@@ -1,0 +1,658 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+  <object class="wxFrame" name="LogFrame">
+    <title>Log for XXX</title>
+    <size>400,300</size>
+    <object class="wxPanel">
+      <object class="wxBoxSizer">
+        <orient>wxVERTICAL</orient>
+        <object class="sizeritem">
+          <object class="wxSplitterWindow">
+            <object class="wxPanel">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Double-click on entry to see diff...</label>
+                  </object>
+                  <flag>wxALL</flag>
+                  <border>5</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxListCtrl" name="LogList">
+                    <style>wxLC_REPORT</style>
+                  </object>
+                  <option>1</option>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>5</border>
+                </object>
+              </object>
+            </object>
+            <object class="wxPanel">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Log Message</label>
+                      </object>
+                      <option>1</option>
+                      <flag>wxALL|wxEXPAND|wxALIGN_CENTRE_VERTICAL</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="StopOnCopy">
+                        <label>Stop on Copy</label>
+                        <checked>1</checked>
+                      </object>
+                      <flag>wxALL</flag>
+                      <border>5</border>
+                    </object>
+                  </object>
+                  <flag>wxEXPAND</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxTextCtrl" name="LogText">
+                    <style>wxTE_MULTILINE</style>
+                  </object>
+                  <option>1</option>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>5</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <option>1</option>
+          <flag>wxEXPAND</flag>
+        </object>
+      </object>
+    </object>
+  </object>
+  <object class="wxFrame" name="CommitFrame">
+    <title></title>
+    <size>800,600</size>
+    <object class="wxPanel">
+      <object class="wxBoxSizer">
+        <object class="sizeritem">
+          <object class="wxSplitterWindow">
+            <object class="wxPanel">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxFlexGridSizer">
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Commit Message</label>
+                      </object>
+                      <flag>wxALL</flag>
+                      <border>5</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxButton" name="PreviousMessages">
+                        <label>Previous Messages</label>
+                      </object>
+                      <flag>wxALL|wxALIGN_RIGHT</flag>
+                      <border>5</border>
+                    </object>
+                    <cols>2</cols>
+                    <growablecols>1</growablecols>
+                  </object>
+                  <flag>wxEXPAND</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxTextCtrl" name="Message">
+                    <style>wxTE_MULTILINE</style>
+                  </object>
+                  <option>1</option>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>5</border>
+                </object>
+              </object>
+            </object>
+            <object class="wxPanel">
+              <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                  <object class="wxStaticText">
+                    <label>Changed Files (Double click to see diffs)</label>
+                  </object>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>5</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxListBox" name="ChangedFiles">
+                    <content/>
+                  </object>
+                  <option>1</option>
+                  <flag>wxALL|wxEXPAND</flag>
+                  <border>5</border>
+                </object>
+              </object>
+            </object>
+          </object>
+          <option>1</option>
+          <flag>wxEXPAND</flag>
+        </object>
+        <object class="sizeritem">
+          <object class="wxPanel">
+            <object class="wxFlexGridSizer">
+              <object class="spacer">
+                <flag>wxEXPAND</flag>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="Commit">
+                  <label>Commit</label>
+                </object>
+                <flag>wxALL|wxALIGN_RIGHT</flag>
+                <border>5</border>
+              </object>
+              <cols>2</cols>
+              <growablecols>0</growablecols>
+            </object>
+          </object>
+          <flag>wxEXPAND</flag>
+        </object>
+        <orient>wxVERTICAL</orient>
+      </object>
+    </object>
+  </object>
+  <object class="wxFrame" name="MessageFrame">
+    <title>SVN</title>
+    <object class="wxPanel">
+      <object class="wxBoxSizer">
+        <object class="sizeritem">
+          <object class="wxTextCtrl" name="Messages">
+            <style>wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY</style>
+          </object>
+          <option>1</option>
+          <flag>wxALL|wxEXPAND</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxButton" name="OK">
+            <label>OK</label>
+          </object>
+          <flag>wxALL|wxEXPAND</flag>
+          <border>5</border>
+        </object>
+        <orient>wxVERTICAL</orient>
+      </object>
+    </object>
+  </object>
+  <object class="wxFrame" name="CheckoutFrame">
+    <title>SVN Checkout</title>
+    <object class="wxPanel">
+      <object class="wxFlexGridSizer">
+        <cols>3</cols>
+        <object class="sizeritem">
+          <object class="wxStaticText">
+            <label>Repository URL</label>
+          </object>
+          <flag>wxALL|wxALIGN_CENTRE_VERTICAL</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxComboBox" name="URL">
+            <content/>
+          </object>
+          <flag>wxALL|wxEXPAND</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxButton" name="FindURL">
+            <label>...</label>
+          </object>
+          <flag>wxALL</flag>
+          <border>5</border>
+          <minsize>25,25</minsize>
+        </object>
+        <growablecols>1</growablecols>
+        <object class="sizeritem">
+          <object class="wxStaticText">
+            <label>Revision</label>
+          </object>
+          <flag>wxALL|wxALIGN_CENTRE_VERTICAL</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxTextCtrl" name="Revision">
+            <value>Head</value>
+          </object>
+          <flag>wxALL|wxEXPAND|wxALIGN_CENTRE_VERTICAL</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxButton" name="FindRevision">
+            <label>...</label>
+          </object>
+          <flag>wxALL|wxEXPAND</flag>
+          <border>5</border>
+          <minsize>25,25</minsize>
+        </object>
+        <object class="sizeritem">
+          <object class="wxStaticText">
+            <label>Local Path</label>
+          </object>
+          <flag>wxALL|wxALIGN_CENTRE_VERTICAL</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxTextCtrl" name="LocalPath"/>
+          <flag>wxALL|wxEXPAND|wxALIGN_CENTRE_VERTICAL</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxButton" name="FindLocalPath">
+            <label>...</label>
+          </object>
+          <flag>wxALL|wxEXPAND</flag>
+          <border>5</border>
+          <minsize>25,25</minsize>
+        </object>
+        <object class="spacer">
+          <size>0,0</size>
+        </object>
+        <object class="sizeritem">
+          <object class="wxButton" name="Checkout">
+            <label>Checkout</label>
+          </object>
+          <flag>wxALL|wxEXPAND</flag>
+          <border>5</border>
+        </object>
+        <object class="spacer">
+          <size>0,0</size>
+        </object>
+      </object>
+    </object>
+  </object>
+  <object class="wxFrame" name="DirDiffFrame">
+    <title>Directory Diff</title>
+    <object class="wxPanel">
+      <object class="wxBoxSizer">
+        <object class="sizeritem">
+          <object class="wxStaticText">
+            <label>Double-click on items to see diff...</label>
+          </object>
+          <flag>wxALL|wxEXPAND</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxListBox" name="ChangedFiles">
+            <content/>
+          </object>
+          <option>1</option>
+          <flag>wxALL|wxEXPAND</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxButton" name="OK">
+            <label>OK</label>
+          </object>
+          <flag>wxALL|wxEXPAND</flag>
+          <border>5</border>
+        </object>
+        <orient>wxVERTICAL</orient>
+      </object>
+    </object>
+  </object>
+  <object class="wxDialog" name="AuthDialog">
+    <title>Authorisation Required</title>
+    <object class="wxPanel">
+      <object class="wxBoxSizer">
+        <orient>wxVERTICAL</orient>
+        <object class="sizeritem">
+          <object class="wxStaticText">
+            <label>Please enter your login details below...</label>
+          </object>
+          <flag>wxALL</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxFlexGridSizer">
+            <cols>2</cols>
+            <rows>2</rows>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>Location</label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticText" name="Location">
+                <label>xxx</label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>Realm</label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticText" name="Realm">
+                <label>xxx</label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>Username</label>
+              </object>
+              <flag>wxALIGN_CENTRE_VERTICAL</flag>
+            </object>
+            <object class="sizeritem">
+              <object class="wxTextCtrl" name="Username"/>
+              <flag>wxEXPAND</flag>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>Password</label>
+              </object>
+              <flag>wxALIGN_CENTRE_VERTICAL</flag>
+            </object>
+            <object class="sizeritem">
+              <object class="wxTextCtrl" name="Password">
+                <style>wxTE_PASSWORD</style>
+              </object>
+              <flag>wxEXPAND</flag>
+            </object>
+            <vgap>5</vgap>
+            <hgap>5</hgap>
+            <growablecols>1</growablecols>
+          </object>
+          <flag>wxALL|wxEXPAND</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxCheckBox" name="SaveDetails">
+            <label>Save Details</label>
+            <checked>1</checked>
+          </object>
+          <flag>wxALL</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxButton" name="OK">
+            <label>OK</label>
+          </object>
+          <flag>wxEXPAND</flag>
+        </object>
+      </object>
+    </object>
+    <size>400, 210</size>
+  </object>
+  <object class="wxDialog" name="CertificateDialog">
+    <title>Check Certificate</title>
+    <object class="wxPanel">
+      <object class="wxBoxSizer">
+        <orient>wxVERTICAL</orient>
+        <object class="sizeritem">
+          <object class="wxFlexGridSizer">
+            <cols>2</cols>
+            <rows>2</rows>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>Realm</label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticText" name="Realm">
+                <label>xxx</label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>Host</label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticText" name="Host">
+                <label>xxx</label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>Issuer</label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticText" name="Issuer">
+                <label>xxx</label>
+              </object>
+            </object>
+            <vgap>5</vgap>
+            <hgap>10</hgap>
+            <growablecols>1</growablecols>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>Valid</label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticText" name="Valid">
+                <label>xxx to xxx</label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>Fingerprint</label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticText" name="Fingerprint">
+                <label>xxx</label>
+              </object>
+            </object>
+          </object>
+          <option>0</option>
+          <flag>wxALL|wxEXPAND</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxBoxSizer">
+            <orient>wxHORIZONTAL</orient>
+            <object class="sizeritem">
+              <object class="wxButton" name="AcceptOnce">
+                <label>Accept Once</label>
+              </object>
+              <option>1</option>
+              <flag>wxALL</flag>
+              <border>5</border>
+            </object>
+            <object class="sizeritem">
+              <object class="wxButton" name="AcceptForever">
+                <label>Accept Forever</label>
+              </object>
+              <option>1</option>
+              <flag>wxALL</flag>
+              <border>5</border>
+            </object>
+            <object class="sizeritem">
+              <object class="wxButton" name="Deny">
+                <label>Deny</label>
+              </object>
+              <option>1</option>
+              <flag>wxALL</flag>
+              <border>5</border>
+            </object>
+          </object>
+          <flag>wxEXPAND</flag>
+        </object>
+      </object>
+    </object>
+    <size>500,160</size>
+  </object>
+  <object class="wxFrame" name="Properties">
+    <title>SVN File Properties</title>
+    <object class="wxPanel">
+      <object class="wxBoxSizer">
+        <orient>wxVERTICAL</orient>
+        <object class="sizeritem">
+          <object class="wxBoxSizer">
+            <orient>wxHORIZONTAL</orient>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>Remote Path</label>
+              </object>
+              <flag>wxALL|wxALIGN_CENTRE_VERTICAL</flag>
+              <border>5</border>
+            </object>
+            <object class="sizeritem">
+              <object class="wxTextCtrl" name="Path">
+                <style>wxTE_READONLY</style>
+              </object>
+              <option>1</option>
+              <flag>wxALL|wxEXPAND</flag>
+              <border>5</border>
+            </object>
+          </object>
+          <flag>wxEXPAND</flag>
+        </object>
+        <object class="sizeritem">
+          <object class="wxStaticBoxSizer">
+            <label>Properties</label>
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+              <object class="wxListCtrl" name="PropList">
+                <style>wxLC_REPORT</style>
+              </object>
+              <option>1</option>
+              <flag>wxALL|wxEXPAND</flag>
+              <border>5</border>
+            </object>
+            <object class="sizeritem">
+              <object class="wxBoxSizer">
+                <orient>wxHORIZONTAL</orient>
+                <object class="sizeritem">
+                  <object class="wxButton" name="Add">
+                    <label>Add</label>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxButton" name="Edit">
+                    <label>Edit</label>
+                  </object>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxButton" name="Delete">
+                    <label>Delete</label>
+                  </object>
+                </object>
+              </object>
+              <flag>wxALIGN_RIGHT</flag>
+            </object>
+          </object>
+          <option>1</option>
+          <flag>wxEXPAND</flag>
+        </object>
+      </object>
+    </object>
+    <size>500,360</size>
+  </object>
+  <object class="wxDialog" name="PropertyEditor">
+    <title>PropertyEditor</title>
+    <object class="wxPanel">
+      <object class="wxBoxSizer">
+        <orient>wxVERTICAL</orient>
+        <object class="sizeritem">
+          <object class="wxFlexGridSizer">
+            <cols>2</cols>
+            <rows>2</rows>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>Property</label>
+              </object>
+              <flag>wxALL|wxALIGN_CENTRE_VERTICAL</flag>
+              <border>5</border>
+            </object>
+            <object class="sizeritem">
+              <object class="wxComboBox" name="Property">
+                <content>
+                  <item>svn:executable</item>
+                  <item>svn:mime-type</item>
+                  <item>svn:ignore</item>
+                  <item>svn:keywords</item>
+                  <item>svn:eol-style</item>
+                  <item>svn:externals</item>
+                  <item>svn:special</item>
+                </content>
+                <style>wxCB_SORT</style>
+              </object>
+              <flag>wxALL|wxEXPAND</flag>
+              <border>5</border>
+            </object>
+            <object class="sizeritem">
+              <object class="wxStaticText">
+                <label>Value</label>
+              </object>
+              <flag>wxALL|wxALIGN_CENTRE_VERTICAL</flag>
+              <border>5</border>
+            </object>
+            <object class="sizeritem">
+              <object class="wxTextCtrl" name="Value"/>
+              <flag>wxALL|wxEXPAND</flag>
+              <border>5</border>
+            </object>
+            <growablecols>1</growablecols>
+          </object>
+          <flag>wxEXPAND</flag>
+        </object>
+        <object class="sizeritem">
+          <object class="wxBoxSizer">
+            <orient>wxHORIZONTAL</orient>
+            <object class="sizeritem">
+              <object class="wxButton" name="OK">
+                <label>OK</label>
+              </object>
+            </object>
+            <object class="sizeritem">
+              <object class="wxButton" name="Cancel">
+                <label>Cancel</label>
+              </object>
+            </object>
+          </object>
+          <flag>wxALIGN_RIGHT</flag>
+        </object>
+      </object>
+    </object>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+  </object>
+  <object class="wxDialog" name="CommitMessagesDialog">
+    <title>Previous Commit Messages</title>
+    <object class="wxPanel">
+      <object class="wxBoxSizer">
+        <orient>wxVERTICAL</orient>
+        <object class="sizeritem">
+          <object class="wxListCtrl" name="MessageList">
+            <style>wxLC_REPORT|wxLC_SORT_ASCENDING</style>
+          </object>
+          <option>1</option>
+          <flag>wxALL|wxEXPAND</flag>
+          <border>5</border>
+        </object>
+        <object class="sizeritem">
+          <object class="wxStaticBoxSizer">
+            <label>Message</label>
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+              <object class="wxTextCtrl" name="Message">
+                <style>wxTE_MULTILINE|wxTE_READONLY</style>
+              </object>
+              <option>1</option>
+              <flag>wxALL|wxEXPAND</flag>
+            </object>
+          </object>
+          <option>1</option>
+          <flag>wxEXPAND</flag>
+        </object>
+        <object class="sizeritem">
+          <object class="wxButton" name="OK">
+            <label>OK</label>
+          </object>
+          <flag>wxALL|wxALIGN_RIGHT</flag>
+          <border>5</border>
+        </object>
+      </object>
+    </object>
+    <style>wxCAPTION|wxSYSTEM_MENU|wxRESIZE_BORDER|wxCLOSE_BOX</style>
+  </object>
+</resource>
