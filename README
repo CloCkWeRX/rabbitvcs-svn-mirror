@@ -1,0 +1,79 @@
+
+								  NautilusSvn
+								  ===========
+
+Introduction
+------------
+
+This program is an extension to the Nautilus file manager to allow better
+integration with the Subversion source control system.
+
+All files copyright 2006 Jason Field. All files licensed under the GNU GPL v2 -
+see file COPYING.
+
+The original source distribution can be found at http://jasonfield.com/freebies.
+
+Requirements
+------------
+
+I've only tested this in Ubuntu Feisty, so the instructions are only for that OS.
+Other operating systems should be essentially the same once the dependencies are
+satisfied.
+
+This software requires the following packages to be installed,
+
+python-nautilus
+python-wxgtk2.6
+python-svn
+meld (Optional - see 'Options' below.)
+
+Everything else required should be installed by default. If not, let me know at
+the address below!
+
+Installation
+------------
+
+* Please note that there is an experimental .deb file available at
+* http://jasonfield.com/freebies.
+
+Nautilus extensions live in ~/.nautilus/python-extensions - make sure that this
+directory exists.
+
+mkdir ~/.nautilus/python-extensions/
+
+Next up unpack the archive into ~/.nautilus/python-extensions/NautilusSvn
+
+cd ~/.nautilus/python-extensions/
+tar -xzf <PATH TO FILE>/NautilusSvn_v0.1.tar.gz NautilusSvn
+
+Finally we need to set up a symlink so that Nautilus finds the correct startup
+script. 
+
+ln -s NautilusSvn/NautilusSvn.py NautilusSvn.py
+
+Now just restart Nautilus (i.e. log out and back in again should do it), and you
+should see the new Subversion menu items.
+
+Options
+-------
+
+There are several user-definable switches in the file helper.py that change the
+behaviour of the extension.
+
+ENABLE_EMBLEMS - This turns on/off the rendering of status emblems oneach file
+	icon in the file browser.
+
+ENABLE_ATTRIBUTES - Adds revision and author columns to the list view in
+	Nautilus.
+
+DIFF_TOOL - Specifes which executable to use for diff operations. I've tried it
+	with gvidiff, but I mostly use Meld since it's ace.
+
+RECURSIVE_STATUS - If enabled, the file status check when drawing emblems will 
+	use recursive checks. This is a bit experimental, as it might cause high
+	CPU loads on large working copies.
+
+Bug Reports / Feature Requests
+------------------------------
+
+Please direct any feedback to jason@jasonfield.com. 
