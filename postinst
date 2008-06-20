@@ -1,0 +1,3 @@
+#!/bin/sh
+ln -s /usr/lib/nautilus/extensions-1.0/python/nautilussvn_0.4-2/NautilusSvn.py /usr/lib/nautilus/extensions-1.0/python/NautilusSvn.py
+gtk-update-icon-cache /usr/share/icons/hicolor/
