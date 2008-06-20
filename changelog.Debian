@@ -1,0 +1,46 @@
+nautilussvn (0.8-1) unstable; urgency=low
+
+  * Some minor bug fixes.
+  * Add new property editor.
+
+ -- Jason Field <jason@jasonfield.com> Sun Jun 24 16:45:13 BST 2007
+
+nautilussvn (0.7-1) unstable; urgency=low
+
+  * Updated wxPython calls to use recommended import method.
+  * Added 'Refresh Status' menu option.
+
+ -- Jason Field <jason@jasonfield.com> Sun, 27 May 2007 17:23:11 +0000
+
+nautilussvn (0.6-1) unstable; urgency=low
+
+  * Code now supports SSL certificate checks and login details dialogs.
+
+ -- Jason Field <jason@jasonfield.com> Thu, 01 Mar 2007 17:43:51 +0000
+
+nautilussvn (0.5-2) unstable; urgency=low
+
+  * The debs are now built with a script which should stop the version
+  	mismatch problems in files.
+
+ -- Jason Field <jason@jasonfield.com> Fri, 23 Feb 2007 10:54:49 +0000
+
+nautilussvn (0.5-1) unstable; urgency=low
+
+  * Can now edit and resolve conflicts.
+  * Directory status now evaluated asynchronously to make nautilus more
+    responsive.
+
+ -- Jason Field <jason@jasonfield.com> Thu, 15 Feb 2007 10:45:20 +0000
+
+nautilussvn (0.4-2) unstable; urgency=low
+
+  * Minor installer fixes - changed paths and improved dependency list.
+
+ -- Jason Field <jason@jasonfield.com> Thu, 15 Feb 2007 10:45:20 +0000
+
+nautilussvn (0.4-1) unstable; urgency=low
+
+  * First packaged release.
+
+ -- Jason Field <jason@jasonfield.com> Tue, 13 Feb 2007 16:23:25 +0000
