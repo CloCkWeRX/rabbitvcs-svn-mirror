@@ -212,7 +212,7 @@ class MyApp(wx.App):
 
 		# Apply the diff as a reverse patch to get our original file
 		x = os.popen( 'patch --reverse "%(source_path)s" < "%(patch_path)s"' % locals() )
-		os.spawnl( os.P_NOWAIT, os.path.join("/usr/bin/", DIFF_TOOL), DIFF_TOOL, path, source_path )
+		CallDiffTool(path, source_path)
 
 	#--------------------------------------------------------------------------
 	def OnStopOnCopyChanged(self, evt):

@@ -38,6 +38,10 @@ SOURCE_PATH = os.path.expanduser("~/.nautilus/python-extensions/NautilusSvn/")
 # a remote repository over a slow connection.
 RECURSIVE_STATUS = True
 
+# Set to True to swap the order of old and new versions of files in diff tool
+# Default is False, new version at left and old one at right
+SWAP = False
+
 #==============================================================================
 if not os.path.exists(SOURCE_PATH):
 	SOURCE_PATH = "/usr/lib/nautilus/extensions-1.0/python/nautilussvn_0.5-1/"
@@ -76,3 +80,11 @@ def CheckDiffTool():
 		return False
 	else:
 		return True
+
+def CallDiffTool(lhs, rhs, rev=-1):
+	if SWAP:   (lhs, rhs) = (rhs, lhs)
+	if rev == -1:
+		os.spawnl(os.P_NOWAIT, os.path.join("/usr/bin/", DIFF_TOOL), DIFF_TOOL, lhs, rhs)
+	else:
+		os.spawnl(os.P_NOWAIT, os.path.join("/usr/bin/", DIFF_TOOL), DIFF_TOOL, lhs, rhs, rev)
+

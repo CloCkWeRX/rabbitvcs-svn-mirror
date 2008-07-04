@@ -317,7 +317,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
 		revs = glob.glob(path + ".r*")
 		revs.sort()
 		revs.reverse()
-		os.spawnl(os.P_NOWAIT, os.path.join("/usr/bin/", DIFF_TOOL), DIFF_TOOL, path + ".mine", path, revs[0])
+		CallDiffTool(path + ".mine", path, revs[0])
 
 	#-------------------------------------------------------------------------- 
 	def OnResolveConflicts(self, menuitem, files):
@@ -374,7 +374,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
 		open("/tmp/tmp.patch", "w").write(df)
 		shutil.copy(path, "/tmp")
 		x = os.popen('patch --reverse "/tmp/%s" < /tmp/tmp.patch' % (os.path.split(path)[-1]))
-		os.spawnl(os.P_NOWAIT, os.path.join("/usr/bin/", DIFF_TOOL), DIFF_TOOL, path, os.path.join("/tmp/", os.path.split(path)[-1]))
+		CallDiffTool(path, os.path.join("/tmp/", os.path.split(path)[-1]))
 
 	#--------------------------------------------------------------------------
 	def OnShowLog(self, menuitem, files):

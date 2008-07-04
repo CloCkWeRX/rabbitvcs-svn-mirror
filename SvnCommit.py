@@ -93,7 +93,7 @@ class MyApp( wx.App ):
 		open( "/tmp/tmp.patch", "w" ).write( df )
 		shutil.copy( path, "/tmp" )
 		x = os.popen( 'patch --reverse "/tmp/%s" < /tmp/tmp.patch' % ( os.path.split( path )[-1] ) )
-		os.spawnl( os.P_NOWAIT, os.path.join( "/usr/bin/", DIFF_TOOL ), DIFF_TOOL, path, os.path.join( "/tmp/", os.path.split( path )[-1] ) )
+		CallDiffTool(path, os.path.join("/tmp/", os.path.split(path)[-1]))
 
 	#-------------------------------------------------------------------------- 
 	def OnCommit( self, evt ):
