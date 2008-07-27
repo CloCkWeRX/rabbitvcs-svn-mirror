@@ -32,7 +32,7 @@ ENABLE_ATTRIBUTES = True
 DIFF_TOOL = "meld"
 
 # The path to the folder containing all of our source files.
-SOURCE_PATH = os.path.expanduser("~/.nautilus/python-extensions/NautilusSvn/")
+SOURCE_PATH = os.path.dirname(os.path.realpath(__file__))
 
 # Set to True to enable recursive status checks. This might be slow when using
 # a remote repository over a slow connection.
@@ -43,8 +43,6 @@ RECURSIVE_STATUS = True
 SWAP = False
 
 #==============================================================================
-if not os.path.exists(SOURCE_PATH):
-	SOURCE_PATH = "/usr/lib/nautilus/extensions-1.0/python/nautilussvn_0.5-1/"
 
 # A useful macro that's used all over the shop.
 def GetPath(path):

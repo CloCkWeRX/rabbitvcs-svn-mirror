@@ -46,11 +46,12 @@ import pysvn
 import shutil
 import sys
 
-path = os.path.expanduser(r"~/.nautilus/python-extensions/NautilusSvn/")
-if os.path.exists(path):
-	sys.path.append(path)
-else:
-	sys.path.append(r"/usr/lib/nautilus/extensions-1.0/python/nautilussvn_%s/"%__version__)
+# NautilusSvn is actually more than just this module so we need to add the entire
+# directory to the path to be able to find our other modules.
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+
+# FIXME: this (and other) should be moved into a nautilussvn module to prevent 
+# collisions with other modules on the path.
 from helper import *
 
 #============================================================================== 
