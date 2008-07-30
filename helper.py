@@ -32,7 +32,7 @@ ENABLE_ATTRIBUTES = True
 DIFF_TOOL = "meld"
 
 # The path to the folder containing all of our source files.
-SOURCE_PATH = os.path.dirname(os.path.realpath(__file__))
+SOURCE_PATH = os.path.dirname(os.path.realpath(__file__.rstrip("c")))
 
 # Set to True to enable recursive status checks. This might be slow when using
 # a remote repository over a slow connection.

@@ -47,8 +47,10 @@ import shutil
 import sys
 
 # NautilusSvn is actually more than just this module so we need to add the entire
-# directory to the path to be able to find our other modules.
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+# directory to the path to be able to find our other modules. Because on import
+# Python generates compiled (.pyc) versions of Python source code files we have
+# to strip the 'c' from the extension to find the actual file.
+sys.path.append(os.path.dirname(os.path.realpath(__file__.rstrip("c"))))
 
 # FIXME: this (and other) should be moved into a nautilussvn module to prevent 
 # collisions with other modules on the path.
