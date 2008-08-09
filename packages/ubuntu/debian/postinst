@@ -1,0 +1,13 @@
+#!/bin/sh
+
+name="nautilussvn"
+version="0.12"
+nautilussvn_directory_name="${name}_${version}"
+python_nautilus_extensions_path="`pkg-config --variable=pythondir nautilus-python`"
+nautilussvn_directory="${python_nautilus_extensions_path}/${nautilussvn_directory_name}"
+
+icon_theme_directory="/usr/share/icons/hicolor/"
+emblems_directory="${icon_theme_directory}/scalable/emblems/"
+
+ln -s "${nautilussvn_directory}/NautilusSvn.py" "${python_nautilus_extensions_path}/NautilusSvn.py"
+gtk-update-icon-cache "$icon_theme_directory"

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+name="nautilussvn"
+version="0.12"
+nautilussvn_directory_name="${name}_${version}"
+python_nautilus_extensions_path="`pkg-config --variable=pythondir nautilus-python`"
+nautilussvn_directory="${python_nautilus_extensions_path}/${nautilussvn_directory_name}"
+
+rm "${python_nautilus_extensions_path}/NautilusSvn.py"
