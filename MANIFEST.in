@@ -12,6 +12,8 @@
 #       present in the temporary directory are ignored. Example:
 #         include *
 #         include icons/*
+#       or
+#         global-include *
 include *.py
 include *.xrc
 include svn.ico

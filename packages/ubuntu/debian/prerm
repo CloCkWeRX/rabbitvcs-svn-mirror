@@ -1,9 +1,16 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 name="nautilussvn"
 version="0.12"
 nautilussvn_directory_name="${name}_${version}"
 python_nautilus_extensions_path="`pkg-config --variable=pythondir nautilus-python`"
+if [ -z "$python_nautilus_extensions_path" ]; then
+	# Fallback if pkg-config can't find anything
+	python_nautilus_extensions_path="`find /usr/lib/nautilus/ -maxdepth 1 | grep extensions | tail -n 1`/python"
+	if [ ! -d "$python_nautilus_extensions_path" ]; then
+		mkdir -p "$python_nautilus_extensions_path"
+	fi
+fi;
 nautilussvn_directory="${python_nautilus_extensions_path}/${nautilussvn_directory_name}"
 
 rm "${python_nautilus_extensions_path}/NautilusSvn.py"
