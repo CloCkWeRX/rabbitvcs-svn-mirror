@@ -18,6 +18,9 @@
 # For more information see: http://docs.python.org/dist/dist.html
 #
 
+# TODO: this all feels just a little too shell scripty, refactoring it later 
+# might be a good idea.
+
 # NOTES:
 # System-wide directories:
 # NautilusSvn goes in: /usr/lib/nautilus/extensions-<version>/python/
@@ -32,6 +35,7 @@
 # Configuration information goes in: ~/.config/nautilussvn/
 # Data goes in: ~/.local/share/nautilussvn
 
+import sys
 import os
 import glob
 import subprocess
@@ -40,7 +44,12 @@ from distutils.core import setup
 
 #==============================================================================
 # Variables
+# TODO: Some variables should get passed in as a command line arguments
 #==============================================================================
+
+# Whether we should do a system-wide or a user-specific setup.
+setup_type = 'sytem-wide' # Available options: system-wide, user-specific
+do_postinst = False
 
 # Some descriptive variables
 # This will eventually be passed to the setup function, but we already need them
@@ -56,6 +65,8 @@ license='GNU General Public License version 2 or later'
 
 # Variables pointing to directories
 icon_theme_directory = '/usr/share/icons/hicolor/' # TODO: does this really need to be hardcoded?
+if setup_type == 'user-specific': 
+    icon_theme_directory = os.path.expanduser('~/.icons/hicolor/')
 emblems_directory = '%s/scalable/emblems/' % icon_theme_directory 
 nautilussvn_directory_name = '%(name)s_%(version)s' % { 'name': name, 'version': version }
 
@@ -68,7 +79,9 @@ python_nautilus_extensions_path = subprocess.Popen(
     ['pkg-config', '--variable=pythondir','nautilus-python'],
     stdout=subprocess.PIPE
 ).stdout.read().strip()
-
+if setup_type == 'user-specific': 
+    python_nautilus_extensions_path = os.path.expanduser('~/.nautilus/python-extensions/')
+    
 # The full path to the directory we want to install
 nautilussvn_directory = os.path.join(python_nautilus_extensions_path, nautilussvn_directory_name)
 
@@ -133,10 +146,19 @@ os_files = [(nautilussvn_directory, os_files)]
 emblem_files = glob.glob('./icons/*.svg')
 emblem_files = [(emblems_directory, emblem_files)]
 
+if setup_type == 'user-specific':
+    emblem_files.extend(
+        [(emblems_directory, glob.glob('./icons/*.icon'))]
+    )
+
 
 #==============================================================================
 # Ready to install
 #==============================================================================
+
+data_files = doc_files + os_files + emblem_files
+if setup_type == 'user-specific': 
+    data_files = os_files + emblem_files
 
 # Calling the setup function will actually install NautilusSvn and also creates 
 # an .egg-info file in /usr/lib/python<version>/site-packages/ or 
@@ -159,7 +181,7 @@ dist = setup(
     # - packages: install complete packages (directories with an __init__.py
     #   file) into site-packages
     # - data_files: any file you want, anywhere you want it
-    data_files=doc_files + os_files + emblem_files
+    data_files=data_files
 )
 
 #==============================================================================
@@ -168,13 +190,14 @@ dist = setup(
 # debian packages include postinst and prerm files in which this should be done).
 #==============================================================================
 
-# We have to call `gtk-update-icon-cache` or else the emblems won't appear.
-#~ subprocess.call(['gtk-update-icon-cache', icon_theme_directory])
+if do_postinst:
+    # We have to call `gtk-update-icon-cache` or else the emblems won't appear.
+    #~ subprocess.call(['gtk-update-icon-cache', icon_theme_directory])
 
-# Nautilus Python extensions actually need to be in the root of the extensions
-# directory so we'll just create a symlink (this actually needs to be a symlink
-# because there's path magic in NautilusSvn.py to include other modules).
-#~ os.symlink(
-    #~ os.path.join(nautilussvn_directory, 'NautilusSvn.py'),
-    #~ os.path.join(python_nautilus_extensions_path, 'NautilusSvn.py')
-#~ )
+    # Nautilus Python extensions actually need to be in the root of the extensions
+    # directory so we'll just create a symlink (this actually needs to be a symlink
+    # because there's path magic in NautilusSvn.py to include other modules).
+    os.symlink(
+        os.path.join(nautilussvn_directory, 'NautilusSvn.py'),
+        os.path.join(python_nautilus_extensions_path, 'NautilusSvn.py')
+    )
