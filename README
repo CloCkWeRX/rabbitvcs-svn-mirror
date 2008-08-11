@@ -11,7 +11,7 @@ integration with the Subversion source control system.
 All files copyright 2006 Jason Field. All files licensed under the GNU GPL v2 -
 see file COPYING.
 
-The original source distribution can be found at http://jasonfield.com/freebies.
+The original source distribution can be found at http://code.google.com/p/nautilussvn.
 
 Requirements
 ------------
@@ -33,8 +33,8 @@ the address below!
 Installation
 ------------
 
-* Please note that there is an experimental .deb file available at
-* http://jasonfield.com/freebies.
+* Please note that there is an experimental Debian package available at
+  http://code.google.com/p/nautilussvn/downloads
 
 Nautilus extensions live in ~/.nautilus/python-extensions - make sure that this
 directory exists.
@@ -76,4 +76,6 @@ RECURSIVE_STATUS - If enabled, the file status check when drawing emblems will
 Bug Reports / Feature Requests
 ------------------------------
 
-Please direct any feedback to jason@jasonfield.com. 
+You can report bugs / request features at http://code.google.com/p/nautilussvn/issues
+
+For discussion there is a mailing list at http://groups.google.com/group/nautilussvn
