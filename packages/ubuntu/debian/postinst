@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
 name="nautilussvn"
 version="0.12"
