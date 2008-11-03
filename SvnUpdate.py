@@ -1,7 +1,7 @@
 #==============================================================================
 """ Copyright Jason Field 2006
 
-	This file is part of NautilusSvn.
+    This file is part of NautilusSvn.
 
     NautilusSvn is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

@@ -1,7 +1,7 @@
 #==============================================================================
 """ Copyright Jason Field 2006
 
-	This file is part of NautilusSvn.
+    This file is part of NautilusSvn.
 
     NautilusSvn is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,43 +46,43 @@ SWAP = False
 
 # A useful macro that's used all over the shop.
 def GetPath(path):
-	""" This function is a helper for the other files so that they can find the
-		resource files etc. that they require.
-	"""
-	return os.path.join(SOURCE_PATH, path)
+    """ This function is a helper for the other files so that they can find the
+        resource files etc. that they require.
+    """
+    return os.path.join(SOURCE_PATH, path)
 
 def GetHomeFolder():
-	""" Returns the location of the hidden folder we use in the home dir.
-		This is used for storing things like previous commit messages and
-		previously used repositories.
-	"""
-	fldr = os.path.abspath( os.path.expanduser("~/.nautilussvn") )
-	if not os.path.exists( fldr ):
-		os.mkdir( fldr )
-	return fldr
+    """ Returns the location of the hidden folder we use in the home dir.
+        This is used for storing things like previous commit messages and
+        previously used repositories.
+    """
+    fldr = os.path.abspath( os.path.expanduser("~/.nautilussvn") )
+    if not os.path.exists( fldr ):
+        os.mkdir( fldr )
+    return fldr
 
 # Checks that the defined diff tool exists. If not, let the user know.
 def CheckDiffTool():
-	if not os.path.exists(os.path.join("/usr/bin", DIFF_TOOL)):
-		
-		import gtk
-		dlg = gtk.MessageDialog(buttons=gtk.BUTTONS_OK)
+    if not os.path.exists(os.path.join("/usr/bin", DIFF_TOOL)):
+        
+        import gtk
+        dlg = gtk.MessageDialog(buttons=gtk.BUTTONS_OK)
 
-		msg = "The diff tool set in %s does not exist.\n\nEither install %s, or update helper.py to point to the correct tool you'd like to use.."%(GetPath("helper.py"),DIFF_TOOL)
-		dlg.set_markup(msg)
-		def OnResponse(widget, event):
-			dlg.destroy()
-		dlg.connect("response", OnResponse)
-		dlg.set_property("title", "NautilusSvn")
-		dlg.run()
-		return False
-	else:
-		return True
+        msg = "The diff tool set in %s does not exist.\n\nEither install %s, or update helper.py to point to the correct tool you'd like to use.."%(GetPath("helper.py"),DIFF_TOOL)
+        dlg.set_markup(msg)
+        def OnResponse(widget, event):
+            dlg.destroy()
+        dlg.connect("response", OnResponse)
+        dlg.set_property("title", "NautilusSvn")
+        dlg.run()
+        return False
+    else:
+        return True
 
 def CallDiffTool(lhs, rhs, rev=-1):
-	if SWAP:   (lhs, rhs) = (rhs, lhs)
-	if rev == -1:
-		os.spawnl(os.P_NOWAIT, os.path.join("/usr/bin/", DIFF_TOOL), DIFF_TOOL, lhs, rhs)
-	else:
-		os.spawnl(os.P_NOWAIT, os.path.join("/usr/bin/", DIFF_TOOL), DIFF_TOOL, lhs, rhs, rev)
+    if SWAP:   (lhs, rhs) = (rhs, lhs)
+    if rev == -1:
+        os.spawnl(os.P_NOWAIT, os.path.join("/usr/bin/", DIFF_TOOL), DIFF_TOOL, lhs, rhs)
+    else:
+        os.spawnl(os.P_NOWAIT, os.path.join("/usr/bin/", DIFF_TOOL), DIFF_TOOL, lhs, rhs, rev)
 

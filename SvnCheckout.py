@@ -1,7 +1,7 @@
 #==============================================================================
 """ Copyright Jason Field 2006
 
-	This file is part of NautilusSvn.
+    This file is part of NautilusSvn.
 
     NautilusSvn is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,76 +32,76 @@ from helper import *
 #============================================================================== 
 class MyApp(wx.App):
 
-	#-------------------------------------------------------------------------- 
-	def OnInit(self):
-		res = wx.xrc.EmptyXmlResource()
-		xrcpath = GetPath("NautilusSvn.xrc")
-		res.Load(xrcpath)
-		self.frame = res.LoadFrame(None, "CheckoutFrame")
+    #-------------------------------------------------------------------------- 
+    def OnInit(self):
+        res = wx.xrc.EmptyXmlResource()
+        xrcpath = GetPath("NautilusSvn.xrc")
+        res.Load(xrcpath)
+        self.frame = res.LoadFrame(None, "CheckoutFrame")
 
-		self.SetTopWindow(self.frame)
-		self.frame.Fit()
-		x,y = self.frame.GetSize()
-		x = max(x, 800)
-		self.frame.SetSize((x,y))
-		self.frame.SetIcon(wx.Icon(GetPath("svn.ico"), wx.BITMAP_TYPE_ICO))
-		self.frame.Centre()
-		self.frame.Show()
+        self.SetTopWindow(self.frame)
+        self.frame.Fit()
+        x,y = self.frame.GetSize()
+        x = max(x, 800)
+        self.frame.SetSize((x,y))
+        self.frame.SetIcon(wx.Icon(GetPath("svn.ico"), wx.BITMAP_TYPE_ICO))
+        self.frame.Centre()
+        self.frame.Show()
 
-		self.checkoutValid = False
-		
-		XRCCTRL(self.frame, "LocalPath").SetValue(sys.argv[1])
+        self.checkoutValid = False
+        
+        XRCCTRL(self.frame, "LocalPath").SetValue(sys.argv[1])
 
-		wx.EVT_BUTTON(self.frame, XRCID("FindURL"), self.OnFindURL)
-		wx.EVT_BUTTON(self.frame, XRCID("FindRevision"), self.OnFindRevision)
-		wx.EVT_BUTTON(self.frame, XRCID("FindLocalPath"), self.OnFindLocalPath)
-		wx.EVT_BUTTON(self.frame, XRCID("Checkout"), self.OnCheckout)
+        wx.EVT_BUTTON(self.frame, XRCID("FindURL"), self.OnFindURL)
+        wx.EVT_BUTTON(self.frame, XRCID("FindRevision"), self.OnFindRevision)
+        wx.EVT_BUTTON(self.frame, XRCID("FindLocalPath"), self.OnFindLocalPath)
+        wx.EVT_BUTTON(self.frame, XRCID("Checkout"), self.OnCheckout)
 
- 		# Load the history of repository locations back into the user interface
-		self.paths_file = os.path.join( GetHomeFolder(), "repos_paths" )
- 		self.paths = [] # just to make sure there is at least a property set
-		if os.path.exists(self.paths_file):
- 			self.paths = [x.strip() for x in open(self.paths_file, "r").readlines()]
- 			for path in self.paths:
- 				XRCCTRL(self.frame, "URL").Append(path)
+         # Load the history of repository locations back into the user interface
+        self.paths_file = os.path.join( GetHomeFolder(), "repos_paths" )
+         self.paths = [] # just to make sure there is at least a property set
+        if os.path.exists(self.paths_file):
+             self.paths = [x.strip() for x in open(self.paths_file, "r").readlines()]
+             for path in self.paths:
+                 XRCCTRL(self.frame, "URL").Append(path)
 
-		return True
+        return True
 
-	#--------------------------------------------------------------------------
-	def OnFindURL(self, evt):
-		url = XRCCTRL(self.frame, "URL").GetValue()
-		os.spawnl(os.P_NOWAIT, "/usr/bin/firefox", "firefox", url)
+    #--------------------------------------------------------------------------
+    def OnFindURL(self, evt):
+        url = XRCCTRL(self.frame, "URL").GetValue()
+        os.spawnl(os.P_NOWAIT, "/usr/bin/firefox", "firefox", url)
 
-	#--------------------------------------------------------------------------
-	def OnFindRevision(self, evt):
-		url = XRCCTRL(self.frame, "URL").GetValue()
-		os.spawnl(os.P_NOWAIT, "/usr/bin/python", "python", GetPath("SvnLog.py"), "%s" % url)
+    #--------------------------------------------------------------------------
+    def OnFindRevision(self, evt):
+        url = XRCCTRL(self.frame, "URL").GetValue()
+        os.spawnl(os.P_NOWAIT, "/usr/bin/python", "python", GetPath("SvnLog.py"), "%s" % url)
 
-	#--------------------------------------------------------------------------
-	def OnFindLocalPath(self, evt):
-		dlg = wx.DirDialog(self.frame)
-		if dlg.ShowModal() == wx.ID_OK:
-			XRCCTRL(self.frame, "LocalPath").SetValue(dlg.GetPath())
+    #--------------------------------------------------------------------------
+    def OnFindLocalPath(self, evt):
+        dlg = wx.DirDialog(self.frame)
+        if dlg.ShowModal() == wx.ID_OK:
+            XRCCTRL(self.frame, "LocalPath").SetValue(dlg.GetPath())
 
-	#--------------------------------------------------------------------------
-	def OnCheckout(self, evt):
-		self.remotePath = XRCCTRL(self.frame, "URL").GetValue()
-		self.localPath = os.path.expanduser(XRCCTRL(self.frame, "LocalPath").GetValue())
-		self.revision = XRCCTRL(self.frame, "Revision").GetValue()
-		self.checkoutValid = True
+    #--------------------------------------------------------------------------
+    def OnCheckout(self, evt):
+        self.remotePath = XRCCTRL(self.frame, "URL").GetValue()
+        self.localPath = os.path.expanduser(XRCCTRL(self.frame, "LocalPath").GetValue())
+        self.revision = XRCCTRL(self.frame, "Revision").GetValue()
+        self.checkoutValid = True
 
-		# Reshuffle the list if we're dealing with an already existing repository
-		# location, otherwise simply add it.
-		if self.remotePath in self.paths:
-			self.paths.pop(self.paths.index(self.remotePath))
-		self.paths.insert( 0, self.remotePath )
-		
-		# Write it back to the repos_paths file
-		paths_file = open( self.paths_file, "w" )
-		paths_file.write( "\n".join( self.paths ) )
-		paths_file.close()
+        # Reshuffle the list if we're dealing with an already existing repository
+        # location, otherwise simply add it.
+        if self.remotePath in self.paths:
+            self.paths.pop(self.paths.index(self.remotePath))
+        self.paths.insert( 0, self.remotePath )
+        
+        # Write it back to the repos_paths file
+        paths_file = open( self.paths_file, "w" )
+        paths_file.write( "\n".join( self.paths ) )
+        paths_file.close()
 
-		self.frame.Close()
+        self.frame.Close()
 
 #============================================================================== 
 # First pop up the commit dialog
@@ -110,15 +110,15 @@ app = MyApp(0)
 app.MainLoop()
 
 if app.checkoutValid:
-	remotePath = app.remotePath
-	localPath = app.localPath
-	revision = app.revision
+    remotePath = app.remotePath
+    localPath = app.localPath
+    revision = app.revision
 
-	del app
+    del app
 
-	app = MessageBoxApp(0)
-	if revision.lower() == "head":
-		app.SetFunc("checkout", remotePath, localPath, revision=pysvn.Revision(pysvn.opt_revision_kind.head))
-	else:
-		app.SetFunc("checkout", remotePath, localPath, revision=pysvn.Revision(pysvn.opt_revision_kind.number, revision))
-	app.MainLoop()
+    app = MessageBoxApp(0)
+    if revision.lower() == "head":
+        app.SetFunc("checkout", remotePath, localPath, revision=pysvn.Revision(pysvn.opt_revision_kind.head))
+    else:
+        app.SetFunc("checkout", remotePath, localPath, revision=pysvn.Revision(pysvn.opt_revision_kind.number, revision))
+    app.MainLoop()

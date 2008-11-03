@@ -1,7 +1,7 @@
 #==============================================================================
 """ Copyright Jason Field 2006
 
-	This file is part of NautilusSvn.
+    This file is part of NautilusSvn.
 
     NautilusSvn is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,68 +35,68 @@ from helper import *
 
 class DirDiffApp(wx.App):
 
-	#-------------------------------------------------------------------------- 
-	def SetFunc(self, svnFunc, *args, **kwargs):
-		self._args = args
-		self._kwargs = kwargs
-		self._svnFunc = svnFunc
+    #-------------------------------------------------------------------------- 
+    def SetFunc(self, svnFunc, *args, **kwargs):
+        self._args = args
+        self._kwargs = kwargs
+        self._svnFunc = svnFunc
 
-	#-------------------------------------------------------------------------- 
-	def OnInit(self):
+    #-------------------------------------------------------------------------- 
+    def OnInit(self):
 
-		path = sys.argv[1]
+        path = sys.argv[1]
 
-		res = wx.xrc.EmptyXmlResource()
-		xrcpath = GetPath("NautilusSvn.xrc")
-		res.Load(xrcpath)
-		self.frame = res.LoadFrame(None, "DirDiffFrame")
-		self.frame.SetSize((800,500))
-		self.frame.Centre()
-		self.frame.SetTitle("Directory Diff - %s"%path)
-		self.frame.SetIcon(wx.Icon(GetPath("svn.ico"), wx.BITMAP_TYPE_ICO))
+        res = wx.xrc.EmptyXmlResource()
+        xrcpath = GetPath("NautilusSvn.xrc")
+        res.Load(xrcpath)
+        self.frame = res.LoadFrame(None, "DirDiffFrame")
+        self.frame.SetSize((800,500))
+        self.frame.Centre()
+        self.frame.SetTitle("Directory Diff - %s"%path)
+        self.frame.SetIcon(wx.Icon(GetPath("svn.ico"), wx.BITMAP_TYPE_ICO))
 
-		wx.EVT_BUTTON(self.frame, XRCID("OK"), self.OnOK)
-		wx.EVT_LISTBOX_DCLICK(self.frame, XRCID("ChangedFiles"), self.OnDiffFile)
+        wx.EVT_BUTTON(self.frame, XRCID("OK"), self.OnOK)
+        wx.EVT_LISTBOX_DCLICK(self.frame, XRCID("ChangedFiles"), self.OnDiffFile)
 
-		files = {}
-		for line in os.popen('svn diff "%s"' % path).readlines():
-			if line[:3] in ["---", "+++"]:
-				file = line[4:line.find("(")].strip()
-				files[file] = 1
+        files = {}
+        for line in os.popen('svn diff "%s"' % path).readlines():
+            if line[:3] in ["---", "+++"]:
+                file = line[4:line.find("(")].strip()
+                files[file] = 1
 
-		if not len(files.keys()):
-			XRCCTRL(self.frame, "ChangedFiles").Append("No modified files found.")
-		else:
-			for x in files.keys():
-				XRCCTRL(self.frame, "ChangedFiles").Append(x)
+        if not len(files.keys()):
+            XRCCTRL(self.frame, "ChangedFiles").Append("No modified files found.")
+        else:
+            for x in files.keys():
+                XRCCTRL(self.frame, "ChangedFiles").Append(x)
 
-		self.SetTopWindow(self.frame)
-		self.frame.Show()
+        self.SetTopWindow(self.frame)
+        self.frame.Show()
 
-		return True
+        return True
 
-	#--------------------------------------------------------------------------
-	def OnDiffFile(self, evt):
+    #--------------------------------------------------------------------------
+    def OnDiffFile(self, evt):
 
-		if not CheckDiffTool(): return
+        if not CheckDiffTool(): return
 
-		path = XRCCTRL(self.frame, "ChangedFiles").GetStringSelection()
+        path = XRCCTRL(self.frame, "ChangedFiles").GetStringSelection()
 
-		if path == "No modified files found.":
-			return
+        if path == "No modified files found.":
+            return
 
-		c = pysvn.Client()
-		entry = c.info(path)
+        c = pysvn.Client()
+        entry = c.info(path)
 
-		df = os.popen('svn diff "%s"' % path).read()
-		open("/tmp/tmp.patch", "w").write(df)
-		shutil.copy(path, "/tmp")
-		x = os.popen('patch --reverse "/tmp/%s" < /tmp/tmp.patch' % (os.path.split(path)[-1]))
-		CallDiffTool(path, os.path.join("/tmp/", os.path.split(path)[-1]))
+        df = os.popen('svn diff "%s"' % path).read()
+        open("/tmp/tmp.patch", "w").write(df)
+        shutil.copy(path, "/tmp")
+        x = os.popen('patch --reverse "/tmp/%s" < /tmp/tmp.patch' % (os.path.split(path)[-1]))
+        CallDiffTool(path, os.path.join("/tmp/", os.path.split(path)[-1]))
 
-	#-------------------------------------------------------------------------- 
-	def OnOK(self, evt):
-		self.frame.Close()
+    #-------------------------------------------------------------------------- 
+    def OnOK(self, evt):
+        self.frame.Close()
 
 #============================================================================== 
 
