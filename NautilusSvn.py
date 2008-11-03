@@ -21,17 +21,6 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 """
 #==============================================================================
-"""
-                        TODO
-                        ----
-
-    1. Show conflicted files in dir diff
-    2. Add Import function
-    3. Add gnome properties integration
-    4. Sort out commit status etc.
-
-"""
-#==============================================================================
 
 __version__ = "0.11-1"
 
