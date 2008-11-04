@@ -57,9 +57,9 @@ class MyApp(wx.App):
         wx.EVT_BUTTON(self.frame, XRCID("FindLocalPath"), self.OnFindLocalPath)
         wx.EVT_BUTTON(self.frame, XRCID("Checkout"), self.OnCheckout)
 
-         # Load the history of repository locations back into the user interface
+        # Load the history of repository locations back into the user interface
         self.paths_file = os.path.join( GetHomeFolder(), "repos_paths" )
-         self.paths = [] # just to make sure there is at least a property set
+        self.paths = [] # just to make sure there is at least a property set
         if os.path.exists(self.paths_file):
              self.paths = [x.strip() for x in open(self.paths_file, "r").readlines()]
              for path in self.paths:
