@@ -167,13 +167,9 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         # we had before will be invalid (think pointers and such).
         self.nautilusVFSFile_table[path] = item
         
-        # See comment for variable: statuses
-        if path in self.statuses:
-            self.set_emblem_by_status(path, self.statuses[path])
-            
-            # We don't have to do anything else since it's already clear
-            # that the StatusMonitor is aware of this item.
-            return
+        # We don't have to do anything else since it's already clear
+        # that the StatusMonitor is aware of this item.
+        if self.set_emblem_by_path(path): return
         
         # Since update_file_info is also the function which lets us
         # know when we see a particular item for the first time we have
@@ -216,13 +212,15 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         """
         
         if len(items) == 0: return
-
+        
         paths = []
         for item in items:
             if item.get_uri().startswith("file://"):
                 path = realpath(gnomevfs.get_local_path_from_uri(item.get_uri()))
                 paths.append(path)
                 self.nautilusVFSFile_table[path] = item
+                
+        #~ log.debug("NautilusSvn.get_file_items() called for %s" % paths)
         
         if paths[0]:
             setcwd(os.path.split(paths[0])[0])
@@ -259,26 +257,32 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
     # Helper functions
     #
     
-    def set_emblem_by_status(self, path, status):
+    def set_emblem_by_path(self, path):
         """
-        Set the emblem for a path by status. 
+        Set the emblem for a path (looks up the status in C{statuses}).
         
         @type   path: string
         @param  path: The path for which to set the emblem.
         
-        @type   status: string
-        @param  status: A string indicating the status of an item (see: EMBLEMS).
+        @rtype:       boolean
+        @return:      Whether the emblem was set successfully.
         """
-        
-        # Try and lookup the NautilusVFSFile in the lookup table since 
-        # we need it.
-        if not path in self.nautilusVFSFile_table: return
-        item = self.nautilusVFSFile_table[path]
         
         #~ log.debug("set_emblem_by_status() called for %s with status %s" % (path, status))
         
+        # Try and lookup the NautilusVFSFile in the lookup table since 
+        # we need it.
+        if not path in self.statuses: return False
+        if not path in self.nautilusVFSFile_table: return False
+        item = self.nautilusVFSFile_table[path]
+        
+        status = self.statuses[path]
+        
         if status in self.EMBLEMS:
             item.add_emblem(self.EMBLEMS[status])
+            return True
+            
+        return False
     
     #
     # Callbacks
@@ -306,7 +310,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         @param  status: A string indicating the status of an item (see: EMBLEMS).
         """
         
-        #~ log.debug("cb_status() called for %s with status %s" % (path, status))
+        log.debug("cb_status() called for %s with status %s" % (path, status))
         
         # We might not have a NautilusVFSFile (which we need to apply an
         # emblem) but we can already store the status for when we do.
