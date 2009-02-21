@@ -1,0 +1,29 @@
+Source: nautilussvn
+Maintainer: Bruce van der Kooij <brucevdkooij@gmail.com>
+Section: universe/gnome
+Priority: optional
+Build-Depends: debhelper (>= 7.0.13),
+               cdbs (>= 0.4.52),
+               python-central (>= 0.5),
+               python-dev
+Build-Depends-Indep: python-support (>= 0.5.3)
+Standards-Version: 3.8.0.1
+Homepage: http://code.google.com/p/nautilussvn
+
+Package: nautilussvn
+Architecture: all
+Section: universe/gnome
+Priority: optional
+Depends: ${python:Depends},
+         python-nautilus (>= 0.5.1),
+         python-gtk2 (>= 2.13.0),
+         python-glade2 (>= 2.13.0),
+         python-gobject (>= 2.15.3),
+         python-svn (>= 1.6.0),
+         python-pyinotify (>= 0.7.1),
+         python-configobj (>= 4.5.2)
+Suggests: meld
+Description: Integrated Subversion support for Nautilus
+ An extension to Nautilus to allow better integration with the Subversion source
+ control system.  Similar to the TortoiseSVN project on Windows.
+Homepage: http://code.google.com/p/nautilussvn

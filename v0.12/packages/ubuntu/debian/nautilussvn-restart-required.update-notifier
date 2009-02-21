@@ -1,0 +1,8 @@
+Name: Nautilus restart required
+Priority: High
+Command: "/usr/share/nautilussvn/do-nautilussvn-restart-nautilus"
+Terminal: True
+DontShowAfterReboot: True
+DisplayIf: pgrep -x nautilus -U $(id -u) > /dev/null
+Description: NautilusSvn has been installed (or reinstalled) and Nautilus must be restarted for the changes to take effect.
+ Please quit and restart Nautilus now.
