@@ -237,7 +237,26 @@ class SVN:
         else:
             return self.status_cache[path]
         
-        return statuses
+        # If we do end up here the cache was bypassed.
+        if recurse:
+            # Empty out all the caches
+            for status in statuses:
+                current_path = os.path.join(path, status.data["path"])
+                while current_path != "/":
+                    self.status_cache[current_path] = []
+                    current_path = os.path.split(current_path)[0]
+            
+            # Fill them back up
+            for status in statuses:
+                current_path = os.path.join(path, status.data["path"])
+                while current_path != "/":
+                    if current_path not in self.status_cache: break;
+                    self.status_cache[current_path].append(status)
+                    current_path = os.path.split(current_path)[0]
+        else:
+            return statuses
+         
+        return self.status_cache[path]
         
     #
     # is
