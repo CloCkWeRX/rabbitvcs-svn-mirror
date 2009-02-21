@@ -1,0 +1,27 @@
+#!/bin/sh
+set -e
+
+# Identifies the point in the file at which debhelper will insert automatically 
+# added snippets.
+#DEBHELPER#
+
+# An installation process can be roll backed in which case we don't want to do
+# anything.
+if [ "$1" != configure ]; then
+	exit 0
+fi
+
+UPDATENOTIFIERDIR=/var/lib/update-notifier/user.d
+
+# Fix some permissions
+# TODO: this probably shouldn't be done here.
+chmod +x /usr/share/nautilussvn/do-nautilussvn-restart-nautilus
+
+echo "You need to run 'nautilus -q && nautilus &' to restart Nautilus."
+
+# FIXME: this only works after running apt-get update (so it doesn't when 
+# somebody manually installs the Debian package using dpkg -i).
+if [ -d $UPDATENOTIFIERDIR ]; then
+	cp -f /usr/share/nautilussvn/nautilussvn-restart-required.update-notifier \
+	    "$UPDATENOTIFIERDIR/nautilussvn-restart-required"
+fi
