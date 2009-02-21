@@ -1,9 +1,0 @@
-#!/bin/sh
-#
-# Restart Nautilus so extensions are reloaded.
-#
-# This script gets called from the update-notifier hook.
-#
-
-nautilus -q
-nohup nautilus > /dev/null &
