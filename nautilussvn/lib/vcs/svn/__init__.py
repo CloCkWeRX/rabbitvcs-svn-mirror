@@ -201,7 +201,7 @@ class SVN:
                 "path": path
             })]
     
-    @timeit
+    #~ @timeit
     def status_with_cache(self, path, invalidate=False, recurse=True):
         """
         
