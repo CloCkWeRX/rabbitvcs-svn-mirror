@@ -575,6 +575,8 @@ class SVN:
         while path_to_check != "/":
             if self.is_versioned(path_to_check):
                 path_to_use = path_to_check
+                return path_to_use
+
             path_to_check = os.path.split(path_to_check)[0]
         
         return path_to_use
