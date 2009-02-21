@@ -443,7 +443,7 @@ class SVN:
             return []
         
         returner = []
-        
+
         for path in abspaths(paths):
         
             # Make sure the given path is in a working copy
@@ -477,7 +477,7 @@ class SVN:
                 st_item.path = st_item.path[len(os.getcwd())+1:]
                     
                 returner.append(st_item)
-            
+
         return returner
         
     def get_repo_url(self, path):
@@ -550,18 +550,14 @@ class SVN:
         @return:        A prop* function-safe path.
 
         """
-        
-        path = os.path.abspath(path)
-
-        if not self.is_versioned(path) and os.path.isfile(path):
-            path = os.path.dirname(path)
 
         path_to_use = path
-        while not self.is_versioned(path_to_use):
-            path_to_use = os.path.split(path_to_use)[0]
-
-            if path_to_use == "":
+        while path_to_use != "" and path_to_use != "/":
+            
+            if not self.is_versioned(path_to_use):
                 break
+
+            path_to_use = os.path.split(path_to_use)[0]
 
         return path_to_use
         
