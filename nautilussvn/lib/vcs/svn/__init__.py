@@ -32,6 +32,7 @@ from os.path import isdir, isfile, dirname
 import pysvn
 
 from nautilussvn.lib.helper import abspaths
+from nautilussvn.lib.decorators import timeit
 from nautilussvn.lib.log import Log
 
 log = Log("nautilussvn.lib.vcs.svn")
@@ -186,7 +187,8 @@ class SVN:
     
     def status(self, path, recurse=True):
         """
-        This function will eventually be deprecated for status_with_cache.
+        
+        Look up the status for path.
         
         """
         
@@ -196,6 +198,7 @@ class SVN:
             log.debug("Exception occured in SVN.status() for %s" % path)
             return [pysvn.PysvnStatus({"text_status": pysvn.wc_status_kind.none})]
     
+    #~ @timeit
     def status_with_cache(self, path, invalidate=False, recurse=True):
         """
         
@@ -220,7 +223,18 @@ class SVN:
         
         """
         
-        return self.status(path, recurse)
+        if (invalidate or 
+                path not in self.status_cache or
+                # The following condition is used to bypass the cache when
+                # an infinity check is requesting and it's most likely
+                # that only an empty check was done before.
+                (recurse and len(self.status_cache[path]) == 1)):
+            #~ log.debug("status_with_cache() invalidated %s" % path)
+            statuses = self.status(path, recurse=recurse)
+        else:
+            return self.status_cache[path]
+        
+        return statuses
         
     #
     # is
