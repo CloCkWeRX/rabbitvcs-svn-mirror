@@ -570,14 +570,13 @@ class SVN:
 
         """
 
-        path_to_use = path
-        while path_to_use != "" and path_to_use != "/":
-            
-            if not self.is_versioned(path_to_use):
-                break
-
-            path_to_use = os.path.split(path_to_use)[0]
-
+        path_to_check = path
+        path_to_use = None
+        while path_to_check != "/":
+            if self.is_versioned(path_to_check):
+                path_to_use = path_to_check
+            path_to_check = os.path.split(path_to_check)[0]
+        
         return path_to_use
         
     def propset(self, path, prop_name, prop_value, overwrite=False):
