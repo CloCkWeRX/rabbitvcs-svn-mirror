@@ -174,7 +174,7 @@ class StatusMonitor:
         
         vcs_client = SVN()
         
-        log.debug("StatusMonitor.add_watch() watch requested for %s" % path)
+        #~ log.debug("StatusMonitor.add_watch() watch requested for %s" % path)
         
         path_to_check = path
         path_to_attach = None
@@ -219,7 +219,7 @@ class StatusMonitor:
         @param  invalidate: Whether or not the cache should be bypassed.
         """
         
-        log.debug("StatusMonitor.status() called for %s with %s" % (path, invalidate))
+        #~ log.debug("StatusMonitor.status() called for %s with %s" % (path, invalidate))
         
         vcs_client = SVN()
         

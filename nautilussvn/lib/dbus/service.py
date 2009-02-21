@@ -40,6 +40,9 @@ import dbus.service
 
 from nautilussvn.lib.dbus.status_monitor import StatusMonitor
 from nautilussvn.lib.dbus.svn_client import SVNClient
+from nautilussvn.lib.log import Log
+
+log = Log("nautilussvn.lib.dbus.service")
 
 INTERFACE = "org.google.code.nautilussvn.Service"
 OBJECT_PATH = "/org/google/code/nautilussvn/Service"
@@ -71,7 +74,7 @@ def start():
         session_bus.get_object(SERVICE, OBJECT_PATH)
         return True
     except dbus.DBusException:
-        traceback.print_exc()
+        log.debug("The D-Bus service doesn't seem to be running, so starting.")
         # FIXME: there must be a better way
         dbus_service_path = os.path.abspath(__file__)
         subprocess.Popen(["/usr/bin/python", dbus_service_path]).pid
