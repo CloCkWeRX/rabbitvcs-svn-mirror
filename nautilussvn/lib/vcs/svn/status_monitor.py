@@ -124,8 +124,14 @@ class StatusMonitor:
             if path.find(".svn") != -1 and not path.endswith(".svn/entries"): return
             
             # Begin debugging code
-            #~ log.debug("Event %s triggered for: %s" % (event.event_name, path.rstrip(os.path.sep)))
+            log.debug("Event %s triggered for: %s" % (event.event_name, path.rstrip(os.path.sep)))
             # End debugging code
+            
+            # When a file is moved it doesn't have a watch and status
+            # wouldn't do anything, so make sure we have a watch:
+            # TODO: this shouldn't be done here
+            if not self.status_monitor.has_watch(path): 
+                self.status_monitor.add_watch(path)
             
             # Make sure to strip any trailing slashes because that will 
             # cause problems for the status checking
