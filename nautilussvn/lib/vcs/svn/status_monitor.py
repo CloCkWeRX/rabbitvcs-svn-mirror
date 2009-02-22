@@ -174,7 +174,7 @@ class StatusMonitor:
         
         vcs_client = SVN()
         
-        #~ log.debug("StatusMonitor.add_watch() watch requested for %s" % path)
+        log.debug("StatusMonitor.add_watch() watch requested for %s" % path)
         
         path_to_check = path
         path_to_attach = None
@@ -219,7 +219,7 @@ class StatusMonitor:
         @param  invalidate: Whether or not the cache should be bypassed.
         """
         
-        #~ log.debug("StatusMonitor.status() called for %s with %s" % (path, invalidate))
+        log.debug("StatusMonitor.status() called for %s with %s" % (path, invalidate))
         
         vcs_client = SVN()
         
@@ -274,7 +274,20 @@ class StatusMonitor:
             
     def get_text_status(self, vcs_client, path, status):
         if isdir(path):
-            # TODO: shouldn't conflicted/obstructed go before these?
+            # Verify the status of the children
+            sub_statuses = vcs_client.status_with_cache(path, invalidate=False)
+            sub_text_statuses = set([sub_status.data["text_status"] 
+                for sub_status in sub_statuses])
+            
+            # These statuses take precedence.
+            if SVN.STATUS["conflicted"] in sub_text_statuses:
+                return "conflicted"
+            
+            if SVN.STATUS["obstructed"] in sub_text_statuses:
+                return "obstructed"
+            
+            # The following statuses take precedence over the status
+            # of children.
             if status.data["text_status"] in [
                     SVN.STATUS["added"],
                     SVN.STATUS["modified"],
@@ -282,17 +295,6 @@ class StatusMonitor:
                 ]:
                 return SVN.STATUS_REVERSE[status.data["text_status"]]
             
-            # Verify the status of the children
-            sub_statuses = vcs_client.status_with_cache(path, invalidate=False)
-            sub_text_statuses = set([sub_status.data["text_status"] 
-                for sub_status in sub_statuses])
-            
-            if SVN.STATUS["conflicted"] in sub_text_statuses:
-                return "conflicted"
-            
-            if SVN.STATUS["obstructed"] in sub_text_statuses:
-                return "obstructed"
-                
             # A directory should have a modified status when any of its children
             # have a certain status (see modified_statuses above). Jason thought up 
             # of a nifty way to do this by using sets and the bitwise AND operator (&).
