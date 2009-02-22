@@ -98,6 +98,10 @@ def exit():
         traceback.print_exc()
 
 if __name__ == "__main__":
+    # This seems to be important for PySVN
+    from nautilussvn.lib.helper import initialize_locale
+    initialize_locale()
+    
     # The following calls are required to make DBus thread-aware and therefor
     # support the ability run threads.
     gobject.threads_init()

@@ -37,7 +37,7 @@ class StatusMonitor(dbus.service.Object):
     We can pretty much do all of this directly on the StatusMonitor itself,
     we'll just have to do make sure we do the type conversion before calling
     anything else. If you pass a dbus.String to PySVN for example it won't
-    know what to do (hence the str(path) statements).
+    know what to do (hence the path.encode("utf-8") statements).
     """
     
     def __init__(self, connection):
@@ -60,16 +60,16 @@ class StatusMonitor(dbus.service.Object):
     @dbus.service.method(INTERFACE)
     def HasWatch(self, path):
         # FIXME: still doesn't return an actual boolean but 1/0.
-        return bool(self.status_monitor.has_watch(str(path)))
+        return bool(self.status_monitor.has_watch(path.encode("utf-8")))
         
     @dbus.service.method(INTERFACE)
     def AddWatch(self, path):
-        self.status_monitor.add_watch(str(path))
+        self.status_monitor.add_watch(path.encode("utf-8"))
         self.WatchAdded(path)
         
     @dbus.service.method(INTERFACE)
     def Status(self, path, invalidate=False, bypass=False):
-        self.status_monitor.status(str(path), bool(invalidate), bool(bypass))
+        self.status_monitor.status(path.encode("utf-8"), bool(invalidate), bool(bypass))
         
     @dbus.service.method(INTERFACE, in_signature="", out_signature="")
     def Exit(self):
@@ -113,10 +113,10 @@ class StatusMonitorStub:
         )
     
     def cb_status(self, path, status):
-        self.status_callback(str(path), str(status))
+        self.status_callback(path.encode("utf-8"), status.encode("utf-8"))
         
     def cb_watch_added(self, path):
-        self.watch_added_callback(str(path))
+        self.watch_added_callback(path.encode("utf-8"))
         
     def exit(self):
         self.status_monitor.Exit()

@@ -26,6 +26,7 @@ All sorts of helper functions.
 
 """
 
+import locale
 import os
 import os.path
 import subprocess
@@ -36,6 +37,9 @@ import shutil
 import nautilussvn.lib.settings
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+
+def initialize_locale():
+    locale.setlocale(locale.LC_ALL, locale.getdefaultlocale())
 
 def get_home_folder():
     """ 

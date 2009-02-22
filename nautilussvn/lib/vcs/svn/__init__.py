@@ -26,6 +26,7 @@ Concrete VCS implementation for Subversion functionality.
 
 """
 
+import traceback
 import os.path
 from os.path import isdir, isfile, dirname
 
@@ -195,6 +196,7 @@ class SVN:
         try:
             return self.client.status(path, recurse=recurse)
         except pysvn.ClientError:
+            traceback.print_exc()
             log.debug("Exception occured in SVN.status() for %s" % path)
             return [pysvn.PysvnStatus({
                 "text_status": pysvn.wc_status_kind.none,

@@ -44,87 +44,87 @@ class SVNClient(dbus.service.Object):
     
     @dbus.service.method(INTERFACE)
     def IsWorkingCopy(self, path):
-        return self.svn_client.is_working_copy(str(path))
+        return self.svn_client.is_working_copy(path.encode("utf-8"))
     
     @dbus.service.method(INTERFACE)
     def IsInAOrAWorkingCopy(self, path):
-        return self.svn_client.is_in_a_or_a_working_copy(str(path))
+        return self.svn_client.is_in_a_or_a_working_copy(path.encode("utf-8"))
     
     @dbus.service.method(INTERFACE)
     def IsVersioned(self, path):
-        return self.svn_client.is_versioned(str(path))
+        return self.svn_client.is_versioned(path.encode("utf-8"))
     
     @dbus.service.method(INTERFACE)
     def IsNormal(self, path):
-        return self.svn_client.is_normal(str(path))
+        return self.svn_client.is_normal(path.encode("utf-8"))
     
     @dbus.service.method(INTERFACE)
     def IsAdded(self, path):
-        return self.svn_client.is_added(str(path))
+        return self.svn_client.is_added(path.encode("utf-8"))
     
     @dbus.service.method(INTERFACE)
     def IsModified(self, path):
-        return self.svn_client.is_modified(str(path))
+        return self.svn_client.is_modified(path.encode("utf-8"))
     
     @dbus.service.method(INTERFACE)
     def IsDeleted(self, path):
-        return self.svn_client.is_deleted(str(path))
+        return self.svn_client.is_deleted(path.encode("utf-8"))
     
     @dbus.service.method(INTERFACE)
     def IsIgnored(self, path):
-        return self.svn_client.is_ignored(str(path))
+        return self.svn_client.is_ignored(path.encode("utf-8"))
 
     @dbus.service.method(INTERFACE)
     def IsLocked(self, path):
-        return self.svn_client.is_locked(str(path))
+        return self.svn_client.is_locked(path.encode("utf-8"))
 
     @dbus.service.method(INTERFACE)
     def IsConflicted(self, path):
-        return self.svn_client.is_conflicted(str(path))
+        return self.svn_client.is_conflicted(path.encode("utf-8"))
 
     @dbus.service.method(INTERFACE)
     def IsMissing(self, path):
-        return self.svn_client.is_missing(str(path))
+        return self.svn_client.is_missing(path.encode("utf-8"))
 
     @dbus.service.method(INTERFACE)
     def IsObstructed(self, path):
-        return self.svn_client.is_obstructed(str(path))
+        return self.svn_client.is_obstructed(path.encode("utf-8"))
             
     @dbus.service.method(INTERFACE)
     def HasUnversioned(self, path):
-        return self.svn_client.has_unversioned(str(path))
+        return self.svn_client.has_unversioned(path.encode("utf-8"))
     
     @dbus.service.method(INTERFACE)
     def HasAdded(self, path):
-        return self.svn_client.has_added(str(path))
+        return self.svn_client.has_added(path.encode("utf-8"))
     
     @dbus.service.method(INTERFACE)
     def HasModified(self, path):
-        return self.svn_client.has_modified(str(path))
+        return self.svn_client.has_modified(path.encode("utf-8"))
     
     @dbus.service.method(INTERFACE)
     def HasDeleted(self, path):
-        return self.svn_client.has_deleted(str(path))
+        return self.svn_client.has_deleted(path.encode("utf-8"))
 
     @dbus.service.method(INTERFACE)
     def HasIgnored(self, path):
-        return self.svn_client.has_ignored(str(path))
+        return self.svn_client.has_ignored(path.encode("utf-8"))
 
     @dbus.service.method(INTERFACE)
     def HasLocked(self, path):
-        return self.svn_client.has_locked(str(path))
+        return self.svn_client.has_locked(path.encode("utf-8"))
 
     @dbus.service.method(INTERFACE)
     def HasConflicted(self, path):
-        return self.svn_client.has_conflicted(str(path))
+        return self.svn_client.has_conflicted(path.encode("utf-8"))
 
     @dbus.service.method(INTERFACE)
     def HasMissing(self, path):
-        return self.svn_client.has_missing(str(path))
+        return self.svn_client.has_missing(path.encode("utf-8"))
 
     @dbus.service.method(INTERFACE)
     def HasObstructed(self, path):
-        return self.svn_client.has_obstructed(str(path))
+        return self.svn_client.has_obstructed(path.encode("utf-8"))
     
     @dbus.service.method(INTERFACE, in_signature="", out_signature="")
     def Exit(self):
