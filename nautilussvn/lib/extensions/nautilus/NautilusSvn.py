@@ -310,7 +310,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         @param  status: A string indicating the status of an item (see: EMBLEMS).
         """
         
-        #~ log.debug("cb_status() called for %s with status %s" % (path, status))
+        log.debug("cb_status() called for %s with status %s" % (path, status))
         
         # We might not have a NautilusVFSFile (which we need to apply an
         # emblem) but we can already store the status for when we do.

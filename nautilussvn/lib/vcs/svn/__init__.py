@@ -228,6 +228,9 @@ class SVN:
         
         """
         
+        # FIXME: cache temporarily disabled to make testing easier
+        return self.status(path, recurse=recurse)
+        
         if (invalidate or 
                 path not in self.status_cache or
                 # The following condition is used to bypass the cache when
@@ -257,7 +260,7 @@ class SVN:
                     current_path = os.path.split(current_path)[0]
         else:
             return statuses
-         
+        
         return self.status_cache[path]
         
     #
