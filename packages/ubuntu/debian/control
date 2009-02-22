@@ -1,7 +1,9 @@
 Source: nautilussvn
 Maintainer: Bruce van der Kooij <brucevdkooij@gmail.com>
-Section: universe/gnome
+Section: devel
 Priority: optional
+Vcs-Svn: http://nautilussvn.googlecode.com/svn/trunk/
+Vcs-Browser: http://code.google.com/p/nautilussvn/source/browse/
 Build-Depends: debhelper (>= 7.0.13),
                cdbs (>= 0.4.52),
                python-central (>= 0.5),
@@ -12,9 +14,10 @@ Homepage: http://code.google.com/p/nautilussvn
 
 Package: nautilussvn
 Architecture: all
-Section: universe/gnome
+Section: devel
 Priority: optional
-Depends: ${python:Depends},
+Depends: ${misc:Depends},
+         ${python:Depends},
          python-nautilus (>= 0.5.1),
          python-gtk2 (>= 2.13.0),
          python-glade2 (>= 2.13.0),
