@@ -200,7 +200,7 @@ class SVN:
             log.debug("Exception occured in SVN.status() for %s" % path)
             return [pysvn.PysvnStatus({
                 "text_status": pysvn.wc_status_kind.none,
-                "path": path
+                "path": os.path.abspath(path)
             })]
     
     #~ @timeit
