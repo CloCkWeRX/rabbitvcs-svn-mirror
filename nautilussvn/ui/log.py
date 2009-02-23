@@ -204,8 +204,8 @@ class Log(InterfaceView):
         return nautilussvn.lib.helper.encode_revisions(returner)
 
     def get_selected_revision_number(self):
-        if len(self.selected_row):
-            return self.selected_row[0]
+        if len(self.selected_rows):
+            return self.revisions_table.get_row(self.selected_rows[0])[0]
         else:
             return ""
 
