@@ -91,7 +91,7 @@ class Merge(InterfaceView):
         record_only = self.get_widget("mergeoptions_only_record").get_active()
 
         action = VCSAction(self.vcs, register_gtk_quit=self.gtk_quit_is_set())
-        action.append(action.set_title, _("Merge"))
+        action.append(action.set_header, _("Merge"))
         action.append(action.set_status, startcmd)
         
         if self.type == "range":
