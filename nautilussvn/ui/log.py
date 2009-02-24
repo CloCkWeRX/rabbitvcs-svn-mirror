@@ -122,11 +122,16 @@ class Log(InterfaceView):
             self.action.set_cancel(True)    
         self.close()
 
-    def on_revisions_table_cursor_changed(self, treeview):
-        
-        # this function only listens to left-clicks or the up/down arrows
+    def on_revisions_table_cursor_changed(self, treeview, data=None):
+        self.on_revisions_table_event(treeview, data)
+
+    def on_revisions_table_button_released(self, treeview, data=None):
+        self.on_revisions_table_event(treeview, data)
+
+    def on_revisions_table_event(self, treeview, data=None):
         selection = treeview.get_selection()
         (liststore, indexes) = selection.get_selected_rows()
+
         self.selected_rows = []
         for tup in indexes:
             self.selected_rows.append(tup[0])
@@ -153,7 +158,7 @@ class Log(InterfaceView):
             
         else:
             self.message.set_text("")
-    
+            
     def on_previous_clicked(self, widget):
         self.rev_start = self.previous_starts.pop()
         self.load_or_refresh()
@@ -192,16 +197,12 @@ class Log(InterfaceView):
         if len(self.selected_rows) == 0:
             return ""
 
-        rows = []
-        for row in self.selected_rows[1]:
-            rows.append(int(row[0]))
+        revisions = []
+        for row in self.selected_rows:
+            revisions.append(int(self.revisions_table.get_row(row)[0]))
 
-        returner = []
-        for row in rows:
-            returner.append(int(self.selected_rows[0][row][0]))
-
-        returner.sort()
-        return nautilussvn.lib.helper.encode_revisions(returner)
+        revisions.sort()
+        return nautilussvn.lib.helper.encode_revisions(revisions)
 
     def get_selected_revision_number(self):
         if len(self.selected_rows):

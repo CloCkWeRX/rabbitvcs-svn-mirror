@@ -118,8 +118,14 @@ class Properties(InterfaceView):
         if self.selected_rows is not None:
             returner = self.table.get_row(self.selected_rows[0])
         return returner
+
+    def on_table_cursor_changed(self, treeview, data=None):
+        self.on_table_event(treeview)
     
-    def on_table_cursor_changed(self, treeview):
+    def on_table_button_released(self, treeview, data=None):
+        self.on_table_event(treeview)
+    
+    def on_table_event(self, treeview):
         selection = treeview.get_selection()
         (liststore, indexes) = selection.get_selected_rows()
         self.selected_rows = []
