@@ -246,7 +246,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         """
         
         if not item.get_uri().startswith("file://"): return
-        path = gnomevfs.get_local_path_from_uri(item.get_uri())
+        path = realpath(gnomevfs.get_local_path_from_uri(item.get_uri()))
         setcwd(os.path.split(path)[0])
         
         self.nautilusVFSFile_table[path] = item
