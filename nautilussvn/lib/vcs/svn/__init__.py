@@ -302,45 +302,43 @@ class SVN:
                 
             return False
     
-    def is_normal(self, path):
-        status = self.status_with_cache(path, recurse=False)[-1]
+    def is_status(self, path, text_status):
+        try:
+            status = self.status_with_cache(path, recurse=False)[-1]
+        except Exception, e:
+            log.info("is_status exception: %s" % str(e))
+            return False
         
-        if status.data["text_status"] == pysvn.wc_status_kind.normal:
+        if status.data["text_status"] == text_status:
             return True
         
         return False
+
+    def is_versioned(self, path):
+        if self.is_working_copy(path):
+            return True
+        else:
+            # info will return nothing for an unversioned file inside a working copy
+            if (self.is_working_copy(os.path.split(path)[0]) and
+                    self.client.info(path)): 
+                return True
+                
+            return False
+    
+    def is_normal(self, path):
+        return self.is_status(path, pysvn.wc_status_kind.normal)
     
     def is_added(self, path):
-        status = self.status_with_cache(path, recurse=False)[-1]
-        
-        if status.data["text_status"] == pysvn.wc_status_kind.added:
-            return True
-        
-        return False
+        return self.is_status(path, pysvn.wc_status_kind.added)
         
     def is_modified(self, path):
-        status = self.status_with_cache(path, recurse=False)[-1]
-        
-        if status.data["text_status"] == pysvn.wc_status_kind.modified:
-            return True
-        
-        return False
+        return self.is_status(path, pysvn.wc_status_kind.modified)
     
     def is_deleted(self, path):
-        status = self.status_with_cache(path, recurse=False)[-1]
-        
-        if status.data["text_status"] == pysvn.wc_status_kind.deleted:
-            return True
-        
-        return False
+        return self.is_status(path, pysvn.wc_status_kind.deleted)
         
     def is_ignored(self, path):
-        status = self.status_with_cache(path, recurse=False)[-1]
-        
-        if status.data["text_status"] == pysvn.wc_status_kind.ignored:
-            return True
-        
-        return False
+        return self.is_status(path, pysvn.wc_status_kind.ignored)
     
     def is_locked(self, path):
         is_locked = False
@@ -352,77 +350,45 @@ class SVN:
         return is_locked
 
     def is_conflicted(self, path):
-        status = self.status_with_cache(path, recurse=False)[-1]
-        
-        if status.data["text_status"] == pysvn.wc_status_kind.conflicted:
-            return True
-        
-        return False
+        return self.is_status(path, pysvn.wc_status_kind.conflicted)
 
     def is_missing(self, path):
-        status = self.status_with_cache(path, recurse=False)[-1]
-        
-        if status.data["text_status"] == pysvn.wc_status_kind.missing:
-            return True
-        
-        return False
+        return self.is_status(path, pysvn.wc_status_kind.missing)
 
     def is_obstructed(self, path):
-        status = self.status_with_cache(path, recurse=False)[-1]
-        
-        if status.data["text_status"] == pysvn.wc_status_kind.obstructed:
-            return True
-        
-        return False
+        return self.is_status(path, pysvn.wc_status_kind.obstructed)
         
     #
     # has
     #
     
-    def has_unversioned(self, path):
-        statuses = self.status_with_cache(path, recurse=True)[:-1]
+    def has_status(self, path, text_status):
+        try:
+            statuses = self.status_with_cache(path, recurse=True)[:-1]
+        except Exception, e:
+            log.info("has_status exception: %s" % str(e))
+            return False
         
         for status in statuses:
-            if status.data["text_status"] == pysvn.wc_status_kind.unversioned:
+            if status.data["text_status"] == text_status:
                 return True
                 
         return False
+        
+    def has_unversioned(self, path):
+        return self.has_status(path, pysvn.wc_status_kind.unversioned)
     
     def has_added(self, path):
-        statuses = self.status_with_cache(path, recurse=True)[:-1]
-        
-        for status in statuses:
-            if status.data["text_status"] == pysvn.wc_status_kind.added:
-                return True
+        return self.has_status(path, pysvn.wc_status_kind.added)
                 
-        return False
-        
     def has_modified(self, path):
-        statuses = self.status_with_cache(path, recurse=True)[:-1]
-        
-        for status in statuses:
-            if status.data["text_status"] == pysvn.wc_status_kind.modified:
-                return True
-        
-        return False
+        return self.has_status(path, pysvn.wc_status_kind.modified)
 
     def has_deleted(self, path):
-        statuses = self.status_with_cache(path, recurse=True)[:-1]
-        
-        for status in statuses:
-            if status.data["text_status"] == pysvn.wc_status_kind.deleted:
-                return True
-        
-        return False
+        return self.has_status(path, pysvn.wc_status_kind.deleted)
 
     def has_ignored(self, path):
-        statuses = self.status_with_cache(path, recurse=True)[:-1]
-        
-        for status in statuses:
-            if status.data["text_status"] == pysvn.wc_status_kind.ignored:
-                return True
-        
-        return False
+        return self.has_status(path, pysvn.wc_status_kind.ignored)
 
     def has_locked(self, path):
         try:
@@ -437,31 +403,13 @@ class SVN:
         return False        
 
     def has_conflicted(self, path):
-        statuses = self.status_with_cache(path, recurse=True)[:-1]
-        
-        for status in statuses:
-            if status.data["text_status"] == pysvn.wc_status_kind.conflicted:
-                return True
-        
-        return False
+        return self.has_status(path, pysvn.wc_status_kind.conflicted)
 
     def has_missing(self, path):
-        statuses = self.status_with_cache(path, recurse=True)[:-1]
-        
-        for status in statuses:
-            if status.data["text_status"] == pysvn.wc_status_kind.missing:
-                return True
-        
-        return False
+        return self.has_status(path, pysvn.wc_status_kind.missing)
 
     def has_obstructed(self, path):
-        statuses = self.status_with_cache(path, recurse=True)[:-1]
-        
-        for status in statuses:
-            if status.data["text_status"] == pysvn.wc_status_kind.obstructed:
-                return True
-        
-        return False
+        return self.has_status(path, pysvn.wc_status_kind.obstructed)
         
     #
     # provides information for ui
