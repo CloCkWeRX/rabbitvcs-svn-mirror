@@ -65,10 +65,11 @@ class Properties(InterfaceView):
         self.table.allow_multiple()
         
         self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
-        self.proplist = self.vcs.proplist(path)
-        
-        for key,val in self.proplist.items():
-            self.table.append([key,val.rstrip()])
+        self.load()
+
+    #
+    # UI Signal Callbacks
+    #
 
     def on_destroy(self, widget):
         gtk.main_quit()
@@ -109,15 +110,6 @@ class Properties(InterfaceView):
             self.delete_stack.append([row[0],row[1]])
             
         self.table.remove_multiple(self.selected_rows)
-    
-    def set_selected_name_value(self, name, value):
-        self.table.set_row(self.selected_rows[0], [name,value])
-        
-    def get_selected_name_value(self):
-        returner = None
-        if self.selected_rows is not None:
-            returner = self.table.get_row(self.selected_rows[0])
-        return returner
 
     def on_table_cursor_changed(self, treeview, data=None):
         self.on_table_event(treeview)
@@ -143,6 +135,33 @@ class Properties(InterfaceView):
             self.get_widget("edit").set_sensitive(False)
             self.get_widget("delete").set_sensitive(True)
 
+    def on_refresh_clicked(self, widget):
+        self.load()
+
+    #
+    # Helper methods
+    #
+    
+    def set_selected_name_value(self, name, value):
+        self.table.set_row(self.selected_rows[0], [name,value])
+        
+    def get_selected_name_value(self):
+        returner = None
+        if self.selected_rows is not None:
+            returner = self.table.get_row(self.selected_rows[0])
+        return returner
+        
+    def load(self):
+        self.table.clear()
+        try:
+            self.proplist = self.vcs.proplist(self.get_widget("path").get_text())
+        except Exception, e:
+            nautilussvn.ui.dialog.MessageBox("Unable to retrieve properties list")
+            self.proplist = []
+        
+        if self.proplist:
+            for key,val in self.proplist.items():
+                self.table.append([key,val.rstrip()])
 
 if __name__ == "__main__":
     from os import getcwd
