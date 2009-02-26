@@ -72,19 +72,28 @@ class Notification(InterfaceView):
         self.pbar.start_pulsate()
         
         self.callback_cancel = callback_cancel
+        self.canceled = False
+        self.finished = False
             
     def on_destroy(self, widget):
         self.close()
     
     def on_cancel_clicked(self, widget):
+
+        if self.canceled or self.finished:
+            self.close();
+
         if self.callback_cancel is not None:
             self.callback_cancel()
+
+        self.canceled = True
         
     def on_ok_clicked(self, widget):
         self.close()
 
     def toggle_ok_button(self, sensitive):
         gtk.gdk.threads_enter()
+        self.finished = True
         self.get_widget("ok").set_sensitive(sensitive)
         gtk.gdk.threads_leave()
             
