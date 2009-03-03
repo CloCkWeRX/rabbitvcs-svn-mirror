@@ -222,8 +222,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
                 
         #~ log.debug("NautilusSvn.get_file_items() called for %s" % paths)
         
-        if len(paths) > 0:
-            return MainContextMenu(paths, self).construct_menu()
+        return MainContextMenu(paths, self).construct_menu()
     
     #~ @disable
     def get_background_items(self, window, item):
