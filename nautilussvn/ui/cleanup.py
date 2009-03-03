@@ -43,7 +43,6 @@ class Cleanup(InterfaceNonView):
     def __init__(self, path):
         InterfaceNonView.__init__(self)
         self.path = path
-        nautilussvn.lib.helper.setcwd(path)
         self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
 
     def start(self):

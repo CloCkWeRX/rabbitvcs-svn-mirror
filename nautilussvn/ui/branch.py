@@ -47,7 +47,6 @@ class Branch(InterfaceView):
     def __init__(self, path):
         InterfaceView.__init__(self, "branch", "Branch")
         
-        nautilussvn.lib.helper.setcwd(path)
         
         self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
         

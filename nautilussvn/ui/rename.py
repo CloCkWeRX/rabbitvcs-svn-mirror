@@ -30,7 +30,6 @@ from nautilussvn.ui import InterfaceView
 from nautilussvn.ui.action import VCSAction
 from nautilussvn.ui.dialog import MessageBox
 import nautilussvn.lib.vcs
-from nautilussvn.lib.helper import setcwd
 
 from nautilussvn import gettext
 _ = gettext.gettext
@@ -39,7 +38,6 @@ class Rename(InterfaceView):
     def __init__(self, path):
         InterfaceView.__init__(self, "rename", "Rename")
         
-        setcwd(path)
         
         self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
         

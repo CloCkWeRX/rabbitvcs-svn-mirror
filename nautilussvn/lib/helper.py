@@ -444,11 +444,6 @@ def get_repository_paths_limit():
     sm = nautilussvn.lib.settings.SettingsManager()
     return int(sm.get("cache", "number_repositories"))
 
-def setcwd(path):
-    cwd = os.path.isdir(path) and path or os.path.dirname(path)
-    if os.path.exists(cwd):
-        os.chdir(cwd)
-
 def get_common_directory(paths):
     common = os.path.commonprefix(paths)
     

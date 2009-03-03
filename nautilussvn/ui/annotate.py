@@ -54,7 +54,6 @@ class Annotate(InterfaceView):
             
         InterfaceView.__init__(self, "annotate", "Annotate")
 
-        nautilussvn.lib.helper.setcwd(path)
 
         self.get_widget("Annotate").set_title(_("Annotate - %s") % path)
         

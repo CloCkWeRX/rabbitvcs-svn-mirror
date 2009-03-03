@@ -29,7 +29,6 @@ from nautilussvn.ui.log import LogDialog
 from nautilussvn.ui.action import VCSAction
 import nautilussvn.ui.widget
 import nautilussvn.ui.dialog
-from nautilussvn.lib.helper import setcwd
 
 from nautilussvn import gettext
 _ = gettext.gettext
@@ -43,7 +42,6 @@ class UpdateToRevision(InterfaceView):
 
     def __init__(self, path):
         InterfaceView.__init__(self, "update", "Update")
-        setcwd(path)
         self.path = path
         self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
 

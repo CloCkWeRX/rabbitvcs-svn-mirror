@@ -38,7 +38,6 @@ class Switch(InterfaceView):
     def __init__(self, path):
         InterfaceView.__init__(self, "switch", "Switch")
 
-        nautilussvn.lib.helper.setcwd(path)
 
         self.path = path
         self.vcs = nautilussvn.lib.vcs.create_vcs_instance()

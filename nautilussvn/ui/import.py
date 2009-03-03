@@ -37,7 +37,6 @@ class Import(InterfaceView):
     def __init__(self, path):
         InterfaceView.__init__(self, "import", "Import")
         
-        nautilussvn.lib.helper.setcwd(path)
         
         self.get_widget("Import").set_title(_("Import - %s") % path)
         

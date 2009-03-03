@@ -24,7 +24,6 @@ import os
 import subprocess
 
 import nautilussvn.ui.dialog
-from nautilussvn.lib.helper import setcwd
 
 from nautilussvn import gettext
 _ = gettext.gettext
@@ -40,7 +39,6 @@ class Create:
     # Also, might want to just launch a terminal window instead of this
     def __init__(self, path):
     
-        setcwd(path)
     
         if not os.path.isdir(path):
             os.makedirs(path)
