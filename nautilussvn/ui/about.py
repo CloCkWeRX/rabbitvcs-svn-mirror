@@ -51,13 +51,17 @@ class About(InterfaceView):
     def __init__(self):
         InterfaceView.__init__(self, "about", "About")
         
-        basepath = os.path.dirname(os.path.realpath(__file__)).split("/")
-        basepath.pop()
-        basepath.pop()
-        basepath = "/".join(basepath)
+        doc_path = "/usr/share/doc/nautilussvn"
+        if not os.path.exists(doc_path):
+            # assumes the user is running NautilusSvn through an svn checkout
+            # and the doc files are in the the module's parent folder
+            doc_path = os.path.dirname(os.path.realpath(__file__)).split("/")
+            doc_path.pop()
+            doc_path.pop()
+            doc_path = "/".join(basepath)
         
-        authors_path = os.path.join(basepath, "AUTHORS")
-        thanks_path = os.path.join(basepath, "THANKS")
+        authors_path = os.path.join(doc_path, "AUTHORS")
+        thanks_path = os.path.join(doc_path, "THANKS")
         
         authors = open(authors_path, "r").read()
         thanks = open(thanks_path, "r").read()
