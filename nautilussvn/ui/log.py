@@ -59,8 +59,6 @@ class Log(InterfaceView):
         """
         
         InterfaceView.__init__(self, "log", "Log")
-        
-        nautilussvn.lib.helper.setcwd(path)
 
         self.get_widget("Log").set_title(_("Log - %s") % path)
         self.vcs = nautilussvn.lib.vcs.create_vcs_instance()

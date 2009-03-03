@@ -158,9 +158,9 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         """
         
         if not item.get_uri().startswith("file://"): return
-        path = gnomevfs.get_local_path_from_uri(item.get_uri())
+        path = realpath(gnomevfs.get_local_path_from_uri(item.get_uri()))
         
-        #~ log.debug("update_file_info() called for %s" % path)
+        log.debug("update_file_info() called for %s" % path)
         
         # Always replace the item in the table with the one we receive, because
         # for example if an item is deleted and recreated the NautilusVFSFile
@@ -217,19 +217,16 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         for item in items:
             if item.get_uri().startswith("file://"):
                 path = realpath(gnomevfs.get_local_path_from_uri(item.get_uri()))
-                paths.append(path)
                 self.nautilusVFSFile_table[path] = item
                 
         #~ log.debug("NautilusSvn.get_file_items() called for %s" % paths)
         
-        if paths[0]:
+        if len(paths) > 0:
             setcwd(os.path.split(paths[0])[0])
-            
-        return MainContextMenu(paths, self).construct_menu()
+            return MainContextMenu(paths, self).construct_menu()
     
     #~ @disable
     def get_background_items(self, window, item):
-        
         """
         Menu activated on entering a directory. Builds context menu for File
         menu and for window background.
