@@ -283,9 +283,13 @@ class Log(InterfaceView):
             if len(msg) > 80:
                 msg = "%s..." % msg[0:80]
         
+            author = _("(no author)")
+            if hasattr(item, "author"):
+                author = item.author
+
             self.revisions_table.append([
                 item.revision.number,
-                item.author,
+                author,
                 datetime.fromtimestamp(item.date).strftime(DATETIME_FORMAT),
                 msg
             ])

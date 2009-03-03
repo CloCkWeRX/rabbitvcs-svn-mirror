@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-02-24 09:13-0500\n"
+"POT-Creation-Date: 2009-03-03 09:37-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -325,15 +325,15 @@ msgstr ""
 msgid "Mime Type"
 msgstr ""
 
-#: ui/action.py:126
+#: ui/action.py:135
 msgid "Empty Message"
 msgstr ""
 
-#: ui/action.py:240 ui/log.py:307
+#: ui/action.py:249 ui/log.py:311
 msgid "Finished"
 msgstr ""
 
-#: ui/action.py:244
+#: ui/action.py:253
 #, python-format
 msgid "%s - Finished"
 msgstr ""
@@ -483,7 +483,11 @@ msgstr ""
 msgid "N/A"
 msgstr ""
 
-#: ui/log.py:311
+#: ui/log.py:286
+msgid "(no author)"
+msgstr ""
+
+#: ui/log.py:315
 msgid "Retrieving Log Information..."
 msgstr ""
 
