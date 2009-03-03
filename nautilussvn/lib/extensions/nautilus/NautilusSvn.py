@@ -217,6 +217,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         for item in items:
             if item.get_uri().startswith("file://"):
                 path = realpath(gnomevfs.get_local_path_from_uri(item.get_uri()))
+                paths.append(path)
                 self.nautilusVFSFile_table[path] = item
                 
         #~ log.debug("NautilusSvn.get_file_items() called for %s" % paths)
