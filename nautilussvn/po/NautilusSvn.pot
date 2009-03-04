@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-03 17:42-0500\n"
+"POT-Creation-Date: 2009-03-03 20:55-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -380,7 +380,7 @@ msgstr ""
 msgid "Select a Folder"
 msgstr ""
 
-#: ui/dialog.py:117 ui/glade/log.glade.h:16
+#: ui/dialog.py:117 ui/glade/log.glade.h:12
 msgid "to"
 msgstr ""
 
@@ -551,28 +551,6 @@ msgstr ""
 msgid "To:"
 msgstr ""
 
-#: ui/glade/switch.glade.h:9 ui/glade/notification.glade.h:2
-#: ui/glade/commit.glade.h:8 ui/glade/lock.glade.h:7
-#: ui/glade/properties.glade.h:7 ui/glade/rename.glade.h:3
-#: ui/glade/branch.glade.h:12 ui/glade/log.glade.h:12
-#: ui/glade/settings.glade.h:25 ui/glade/cleanup.glade.h:5
-#: ui/glade/dialogs.glade.h:30 ui/glade/checkout.glade.h:13
-#: ui/glade/add.glade.h:3 ui/glade/import.glade.h:6 ui/glade/update.glade.h:9
-#: ui/glade/relocate.glade.h:5
-msgid "gtk-cancel"
-msgstr ""
-
-#: ui/glade/switch.glade.h:10 ui/glade/notification.glade.h:3
-#: ui/glade/commit.glade.h:9 ui/glade/lock.glade.h:8
-#: ui/glade/properties.glade.h:8 ui/glade/rename.glade.h:4
-#: ui/glade/branch.glade.h:13 ui/glade/log.glade.h:15
-#: ui/glade/settings.glade.h:27 ui/glade/cleanup.glade.h:6
-#: ui/glade/dialogs.glade.h:33 ui/glade/checkout.glade.h:14
-#: ui/glade/add.glade.h:4 ui/glade/import.glade.h:7 ui/glade/update.glade.h:10
-#: ui/glade/relocate.glade.h:6
-msgid "gtk-ok"
-msgstr ""
-
 #: ui/glade/notification.glade.h:1
 msgid "Notification Messages"
 msgstr ""
@@ -648,10 +626,6 @@ msgstr ""
 
 #: ui/glade/annotate.glade.h:3
 msgid "Annotate"
-msgstr ""
-
-#: ui/glade/annotate.glade.h:4 ui/glade/about.glade.h:7
-msgid "gtk-close"
 msgstr ""
 
 #: ui/glade/about.glade.h:1
@@ -737,14 +711,6 @@ msgstr ""
 
 #: ui/glade/log.glade.h:11
 msgid "Stop on copy"
-msgstr ""
-
-#: ui/glade/log.glade.h:13
-msgid "gtk-go-back"
-msgstr ""
-
-#: ui/glade/log.glade.h:14
-msgid "gtk-go-forward"
 msgstr ""
 
 #: ui/glade/merge.glade.h:1
@@ -919,14 +885,6 @@ msgstr ""
 msgid "Type:"
 msgstr ""
 
-#: ui/glade/settings.glade.h:24
-msgid "gtk-apply"
-msgstr ""
-
-#: ui/glade/settings.glade.h:26
-msgid "gtk-clear"
-msgstr ""
-
 #: ui/glade/cleanup.glade.h:2
 msgid ""
 "Cleanup Requested....\n"
@@ -1029,18 +987,6 @@ msgstr ""
 
 #: ui/glade/dialogs.glade.h:29
 msgid "Value:"
-msgstr ""
-
-#: ui/glade/dialogs.glade.h:31
-msgid "gtk-delete"
-msgstr ""
-
-#: ui/glade/dialogs.glade.h:32
-msgid "gtk-no"
-msgstr ""
-
-#: ui/glade/dialogs.glade.h:34
-msgid "gtk-yes"
 msgstr ""
 
 #: ui/glade/checkout.glade.h:6

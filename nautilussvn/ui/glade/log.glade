@@ -261,7 +261,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="label" translatable="yes">gtk-go-back</property>
+                        <property name="label">gtk-go-back</property>
                         <property name="use_stock">True</property>
                         <property name="response_id">0</property>
                         <signal name="clicked" handler="on_previous_clicked"/>
@@ -272,7 +272,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="label" translatable="yes">gtk-go-forward</property>
+                        <property name="label">gtk-go-forward</property>
                         <property name="use_stock">True</property>
                         <property name="response_id">0</property>
                         <signal name="clicked" handler="on_next_clicked"/>
@@ -359,7 +359,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="label" translatable="yes">gtk-cancel</property>
+                    <property name="label">gtk-cancel</property>
                     <property name="use_stock">True</property>
                     <property name="response_id">0</property>
                     <signal name="clicked" handler="on_cancel_clicked"/>
@@ -370,7 +370,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="label" translatable="yes">gtk-ok</property>
+                    <property name="label">gtk-ok</property>
                     <property name="use_stock">True</property>
                     <property name="response_id">0</property>
                     <signal name="clicked" handler="on_ok_clicked"/>

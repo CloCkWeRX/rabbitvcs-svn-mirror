@@ -390,7 +390,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="label" translatable="yes">gtk-clear</property>
+                                <property name="label">gtk-clear</property>
                                 <property name="use_stock">True</property>
                                 <property name="response_id">0</property>
                                 <signal name="clicked" handler="on_cache_clear_repositories_clicked"/>
@@ -465,7 +465,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="label" translatable="yes">gtk-clear</property>
+                                <property name="label">gtk-clear</property>
                                 <property name="use_stock">True</property>
                                 <property name="response_id">0</property>
                                 <signal name="clicked" handler="on_cache_clear_messages_clicked"/>
@@ -529,7 +529,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="label" translatable="yes">gtk-clear</property>
+                                <property name="label">gtk-clear</property>
                                 <property name="use_stock">True</property>
                                 <property name="response_id">0</property>
                                 <signal name="clicked" handler="on_cache_clear_authentication_clicked"/>
@@ -697,7 +697,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="label" translatable="yes">gtk-apply</property>
+                <property name="label">gtk-apply</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">0</property>
                 <signal name="clicked" handler="on_apply_clicked"/>
@@ -708,7 +708,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="label">gtk-cancel</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">0</property>
                 <signal name="clicked" handler="on_cancel_clicked"/>
@@ -722,7 +722,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="label" translatable="yes">gtk-ok</property>
+                <property name="label">gtk-ok</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">0</property>
                 <signal name="clicked" handler="on_ok_clicked"/>
