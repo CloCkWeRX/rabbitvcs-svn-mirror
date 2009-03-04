@@ -20,11 +20,21 @@
 # along with NautilusSvn;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import gettext
+import gettext as _gettext
+from os import environ
 
 version = "0.12-dev"
 APP_NAME = "NautilusSvn"
 LOCALE_DIR = "locale"
 
-gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
-gettext.textdomain(APP_NAME)
+language = environ.get('LANGUAGE', None)
+langs = []
+if language:
+	langs += language.split(":")
+langs += ["en_US"]
+
+_gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
+_gettext.textdomain(APP_NAME)
+
+gettext = _gettext.translation(APP_NAME, LOCALE_DIR, languages=langs, fallback=True)
+
