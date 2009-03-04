@@ -22,16 +22,17 @@
 
 import gettext as _gettext
 from os import environ
+from locale import getdefaultlocale
 
 version = "0.12-dev"
 APP_NAME = "NautilusSvn"
 LOCALE_DIR = "locale"
 
-language = environ.get('LANGUAGE', None)
 langs = []
+language = environ.get('LANGUAGE', None)
 if language:
 	langs += language.split(":")
-langs += ["en_US"]
+langs += [getdefaultlocale()[0]]
 
 _gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
 _gettext.textdomain(APP_NAME)
