@@ -22,14 +22,16 @@
 
 import gettext as _gettext
 from os import environ
+from os.path import abspath
+import os
 from locale import getdefaultlocale
 
 version = "0.12-dev"
 APP_NAME = "NautilusSvn"
-LOCALE_DIR = "locale"
+LOCALE_DIR = "%s/locale" % os.path.dirname(os.path.abspath(__file__))
 
 langs = []
-language = environ.get('LANGUAGE', None)
+language = os.environ.get('LANGUAGE', None)
 if language:
 	langs += language.split(":")
 langs += [getdefaultlocale()[0]]
