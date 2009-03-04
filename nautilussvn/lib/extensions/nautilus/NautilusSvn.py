@@ -224,9 +224,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
         # Use the selected path to determine nautilus's cwd
         # If more than one files are selected, make sure to use get_common_directory
-        path_to_use = paths[0]
-        if len(paths) > 1:
-            path_to_use = get_common_directory(paths)
+        path_to_use = (len(paths) > 1 and get_common_directory(paths) or paths[0])
         os.chdir(os.path.split(path_to_use)[0])
         
         return MainContextMenu(paths, self).construct_menu()
