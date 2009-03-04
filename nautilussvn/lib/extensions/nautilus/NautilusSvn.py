@@ -42,7 +42,7 @@ import nautilussvn.lib.dbus.service
 from nautilussvn.lib.dbus.status_monitor import StatusMonitorStub as StatusMonitor
 from nautilussvn.lib.dbus.svn_client import SVNClientStub as SVNClient
 
-from nautilussvn.lib.helper import launch_ui_window, launch_diff_tool, get_file_extension
+from nautilussvn.lib.helper import launch_ui_window, launch_diff_tool, get_file_extension, get_common_directory
 from nautilussvn.lib.decorators import timeit, disable
 
 from nautilussvn.lib.log import Log
@@ -221,7 +221,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
                 self.nautilusVFSFile_table[path] = item
                 
         #~ log.debug("NautilusSvn.get_file_items() called for %s" % paths)
-        
+        os.chdir(os.path.split(get_common_directory(paths))[0])
         return MainContextMenu(paths, self).construct_menu()
     
     #~ @disable
@@ -246,6 +246,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
         self.nautilusVFSFile_table[path] = item
         
+        os.chdir(os.path.split(path)[0])
         return MainContextMenu([path], self).construct_menu()
     
     #
