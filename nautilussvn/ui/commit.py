@@ -389,11 +389,7 @@ class Commit(InterfaceView):
         if message is not None:
             self.message.set_text(message)
     
-    #
     # Conditions
-    # TODO: I'm not sure if the comments below are really needed (they describe
-    # what is being done, it's basically an English version of the code below).
-    #
     
     def condition_add(self):
         return (
