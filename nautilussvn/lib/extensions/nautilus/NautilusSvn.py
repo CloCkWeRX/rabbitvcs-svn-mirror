@@ -221,7 +221,14 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
                 self.nautilusVFSFile_table[path] = item
                 
         #~ log.debug("NautilusSvn.get_file_items() called for %s" % paths)
-        os.chdir(os.path.split(get_common_directory(paths))[0])
+        
+        # Use the selected path to determine nautilus's cwd
+        # If more than one files are selected, make sure to use get_common_directory
+        path_to_use = paths[0]
+        if len(paths) > 1:
+            path_to_use = get_common_directory(paths)
+        os.chdir(os.path.split(path_to_use)[0])
+        
         return MainContextMenu(paths, self).construct_menu()
     
     #~ @disable
@@ -246,7 +253,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
         self.nautilusVFSFile_table[path] = item
         
-        os.chdir(os.path.split(path)[0])
+        os.chdir(path)
         return MainContextMenu([path], self).construct_menu()
     
     #
