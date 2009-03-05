@@ -20,15 +20,15 @@
 # along with NautilusSvn;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import gettext as _gettext
-from os import environ
-from os.path import abspath
 import os
+import gettext as _gettext
 from locale import getdefaultlocale
 
-version = "0.12-dev"
+version = "0.12-beta1"
 APP_NAME = "NautilusSvn"
 LOCALE_DIR = "%s/locale" % os.path.dirname(os.path.abspath(__file__))
+if not os.path.exists(LOCALE_DIR):
+    LOCALE_DIR = "/usr/share/locale"
 
 langs = []
 language = os.environ.get('LANGUAGE', None)
