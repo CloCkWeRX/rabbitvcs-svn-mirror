@@ -64,6 +64,22 @@ python_nautilus_extensions_path = subprocess.Popen(
 ).stdout.read().strip()
 
 icon_theme_directory = "/usr/share/icons/hicolor" # TODO: does this really need to be hardcoded?
+locale_directory = "/usr/share/locale"
+
+#==============================================================================
+# Helper functions
+#==============================================================================
+
+def include_by_pattern(directory, directory_to_install, pattern):
+    files_to_include = []
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(pattern):
+                files_to_include.append((
+                    root.replace(directory, directory_to_install),
+                    [os.path.join(root, file)]
+                ))
+    return files_to_include
 
 #==============================================================================
 # Gather all the files that need to be included
@@ -81,14 +97,12 @@ nautilus_extension = [(
     ["nautilussvn/lib/extensions/nautilus/NautilusSvn.py"]
 )]
 
+# Translation
+translations = include_by_pattern("nautilussvn/locale", locale_directory, ".mo")
+
 # Icons
-icons = []
-for root, dirs, files in os.walk("nautilussvn/data/icons/hicolor"):
-    icons.append((
-        root.replace("nautilussvn/data/icons/hicolor", icon_theme_directory),
-        [os.path.join(root, file) for file in files if file.find(".svg") > 0]
-    ))
-    
+icons = include_by_pattern("nautilussvn/data/icons/hicolor", icon_theme_directory, ".svg")
+
 # Update notifier
 update_notifier = [("/usr/share/nautilussvn", [
     "packages/ubuntu/debian/nautilussvn-restart-required.update-notifier",
@@ -130,5 +144,12 @@ dist = setup(
     #   file) into site-packages
     # - data_files: any file you want, anywhere you want it
     packages=packages,
-    data_files=nautilus_extension + icons + documentation + update_notifier
+    include_package_data=True,
+    package_data={
+        "nautilussvn": [
+            # Include our Glade UI files right into the package
+            "ui/glade/*.glade"
+        ]
+    },
+    data_files=nautilus_extension + translations + icons + documentation + update_notifier
 )
