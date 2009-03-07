@@ -222,7 +222,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
                 
         #~ log.debug("NautilusSvn.get_file_items() called for %s" % paths)
         
-        # Use the selected path to determine nautilus's cwd
+        # Use the selected path to determine Nautilus's cwd
         # If more than one files are selected, make sure to use get_common_directory
         path_to_use = (len(paths) > 1 and get_common_directory(paths) or paths[0])
         os.chdir(os.path.split(path_to_use)[0])

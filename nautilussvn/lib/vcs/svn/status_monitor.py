@@ -43,8 +43,7 @@ class StatusMonitor:
       - When somebody adds a watch and if there's not already a watch for this 
         item it will add one.
     
-      - Use inotify to keep track of modifications of any watched items
-        (we actually only care about modifications not creations and deletions)
+      - Use inotify to keep track of modifications of any watched items.
         
       - Either on request, or when something interesting happens, it checks
         the status for an item which means:
@@ -63,6 +62,9 @@ class StatusMonitor:
                |     add_watch(path)        |
                |--------------------------->|
                |                            |
+               |      watch_added(path)     |
+               |<---------------------------|
+               |                            |
                |        status(path)        |
                |--------------------------->|
                |                            |
@@ -70,7 +72,7 @@ class StatusMonitor:
                |<---------------------------|
                |                            |
                |---+                        |
-               |   | set_emblem_by_status(path, status)
+               |   | set_emblem_for_path(path)
                |<--+                        |
                |                            |
 
@@ -121,6 +123,8 @@ class StatusMonitor:
             path = event.path
             if event.name: path = os.path.join(path, event.name)
             
+            # The administration area is modified a lot, but only the 
+            # entries file really matters.
             if path.find(".svn") != -1 and not path.endswith(".svn/entries"): return
             
             # Begin debugging code
@@ -206,8 +210,6 @@ class StatusMonitor:
         
     def status(self, path, invalidate=False, bypass=False):
         """
-        
-        TODO: This function is really quite unmaintainable.
         
         This function doesn't return anything but calls the callback supplied
         to C{StatusMonitor} by the caller.
