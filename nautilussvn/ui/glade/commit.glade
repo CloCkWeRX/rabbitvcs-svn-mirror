@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Feb 20 16:12:53 2009 -->
+<?xml version="1.0"?>
 <glade-interface>
+  <!-- interface-requires gtk+ 2.16 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="Commit">
     <property name="width_request">640</property>
     <property name="visible">True</property>
     <property name="title" translatable="yes">Commit</property>
-    <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
+    <property name="window_position">center-on-parent</property>
     <property name="icon_name">nautilussvn</property>
     <signal name="destroy" handler="on_destroy"/>
     <child>
@@ -26,11 +26,12 @@
                 <property name="yalign">0</property>
                 <property name="label" translatable="yes">&lt;b&gt;Commit to:&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
-                <property name="wrap_mode">PANGO_WRAP_CHAR</property>
+                <property name="wrap_mode">char</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -39,7 +40,7 @@
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="wrap">True</property>
-                <property name="wrap_mode">PANGO_WRAP_CHAR</property>
+                <property name="wrap_mode">char</property>
               </widget>
               <packing>
                 <property name="position">1</property>
@@ -50,6 +51,7 @@
             <property name="expand">False</property>
             <property name="fill">False</property>
             <property name="padding">3</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
@@ -66,6 +68,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -80,37 +83,41 @@
                       <widget class="GtkHButtonBox" id="hbuttonbox4">
                         <property name="width_request">0</property>
                         <property name="visible">True</property>
-                        <property name="layout_style">GTK_BUTTONBOX_START</property>
+                        <property name="layout_style">start</property>
                         <child>
                           <widget class="GtkButton" id="previous_messages">
+                            <property name="label" translatable="yes">Previous Messages</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
-                            <property name="label" translatable="yes">Previous Messages</property>
-                            <property name="response_id">0</property>
                             <signal name="clicked" handler="on_previous_messages_clicked"/>
                           </widget>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
                         </child>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
                       <widget class="GtkScrolledWindow" id="scrolledwindow3">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-                        <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-                        <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+                        <property name="hscrollbar_policy">automatic</property>
+                        <property name="vscrollbar_policy">automatic</property>
+                        <property name="shadow_type">etched-in</property>
                         <child>
                           <widget class="GtkTextView" id="message">
                             <property name="height_request">100</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="pixels_below_lines">7</property>
-                            <property name="wrap_mode">GTK_WRAP_WORD</property>
+                            <property name="wrap_mode">word</property>
+                            <property name="accepts_tab">False</property>
                           </widget>
                         </child>
                       </widget>
@@ -144,6 +151,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -158,9 +166,9 @@
                       <widget class="GtkScrolledWindow" id="scrolledwindow2">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-                        <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-                        <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+                        <property name="hscrollbar_policy">automatic</property>
+                        <property name="vscrollbar_policy">automatic</property>
+                        <property name="shadow_type">etched-in</property>
                         <child>
                           <widget class="GtkTreeView" id="files_table">
                             <property name="height_request">250</property>
@@ -171,30 +179,34 @@
                           </widget>
                         </child>
                       </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
                     </child>
                     <child>
                       <widget class="GtkVBox" id="vbox5">
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkCheckButton" id="toggle_show_all">
+                            <property name="label" translatable="yes">Select / Deselect all</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="label" translatable="yes">Select / Deselect all</property>
-                            <property name="response_id">0</property>
+                            <property name="receives_default">False</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="on_toggle_show_all_toggled"/>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
+                            <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
                           <widget class="GtkCheckButton" id="toggle_show_unversioned">
+                            <property name="label" translatable="yes">Show unversioned files</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="label" translatable="yes">Show unversioned files</property>
-                            <property name="response_id">0</property>
+                            <property name="receives_default">False</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
                             <signal name="toggled" handler="on_toggle_show_unversioned_toggled"/>
@@ -235,36 +247,36 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <widget class="GtkHButtonBox" id="hbuttonbox3">
                 <property name="visible">True</property>
                 <property name="spacing">6</property>
-                <property name="layout_style">GTK_BUTTONBOX_END</property>
+                <property name="layout_style">end</property>
                 <child>
                   <widget class="GtkButton" id="cancel">
+                    <property name="label">gtk-cancel</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="label">gtk-cancel</property>
                     <property name="use_stock">True</property>
-                    <property name="response_id">0</property>
                     <signal name="clicked" handler="on_cancel_clicked"/>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
                   <widget class="GtkButton" id="ok">
+                    <property name="label">gtk-ok</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="label">gtk-ok</property>
                     <property name="use_stock">True</property>
-                    <property name="response_id">0</property>
                     <signal name="clicked" handler="on_ok_clicked"/>
                   </widget>
                   <packing>
@@ -277,7 +289,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="pack_type">GTK_PACK_END</property>
+                <property name="pack_type">end</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -285,7 +297,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
-            <property name="pack_type">GTK_PACK_END</property>
+            <property name="pack_type">end</property>
             <property name="position">3</property>
           </packing>
         </child>
