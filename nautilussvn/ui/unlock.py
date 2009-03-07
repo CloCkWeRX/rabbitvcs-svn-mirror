@@ -33,6 +33,9 @@ import nautilussvn.ui.widget
 import nautilussvn.ui.dialog
 import nautilussvn.ui.action
 import nautilussvn.lib.helper
+from nautilussvn.lib.log import Log
+
+log = Log("nautilussvn.ui.unlock")
 
 from nautilussvn import gettext
 _ = gettext.gettext
@@ -58,7 +61,7 @@ class Unlock(Add):
         try:
             thread.start_new_thread(self.load, ())
         except Exception, e:
-            print str(e)
+            log.exception()
         
         
     #

@@ -29,6 +29,9 @@ import gtk
 from nautilussvn.ui import InterfaceNonView
 from nautilussvn.ui.action import VCSAction
 import nautilussvn.lib.vcs
+from nautilussvn.lib.log import Log
+
+log = Log("nautilussvn.ui.delete")
 
 from nautilussvn import gettext
 _ = gettext.gettext
@@ -72,7 +75,7 @@ class Delete(InterfaceNonView):
                 try:
                     self.vcs.remove(versioned, force=True)
                 except Exception, e:
-                    print str(e)
+                    log.exception()
                     return
             
             if unversioned:

@@ -156,6 +156,17 @@ class BaseLog:
         """
         
         self.logger.critical(msg)
+
+    def exception(self, msg=""):
+        """
+        Pass a exception level log message (Numeric value: 50)
+        
+        @type   msg: string
+        @param  msg: The message to pass
+        
+        """
+        
+        self.logger.exception(msg)
     
     def set_handler(self, handler, format=DEFAULT_FORMAT):
         """

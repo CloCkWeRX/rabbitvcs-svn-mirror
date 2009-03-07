@@ -33,6 +33,9 @@ import nautilussvn.ui.widget
 import nautilussvn.ui.dialog
 import nautilussvn.lib.vcs
 import nautilussvn.lib.helper
+from nautilussvn.lib.log import Log
+
+log = Log("nautilussvn.ui.lock")
 
 from nautilussvn import gettext
 _ = gettext.gettext
@@ -76,7 +79,7 @@ class Lock(InterfaceView):
         try:
             thread.start_new_thread(self.load, ())
         except Exception, e:
-            print str(e)
+            log.exception()
 
     #
     # Helper functions

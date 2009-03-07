@@ -20,6 +20,10 @@
 # along with NautilusSvn;  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from nautilussvn.lib.log import Log
+
+log = Log("nautilussvn.lib")
+
 class Function:
     """
     Provides an interface to define and call a function.
@@ -96,6 +100,7 @@ class FunctionQueue:
             try:
                 func.start()
             except Exception, e:
+                log.exception()
                 if self._exception:
                     self._exception.set_args(e)
                     self._exception.call()

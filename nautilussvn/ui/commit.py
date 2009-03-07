@@ -33,6 +33,9 @@ import nautilussvn.ui.widget
 import nautilussvn.ui.dialog
 import nautilussvn.lib
 import nautilussvn.lib.helper
+from nautilussvn.lib.log import Log
+
+log = Log("nautilussvn.ui.commit")
 
 from nautilussvn import gettext
 _ = gettext.gettext
@@ -86,7 +89,7 @@ class Commit(InterfaceView):
         try:
             thread.start_new_thread(self.load, ())
         except Exception, e:
-            print str(e)
+            log.exception()
 
     #
     # Helper functions

@@ -28,6 +28,9 @@ from nautilussvn.ui import InterfaceView
 import nautilussvn.ui.widget
 import nautilussvn.ui.dialog
 import nautilussvn.lib.vcs
+from nautilussvn.lib.log import Log
+
+log = Log("nautilussvn.ui.properties")
 
 from nautilussvn import gettext
 _ = gettext.gettext

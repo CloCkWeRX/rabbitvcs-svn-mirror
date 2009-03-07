@@ -72,8 +72,8 @@ DEFAULT_SETTINGS = {
         "number_messages": 30
     },
     "logging": {
-        "type": "Console",
-        "level": "Debug"
+        "type": "File",
+        "level": "Error"
     }
 }
 

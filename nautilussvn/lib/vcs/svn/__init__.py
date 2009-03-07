@@ -197,7 +197,7 @@ class SVN:
             return self.client.status(path, recurse=recurse)
         except pysvn.ClientError:
             traceback.print_exc()
-            log.debug("Exception occured in SVN.status() for %s" % path)
+            log.exception("Exception occured in SVN.status() for %s" % path)
             return [pysvn.PysvnStatus({
                 "text_status": pysvn.wc_status_kind.none,
                 "path": os.path.abspath(path)
@@ -303,7 +303,7 @@ class SVN:
         try:
             status = self.status_with_cache(path, recurse=False)[-1]
         except Exception, e:
-            log.info("is_status exception: %s" % str(e))
+            log.exception("is_status exception: %s" % str(e))
             return False
         
         if status.data["text_status"] == text_status:
@@ -342,7 +342,7 @@ class SVN:
         try:
             is_locked = self.client.info2(path)[0][1].lock is not None
         except pysvn.ClientError, e:
-            print str(e)
+            log.exception("is_locked exception for %s" % path)
             
         return is_locked
 
@@ -363,7 +363,7 @@ class SVN:
         try:
             statuses = self.status_with_cache(path, recurse=True)[:-1]
         except Exception, e:
-            log.info("has_status exception: %s" % str(e))
+            log.exception("has_status exception: %s" % str(e))
             return False
         
         for status in statuses:
@@ -391,6 +391,7 @@ class SVN:
         try:
             infos = self.client.info2(path)
         except:
+            log.exception("has_locked exception for %s" % path)
             return False
 
         for info in infos:
@@ -440,7 +441,7 @@ class SVN:
             try:
                 st = self.status(versioned_path)
             except Exception, e:
-                print str(e)
+                log.exception("get_items exception")
                 continue
 
             if st is None:
@@ -491,8 +492,7 @@ class SVN:
         try:
             returner = info["url"]
         except Exception, e:
-            print "Exception in svn.py get_repo_url()"
-            print str(e)
+            log.exception("Exception in svn.py get_repo_url() for %s" % path)
 
         return returner
     
@@ -514,11 +514,9 @@ class SVN:
         try:
             returner = info["revision"].number
         except KeyError, e:
-            print "KeyError exception in svn.py get_revision()"
-            print str(e)
+            log.exception("KeyError exception in svn.py get_revision() for %s" % path)
         except AttributeError, e:
-            print "AttributeError exception in svn.py get_revision()"
-            print str(e)
+            log.exception("AttributeError exception in svn.py get_revision() for %s" % path)
         
         return returner
     
@@ -583,11 +581,9 @@ class SVN:
             )
             returner = True
         except pysvn.ClientError, e:
-            print "pysvn.ClientError exception in svn.py propset()"
-            print str(e)
+            log.exception("pysvn.ClientError exception in svn.py propset() for %s" % path)
         except TypeError, e:
-            print "TypeError exception in svn.py propset()"
-            print str(e)
+            log.exception("TypeError exception in svn.py propset() %s" % path)
             
         return returner
         
@@ -636,8 +632,7 @@ class SVN:
                 recurse=True
             )
         except pysvn.ClientError, e:
-            print "pysvn.ClientError exception in svn.py propget()"
-            print str(e)
+            log.exception("pysvn.ClientError exception in svn.py propget() for %s" % path)
             return ""
         
         try:
@@ -670,11 +665,9 @@ class SVN:
             )
             returner = True
         except pysvn.ClientError, e:
-            print "pysvn.ClientError exception in svn.py propdel()"
-            print str(e)
+            log.exception("pysvn.ClientError exception in svn.py propdel() for %s" % path)
         except TypeError, e:
-            print "TypeError exception in svn.py propdel()"
-            print str(e)
+            log.exception("TypeError exception in svn.py propdel() %s" % path)
         
         return returner
     
@@ -732,14 +725,13 @@ class SVN:
         try:
             pysvn_obj = self.REVISIONS[kind]
         except KeyError, e:
-            print "pysvn.ClientError exception in svn.py revision()"
-            print str(e)
+            log.exception("pysvn.ClientError exception in svn.py revision()")
             return None
         
         returner = None
         if kind == "date":
             if date is None:
-                print "In svn.py revision(),kind = date, but date not given"
+                log.exception("In svn.py revision(),kind = date, but date not given")
                 return None
             
             returner = pysvn.Revision(pysvn_obj, date)

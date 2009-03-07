@@ -33,6 +33,9 @@ import nautilussvn.ui.dialog
 import nautilussvn.ui.action
 import nautilussvn.lib.helper
 import nautilussvn.lib.vcs
+from nautilussvn.lib.log import Log
+
+log = Log("nautilussvn.ui.add")
 
 from nautilussvn import gettext
 _ = gettext.gettext
