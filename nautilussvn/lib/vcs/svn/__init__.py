@@ -303,7 +303,7 @@ class SVN:
         try:
             status = self.status_with_cache(path, recurse=False)[-1]
         except Exception, e:
-            log.exception("is_status exception: %s" % str(e))
+            log.exception("is_status exception for %s" % path)
             return False
         
         if status.data["text_status"] == text_status:
@@ -363,7 +363,7 @@ class SVN:
         try:
             statuses = self.status_with_cache(path, recurse=True)[:-1]
         except Exception, e:
-            log.exception("has_status exception: %s" % str(e))
+            log.exception("has_status exception for %s" % path)
             return False
         
         for status in statuses:
