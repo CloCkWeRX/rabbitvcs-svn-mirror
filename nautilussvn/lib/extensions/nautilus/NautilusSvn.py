@@ -1201,6 +1201,8 @@ class MainContextMenu:
                         not self.vcs_client.is_versioned(path)):
                     return True
                 else:
+                    # FIXME: for some reason the menu item is not being
+                    # displayed when there are unversioned files.
                     if (isdir(path) and
                             (self.vcs_client.has_added(path) or 
                             self.vcs_client.has_modified(path) or
