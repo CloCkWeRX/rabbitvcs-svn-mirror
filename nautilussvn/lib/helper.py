@@ -39,13 +39,13 @@ import nautilussvn.lib.settings
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 def initialize_locale():
-    locale, encoding = locale.getdefaultlocale()
-    if locale is None:
-        locale = "en_US"
+    _locale, encoding = locale.getdefaultlocale()
+    if _locale is None:
+        _locale = "en_US"
     if encoding is None:
         encoding = "utf8"
         
-    locale.setlocale(locale.LC_ALL, (locale, encoding))
+    locale.setlocale(locale.LC_ALL, (_locale, encoding))
 
 def get_home_folder():
     """ 
