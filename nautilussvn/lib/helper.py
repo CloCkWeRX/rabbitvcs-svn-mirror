@@ -36,6 +36,9 @@ import shutil
 
 import nautilussvn.lib.settings
 
+from nautilussvn.lib.log import Log
+log = Log("nautilussvn.lib.helper")
+
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 def initialize_locale():
@@ -253,7 +256,7 @@ def get_diff_tool():
         "swap": diff_tool_swap
     }
     
-def launch_diff_tool(path):
+def launch_diff_tool(path1, path2=None):
     """
     Launches the diff tool of choice.
     
@@ -263,8 +266,8 @@ def launch_diff_tool(path):
       4.  Do a reverse patch to get a version of the file that is in the repo.
       5.  Now you have two files and you can send them to the diff tool.
     
-    @type   path: string
-    @param  path: Path to the file in question.
+    @type   paths: list
+    @param  paths: Paths to the given files
 
     """
     
@@ -276,17 +279,20 @@ def launch_diff_tool(path):
     if not os.path.exists(diff["path"]):
         return
 
-    patch = os.popen("svn diff --diff-cmd 'diff' '%s'" % path).read()
-    open("/tmp/tmp.patch", "w").write(patch)
-    
-    tmp_path = "/tmp/%s" % os.path.split(path)[-1]
-    shutil.copy(path, "/tmp")
-    os.popen(
-        "patch --reverse '%s' < /tmp/tmp.patch" % 
-        tmp_path
-    )
-    
-    (lhs, rhs) = (path, tmp_path)
+    # If path2 is set, that means we are comparing one file/folder to another
+    if path2 is not None:
+        (lhs, rhs) = (path1, path2)
+    else:
+        patch = os.popen("svn diff --diff-cmd 'diff' '%s'" % path1).read()
+        open("/tmp/tmp.patch", "w").write(patch)
+        
+        tmp_path = "/tmp/%s" % os.path.split(path1)[-1]
+        shutil.copy(path1, "/tmp")
+        os.popen(
+            "patch --reverse '%s' < /tmp/tmp.patch" % 
+            tmp_path
+        )
+        (lhs, rhs) = (path1, tmp_path)
         
     if diff["swap"]:
         (lhs, rhs) = (rhs, lhs)

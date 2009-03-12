@@ -350,6 +350,42 @@ class MainContextMenu:
         self.nautilussvn_extension = nautilussvn_extension
         self.vcs_client = SVNClient()
         
+        self.path_dict = {}
+        self.path_dict["length"] = len(paths)
+        
+        checks = {
+            "is_dir"                        : isdir,
+            "is_file"                       : isfile,
+            "is_working_copy"               : self.vcs_client.is_working_copy,
+            "is_in_a_or_a_working_copy"     : self.vcs_client.is_in_a_or_a_working_copy,
+            "is_versioned"                  : self.vcs_client.is_versioned,
+            "is_normal"                     : self.vcs_client.is_normal,
+            "is_added"                      : self.vcs_client.is_added,
+            "is_modified"                   : self.vcs_client.is_modified,
+            "is_deleted"                    : self.vcs_client.is_deleted,
+            "is_ignored"                    : self.vcs_client.is_ignored,
+            "is_locked"                     : self.vcs_client.is_locked,
+            "is_missing"                    : self.vcs_client.is_missing,
+            "is_conflicted"                 : self.vcs_client.is_conflicted,
+            "is_obstructed"                 : self.vcs_client.is_obstructed,
+            "has_unversioned"               : self.vcs_client.has_unversioned,
+            "has_added"                     : self.vcs_client.has_added,
+            "has_modified"                  : self.vcs_client.has_modified,
+            "has_deleted"                   : self.vcs_client.has_deleted,
+            "has_ignored"                   : self.vcs_client.has_ignored,
+            "has_locked"                    : self.vcs_client.has_locked,
+            "has_missing"                   : self.vcs_client.has_missing,
+            "has_conflicted"                : self.vcs_client.has_conflicted,
+            "has_obstructed"                : self.vcs_client.has_obstructed
+        }
+
+        # Each path gets tested for each check
+        # If a check has returned True for any path, skip it for remaining paths
+        for path in paths:
+            for key,func in checks.items():
+                if key not in self.path_dict or self.path_dict[key] is not True:
+                    self.path_dict[key] = func(path)
+        
     def construct_menu(self):
         """
         
@@ -679,7 +715,7 @@ class MainContextMenu:
                             },
                             {
                                 "identifier": "NautilusSvn::AddToIgnoreExt",
-                                "label": "*.%s"%get_file_extension(self.paths[0]),
+                                "label": "*%s"%get_file_extension(self.paths[0]),
                                 "tooltip": _("Ignore all files with this extension"),
                                 "icon": None,
                                 "signals": {
@@ -1176,222 +1212,145 @@ class MainContextMenu:
     #
     
     def condition_checkout(self):
-        if (len(self.paths) == 1 and
-                isdir(self.paths[0]) and
-                not self.vcs_client.is_working_copy(self.paths[0])):
-            return True
-            
-        return False
-        
-    def condition_update(self):
-        for path in self.paths:
-            if (self.vcs_client.is_in_a_or_a_working_copy(path) and
-                    self.vcs_client.is_versioned(path) and
-                    not self.vcs_client.is_added(path)):
-                return True
+        return (self.path_dict["length"] == 1 and
+                self.path_dict["is_dir"] and
+                not self.path_dict["is_working_copy"])
                 
-        return False
-        
+    def condition_update(self):
+        return (self.path_dict["is_in_a_or_a_working_copy"] and
+                self.path_dict["is_versioned"] and
+                not self.path_dict["is_added"])
+                        
     def condition_commit(self):
-        for path in self.paths:
-            if self.vcs_client.is_in_a_or_a_working_copy(path): 
-                if (self.vcs_client.is_added(path) or 
-                        self.vcs_client.is_modified(path) or
-                        self.vcs_client.is_deleted(path) or
-                        not self.vcs_client.is_versioned(path)):
-                    return True
-                else:
-                    # FIXME: for some reason the menu item is not being
-                    # displayed when there are unversioned files.
-                    if (isdir(path) and
-                            (self.vcs_client.has_added(path) or 
-                            self.vcs_client.has_modified(path) or
-                            self.vcs_client.has_deleted(path)) or
-                            self.vcs_client.has_unversioned(path) or
-                            self.vcs_client.has_missing(path)):
-                        return True
-        
+        if self.path_dict["is_in_a_or_a_working_copy"]:
+            if (self.path_dict["is_added"] or
+                    self.path_dict["is_modified"] or
+                    self.path_dict["is_deleted"] or
+                    not self.path_dict["is_versioned"]):
+                return True
+            elif (self.path_dict["is_dir"] and
+                    (self.path_dict["has_added"] or
+                    self.path_dict["has_modified"] or
+                    self.path_dict["has_deleted"] or
+                    self.path_dict["has_unversioned"] or
+                    self.path_dict["has_missing"])):
+                return True
         return False
         
     def condition_diff(self):
-        if len(self.paths) == 2:
+        if self.path_dict["length"] == 2:
             return True
-        elif (len(self.paths) == 1 and 
-                self.vcs_client.is_in_a_or_a_working_copy(self.paths[0]) and
-                self.vcs_client.is_modified(self.paths[0])):
-            return True
-        
+        elif (self.path_dict["length"] == 1 and
+                self.path_dict["is_in_a_or_a_working_copy"] and
+                self.path_dict["is_modified"]):
+            return True        
         return False
         
     def condition_show_log(self):
-        if (len(self.paths) == 1 and
-                self.vcs_client.is_in_a_or_a_working_copy(self.paths[0]) and
-                self.vcs_client.is_versioned(self.paths[0]) and
-                not self.vcs_client.is_added(self.paths[0])):
-            return True
-        
-        return False
+        return (self.path_dict["length"] == 1 and
+                self.path_dict["is_in_a_or_a_working_copy"] and
+                self.path_dict["is_versioned"] and
+                not self.path_dict["is_added"])
         
     def condition_add(self):
-        for path in self.paths:
-            if (isfile(path) and
-                    self.vcs_client.is_in_a_or_a_working_copy(path) and
-                    not self.vcs_client.is_versioned(path)):
-                return True
-            elif (isdir(path) and
-                    self.vcs_client.is_in_a_or_a_working_copy(path)):
-                return True
-            
+        if (self.path_dict["is_dir"] and
+                self.path_dict["is_in_a_or_a_working_copy"]):
+            return True
+        elif (not self.path_dict["is_dir"] and
+                self.path_dict["is_in_a_or_a_working_copy"] and
+                not self.path_dict["is_versioned"]):
+            return True
         return False
         
     def condition_add_to_ignore_list(self):
-        for path in self.paths:
-            if (self.vcs_client.is_in_a_or_a_working_copy(path) and
-                    not self.vcs_client.is_versioned(path)):
-                return False
-                
-        return True
+        return self.path_dict["is_versioned"]
         
     def condition_rename(self):
-        if (len(self.paths) == 1 and
-                self.vcs_client.is_in_a_or_a_working_copy(self.paths[0]) and
-                self.vcs_client.is_versioned(self.paths[0]) and
-                not self.vcs_client.is_added(self.paths[0])):
-            return True
-        
-        return False
+        return (self.path_dict["length"] == 1 and
+                self.path_dict["is_in_a_or_a_working_copy"] and
+                self.path_dict["is_versioned"] and
+                not self.path_dict["is_added"])
         
     def condition_delete(self):
-        for path in self.paths:
-            if (self.vcs_client.is_in_a_or_a_working_copy(path) and
-                    self.vcs_client.is_versioned(path)):
-                return True
-            
-        return False
+        # FIXME: This should be False for the top-level WC folder
+        return self.path_dict["is_versioned"]
         
     def condition_revert(self):
-        for path in self.paths:
-            if self.vcs_client.is_in_a_or_a_working_copy(path): 
-                if (self.vcs_client.is_added(path) or 
-                        self.vcs_client.is_modified(path) or
-                        self.vcs_client.is_deleted(path)):
+        if self.path_dict["is_in_a_or_a_working_copy"]:
+            if (self.path_dict["is_added"] or
+                    self.path_dict["is_modified"] or
+                    self.path_dict["is_deleted"]):
+                return True
+            else:
+                if (self.path_dict["is_dir"] and
+                        (self.path_dict["has_added"] or
+                        self.path_dict["has_modified"] or
+                        self.path_dict["has_deleted"])):
                     return True
-                else:
-                    if (isdir(path) and
-                            (self.vcs_client.has_added(path) or 
-                            self.vcs_client.has_modified(path) or
-                            self.vcs_client.has_deleted(path))):
-                        return True
-        
         return False
         
     def condition_annotate(self):
-        if (len(self.paths) == 1 and
-                not isdir(self.paths[0]) and
-                self.vcs_client.is_in_a_or_a_working_copy(self.paths[0]) and
-                self.vcs_client.is_versioned(self.paths[0]) and
-                not self.vcs_client.is_added(self.paths[0])):
-            return True
-        
-        return False
+        return (self.path_dict["length"] == 1 and
+                not self.path_dict["is_dir"] and
+                self.path_dict["is_in_a_or_a_working_copy"] and
+                self.path_dict["is_versioned"] and
+                not self.path_dict["is_added"])
         
     def condition_properties(self):
-        for path in self.paths:
-            if (self.vcs_client.is_in_a_or_a_working_copy(path) and
-                    self.vcs_client.is_versioned(path)):
-                return True
-        
-        return False
+        return (self.path_dict["is_in_a_or_a_working_copy"] and
+                self.path_dict["is_versioned"])
     
     def condition_add_to_ignore_list(self):
-        return (len(self.paths) == 1 and 
-                self.vcs_client.is_in_a_or_a_working_copy(self.paths[0]) and
-                not self.vcs_client.is_versioned(self.paths[0]))
+        return (self.path_dict["length"] == 1 and 
+                self.path_dict["is_in_a_or_a_working_copy"] and
+                not self.path_dict["is_versioned"])
     
     def condition_ignore_ext(self):
-        return isfile(self.paths[0])
+        return (self.path_dict["length"] == 1 and self.path_dict["is_file"])
 
     def condition_lock(self):
-        for path in self.paths:
-            if (self.vcs_client.is_in_a_or_a_working_copy(path) and
-                    self.vcs_client.is_versioned(path)):
-                return True
-            
-        return False
+        return self.path_dict["is_versioned"]
 
     def condition_branch(self):
-        for path in self.paths:
-            if (self.vcs_client.is_in_a_or_a_working_copy(path) and
-                    self.vcs_client.is_versioned(path)):
-                return True
-            
-        return False
+        return self.path_dict["is_versioned"]
 
     def condition_relocate(self):
-        for path in self.paths:
-            if (self.vcs_client.is_in_a_or_a_working_copy(path) and
-                    self.vcs_client.is_versioned(path)):
-                return True
-            
-        return False
+        return self.path_dict["is_versioned"]
 
     def condition_switch(self):
-        for path in self.paths:
-            if (self.vcs_client.is_in_a_or_a_working_copy(path) and
-                    self.vcs_client.is_versioned(path)):
-                return True
-            
-        return False
+        return self.path_dict["is_versioned"]
 
     def condition_merge(self):
-        for path in self.paths:
-            if (self.vcs_client.is_in_a_or_a_working_copy(path) and
-                    self.vcs_client.is_versioned(path)):
-                return True
-            
-        return False
+        return self.path_dict["is_versioned"]
 
     def condition_import(self):
-        return (len(self.paths) == 1 and
-                not self.vcs_client.is_in_a_or_a_working_copy(self.paths[0]))
+        return (self.path_dict["length"] == 1 and
+                not self.path_dict["is_in_a_or_a_working_copy"])
 
     def condition_export(self):
-        return (len(self.paths) == 1 and
-                not self.vcs_client.is_in_a_or_a_working_copy(self.paths[0]))
-    
+        return (self.path_dict["length"] == 1 and
+                not self.path_dict["is_in_a_or_a_working_copy"])
+   
     def condition_update_to(self):
-        return (len(self.paths) == 1 and 
-                self.vcs_client.is_in_a_or_a_working_copy(self.paths[0]))
+        return (self.path_dict["length"] == 1 and
+                self.path_dict["is_in_a_or_a_working_copy"])
     
     def condition_resolve(self):
-        for path in self.paths:
-            if (self.vcs_client.is_in_a_or_a_working_copy(path) and
-                    self.vcs_client.is_versioned(path) and
-                    self.vcs_client.has_conflicted(path)):
-                return True
-            
-        return False
+        return (self.path_dict["is_in_a_or_a_working_copy"] and
+                self.path_dict["is_versioned"] and
+                self.path_dict["is_conflicted"])
             
     def condition_create(self):
-        return (len(self.paths) == 1 and
-                not self.vcs_client.is_in_a_or_a_working_copy(self.paths[0]))
+        return (self.path_dict["length"] == 1 and
+                not self.path_dict["is_in_a_or_a_working_copy"])
 
     def condition_unlock(self):
-        for path in self.paths:
-            if (self.vcs_client.is_in_a_or_a_working_copy(path) and
-                    self.vcs_client.is_versioned(path) and
-                    self.vcs_client.has_locked(path)):
-                return True
-            
-        return False
+        return (self.path_dict["is_in_a_or_a_working_copy"] and
+                self.path_dict["is_versioned"] and
+                self.path_dict["has_locked"])
 
     def condition_cleanup(self):
-        for path in self.paths:
-            if (self.vcs_client.is_in_a_or_a_working_copy(path) and
-                    self.vcs_client.is_versioned(path)):
-                return True
-            
-        return False
+        return self.path_dict["is_versioned"]
 
     #
     # Callbacks
@@ -1564,7 +1523,7 @@ class MainContextMenu:
         launch_ui_window("revert", paths)
 
     def callback_diff(self, menu_item, paths):
-        launch_diff_tool(paths[0])
+        launch_diff_tool(*paths)
     
     def callback_show_log(self, menu_item, paths):
         launch_ui_window("log", paths)
