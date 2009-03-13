@@ -196,8 +196,8 @@ class SVN:
         try:
             return self.client.status(path, recurse=recurse)
         except pysvn.ClientError:
-            traceback.print_exc()
-            log.exception("Exception occured in SVN.status() for %s" % path)
+            #traceback.print_exc()
+            #log.exception("Exception occured in SVN.status() for %s" % path)
             return [pysvn.PysvnStatus({
                 "text_status": pysvn.wc_status_kind.none,
                 "path": os.path.abspath(path)
@@ -342,7 +342,8 @@ class SVN:
         try:
             is_locked = self.client.info2(path)[0][1].lock is not None
         except pysvn.ClientError, e:
-            log.exception("is_locked exception for %s" % path)
+            return False
+            #log.exception("is_locked exception for %s" % path)
             
         return is_locked
 
@@ -391,7 +392,7 @@ class SVN:
         try:
             infos = self.client.info2(path)
         except:
-            log.exception("has_locked exception for %s" % path)
+            #log.exception("has_locked exception for %s" % path)
             return False
 
         for info in infos:
