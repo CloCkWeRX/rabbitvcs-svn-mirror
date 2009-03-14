@@ -159,7 +159,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
         """
         
-        if not item.get_uri().startswith("file://"): return
+        if not self.valid_uri(item.get_uri()): return
         path = realpath(gnomevfs.get_local_path_from_uri(item.get_uri()))
         
         log.debug("update_file_info() called for %s" % path)
@@ -277,7 +277,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
         paths = []
         for item in items:
-            if item.get_uri().startswith("file://"):
+            if self.valid_uri(item.get_uri()):
                 path = realpath(gnomevfs.get_local_path_from_uri(item.get_uri()))
                 paths.append(path)
                 self.nautilusVFSFile_table[path] = item
@@ -310,7 +310,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
         """
         
-        if not item.get_uri().startswith("file://"): return
+        if not self.valid_uri(item.get_uri()): return
         path = realpath(gnomevfs.get_local_path_from_uri(item.get_uri()))
         self.nautilusVFSFile_table[path] = item
         
@@ -322,6 +322,19 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
     #
     # Helper functions
     #
+    
+    def valid_uri(self, uri):
+        """
+        Check whether or not it's a good idea to have NautilusSvn do
+        its magic for this URI. Some examples of URI schemes:
+        
+        x-nautilus-desktop:/// # e.g. mounted devices on the desktop
+        
+        """
+        
+        if not uri.startswith("file://"): return False
+        
+        return True
     
     def set_emblem_by_path(self, path):
         """
