@@ -196,8 +196,9 @@ class SVN:
         try:
             return self.client.status(path, recurse=recurse)
         except pysvn.ClientError:
-            #traceback.print_exc()
-            #log.exception("Exception occured in SVN.status() for %s" % path)
+            # TODO: uncommenting these might not be a good idea
+            #~ traceback.print_exc()
+            #~ log.exception("Exception occured in SVN.status() for %s" % path)
             return [pysvn.PysvnStatus({
                 "text_status": pysvn.wc_status_kind.none,
                 "path": os.path.abspath(path)
@@ -234,7 +235,7 @@ class SVN:
                 # an infinity check is requesting and it's most likely
                 # that only an empty check was done before.
                 (recurse and len(self.status_cache[path]) == 1)):
-            #~ log.debug("status_with_cache() invalidated %s" % path)
+            log.debug("status_with_cache() invalidated %s" % path)
             statuses = self.status(path, recurse=recurse)
         else:
             return self.status_cache[path]

@@ -35,12 +35,7 @@ import pysvn
 import gobject
 import gtk
 
-from nautilussvn.lib.vcs import create_vcs_instance
 from nautilussvn.lib.vcs.svn import SVN
-
-import nautilussvn.lib.dbus.service
-from nautilussvn.lib.dbus.status_monitor import StatusMonitorStub as StatusMonitor
-from nautilussvn.lib.dbus.svn_client import SVNClientStub as SVNClient
 
 from nautilussvn.lib.helper import launch_ui_window, launch_diff_tool, get_file_extension, get_common_directory
 from nautilussvn.lib.decorators import timeit, disable
@@ -98,16 +93,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
     statuses = {}
     
     def __init__(self):
-        # Start up our DBus service if it's not already started, if this fails
-        # we can't really do anything.
-        self.dbus_service_available = nautilussvn.lib.dbus.service.start()
-
-        # Create a StatusMonitor and register all sorts of callbacks with it
-        if self.dbus_service_available:
-            self.status_monitor = StatusMonitor(
-                status_callback=self.cb_status,
-                watch_added_callback=self.cb_watch_added
-            )
+        pass
         
     def get_columns(self):
         """
@@ -119,38 +105,6 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
     def update_file_info(self, item):
         """
-        
-        Normally this function is used to monitor changes to items, however 
-        we're using our own C{StatusMonitor} for this. So this function is only
-        used to apply emblems (which is needed because emblems from extensions
-        are temporary).
-        
-        C{update_file_info} is called only when:
-        
-          - When you enter a directory (once for each item) but only when the
-            item was modified since the last time it was listed
-          - When an item viewable from the current window is created or modified
-          
-        This is insufficient for our purpose because:
-        
-          - You're not notified about items you don't see (which is needed to 
-            keep the emblem for the directories above the item up-to-date)
-        
-        When C{update_file_info} is called we do:
-        
-          - Add the C{NautilusVFSFile} to the lookup table for lookups
-          - Add a watch for this item to the C{StatusMonitor} (it's 
-            C{StatusMonitor}'s responsibility to check whether this is needed)
-        
-        When C{StatusMonitor} calls us back we just look the C{NautilusVFSFile} up in
-        the look up table using the path and apply an emblem according to the 
-        status we've been given.
-        
-        FIXME: This function is in a race condition with the StatusMonitor
-        (which is threaded) to make things update the emblem. For now this
-        doesn't seem to be causing any problems (but that doesn't mean anything).
-        
-        We'll probably have to look into locking and all that stuff.
         
         @type   item: NautilusVFSFile
         @param  item: 
@@ -167,28 +121,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         # we had before will be invalid (think pointers and such).
         self.nautilusVFSFile_table[path] = item
         
-        # We don't have to do anything else since it's already clear
-        # that the StatusMonitor is aware of this item.
         if self.set_emblem_by_path(path): return
-        
-        # Since update_file_info is also the function which lets us
-        # know when we see a particular item for the first time we have
-        # to figure out whether or not we should do a status check.
-        vcs_client = SVNClient()
-        has_watch = self.status_monitor.has_watch(path)
-        is_in_a_or_a_working_copy = vcs_client.is_in_a_or_a_working_copy(path)
-        
-        if not has_watch and is_in_a_or_a_working_copy:
-            self.status_monitor.add_watch(path)
-        
-        # If we access the StatusMonitor over DBus it keeps running even though 
-        # Nautilus is not. So watches will stay attached. So an initial status 
-        # check won't be done. Though there are other situations where there is
-        # a watch but we don't have a status yet.
-        elif (has_watch and
-                not path in self.statuses and
-                is_in_a_or_a_working_copy):
-            self.status_monitor.status(path, bypass=True)
     
     #~ @disable
     def get_file_items(self, window, items):
@@ -219,8 +152,6 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
                 self.nautilusVFSFile_table[path] = item
 
         if len(paths) == 0: return []
-                
-        #~ log.debug("NautilusSvn.get_file_items() called for %s" % paths)
         
         # Use the selected path to determine Nautilus's cwd
         # If more than one files are selected, make sure to use get_common_directory
@@ -269,7 +200,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         @return:      Whether the emblem was set successfully.
         """
         
-        #~ log.debug("set_emblem_by_status() called for %s with status %s" % (path, status))
+        log.debug("set_emblem_by_path() called for %s" % (path))
         
         # Try and lookup the NautilusVFSFile in the lookup table since 
         # we need it.
@@ -284,51 +215,6 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             return True
             
         return False
-    
-    #
-    # Callbacks
-    #
-    
-    def cb_watch_added(self, path):
-        """
-        This callback is called by C{StatusMonitor} when a watch is added
-        for a particular path.
-        
-        @type   path:   string
-        @param  path:   The path for which a watch was added
-        """
-        
-        self.status_monitor.status(path)
-    
-    def cb_status(self, path, status):
-        """
-        This is the callback that C{StatusMonitor} calls. 
-        
-        @type   path:   string
-        @param  path:   The path of the item something interesting happend to.
-        
-        @type   status: string
-        @param  status: A string indicating the status of an item (see: EMBLEMS).
-        """
-        
-        log.debug("cb_status() called for %s with status %s" % (path, status))
-        
-        # We might not have a NautilusVFSFile (which we need to apply an
-        # emblem) but we can already store the status for when we do.
-        self.statuses[path] = status
-
-        if not path in self.nautilusVFSFile_table: return
-        item = self.nautilusVFSFile_table[path]
-        
-        # We need to invalidate the extension info for only one reason:
-        #
-        # - Invalidating the extension info will cause Nautilus to remove all
-        #   temporary emblems we applied so we don't have overlay problems
-        #   (with ourselves, we'd still have some with other extensions).
-        #
-        # After invalidating update_file_info applies the correct emblem.
-        #
-        item.invalidate_extension_info()
     
 class MainContextMenu:
     """
@@ -348,7 +234,7 @@ class MainContextMenu:
     def __init__(self, paths, nautilussvn_extension):
         self.paths = paths
         self.nautilussvn_extension = nautilussvn_extension
-        self.vcs_client = SVNClient()
+        self.vcs_client = SVN()
         
         self.path_dict = {}
         self.path_dict["length"] = len(paths)
@@ -411,53 +297,6 @@ class MainContextMenu:
                 },
                 "condition": (lambda: True),
                 "submenus": [
-                    {
-                        "identifier": "NautilusSvn::DBus",
-                        "label": _("DBus"),
-                        "tooltip": "",
-                        "icon": "nautilussvn-dbus",
-                        "signals": {
-                            "activate": {
-                                "callback": None,
-                                "args": None
-                            }
-                        }, 
-                        "condition": (lambda: True),
-                        "submenus": [
-                            {
-                                "identifier": "NautilusSvn::DBus_Restart",
-                                "label": _("Start/Restart Service"),
-                                "tooltip": "",
-                                "icon": "nautilussvn-run",
-                                "signals": {
-                                    "activate": {
-                                        "callback": self.callback_dbus_restart,
-                                        "args": None
-                                    }
-                                }, 
-                                "condition": (lambda: True),
-                                "submenus": [
-                                    
-                                ]
-                            },
-                            {
-                                "identifier": "NautilusSvn::DBus_Exit",
-                                "label": _("Exit Service"),
-                                "tooltip": "",
-                                "icon": "nautilussvn-stop",
-                                "signals": {
-                                    "activate": {
-                                        "callback": self.callback_dbus_exit,
-                                        "args": None
-                                    }
-                                }, 
-                                "condition": (lambda: True),
-                                "submenus": [
-                                    
-                                ]
-                            }
-                        ]
-                    },
                     {
                         "identifier": "NautilusSvn::Bugs",
                         "label": _("Bugs"),
@@ -1361,31 +1200,6 @@ class MainContextMenu:
     # Callbacks
     #
     
-    # Begin debugging callbacks
-    def callback_dbus_restart(self, menu_item, path):
-        import time
-        if self.nautilussvn_extension.dbus_service_available:
-            nautilussvn.lib.dbus.service.exit()
-            time.sleep(1)
-        else:
-            nautilussvn.lib.dbus.service.start()
-            
-        self.nautilussvn_extension.dbus_service_available = (
-            nautilussvn.lib.dbus.service.start())
-        
-        # All references to the previous DBus will now have been invaldated
-        time.sleep(1)
-        self.nautilussvn_extension.status_monitor = (
-            StatusMonitor(
-                self.nautilussvn_extension.cb_status,
-                self.nautilussvn_extension.cb_watch_added
-            )
-        )
-        
-    def callback_dbus_exit(self, menu_item, paths):
-        nautilussvn.lib.dbus.service.exit()
-        self.nautilussvn_extension.dbus_service_available = False
-    
     def callback_debug_asynchronicity(self, menu_item, paths):
         """
         This is a function to test doing things asynchronously.
@@ -1472,10 +1286,7 @@ class MainContextMenu:
         Update should go downwards. Only conflicts matter?
         """
         
-        nautilussvn_extension = self.nautilussvn_extension
-        status_monitor = nautilussvn_extension.status_monitor
-        for path in paths:
-            status_monitor.status(path, invalidate=True)
+        pass
     
     def callback_debug_revert(self, menu_item, paths):
         client = pysvn.Client()
@@ -1486,9 +1297,7 @@ class MainContextMenu:
         nautilussvn_extension = self.nautilussvn_extension
         nautilusVFSFile_table = nautilussvn_extension.nautilusVFSFile_table
         for path in paths:
-            # Begin debugging code
             log.debug("callback_debug_invalidate() called for %s" % path)
-            # End debugging code
             if path in nautilusVFSFile_table:
                 nautilusVFSFile_table[path].invalidate_extension_info()
     
