@@ -76,6 +76,14 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         SVN.STATUS["missing"]
     ]
     
+    MODIFIED_TEXT_STATUSES = [
+        "added", 
+        "deleted",
+        "replaced",
+        "modified",
+        "missing"
+    ]
+    
     #: This is our lookup table for C{NautilusVFSFile}s which we need for attaching
     #: emblems. This is mostly a workaround for not being able to turn a path/uri
     #: into a C{NautilusVFSFile}. It looks like:::
@@ -143,20 +151,44 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         # we had before will be invalid (think pointers and such).
         self.nautilusVFSFile_table[path] = item
         
+        # This check should be pretty obvious :-)
+        # TODO: how come the statuses for a few directories are incorrect
+        # when we remove this line (detected as working copies, even though
+        # they are not)? That shouldn't happen.
         is_in_a_or_a_working_copy = self.vcs_client.is_in_a_or_a_working_copy(path)
-        if is_in_a_or_a_working_copy:
-            # If this is the first time we see this item we have to do
-            # a recursive status check, but we don't have to invalidate the
-            # cache.
-            if path not in self.statuses:
-                statuses = self.vcs_client.status_with_cache(path)
-            else:
-                # If we have seen this item before then it was modified, so
-                # bypass the cache and retrieve a new status.
-                statuses = self.vcs_client.status_with_cache(path, invalidate=True)
+        if not is_in_a_or_a_working_copy: return
+        
+        # If this is the first time we see this item we have to do
+        # a recursive status check, but we don't have to invalidate the
+        # cache.
+        if path not in self.statuses:
+            statuses = self.vcs_client.status_with_cache(path)
+        else:
+            # If we have seen this item before then it was modified, so
+            # bypass the cache and retrieve a new status.
+            statuses = self.vcs_client.status_with_cache(path, invalidate=True)
+        
+        # Apply the correct emblem
+        self.statuses[path] = self.get_text_status(path, statuses)
+        self.set_emblem_by_path(path)
+        
+        # We have to make sure the statuses for all parent paths are set
+        # correctly too.
+        parent_path = path
+        while parent_path != "/":
+            parent_path = os.path.split(parent_path)[0]
             
-            self.statuses[path] = self.get_text_status(path, statuses)
-            self.set_emblem_by_path(path)
+            if parent_path in self.nautilusVFSFile_table: 
+                item = self.nautilusVFSFile_table[parent_path]
+                # We need to invalidate the extension info for only one reason:
+                #
+                # - Invalidating the extension info will cause Nautilus to remove all
+                #   temporary emblems we applied so we don't have overlay problems
+                #   (with ourselves, we'd still have some with other extensions).
+                #
+                # After invalidating update_file_info applies the correct emblem.
+                #
+                item.invalidate_extension_info()
         
     def get_text_status(self, path, statuses):
         """
