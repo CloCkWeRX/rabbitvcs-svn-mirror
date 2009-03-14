@@ -37,7 +37,7 @@ def get_home_folder():
     This is used for storing things like previous commit messages and
     previously used repositories.
     
-    NOTE: This is a copy of the helper module's function, because I can't
+    FIXME: This is a copy of the helper module's function, because I can't
     have a circular module reference (helper imports Settings right now).
     
     @rtype:     string
@@ -45,13 +45,20 @@ def get_home_folder():
     
     """
     
-    returner = os.path.abspath(
-        os.path.expanduser("~/.nautilussvn")
+    # Make sure we adher to the freedesktop.org XDG Base Directory 
+    # Specifications. $XDG_CONFIG_HOME if set, by default ~/.config 
+    xdg_config_home = os.environ.get(
+        "XDG_CONFIG_HOME", 
+        os.path.join(os.path.expanduser("~"), ".config")
     )
-    if not os.path.exists(returner):
-        os.mkdir(returner)
+    config_home = os.path.join(xdg_config_home, "nautilussvn")
+    
+    # Make sure the directories are there
+    if not os.path.isdir(config_home):
+        # FIXME: what if somebody places a file in there?
+        os.makedirs(config_home, 0700)
 
-    return returner
+    return config_home
 
 SETTINGS_FILE = "%s/settings.conf" % get_home_folder()
 

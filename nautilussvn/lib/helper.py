@@ -50,6 +50,7 @@ def initialize_locale():
         
     locale.setlocale(locale.LC_ALL, (_locale, encoding))
 
+# FIXME: this function is duplicated in settings.py
 def get_home_folder():
     """ 
     Returns the location of the hidden folder we use in the home dir.
@@ -61,13 +62,20 @@ def get_home_folder():
     
     """
     
-    returner = os.path.abspath(
-        os.path.expanduser("~/.nautilussvn")
+    # Make sure we adher to the freedesktop.org XDG Base Directory 
+    # Specifications. $XDG_CONFIG_HOME if set, by default ~/.config 
+    xdg_config_home = os.environ.get(
+        "XDG_CONFIG_HOME", 
+        os.path.join(os.path.expanduser("~"), ".config")
     )
-    if not os.path.exists(returner):
-        os.mkdir(returner)
+    config_home = os.path.join(xdg_config_home, "nautilussvn")
+    
+    # Make sure the directories are there
+    if not os.path.isdir(config_home):
+        # FIXME: what if somebody places a file in there?
+        os.makedirs(config_home, 0700)
 
-    return returner
+    return config_home
     
 def get_user_path():
     """
