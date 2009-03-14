@@ -415,7 +415,9 @@ class VCSAction(threading.Thread):
         """
         
         if message is not None:
+            gtk.gdk.threads_enter()
             self.notification.get_widget("status").set_text(message)
+            gtk.gdk.threads_leave()
     
     def append(self, func, *args, **kwargs):
         """
