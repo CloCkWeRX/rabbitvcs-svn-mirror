@@ -53,12 +53,10 @@ class About(InterfaceView):
         
         doc_path = "/usr/share/doc/nautilussvn"
         if not os.path.exists(doc_path):
-            # assumes the user is running NautilusSvn through an svn checkout
-            # and the doc files are in the the module's parent folder
-            doc_path = os.path.dirname(os.path.realpath(__file__)).split("/")
-            doc_path.pop()
-            doc_path.pop()
-            doc_path = "/".join(basepath)
+            # Assumes the user is running NautilusSvn through an svn checkout
+            # and the doc files are two directories up (from nautilussvn/ui).
+            doc_path = os.path.dirname(os.path.realpath(__file__)).split('/')
+            doc_path = '/'.join(doc_path[:-2])
         
         authors_path = os.path.join(doc_path, "AUTHORS")
         thanks_path = os.path.join(doc_path, "THANKS")
