@@ -470,6 +470,9 @@ def get_common_directory(paths):
     while not os.path.exists(common) or os.path.isfile(common):
         common = os.path.split(common)[0]
         
+        if common == "":
+            break
+        
     return common
 
 def abspaths(paths):

@@ -22,6 +22,7 @@
 # along with NautilusSvn;  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os.path
 import sys
 from nautilussvn.lib.helper import launch_ui_window
 
@@ -38,7 +39,12 @@ resolve, revert, settings, switch, unlock, update, updateto
 if len(sys.argv) < 2:
     raise SystemExit(usage)
 
-args = sys.argv[1:]   
+args = sys.argv[1:]
 module = args.pop(0)
+
+index = 0
+for arg in args:
+    args[index] = os.path.realpath(os.path.abspath(arg))
+    index += 1
 
 launch_ui_window(module, args, return_immmediately=False)

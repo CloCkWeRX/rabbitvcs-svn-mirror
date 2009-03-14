@@ -461,7 +461,9 @@ class SVN:
                     if st_item.text_status not in statuses:
                         continue
 
-                st_item.path = st_item.path[len(os.getcwd())+1:]
+                tmp = st_item.path[len(os.getcwd())+1:]
+                if os.path.exists(tmp):
+                    st_item.path = tmp
                     
                 returner.append(st_item)
 
@@ -537,13 +539,13 @@ class SVN:
 
         path_to_check = path
         path_to_use = None
-        while path_to_check != "/":
+        while path_to_check != "/" and path_to_check != "":
             if self.is_versioned(path_to_check):
                 path_to_use = path_to_check
                 return path_to_use
 
             path_to_check = os.path.split(path_to_check)[0]
-        
+
         return path_to_use
         
     def propset(self, path, prop_name, prop_value, overwrite=False):
