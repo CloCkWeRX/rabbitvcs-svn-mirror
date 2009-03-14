@@ -1173,6 +1173,11 @@ class MainContextMenu:
                     definition_item["icon"]
                 )
                 
+                # Making the seperator insensitive makes sure nobody
+                # will click it accidently.
+                if (definition_item["label"] == self.SEPARATOR): 
+                  menu_item.set_property("sensitive", False)
+                
                 for signal, value in definition_item["signals"].items():
                     if value["callback"] != None:
                         # FIXME: the adding of arguments need to be done properly
