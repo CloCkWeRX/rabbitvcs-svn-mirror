@@ -36,6 +36,8 @@ See:
 import time
 import warnings
 
+import gtk
+
 def update_func_meta(fake_func, real_func):
     """
     Set meta information (eg. __doc__) of fake function to that of the real 
@@ -104,5 +106,20 @@ def disable(func):
 
     def newfunc(*args, **kwargs):
         return
+        
+    return update_func_meta(newfunc, func)
+
+def gtk_unsafe(func):
+    """
+    Used to wrap a function that makes calls to GTK from a thread in
+    gtk.gdk.threads_enter() and gtk.gdk.threads_leave().
+    
+    """
+    
+    def newfunc(*args, **kwargs):
+        gtk.gdk.threads_enter()
+        result = func(*args, **kwargs)
+        gtk.gdk.threads_leave()
+        return result
         
     return update_func_meta(newfunc, func)

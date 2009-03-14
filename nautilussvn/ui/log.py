@@ -34,6 +34,7 @@ from nautilussvn.ui.dialog import MessageBox
 import nautilussvn.ui.widget
 import nautilussvn.lib.helper
 import nautilussvn.lib.vcs
+from nautilussvn.lib.decorators import gtk_unsafe
 
 from nautilussvn import gettext
 _ = gettext.gettext
@@ -239,7 +240,8 @@ class Log(InterfaceView):
     #
     # Log-loading callback methods
     #
-
+    
+    @gtk_unsafe
     def refresh(self):
         """
         Refresh the items in the main log table that shows Revision/Author/etc.

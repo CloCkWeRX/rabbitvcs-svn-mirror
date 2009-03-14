@@ -33,6 +33,7 @@ import nautilussvn.ui.dialog
 import nautilussvn.lib
 import nautilussvn.lib.vcs
 import nautilussvn.lib.helper
+from nautilussvn.lib.decorators import gtk_unsafe
 
 from nautilussvn import gettext
 _ = gettext.gettext
@@ -401,6 +402,7 @@ class VCSAction(threading.Thread):
         
         self.message = message
     
+    @gtk_unsafe
     def set_status(self, message):
         """
         Set the current status of the VCS action.  Currently, this method
@@ -415,9 +417,7 @@ class VCSAction(threading.Thread):
         """
         
         if message is not None:
-            gtk.gdk.threads_enter()
             self.notification.get_widget("status").set_text(message)
-            gtk.gdk.threads_leave()
     
     def append(self, func, *args, **kwargs):
         """
