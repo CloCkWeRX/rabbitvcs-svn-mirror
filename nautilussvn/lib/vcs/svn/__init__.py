@@ -230,11 +230,7 @@ class SVN:
         """
         
         if (invalidate or 
-                path not in self.status_cache or
-                # The following condition is used to bypass the cache when
-                # an infinity check is requesting and it's most likely
-                # that only an empty check was done before.
-                (recurse and len(self.status_cache[path]) == 1)):
+                path not in self.status_cache):
             log.debug("status_with_cache() invalidated %s" % path)
             statuses = self.status(path, recurse=recurse)
         else:

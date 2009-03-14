@@ -66,6 +66,15 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         "obstructed":   "nautilussvn-obstructed"
     }
     
+    #: A set of statuses which count as modified (for a directory) in 
+    #: TortoiseSVN emblem speak.
+    MODIFIED_STATUSES = [
+        SVN.STATUS["added"],
+        SVN.STATUS["deleted"],
+        SVN.STATUS["replaced"],
+        SVN.STATUS["modified"],
+        SVN.STATUS["missing"]
+    ]
     
     #: This is our lookup table for C{NautilusVFSFile}s which we need for attaching
     #: emblems. This is mostly a workaround for not being able to turn a path/uri
@@ -93,7 +102,8 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
     statuses = {}
     
     def __init__(self):
-        pass
+        # Create a global client we can use to do VCS related stuff
+        self.vcs_client = SVN()
         
     def get_columns(self):
         """
@@ -105,6 +115,18 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
     def update_file_info(self, item):
         """
+        
+        C{update_file_info} is called only when:
+        
+          - When you enter a directory (once for each item but only when the
+            item was modified since the last time it was listed)
+          - When you refresh (once for each item visible)
+          - When an item viewable from the current window is created or modified
+          
+        This is insufficient for our purpose because:
+        
+          - You're not notified about items you don't see (which is needed to 
+            keep the emblem for the directories above the item up-to-date)
         
         @type   item: NautilusVFSFile
         @param  item: 
@@ -121,7 +143,64 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         # we had before will be invalid (think pointers and such).
         self.nautilusVFSFile_table[path] = item
         
-        if self.set_emblem_by_path(path): return
+        is_in_a_or_a_working_copy = self.vcs_client.is_in_a_or_a_working_copy(path)
+        if is_in_a_or_a_working_copy:
+            # If this is the first time we see this item we have to do
+            # a recursive status check, but we don't have to invalidate the
+            # cache.
+            if path not in self.statuses:
+                statuses = self.vcs_client.status_with_cache(path)
+            else:
+                # If we have seen this item before then it was modified, so
+                # bypass the cache and retrieve a new status.
+                statuses = self.vcs_client.status_with_cache(path, invalidate=True)
+            
+            self.statuses[path] = self.get_text_status(path, statuses)
+            self.set_emblem_by_path(path)
+        
+    def get_text_status(self, path, statuses):
+        """
+        This is a helper function for update_file_info to figure out
+        the textual representation for a set of statuses.
+        
+        @type   path:       string
+        @param  path:       The path which the statuses belong to.
+        
+        @type   statuses:   list of PySVN status objects
+        @param  path:       The actual statuses.
+        
+        @rtype:             string
+        @return:            The textual representation of the status (e.g. "modified").
+        """
+        
+        # We need to take special care of directories
+        if isdir(path):
+            text_statuses = set([status.data["text_status"] for status in statuses])
+            
+            # These statuses take precedence.
+            if SVN.STATUS["conflicted"] in text_statuses:
+                return "conflicted"
+            
+            if SVN.STATUS["obstructed"] in text_statuses:
+                return "obstructed"
+            
+            # The following statuses take precedence over the status
+            # of children.
+            if status.data["text_status"] in [
+                    SVN.STATUS["added"],
+                    SVN.STATUS["modified"],
+                    SVN.STATUS["deleted"]
+                ]:
+                return SVN.STATUS_REVERSE[status.data["text_status"]]
+            
+            # A directory should have a modified status when any of its children
+            # have a certain status (see modified_statuses above). Jason thought up 
+            # of a nifty way to do this by using sets and the bitwise AND operator (&).
+            if len(set(self.MODIFIED_STATUSES) & text_statuses):
+                return "modified"
+        
+        # If we're not a directory we end up here.
+        return SVN.STATUS_REVERSE[statuses[-1].data["text_status"]]
     
     #~ @disable
     def get_file_items(self, window, items):
