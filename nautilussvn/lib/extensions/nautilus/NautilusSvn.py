@@ -158,17 +158,8 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         is_in_a_or_a_working_copy = self.vcs_client.is_in_a_or_a_working_copy(path)
         if not is_in_a_or_a_working_copy: return
         
-        # If this is the first time we see this item we have to do
-        # a recursive status check, but we don't have to invalidate the
-        # cache.
-        if path not in self.statuses:
-            statuses = self.vcs_client.status_with_cache(path)
-        else:
-            # If we have seen this item before then it was modified, so
-            # bypass the cache and retrieve a new status.
-            statuses = self.vcs_client.status_with_cache(path, invalidate=True)
-        
         # Apply the correct emblem
+        statuses = self.vcs_client.status_with_cache(path, invalidate=True)
         self.statuses[path] = self.get_text_status(path, statuses)
         self.set_emblem_by_path(path)
         
