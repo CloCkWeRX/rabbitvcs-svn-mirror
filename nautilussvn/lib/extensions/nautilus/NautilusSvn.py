@@ -173,22 +173,24 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         self.set_emblem_by_path(path)
         
         # We have to make sure the statuses for all parent paths are set
-        # correctly too.
-        parent_path = path
-        while parent_path != "/":
-            parent_path = os.path.split(parent_path)[0]
-            
-            if parent_path in self.nautilusVFSFile_table: 
-                item = self.nautilusVFSFile_table[parent_path]
-                # We need to invalidate the extension info for only one reason:
-                #
-                # - Invalidating the extension info will cause Nautilus to remove all
-                #   temporary emblems we applied so we don't have overlay problems
-                #   (with ourselves, we'd still have some with other extensions).
-                #
-                # After invalidating update_file_info applies the correct emblem.
-                #
-                item.invalidate_extension_info()
+        # correctly too. If we haven't seen this file before it means
+        # we're probably entering a directory and we don't want to do this.
+        if path in self.statuses:
+            parent_path = path
+            while parent_path != "/":
+                parent_path = os.path.split(parent_path)[0]
+                
+                if parent_path in self.nautilusVFSFile_table: 
+                    item = self.nautilusVFSFile_table[parent_path]
+                    # We need to invalidate the extension info for only one reason:
+                    #
+                    # - Invalidating the extension info will cause Nautilus to remove all
+                    #   temporary emblems we applied so we don't have overlay problems
+                    #   (with ourselves, we'd still have some with other extensions).
+                    #
+                    # After invalidating update_file_info applies the correct emblem.
+                    #
+                    item.invalidate_extension_info()
         
     def get_text_status(self, path, statuses):
         """
