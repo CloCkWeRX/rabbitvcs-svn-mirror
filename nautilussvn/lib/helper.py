@@ -427,6 +427,8 @@ def launch_ui_window(filename, args=[], return_immmediately=True):
     Launches a UI window in a new process, so that we don't have to worry about
     nautilus and threading.
     
+    TODO: return_immmediately is no longer used.
+    
     @type   filename: string
     @param  filename: The filename of the window, without the extension
     
@@ -435,7 +437,7 @@ def launch_ui_window(filename, args=[], return_immmediately=True):
     
     """
     
-    from subprocess import Popen, call
+    from subprocess import Popen
     
     # Hackish.  Get's the helper module's path, then assumes it is in
     # the lib folder.  Removes the /lib part of the path.
@@ -451,10 +453,8 @@ def launch_ui_window(filename, args=[], return_immmediately=True):
     for arg in args:
         popen_args.append(arg)
         
-    if return_immmediately:
-        Popen(popen_args)
-    else:
-        call(popen_args)
+    return Popen(popen_args).pid
+    
 
 def get_log_messages_limit():
     sm = nautilussvn.lib.settings.SettingsManager()
