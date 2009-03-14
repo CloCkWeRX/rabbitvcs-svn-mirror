@@ -22,7 +22,7 @@
 
 from nautilussvn.lib.log import Log
 
-log = Log("nautilussvn.lib")
+log = Log("nautilussvn.lib.__init__")
 
 class Function:
     """
