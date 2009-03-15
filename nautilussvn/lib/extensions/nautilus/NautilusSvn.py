@@ -201,12 +201,13 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
                 
                 if parent_path in self.nautilusVFSFile_table: 
                     item = self.nautilusVFSFile_table[parent_path]
-                    # We need to invalidate the extension info for only one reason:
+                    # One important reason to invalidate the extension info (besides
+                    # the fact that otherwise we wouldn't update the status) is that:
                     #
                     # - Invalidating the extension info will cause Nautilus to remove all
                     #   temporary emblems we applied so we don't have overlay problems
                     #   (with ourselves, we'd still have some with other extensions).
-                    #
+                    # 
                     # After invalidating update_file_info applies the correct emblem.
                     #
                     item.invalidate_extension_info()
