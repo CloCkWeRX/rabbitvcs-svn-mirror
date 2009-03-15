@@ -40,11 +40,12 @@ Usage:
 
 """
 
+import os
 from os.path import expanduser
 import logging
 import logging.handlers
 
-from nautilussvn.lib.settings import SettingsManager
+from nautilussvn.lib.settings import SettingsManager, get_home_folder
 
 LEVELS = {
     "debug":    logging.DEBUG,
@@ -72,7 +73,8 @@ if not DEFAULT_LOG_TYPE:
 if changed:
     sm.write()
 
-LOG_PATH = expanduser("~/.nautilussvn/NautilusSvn.log")
+LOG_PATH = os.path.join(get_home_folder(), "NautilusSvn.log")
+if not os.path.exists(LOG_PATH): open(LOG_PATH, "a").close()
 DEFAULT_FORMAT = "%(message)s"
 FILE_FORMAT = "%(asctime)s %(levelname)s\t%(name)s\t%(message)s"
 CONSOLE_FORMAT = "%(levelname)s\t%(name)s\t%(message)s"
