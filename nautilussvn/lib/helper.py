@@ -464,7 +464,7 @@ def get_repository_paths_limit():
     return int(sm.get("cache", "number_repositories"))
 
 def get_common_directory(paths):
-    common = os.path.commonprefix(paths)
+    common = os.path.commonprefix(abspaths(paths))
     
     while not os.path.exists(common) or os.path.isfile(common):
         common = os.path.split(common)[0]
