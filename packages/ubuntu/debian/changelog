@@ -1,3 +1,18 @@
+nautilussvn (0.12-1ubuntu1) intrepid; urgency=low
+
+  * Improved status checking and emblem support.
+  * Complete rewrite of extension and user interface layer.
+  * An entirely new context menu in Nautilus including submenus.
+  * New UIs: Add, Copy/Branch, Cleanup, Export, Import, Lock, Merge, 
+      Relocate, Revert, Rename, Settings, Switch, Unlock, 
+      Update-to-Revision.
+  * Updated UIs: Checkout, Commit, Popup Dialogs, Log, Notifications, 
+      Properties.
+  * Many UIs now have context menus.
+  * Internationalization support.  
+
+ -- Bruce van der Kooij <brucevdkooij@gmail.com>  Mon, 16 Mar 2009 00:38:46 +0100
+
 nautilussvn (0.11-1) unstable; urgency=low
 
   * Applied patches from Bruce van der Kooij to allow commiting without a log
