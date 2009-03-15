@@ -26,6 +26,7 @@ Our module for everything related to the Nautilus extension.
   
 """
 
+import traceback
 import copy
 import os.path
 from os.path import isdir, isfile, realpath, basename
@@ -133,11 +134,36 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
     def get_columns(self):
         """
-        
+        Return all the columns we support.
         
         """
             
-        pass
+        return (
+            nautilus.Column(
+                "NautilusSvn::status_column",
+                "status",
+                "SVN Status",
+                "The SVN status"
+            ),
+            nautilus.Column(
+                "NautilusSvn::revision_column",
+                "revision",
+                "SVN Revision",
+                "The SVN revision"
+            ),
+            nautilus.Column(
+                "NautilusSvn::url_column",
+                "url",
+                "SVN URL",
+                "The SVN URL"
+            ),
+            nautilus.Column(
+                "NautilusSvn::author_column",
+                "author",
+                "SVN Author",
+                "The SVN author"
+            )
+        )
         
     def update_file_info(self, item):
         """
@@ -176,7 +202,41 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         is_in_a_or_a_working_copy = self.vcs_client.is_in_a_or_a_working_copy(path)
         if not is_in_a_or_a_working_copy: return
         
-        # Apply the correct emblem
+        # Do our magic
+        self.update_columns(item, path)
+        self.update_status(item, path)
+        
+    def update_columns(self, item, path):
+        """
+        Update the columns for a given item. This isn't a very elegant 
+        function but it does work.
+        """
+        
+        values = {
+            "status": "",
+            "revision": "",
+            "url": "",
+            "author": ""
+        }
+        
+        try:
+            # TODO: using pysvn directly because I don't like the current
+            # SVN class.
+            client = pysvn.Client()
+            info = client.info(path).data
+            status = client.status(path, recurse=False)[-1].data
+            
+            values["status"] = SVN.STATUS_REVERSE[status["text_status"]]
+            values["revision"] = str(info["commit_revision"].number)
+            values["url"] = info["url"]
+            values["author"] = info["commit_author"]
+        except: 
+            traceback.print_exc()
+            
+        for key, value in values.items():
+            item.add_string_attribute(key, value)
+    
+    def update_status(self, item, path):
         statuses = self.vcs_client.status_with_cache(path, invalidate=True)
         self.statuses[path] = self.get_text_status(path, statuses)
         self.set_emblem_by_path(path)
@@ -211,7 +271,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
                     # After invalidating update_file_info applies the correct emblem.
                     #
                     item.invalidate_extension_info()
-        
+    
     def get_text_status(self, path, statuses):
         """
         This is a helper function for update_file_info to figure out
