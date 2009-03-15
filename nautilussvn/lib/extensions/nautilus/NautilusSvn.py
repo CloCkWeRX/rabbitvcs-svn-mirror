@@ -1356,7 +1356,8 @@ class MainContextMenu:
                 if (self.path_dict["is_dir"] and
                         (self.path_dict["has_added"] or
                         self.path_dict["has_modified"] or
-                        self.path_dict["has_deleted"])):
+                        self.path_dict["has_deleted"] or
+                        self.path_dict["has_missing"])):
                     return True
         return False
         
