@@ -51,16 +51,6 @@ _ = gettext.gettext
 from nautilussvn.lib.settings import SettingsManager
 settings = SettingsManager()
 
-def load_settings():
-    """
-    Used to re-load settings after the settings dialog has been closed.
-    
-    """
-    
-    globals()["settings"] = SettingsManager()
-    globals()["log"] = reload_log_settings()("nautilussvn.lib.extensions.nautilus")
-    log.debug("Re-scanning settings")
-
 class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnProvider):
     """ 
     This is the main class that implements all of our awesome features.
@@ -496,11 +486,30 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             else:
                 # Our job is done :-)
                 func()
-                load_settings()
                 return False
 
         # Add our callback function on a 1 second timeout
         gobject.timeout_add(1000, is_process_still_alive)
+        
+    # 
+    # Some other methods
+    # 
+    
+    def reload_settings(self, pid):
+        """
+        Used to re-load settings after the settings dialog has been closed.
+        
+        FIXME: This probably doesn't belong here, ideally the settings manager
+        does this itself and make sure everything is reloaded properly 
+        after the settings dialogs saves.
+        """
+    
+        def do_reload_settings():
+            globals()["settings"] = SettingsManager()
+            globals()["log"] = reload_log_settings()("nautilussvn.lib.extensions.nautilus")
+            log.debug("Re-scanning settings")
+            
+        self.execute_after_process_exit(pid, do_reload_settings)
     
 class MainContextMenu:
     """
@@ -1639,7 +1648,7 @@ class MainContextMenu:
         
     def callback_settings(self, menu_item, paths):
         pid = launch_ui_window("settings")
-        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
+        self.nautilussvn_extension.reload_settings(pid)
     
     def callback_ignore_filename(self, menu_item, paths):
         from nautilussvn.ui.ignore import Ignore
