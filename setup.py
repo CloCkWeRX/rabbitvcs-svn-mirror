@@ -103,6 +103,12 @@ nautilus_extension = [(
     ["nautilussvn/lib/extensions/nautilus/NautilusSvn.py"]
 )]
 
+# Command-line tool
+command_line_tool = [(
+    "/usr/bin",
+    ["bin/nautilussvn"]
+)]
+
 # Translation
 translations = include_by_pattern("nautilussvn/locale", locale_directory, ".mo")
 
@@ -157,5 +163,5 @@ dist = setup(
             "ui/glade/*.glade"
         ]
     },
-    data_files=nautilus_extension + translations + icons + documentation + update_notifier
+    data_files=nautilus_extension + command_line_tool + translations + icons + documentation + update_notifier
 )
