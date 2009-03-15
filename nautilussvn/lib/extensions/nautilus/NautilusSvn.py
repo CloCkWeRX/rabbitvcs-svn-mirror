@@ -42,7 +42,7 @@ from nautilussvn.lib.vcs.svn import SVN
 from nautilussvn.lib.helper import launch_ui_window, launch_diff_tool, get_file_extension, get_common_directory
 from nautilussvn.lib.decorators import timeit, disable
 
-from nautilussvn.lib.log import Log
+from nautilussvn.lib.log import Log, load_log_settings
 log = Log("nautilussvn.lib.extensions.nautilus")
 
 from nautilussvn import gettext
@@ -50,6 +50,16 @@ _ = gettext.gettext
 
 from nautilussvn.lib.settings import SettingsManager
 settings = SettingsManager()
+
+def load_settings():
+    """
+    Used to re-load settings after the settings dialog has been closed.
+    
+    """
+    
+    globals()["settings"] = SettingsManager()
+    globals()["log"] = reload_log_settings()("nautilussvn.lib.extensions.nautilus")
+    log.debug("Re-scanning settings")
 
 class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnProvider):
     """ 
@@ -234,7 +244,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             values["url"] = info["url"]
             values["author"] = info["commit_author"]
         except: 
-            traceback.print_exc()
+            log.exception()
             
         for key, value in values.items():
             item.add_string_attribute(key, value)
@@ -486,6 +496,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             else:
                 # Our job is done :-)
                 func()
+                load_settings()
                 return False
 
         # Add our callback function on a 1 second timeout
@@ -1627,7 +1638,8 @@ class MainContextMenu:
         launch_ui_window("about")
         
     def callback_settings(self, menu_item, paths):
-        launch_ui_window("settings")
+        pid = launch_ui_window("settings")
+        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
     
     def callback_ignore_filename(self, menu_item, paths):
         from nautilussvn.ui.ignore import Ignore

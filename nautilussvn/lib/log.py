@@ -55,23 +55,24 @@ LEVELS = {
     "critical": logging.CRITICAL
 }
 
-sm = SettingsManager()
-DEFAULT_LEVEL = sm.get("logging", "level").lower()
-DEFAULT_LOG_TYPE = sm.get("logging", "type")
+settings = SettingsManager()
+DEFAULT_LEVEL = settings.get("logging", "level").lower()
+DEFAULT_LOG_TYPE = settings.get("logging", "type")
 
+# The following merely sets the log type/level if it hasn't already been set
 changed = False
 if DEFAULT_LEVEL not in LEVELS:
     DEFAULT_LEVEL = "debug"
-    sm.set("logging", "level", DEFAULT_LEVEL.title())
+    settings.set("logging", "level", DEFAULT_LEVEL.title())
     changed = True
     
 if not DEFAULT_LOG_TYPE:
     DEFAULT_LOG_TYPE = "Console"
-    sm.set("logging", "type", DEFAULT_LOG_TYPE)
+    settings.set("logging", "type", DEFAULT_LOG_TYPE)
     changed = True
 
 if changed:
-    sm.write()
+    settings.write()
 
 LOG_PATH = os.path.join(get_home_folder(), "NautilusSvn.log")
 if not os.path.exists(LOG_PATH): open(LOG_PATH, "a").close()
@@ -297,3 +298,23 @@ elif DEFAULT_LOG_TYPE == "Console":
     Log = ConsoleLog
 elif DEFAULT_LOG_TYPE == "Both":
     Log = DualLog
+    
+def reload_log_settings():
+    """
+    Refreshes the settings manager and returns a new log instance
+    
+    """
+    
+    settings = SettingsManager()
+    DEFAULT_LEVEL = settings.get("logging", "level").lower()
+    DEFAULT_LOG_TYPE = settings.get("logging", "type")
+    
+    Log = NullLog
+    if DEFAULT_LOG_TYPE == "File":
+        Log = FileLog
+    elif DEFAULT_LOG_TYPE == "Console":
+        Log = ConsoleLog
+    elif DEFAULT_LOG_TYPE == "Both":
+        Log = DualLog
+    
+    return Log
