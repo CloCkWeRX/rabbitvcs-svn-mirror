@@ -187,7 +187,8 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         else:
             # Using try...except because it might not even be monitored
             try:
-                self.monitor_files.remove(item)
+                self.monitored_files.remove(item)
+                log.debug("update_file_info() removed %s from monitored_files" % path)
             except: pass
         
         # We have to make sure the statuses for all parent paths are set
