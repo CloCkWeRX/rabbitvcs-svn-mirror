@@ -48,6 +48,9 @@ log = Log("nautilussvn.lib.extensions.nautilus")
 from nautilussvn import gettext
 _ = gettext.gettext
 
+from nautilussvn.lib.settings import SettingsManager
+settings = SettingsManager()
+
 class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnProvider):
     """ 
     This is the main class that implements all of our awesome features.
@@ -203,8 +206,8 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         if not is_in_a_or_a_working_copy: return
         
         # Do our magic
-        self.update_columns(item, path)
-        self.update_status(item, path)
+        if bool(int(settings.get("general", "enable_attributes"))): self.update_columns(item, path)
+        if bool(int(settings.get("general", "enable_emblems"))): self.update_status(item, path)
         
     def update_columns(self, item, path):
         """
