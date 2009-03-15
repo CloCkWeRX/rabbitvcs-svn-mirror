@@ -339,7 +339,7 @@ def open_item(path):
     if path == "" or path is None:
         return
     
-    subprocess.Popen("gnome-open %s" % os.path.abspath(path), shell=True)
+    subprocess.Popen(["gnome-open", os.path.abspath(path)])
     
 def browse_to_item(path):
     """
@@ -350,11 +350,10 @@ def browse_to_item(path):
     
     """
 
-    subprocess.Popen(
-        "nautilus --no-desktop --browser %s" % 
-        os.path.dirname(os.path.abspath(path)), 
-        shell=True
-    )
+    subprocess.Popen([
+        "nautilus", "--no-desktop", "--browser", 
+        os.path.dirname(os.path.abspath(path))
+    ])
     
 def delete_item(path):
     """
