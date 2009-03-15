@@ -6,7 +6,7 @@
     <property name="width_request">640</property>
     <property name="visible">True</property>
     <property name="title" translatable="yes">Commit</property>
-    <property name="window_position">center-on-parent</property>
+    <property name="window_position">center</property>
     <property name="icon_name">nautilussvn</property>
     <signal name="destroy" handler="on_destroy"/>
     <child>

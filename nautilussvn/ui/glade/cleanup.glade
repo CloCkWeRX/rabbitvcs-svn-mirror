@@ -6,7 +6,7 @@
     <property name="width_request">400</property>
     <property name="visible">True</property>
     <property name="title" translatable="yes">Cleaning Up...</property>
-    <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
+    <property name="window_position">center</property>
     <property name="icon_name">nautilussvn</property>
     <signal name="destroy" handler="on_destroy"/>
     <child>

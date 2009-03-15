@@ -7,7 +7,7 @@
     <property name="visible">True</property>
     <property name="border_width">12</property>
     <property name="title" translatable="yes">Merge Assistant</property>
-    <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
+    <property name="window_position">center</property>
     <property name="icon_name">nautilussvn</property>
     <property name="gravity">GDK_GRAVITY_CENTER</property>
     <signal name="close" handler="on_close_clicked"/>
