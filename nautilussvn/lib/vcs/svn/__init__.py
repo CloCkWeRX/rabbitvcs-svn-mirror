@@ -429,45 +429,22 @@ class SVN:
         if paths is None:
             return []
         
-        returner = []
-
+        items = []
         for path in abspaths(paths):
-        
-            # Make sure the given path is in a working copy
-            versioned_path = self.get_versioned_path(path)
-
             try:
-                st = self.status(versioned_path)
+                st = self.status(path)
             except Exception, e:
                 log.exception("get_items exception")
                 continue
 
-            if st is None:
-                continue
-
             for st_item in st:
-                # If we had to move up to a parent folder to get to a working
-                # copy, then skip all items that weren't specified
-                if versioned_path != path:
-                
-                    # Filter the item if it IS NOT "path" and
-                    # if it's a file and not a child of the "path" folder
-                    if (path != st_item.path and 
-                            (isfile(st_item.path) and 
-                            st_item.path.startswith(path) == False)):
-                        continue
-            
                 if statuses:
                     if st_item.text_status not in statuses:
                         continue
 
-                tmp = st_item.path[len(os.getcwd())+1:]
-                if os.path.exists(tmp):
-                    st_item.path = tmp
-                    
-                returner.append(st_item)
+                items.append(st_item)
 
-        return returner
+        return items
         
     def get_repo_url(self, path):
         """

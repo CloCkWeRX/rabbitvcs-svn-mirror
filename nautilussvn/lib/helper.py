@@ -477,7 +477,7 @@ def get_common_directory(paths):
 def abspaths(paths):
     index = 0
     for path in paths:
-        paths[index] = os.path.abspath(path)
+        paths[index] = os.path.realpath(os.path.abspath(path))
         index += 1
     
     return paths

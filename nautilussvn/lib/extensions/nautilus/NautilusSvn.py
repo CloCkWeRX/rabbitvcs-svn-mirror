@@ -363,8 +363,8 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
         # Use the selected path to determine Nautilus's cwd
         # If more than one files are selected, make sure to use get_common_directory
-        path_to_use = (len(paths) > 1 and get_common_directory(paths) or paths[0])
-        os.chdir(os.path.split(path_to_use)[0])
+        #path_to_use = (len(paths) > 1 and get_common_directory(paths) or paths[0])
+        #os.chdir(os.path.split(path_to_use)[0])
         
         return MainContextMenu(paths, self).construct_menu()
     
@@ -391,7 +391,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
         log.debug("get_background_items() called")
         
-        os.chdir(path)
+        #os.chdir(path)
         return MainContextMenu([path], self).construct_menu()
     
     #
