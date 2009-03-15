@@ -367,10 +367,11 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
     # Some methods to help with keeping emblems up-to-date
     #
     
-    def rescan_items_after_process(self, pid):
+    def rescan_after_process_exit(self, pid, paths):
         """ 
         Rescans all of the items on our C{monitored_files} list after the
-        process specified by C{pid} completes.
+        process specified by C{pid} completes. Also checks the paths
+        that were passed.
         
         TODO: the monitored_files list could grow quite large if somebody
         browses a lot of working copies. It probably won't affect anything
@@ -378,7 +379,32 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
         """
         
-        # We need a function that can check the file status once the process has completed.
+        def do_check():
+            # We'll check the paths first (these were the paths that
+            # were originally passed along from the context menu). 
+            #
+            # This is needed among other things for:
+            #
+            #   - When a directory is normal and you add files inside it
+            #
+            for path in paths:
+                if not path in self.nautilusVFSFile_table: continue
+                item = self.nautilusVFSFile_table[path]
+                item.invalidate_extension_info()
+            
+            # The process has completed, so we now want to rescan the 
+            # files we're monitoring to see if their status has changed. We
+            # need to make a copy of monitored_files as the rescanning process
+            # will affect it.
+            check_list = copy.copy(self.monitored_files)
+            while len(check_list):
+                check_list.pop().invalidate_extension_info()
+            return False
+            
+        self.execute_after_process_exit(pid, do_check)
+        
+    def execute_after_process_exit(self, pid, func):
+        
         def is_process_still_alive():
             log.debug("is_process_still_alive() for pid: %i" % pid)
             
@@ -393,13 +419,8 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
                 # Return true to get another callback after the next timeout
                 return True
             else:
-                # The process has completed, so we now want to rescan the 
-                # files we're monitoring to see if their status has changed. We
-                # need to make a copy of monitored_files as the rescanning process
-                # will affect it.
-                check_list = copy.copy(self.monitored_files)
-                while len(check_list):
-                    check_list.pop().invalidate_extension_info()
+                # Our job is done :-)
+                func()
                 return False
 
         # Add our callback function on a 1 second timeout
@@ -1538,27 +1559,27 @@ class MainContextMenu:
 
     def callback_checkout(self, menu_item, paths):
         pid = launch_ui_window("checkout", paths)
-        self.nautilussvn_extension.rescan_items_after_process(pid)
+        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
     
     def callback_update(self, menu_item, paths):
         pid = launch_ui_window("update", paths)
-        self.nautilussvn_extension.rescan_items_after_process(pid)
+        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
 
     def callback_commit(self, menu_item, paths):
         pid = launch_ui_window("commit", paths)
-        self.nautilussvn_extension.rescan_items_after_process(pid)
+        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
 
     def callback_add(self, menu_item, paths):
         pid = launch_ui_window("add", paths)
-        self.nautilussvn_extension.rescan_items_after_process(pid)
+        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
 
     def callback_delete(self, menu_item, paths):
         pid = launch_ui_window("delete", paths)
-        self.nautilussvn_extension.rescan_items_after_process(pid)
+        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
 
     def callback_revert(self, menu_item, paths):
         pid = launch_ui_window("revert", paths)
-        self.nautilussvn_extension.rescan_items_after_process(pid)
+        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
 
     def callback_diff(self, menu_item, paths):
         launch_diff_tool(*paths)
