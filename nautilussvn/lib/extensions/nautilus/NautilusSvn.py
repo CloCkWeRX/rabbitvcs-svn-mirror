@@ -563,8 +563,7 @@ class MainContextMenu:
                         "signals": {
                             "activate": {
                                 "callback": self.callback_refresh_status,
-                                "args": None,
-                                "kwargs": {"recurse": True}
+                                "args": None
                             }
                         },
                         "condition": (lambda: True),
@@ -1487,18 +1486,12 @@ class MainContextMenu:
         window.add(scrolled_window)
         window.show()
     
-    def callback_refresh_status(self, menu_item, paths, recurse=False):
+    def callback_refresh_status(self, menu_item, paths):
         """
-        Refreshes an item status, so it will always bypass the cache.
-        
-        TODO:
-        Add should only go downwards. Lower is added, up is modified. 
-        Revert should go downwards. Check on highest folder?
-        Commit should go downwards. Check on highest folder?
-        Update should go downwards. Only conflicts matter?
+        Refreshes an item status, which is actually just invalidate.
         """
         
-        pass
+        self.callback_debug_invalidate(menu_item, paths)
     
     def callback_debug_revert(self, menu_item, paths):
         client = pysvn.Client()
