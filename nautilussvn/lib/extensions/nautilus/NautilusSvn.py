@@ -42,7 +42,7 @@ from nautilussvn.lib.vcs.svn import SVN
 from nautilussvn.lib.helper import launch_ui_window, launch_diff_tool, get_file_extension, get_common_directory
 from nautilussvn.lib.decorators import timeit, disable
 
-from nautilussvn.lib.log import Log, load_log_settings
+from nautilussvn.lib.log import Log, reload_log_settings
 log = Log("nautilussvn.lib.extensions.nautilus")
 
 from nautilussvn import gettext
