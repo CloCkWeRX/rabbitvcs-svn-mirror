@@ -3,7 +3,7 @@
 # TODO: this probably needs some work
 
 # This is needed to copy the changelog back later
-original_dir="`cwd`"
+original_dir="`pwd`"
 
 # Grab some variables from the VERSION file
 package=`head -n 1 VERSION`
