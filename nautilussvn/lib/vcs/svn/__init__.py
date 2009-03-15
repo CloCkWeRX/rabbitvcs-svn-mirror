@@ -438,9 +438,8 @@ class SVN:
                 continue
 
             for st_item in st:
-                if statuses:
-                    if st_item.text_status not in statuses:
-                        continue
+                if statuses and st_item.text_status not in statuses:
+                    continue
 
                 items.append(st_item)
 
