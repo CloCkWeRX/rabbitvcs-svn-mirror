@@ -177,7 +177,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
                 "The SVN author"
             )
         )
-        
+    
     def update_file_info(self, item):
         """
         
@@ -241,8 +241,8 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             
             values["status"] = SVN.STATUS_REVERSE[status["text_status"]]
             values["revision"] = str(info["commit_revision"].number)
-            values["url"] = info["url"]
-            values["author"] = info["commit_author"]
+            values["url"] = str(info["url"])
+            values["author"] = str(info["commit_author"])
         except: 
             log.exception()
             
