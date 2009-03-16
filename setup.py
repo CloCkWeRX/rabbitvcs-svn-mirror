@@ -28,6 +28,7 @@
 # Configuration information goes in: ~/.config/nautilussvn/
 # Data goes in: ~/.local/share/nautilussvn
 
+import sys
 import os
 import os.path
 import subprocess
@@ -165,3 +166,16 @@ dist = setup(
     },
     data_files=nautilus_extension + command_line_tool + translations + icons + documentation + update_notifier
 )
+
+#
+# Post installation
+#
+
+# Make sure the icon cache is deleted and recreated
+if sys.argv[1] == "install":
+    print "Running gtk-update-icon-cache"
+    
+    subprocess.Popen(
+        ["gtk-update-icon-cache", icon_theme_directory], 
+        stdout=subprocess.PIPE
+    ).communicate()[0]

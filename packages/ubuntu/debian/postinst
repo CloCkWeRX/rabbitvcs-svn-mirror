@@ -11,6 +11,11 @@ if [ "$1" != configure ]; then
 	exit 0
 fi
 
+# Make sure the icon cache is deleted and recreated
+gtk-update-icon-cache /usr/share/icons/hicolor/
+
+# Prepare the notification that tells the user to restart Nautilus
+
 UPDATENOTIFIERDIR=/var/lib/update-notifier/user.d
 
 # Fix some permissions
