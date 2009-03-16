@@ -4,10 +4,10 @@ Section: devel
 Priority: optional
 Vcs-Svn: http://nautilussvn.googlecode.com/svn/trunk/
 Vcs-Browser: http://code.google.com/p/nautilussvn/source/browse/
-Build-Depends: debhelper (>= 7.0.13),
-               cdbs (>= 0.4.52),
-               python-central (>= 0.5),
-               python-dev
+Build-Depends: debhelper (>= 6.0.4),
+               cdbs (>= 0.4.51),
+               python-central (>= 0.6.5),
+               python-dev (>= 2.5.2)
 Build-Depends-Indep: python-support (>= 0.5.3)
 Standards-Version: 3.8.0.1
 Homepage: http://code.google.com/p/nautilussvn
@@ -18,14 +18,13 @@ Section: devel
 Priority: optional
 Depends: ${misc:Depends},
          ${python:Depends},
-         python-nautilus (>= 0.5.1),
-         python-gtk2 (>= 2.13.0),
-         python-glade2 (>= 2.13.0),
-         python-gobject (>= 2.15.3),
-         python-svn (>= 1.6.0),
-         python-pyinotify (>= 0.7.1),
-         python-configobj (>= 4.5.2),
-         subversion (>= 1.5.1)
+         python-nautilus (>= 0.5.0),
+         python-gtk2 (>= 2.12.1),
+         python-glade2 (>= 2.12.1),
+         python-gobject (>= 2.14.1),
+         python-svn (>= 1.5.2),
+         python-configobj (>= 4.4.0),
+         subversion (>= 1.4.6)
 Suggests: meld
 Description: Integrated Subversion support for Nautilus
  An extension to Nautilus to allow better integration with the Subversion source
