@@ -212,7 +212,7 @@ class Commit(InterfaceView):
         else:
             index = 0
             for row in self.files_table.get_items():
-                if row[3] == "unversioned":
+                if not self.vcs.is_versioned(row[1]):
                     self.files_table.remove(index)
                 index += 1
         
