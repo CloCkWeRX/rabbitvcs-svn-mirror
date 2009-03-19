@@ -146,10 +146,14 @@ class Commit(InterfaceView):
                     or item.text_status == self.vcs.STATUS["missing"]):
                 checked = False
             
+            ext = ""
+            if os.path.isfile(item.path):
+                ext = nautilussvn.lib.helper.get_file_extension(item.path)
+            
             self.files_table.append([
                 checked,
                 item.path, 
-                nautilussvn.lib.helper.get_file_extension(item.path),
+                ext,
                 item.text_status,
                 item.prop_status
             ])
@@ -214,6 +218,7 @@ class Commit(InterfaceView):
             for row in self.files_table.get_items():
                 if not self.vcs.is_versioned(row[1]):
                     self.files_table.remove(index)
+                    index -= 1
                 index += 1
         
     def on_files_table_button_pressed(self, treeview, event):
