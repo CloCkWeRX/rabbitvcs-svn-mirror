@@ -248,7 +248,8 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         if self.statuses[path] in self.STATUSES_TO_MONITOR:
             self.monitored_files.append(item)
         else:
-            # Using try...except because it might not even be monitored
+            # This file doesn't interest us remove it from the monitored_files
+            # list using try...except because it might not even be monitored.
             try:
                 self.monitored_files.remove(item)
                 log.debug("update_file_info() removed %s from monitored_files" % path)
@@ -1290,10 +1291,12 @@ class MainContextMenu:
         
         for definition_item in menu_definition:
             is_last = (index + 1 == length)
+            
+            # Execute the condition associated with the definition_item
+            # which will figure out whether or not to display this item.
             if definition_item["condition"]():
-
                 # If the item is a separator, don't show it if this is the first
-                # or last item, or if the previous item was a separator
+                # or last item, or if the previous item was a separator.
                 if (definition_item["label"] == self.SEPARATOR and
                         (is_first or is_last or previous_label == self.SEPARATOR)):
                     index += 1
@@ -1311,6 +1314,7 @@ class MainContextMenu:
                 if (definition_item["label"] == self.SEPARATOR): 
                   menu_item.set_property("sensitive", False)
                 
+                # Make sure all the signals are connected.
                 for signal, value in definition_item["signals"].items():
                     if value["callback"] != None:
                         # FIXME: the adding of arguments need to be done properly
@@ -1345,6 +1349,7 @@ class MainContextMenu:
             index += 1
             
         return menu
+    
     #
     # Conditions
     #
