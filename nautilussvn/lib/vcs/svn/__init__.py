@@ -237,7 +237,7 @@ class SVN:
             return self.status_cache[path]
         
         # If we do end up here the cache was bypassed.
-        if recurse:
+        if recurse and len(statuses) > 1:
             # Empty out all the caches
             for status in statuses:
                 current_path = os.path.join(path, status.data["path"].encode("utf-8"))
