@@ -13,3 +13,6 @@ Licensed under: BSD
 GNOME <http://svn.gnome.org/svn/releng/trunk/tools/> - prepare-ChangeLog.pl
 Darin Adler <darin@eazel.com>
 Licensed under: N/A (maybe GPL)
+
+Edgewall Software <http://trac.edgewall.org/> nautilussvn/lib/helper.py:pretty_timedelta
+Licensed under: BSD
