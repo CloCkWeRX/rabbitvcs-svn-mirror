@@ -143,7 +143,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         Return all the columns we support.
         
         """
-            
+        
         return (
             nautilus.Column(
                 "NautilusSvn::status_column",
@@ -1310,7 +1310,7 @@ class MainContextMenu:
             
             # Execute the condition associated with the definition_item
             # which will figure out whether or not to display this item.
-            if definition_item["condition"]():
+            if not definition_item.has_key("condition") or definition_item["condition"]():
                 # If the item is a separator, don't show it if this is the first
                 # or last item, or if the previous item was a separator.
                 if (definition_item["label"] == self.SEPARATOR and
@@ -1351,16 +1351,17 @@ class MainContextMenu:
                 # Since we can't just call set_submenu and run the risk of not
                 # having any submenu items later (which would result in the 
                 # menu item not being displayed) we have to check first.
-                submenu = self.create_menu_from_definition(
-                    definition_item["submenus"]
-                )
-                
-                if len(submenu) > 0:
-                    nautilus_submenu = nautilus.Menu()
-                    menu_item.set_submenu(nautilus_submenu)
+                if definition_item.has_key("submenus"):
+                    submenu = self.create_menu_from_definition(
+                        definition_item["submenus"]
+                    )
                     
-                    for submenu_item in submenu:
-                        nautilus_submenu.append_item(submenu_item)
+                    if len(submenu) > 0:
+                        nautilus_submenu = nautilus.Menu()
+                        menu_item.set_submenu(nautilus_submenu)
+                        
+                        for submenu_item in submenu:
+                            nautilus_submenu.append_item(submenu_item)
 
             index += 1
             
