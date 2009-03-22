@@ -463,7 +463,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
         def do_check():
             # We'll check the paths first (these were the paths that
-            # were originally passed along from the context menu). 
+            # were originally passed along to the context menu). 
             #
             # This is needed among other things for:
             #
@@ -580,7 +580,7 @@ class MainContextMenu:
         # Each path gets tested for each check
         # If a check has returned True for any path, skip it for remaining paths
         for path in paths:
-            for key,func in checks.items():
+            for key, func in checks.items():
                 if key not in self.path_dict or self.path_dict[key] is not True:
                     self.path_dict[key] = func(path)
         
