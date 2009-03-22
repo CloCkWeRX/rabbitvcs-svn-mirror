@@ -148,32 +148,32 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             nautilus.Column(
                 "NautilusSvn::status_column",
                 "status",
-                "SVN Status",
-                "The SVN status"
+                _("Status"),
+                _("")
             ),
             nautilus.Column(
                 "NautilusSvn::revision_column",
                 "revision",
-                "SVN Revision",
-                "The SVN revision"
+                _("Revision"),
+                _("")
             ),
             nautilus.Column(
                 "NautilusSvn::url_column",
                 "url",
-                "SVN URL",
-                "The SVN URL"
+                _("URL"),
+                _("")
             ),
             nautilus.Column(
                 "NautilusSvn::author_column",
                 "author",
-                "SVN Author",
-                "The SVN author"
+                _("Author"),
+                _("")
             ),
             nautilus.Column(
                 "NautilusSvn::age_column",
                 "age",
-                "SVN Age",
-                "The SVN age"
+                _("Age"),
+                _("")
             )
         )
     
