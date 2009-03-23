@@ -135,6 +135,11 @@ class Log(InterfaceView):
         for tup in indexes:
             self.selected_rows.append(tup[0])
 
+        if len(self.selected_rows) == 0:
+            self.message.set_text("")
+            self.paths_table.clear()
+            return
+
         item = self.revision_items[self.selected_rows[0]]
 
         self.paths_table.clear()
