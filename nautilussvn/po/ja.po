@@ -1,0 +1,1345 @@
+# Japanese translation for nautilussvn
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the nautilussvn package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: nautilussvn\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2009-03-04 14:35-0500\n"
+"PO-Revision-Date: 2009-03-25 06:02+0000\n"
+"Last-Translator: YUTA Hayashibe <Unknown>\n"
+"Language-Team: Japanese <ja@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2009-03-26 12:16+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: ui/branch.py:71
+msgid ""
+"There have been modifications to your working copy.  If you copy from the "
+"HEAD revision you will lose your changes."
+msgstr "作業コピーへの変更がありました．HEADリビジョンからコピーした場合，変更は失われます．"
+
+#: ui/branch.py:89
+msgid "You must supply a destination path."
+msgstr "送り先パスを設定してください．"
+
+#: ui/branch.py:99
+msgid "The from revision field is required."
+msgstr "元リビジョンを設定してください."
+
+#: ui/branch.py:108
+msgid "Invalid revision information"
+msgstr "不正なリビジョン情報"
+
+#: ui/branch.py:123 ui/glade/branch.glade.h:4
+msgid "Branch/tag"
+msgstr "ブランチ/タグ"
+
+#: ui/branch.py:124
+msgid "Running Branch/tag Command..."
+msgstr "ブランチ/タグ コマンドを実行中..."
+
+#: ui/branch.py:126
+msgid "Completed Branch/tag"
+msgstr "ブランチ/タグ の完了"
+
+#: ui/updateto.py:70
+msgid "Update To Revision"
+msgstr "特定のリビジョンへ更新"
+
+#: ui/updateto.py:71 ui/update.py:54
+msgid "Updating..."
+msgstr "更新中..."
+
+#: ui/updateto.py:79 ui/update.py:57
+msgid "Completed Update"
+msgstr "更新完了"
+
+#: ui/rename.py:59
+msgid "The new name field is required"
+msgstr "新しい名前を入力してください"
+
+#: ui/rename.py:70 ui/glade/rename.glade.h:2
+msgid "Rename"
+msgstr "リネーム"
+
+#: ui/rename.py:71
+msgid "Running Rename Command..."
+msgstr "リネームを実行中..."
+
+#: ui/rename.py:78
+msgid "Completed Rename"
+msgstr "リネームの完了"
+
+#: ui/annotate.py:51
+msgid "Cannot annotate a directory"
+msgstr "ディレクトリに注釈できません"
+
+#: ui/annotate.py:58
+#, python-format
+msgid "Annotate - %s"
+msgstr "注釈 - %s"
+
+#: ui/annotate.py:71
+msgid "Line"
+msgstr "行"
+
+#: ui/annotate.py:71 ui/log.py:80 ui/glade/switch.glade.h:5
+#: ui/glade/merge.glade.h:17 ui/glade/checkout.glade.h:10
+#: ui/glade/update.glade.h:6
+msgid "Revision"
+msgstr "リビジョン"
+
+#: ui/annotate.py:71 ui/log.py:80
+msgid "Author"
+msgstr "作者"
+
+#: ui/annotate.py:72 ui/dialog.py:47 ui/log.py:81
+msgid "Date"
+msgstr "日付"
+
+#: ui/annotate.py:72
+msgid "Text"
+msgstr "テキスト"
+
+#: ui/annotate.py:112
+msgid "The from revision field must be an integer"
+msgstr "元リビジョン番号は整数でなければなりません"
+
+#: ui/annotate.py:122
+msgid "Generating Annotation..."
+msgstr "注釈を作成中..."
+
+#: ui/annotate.py:138 lib/vcs/svn/__init__.py:122 lib/vcs/svn/__init__.py:124
+msgid "Completed"
+msgstr "完了"
+
+#: ui/settings.py:50
+msgid "English"
+msgstr "英語"
+
+#: ui/settings.py:156 ui/settings.py:165
+msgid "Select a program"
+msgstr "プログラムを選択"
+
+#: ui/settings.py:174
+msgid "Are you sure you want to clear your repository paths?"
+msgstr "本当にレポジトリのパスをクリアしますか?"
+
+#: ui/settings.py:181
+msgid "Repository paths cleared"
+msgstr "レポジトリのパスはクリアされました"
+
+#: ui/settings.py:185
+msgid "Are you sure you want to clear your previous messages?"
+msgstr "本当にログメッセージを削除しますか?"
+
+#: ui/settings.py:192
+msgid "Previous messages cleared"
+msgstr "ログメッセージは削除されました"
+
+#: ui/settings.py:196
+msgid "Are you sure you want to clear your authentication information?"
+msgstr "本当に認証情報を削除しますか?"
+
+#: ui/settings.py:213
+msgid "Authentication information cleared"
+msgstr "認証情報は削除されました"
+
+#: ui/cleanup.py:54 lib/extensions/nautilus/NautilusSvn.py:831
+msgid "Cleanup"
+msgstr "クリーンアップ"
+
+#: ui/cleanup.py:55 ui/glade/cleanup.glade.h:1
+msgid "Cleaning Up..."
+msgstr "クリーンアップ中..."
+
+#: ui/cleanup.py:57
+msgid "Completed Cleanup"
+msgstr "クリーンアップ完了"
+
+#: ui/relocate.py:76
+msgid "The from and to url fields are both required."
+msgstr "FROMフィールドとURLフィールドの両方に入力してください"
+
+#: ui/relocate.py:86 ui/glade/relocate.glade.h:3
+msgid "Relocate"
+msgstr "再配置"
+
+#: ui/relocate.py:87
+msgid "Running Relocate Command..."
+msgstr "再配置中..."
+
+#: ui/relocate.py:94
+msgid "Completed Relocate"
+msgstr "再配置完了"
+
+#: ui/add.py:64 ui/lock.py:66 ui/resolve.py:55 ui/action.py:66 ui/commit.py:73
+#: ui/unlock.py:55 ui/log.py:89 ui/revert.py:55
+msgid "Path"
+msgstr "パス"
+
+#: ui/add.py:64 ui/lock.py:66 ui/resolve.py:55 ui/commit.py:73 ui/unlock.py:55
+#: ui/revert.py:55
+msgid "Extension"
+msgstr "拡張"
+
+#: ui/add.py:78 ui/lock.py:96 ui/commit.py:97 ui/unlock.py:70 ui/log.py:253
+#: ui/glade/log.glade.h:6
+msgid "Loading..."
+msgstr "ロード中..."
+
+#: ui/add.py:81 ui/lock.py:99 ui/commit.py:100 ui/unlock.py:91
+#, python-format
+msgid "Found %d item(s)"
+msgstr "%d個のアイテムが見つかりました"
+
+#: ui/add.py:115 ui/commit.py:269 ui/glade/add.glade.h:1
+#: lib/extensions/nautilus/NautilusSvn.py:638
+msgid "Add"
+msgstr "追加"
+
+#: ui/add.py:116
+msgid "Running Add Command..."
+msgstr "追加中..."
+
+#: ui/add.py:118
+msgid "Completed Add"
+msgstr "追加完了"
+
+#: ui/add.py:141 ui/lock.py:206 ui/commit.py:239
+msgid "Open"
+msgstr "開く"
+
+#: ui/add.py:150 ui/lock.py:216 ui/commit.py:249
+msgid "Browse to"
+msgstr "参照"
+
+#: ui/add.py:159 ui/commit.py:259 ui/glade/properties.glade.h:2
+#: lib/extensions/nautilus/NautilusSvn.py:735
+msgid "Delete"
+msgstr "削除"
+
+#: ui/add.py:168 ui/commit.py:299 lib/extensions/nautilus/NautilusSvn.py:654
+msgid "Add to ignore list"
+msgstr "無視リストに追加"
+
+#: ui/import.py:41
+#, python-format
+msgid "Import - %s"
+msgstr "インポート - %s"
+
+#: ui/import.py:68
+msgid "The repository URL field is required."
+msgstr "レポジトリURLを入力してください"
+
+#: ui/import.py:80 ui/glade/import.glade.h:3
+#: lib/extensions/nautilus/NautilusSvn.py:888
+msgid "Import"
+msgstr "インポート"
+
+#: ui/import.py:81
+msgid "Running Import Command..."
+msgstr "インポート中..."
+
+#: ui/import.py:89
+msgid "Completed Import"
+msgstr "インポート完了"
+
+#: ui/lock.py:67 lib/vcs/svn/__init__.py:132
+msgid "Locked"
+msgstr "ロック"
+
+#: ui/lock.py:90 ui/lock.py:107
+msgid "Yes"
+msgstr "はい"
+
+#: ui/lock.py:144
+msgid "Get Lock"
+msgstr "ロックを取得"
+
+#: ui/lock.py:145
+msgid "Running Lock Command..."
+msgstr "ロック中..."
+
+#: ui/lock.py:154
+msgid "Completed Lock"
+msgstr "ロック完了"
+
+#: ui/lock.py:176
+msgid "Remove Lock"
+msgstr "ロックを削除"
+
+#: ui/lock.py:186 ui/commit.py:229 lib/extensions/nautilus/NautilusSvn.py:597
+msgid "View Diff"
+msgstr "差分を見る"
+
+#: ui/lock.py:196 ui/glade/switch.glade.h:6 ui/glade/branch.glade.h:10
+#: ui/glade/merge.glade.h:18 ui/glade/checkout.glade.h:11
+#: ui/glade/update.glade.h:7
+msgid "Show log"
+msgstr "ログを表示"
+
+#: ui/export.py:40
+#, python-format
+msgid "Export - %s"
+msgstr "エクスポート - %s"
+
+#: ui/export.py:58 ui/checkout.py:82
+msgid "The repository URL and destination path are both required fields."
+msgstr "レポジトリのURLとチェックアウト先の両方の入力が必要です．"
+
+#: ui/export.py:79 lib/extensions/nautilus/NautilusSvn.py:856
+msgid "Export"
+msgstr "エクスポート"
+
+#: ui/export.py:80
+msgid "Running Export Command..."
+msgstr "エクスポート中..."
+
+#: ui/export.py:91
+msgid "Completed Export"
+msgstr "エクスポート完了"
+
+#: ui/resolve.py:45 ui/resolve.py:76
+#: lib/extensions/nautilus/NautilusSvn.py:767
+msgid "Resolve"
+msgstr "解消"
+
+#: ui/resolve.py:77
+msgid "Running Resolve Command..."
+msgstr "解消中..."
+
+#: ui/resolve.py:80
+msgid "Completed Resolve"
+msgstr "解消完了"
+
+#: ui/action.py:66 ui/log.py:89
+msgid "Action"
+msgstr "アクション"
+
+#: ui/action.py:66
+msgid "Mime Type"
+msgstr "Mimeタイプ"
+
+#: ui/action.py:135
+msgid "Empty Message"
+msgstr "空のメッセージ"
+
+#: ui/action.py:249 ui/log.py:309
+msgid "Finished"
+msgstr "完了"
+
+#: ui/action.py:253
+#, python-format
+msgid "%s - Finished"
+msgstr "%s - 完了"
+
+#: ui/commit.py:66
+msgid "The given path is not a working copy"
+msgstr "与えられたパスはワーキングコピーではありません"
+
+#: ui/commit.py:74
+msgid "Text Status"
+msgstr "テキストの状態"
+
+#: ui/commit.py:74
+msgid "Property Status"
+msgstr "属性の状態"
+
+#: ui/commit.py:188 ui/glade/commit.glade.h:4
+#: lib/extensions/nautilus/NautilusSvn.py:568
+msgid "Commit"
+msgstr "コミット"
+
+#: ui/commit.py:189
+msgid "Running Commit Command..."
+msgstr "コミット中"
+
+#: ui/commit.py:195
+msgid "Completed Commit"
+msgstr "コミット完了"
+
+#: ui/commit.py:279 ui/revert.py:45 ui/revert.py:75
+#: lib/extensions/nautilus/NautilusSvn.py:751
+msgid "Revert"
+msgstr "元に戻す"
+
+#: ui/commit.py:289
+msgid "Restore"
+msgstr "復元"
+
+#: ui/dialog.py:47 ui/log.py:81 ui/glade/dialogs.glade.h:20
+msgid "Message"
+msgstr "メッセージ"
+
+#: ui/dialog.py:88
+msgid "Select a Folder"
+msgstr "フォルダを選択"
+
+#: ui/dialog.py:117 ui/glade/log.glade.h:12
+msgid "to"
+msgstr "to"
+
+#: ui/dialog.py:210
+msgid "Select a File"
+msgstr "ファイルを選択"
+
+#: ui/dialog.py:229 ui/glade/dialogs.glade.h:10
+msgid "Are you sure you want to continue?"
+msgstr "本当に続けますか?"
+
+#: ui/dialog.py:257
+msgid "the selected item(s)"
+msgstr "選択されたアイテム"
+
+#: ui/switch.py:65
+msgid "The repository location is a required field."
+msgstr "レポジトリの場所を入力してください"
+
+#: ui/switch.py:81 ui/glade/switch.glade.h:7
+msgid "Switch"
+msgstr "切り替え"
+
+#: ui/switch.py:82
+msgid "Running Switch Command..."
+msgstr "切り替え中..."
+
+#: ui/switch.py:90
+msgid "Completed Switch"
+msgstr "切り替え完了"
+
+#: ui/unlock.py:45 ui/unlock.py:109
+msgid "Unlock"
+msgstr "ロック解除"
+
+#: ui/unlock.py:110
+msgid "Running Unlock Command..."
+msgstr "ロック解除中"
+
+#: ui/unlock.py:113
+msgid "Completed Unlock"
+msgstr "ロック解除完了"
+
+#: ui/merge.py:81
+msgid "Running Merge Test"
+msgstr "マージテスト中"
+
+#: ui/merge.py:82
+msgid "Completed Merge Test"
+msgstr "マージテスト完了"
+
+#: ui/merge.py:84
+msgid "Running Merge Command"
+msgstr "マージ中"
+
+#: ui/merge.py:85
+msgid "Completed Merge"
+msgstr "マージ完了"
+
+#: ui/merge.py:93
+msgid "Merge"
+msgstr "マージ"
+
+#: ui/checkout.py:52
+#, python-format
+msgid "Checkout - %s"
+msgstr "チェックアウト - %s"
+
+#: ui/checkout.py:100 ui/glade/checkout.glade.h:5
+#: lib/extensions/nautilus/NautilusSvn.py:536
+msgid "Checkout"
+msgstr "チェックアウト"
+
+#: ui/checkout.py:101
+msgid "Running Checkout Command..."
+msgstr "チェックアウト中..."
+
+#: ui/checkout.py:111
+msgid "Completed Checkout"
+msgstr "チェックアウト完了"
+
+#: ui/log.py:63
+#, python-format
+msgid "Log - %s"
+msgstr "ログ - %s"
+
+#: ui/log.py:90
+msgid "Copy From Path"
+msgstr "パスからコピー"
+
+#: ui/log.py:90
+msgid "Copy From Revision"
+msgstr "リビジョンからコピー"
+
+#: ui/log.py:112
+msgid "Cancelled"
+msgstr "キャンセルされました"
+
+#: ui/log.py:236 ui/log.py:237 ui/glade/log.glade.h:8
+msgid "N/A"
+msgstr "N/A"
+
+#: ui/log.py:284
+msgid "(no author)"
+msgstr "(作者なし)"
+
+#: ui/log.py:313
+msgid "Retrieving Log Information..."
+msgstr "ログ情報の回復..."
+
+#: ui/properties.py:53
+#, python-format
+msgid "Properties - %s"
+msgstr "プロパティ - %s"
+
+#: ui/properties.py:61
+msgid "Name"
+msgstr "名前"
+
+#: ui/properties.py:61
+msgid "Value"
+msgstr "値"
+
+#: ui/revert.py:76
+msgid "Running Revert Command..."
+msgstr "元に戻しています"
+
+#: ui/revert.py:78
+msgid "Completed Revert"
+msgstr "元に戻しました"
+
+#: ui/update.py:53 ui/glade/update.glade.h:8
+#: lib/extensions/nautilus/NautilusSvn.py:552
+msgid "Update"
+msgstr "更新"
+
+#: ui/create.py:49
+msgid "Repository successfully created"
+msgstr "レポジトリの作成に成功しました"
+
+#: ui/create.py:51
+msgid ""
+"There was an error creating the repository.  Make sure the given folder is "
+"empty."
+msgstr "リポジトリ作成中にエラーが発生しました．フォルダが空であるか確認してください．"
+
+#: ui/glade/switch.glade.h:1 ui/glade/checkout.glade.h:3
+#: ui/glade/update.glade.h:1
+msgid "<b>Revision</b>"
+msgstr "<b>リビジョン</b>"
+
+#: ui/glade/switch.glade.h:2
+msgid "<b>Switch Details</b>"
+msgstr "<b>詳細の切り替え</b>"
+
+#: ui/glade/switch.glade.h:3 ui/glade/branch.glade.h:8
+#: ui/glade/relocate.glade.h:2
+msgid "From:"
+msgstr "元:"
+
+#: ui/glade/switch.glade.h:4 ui/glade/merge.glade.h:10
+#: ui/glade/checkout.glade.h:7 ui/glade/update.glade.h:3
+msgid "HEAD"
+msgstr "最新"
+
+#: ui/glade/switch.glade.h:8 ui/glade/branch.glade.h:11
+#: ui/glade/relocate.glade.h:4
+msgid "To:"
+msgstr "先:"
+
+#: ui/glade/notification.glade.h:1
+msgid "Notification Messages"
+msgstr "通知メッセージ"
+
+#: ui/glade/commit.glade.h:1 ui/glade/branch.glade.h:1
+msgid "<b>Add Message</b>"
+msgstr "<b>メッセージの追加</b>"
+
+#: ui/glade/commit.glade.h:2
+msgid "<b>Changed Files</b> (double-click to see diff)"
+msgstr "<b>変更されファイル</b> (ダブルクリックで差分表示)"
+
+#: ui/glade/commit.glade.h:3
+msgid "<b>Commit to:</b>"
+msgstr "<b>コミット先:</b>"
+
+#: ui/glade/commit.glade.h:5 ui/glade/lock.glade.h:4 ui/glade/branch.glade.h:9
+#: ui/glade/dialogs.glade.h:22 ui/glade/import.glade.h:5
+msgid "Previous Messages"
+msgstr "以前のメッセージ"
+
+#: ui/glade/commit.glade.h:6 ui/glade/lock.glade.h:5 ui/glade/add.glade.h:2
+msgid "Select / Deselect all"
+msgstr "全て選択／全て非選択"
+
+#: ui/glade/commit.glade.h:7
+msgid "Show unversioned files"
+msgstr "バージョン管理外のファイルを表示する"
+
+#: ui/glade/lock.glade.h:1
+msgid "<b>Files to lock</b>"
+msgstr "<b>ロックすファイル</b>"
+
+#: ui/glade/lock.glade.h:2
+msgid "<b>Please describe why you are locking these files</b>"
+msgstr "<b>ファイルをロックする理由を入力してください</b>"
+
+#: ui/glade/lock.glade.h:3
+msgid "Lock Files"
+msgstr "ロックするファイル"
+
+#: ui/glade/lock.glade.h:6
+msgid "Steal the locks"
+msgstr "ロックを横取りする"
+
+#: ui/glade/properties.glade.h:1
+msgid "<b>Properties for:</b>"
+msgstr "<b>属性:</b>"
+
+#: ui/glade/properties.glade.h:3
+msgid "Edit..."
+msgstr "編集..."
+
+#: ui/glade/properties.glade.h:4
+msgid "New..."
+msgstr "新規..."
+
+#: ui/glade/properties.glade.h:5 lib/extensions/nautilus/NautilusSvn.py:995
+msgid "Properties"
+msgstr "属性"
+
+#: ui/glade/properties.glade.h:6
+msgid "URL/Path:"
+msgstr "URL/パス:"
+
+#: ui/glade/annotate.glade.h:1
+msgid "<b>From Revision</b>"
+msgstr "<b>元リビジョン</b>"
+
+#: ui/glade/annotate.glade.h:2
+msgid "<b>To Revision</b>"
+msgstr "<b>先リビジョン</b>"
+
+#: ui/glade/annotate.glade.h:3
+msgid "Annotate"
+msgstr "注釈"
+
+#: ui/glade/about.glade.h:1
+msgid "<b>Links</b>"
+msgstr "<b>関連リンク</b>"
+
+#: ui/glade/about.glade.h:2
+msgid "<b>Version Information</b>"
+msgstr "バージョン情報"
+
+#: ui/glade/about.glade.h:3
+msgid "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
+msgstr "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
+
+#: ui/glade/about.glade.h:4 lib/extensions/nautilus/NautilusSvn.py:1059
+msgid "About"
+msgstr "About"
+
+#: ui/glade/about.glade.h:5
+msgid "Authors:"
+msgstr "著者:"
+
+#: ui/glade/about.glade.h:6
+msgid "Thanks:"
+msgstr "謝辞:"
+
+#: ui/glade/rename.glade.h:1
+msgid "New Name:"
+msgstr "新しい名前:"
+
+#: ui/glade/branch.glade.h:2
+msgid "<b>Create copy from</b>"
+msgstr "<b>次の場所からコピー</b>"
+
+#: ui/glade/branch.glade.h:3 ui/glade/checkout.glade.h:2
+#: ui/glade/import.glade.h:2
+msgid "<b>Repository</b>"
+msgstr "<b>レポジトリ</b>"
+
+#: ui/glade/branch.glade.h:5
+msgid "Copy from HEAD"
+msgstr "HEADからコピー"
+
+#: ui/glade/branch.glade.h:6
+msgid "Copy from revision"
+msgstr "リビジョンからコピー"
+
+#: ui/glade/branch.glade.h:7
+msgid "Copy from working copy"
+msgstr "作業コピーからコピー"
+
+#: ui/glade/log.glade.h:1
+msgid "100"
+msgstr "100"
+
+#: ui/glade/log.glade.h:2
+msgid "<b>Affected File(s)</b>"
+msgstr "<b>影響を受けるコピー</b>"
+
+#: ui/glade/log.glade.h:3 ui/glade/dialogs.glade.h:3
+msgid "<b>Message</b>"
+msgstr "<b>メッセージ</b>"
+
+#: ui/glade/log.glade.h:4
+msgid "<b>Revisions Table</b>"
+msgstr "リビジョン一覧"
+
+#: ui/glade/log.glade.h:5
+msgid "Limit:"
+msgstr "期限:"
+
+#: ui/glade/log.glade.h:7
+msgid "Log"
+msgstr "ログ"
+
+#: ui/glade/log.glade.h:9
+msgid "Refresh"
+msgstr "更新"
+
+#: ui/glade/log.glade.h:10
+msgid "Showing Revisions:"
+msgstr "表示しているリビジョン:"
+
+#: ui/glade/log.glade.h:11
+msgid "Stop on copy"
+msgstr "コピーが発生したら停止"
+
+#: ui/glade/merge.glade.h:1
+msgid "<b>From URL</b>"
+msgstr "<b>元URL</b>"
+
+#: ui/glade/merge.glade.h:2
+msgid "<b>From: (URL and revision to merge)</b>"
+msgstr "<b>元: (マージするURLとリビジョン)</b>"
+
+#: ui/glade/merge.glade.h:3 ui/glade/checkout.glade.h:1
+msgid "<b>Options</b>"
+msgstr "<b>オプション</b>"
+
+#: ui/glade/merge.glade.h:4
+msgid "<b>Revision Range</b>"
+msgstr "<b>リビジョンの範囲</b>"
+
+#: ui/glade/merge.glade.h:5
+msgid "<b>To: (URL and revision to merge)</b>"
+msgstr "<b>先: (マージするURLとリビジョン)</b>"
+
+#: ui/glade/merge.glade.h:6
+msgid "<b>URL to merge from</b>"
+msgstr "<b>マージ元のURL</b>"
+
+#: ui/glade/merge.glade.h:7
+msgid "<b>Working Copy</b>"
+msgstr "<b>作業コピー</b>"
+
+#: ui/glade/merge.glade.h:8
+msgid ""
+"Choose this method if you have made some changes to a branch and wish to "
+"merge your changes with another branch."
+msgstr "ブランチに変更を加え，それを別のブランチに変更をマージする場合，このメソッドを選択してください．"
+
+#: ui/glade/merge.glade.h:9
+msgid ""
+"Choose this method if you wish to merge two different branches into your "
+"working copy."
+msgstr "2つの異なるブランチを作業コピーにマージする場合，このメソッドを選択してください．"
+
+#: ui/glade/merge.glade.h:11
+msgid "Ignore ancestry"
+msgstr "系統情報を無視する"
+
+#: ui/glade/merge.glade.h:12
+msgid "Merge Assistant"
+msgstr "マージアシスタント"
+
+#: ui/glade/merge.glade.h:13
+msgid "Merge a range of revisions"
+msgstr "リビジョンの範囲をマージ"
+
+#: ui/glade/merge.glade.h:14
+msgid "Merge two different trees"
+msgstr "異なる2つのツリーをマージ"
+
+#: ui/glade/merge.glade.h:15
+msgid "Only record the merge"
+msgstr "マージのみ記録する"
+
+#: ui/glade/merge.glade.h:16 ui/glade/checkout.glade.h:9
+#: ui/glade/update.glade.h:5
+msgid "Recursive"
+msgstr "再帰的"
+
+#: ui/glade/merge.glade.h:19
+msgid "Test Merge"
+msgstr "マージをテストする"
+
+#: ui/glade/merge.glade.h:20
+msgid ""
+"Use the log dialog to select the revisions that you wish to merge.  Or write "
+"out the revisions manually, each separated by a comma.  You can specify a "
+"revision range by a dash. \n"
+"\n"
+"Example: 4-7,9,11,15-HEAD\n"
+"\n"
+"To merge all revisions, leave the box empty."
+msgstr ""
+"マージしたいリビジョンの選択にログダイアログを利用する，もしくは，マージするリビジョンをコンマで区切って入力してください．リビジョンの範囲はハイフンで指定"
+"することができます．\n"
+"\n"
+"例: 4-7,9,11,15-HEAD\n"
+"\n"
+"すべてのリビジョンをマージするには，入力ボックスを空のままにしてください．"
+
+#: ui/glade/settings.glade.h:1
+msgid "<b>Authentication</b>"
+msgstr "<b>認証</b>"
+
+#: ui/glade/settings.glade.h:2
+msgid "<b>Log Messages</b>"
+msgstr "<b>ログメッセージ</b>"
+
+#: ui/glade/settings.glade.h:3
+msgid "<b>Logging Options</b>"
+msgstr "<b>ログオプション</b>"
+
+#: ui/glade/settings.glade.h:4
+msgid "<b>NautilusSvn</b>"
+msgstr "<b>NautilusSvn</b>"
+
+#: ui/glade/settings.glade.h:5
+msgid "<b>Program used to browse repositories</b>"
+msgstr "<b>レポジトリの閲覧に使用するプログラム</b>"
+
+#: ui/glade/settings.glade.h:6
+msgid "<b>Program used to compare files</b>"
+msgstr "<b>ファイルの比較に使用するプログラム</b>"
+
+#: ui/glade/settings.glade.h:7
+msgid "<b>URL History</b>"
+msgstr "<b>URL履歴</b>"
+
+#: ui/glade/settings.glade.h:8 ui/glade/checkout.glade.h:4
+msgid "Browse..."
+msgstr "閲覧..."
+
+#: ui/glade/settings.glade.h:9
+msgid "Clear your authentication information"
+msgstr "認証履歴を削除"
+
+#: ui/glade/settings.glade.h:10
+msgid "Enable emblems"
+msgstr "エンブレムを有効にする"
+
+#: ui/glade/settings.glade.h:11
+msgid "Enable file attributes"
+msgstr "ファイル属性を有効にする"
+
+#: ui/glade/settings.glade.h:12
+msgid "Enable recursive status checks"
+msgstr "再帰的な状態チェックを有効にする"
+
+#: ui/glade/settings.glade.h:13
+msgid "External Programs"
+msgstr "外部プログラム"
+
+#: ui/glade/settings.glade.h:14
+msgid "General"
+msgstr "一般"
+
+#: ui/glade/settings.glade.h:15
+msgid "Language:"
+msgstr "言語:"
+
+#: ui/glade/settings.glade.h:16
+msgid "Logging"
+msgstr "ログ"
+
+#: ui/glade/settings.glade.h:17
+msgid "Minimum level to log"
+msgstr "次のレベル以上を記録する"
+
+#: ui/glade/settings.glade.h:18
+msgid "Number of URLs to remember"
+msgstr "記録するURLの数"
+
+#: ui/glade/settings.glade.h:19
+msgid "Number of messages to remember"
+msgstr "記録するメッセージの数"
+
+#: ui/glade/settings.glade.h:20
+msgid "Saved Data"
+msgstr "データの保存"
+
+#: ui/glade/settings.glade.h:21 lib/extensions/nautilus/NautilusSvn.py:1043
+msgid "Settings"
+msgstr "設定"
+
+#: ui/glade/settings.glade.h:22
+msgid "Show new version on the right side"
+msgstr "新しいバージョンを右側に表示する"
+
+#: ui/glade/settings.glade.h:23
+msgid "Type:"
+msgstr "種類:"
+
+#: ui/glade/cleanup.glade.h:2
+msgid ""
+"Cleanup Requested....\n"
+"\n"
+"Begin working copy cleanup?"
+msgstr ""
+"クリーンアップが要求されました....\n"
+"\n"
+"作業コピーをクリーンアップしますか?"
+
+#: ui/glade/dialogs.glade.h:1
+msgid "<b>Certificate Details</b>"
+msgstr "<b>証明書の詳細</b>"
+
+#: ui/glade/dialogs.glade.h:2
+msgid "<b>Edit Property Details</b>"
+msgstr "<b>プロパティの詳細を編集</b>"
+
+#: ui/glade/dialogs.glade.h:4
+msgid "<b>Please add your authentication details</b>"
+msgstr "<b>認証の詳細を追加してください</b>"
+
+#: ui/glade/dialogs.glade.h:5
+msgid "<b>Previous Messages</b>"
+msgstr "<b>以前のメッセージ</b>"
+
+#: ui/glade/dialogs.glade.h:7
+msgid ""
+"<span size=\"large\"><b>Are you sure you want to delete %item%?</b></span>"
+msgstr "<span size=\"large\"><b>本当に%iつのアイテムを削除しますか%?</b></span>"
+
+#: ui/glade/dialogs.glade.h:8
+msgid "Accept Forever"
+msgstr "今後受け入れる"
+
+#: ui/glade/dialogs.glade.h:9
+msgid "Accept Once"
+msgstr "一度だけ受け入れる"
+
+#: ui/glade/dialogs.glade.h:11
+msgid "Authentication"
+msgstr "認証"
+
+#: ui/glade/dialogs.glade.h:12
+msgid "Check Certificate"
+msgstr "証明書をチェックする"
+
+#: ui/glade/dialogs.glade.h:13
+msgid "Confirmation"
+msgstr "確認"
+
+#: ui/glade/dialogs.glade.h:14
+msgid "Delete Confirmation"
+msgstr "削除の確認"
+
+#: ui/glade/dialogs.glade.h:15
+msgid "Deny"
+msgstr "拒否"
+
+#: ui/glade/dialogs.glade.h:16
+msgid "Fingerprint:"
+msgstr "フィンガープリント:"
+
+#: ui/glade/dialogs.glade.h:17
+msgid "Host:"
+msgstr "ホスト:"
+
+#: ui/glade/dialogs.glade.h:18
+msgid "Issuer:"
+msgstr "発行者:"
+
+#: ui/glade/dialogs.glade.h:19
+msgid "Login:"
+msgstr "ログイン:"
+
+#: ui/glade/dialogs.glade.h:21
+msgid "Password:"
+msgstr "パスワード:"
+
+#: ui/glade/dialogs.glade.h:23
+msgid "Property"
+msgstr "属性"
+
+#: ui/glade/dialogs.glade.h:24
+msgid "Property:"
+msgstr "属性:"
+
+#: ui/glade/dialogs.glade.h:25
+msgid "Realm:"
+msgstr "領域:"
+
+#: ui/glade/dialogs.glade.h:26
+msgid "Save Authentication"
+msgstr "認証を保存する"
+
+#: ui/glade/dialogs.glade.h:27
+msgid "The item(s) will be sent to the trash can."
+msgstr "その(それらの)アイテムはゴミ箱へ送られます"
+
+#: ui/glade/dialogs.glade.h:28
+msgid "Valid:"
+msgstr "有効:"
+
+#: ui/glade/dialogs.glade.h:29
+msgid "Value:"
+msgstr "値:"
+
+#: ui/glade/checkout.glade.h:6
+msgid "Destination:"
+msgstr "送り先:"
+
+#: ui/glade/checkout.glade.h:8 ui/glade/update.glade.h:4
+msgid "Omit Externals"
+msgstr "外部参照を除外する"
+
+#: ui/glade/checkout.glade.h:12
+msgid "URL:"
+msgstr "URL:"
+
+#: ui/glade/import.glade.h:1
+msgid "<b>Import Message</b>"
+msgstr "<b>メッセージをインポートする</b>"
+
+#: ui/glade/import.glade.h:4
+msgid "Include ignored files"
+msgstr "除外ファイルを含める"
+
+#: ui/glade/update.glade.h:2
+msgid "<b>Update Depth</b>"
+msgstr "<b>更新</b>"
+
+#: ui/glade/relocate.glade.h:1
+msgid "<b>Change the repository of your working copy</b>"
+msgstr "<b>作業コピーのレポジトリを変更する</b>"
+
+#: lib/extensions/nautilus/NautilusSvn.py:362
+msgid "Debug"
+msgstr "デバッグ"
+
+#: lib/extensions/nautilus/NautilusSvn.py:375
+msgid "DBus"
+msgstr "DBus"
+
+#: lib/extensions/nautilus/NautilusSvn.py:388
+msgid "Start/Restart Service"
+msgstr "サービスを開始/再開する"
+
+#: lib/extensions/nautilus/NautilusSvn.py:404
+msgid "Exit Service"
+msgstr "サービスを終了する"
+
+#: lib/extensions/nautilus/NautilusSvn.py:422
+msgid "Bugs"
+msgstr "バグ"
+
+#: lib/extensions/nautilus/NautilusSvn.py:435
+msgid "Test Asynchronicity"
+msgstr "非同期テスト"
+
+#: lib/extensions/nautilus/NautilusSvn.py:453
+msgid "Open Shell"
+msgstr "シェルを開く"
+
+#: lib/extensions/nautilus/NautilusSvn.py:469
+msgid "Refresh Status"
+msgstr "状態を更新"
+
+#: lib/extensions/nautilus/NautilusSvn.py:486
+msgid "Debug Revert"
+msgstr ""
+
+#: lib/extensions/nautilus/NautilusSvn.py:487
+msgid "Reverts everything it sees"
+msgstr ""
+
+#: lib/extensions/nautilus/NautilusSvn.py:502
+msgid "Invalidate"
+msgstr "無効にする"
+
+#: lib/extensions/nautilus/NautilusSvn.py:503
+msgid "Force an invalidate_extension_info() call"
+msgstr "invalidate_extension_info() 呼び出しを強制する"
+
+#: lib/extensions/nautilus/NautilusSvn.py:518
+msgid "Add Emblem"
+msgstr "エンブレムを追加"
+
+#: lib/extensions/nautilus/NautilusSvn.py:519
+msgid "Add an emblem"
+msgstr "エンブレムを追加"
+
+#: lib/extensions/nautilus/NautilusSvn.py:537
+msgid "Check out a working copy"
+msgstr "作業コピーをチェックアウト"
+
+#: lib/extensions/nautilus/NautilusSvn.py:553
+msgid "Update a working copy"
+msgstr "作業コピーを更新"
+
+#: lib/extensions/nautilus/NautilusSvn.py:569
+msgid "Commit modifications to the repository"
+msgstr "レポジトリへの変更をコミット"
+
+#: lib/extensions/nautilus/NautilusSvn.py:584
+msgid "NautilusSvn"
+msgstr "NautilusSvn"
+
+#: lib/extensions/nautilus/NautilusSvn.py:598
+msgid "View the modifications made to a file"
+msgstr "ファイルに対する変更を見る"
+
+#: lib/extensions/nautilus/NautilusSvn.py:613
+msgid "Show Log"
+msgstr "ログを表示"
+
+#: lib/extensions/nautilus/NautilusSvn.py:614
+msgid "Show a file's log information"
+msgstr "ファイルのログ情報を見る"
+
+#: lib/extensions/nautilus/NautilusSvn.py:639
+msgid "Schedule an item to be added to the repository"
+msgstr "レポジトリへのアイテムの追加を予定する"
+
+#: lib/extensions/nautilus/NautilusSvn.py:663
+msgid "Ignore an item"
+msgstr "アイテムを無視する"
+
+#: lib/extensions/nautilus/NautilusSvn.py:678
+msgid "Ignore all files with this extension"
+msgstr "この拡張子をもつファイル全てを無視する"
+
+#: lib/extensions/nautilus/NautilusSvn.py:703
+msgid "Update to revision..."
+msgstr "特定のリビジョンへ更新..."
+
+#: lib/extensions/nautilus/NautilusSvn.py:704
+msgid "Update a file to a specific revision"
+msgstr "特定のリビジョンへ更新..."
+
+#: lib/extensions/nautilus/NautilusSvn.py:719
+msgid "Rename..."
+msgstr "リネーム..."
+
+#: lib/extensions/nautilus/NautilusSvn.py:720
+msgid "Schedule an item to be renamed on the repository"
+msgstr "レポジトリへのアイテムのリネームを予定する"
+
+#: lib/extensions/nautilus/NautilusSvn.py:736
+msgid "Schedule an item to be deleted from the repository"
+msgstr "レポジトリへのアイテムの削除を予定する"
+
+#: lib/extensions/nautilus/NautilusSvn.py:752
+msgid "Revert an item to its unmodified state"
+msgstr "未変更の状態に戻す"
+
+#: lib/extensions/nautilus/NautilusSvn.py:768
+msgid "Mark a conflicted item as resolved"
+msgstr "競合するアイテムを解決済みにマークする"
+
+#: lib/extensions/nautilus/NautilusSvn.py:783
+msgid "Relocate..."
+msgstr "再配置..."
+
+#: lib/extensions/nautilus/NautilusSvn.py:784
+msgid "Relocate your working copy"
+msgstr "作業コピーを再配置"
+
+#: lib/extensions/nautilus/NautilusSvn.py:799
+msgid "Get Lock..."
+msgstr "ロックを取得..."
+
+#: lib/extensions/nautilus/NautilusSvn.py:800
+msgid "Locally lock items"
+msgstr "ローカルでアイテムをロック"
+
+#: lib/extensions/nautilus/NautilusSvn.py:815
+msgid "Release Lock..."
+msgstr "ロックを開放..."
+
+#: lib/extensions/nautilus/NautilusSvn.py:816
+msgid "Release lock on an item"
+msgstr "アイテム上でロックを開放"
+
+#: lib/extensions/nautilus/NautilusSvn.py:832
+msgid "Clean up working copy"
+msgstr "作業コピーをクリーンアップ"
+
+#: lib/extensions/nautilus/NautilusSvn.py:857
+msgid "Export a working copy or repository with no versioning information"
+msgstr "バージョン情報無しで，作業コピーまたはレポジトリをエクスポートする"
+
+#: lib/extensions/nautilus/NautilusSvn.py:872
+msgid "Create Repository here"
+msgstr "ここにレポジトリを作成"
+
+#: lib/extensions/nautilus/NautilusSvn.py:873
+msgid "Create a repository in a folder"
+msgstr "フォルダ内にレポジトリを作成"
+
+#: lib/extensions/nautilus/NautilusSvn.py:889
+msgid "Import an item into a repository"
+msgstr "レポジトリにアイテムをインポート"
+
+#: lib/extensions/nautilus/NautilusSvn.py:913
+msgid "Branch/tag..."
+msgstr "ブランチ/タグ..."
+
+#: lib/extensions/nautilus/NautilusSvn.py:914
+msgid "Copy an item to another location in the repository"
+msgstr "レポジトリ内の別の場所にアイテムをコピーする"
+
+#: lib/extensions/nautilus/NautilusSvn.py:929
+msgid "Switch..."
+msgstr "切り替え..."
+
+#: lib/extensions/nautilus/NautilusSvn.py:930
+msgid "Change the repository location of a working copy"
+msgstr "作業コピーのレポジトリの場所を変更する"
+
+#: lib/extensions/nautilus/NautilusSvn.py:945
+msgid "Merge..."
+msgstr "マージ..."
+
+#: lib/extensions/nautilus/NautilusSvn.py:946
+msgid "A wizard with steps for merging"
+msgstr "マージウィザード"
+
+#: lib/extensions/nautilus/NautilusSvn.py:970
+msgid "Annotate..."
+msgstr "注釈..."
+
+#: lib/extensions/nautilus/NautilusSvn.py:971
+msgid "Annotate a file"
+msgstr "ファイルに注釈"
+
+#: lib/extensions/nautilus/NautilusSvn.py:996
+msgid "View the properties of an item"
+msgstr "アイテムのプロパティを見る"
+
+#: lib/extensions/nautilus/NautilusSvn.py:1027
+msgid "Help"
+msgstr "ヘルプ"
+
+#: lib/extensions/nautilus/NautilusSvn.py:1028
+msgid "View help"
+msgstr "ヘルプの閲覧"
+
+#: lib/extensions/nautilus/NautilusSvn.py:1044
+msgid "View or change NautilusSvn settings"
+msgstr "NautilusSvnの設定"
+
+#: lib/extensions/nautilus/NautilusSvn.py:1060
+msgid "About NautilusSvn"
+msgstr "NautilusSvnについて"
+
+#: lib/vcs/svn/__init__.py:111 lib/vcs/svn/__init__.py:120
+#: lib/vcs/svn/__init__.py:127
+msgid "Added"
+msgstr "追加"
+
+#: lib/vcs/svn/__init__.py:112 lib/vcs/svn/__init__.py:128
+msgid "Copied"
+msgstr "コピー"
+
+#: lib/vcs/svn/__init__.py:113 lib/vcs/svn/__init__.py:119
+msgid "Deleted"
+msgstr "削除"
+
+#: lib/vcs/svn/__init__.py:114
+msgid "Restored"
+msgstr "復元"
+
+#: lib/vcs/svn/__init__.py:115
+msgid "Reverted"
+msgstr "元に戻す"
+
+#: lib/vcs/svn/__init__.py:116
+msgid "Failed Revert"
+msgstr "元に戻せませんでした"
+
+#: lib/vcs/svn/__init__.py:117
+msgid "Resolved"
+msgstr "解消"
+
+#: lib/vcs/svn/__init__.py:118
+msgid "Skipped"
+msgstr "スキップ"
+
+#: lib/vcs/svn/__init__.py:121
+msgid "Updated"
+msgstr "更新"
+
+#: lib/vcs/svn/__init__.py:123 lib/vcs/svn/__init__.py:125
+msgid "External"
+msgstr "外部"
+
+#: lib/vcs/svn/__init__.py:126
+msgid "Modified"
+msgstr "変更"
+
+#: lib/vcs/svn/__init__.py:129
+msgid "Replaced"
+msgstr "置換"
+
+#: lib/vcs/svn/__init__.py:130 lib/vcs/svn/__init__.py:149
+msgid "Changed"
+msgstr "変更"
+
+#: lib/vcs/svn/__init__.py:131
+msgid "Annotated"
+msgstr "注釈"
+
+#: lib/vcs/svn/__init__.py:133
+msgid "Unlocked"
+msgstr "ロック解除"
+
+#: lib/vcs/svn/__init__.py:134
+msgid "Failed Lock"
+msgstr "ロック失敗"
+
+#: lib/vcs/svn/__init__.py:135
+msgid "Failed Unlock"
+msgstr "ロック解除失敗"
+
+#: lib/vcs/svn/__init__.py:144
+msgid "Inapplicable"
+msgstr "適用不可"
+
+#: lib/vcs/svn/__init__.py:145
+msgid "Unknown"
+msgstr "不明"
+
+#: lib/vcs/svn/__init__.py:146
+msgid "Unchanged"
+msgstr "変更無"
+
+#: lib/vcs/svn/__init__.py:147
+msgid "Missing"
+msgstr "紛失"
+
+#: lib/vcs/svn/__init__.py:148
+msgid "Obstructed"
+msgstr "妨害"
+
+#: lib/vcs/svn/__init__.py:150
+msgid "Merged"
+msgstr "マージ"
+
+#: lib/vcs/svn/__init__.py:151
+msgid "Conflicted"
+msgstr "競合"
