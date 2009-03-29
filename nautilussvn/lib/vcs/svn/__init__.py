@@ -228,32 +228,27 @@ class SVN:
                        for the path being the first item in the list.
         
         """
+
+        if (not invalidate and path in self.status_cache):
+            return self.status_cache[path]  
+
+        # The cache was bypassed or does not contain the requested path.
+        statuses = self.status(path, recurse=recurse)
         
-        if (invalidate or 
-                path not in self.status_cache):
-            log.debug("status_with_cache() invalidated %s" % path)
-            statuses = self.status(path, recurse=recurse)
-        else:
-            return self.status_cache[path]
+        # Empty out all the caches
+        for status in statuses:
+            current_path = os.path.join(path, status.data["path"].encode("utf-8"))
+            while current_path != "/":
+                self.status_cache[current_path] = []
+                current_path = os.path.split(current_path)[0]
         
-        # If we do end up here the cache was bypassed.
-        if recurse and len(statuses) > 1:
-            # Empty out all the caches
-            for status in statuses:
-                current_path = os.path.join(path, status.data["path"].encode("utf-8"))
-                while current_path != "/":
-                    self.status_cache[current_path] = []
-                    current_path = os.path.split(current_path)[0]
-            
-            # Fill them back up
-            for status in statuses:
-                current_path = os.path.join(path, status.data["path"].encode("utf-8"))
-                while current_path != "/":
-                    if current_path not in self.status_cache: break;
-                    self.status_cache[current_path].append(status)
-                    current_path = os.path.split(current_path)[0]
-        else:
-            return statuses
+        # Fill them back up
+        for status in statuses:
+            current_path = os.path.join(path, status.data["path"].encode("utf-8"))
+            while current_path != "/":
+                if current_path not in self.status_cache: break;
+                self.status_cache[current_path].append(status)
+                current_path = os.path.split(current_path)[0]
         
         return self.status_cache[path]
         
