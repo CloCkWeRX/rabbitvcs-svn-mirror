@@ -26,6 +26,8 @@ import pygtk
 import gobject
 import gtk
 
+from datetime import datetime
+
 from nautilussvn.ui import InterfaceView
 from nautilussvn.ui.log import LogDialog
 from nautilussvn.ui.action import VCSAction
@@ -36,6 +38,8 @@ import nautilussvn.lib.vcs
 
 from nautilussvn import gettext
 _ = gettext.gettext
+
+DATETIME_FORMAT = nautilussvn.lib.helper.LOCAL_DATETIME_FORMAT
 
 class Annotate(InterfaceView):
     """
@@ -147,15 +151,21 @@ class Annotate(InterfaceView):
         blamedict = self.action.get_result(0)
 
         self.table.clear()
-        for item in blamedict:
-        
-            date = item["date"].replace("T", " ")[0:-8]
-        
+        for item in blamedict:            
+            # remove fractional seconds and timezone information from 
+            # the end of the string provided by pysvn:
+            # * timezone should be always "Z" (for UTC), "%Z" is not yet
+            #   yet supported by strptime
+            # * fractional could be parsed with "%f" since python 2.6 
+            #   but this precision is not needed anyway 
+            datestr = item["date"][0:-8]
+            date = datetime.strptime(datestr,"%Y-%m-%dT%H:%M:%S")
+                
             self.table.append([
                 item["number"],
                 item["revision"].number,
                 item["author"],
-                date,
+                datetime.strftime(date,DATETIME_FORMAT),
                 item["line"]
             ])
 

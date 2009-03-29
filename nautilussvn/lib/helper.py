@@ -43,7 +43,8 @@ log = Log("nautilussvn.lib.helper")
 from nautilussvn import gettext
 ngettext = gettext.ngettext
 
-DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S" # for log files
+LOCAL_DATETIME_FORMAT = locale.nl_langinfo(locale.D_T_FMT) # for UIs
 
 def initialize_locale():
     _locale, encoding = locale.getdefaultlocale()
