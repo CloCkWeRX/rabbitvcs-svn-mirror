@@ -489,38 +489,26 @@ def pretty_timedelta(time1, time2, resolution=None):
     Calculate time delta between two C{datetime} objects.
     (the result is somewhat imprecise, only use for prettyprinting).
     
-    Was originally based on the function pretty_timedelta from:
-	http://trac.edgewall.org/browser/trunk/trac/util/datefmt.py
+    Copied from: http://trac.edgewall.org/browser/trunk/trac/util/datefmt.py
     """
     
     if time1 > time2:
         time2, time1 = time1, time2
+    units = ((3600 * 24 * 365, 'year',   'years'),
+             (3600 * 24 * 30,  'month',  'months'),
+             (3600 * 24 * 7,   'week',   'weeks'),
+             (3600 * 24,       'day',    'days'),
+             (3600,            'hour',   'hours'),
+             (60,              'minute', 'minutes'))
     diff = time2 - time1
     age_s = int(diff.days * 86400 + diff.seconds)
     if resolution and age_s < resolution:
-        return ""
-    
-    # I do not see a way to make this less repetitive - to make the 
-    # strings fully translatable (i.e. also for languages that have more
-    # or less than two plural forms) we have to state all the strings
-    # explicitely within an ngettext call
+        return ''
     if age_s <= 60 * 1.9:
-        return ngettext("%i second", "%i seconds",age_s) % age_s
-    elif age_s <= 3600 * 1.9:
-        r = age_s / 60
-        return ngettext("%i minute", "%i minutes",r) % r
-    elif age_s <= 3600 * 24 * 1.9:
-        r = age_s / 3600
-        return ngettext("%i hour", "%i hours",r) % r        		
-    elif age_s <= 3600 * 24 * 7 * 1.9:
-        r = age_s / (3600 * 24)
-        return ngettext("%i day", "%i days",r) % r
-    elif age_s <= 3600 * 24 * 30 * 1.9:
-        r = age_s / (3600 * 24 * 7)
-        return ngettext("%i week", "%i weeks",r) % r
-    elif age_s <= 3600 * 24 * 365 * 1.9:
-        r = age_s / (3600 * 24 * 30)
-        return ngettext("%i month", "%i months",r) % r
-    else:
-        r = age_s / (3600 * 24 * 365)
-        return ngettext("%i year", "%i years",r) % r        
+        return '%i second%s' % (age_s, age_s != 1 and 's' or '')
+    for u, unit, unit_plural in units:
+        r = float(age_s) / float(u)
+        if r >= 1.9:
+            r = int(round(r))
+            return '%d %s' % (r, r == 1 and unit or unit_plural)
+    return ''

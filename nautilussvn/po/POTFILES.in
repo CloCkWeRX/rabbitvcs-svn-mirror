@@ -48,4 +48,3 @@ ui/glade/update.glade.h
 ui/glade/relocate.glade.h
 lib/extensions/nautilus/NautilusSvn.py
 lib/vcs/svn/__init__.py
-lib/helper.py
