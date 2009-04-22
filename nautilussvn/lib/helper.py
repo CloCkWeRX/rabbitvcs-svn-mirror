@@ -528,3 +528,24 @@ def pretty_timedelta(time1, time2, resolution=None):
     else:
         r = age_s / (3600 * 24 * 365)
         return ngettext("%i year", "%i years",r) % r        
+
+def _commonpath(l1, l2, common=[]):
+    """
+    Helper method for the get_relative_path method
+    """
+    if len(l1) < 1: return (common, l1, l2)
+    if len(l2) < 1: return (common, l1, l2)
+    if l1[0] != l2[0]: return (common, l1, l2)
+    return _commonpath(l1[1:], l2[1:], common+[l1[0]])
+    
+def get_relative_path(p1, p2):
+    """
+    Method that returns the relative path between the specified paths
+    """
+    (common,l1,l2) = _commonpath(p1.split(os.path.sep), p2.split(os.path.sep))
+    p = []
+    if len(l1) > 0:
+        p = [ '../' * len(l1) ]
+    p = p + l2
+    return os.path.join( *p )
+    

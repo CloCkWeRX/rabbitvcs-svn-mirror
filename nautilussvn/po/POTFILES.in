@@ -14,6 +14,7 @@ ui/export.py
 ui/resolve.py
 ui/action.py
 ui/commit.py
+ui/createpatch.py
 ui/dialog.py
 ui/switch.py
 ui/unlock.py
@@ -30,6 +31,7 @@ ui/ignore.py
 ui/glade/switch.glade.h
 ui/glade/notification.glade.h
 ui/glade/commit.glade.h
+ui/glade/createpatch.glade.h
 ui/glade/lock.glade.h
 ui/glade/properties.glade.h
 ui/glade/annotate.glade.h

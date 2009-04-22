@@ -478,6 +478,8 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             # files we're monitoring to see if their status has changed. We
             # need to make a copy of monitored_files as the rescanning process
             # will affect it.
+            # FIXME: make sure you only check paths within the same working
+            # copy....
             check_list = copy.copy(self.monitored_files)
             while len(check_list):
                 check_list.pop().invalidate_extension_info()
@@ -1181,6 +1183,38 @@ class MainContextMenu:
                         "condition": (lambda: True),
                         "submenus": []
                     },
+                   {
+                        "identifier": "NautilusSvn::CreatePatch",
+                        "label": _("Create Patch..."),
+                        "tooltip": _("Creates a unified diff file with all changes you made"),
+                        "icon": "nautilussvn-createpatch",
+                        "signals": {
+                            "activate": {
+                                "callback": self.callback_createpatch,
+                                "args": None
+                            }
+                        }, 
+                        "condition": self.condition_createpatch,
+                        "submenus": [
+                            
+                        ]
+                    },
+                    {
+                        "identifier": "NautilusSvn::ApplyPatch",
+                        "label": _("Apply Patch..."),
+                        "tooltip": _("Applies a unified diff file to the working copy"),
+                        "icon": "nautilussvn-applypatch",
+                        "signals": {
+                            "activate": {
+                                "callback": self.callback_applypatch,
+                                "args": None
+                            }
+                        }, 
+                        "condition": self.condition_applypatch,
+                        "submenus": [
+                            
+                        ]
+                    },
                     {
                         "identifier": "NautilusSvn::Properties",
                         "label": _("Properties"),
@@ -1460,6 +1494,27 @@ class MainContextMenu:
     def condition_properties(self):
         return (self.path_dict["is_in_a_or_a_working_copy"] and
                 self.path_dict["is_versioned"])
+
+    def condition_createpatch(self):
+        if self.path_dict["is_in_a_or_a_working_copy"]:
+            if (self.path_dict["is_added"] or
+                    self.path_dict["is_modified"] or
+                    self.path_dict["is_deleted"] or
+                    not self.path_dict["is_versioned"]):
+                return True
+            elif (self.path_dict["is_dir"] and
+                    (self.path_dict["has_added"] or
+                    self.path_dict["has_modified"] or
+                    self.path_dict["has_deleted"] or
+                    self.path_dict["has_unversioned"] or
+                    self.path_dict["has_missing"])):
+                return True
+        return False
+    
+    def condition_applypatch(self):
+        if self.path_dict["is_in_a_or_a_working_copy"]:
+            return True
+        return False
     
     def condition_add_to_ignore_list(self):
         return (self.path_dict["length"] == 1 and 
@@ -1662,6 +1717,13 @@ class MainContextMenu:
     def callback_rename(self, menu_item, paths):
         launch_ui_window("rename", paths)
 
+    def callback_createpatch(self, menu_item, paths):
+        pid = launch_ui_window("createpatch", paths)
+    
+    def callback_applypatch(self, menu_item, paths):
+        pid = launch_ui_window("applypatch", paths)
+        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
+    
     def callback_properties(self, menu_item, paths):
         launch_ui_window("properties", paths)
 

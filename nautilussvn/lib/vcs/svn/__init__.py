@@ -1119,3 +1119,38 @@ class SVN:
         """
 
         return self.client.merge(*args, **kwargs)
+
+    def diff(self, *args, **kwargs):
+        """
+        Returns the diff text between the base code and the working copy.
+        
+        @type   tmp_path: string
+        @param  tmp_path: Temporal path to store the diff
+        
+        @type   url_or_path: string
+        @param  url_or_path: From WC/URL location
+        
+        @type   revision1: pysvn.Revision
+        @param  revision1: Indicates the revision of the URL/Path (def: pysvn.Revision( opt_revision_kind.base ))
+        
+        @type   url_or_path2: string
+        @param  url_or_path2: From WC/URL location
+        
+        @type   revision2: pysvn.Revision
+        @param  revision2: Indicates the revision of the URL/Path (def: pysvn.Revision( opt_revision_kind.working ))
+        
+        @type   recurse: boolean
+        @param  recurse: Whether or not to recurse into sub-directories. (def: True)
+        
+        @type   ignore_ancestry: boolean
+        @param  ignore_ancestry: Whether or not to recurse into sub-directories. (def: False)
+        
+        @type   diff_deleted: boolean
+        @param  diff_deleted: Whether or not to recurse into sub-directories. (def: True)
+        
+        @type   ignore_content_type: boolean
+        @param  ignore_content_type: Whether or not to recurse into sub-directories. (def: False)
+        
+        """
+        
+        return self.client.diff(*args, **kwargs)
