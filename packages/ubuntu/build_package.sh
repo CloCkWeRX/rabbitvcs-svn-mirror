@@ -1,12 +1,9 @@
 #!/usr/bin/env bash
 
 # TODO:
-# . make the script less stateful -- use () and/or absolute paths
 # . give the script a proper usage() function
-# . some of the double-quotes below may not be necessary
 
-# SOURCEDIR is needed to copy the changelog back later
-SOURCEDIR="`pwd`"
+SOURCEDIR=`pwd`
 if [ ! -d ${SOURCEDIR}/packages ]; then
     echo "ERROR:"
     echo "   ./packages not found."
@@ -15,35 +12,33 @@ if [ ! -d ${SOURCEDIR}/packages ]; then
     exit 1
 fi
 
-# Grab some variables from the VERSION file
-package=`head -n 1 VERSION`
-version=`head -n 2 VERSION | tail -n 1`
+# Get the version identifier from the nautilussvn package
+PACKAGE_ID=`python -c "from nautilussvn import *;print package_identifier()"`
+PACKAGE_FILE=`echo $PACKAGE_ID | tr - _`
 
 # Cleanup
-rm -rf /tmp/nautilussvn_build
-mkdir /tmp/nautilussvn_build
+BUILDPATH=/tmp/nautilussvn_build
+rm -rf $BUILDPATH
+mkdir $BUILDPATH
 
 # Export
-svn export $SOURCEDIR /tmp/nautilussvn_build/${package}-${version}
+BUILDSRC=$BUILDPATH/$PACKAGE_ID
+svn export $SOURCEDIR $BUILDSRC
 
 # Zip up the original source code
-cd /tmp/nautilussvn_build
-tar -zcvf ${package}_${version}.orig.tar.gz ${package}-${version}
-cd ${package}-${version}/
+(cd $BUILDPATH && tar zcvf $PACKAGE_FILE.orig.tar.gz $PACKAGE_ID)
 
 # Update the changelog (be sure to commit this afterwards)
-cd packages/ubuntu/
-debchange -i
-cp ./debian/changelog "${SOURCEDIR}/packages/ubuntu/debian"
+(cd $BUILDSRC/packages/ubuntu/ && debchange -i)
+cp -v {$BUILDSRC,$SOURCEDIR}/packages/ubuntu/debian/changelog
 
 # Copy the Debian directory into place and build the directory
-cd ../../
-cp -R packages/ubuntu/debian/ .
-debuild
+cp -R $BUILDSRC{/packages/ubuntu/debian/,/}
+(cd $BUILDSRC && debuild)
 
 # Let the user know he should commit
-echo ""
+echo 
 echo "================================================================="
 echo " PLEASE COMMIT THE NEW CHANGELOG"
 echo "================================================================="
-echo ""
+echo 

@@ -33,7 +33,7 @@ if not os.path.exists(LOCALE_DIR):
 langs = []
 language = os.environ.get('LANGUAGE', None)
 if language:
-	langs += language.split(":")
+    langs += language.split(":")
 langs += [getdefaultlocale()[0]]
 if not langs:
     langs = ["en_US"]
@@ -43,3 +43,30 @@ _gettext.textdomain(APP_NAME)
 
 gettext = _gettext.translation(APP_NAME, LOCALE_DIR, languages=langs, fallback=True)
 
+
+def package_name():
+    """
+    Report the application name in a form appropriate for building
+    package files.
+
+    """
+    return APP_NAME.lower()
+
+
+def package_version():
+    """
+    Report the version number of the application, minus any name
+    extensions.
+
+    """
+    app_version = version.split('-')[0]
+    # TODO: sanity-check app_version: make sure it's just digits and dots
+    return app_version
+
+
+def package_identifier():
+    """
+    Return a package identifier suitable for use in a package file.
+
+    """
+    return "%s-%s" % (package_name(), package_version())
