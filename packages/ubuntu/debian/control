@@ -25,8 +25,7 @@ Depends: ${misc:Depends},
          python-gobject (>= 2.14.1),
          python-svn (>= 1.5.2),
          python-configobj (>= 4.4.0),
-         subversion (>= 1.4.6),
-         
+         subversion (>= 1.4.6)
 Suggests: meld
 Description: Integrated Subversion support for Nautilus
  An extension to Nautilus to allow better integration with the Subversion source
