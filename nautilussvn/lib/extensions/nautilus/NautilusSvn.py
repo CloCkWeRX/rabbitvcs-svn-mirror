@@ -322,6 +322,8 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             
             # The following statuses take precedence over the status
             # of children.
+            # FIXME: we have absolute and total luck that status happens to
+            # be in the scope here, that was never the intention
             if status.data["text_status"] in [
                     SVN.STATUS["added"],
                     SVN.STATUS["modified"],
