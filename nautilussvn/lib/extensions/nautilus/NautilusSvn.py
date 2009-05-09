@@ -177,6 +177,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             )
         )
     
+    @timeit
     def update_file_info(self, item):
         """
         
@@ -255,6 +256,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         for key, value in values.items():
             item.add_string_attribute(key, value)
     
+    @timeit
     def update_status(self, item, path):
         statuses = self.vcs_client.status_with_cache(path, invalidate=True)
         self.statuses[path] = self.get_text_status(path, statuses)
@@ -337,6 +339,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         return SVN.STATUS_REVERSE[statuses[-1].data["text_status"]]
     
     #~ @disable
+    @timeit
     def get_file_items(self, window, items):
         """
         Menu activated with items selected. Nautilus also calls this function
@@ -376,6 +379,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         return MainContextMenu(paths, self).construct_menu()
     
     #~ @disable
+    @timeit
     def get_background_items(self, window, item):
         """
         Menu activated on entering a directory. Builds context menu for File
@@ -495,7 +499,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             # First we need to see if the commit process is still running
             if os.path.exists("/proc/" + str(pid)):
                 # If so, check its status by reading the status file from /proc
-                f = open("/proc/%d/status"%pid).readlines()
+                f = open("/proc/%d/status" % pid).readlines()
                 # If it's a zombie process, then we can waitpid() on it to end the process
                 if "zombie" in f[1]:
                     os.waitpid(pid, 0)
@@ -867,7 +871,7 @@ class MainContextMenu:
                             },
                             {
                                 "identifier": "NautilusSvn::AddToIgnoreExt",
-                                "label": "*%s"%get_file_extension(self.paths[0]),
+                                "label": "*%s" % get_file_extension(self.paths[0]),
                                 "tooltip": _("Ignore all files with this extension"),
                                 "icon": None,
                                 "signals": {
