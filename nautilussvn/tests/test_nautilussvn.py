@@ -32,6 +32,7 @@ toplevel = normpath(join(dirname(abspath(__file__)), '..', '..'))
 sys.path.insert(0, toplevel)
 
 from unittest import TestCase, main
+import traceback
 
 import nautilus
 import pysvn
@@ -64,6 +65,29 @@ class NautilusSvnTest(TestCase):
         self.assertEqual(result, "nautilussvn-%s" % version)
 
 
+class FakeVersion(object):
+    """
+    Fake revision info for FakeInfo, below.
+
+    """
+    def __init__(self, number):
+        self.number = number
+
+
+class FakeInfo(object):
+    """
+    Fake pysvn.Client.info() response.
+
+    """
+    def __init__(self):
+        self.data = {'text_status': pysvn.wc_status_kind.none,
+                     'commit_revision': FakeVersion(1234),
+                     'commit_author': None,
+                     'commit_time': 0.0,
+                     'url': None,
+                     }
+
+
 class FakeClient(object):
     """
     Fake pysvn.Client that can have its behavior controlled.
@@ -79,7 +103,11 @@ class FakeClient(object):
         if self.send_empty_info:
             return None
         else:
-            return "Bad Info"
+            return FakeInfo()
+
+    def status(self, path, recurse=False):
+        """Return a fake status, as a list."""
+        return [FakeInfo()]
 
 
 class FakeLog(object):
@@ -111,6 +139,7 @@ class NautilusSvnPySvnTest(TestCase):
     def setUp(self):
         self.oldClient = pysvn.Client
         pysvn.Client = FakeClient
+        FakeClient.instance_count = 0
         self.oldLog = NautilusSvn.log
         self.logger = FakeLog("nautilussvn")
         NautilusSvn.log = self.logger
@@ -137,6 +166,21 @@ class NautilusSvnPySvnTest(TestCase):
         self.assertEqual(last_message[1],
                          "The path 'awesomepath' does not "
                          "appear to be under source control.")
+
+    def test_update_columns_correct_info(self):
+        """
+        Test the side effects of update_columns() when things happen
+        normally.
+
+        """
+        path = "excellentpath"
+        FakeClient.send_empty_info = False
+        item = nautilus.NautilusVFSFile()
+        self.nsvn.update_columns(item, path)
+        self.assertEqual(FakeClient.instance_count, 2)
+        if len(self.logger.messages) > 0:
+            for e,m,t in self.logger.messages:
+                traceback.print_exception(e, m, t)
 
     def tearDown(self):
         NautilusSvn.log = self.oldLog
