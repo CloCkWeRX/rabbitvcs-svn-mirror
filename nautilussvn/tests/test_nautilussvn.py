@@ -32,7 +32,12 @@ toplevel = normpath(join(dirname(abspath(__file__)), '..', '..'))
 sys.path.insert(0, toplevel)
 
 from unittest import TestCase, main
+import traceback
+
+import nautilus
+import pysvn
 import nautilussvn
+from nautilussvn.lib.extensions.nautilus import NautilusSvn
 
 
 class NautilusSvnTest(TestCase):
@@ -58,6 +63,128 @@ class NautilusSvnTest(TestCase):
         result = nautilussvn.package_identifier()
         version = nautilussvn.package_version()
         self.assertEqual(result, "nautilussvn-%s" % version)
+
+
+class FakeVersion(object):
+    """
+    Fake revision info for FakeInfo, below.
+
+    """
+    def __init__(self, number):
+        self.number = number
+
+
+class FakeInfo(object):
+    """
+    Fake pysvn.Client.info() response.
+
+    """
+    def __init__(self):
+        self.data = {'text_status': pysvn.wc_status_kind.none,
+                     'commit_revision': FakeVersion(1234),
+                     'commit_author': None,
+                     'commit_time': 0.0,
+                     'url': None,
+                     }
+
+
+class FakeClient(object):
+    """
+    Fake pysvn.Client that can have its behavior controlled.
+
+    """
+    instance_count = 0
+    send_empty_info = True
+
+    def __init__(self, *args, **kwargs):
+        FakeClient.instance_count += 1
+
+    def info(self, path):
+        if self.send_empty_info:
+            return None
+        else:
+            return FakeInfo()
+
+    def status(self, path, recurse=False):
+        """Return a fake status, as a list."""
+        return [FakeInfo()]
+
+
+class FakeLog(object):
+    """
+    Fake logger that allows us to pick the log messages out from
+    within unit tests.
+
+    """
+    def __init__(self, prefix):
+        self.prefix = prefix
+        self.messages = []
+
+    def exception(self):
+        """
+        Log an exception.  Just add the (exc_type, message,
+        traceback) tuple onto the list of messages.
+
+        """
+        info = sys.exc_info()
+        self.messages.append(info)
+
+
+class NautilusSvnPySvnTest(TestCase):
+    """
+    NautilusSvn tests that involve pysvn in such a way that we need to
+    fiddle with pysvn stuff for the tests to work.
+
+    """
+    def setUp(self):
+        self.oldClient = pysvn.Client
+        pysvn.Client = FakeClient
+        FakeClient.instance_count = 0
+        self.oldLog = NautilusSvn.log
+        self.logger = FakeLog("nautilussvn")
+        NautilusSvn.log = self.logger
+        self.nsvn = NautilusSvn.NautilusSvn()
+
+    def test_update_columns_missing_info(self):
+        """
+        Test the behavior of update_columns() when the info() call
+        returns None.
+        See http://code.google.com/p/nautilussvn/issues/detail?id=119
+
+        The desired behavior is that an error message is logged which
+        indicates that the given path is not under source control.
+
+        """
+        path = "awesomepath"
+        FakeClient.send_empty_info = True
+        item = nautilus.NautilusVFSFile()
+        self.nsvn.update_columns(item, path)
+        self.assertEqual(FakeClient.instance_count, 2)
+        self.assertEqual(len(self.logger.messages), 1)
+        last_message = self.logger.messages[-1]
+        self.assertEqual(str(last_message[1]),
+                         "The path 'awesomepath' does not "
+                         "appear to be under source control.")
+
+    def test_update_columns_correct_info(self):
+        """
+        Test the side effects of update_columns() when things happen
+        normally.
+
+        """
+        path = "excellentpath"
+        FakeClient.send_empty_info = False
+        item = nautilus.NautilusVFSFile()
+        self.nsvn.update_columns(item, path)
+        self.assertEqual(FakeClient.instance_count, 2)
+        if len(self.logger.messages) > 0:
+            for e,m,t in self.logger.messages:
+                traceback.print_exception(e, m, t)
+            self.fail()
+
+    def tearDown(self):
+        NautilusSvn.log = self.oldLog
+        pysvn.Client = self.oldClient
 
 
 if __name__ == "__main__":
