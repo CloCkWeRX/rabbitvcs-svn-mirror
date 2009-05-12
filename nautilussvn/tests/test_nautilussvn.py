@@ -145,7 +145,6 @@ class NautilusSvnPySvnTest(TestCase):
         NautilusSvn.log = self.logger
         self.nsvn = NautilusSvn.NautilusSvn()
 
-
     def test_update_columns_missing_info(self):
         """
         Test the behavior of update_columns() when the info() call
@@ -163,7 +162,7 @@ class NautilusSvnPySvnTest(TestCase):
         self.assertEqual(FakeClient.instance_count, 2)
         self.assertEqual(len(self.logger.messages), 1)
         last_message = self.logger.messages[-1]
-        self.assertEqual(last_message[1],
+        self.assertEqual(str(last_message[1]),
                          "The path 'awesomepath' does not "
                          "appear to be under source control.")
 
@@ -181,6 +180,7 @@ class NautilusSvnPySvnTest(TestCase):
         if len(self.logger.messages) > 0:
             for e,m,t in self.logger.messages:
                 traceback.print_exception(e, m, t)
+            self.fail()
 
     def tearDown(self):
         NautilusSvn.log = self.oldLog

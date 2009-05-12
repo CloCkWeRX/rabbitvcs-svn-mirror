@@ -218,13 +218,15 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         # Do our magic
         if bool(int(settings.get("general", "enable_attributes"))): self.update_columns(item, path)
         if bool(int(settings.get("general", "enable_emblems"))): self.update_status(item, path)
-        
+
     def update_columns(self, item, path):
         """
-        Update the columns for a given item. This isn't a very elegant 
-        function but it does work.
+        Update the columns (attributes) for a given Nautilus item,
+        filling them in with information from the version control
+        server.
+
         """
-        
+
         values = {
             "status": "",
             "revision": "",
@@ -232,30 +234,34 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             "author": "",
             "age": ""
         }
-        
+
         try:
             # TODO: using pysvn directly because I don't like the current
             # SVN class.
             client = pysvn.Client()
-            info = client.info(path).data
+            client_info = client.info(path)
+            if client_info is None:
+                raise ValueError("The path '%s' does not appear "
+                                 "to be under source control." % path)
+            info = client_info.data
             status = client.status(path, recurse=False)[-1].data
-            
+
             values["status"] = SVN.STATUS_REVERSE[status["text_status"]]
             values["revision"] = str(info["commit_revision"].number)
             values["url"] = str(info["url"])
             values["author"] = str(info["commit_author"])
             values["age"] = str(
                 pretty_timedelta(
-                    datetime.datetime.fromtimestamp(info["commit_time"]), 
+                    datetime.datetime.fromtimestamp(info["commit_time"]),
                     datetime.datetime.now()
                 )
             )
-        except: 
+        except:
             log.exception()
-            
+
         for key, value in values.items():
             item.add_string_attribute(key, value)
-    
+
     @timeit
     def update_status(self, item, path):
         statuses = self.vcs_client.status_with_cache(path, invalidate=True)
