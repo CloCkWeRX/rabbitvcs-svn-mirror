@@ -1,0 +1,10 @@
+*************** ui/glade/update.glade.h
+*** 48,50 ****
+  ui/glade/relocate.glade.h
+  lib/extensions/nautilus/NautilusSvn.py
+  lib/vcs/svn/__init__.py
+--- 48,51 ----
+  ui/glade/relocate.glade.h
+  lib/extensions/nautilus/NautilusSvn.py
+  lib/vcs/svn/__init__.py
++ lib/helper.py
