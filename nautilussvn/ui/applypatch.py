@@ -25,6 +25,9 @@ import os.path
 import pygtk
 import gobject
 import gtk
+import os
+import commands
+import subprocess
 
 from nautilussvn.ui import InterfaceNonView
 from nautilussvn.ui.action import VCSAction
@@ -51,14 +54,16 @@ class ApplyPatch(InterfaceNonView):
     def choose_patch_path(self):
         path = ""
         
-        dialog = gtk.FileChooserDialog(_("Apply Patch"),None,
-                                       gtk.FILE_CHOOSER_ACTION_OPEN,(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                                                                     gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+        dialog = gtk.FileChooserDialog(
+            _("Apply Patch"),
+            None,
+            gtk.FILE_CHOOSER_ACTION_OPEN,(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                                          gtk.STOCK_SAVE, gtk.RESPONSE_OK))
         dialog.set_default_response(gtk.RESPONSE_OK)
         response = dialog.run()
         if response == gtk.RESPONSE_OK:
             path = dialog.get_filename()
-            
+        
         dialog.destroy()
         
         return path
@@ -66,6 +71,10 @@ class ApplyPatch(InterfaceNonView):
     def start(self):
     
         path = self.choose_patch_path()
+        
+        # If empty path, means we've cancelled
+        if not len(path):
+            return
         
         ticks = 2
         self.action = nautilussvn.ui.action.VCSAction(
@@ -76,12 +85,7 @@ class ApplyPatch(InterfaceNonView):
         self.action.append(self.action.set_header, _("Apply Patch"))
         self.action.append(self.action.set_status, _("Applying Patch File..."))
         
-        # Change dir to the working copy, then we can apply the patch file
-        import os
-        os.chdir(self.common)
-        
-        import commands
-        status, output = commands.getstatusoutput("patch -p0 -i " + '"'+str(path)+'"')
+        subprocess.Popen(["patch", "-p0", "-i", str(path), "--directory", self.common])
         
         self.action.append(self.action.set_status, _("Patch File Applied"))
         self.action.append(self.action.finish)

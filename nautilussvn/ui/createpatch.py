@@ -26,6 +26,8 @@ import thread
 import pygtk
 import gobject
 import gtk
+import os
+from tempfile import NamedTemporaryFile
 
 from nautilussvn.ui import InterfaceView
 from nautilussvn.ui.action import VCSAction
@@ -150,9 +152,11 @@ class CreatePatch(InterfaceView):
     def choose_patch_path(self):
         path = ""
         
-        dialog = gtk.FileChooserDialog(_("Create Patch"),None,
-                                       gtk.FILE_CHOOSER_ACTION_SAVE,(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                                                                     gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+        dialog = gtk.FileChooserDialog(
+            _("Create Patch"),
+            None,
+            gtk.FILE_CHOOSER_ACTION_SAVE,(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                                          gtk.STOCK_SAVE, gtk.RESPONSE_OK))
         dialog.set_default_response(gtk.RESPONSE_OK)
         response = dialog.run()
         if response == gtk.RESPONSE_OK:
@@ -175,13 +179,13 @@ class CreatePatch(InterfaceView):
     def on_ok_clicked(self, widget, data=None):
         items = self.files_table.get_activated_rows(1)
         self.hide()
-
+        
         if len(items) == 0:
             self.close()
             return
-
+        
         path = self.choose_patch_path()
-
+        
         ticks = len(items)*2
         self.action = nautilussvn.ui.action.VCSAction(
             self.vcs,
@@ -190,13 +194,7 @@ class CreatePatch(InterfaceView):
         self.action.set_pbar_ticks(ticks)
         self.action.append(self.action.set_header, _("Create Patch"))
         self.action.append(self.action.set_status, _("Creating Patch File..."))
-
-        # Change dir to the working copy, then we can do the diff in the relative path
-        #   getting back a diff file with relative paths :)
-        import os
-        os.chdir(self.common)
         
-        from tempfile import NamedTemporaryFile
         fileObj = open(path,"w")
         
         # Add to the Patch file only the selected items
