@@ -1,29 +1,31 @@
-# Russian translation for nautilussvn
-# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# Russian translations for nautilussvn package
+# Русские переводы для пакета nautilussvn.
+# Copyright (C) 2009 THE nautilussvn'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the nautilussvn package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#  <rion4ik@gmail.com>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilussvn\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"Project-Id-Version: nautilussvn 0.12\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-03-04 14:35-0500\n"
-"PO-Revision-Date: 2009-03-25 14:18+0000\n"
-"Last-Translator: Vadim Peretokin <vperetokin@gmail.com>\n"
-"Language-Team: Russian <ru@li.org>\n"
+"PO-Revision-Date: 2009-05-13 10:27+0000\n"
+"Last-Translator: Rion <rion4ik@gmail.com>\n"
+"Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-05-13 06:52+0000\n"
+"X-Launchpad-Export-Date: 2009-05-13 10:40+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
+"X-Language: ru_RU\n"
 
 #: ui/rename.py:70 ui/glade/rename.glade.h:2
 msgid "Rename"
-msgstr "Переменовать"
+msgstr "Переименовать"
 
 #: ui/annotate.py:71
 msgid "Line"
-msgstr "Линия"
+msgstr "Строка"
 
 #: ui/annotate.py:71 ui/log.py:80
 msgid "Author"
@@ -35,46 +37,46 @@ msgstr "Текст"
 
 #: ui/annotate.py:138 lib/vcs/svn/__init__.py:122 lib/vcs/svn/__init__.py:124
 msgid "Completed"
-msgstr "Закончено"
+msgstr "Завершено"
 
 #: ui/settings.py:50
 msgid "English"
-msgstr "Англиский"
+msgstr "Английский"
 
 #: ui/settings.py:156 ui/settings.py:165
 msgid "Select a program"
-msgstr "Выберите программу"
+msgstr "Выбор программы"
 
 #: ui/cleanup.py:54 lib/extensions/nautilus/NautilusSvn.py:831
 msgid "Cleanup"
-msgstr "Почистить"
+msgstr "Зачистить"
 
 #: ui/cleanup.py:55 ui/glade/cleanup.glade.h:1
 msgid "Cleaning Up..."
-msgstr "Чистим..."
+msgstr "Зачистка..."
 
 #: ui/cleanup.py:57
 msgid "Completed Cleanup"
-msgstr "Закончили чистить"
+msgstr "Зачистка завершена"
 
 #: ui/relocate.py:86 ui/glade/relocate.glade.h:3
 msgid "Relocate"
-msgstr "Передвинуть"
+msgstr "Переселить"
 
 #: ui/add.py:64 ui/lock.py:66 ui/resolve.py:55 ui/commit.py:73 ui/unlock.py:55
 #: ui/revert.py:55
 msgid "Extension"
-msgstr "Окончание"
+msgstr "Расширение"
 
 #: ui/add.py:78 ui/lock.py:96 ui/commit.py:97 ui/unlock.py:70 ui/log.py:253
 #: ui/glade/log.glade.h:6
 msgid "Loading..."
-msgstr "Загружаем..."
+msgstr "Загрузка..."
 
 #: ui/add.py:81 ui/lock.py:99 ui/commit.py:100 ui/unlock.py:91
 #, python-format
 msgid "Found %d item(s)"
-msgstr "Нашли %d вещь(ей)"
+msgstr "Найдено %d элементов"
 
 #: ui/add.py:115 ui/commit.py:269 ui/glade/add.glade.h:1
 #: lib/extensions/nautilus/NautilusSvn.py:638
@@ -83,11 +85,11 @@ msgstr "Добавить"
 
 #: ui/add.py:116
 msgid "Running Add Command..."
-msgstr "Добавляем..."
+msgstr "Добавление..."
 
 #: ui/add.py:118
 msgid "Completed Add"
-msgstr "Добавили"
+msgstr "Добавлено"
 
 #: ui/add.py:141 ui/lock.py:206 ui/commit.py:239
 msgid "Open"
@@ -104,30 +106,30 @@ msgstr "Да"
 
 #: ui/lock.py:186 ui/commit.py:229 lib/extensions/nautilus/NautilusSvn.py:597
 msgid "View Diff"
-msgstr "Посмотреть разницу"
+msgstr "Показать отличия"
 
 #: ui/lock.py:196 ui/glade/switch.glade.h:6 ui/glade/branch.glade.h:10
 #: ui/glade/merge.glade.h:18 ui/glade/checkout.glade.h:11
 #: ui/glade/update.glade.h:7
 msgid "Show log"
-msgstr "Показать журнал"
+msgstr "Показать лог"
 
 #: ui/action.py:249 ui/log.py:309
 msgid "Finished"
-msgstr "Закончили"
+msgstr "Завершено"
 
 #: ui/action.py:253
 #, python-format
 msgid "%s - Finished"
-msgstr "%s - Закончили"
+msgstr "%s - Завершено"
 
 #: ui/dialog.py:47 ui/log.py:81 ui/glade/dialogs.glade.h:20
 msgid "Message"
-msgstr "Запись"
+msgstr "Сообщение"
 
 #: ui/dialog.py:88
 msgid "Select a Folder"
-msgstr "Выберите папку"
+msgstr "Выбор каталога"
 
 #: ui/dialog.py:117 ui/glade/log.glade.h:12
 msgid "to"
@@ -135,17 +137,19 @@ msgstr "до"
 
 #: ui/dialog.py:210
 msgid "Select a File"
-msgstr "Выберите файл"
+msgstr "Выбрать файл"
 
 #: ui/branch.py:71
 msgid ""
 "There have been modifications to your working copy.  If you copy from the "
 "HEAD revision you will lose your changes."
 msgstr ""
+"В рабочей копии имеются изменения.  Если вы скопируете из HEAD ревизии, то "
+"потеряете свои изменения."
 
 #: ui/branch.py:89
 msgid "You must supply a destination path."
-msgstr ""
+msgstr "Вы должны задать путь назначения."
 
 #: ui/branch.py:99
 msgid "The from revision field is required."
@@ -157,7 +161,7 @@ msgstr ""
 
 #: ui/branch.py:123 ui/glade/branch.glade.h:4
 msgid "Branch/tag"
-msgstr ""
+msgstr "Ветка/тэг"
 
 #: ui/branch.py:124
 msgid "Running Branch/tag Command..."
@@ -169,15 +173,15 @@ msgstr ""
 
 #: ui/updateto.py:70
 msgid "Update To Revision"
-msgstr ""
+msgstr "Обновить до ревизии"
 
 #: ui/updateto.py:71 ui/update.py:54
 msgid "Updating..."
-msgstr ""
+msgstr "Обновление..."
 
 #: ui/updateto.py:79 ui/update.py:57
 msgid "Completed Update"
-msgstr ""
+msgstr "Обновление завершено"
 
 #: ui/rename.py:59
 msgid "The new name field is required"
@@ -185,30 +189,30 @@ msgstr ""
 
 #: ui/rename.py:71
 msgid "Running Rename Command..."
-msgstr ""
+msgstr "Переименовывание..."
 
 #: ui/rename.py:78
 msgid "Completed Rename"
-msgstr ""
+msgstr "Переименовано"
 
 #: ui/annotate.py:51
 msgid "Cannot annotate a directory"
-msgstr ""
+msgstr "Нельзя комментировать каталоги"
 
 #: ui/annotate.py:58
 #, python-format
 msgid "Annotate - %s"
-msgstr ""
+msgstr "Комментировать - %s"
 
 #: ui/annotate.py:71 ui/log.py:80 ui/glade/switch.glade.h:5
 #: ui/glade/merge.glade.h:17 ui/glade/checkout.glade.h:10
 #: ui/glade/update.glade.h:6
 msgid "Revision"
-msgstr ""
+msgstr "Ревизия"
 
 #: ui/annotate.py:72 ui/dialog.py:47 ui/log.py:81
 msgid "Date"
-msgstr ""
+msgstr "Дата"
 
 #: ui/annotate.py:112
 msgid "The from revision field must be an integer"
@@ -216,7 +220,7 @@ msgstr ""
 
 #: ui/annotate.py:122
 msgid "Generating Annotation..."
-msgstr ""
+msgstr "Генерирование комментария..."
 
 #: ui/settings.py:174
 msgid "Are you sure you want to clear your repository paths?"
@@ -228,19 +232,19 @@ msgstr ""
 
 #: ui/settings.py:185
 msgid "Are you sure you want to clear your previous messages?"
-msgstr ""
+msgstr "Вы точно хотите удалить ваши предыдущие сообщения?"
 
 #: ui/settings.py:192
 msgid "Previous messages cleared"
-msgstr ""
+msgstr "Предыдущие сообщения удалены"
 
 #: ui/settings.py:196
 msgid "Are you sure you want to clear your authentication information?"
-msgstr ""
+msgstr "Вы точно хотите удалить информацию о аутентийикации?"
 
 #: ui/settings.py:213
 msgid "Authentication information cleared"
-msgstr ""
+msgstr "Информация о аутентификации удалена"
 
 #: ui/relocate.py:76
 msgid "The from and to url fields are both required."
@@ -257,7 +261,7 @@ msgstr ""
 #: ui/add.py:64 ui/lock.py:66 ui/resolve.py:55 ui/action.py:66 ui/commit.py:73
 #: ui/unlock.py:55 ui/log.py:89 ui/revert.py:55
 msgid "Path"
-msgstr ""
+msgstr "Путь"
 
 #: ui/add.py:150 ui/lock.py:216 ui/commit.py:249
 msgid "Browse to"
@@ -265,12 +269,12 @@ msgstr ""
 
 #: ui/add.py:168 ui/commit.py:299 lib/extensions/nautilus/NautilusSvn.py:654
 msgid "Add to ignore list"
-msgstr ""
+msgstr "Добавить в игнор"
 
 #: ui/import.py:41
 #, python-format
 msgid "Import - %s"
-msgstr ""
+msgstr "Импорт - %s"
 
 #: ui/import.py:68
 msgid "The repository URL field is required."
@@ -279,40 +283,40 @@ msgstr ""
 #: ui/import.py:80 ui/glade/import.glade.h:3
 #: lib/extensions/nautilus/NautilusSvn.py:888
 msgid "Import"
-msgstr ""
+msgstr "Импорт"
 
 #: ui/import.py:81
 msgid "Running Import Command..."
-msgstr ""
+msgstr "Импортирование..."
 
 #: ui/import.py:89
 msgid "Completed Import"
-msgstr ""
+msgstr "Импорт завершен"
 
 #: ui/lock.py:67 lib/vcs/svn/__init__.py:132
 msgid "Locked"
-msgstr ""
+msgstr "Блокирован"
 
 #: ui/lock.py:144
 msgid "Get Lock"
-msgstr ""
+msgstr "Заблокировать"
 
 #: ui/lock.py:145
 msgid "Running Lock Command..."
-msgstr ""
+msgstr "Блокировка..."
 
 #: ui/lock.py:154
 msgid "Completed Lock"
-msgstr ""
+msgstr "Заблокировано"
 
 #: ui/lock.py:176
 msgid "Remove Lock"
-msgstr ""
+msgstr "Удалить блокировку"
 
 #: ui/export.py:40
 #, python-format
 msgid "Export - %s"
-msgstr ""
+msgstr "Экспорт - %s"
 
 #: ui/export.py:58 ui/checkout.py:82
 msgid "The repository URL and destination path are both required fields."
@@ -320,15 +324,15 @@ msgstr ""
 
 #: ui/export.py:79 lib/extensions/nautilus/NautilusSvn.py:856
 msgid "Export"
-msgstr ""
+msgstr "Экспорт"
 
 #: ui/export.py:80
 msgid "Running Export Command..."
-msgstr ""
+msgstr "Экспортирование..."
 
 #: ui/export.py:91
 msgid "Completed Export"
-msgstr ""
+msgstr "Экспорт завершен"
 
 #: ui/resolve.py:45 ui/resolve.py:76
 #: lib/extensions/nautilus/NautilusSvn.py:767
@@ -345,19 +349,19 @@ msgstr ""
 
 #: ui/action.py:66 ui/log.py:89
 msgid "Action"
-msgstr ""
+msgstr "Действие"
 
 #: ui/action.py:66
 msgid "Mime Type"
-msgstr ""
+msgstr "Тип mime"
 
 #: ui/action.py:135
 msgid "Empty Message"
-msgstr ""
+msgstr "Пустое сообщение"
 
 #: ui/commit.py:66
 msgid "The given path is not a working copy"
-msgstr ""
+msgstr "Заданный путь не является рабочей копией"
 
 #: ui/commit.py:74
 msgid "Text Status"
@@ -370,32 +374,32 @@ msgstr ""
 #: ui/commit.py:188 ui/glade/commit.glade.h:4
 #: lib/extensions/nautilus/NautilusSvn.py:568
 msgid "Commit"
-msgstr ""
+msgstr "Зафиксировать"
 
 #: ui/commit.py:189
 msgid "Running Commit Command..."
-msgstr ""
+msgstr "Фиксация..."
 
 #: ui/commit.py:195
 msgid "Completed Commit"
-msgstr ""
+msgstr "Фиксация завершена"
 
 #: ui/commit.py:279 ui/revert.py:45 ui/revert.py:75
 #: lib/extensions/nautilus/NautilusSvn.py:751
 msgid "Revert"
-msgstr ""
+msgstr "Откатить изменения"
 
 #: ui/commit.py:289
 msgid "Restore"
-msgstr ""
+msgstr "Восстановить"
 
 #: ui/dialog.py:229 ui/glade/dialogs.glade.h:10
 msgid "Are you sure you want to continue?"
-msgstr ""
+msgstr "Вы действительно хотите продолжить?"
 
 #: ui/dialog.py:257
 msgid "the selected item(s)"
-msgstr ""
+msgstr "выбранные элементы"
 
 #: ui/switch.py:65
 msgid "The repository location is a required field."
@@ -403,7 +407,7 @@ msgstr ""
 
 #: ui/switch.py:81 ui/glade/switch.glade.h:7
 msgid "Switch"
-msgstr ""
+msgstr "Переключить"
 
 #: ui/switch.py:82
 msgid "Running Switch Command..."
@@ -415,15 +419,15 @@ msgstr ""
 
 #: ui/unlock.py:45 ui/unlock.py:109
 msgid "Unlock"
-msgstr ""
+msgstr "Разблокировать"
 
 #: ui/unlock.py:110
 msgid "Running Unlock Command..."
-msgstr ""
+msgstr "Снатие блокировки..."
 
 #: ui/unlock.py:113
 msgid "Completed Unlock"
-msgstr ""
+msgstr "Блокировка снята"
 
 #: ui/merge.py:81
 msgid "Running Merge Test"
@@ -443,17 +447,18 @@ msgstr ""
 
 #: ui/merge.py:93
 msgid "Merge"
-msgstr ""
+msgstr "Слить"
 
+# тупая трансляция.. хз как лучше
 #: ui/checkout.py:52
 #, python-format
 msgid "Checkout - %s"
-msgstr ""
+msgstr "Загрузить - %s"
 
 #: ui/checkout.py:100 ui/glade/checkout.glade.h:5
 #: lib/extensions/nautilus/NautilusSvn.py:536
 msgid "Checkout"
-msgstr ""
+msgstr "Загрузить"
 
 #: ui/checkout.py:101
 msgid "Running Checkout Command..."
@@ -461,12 +466,12 @@ msgstr ""
 
 #: ui/checkout.py:111
 msgid "Completed Checkout"
-msgstr ""
+msgstr "Загрузка завершена"
 
 #: ui/log.py:63
 #, python-format
 msgid "Log - %s"
-msgstr ""
+msgstr "Лог - %s"
 
 #: ui/log.py:90
 msgid "Copy From Path"
@@ -478,7 +483,7 @@ msgstr ""
 
 #: ui/log.py:112
 msgid "Cancelled"
-msgstr ""
+msgstr "Отменено"
 
 #: ui/log.py:236 ui/log.py:237 ui/glade/log.glade.h:8
 msgid "N/A"
@@ -486,7 +491,7 @@ msgstr ""
 
 #: ui/log.py:284
 msgid "(no author)"
-msgstr ""
+msgstr "(без автора)"
 
 #: ui/log.py:313
 msgid "Retrieving Log Information..."
@@ -495,32 +500,32 @@ msgstr ""
 #: ui/properties.py:53
 #, python-format
 msgid "Properties - %s"
-msgstr ""
+msgstr "Свойства - %s"
 
 #: ui/properties.py:61
 msgid "Name"
-msgstr ""
+msgstr "Имя"
 
 #: ui/properties.py:61
 msgid "Value"
-msgstr ""
+msgstr "Значение"
 
 #: ui/revert.py:76
 msgid "Running Revert Command..."
-msgstr ""
+msgstr "Восстановление исходного состояния..."
 
 #: ui/revert.py:78
 msgid "Completed Revert"
-msgstr ""
+msgstr "Исходное состояние восстановлено"
 
 #: ui/update.py:53 ui/glade/update.glade.h:8
 #: lib/extensions/nautilus/NautilusSvn.py:552
 msgid "Update"
-msgstr ""
+msgstr "Обновить"
 
 #: ui/create.py:49
 msgid "Repository successfully created"
-msgstr ""
+msgstr "Репозиторий успешно создан"
 
 #: ui/create.py:51
 msgid ""
@@ -531,7 +536,7 @@ msgstr ""
 #: ui/glade/switch.glade.h:1 ui/glade/checkout.glade.h:3
 #: ui/glade/update.glade.h:1
 msgid "<b>Revision</b>"
-msgstr ""
+msgstr "<b>Ревизия</b>"
 
 #: ui/glade/switch.glade.h:2
 msgid "<b>Switch Details</b>"
@@ -540,7 +545,7 @@ msgstr ""
 #: ui/glade/switch.glade.h:3 ui/glade/branch.glade.h:8
 #: ui/glade/relocate.glade.h:2
 msgid "From:"
-msgstr ""
+msgstr "Из:"
 
 #: ui/glade/switch.glade.h:4 ui/glade/merge.glade.h:10
 #: ui/glade/checkout.glade.h:7 ui/glade/update.glade.h:3
@@ -550,7 +555,7 @@ msgstr ""
 #: ui/glade/switch.glade.h:8 ui/glade/branch.glade.h:11
 #: ui/glade/relocate.glade.h:4
 msgid "To:"
-msgstr ""
+msgstr "В:"
 
 #: ui/glade/notification.glade.h:1
 msgid "Notification Messages"
@@ -558,11 +563,11 @@ msgstr ""
 
 #: ui/glade/commit.glade.h:1 ui/glade/branch.glade.h:1
 msgid "<b>Add Message</b>"
-msgstr ""
+msgstr "<b>Добавить сообщение</b>"
 
 #: ui/glade/commit.glade.h:2
 msgid "<b>Changed Files</b> (double-click to see diff)"
-msgstr ""
+msgstr "<b>Измененные файлы</b> (двойной щелчек для просмотра изменений)"
 
 #: ui/glade/commit.glade.h:3
 msgid "<b>Commit to:</b>"
@@ -571,55 +576,55 @@ msgstr ""
 #: ui/glade/commit.glade.h:5 ui/glade/lock.glade.h:4 ui/glade/branch.glade.h:9
 #: ui/glade/dialogs.glade.h:22 ui/glade/import.glade.h:5
 msgid "Previous Messages"
-msgstr ""
+msgstr "Предыдущие сообщения"
 
 #: ui/glade/commit.glade.h:6 ui/glade/lock.glade.h:5 ui/glade/add.glade.h:2
 msgid "Select / Deselect all"
-msgstr ""
+msgstr "Выбрать / Снять выбор для всего"
 
 #: ui/glade/commit.glade.h:7
 msgid "Show unversioned files"
-msgstr ""
+msgstr "Показать файлы без версии"
 
 #: ui/glade/lock.glade.h:1
 msgid "<b>Files to lock</b>"
-msgstr ""
+msgstr "<b>Файлы на блокировки</b>"
 
 #: ui/glade/lock.glade.h:2
 msgid "<b>Please describe why you are locking these files</b>"
-msgstr ""
+msgstr "<b>Пожалуйста опишите причину блокировки этих файлов</b>"
 
 #: ui/glade/lock.glade.h:3
 msgid "Lock Files"
-msgstr ""
+msgstr "Блокировать файлы"
 
 #: ui/glade/lock.glade.h:6
 msgid "Steal the locks"
-msgstr ""
+msgstr "Скрыть блокировки"
 
 #: ui/glade/properties.glade.h:1
 msgid "<b>Properties for:</b>"
-msgstr ""
+msgstr "<b>Свойства для:</b>"
 
 #: ui/glade/properties.glade.h:3
 msgid "Edit..."
-msgstr ""
+msgstr "Редактиерование..."
 
 #: ui/glade/properties.glade.h:4
 msgid "New..."
-msgstr ""
+msgstr "Новый..."
 
 #: ui/glade/properties.glade.h:5 lib/extensions/nautilus/NautilusSvn.py:995
 msgid "Properties"
-msgstr ""
+msgstr "Свойства"
 
 #: ui/glade/properties.glade.h:6
 msgid "URL/Path:"
-msgstr ""
+msgstr "URL/Путь:"
 
 #: ui/glade/annotate.glade.h:1
 msgid "<b>From Revision</b>"
-msgstr ""
+msgstr "<b>Из ревизии</b>"
 
 #: ui/glade/annotate.glade.h:2
 msgid "<b>To Revision</b>"
@@ -627,15 +632,15 @@ msgstr ""
 
 #: ui/glade/annotate.glade.h:3
 msgid "Annotate"
-msgstr ""
+msgstr "Комментировать"
 
 #: ui/glade/about.glade.h:1
 msgid "<b>Links</b>"
-msgstr ""
+msgstr "<b>Ссылки</b>"
 
 #: ui/glade/about.glade.h:2
 msgid "<b>Version Information</b>"
-msgstr ""
+msgstr "<b>Информация о версии</b>"
 
 #: ui/glade/about.glade.h:3
 msgid "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
@@ -643,19 +648,19 @@ msgstr ""
 
 #: ui/glade/about.glade.h:4 lib/extensions/nautilus/NautilusSvn.py:1059
 msgid "About"
-msgstr ""
+msgstr "О программе"
 
 #: ui/glade/about.glade.h:5
 msgid "Authors:"
-msgstr ""
+msgstr "Авторы:"
 
 #: ui/glade/about.glade.h:6
 msgid "Thanks:"
-msgstr ""
+msgstr "Спасибо:"
 
 #: ui/glade/rename.glade.h:1
 msgid "New Name:"
-msgstr ""
+msgstr "Новое имя:"
 
 #: ui/glade/branch.glade.h:2
 msgid "<b>Create copy from</b>"
@@ -684,15 +689,15 @@ msgstr ""
 
 #: ui/glade/log.glade.h:2
 msgid "<b>Affected File(s)</b>"
-msgstr ""
+msgstr "<b>Затронутые файлы</b>"
 
 #: ui/glade/log.glade.h:3 ui/glade/dialogs.glade.h:3
 msgid "<b>Message</b>"
-msgstr ""
+msgstr "<b>Сообщение</b>"
 
 #: ui/glade/log.glade.h:4
 msgid "<b>Revisions Table</b>"
-msgstr ""
+msgstr "<b>Таблица ревизий</b>"
 
 #: ui/glade/log.glade.h:5
 msgid "Limit:"
@@ -708,7 +713,7 @@ msgstr ""
 
 #: ui/glade/log.glade.h:10
 msgid "Showing Revisions:"
-msgstr ""
+msgstr "Отображенные ревизии:"
 
 #: ui/glade/log.glade.h:11
 msgid "Stop on copy"
@@ -716,15 +721,15 @@ msgstr ""
 
 #: ui/glade/merge.glade.h:1
 msgid "<b>From URL</b>"
-msgstr ""
+msgstr "<b>Из URL</b>"
 
 #: ui/glade/merge.glade.h:2
 msgid "<b>From: (URL and revision to merge)</b>"
-msgstr ""
+msgstr "<b>Из: (URL и ревизия для слития)</b>"
 
 #: ui/glade/merge.glade.h:3 ui/glade/checkout.glade.h:1
 msgid "<b>Options</b>"
-msgstr ""
+msgstr "<b>Настройки</b>"
 
 #: ui/glade/merge.glade.h:4
 msgid "<b>Revision Range</b>"
@@ -777,7 +782,7 @@ msgstr ""
 #: ui/glade/merge.glade.h:16 ui/glade/checkout.glade.h:9
 #: ui/glade/update.glade.h:5
 msgid "Recursive"
-msgstr ""
+msgstr "Рекурсивно"
 
 #: ui/glade/merge.glade.h:19
 msgid "Test Merge"
@@ -796,15 +801,15 @@ msgstr ""
 
 #: ui/glade/settings.glade.h:1
 msgid "<b>Authentication</b>"
-msgstr ""
+msgstr "<b>Аутентификация</b>"
 
 #: ui/glade/settings.glade.h:2
 msgid "<b>Log Messages</b>"
-msgstr ""
+msgstr "<b>Сообщения лога</b>"
 
 #: ui/glade/settings.glade.h:3
 msgid "<b>Logging Options</b>"
-msgstr ""
+msgstr "<b>Настройки журнала</b>"
 
 #: ui/glade/settings.glade.h:4
 msgid "<b>NautilusSvn</b>"
@@ -812,15 +817,15 @@ msgstr ""
 
 #: ui/glade/settings.glade.h:5
 msgid "<b>Program used to browse repositories</b>"
-msgstr ""
+msgstr "<b>Программа для просмотра репозиториев</b>"
 
 #: ui/glade/settings.glade.h:6
 msgid "<b>Program used to compare files</b>"
-msgstr ""
+msgstr "<b>Программа используемая для сравнения файлов</b>"
 
 #: ui/glade/settings.glade.h:7
 msgid "<b>URL History</b>"
-msgstr ""
+msgstr "<b>История URL</b>"
 
 #: ui/glade/settings.glade.h:8 ui/glade/checkout.glade.h:4
 msgid "Browse..."
@@ -828,15 +833,15 @@ msgstr ""
 
 #: ui/glade/settings.glade.h:9
 msgid "Clear your authentication information"
-msgstr ""
+msgstr "Удалить информацию об аутентификации"
 
 #: ui/glade/settings.glade.h:10
 msgid "Enable emblems"
-msgstr ""
+msgstr "Разрешить иконки"
 
 #: ui/glade/settings.glade.h:11
 msgid "Enable file attributes"
-msgstr ""
+msgstr "Разрешить атрибуты файлов"
 
 #: ui/glade/settings.glade.h:12
 msgid "Enable recursive status checks"
@@ -844,11 +849,11 @@ msgstr ""
 
 #: ui/glade/settings.glade.h:13
 msgid "External Programs"
-msgstr ""
+msgstr "Внешние Программы"
 
 #: ui/glade/settings.glade.h:14
 msgid "General"
-msgstr ""
+msgstr "Общие"
 
 #: ui/glade/settings.glade.h:15
 msgid "Language:"
@@ -856,35 +861,35 @@ msgstr ""
 
 #: ui/glade/settings.glade.h:16
 msgid "Logging"
-msgstr ""
+msgstr "Журнал"
 
 #: ui/glade/settings.glade.h:17
 msgid "Minimum level to log"
-msgstr ""
+msgstr "Максимальный уровень журнала"
 
 #: ui/glade/settings.glade.h:18
 msgid "Number of URLs to remember"
-msgstr ""
+msgstr "Сколько URL'ов запоминать"
 
 #: ui/glade/settings.glade.h:19
 msgid "Number of messages to remember"
-msgstr ""
+msgstr "Сколько сообщений запоминать"
 
 #: ui/glade/settings.glade.h:20
 msgid "Saved Data"
-msgstr ""
+msgstr "Сохраненные даныне"
 
 #: ui/glade/settings.glade.h:21 lib/extensions/nautilus/NautilusSvn.py:1043
 msgid "Settings"
-msgstr ""
+msgstr "Настройки"
 
 #: ui/glade/settings.glade.h:22
 msgid "Show new version on the right side"
-msgstr ""
+msgstr "Показывать новую версию справа"
 
 #: ui/glade/settings.glade.h:23
 msgid "Type:"
-msgstr ""
+msgstr "Тип:"
 
 #: ui/glade/cleanup.glade.h:2
 msgid ""
@@ -899,15 +904,15 @@ msgstr ""
 
 #: ui/glade/dialogs.glade.h:2
 msgid "<b>Edit Property Details</b>"
-msgstr ""
+msgstr "<b>Редактирование свойства</b>"
 
 #: ui/glade/dialogs.glade.h:4
 msgid "<b>Please add your authentication details</b>"
-msgstr ""
+msgstr "<b>Пожалуйста добавьте информацию об аутентификации</b>"
 
 #: ui/glade/dialogs.glade.h:5
 msgid "<b>Previous Messages</b>"
-msgstr ""
+msgstr "<b>Предыдущие сообщения</b>"
 
 #: ui/glade/dialogs.glade.h:7
 msgid ""
@@ -916,15 +921,15 @@ msgstr ""
 
 #: ui/glade/dialogs.glade.h:8
 msgid "Accept Forever"
-msgstr ""
+msgstr "Принять навсегда"
 
 #: ui/glade/dialogs.glade.h:9
 msgid "Accept Once"
-msgstr ""
+msgstr "Принять единожды"
 
 #: ui/glade/dialogs.glade.h:11
 msgid "Authentication"
-msgstr ""
+msgstr "Аутентификация"
 
 #: ui/glade/dialogs.glade.h:12
 msgid "Check Certificate"
@@ -996,7 +1001,7 @@ msgstr ""
 
 #: ui/glade/checkout.glade.h:8 ui/glade/update.glade.h:4
 msgid "Omit Externals"
-msgstr ""
+msgstr "Без внешних включений"
 
 #: ui/glade/checkout.glade.h:12
 msgid "URL:"
@@ -1012,15 +1017,15 @@ msgstr ""
 
 #: ui/glade/update.glade.h:2
 msgid "<b>Update Depth</b>"
-msgstr ""
+msgstr "<b>Глубина обновления</b>"
 
 #: ui/glade/relocate.glade.h:1
 msgid "<b>Change the repository of your working copy</b>"
-msgstr ""
+msgstr "<b>Изменить репозиторий вашей рабочей копии</b>"
 
 #: lib/extensions/nautilus/NautilusSvn.py:362
 msgid "Debug"
-msgstr ""
+msgstr "Отладка"
 
 #: lib/extensions/nautilus/NautilusSvn.py:375
 msgid "DBus"
@@ -1028,7 +1033,7 @@ msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:388
 msgid "Start/Restart Service"
-msgstr ""
+msgstr "Запустить/перезапустить сервис"
 
 #: lib/extensions/nautilus/NautilusSvn.py:404
 msgid "Exit Service"
@@ -1036,7 +1041,7 @@ msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:422
 msgid "Bugs"
-msgstr ""
+msgstr "Баги"
 
 #: lib/extensions/nautilus/NautilusSvn.py:435
 msgid "Test Asynchronicity"
@@ -1044,11 +1049,11 @@ msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:453
 msgid "Open Shell"
-msgstr ""
+msgstr "Открыть терминал"
 
 #: lib/extensions/nautilus/NautilusSvn.py:469
 msgid "Refresh Status"
-msgstr ""
+msgstr "Обновить статус"
 
 #: lib/extensions/nautilus/NautilusSvn.py:486
 msgid "Debug Revert"
@@ -1072,7 +1077,7 @@ msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:519
 msgid "Add an emblem"
-msgstr ""
+msgstr "Добавить иконку"
 
 #: lib/extensions/nautilus/NautilusSvn.py:537
 msgid "Check out a working copy"
@@ -1080,11 +1085,11 @@ msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:553
 msgid "Update a working copy"
-msgstr ""
+msgstr "Обновить рабочую копию"
 
 #: lib/extensions/nautilus/NautilusSvn.py:569
 msgid "Commit modifications to the repository"
-msgstr ""
+msgstr "Зафиксировать изменения в репозитории"
 
 #: lib/extensions/nautilus/NautilusSvn.py:584
 msgid "NautilusSvn"
@@ -1096,7 +1101,7 @@ msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:613
 msgid "Show Log"
-msgstr ""
+msgstr "Показать лог"
 
 #: lib/extensions/nautilus/NautilusSvn.py:614
 msgid "Show a file's log information"
@@ -1116,7 +1121,7 @@ msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:703
 msgid "Update to revision..."
-msgstr ""
+msgstr "Обновить до ревизии..."
 
 #: lib/extensions/nautilus/NautilusSvn.py:704
 msgid "Update a file to a specific revision"
@@ -1124,7 +1129,7 @@ msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:719
 msgid "Rename..."
-msgstr ""
+msgstr "Переименовать..."
 
 #: lib/extensions/nautilus/NautilusSvn.py:720
 msgid "Schedule an item to be renamed on the repository"
@@ -1144,7 +1149,7 @@ msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:783
 msgid "Relocate..."
-msgstr ""
+msgstr "Переселить..."
 
 #: lib/extensions/nautilus/NautilusSvn.py:784
 msgid "Relocate your working copy"
@@ -1176,11 +1181,11 @@ msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:872
 msgid "Create Repository here"
-msgstr ""
+msgstr "Создать репозиторий здесь"
 
 #: lib/extensions/nautilus/NautilusSvn.py:873
 msgid "Create a repository in a folder"
-msgstr ""
+msgstr "Создать репозиторий в папке"
 
 #: lib/extensions/nautilus/NautilusSvn.py:889
 msgid "Import an item into a repository"
@@ -1188,7 +1193,7 @@ msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:913
 msgid "Branch/tag..."
-msgstr ""
+msgstr "Ветка/тэг..."
 
 #: lib/extensions/nautilus/NautilusSvn.py:914
 msgid "Copy an item to another location in the repository"
@@ -1196,7 +1201,7 @@ msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:929
 msgid "Switch..."
-msgstr ""
+msgstr "Переключить..."
 
 #: lib/extensions/nautilus/NautilusSvn.py:930
 msgid "Change the repository location of a working copy"
@@ -1212,7 +1217,7 @@ msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:970
 msgid "Annotate..."
-msgstr ""
+msgstr "Комментировать..."
 
 #: lib/extensions/nautilus/NautilusSvn.py:971
 msgid "Annotate a file"
@@ -1224,11 +1229,11 @@ msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:1027
 msgid "Help"
-msgstr ""
+msgstr "Помощь"
 
 #: lib/extensions/nautilus/NautilusSvn.py:1028
 msgid "View help"
-msgstr ""
+msgstr "Посмотреть помощь"
 
 #: lib/extensions/nautilus/NautilusSvn.py:1044
 msgid "View or change NautilusSvn settings"
@@ -1236,12 +1241,12 @@ msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:1060
 msgid "About NautilusSvn"
-msgstr ""
+msgstr "О NautilusSvn"
 
 #: lib/vcs/svn/__init__.py:111 lib/vcs/svn/__init__.py:120
 #: lib/vcs/svn/__init__.py:127
 msgid "Added"
-msgstr ""
+msgstr "Добавлено"
 
 #: lib/vcs/svn/__init__.py:112 lib/vcs/svn/__init__.py:128
 msgid "Copied"
@@ -1329,7 +1334,7 @@ msgstr ""
 
 #: lib/vcs/svn/__init__.py:150
 msgid "Merged"
-msgstr ""
+msgstr "Слито"
 
 #: lib/vcs/svn/__init__.py:151
 msgid "Conflicted"
