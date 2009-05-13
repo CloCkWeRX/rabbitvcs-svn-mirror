@@ -23,9 +23,11 @@
 import os
 import thread
 
+import gnomevfs
 import pygtk
 import gobject
 import gtk
+import gio
 import os
 from tempfile import NamedTemporaryFile
 
@@ -35,6 +37,7 @@ import nautilussvn.ui.widget
 import nautilussvn.ui.dialog
 import nautilussvn.lib
 import nautilussvn.lib.helper
+from nautilussvn.lib.helper import get_common_directory
 from nautilussvn.lib.log import Log
 
 log = Log("nautilussvn.ui.createpatch")
@@ -158,7 +161,11 @@ class CreatePatch(InterfaceView):
             gtk.FILE_CHOOSER_ACTION_SAVE,(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                                           gtk.STOCK_SAVE, gtk.RESPONSE_OK))
         dialog.set_default_response(gtk.RESPONSE_OK)
+        dialog.set_current_folder_uri(
+            gnomevfs.get_uri_from_local_path(get_common_directory(self.paths))
+        )
         response = dialog.run()
+        
         if response == gtk.RESPONSE_OK:
             path = dialog.get_filename()
             
@@ -185,6 +192,9 @@ class CreatePatch(InterfaceView):
             return
         
         path = self.choose_patch_path()
+        if not path:
+            self.close()
+            return
         
         ticks = len(items)*2
         self.action = nautilussvn.ui.action.VCSAction(
