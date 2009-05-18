@@ -115,6 +115,7 @@
                             <property name="height_request">100</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="has_focus">True</property>
                             <property name="pixels_below_lines">7</property>
                             <property name="wrap_mode">word</property>
                             <property name="accepts_tab">False</property>
