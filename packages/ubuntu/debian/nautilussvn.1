@@ -1,0 +1,35 @@
+.\"Created with GNOME Manpages Editor Wizard
+.\"http://sourceforge.net/projects/gmanedit2
+.TH nautilussvn 1 "May 25, 2009" "" "nautilussvn"
+
+.SH NAME
+nautilussvn \- Integrated Subversion support for Nautilus
+
+.SH SYNOPSIS
+.B nautilussvn
+<module> [path1] [path2] ...
+.br
+
+.SH DESCRIPTION
+.B nautilussvn
+provides integrated support for the Subversion (SVN) version control system in
+the Nautilus file manager. This command opens a new
+.B nautilus
+window and applies the given SVN command.
+
+.SH OPTIONS
+.B
+.IP module
+The SVN command to invoke. Available modules are: about, add, blame, checkout,
+cleanup, commit, create, delete, export, ignore, import, lock, log, merge,
+properties, relocate, rename, resolve, revert, settings, switch, unlock, update,
+updateto
+
+.B
+.IP path
+The file(s) or directory(\-ies) to apply the action to.
+
+.SH "SEE ALSO"
+.B nautilus(1)
+,
+.B svn(1)

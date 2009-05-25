@@ -124,7 +124,8 @@ update_notifier = [("/usr/share/nautilussvn", [
 
 # Documentation
 documentation = [("/usr/share/doc/nautilussvn", [
-    "README",
+# The README file is empty, and causes lintian errors if left in.
+#    "README",
     "AUTHORS",
     "MAINTAINERS",
     "CREDITS",

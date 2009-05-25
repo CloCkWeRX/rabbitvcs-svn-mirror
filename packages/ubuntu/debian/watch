@@ -1,0 +1,4 @@
+version=3
+opts="uversionmangle=s/-/./g" \
+ http://code.google.com/p/nautilussvn/downloads/list\
+ http://nautilussvn.googlecode.com/files/nautilussvn_(.*).tar.gz
