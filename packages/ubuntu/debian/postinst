@@ -19,8 +19,8 @@ gtk-update-icon-cache /usr/share/icons/hicolor/
 UPDATENOTIFIERDIR=/var/lib/update-notifier/user.d
 
 # Fix some permissions
-# TODO: this probably shouldn't be done here.
-chmod +x /usr/share/nautilussvn/do-nautilussvn-restart-nautilus
+# This should be fixed via the added binary-install target in debian/rules
+# chmod +x /usr/share/nautilussvn/do-nautilussvn-restart-nautilus
 
 echo "You need to run 'nautilus -q && nautilus &' to restart Nautilus."
 
