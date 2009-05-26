@@ -2,7 +2,8 @@
 #
 # Restart Nautilus so extensions are reloaded.
 #
-# This script gets called from the update-notifier hook.
+# This script gets called from the update-notifier hook, but never automatically
+# only through a visual dialog (see nautilussvn-restart-required.update-notifier).
 #
 
 nautilus -q
