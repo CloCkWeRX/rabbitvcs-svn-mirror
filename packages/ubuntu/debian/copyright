@@ -1,50 +1,47 @@
-This package was debianized by Bruce van der Kooij <brucevdkooij@gmail.com> and
-Jason Heeris <jason.heeris@gmail.com>
+Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=48
+Name: nautilussvn
+Maintainer: Jason Heeris <jason.heeris@gmail.com>
+Source: http://code.google.com/p/nautilussvn/
 
-It was downloaded from: {http://code.google.com/p/nautilussvn} 
+Files: *
+Copyright: 2006-2008, Jason Field <jason@jasonfield.com>
+           2007-2008, Bruce van der Kooij <brucevdkooij@gmail.com>
+           2008-2008, Adam Plumb <adamplumb@gmail.com>
+License: GPL-2+
+    On Debian systems the full text of the GNU General Public
+    License can be found in the `/usr/share/common-licenses/GPL-2'
+    file.
 
-Upstream Authors: 
-    Jason Field <jason@jasonfield.com>
-    Bruce van der Kooij <brucevdkooij@gmail.com>
-    Adam Plumb <adamplumb@gmail.com>
+Files: debian/*
+Copyright: 2006-2008, Jason Field <jason@jasonfield.com>
+           2007-2008, Bruce van der Kooij <brucevdkooij@gmail.com>
+           2008-2008, Adam Plumb <adamplumb@gmail.com>
+           2009, Jason Heeris <jason.heeris@gmail.com>
+License: GPL-3+
+    On Debian systems the full text of the GNU General Public
+    License can be found in the `/usr/share/common-licenses/GPL-3'
+    file.
 
-Copyright:
+Files: nautilussvn/data/icons/hicolor/scalable/emblems/*.svg
+Copyright: TortoiseSVN <http://tortoisesvn.tigris.org/>
+License: GPL-2+
+    On Debian systems the full text of the GNU General Public
+    License can be found in the `/usr/share/common-licenses/GPL-2'
+    file.
 
-    Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
-    Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
-    Copyright (C) 2008-2008 by Adam Plumb <adamplumb@gmail.com>
+Files: nautilussvn/lib/decorators.py
+Copyright: 2006-2008, Jason Field <jason@jasonfield.com>
+           2007-2008, Bruce van der Kooij <brucevdkooij@gmail.com>
+           2008-2008, Adam Plumb <adamplumb@gmail.com>
+           2005-2009, Bastian Kleineidam
+License: GPL-2+
+    On Debian systems the full text of the GNU General Public
+    License can be found in the `/usr/share/common-licenses/GPL-2'
+    file.
 
-Main license:
+Files: nautilussvn/debug/ipython_view.py
+Copyright: 2007, IBM Corporation
+License: BSD
+    On Debian systems the full text of the BSD License can be found in
+    the '/usr/share/common-licenses/BSD' file.
 
-        NautilusSvn is free software; you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation; either version 2 of the License, or
-        (at your option) any later version.
-
-        NautilusSvn is distributed in the hope that it will be useful,
-        but WITHOUT ANY WARRANTY; without even the implied warranty of
-        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-        GNU General Public License for more details.
-
-        You should have received a copy of the GNU General Public License
-        along with NautilusSvn;  If not, see <http://www.gnu.org/licenses/>.
-
-    On Debian GNU/Linux systems, the complete text of the GNU General
-    Public License can be found in `/usr/share/common-licenses/GPL'.
-
-Included components:
-
-    TortoiseSVN <http://tortoisesvn.tigris.org/> - SVG emblems/overlays
-    Licensed under: GPL v2 or later
-
-    LinkChecker <http://linkchecker.sourceforge.net/> - several decorators
-    Bastian Kleineidam <calvin@debian.org>
-    Licensed under: GPL v2 or later
-
-    Accerciser <http://live.gnome.org/Accerciser> - ipython_view.py
-    Eitan Isaacson <eitan@ascender.com>
-    Licensed under: BSD
-
-Packaging:
-    Copyright (C) 2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
-    released under GPL v3 or later
