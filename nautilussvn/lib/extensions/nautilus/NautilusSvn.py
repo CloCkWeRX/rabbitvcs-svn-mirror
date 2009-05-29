@@ -555,7 +555,7 @@ class MainContextMenu:
     
     """
     
-    SEPARATOR = "- - - - - - - - - - - - - - -"
+    SEPARATOR = u'\u2015' * 10
     
     def __init__(self, paths, nautilussvn_extension):
         self.paths = paths
