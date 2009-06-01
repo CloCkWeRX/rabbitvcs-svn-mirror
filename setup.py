@@ -116,6 +116,13 @@ translations = include_by_pattern("nautilussvn/locale", locale_directory, ".mo")
 # Icons
 icons = include_by_pattern("nautilussvn/data/icons/hicolor", icon_theme_directory, ".svg")
 
+# Config parsing specification
+config_spec = [(
+    # FIXME: hard coded prefix!
+    "/usr/share/nautilussvn",
+    ["nautilussvn/lib/configspec/configspec.ini"]
+)]
+
 # Update notifier
 update_notifier = [("/usr/share/nautilussvn", [
     "packages/ubuntu/debian/nautilussvn-restart-required.update-notifier",
@@ -124,8 +131,6 @@ update_notifier = [("/usr/share/nautilussvn", [
 
 # Documentation
 documentation = [("/usr/share/doc/nautilussvn", [
-# The README file is empty, and causes lintian errors if left in.
-#    "README",
     "AUTHORS",
     "MAINTAINERS",
     "CREDITS",
@@ -165,7 +170,7 @@ dist = setup(
             "ui/glade/*.glade"
         ]
     },
-    data_files=nautilus_extension + command_line_tool + translations + icons + documentation + update_notifier
+    data_files=nautilus_extension + command_line_tool + translations + icons + documentation + update_notifier + config_spec
 )
 
 #

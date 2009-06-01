@@ -30,6 +30,7 @@ import os
 
 import shutil
 import configobj
+import validate
 
 def get_home_folder():
     """ 
@@ -62,27 +63,8 @@ def get_home_folder():
 
 SETTINGS_FILE = "%s/settings.conf" % get_home_folder()
 
-DEFAULT_SETTINGS = {
-    "general": {
-        "language": "English",
-        "enable_attributes": 1,
-        "enable_emblems": 1,
-        "enable_recursive": 1
-    },
-    "external": {
-        "diff_tool": "/usr/bin/meld",
-        "diff_tool_swap": 0,
-        "repo_browser": "firefox"
-    },
-    "cache": {
-        "number_repositories": 30,
-        "number_messages": 30
-    },
-    "logging": {
-        "type": "File",
-        "level": "Error"
-    }
-}
+# FIXME: hardcoded!
+SETTINGS_SPEC = "/usr/share/nautilussvn/configspec.ini"
 
 class SettingsManager:
     """
@@ -102,15 +84,31 @@ class SettingsManager:
     """
     
     def __init__(self):
-    
-        if not os.path.exists(SETTINGS_FILE):
-            self.use_default_settings()
-            self.write()
-    
+        
         self.settings = configobj.ConfigObj(
-            SETTINGS_FILE, 
-            indent_type="    "
+            infile=SETTINGS_FILE,
+            create_empty=True,
+            indent_type="    ",
+            configspec=SETTINGS_SPEC
         )
+        
+        self.validator = validate.Validator()
+        
+        valid = self.settings.validate(self.validator)
+                
+        # We cannot use "if not valid" here, since validate() returns a dict
+        # if validation fails!
+        # See:
+        # http://www.voidspace.org.uk/python/articles/configobj.shtml#validation
+        if not (valid is True):
+            # What to do here?
+            # We could only get to this point if:
+            #   1. The user config file existed
+            #   2. It was invalid
+            # One option is to copy it to a different file and recreate it...
+            print "User configuration not valid. Backing up and recreating."
+            self.backup_and_rewrite_config()
+        
 
     def get(self, section=None, keyword=None):
         """
@@ -159,12 +157,7 @@ class SettingsManager:
         
         if section not in self.settings:
             self.settings[section] = {}
-            
-        if value == True:
-            value = 1
-        elif value == False:
-            value = 0
-        
+
         self.settings[section][keyword] = value
             
     def set_comments(self, section, comments=[]):
@@ -211,6 +204,7 @@ class SettingsManager:
         """
         self.settings = configobj.ConfigObj(indent_type="    ")
         self.settings.filename = SETTINGS_FILE
+        # Maybe we should use self.settings.reset()?
 
     def use_default_settings(self):
         """
@@ -254,6 +248,44 @@ class SettingsManager:
             print "Error: section %s:%s doesn't exist" % (section, keyword)
             
         return returner
+
+    def backup_and_rewrite_config(self) :
+        """
+        Backs up the user configuration file (for debugging) and rewrites a
+        valid config file.
+        
+        The name of the backup file is the name of the settings file plus an
+        incremental count.
+        
+        """
+        # We need to check that the file doesn't already exist, in case this has
+        # happened before.
+        new_file_free = False
+        renumber = 0
+
+        while not new_file_free :
+            new_name = "%s.%02i" % (SETTINGS_FILE, renumber)
+            
+            # FIXME: is this too paranoid?
+            if not os.path.exists(new_name) :
+                    
+                    new_file_free = True
+                    
+                    created = False
+                    
+                    try :
+                        os.rename(SETTINGS_FILE, new_name)
+                        created = True
+                    except IOError :
+                        # Paranoid again?
+                        print "Could not back up user configuration."
+                        
+                    if created :
+                        self.settings.reset()
+                        self.write()
+            else :
+                renumber += 1
+
 
 if __name__ == "__main__":
     pass
