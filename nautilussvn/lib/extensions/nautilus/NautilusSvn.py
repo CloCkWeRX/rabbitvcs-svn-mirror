@@ -621,7 +621,7 @@ class MainContextMenu:
                         "args": None
                     }
                 },
-                "condition": (lambda: True),
+                "condition": (lambda: settings.get("general", "show_debug")),
                 "submenus": [
                     {
                         "identifier": "NautilusSvn::Bugs",
