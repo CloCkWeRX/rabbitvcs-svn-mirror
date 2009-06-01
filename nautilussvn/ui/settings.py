@@ -129,6 +129,10 @@ class Settings(InterfaceView):
             self.get_widget("enable_recursive").get_active()
         )
         self.settings.set(
+            "general", "show_debug",
+            self.get_widget("show_debug").get_active()
+        )
+        self.settings.set(
             "external", "diff_tool",
             self.get_widget("diff_tool").get_text()
         )
