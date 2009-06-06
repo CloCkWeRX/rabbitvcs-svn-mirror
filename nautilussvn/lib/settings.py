@@ -27,6 +27,7 @@ Everything related retrieving and storing configuration keys.
 """
 
 import os
+from os.path import dirname
 
 import shutil
 import configobj
@@ -63,8 +64,18 @@ def get_home_folder():
 
 SETTINGS_FILE = "%s/settings.conf" % get_home_folder()
 
-# FIXME: hardcoded!
-SETTINGS_SPEC = "/usr/share/nautilussvn/configspec.ini"
+def find_configspec():
+    # FIXME: this needs to be modified once configspec.ini is placed in the data folder
+    configspec = os.path.join(dirname(__file__), "configspec/configspec.ini")
+    if os.path.exists(configspec):
+        return configspec
+    elif os.path.exists("/usr/share/nautilussvn/configspec.ini"):
+        return "/usr/share/nautilussvn/configspec.ini"
+    else:
+        # FIXME: what if we can't find anything?
+        return None
+
+SETTINGS_SPEC = find_configspec()
 
 class SettingsManager:
     """
@@ -263,27 +274,27 @@ class SettingsManager:
         new_file_free = False
         renumber = 0
 
-        while not new_file_free :
+        while not new_file_free:
             new_name = "%s.%02i" % (SETTINGS_FILE, renumber)
             
             # FIXME: is this too paranoid?
-            if not os.path.exists(new_name) :
+            if not os.path.exists(new_name):
                     
                     new_file_free = True
                     
                     created = False
                     
-                    try :
+                    try:
                         os.rename(SETTINGS_FILE, new_name)
                         created = True
-                    except IOError :
+                    except IOError:
                         # Paranoid again?
                         print "Could not back up user configuration."
                         
-                    if created :
+                    if created:
                         self.settings.reset()
                         self.write()
-            else :
+            else:
                 renumber += 1
 
 
