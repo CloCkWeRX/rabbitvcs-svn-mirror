@@ -116,7 +116,7 @@ class Notification(InterfaceView):
         self.set_title(header)
         gtk.gdk.threads_enter()
         self.get_widget("action").set_markup(
-            "<span font_size=\"xx-large\"><b>%s</b></span>" % header
+            "<span size=\"xx-large\"><b>%s</b></span>" % header
         )
         gtk.gdk.threads_leave()
 
