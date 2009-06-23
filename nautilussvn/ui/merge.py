@@ -45,12 +45,18 @@ class Merge(InterfaceView):
         
         self.page = self.assistant.get_nth_page(0)
         
+        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        
+        if not self.vcs.has_merge2():
+            self.get_widget("mergetype_range_opt").set_sensitive(False)
+            self.get_widget("mergetype_range_instruct").set_sensitive(False)
+            self.get_widget("mergetype_tree_opt").set_active(True)
+            self.get_widget("mergeoptions_only_record").set_active(False)
+            
         self.assistant.set_page_complete(self.page, True)
         self.assistant.set_forward_page_func(self.on_forward_clicked)
         
         self.repo_paths = nautilussvn.lib.helper.get_repository_paths()
-        
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
         
         # Keeps track of which stages should be marked as complete
         self.type = None
@@ -87,11 +93,17 @@ class Merge(InterfaceView):
 
         recursive = self.get_widget("mergeoptions_recursive").get_active()
         ignore_ancestry = self.get_widget("mergeoptions_ignore_ancestry").get_active()
-        record_only = self.get_widget("mergeoptions_only_record").get_active()
+        
+        record_only = False
+        if self.vcs.has_merge2():
+            record_only = self.get_widget("mergeoptions_only_record").get_active()
 
         action = VCSAction(self.vcs, register_gtk_quit=self.gtk_quit_is_set())
         action.append(action.set_header, _("Merge"))
         action.append(action.set_status, startcmd)
+        
+        args = ()
+        kwargs = {}
         
         if self.type == "range":
             url = self.get_widget("mergerange_from_url").get_text()
@@ -113,16 +125,21 @@ class Merge(InterfaceView):
                     None
                 ))
             
-            action.append(
+            # Build up args and kwargs because some args are not supported
+            # with older versions of pysvn/svn
+            args = (
                 self.vcs.merge_ranges,
                 url,
                 ranges,
                 self.vcs.revision("head"),
-                self.path,
-                notice_ancestry=(not ignore_ancestry),
-                dry_run=test,
-                record_only=record_only
+                self.path
             )
+            kwargs = {
+                "notice_ancestry": (not ignore_ancestry),
+                "dry_run":          test
+            }
+            if record_only:
+                kwargs["record_only"] = record_only
 
         elif self.type == "tree":
             from_url = self.get_widget("mergetree_from_url").get_text()
@@ -139,18 +156,24 @@ class Merge(InterfaceView):
                     "number",
                     number=int(self.get_widget("mergetree_to_revision_number").get_text())
                 )
-            
-            action.append(
+
+            # Build up args and kwargs because some args are not supported
+            # with older versions of pysvn/svn
+            args = (
                 self.vcs.merge_trees,
                 from_url,
                 from_revision,
                 to_url,
                 to_revision,
-                self.path,
-                recurse=recursive,
-                record_only=record_only
+                self.path
             )
-            
+            kwargs = {
+                "recurse": recursive
+            }
+        
+        if len(args) > 0:
+            action.append(*args, **kwargs) 
+                       
         action.append(action.set_status, endcmd)
         action.append(action.finish)
         action.start()
