@@ -1085,6 +1085,13 @@ class SVN:
         """
 
         return self.client.merge_peg2(*args, **kwargs)
+    
+    def has_merge2(self):
+        """
+        Tests whether the user has a later version of pysvn/svn installed
+        with more merge features
+        """
+        return hasattr(self.client, "merge_peg2")
 
     def merge_trees(self, *args, **kwargs):
         """
