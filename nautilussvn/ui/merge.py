@@ -121,16 +121,16 @@ class Merge(InterfaceView):
                 # Before pysvn v1.6.3, there was a bug that required the ranges 
                 # tuple to have three elements, even though only two were used
                 # Fixed in Pysvn Revision 1114
-                if self.vcs.interface == "pysvn" and self.vcs.get_joined_version() < 1630:
+                if (self.vcs.interface == "pysvn" and self.vcs.is_version_less_than((1,6,3,0))):
                     ranges.append((
                         self.vcs.revision("number", number=int(low)),
                         self.vcs.revision("number", number=int(high)),
+                        None
                     ))
                 else:
                     ranges.append((
                         self.vcs.revision("number", number=int(low)),
                         self.vcs.revision("number", number=int(high)),
-                        None
                     ))
             
             # Build up args and kwargs because some args are not supported
