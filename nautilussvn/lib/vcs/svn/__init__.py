@@ -185,6 +185,7 @@ class SVN:
     
     def __init__(self):
         self.client = pysvn.Client()
+        self.interface = "pysvn"
     
     def status(self, path, recurse=True):
         """
@@ -1161,3 +1162,9 @@ class SVN:
         """
         
         return self.client.diff(*args, **kwargs)
+    
+    def get_joined_version(self):
+        """
+        Returns an integer based on the current pysvn version number (i.e. 1630)
+        """
+        return int("".join([str(x) for x in pysvn.version]))
