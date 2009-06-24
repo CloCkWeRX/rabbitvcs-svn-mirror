@@ -49,7 +49,6 @@ class Merge(InterfaceView):
         
         if not self.vcs.has_merge2():
             self.get_widget("mergetype_range_opt").set_sensitive(False)
-            self.get_widget("mergetype_range_instruct").set_sensitive(False)
             self.get_widget("mergetype_tree_opt").set_active(True)
             self.get_widget("mergeoptions_only_record").set_active(False)
             
@@ -118,12 +117,21 @@ class Merge(InterfaceView):
                 else:
                     low = r
                     high = r
-                
-                ranges.append((
-                    self.vcs.revision("number", number=int(low)),
-                    self.vcs.revision("number", number=int(high)),
-                    None
-                ))
+
+                # Before pysvn v1.6.3, there was a bug that required the ranges 
+                # tuple to have three elements, even though only two were used
+                # Fixed in Pysvn Revision 1114
+                if self.vcs.interface == "pysvn" and self.vcs.get_joined_version() < 1630:
+                    ranges.append((
+                        self.vcs.revision("number", number=int(low)),
+                        self.vcs.revision("number", number=int(high)),
+                    ))
+                else:
+                    ranges.append((
+                        self.vcs.revision("number", number=int(low)),
+                        self.vcs.revision("number", number=int(high)),
+                        None
+                    ))
             
             # Build up args and kwargs because some args are not supported
             # with older versions of pysvn/svn
