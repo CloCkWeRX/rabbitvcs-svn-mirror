@@ -20,6 +20,8 @@
 # along with NautilusSvn;  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os.path
+
 import pygtk
 import gobject
 import gtk
@@ -60,8 +62,16 @@ class Export(Checkout):
         
         if url.startswith("file://"):
             url = url[7:]
+        
+        # Cannot do:
+        # url = os.path.normpath(url)
+        # ...in general, since it might be eg. an http URL. Doesn't seem to
+        # affect pySvn though.
+        
         if path.startswith("file://"):
             path = path[7:]
+        
+        path = os.path.normpath(path)
         
         revision = self.vcs.revision("head")
         if self.get_widget("revision_number_opt").get_active():

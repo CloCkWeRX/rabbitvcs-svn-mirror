@@ -83,7 +83,9 @@ class Checkout(InterfaceView):
             return
 
         if path.startswith("file://"):
-            path = path[7:]        
+            path = path[7:]
+        
+        path = os.path.normpath(path)
         
         revision = self.vcs.revision("head")
         if self.get_widget("revision_number_opt").get_active():
