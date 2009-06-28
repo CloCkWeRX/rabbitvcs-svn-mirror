@@ -385,6 +385,17 @@ def save_log_message(message):
     if os.path.exists(path):
         limit = get_log_messages_limit()
         messages = get_previous_messages()
+
+        # If the current message already exists, delete the old one
+        # The new one will take it's place at the top
+        tmp = []
+        for i, m in enumerate(messages):
+            if message != m[1]:
+                tmp.append(m)
+        
+        messages = tmp
+             
+        # Don't allow the number of messages to pile up past the limit
         while len(messages) > limit:
             messages.pop()
 
