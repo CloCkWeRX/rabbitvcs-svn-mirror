@@ -250,6 +250,13 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
                 status = client.status(path, recurse=False)[-1].data
     
                 values["status"] = SVN.STATUS_REVERSE[status["text_status"]]
+
+                # If the text status shows it isn't modified, but the properties
+                # DO, let them take priority.
+                if status["text_status"] not in NautilusSvn.MODIFIED_STATUSES \
+                  and status["prop_status"] in NautilusSvn.MODIFIED_STATUSES:
+                    values["status"] = SVN.STATUS_REVERSE[status["prop_status"]]
+
                 values["revision"] = str(info["commit_revision"].number)
                 values["url"] = str(info["url"])
                 values["author"] = str(info["commit_author"])
@@ -321,18 +328,26 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         # We need to take special care of directories
         if isdir(path):
             text_statuses = set([status.data["text_status"] for status in statuses])
+            prop_statuses = set([status.data["prop_status"] for status in statuses])
+            
+            all_statuses = text_statuses | prop_statuses # Set union
             
             # These statuses take precedence.
-            if SVN.STATUS["conflicted"] in text_statuses:
+			# Do we need to include the property statuses?
+            if SVN.STATUS["conflicted"] in all_statuses:
                 return "conflicted"
             
-            if SVN.STATUS["obstructed"] in text_statuses:
+            if SVN.STATUS["obstructed"] in all_statuses:
                 return "obstructed"
             
             # The following statuses take precedence over the status
             # of children.
             # FIXME: we have absolute and total luck that status happens to
             # be in the scope here, that was never the intention
+			# I'm confused: by Python scoping rules, we should have the LAST item from
+			# "statuses" still in scope here. But according to the docstring for
+			# vcs_client.status_with_cache, the FIRST item in the list is that for the
+			# path itself. So what are we checking here?
             if status.data["text_status"] in [
                     SVN.STATUS["added"],
                     SVN.STATUS["modified"],
@@ -343,7 +358,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             # A directory should have a modified status when any of its children
             # have a certain status (see modified_statuses above). Jason thought up 
             # of a nifty way to do this by using sets and the bitwise AND operator (&).
-            if len(set(self.MODIFIED_STATUSES) & text_statuses):
+            if len(set(self.MODIFIED_STATUSES) & all_statuses):
                 return "modified"
         
         # If we're not a directory we end up here.

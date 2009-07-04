@@ -202,6 +202,7 @@ class SVN:
             #~ log.exception("Exception occured in SVN.status() for %s" % path)
             return [pysvn.PysvnStatus({
                 "text_status": pysvn.wc_status_kind.none,
+                "prop_status": pysvn.wc_status_kind.none,
                 "path": os.path.abspath(path)
             })]
     
@@ -302,6 +303,9 @@ class SVN:
         if status.data["text_status"] == text_status:
             return True
         
+        if status.data["prop_status"] == text_status:
+            return True
+        
         return False
 
     def is_versioned(self, path):
@@ -362,6 +366,8 @@ class SVN:
         
         for status in statuses:
             if status.data["text_status"] == text_status:
+                return True
+            if status.data["prop_status"] == text_status:
                 return True
                 
         return False
@@ -434,7 +440,8 @@ class SVN:
                 continue
 
             for st_item in st:
-                if statuses and st_item.text_status not in statuses:
+                if statuses and st_item.text_status not in statuses \
+                  and st_item.prop_status not in statuses:
                     continue
 
                 items.append(st_item)
