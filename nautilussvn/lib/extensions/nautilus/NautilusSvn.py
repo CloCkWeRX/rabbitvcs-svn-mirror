@@ -241,21 +241,24 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             client = pysvn.Client()
             client_info = client.info(path)
             if client_info is None:
-                raise ValueError("The path '%s' does not appear "
-                                 "to be under source control." % path)
-            info = client_info.data
-            status = client.status(path, recurse=False)[-1].data
-
-            values["status"] = SVN.STATUS_REVERSE[status["text_status"]]
-            values["revision"] = str(info["commit_revision"].number)
-            values["url"] = str(info["url"])
-            values["author"] = str(info["commit_author"])
-            values["age"] = str(
-                pretty_timedelta(
-                    datetime.datetime.fromtimestamp(info["commit_time"]),
-                    datetime.datetime.now()
+                # It IS possible to reach here: ignored files satisfy the "is in
+                # WC" condition, but aren't themselves versioned!
+                log.debug("Unversioned file in WC: %s" % path)
+                values["status"] = SVN.STATUS_REVERSE[pysvn.wc_status_kind.unversioned]
+            else:
+                info = client_info.data
+                status = client.status(path, recurse=False)[-1].data
+    
+                values["status"] = SVN.STATUS_REVERSE[status["text_status"]]
+                values["revision"] = str(info["commit_revision"].number)
+                values["url"] = str(info["url"])
+                values["author"] = str(info["commit_author"])
+                values["age"] = str(
+                    pretty_timedelta(
+                        datetime.datetime.fromtimestamp(info["commit_time"]),
+                        datetime.datetime.now()
+                    )
                 )
-            )
         except:
             log.exception()
 
