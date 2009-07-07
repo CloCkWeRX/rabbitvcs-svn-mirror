@@ -551,3 +551,11 @@ def get_relative_path(p1, p2):
     p = p + l2
     return os.path.join( *p )
     
+def initialize_locale():
+    _locale, encoding = locale.getdefaultlocale()
+    if _locale is None:
+        _locale = "en_US"
+    if encoding is None:
+        encoding = "utf8"
+        
+    locale.setlocale(locale.LC_ALL, (_locale, encoding))
