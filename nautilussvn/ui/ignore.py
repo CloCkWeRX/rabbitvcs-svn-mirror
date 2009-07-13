@@ -37,13 +37,16 @@ class Ignore(InterfaceNonView):
     
     """
 
-    def __init__(self, path, pattern):
+    def __init__(self, path, pattern, glob=False):
         """
         @type   path: string
         @param  path: The path to apply the ignore keyword to
         
         @type   pattern: string
         @param  pattern: Ignore items with the given pattern
+        
+        @type   glob: boolean
+        @param  glob: True iff the path to ignore is a wildcard "glob"
         
         """
         
@@ -54,7 +57,7 @@ class Ignore(InterfaceNonView):
 
     def start(self):
         prop = self.vcs.PROPERTIES["ignore"]
-        return self.vcs.propset(self.path, prop, self.pattern)
+        return self.vcs.propset(self.path, prop, self.pattern, recurse=glob)
         
 if __name__ == "__main__":
     from os import getcwd

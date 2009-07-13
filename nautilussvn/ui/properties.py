@@ -60,8 +60,8 @@ class Properties(InterfaceView):
         
         self.table = nautilussvn.ui.widget.Table(
             self.get_widget("table"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [_("Name"), _("Value")]
+            [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Name"), _("Value")]
         )
         self.table.allow_multiple()
         
@@ -83,24 +83,28 @@ class Properties(InterfaceView):
         gtk.main_quit()
     
     def save(self):
+        delete_recurse = self.get_widget("delete_recurse").get_active()
+        
         for row in self.delete_stack:
-            self.vcs.propdel(self.path, row[0])
+            self.vcs.propdel(self.path, row[1], recurse=delete_recurse)
 
         for row in self.table.get_items():
-            self.vcs.propset(self.path, row[0], row[1], overwrite=True)
+            self.vcs.propset(self.path, row[1], row[2],
+                             overwrite=True, recurse=row[0])
         
     def on_new_clicked(self, widget):
         dialog = nautilussvn.ui.dialog.Property()
-        name,value = dialog.run()
+        name,value,recurse = dialog.run()
         if name is not None:
-            self.table.append([name,value])
+            self.table.append([recurse,name,value])
     
     def on_edit_clicked(self, widget):
-        (name,value) = self.get_selected_name_value()
+        (recurse,name,value) = self.get_selected_name_value()
         dialog = nautilussvn.ui.dialog.Property(name, value)
-        name,value = dialog.run()
+        name,value,recurse = dialog.run()
         if name is not None:
-            self.set_selected_name_value(name, value)
+            self.set_selected_name_value(name, value, recurse)
+
     
     def on_delete_clicked(self, widget, data=None):
         if not self.selected_rows:
@@ -143,8 +147,8 @@ class Properties(InterfaceView):
     # Helper methods
     #
     
-    def set_selected_name_value(self, name, value):
-        self.table.set_row(self.selected_rows[0], [name,value])
+    def set_selected_name_value(self, name, value, recurse):
+        self.table.set_row(self.selected_rows[0], [recurse,name,value])
         
     def get_selected_name_value(self):
         returner = None
@@ -162,7 +166,7 @@ class Properties(InterfaceView):
         
         if self.proplist:
             for key,val in self.proplist.items():
-                self.table.append([key,val.rstrip()])
+                self.table.append([False, key,val.rstrip()])
 
 if __name__ == "__main__":
     from os import getcwd

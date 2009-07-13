@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Feb 24 09:04:45 2009 -->
+<!--Generated with glade3 3.4.5 on Tue Jul  7 20:39:54 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="Properties">
     <property name="width_request">500</property>
@@ -110,6 +110,28 @@
                       </packing>
                     </child>
                     <child>
+                      <widget class="GtkLabel" id="recursive_label">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">&lt;i&gt;Selected properties will be applied recursively.&lt;/i&gt;</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkCheckButton" id="delete_recurse">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="label" translatable="yes">Delete properties recursively</property>
+                        <property name="response_id">0</property>
+                        <property name="draw_indicator">True</property>
+                      </widget>
+                      <packing>
+                        <property name="position">3</property>
+                      </packing>
+                    </child>
+                    <child>
                       <widget class="GtkHButtonBox" id="hbuttonbox9">
                         <property name="visible">True</property>
                         <property name="spacing">3</property>
@@ -156,7 +178,7 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
-                        <property name="position">2</property>
+                        <property name="position">4</property>
                       </packing>
                     </child>
                   </widget>

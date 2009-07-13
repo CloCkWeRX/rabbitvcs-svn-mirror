@@ -1718,7 +1718,7 @@ class MainContextMenu:
 
     def callback_ignore_ext(self, menu_item, paths):
         from nautilussvn.ui.ignore import Ignore
-        ignore = Ignore(paths[0], "*%s" % get_file_extension(paths[0]))
+        ignore = Ignore(paths[0], "*%s" % get_file_extension(paths[0]), glob=True)
         ignore.start()
 
     def callback_lock(self, menu_item, paths):

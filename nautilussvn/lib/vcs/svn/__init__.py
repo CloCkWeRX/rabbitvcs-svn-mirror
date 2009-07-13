@@ -527,7 +527,7 @@ class SVN:
 
         return path_to_use
         
-    def propset(self, path, prop_name, prop_value, overwrite=False):
+    def propset(self, path, prop_name, prop_value, overwrite=False, recurse=True):
         """
         Adds an svn property to a path.  If the item is unversioned,
         add a recursive property to the parent path
@@ -540,6 +540,10 @@ class SVN:
         
         @type   prop_value: string
         @param  prop_value: An svn property value/pattern.
+        
+        @type   recurse: boolean 
+        @param  recurse: If True, the property will be applied to all
+                subdirectories as well.
         
         """
 
@@ -556,7 +560,7 @@ class SVN:
                 prop_name, 
                 props, 
                 path, 
-                recurse=True
+                recurse=recurse
             )
             returner = True
         except pysvn.ClientError, e:
@@ -621,7 +625,7 @@ class SVN:
             
         return returner
         
-    def propdel(self, path, prop_name):
+    def propdel(self, path, prop_name, recurse=True):
         """
         Removes a property from a given path
         
@@ -630,6 +634,10 @@ class SVN:
         
         @type   prop_name: string or self.PROPERTIES
         @param  prop_name: An svn property name.
+        
+        @type   recurse: boolean
+        @param  recurse: If True, the property will be deleted from any
+                subdirectories also having the property set.
         
         """
         
@@ -640,7 +648,7 @@ class SVN:
             self.client.propdel(
                 prop_name,
                 path,
-                recurse=True
+                recurse=recurse
             )
             returner = True
         except pysvn.ClientError, e:

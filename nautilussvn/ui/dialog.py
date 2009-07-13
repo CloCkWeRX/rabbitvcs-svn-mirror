@@ -178,7 +178,7 @@ class CertAuthentication(InterfaceView):
             return (False, "", False)
         
 class Property(InterfaceView):
-    def __init__(self, name="", value=""):
+    def __init__(self, name="", value="", recurse=True):
         InterfaceView.__init__(self, GLADE, "Property")
         
         self.save_name = name
@@ -192,6 +192,9 @@ class Property(InterfaceView):
             value
         )
         
+        self.recurse = self.get_widget("property_recurse")
+        self.recurse.set_active(recurse)
+        
     def run(self):
         self.dialog = self.get_widget("Property")
         result = self.dialog.run()
@@ -200,11 +203,12 @@ class Property(InterfaceView):
             self.save()
         
         self.dialog.destroy()
-        return (self.save_name, self.save_value)
+        return (self.save_name, self.save_value, self.save_recurse)
     
     def save(self):
         self.save_name = self.name.get_text()
         self.save_value = self.value.get_text()
+        self.save_recurse = self.recurse.get_active()
 
 class FileChooser:
     def __init__(self, title=_("Select a File"), folder=None):

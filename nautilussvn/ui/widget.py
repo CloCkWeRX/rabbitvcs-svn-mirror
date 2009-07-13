@@ -25,7 +25,7 @@ import gobject
 import gtk
 
 import nautilussvn.lib.helper
-    
+
 TOGGLE_BUTTON = 'TOGGLE_BUTTON'
 
 class Table:
@@ -38,7 +38,10 @@ class Table:
         self.treeview.set_model(self.liststore)
 
         self.cols = []
+
+        # FIXME: where is this used?
         self.cells = {}
+        
         i = 0
         for name in colnames:
             if name == TOGGLE_BUTTON:
@@ -77,7 +80,7 @@ class Table:
                 rm_index -= 1
             
             self.remove(rm_index)
-            i += 1            
+            i += 1     
 
     def get_items(self):
         return self.treeview.get_model()
