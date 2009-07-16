@@ -3,10 +3,11 @@
   <!-- interface-requires gtk+ 2.16 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="Commit">
-    <property name="width_request">640</property>
     <property name="visible">True</property>
     <property name="title" translatable="yes">Commit</property>
     <property name="window_position">center</property>
+    <property name="default_width">640</property>
+    <property name="default_height">640</property>
     <property name="icon_name">nautilussvn</property>
     <signal name="destroy" handler="on_destroy"/>
     <child>
@@ -112,7 +113,6 @@
                         <property name="shadow_type">etched-in</property>
                         <child>
                           <widget class="GtkTextView" id="message">
-                            <property name="height_request">100</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="has_focus">True</property>
@@ -172,7 +172,6 @@
                         <property name="shadow_type">etched-in</property>
                         <child>
                           <widget class="GtkTreeView" id="files_table">
-                            <property name="height_request">250</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <signal name="button_press_event" handler="on_files_table_button_pressed"/>
