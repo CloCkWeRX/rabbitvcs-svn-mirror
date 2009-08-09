@@ -122,23 +122,6 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
     #: we also add C{NautilusVFSFile}s to this table from C{get_file_items} etc.
     nautilusVFSFile_table = {}
     
-    #: Keep track of item statuses. This is a workaround for the fact that
-    #: emblems added using C{NautilusVFSFile.add_emblem} are removed once the 
-    #: C{NautilusVFSFile} is invalidated (one example of when this happens is
-    #: when an item is modified).::
-    #: 
-    #:     statuses = {
-    #:         "/foo/bar/baz": "modified"
-    #:     }
-    #: 
-    # FIXME: this needs to have a synchronisation mechanism associated with it,
-    # since we expect to update it from another process. (Dicts are "sort of"
-    # thread safe, ie. won't crash Python, but should still be protected
-    # appropriately.)
-    statuses = {}
-    # I can't imagine why this would need to be re-entrant.
-    status_lock = threading.Lock()
-    
     #: Without an actual status monitor it's not possible to just keep
     #: track of stuff that happens (e.g. a commit happens, files are added,
     #: such things). So at the moment we just add all interesting items
