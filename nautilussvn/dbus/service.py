@@ -35,6 +35,8 @@ class Service(dbus.service.Object):
     @dbus.service.method(INTERFACE, in_signature="", out_signature="")
     def Exit(self):
         self.status_monitor.Exit()
+        # TODO: we could add a quit call to the status checker here, so that it
+        # doesn't have to be daemonic.
         loop.quit()
 
 def start():

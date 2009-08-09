@@ -26,11 +26,12 @@ Our module for everything related to the Nautilus extension.
   
 """
 
-import traceback
+from __future__ import with_statement
 import copy
 import os.path
 from os.path import isdir, isfile, realpath, basename
 import datetime
+import threading
 
 import gnomevfs
 import nautilus
@@ -130,7 +131,13 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
     #:         "/foo/bar/baz": "modified"
     #:     }
     #: 
+    # FIXME: this needs to have a synchronisation mechanism associated with it,
+    # since we expect to update it from another process. (Dicts are "sort of"
+    # thread safe, ie. won't crash Python, but should still be protected
+    # appropriately.)
     statuses = {}
+    # I can't imagine why this would need to be re-entrant.
+    status_lock = threading.Lock()
     
     #: Without an actual status monitor it's not possible to just keep
     #: track of stuff that happens (e.g. a commit happens, files are added,
@@ -194,7 +201,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             )
         )
     
-    @timeit
+    #~ @timeit
     def update_file_info(self, item):
         """
         
@@ -218,7 +225,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         if not self.valid_uri(item.get_uri()): return
         path = realpath(gnomevfs.get_local_path_from_uri(item.get_uri()))
         
-        log.debug("update_file_info() called for %s" % path)
+        # log.debug("update_file_info() called for %s" % path)
         
         # Always replace the item in the table with the one we receive, because
         # for example if an item is deleted and recreated the NautilusVFSFile
@@ -294,20 +301,13 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         # If we are able to set an emblem that means we have a local status
         # available. The StatusMonitor will keep us up-to-date through the 
         # C{cb_status} callback.
-        if path in self.statuses:
-            statuses = self.statuses[path]
+        statuses = self.status_checker.check_status(path, recurse=True)
+        if statuses[0][1] == "calculating":
+            item.add_emblem(self.EMBLEMS["calculating"])
+        else:
             summarized_status = get_summarized_status(path, statuses)
-            
-            # We may not have an emblem available for this specific status
-            # but that doesn't really matter, return so we don't go into
-            # a never-ending loop.
             if summarized_status in self.EMBLEMS:
                 item.add_emblem(self.EMBLEMS[summarized_status])
-            return
-        
-        # Otherwise request an initial status check to be done.
-        statuses = self.status_checker.check_status(path, recurse=True)
-        if statuses[0][1] == "calculating": item.add_emblem(self.EMBLEMS["calculating"])
         
     #~ @disable
     @timeit
@@ -371,7 +371,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         path = realpath(gnomevfs.get_local_path_from_uri(item.get_uri()))
         self.nautilusVFSFile_table[path] = item
         
-        log.debug("get_background_items() called")
+        # log.debug("get_background_items() called")
         
         #os.chdir(path)
         return MainContextMenu([path], self).construct_menu()
@@ -480,25 +480,18 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         @type   statuses: tuple of (path, status)
         @param  statuses: 
         """
+
+        if path in self.nautilusVFSFile_table:
+            item = self.nautilusVFSFile_table[path]
+            # We need to invalidate the extension info for only one reason:
+            #
+            # - Invalidating the extension info will cause Nautilus to remove all
+            #   temporary emblems we applied so we don't have overlay problems
+            #   (with ourselves, we'd still have some with other extensions).
+            #
+            # After invalidating C{update_file_info} applies the correct emblem.
+            item.invalidate_extension_info()    
         
-        log.debug("cb_status() called")
-        
-        # We might not have a NautilusVFSFile (which we need to apply an
-        # emblem) but we can already store the status for when we do.
-        self.statuses[path] = statuses
-        
-        if not path in self.nautilusVFSFile_table: return
-        item = self.nautilusVFSFile_table[path]
-        
-        # We need to invalidate the extension info for only one reason:
-        #
-        # - Invalidating the extension info will cause Nautilus to remove all
-        #   temporary emblems we applied so we don't have overlay problems
-        #   (with ourselves, we'd still have some with other extensions).
-        #
-        # After invalidating C{update_file_info} applies the correct emblem.
-        item.invalidate_extension_info()
-    
 class MainContextMenu:
     """
     

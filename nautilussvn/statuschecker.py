@@ -4,12 +4,18 @@
 
 from __future__ import with_statement
 
+from nautilussvn.lib.log import Log, reload_log_settings
+log = Log("nautilussvn.lib.extensions.nautilus")
+
 import threading
 from Queue import Queue
 
 import pysvn
 
 import nautilussvn.util.vcs
+
+# FIXME: debug
+import time
 
 class StatusChecker(threading.Thread):
     #: The queue will be populated with 4-ples of
@@ -47,7 +53,7 @@ class StatusChecker(threading.Thread):
         
     def check_status(self, path, recurse=False, invalidate=False, callback=None):
         """
-        Checks the status of the given path. Must be thread safe.
+        Checks the status of the given path. The callback must be thread safe.
         
         This can go two ways:
         
@@ -60,19 +66,22 @@ class StatusChecker(threading.Thread):
              locked OR if the queue is blocking. In the meantime, the thread 
              will pop the path from the queue and look it up.
         """
-        
+        log.debug("Status checker: %s (inv: %s)" % (path, invalidate))
+        # FIXME: shouldn't the callback only be done from the updater?
         with self.__status_tree_lock:
             if nautilussvn.util.vcs.is_in_a_or_a_working_copy(path):
                 if not invalidate and path in self.__status_tree:
+                    log.debug("SC: we're good, so return the status")
                     statuses = self.__get_path_statuses(path)
-                    if callback: callback(path, statuses)
+                    # if callback: callback(path, statuses)
                 else:
+                    log.debug("SC: we need to calculate the status")
                     statuses = [(path, "calculating")]
                     self.__paths_to_check.put((path, recurse, invalidate, callback))
             else:
                 statuses = [(path, "unknown")]
-                if callback: callback(path, statuses)
-                
+                # if callback: callback(path, statuses)
+ 
         return statuses
         
     def run(self):
@@ -102,10 +111,15 @@ class StatusChecker(threading.Thread):
     def __update_path_status(self, path, recurse=False, invalidate=False, callback=None):
         statuses = []
         
+        log.debug("Sleeping for 10s...")
+        time.sleep(5)
+        log.debug("Done.")
+        
         # Another status check which includes this path may have completed in
         # the meantime so let's do a sanity check.
         with self.__status_tree_lock:
             if not invalidate and path in self.__status_tree:
+                log.debug("Sanity check proves useful! [%s]" % path)
                 statuses = self.__get_path_statuses(path)
                 if callback: callback(path, statuses)
                 return
