@@ -128,6 +128,21 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
     #: to this list.
     monitored_files = []
     
+    #: This is in case we want to permanently enable invalidation of the status
+    #: checker info. We put a path here before we invalidate the item, so that
+    #: we don't enter an endless loop when updating the status.
+    #: The callback should acquire this lock when pushing the path to this.
+    always_invalidate = True
+    paths_from_callback = []
+    #: It appears that the "update_file_info" call that is triggered by the
+    #: "invalidate_extension_info" in the callback function happens
+    #: synchronously (ie. in the same thread). However, given the nature of the
+    #: python/nautilus extensions module, I'm not sure how reliable this is.
+    #: It's certainly supported by debugging statements, but maybe it will
+    #: change in the future? Who knows. This should work for both the current
+    #: situation, and the possibility that they are asynchronous.
+    callback_paths_lock = threading.RLock()
+    
     #: A list of statuses that we want to keep track of for when a process
     #: might have done something.
     STATUSES_TO_MONITOR = copy.copy(MODIFIED_TEXT_STATUSES)
@@ -140,10 +155,13 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
     ])
     
     def __init__(self):
+        threading.currentThread().setName("NautilusSVN extension thread")
+        
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = SVN()
         
         self.status_checker = StatusChecker(self.cb_status)
+        
         
     def get_columns(self):
         """
@@ -284,13 +302,37 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         # If we are able to set an emblem that means we have a local status
         # available. The StatusMonitor will keep us up-to-date through the 
         # C{cb_status} callback.
-        statuses = self.status_checker.check_status(path, recurse=True)
+        # Warning! If you use invalidate=True here, it will set up an endless
+        # loop:
+        # 1. Update requests status (inv=True)
+        # 2. Status checker returns "calculating"
+        # 3. Status checker calculates status, calls callback
+        # 4. Callback triggers update
+        
+        # I have added extra logic in cb_status, using a list
+        # (paths_from_callback) that should allow us to work around this for
+        # now. But it'd be good to have an actual status monitor. 
+        
+        # log.debug("US Thread: %s" % threading.currentThread())
+        
+        # Useful for figuring out order of calls. See "cb_status".
+        # log.debug("%s: In update_status" % threading.currentThread())
+        with self.callback_paths_lock:
+            triggered_by_callback = path in self.paths_from_callback
+            if triggered_by_callback:
+                self.paths_from_callback.remove(path)
+            
+        invalidate_now = self.always_invalidate and not triggered_by_callback
+
+        statuses = self.status_checker.check_status(path, recurse=True, invalidate=invalidate_now)
         if statuses[0][1] == "calculating":
             item.add_emblem(self.EMBLEMS["calculating"])
         else:
             summarized_status = get_summarized_status(path, statuses)
             if summarized_status in self.EMBLEMS:
                 item.add_emblem(self.EMBLEMS[summarized_status])
+        # Useful for figuring out order of calls. See "cb_status".
+        # log.debug("%s: Leaving update_status" % threading.currentThread())
         
     #~ @disable
     @timeit
@@ -322,8 +364,6 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
                 self.nautilusVFSFile_table[path] = item
 
         if len(paths) == 0: return []
-        
-        log.debug("get_file_items() called")
         
         # Use the selected path to determine Nautilus's cwd
         # If more than one files are selected, make sure to use get_common_directory
@@ -458,12 +498,12 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         This is the callback that C{StatusMonitor} calls. 
         
         @type   path:   string
-        @param  path:   The path of the item something interesting happend to.
+        @param  path:   The path of the item something interesting happened to.
         
         @type   statuses: tuple of (path, status)
         @param  statuses: 
         """
-
+        # log.debug("CB Thread: %s" % threading.currentThread())
         if path in self.nautilusVFSFile_table:
             item = self.nautilusVFSFile_table[path]
             # We need to invalidate the extension info for only one reason:
@@ -473,7 +513,16 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             #   (with ourselves, we'd still have some with other extensions).
             #
             # After invalidating C{update_file_info} applies the correct emblem.
-            item.invalidate_extension_info()    
+            
+            # Since invalidation triggers an "update_file_info" call, we can
+            # tell it NOT to invalidate the status checker path.
+            with self.callback_paths_lock:
+                self.paths_from_callback.append(path)
+                # These are useful to establish whether the "update_status" call
+                # happens INSIDE this next call, or later, or in another thread. 
+                # log.debug("%s: Invalidating..." % threading.currentThread())
+                item.invalidate_extension_info()
+                # log.debug("%s: Done invalidate call." % threading.currentThread())
         
 class MainContextMenu:
     """

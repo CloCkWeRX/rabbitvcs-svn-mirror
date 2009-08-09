@@ -4,9 +4,6 @@
 
 from __future__ import with_statement
 
-from nautilussvn.lib.log import Log, reload_log_settings
-log = Log("nautilussvn.lib.extensions.nautilus")
-
 import threading
 from Queue import Queue
 
@@ -76,21 +73,19 @@ class StatusChecker(threading.Thread):
              locked OR if the queue is blocking. In the meantime, the thread 
              will pop the path from the queue and look it up.
         """
-        log.debug("Status checker: %s (inv: %s)" % (path, invalidate))
-        # FIXME: shouldn't the callback only be done from the updater?
+        # log.debug("Status checker: %s (inv: %s)" % (path, invalidate))
+        # log.debug("SC Thread: %s" % threading.currentThread())
         with self.__status_tree_lock:
             if nautilussvn.util.vcs.is_in_a_or_a_working_copy(path):
                 if not invalidate and path in self.__status_tree:
-                    log.debug("SC: we're good, so return the status")
+                    # log.debug("SC: we're good, so return the status")
                     statuses = self.__get_path_statuses(path)
-                    # if callback: callback(path, statuses)
                 else:
-                    log.debug("SC: we need to calculate the status")
+                    # log.debug("SC: we need to calculate the status")
                     statuses = [(path, "calculating")]
                     self.__paths_to_check.put((path, recurse, invalidate, callback))
             else:
                 statuses = [(path, "unknown")]
-                # if callback: callback(path, statuses)
  
         return statuses
         
@@ -119,6 +114,7 @@ class StatusChecker(threading.Thread):
         return statuses
         
     def __update_path_status(self, path, recurse=False, invalidate=False, callback=None):
+        # log.debug("UPS Thread: %s" % threading.currentThread())
         statuses = []
         
         # Uncomment this for useful simulation of a looooong status check :) 
@@ -130,7 +126,7 @@ class StatusChecker(threading.Thread):
         # the meantime so let's do a sanity check.
         with self.__status_tree_lock:
             if not invalidate and path in self.__status_tree:
-                log.debug("Sanity check proves useful! [%s]" % path)
+                # log.debug("Sanity check proves useful! [%s]" % path)
                 statuses = self.__get_path_statuses(path)
                 if callback: callback(path, statuses)
                 return
