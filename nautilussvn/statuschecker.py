@@ -27,9 +27,9 @@ class StatusChecker(threading.Thread):
     #: This isn't a tree (yet) and looks like:::
     #:
     #:     __status_tree = {
-    #:         "/foo": "normal",
-    #:         "/foo/bar": normal",
-    #:         "/foo/bar/baz": "added"
+    #:         "/foo": {"text_status": "normal", "prop_status": "normal"},
+    #:         "/foo/bar": {"text_status": "normal", "prop_status": "normal"},
+    #:         "/foo/bar/baz": {"text_status": "added", "prop_status": "normal"}
     #:     }
     #:
     #: As you can see it's not a tree (yet) and the way statuses are 
@@ -75,6 +75,9 @@ class StatusChecker(threading.Thread):
         """
         # log.debug("Status checker: %s (inv: %s)" % (path, invalidate))
         # log.debug("SC Thread: %s" % threading.currentThread())
+        
+        statuses = {}
+        
         with self.__status_tree_lock:
             if nautilussvn.util.vcs.is_in_a_or_a_working_copy(path):
                 if not invalidate and path in self.__status_tree:
@@ -82,10 +85,10 @@ class StatusChecker(threading.Thread):
                     statuses = self.__get_path_statuses(path)
                 else:
                     # log.debug("SC: we need to calculate the status")
-                    statuses = [(path, "calculating")]
+                    statuses[path] = {"text_status": "calculating", "prop_status": "calculating"}
                     self.__paths_to_check.put((path, recurse, invalidate, callback))
             else:
-                statuses = [(path, "unknown")]
+                statuses[path] = {"text_status": "unknown", "prop_status": "unknown"}
  
         return statuses
         
@@ -105,17 +108,17 @@ class StatusChecker(threading.Thread):
             self.__update_path_status(path, recurse, invalidate, callback)
     
     def __get_path_statuses(self, path):
-        statuses = []
+        statuses = {}
         with self.__status_tree_lock:
             for another_path in self.__status_tree.keys():
                 if another_path.startswith(path):
-                    statuses.append((another_path, self.__status_tree[another_path]))
+                    statuses[another_path] = self.__status_tree[another_path]
         
         return statuses
         
     def __update_path_status(self, path, recurse=False, invalidate=False, callback=None):
         # log.debug("UPS Thread: %s" % threading.currentThread())
-        statuses = []
+        statuses = {}
         
         # Uncomment this for useful simulation of a looooong status check :) 
         # log.debug("Sleeping for 10s...")
@@ -132,12 +135,18 @@ class StatusChecker(threading.Thread):
                 return
         
         # Otherwise actually do a status check
-        statuses = [(status.path, str(status.text_status)) 
+        # FIXME: Get propchanges from here...
+        
+        
+        testlist = list(self.vcs_client.status(path, recurse=recurse))
+                
+        statuses = [(status.path, str(status.text_status), str(status.prop_status)) 
                         for status in self.vcs_client.status(path, recurse=recurse)]
         
         with self.__status_tree_lock:
-            for path, status in statuses:
-                self.__status_tree[path] = status
+            for path, text_status, prop_status in statuses:
+                self.__status_tree[path] = {"text_status" : text_status,
+                                            "prop_status" : prop_status}
         
         # Remember: these callbacks will block THIS thread from calculating the
         # next path on the "to do" list.

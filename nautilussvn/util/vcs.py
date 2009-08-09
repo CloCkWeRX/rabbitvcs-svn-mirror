@@ -21,12 +21,17 @@ def get_summarized_status(path, statuses):
     deleted, replaced, modified or missing so you can quickly see if 
     your working copy has local changes.
     
+    This function accounts for both file and property statuses.
+    
     @type   path:   list
-    @param  path:   A list of (abspath, state) tuples
+    @param  path:   A dict of {path : {"text_status" : [...],
+                                       "prop_status" : [...]} entries
     """
     
-    text_statuses = [status[1] for status in statuses]
-    statuses_dictionary = dict(statuses)
+    text_statuses = set([statuses[key]["text_status"] for key in statuses.keys()])
+    prop_statuses = set([statuses[key]["prop_status"] for key in statuses.keys()])
+    
+    all_statuses = text_statuses | prop_statuses
     
     # If no statuses are returned but we do have a workdir_manager
     # it means that an error occured, most likely a working copy
@@ -34,7 +39,7 @@ def get_summarized_status(path, statuses):
     # be pretty much anything.
     if not statuses: 
         # FIXME: figure out a way to make only the directory that
-        # is missing display conflicted and the rest unkown.
+        # is missing display conflicted and the rest unknown.
         return "unknown"
 
     # We need to take special care of directories
@@ -45,18 +50,18 @@ def get_summarized_status(path, statuses):
         
         # The following statuses take precedence over the status
         # of children.
-        if (path in statuses_dictionary and 
-                statuses_dictionary[path] in ["added", "modified", "deleted"]):
-            return statuses_dictionary[path]
+        if (statuses.has_key(path) and 
+                statuses[path]["text_status"] in ["added", "modified", "deleted"]):
+            return statuses[path]["text_status"]
         
         # A directory should have a modified status when any of its children
         # have a certain status (see modified_statuses above). Jason thought up 
         # of a nifty way to do this by using sets and the bitwise AND operator (&).
-        if len(set(MODIFIED_STATUSES) & set(text_statuses)):
+        if len(set(MODIFIED_STATUSES) & all_statuses):
             return "modified"
     
     # If we're not a directory we end up here.
-    if path in statuses_dictionary: return statuses_dictionary[path]
+    if statuses.has_key(path): return statuses[path]["text_status"]
     return "normal"
 
 def is_working_copy(path):

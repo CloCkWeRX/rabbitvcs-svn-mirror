@@ -240,17 +240,45 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         is_in_a_or_a_working_copy = self.vcs_client.is_in_a_or_a_working_copy(path)
         if not is_in_a_or_a_working_copy: return
         
-        # Do our magic
-        if bool(int(settings.get("general", "enable_attributes"))): self.update_columns(item, path)
-        if bool(int(settings.get("general", "enable_emblems"))): self.update_status(item, path)
+        # Do our magic...
+        
+        # I have added extra logic in cb_status, using a list
+        # (paths_from_callback) that should allow us to work around this for
+        # now. But it'd be good to have an actual status monitor. 
+        
+        # Useful for figuring out order of calls. See "cb_status".
+        # log.debug("%s: In update_status" % threading.currentThread())
+        with self.callback_paths_lock:
+            triggered_by_callback = path in self.paths_from_callback
+            if triggered_by_callback:
+                self.paths_from_callback.remove(path)
 
-    def update_columns(self, item, path):
+        # log.debug("US Thread: %s" % threading.currentThread())
+        invalidate_now = self.always_invalidate and not triggered_by_callback
+        statuses = self.status_checker.check_status(path, recurse=True, invalidate=invalidate_now)
+
+        # TODO: using pysvn directly because I don't like the current
+        # SVN class.
+        client = pysvn.Client()
+        client_info = client.info(path)
+
+        assert statuses.has_key(path), "Path not in status list!"
+
+        if bool(int(settings.get("general", "enable_attributes"))): self.update_columns(item, path, statuses, client_info)
+        if bool(int(settings.get("general", "enable_emblems"))): self.update_status(item, path, statuses, client_info)
+
+        # Useful for figuring out order of calls. See "cb_status".
+        # log.debug("%s: Leaving update_status" % threading.currentThread())
+        
+        
+    def update_columns(self, item, path, statuses, client_info):
         """
         Update the columns (attributes) for a given Nautilus item,
         filling them in with information from the version control
         server.
 
         """
+        log.debug("update_colums called for %s" % path)
 
         values = {
             "status": "",
@@ -261,10 +289,6 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         }
 
         try:
-            # TODO: using pysvn directly because I don't like the current
-            # SVN class.
-            client = pysvn.Client()
-            client_info = client.info(path)
             if client_info is None:
                 # It IS possible to reach here: ignored files satisfy the "is in
                 # WC" condition, but aren't themselves versioned!
@@ -272,15 +296,17 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
                 values["status"] = SVN.STATUS_REVERSE[pysvn.wc_status_kind.unversioned]
             else:
                 info = client_info.data
-                status = client.status(path, recurse=False)[-1].data
+                # FIXME: replace
+                # status = client.status(path, recurse=False)[-1].data                
+                status = statuses[path]
     
-                values["status"] = SVN.STATUS_REVERSE[status["text_status"]]
+                values["status"] = status["text_status"]
 
                 # If the text status shows it isn't modified, but the properties
                 # DO, let them take priority.
-                if status["text_status"] not in NautilusSvn.MODIFIED_STATUSES \
-                  and status["prop_status"] in NautilusSvn.MODIFIED_STATUSES:
-                    values["status"] = SVN.STATUS_REVERSE[status["prop_status"]]
+                if status["text_status"] not in NautilusSvn.MODIFIED_TEXT_STATUSES \
+                  and status["prop_status"] in NautilusSvn.MODIFIED_TEXT_STATUSES:
+                    values["status"] = status["prop_status"]
 
                 values["revision"] = str(info["commit_revision"].number)
                 values["url"] = str(info["url"])
@@ -298,7 +324,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             item.add_string_attribute(key, value)
 
     
-    def update_status(self, item, path):
+    def update_status(self, item, path, statuses, client_info):
         # If we are able to set an emblem that means we have a local status
         # available. The StatusMonitor will keep us up-to-date through the 
         # C{cb_status} callback.
@@ -308,31 +334,14 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         # 2. Status checker returns "calculating"
         # 3. Status checker calculates status, calls callback
         # 4. Callback triggers update
-        
-        # I have added extra logic in cb_status, using a list
-        # (paths_from_callback) that should allow us to work around this for
-        # now. But it'd be good to have an actual status monitor. 
-        
-        # log.debug("US Thread: %s" % threading.currentThread())
-        
-        # Useful for figuring out order of calls. See "cb_status".
-        # log.debug("%s: In update_status" % threading.currentThread())
-        with self.callback_paths_lock:
-            triggered_by_callback = path in self.paths_from_callback
-            if triggered_by_callback:
-                self.paths_from_callback.remove(path)
-            
-        invalidate_now = self.always_invalidate and not triggered_by_callback
-
-        statuses = self.status_checker.check_status(path, recurse=True, invalidate=invalidate_now)
-        if statuses[0][1] == "calculating":
+                
+        # Path == first index or last for old system?
+        if statuses[path]["text_status"] == "calculating":
             item.add_emblem(self.EMBLEMS["calculating"])
         else:
             summarized_status = get_summarized_status(path, statuses)
             if summarized_status in self.EMBLEMS:
                 item.add_emblem(self.EMBLEMS[summarized_status])
-        # Useful for figuring out order of calls. See "cb_status".
-        # log.debug("%s: Leaving update_status" % threading.currentThread())
         
     #~ @disable
     @timeit
@@ -371,6 +380,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         #os.chdir(os.path.split(path_to_use)[0])
         
         return MainContextMenu(paths, self).construct_menu()
+        
     
     #~ @disable
     @timeit
@@ -398,6 +408,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
         #os.chdir(path)
         return MainContextMenu([path], self).construct_menu()
+        
     
     #
     # Helper functions
@@ -500,8 +511,8 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         @type   path:   string
         @param  path:   The path of the item something interesting happened to.
         
-        @type   statuses: tuple of (path, status)
-        @param  statuses: 
+        @type   statuses: list of tuples of (path, status)
+        @param  statuses: The statuses (we do nothing with this now)
         """
         # log.debug("CB Thread: %s" % threading.currentThread())
         if path in self.nautilusVFSFile_table:
@@ -546,11 +557,11 @@ class MainContextMenu:
         
         self.status_checker = StatusChecker()
         
-        self.statuses = []
+        self.statuses = {}
         for path in self.paths:
-            self.statuses.extend(self.status_checker.check_status(path, recurse=True, callback=False))
-        self.text_statuses = [status[1] for status in self.statuses]
-        self.statuses = dict(self.statuses)
+            self.statuses.update(self.status_checker.check_status(path, recurse=True, callback=False))
+        self.text_statuses = [self.statuses[key]["text_status"] for key in self.statuses.keys()]
+        
         
         self.path_dict = {}
         self.path_dict["length"] = len(paths)
