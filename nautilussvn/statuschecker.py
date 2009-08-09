@@ -50,7 +50,17 @@ class StatusChecker(threading.Thread):
         # This means that the thread will die when everything else does. If
         # there are problems, we will need to add a flag to manually kill it.
         self.setDaemon(True)
-        
+    
+    def path_modified(self, path):
+        """
+        Alerts the status checker that the given path was modified. It will be
+        removed from the list (but not from pending actions, since they will be
+        re-checked anyway).
+        """
+        with self.__status_tree_lock:
+            pass
+            # Need to clarify the logic for this. Stub for now.
+    
     def check_status(self, path, recurse=False, invalidate=False, callback=None):
         """
         Checks the status of the given path. The callback must be thread safe.
