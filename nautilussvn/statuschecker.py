@@ -111,9 +111,10 @@ class StatusChecker(threading.Thread):
     def __update_path_status(self, path, recurse=False, invalidate=False, callback=None):
         statuses = []
         
-        log.debug("Sleeping for 10s...")
-        time.sleep(5)
-        log.debug("Done.")
+        # Uncomment this for useful simulation of a looooong status check :) 
+        # log.debug("Sleeping for 10s...")
+        # time.sleep(5)
+        # log.debug("Done.")
         
         # Another status check which includes this path may have completed in
         # the meantime so let's do a sanity check.
