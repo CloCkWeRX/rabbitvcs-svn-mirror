@@ -1,2 +1,7 @@
 TortoiseSVN <http://tortoisesvn.tigris.org/> - SVG emblems/overlays
 Licensed under: GPL v2 or later
+
+Except:
+emblem-nautilussvn-calculating.svg: (C) 2009 Bruce van der Kooij <brucevdkooij@gmail.com>
+emblem-nautilussvn-error.svg: (C) 2009 Jason Heeris <jason.heeris@gmail.com>
+Licensed under: GPL v2 or later
