@@ -637,22 +637,7 @@ class MainContextMenu:
                         },
                         "condition": (lambda: True),
                         "submenus": [
-                            {
-                                "identifier": "NautilusSvn::Debug_Asynchronicity",
-                                "label": _("Test Asynchronicity"),
-                                "tooltip": "",
-                                "icon": "nautilussvn-asynchronous",
-                                "signals": {
-                                    "activate": {
-                                        "callback": self.callback_debug_asynchronicity,
-                                        "args": None
-                                    }
-                                },
-                                "condition": (lambda: True),
-                                "submenus": [
-                                    
-                                ]
-                            }
+
                         ]
                     },
                     {
@@ -1580,60 +1565,7 @@ class MainContextMenu:
 
     def condition_cleanup(self):
         return self.path_dict["is_versioned"]
-
-    #
-    # Callbacks
-    #
-    
-    def callback_debug_asynchronicity(self, menu_item, paths):
-        """
-        This is a function to test doing things asynchronously.
-        
-        Plain Python threads don't seem to work properly in the context of a
-        Nautilus extension, so this doesn't work out all too well::
-        
-            import thread
-            thread.start_new_thread(asynchronous_function, ())
-        
-        The thread will _only_ run when not idle (e.g. it will run for a short 
-        while when you change the item selection).
-        
-        A few words of advice. Don't be misled, as I was, into thinking that a 
-        function you add using C{gobject.add_idle} is run asynchronously. 
-        
-        Calling C{time.sleep()} or doing something for a long time will simply block 
-        the main thread while the function is running. It's just that Nautilus
-        is idle a lot so it might create that impression.
-        
-        Calling C{gtk.gdk.threads_init()} or C{gobject.threads_init()} is not needed.
-        
-        Also see:
-        
-          - http://www.pygtk.org/pygtk2reference/gobject-functions.html
-          - http://www.pygtk.org/docs/pygtk/gdk-functions.html
-        
-        Interesting links (but not relevant per se): 
-        
-          - http://research.operationaldynamics.com/blogs/andrew/software/gnome-desktop/gtk-thread-awareness.html
-          - http://unpythonic.blogspot.com/2007/08/using-threads-in-pygtk.html
-        
-        """
-    
-        import thread
-        import time
-        
-        def asynchronous_function():
-            log.debug("inside asynchronous_function()")
-            
-            for i in range(0, 100000):
-                print i
-            
-            log.debug("asynchronous_function() finished")
-        
-        # Calling threads_init does not do anything.
-        gobject.threads_init()
-        thread.start_new_thread(asynchronous_function, ())
-        
+       
     def callback_debug_shell(self, menu_item, paths):
         """
         
