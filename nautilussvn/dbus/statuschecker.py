@@ -10,6 +10,7 @@ from nautilussvn.statuschecker import StatusChecker as RealStatusChecker
 INTERFACE = "org.google.code.nautilussvn.StatusChecker"
 OBJECT_PATH = "/org/google/code/nautilussvn/StatusChecker"
 SERVICE = "org.google.code.nautilussvn.NautilusSvn"
+TIMEOUT = 60*15 # seconds
 
 class StatusChecker(dbus.service.Object):
     
@@ -42,4 +43,19 @@ class StatusCheckerStub:
             traceback.print_exc()
     
     def check_status(self, path, recurse=False, invalidate=False, callback=True):
-        return self.status_checker.CheckStatus(path, recurse, invalidate, callback, dbus_interface=INTERFACE)
+        status = None
+        try:
+            status = self.status_checker.CheckStatus(path, recurse, invalidate, callback, dbus_interface=INTERFACE, timeout=TIMEOUT)
+            # Test client error problems :)
+            # raise dbus.DBusException("Test")
+        except dbus.DBusException, ex:
+            # An exception here is probably caused by large amounts of data
+            # triggering a timeout. We could make the timeout arbitrarily large,
+            # but I don't know if that's wise. -JH
+            from nautilussvn.lib.extensions.nautilus.NautilusSvn import log
+            log.exception(ex)
+            status = {path: {"text_status": "client_error", "prop_status": "client_error"}}
+        return status
+            
+        
+        

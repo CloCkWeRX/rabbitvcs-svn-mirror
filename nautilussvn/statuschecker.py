@@ -38,6 +38,9 @@ class StatusChecker(threading.Thread):
     
     #: Need a re-entrant lock here, look at check_status/add_path_to_check
     __status_tree_lock = threading.RLock()
+    
+    # In here to avoid circular imports
+    # from nautilussvn.lib.extensions.nautilus.NautilusSvn import log
 
     def __init__(self):
         threading.Thread.__init__(self)
