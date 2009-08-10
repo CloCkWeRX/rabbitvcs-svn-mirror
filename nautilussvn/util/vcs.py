@@ -40,7 +40,10 @@ def get_summarized_status(path, statuses):
     if not statuses: 
         # FIXME: figure out a way to make only the directory that
         # is missing display conflicted and the rest unknown.
-        return "unknown"
+        return "error"
+
+    if "client_error" in all_statuses:
+        return "error"
 
     # We need to take special care of directories
     if isdir(path):

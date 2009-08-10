@@ -87,7 +87,8 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         "incomplete":   "nautilussvn-incomplete",
         "unversioned":  "nautilussvn-unversioned",
         "unknown":      "nautilussvn-unknown",
-        "calculating":  "nautilussvn-calculating"
+        "calculating":  "nautilussvn-calculating",
+        "error":        "nautilussvn-error"
     }
     
     #: A list of statuses which count as modified (for a directory) in 
@@ -561,7 +562,7 @@ class MainContextMenu:
         for path in self.paths:
             self.statuses.update(self.status_checker.check_status(path, recurse=True, callback=False))
         self.text_statuses = [self.statuses[key]["text_status"] for key in self.statuses.keys()]
-        
+        self.prop_statuses = [self.statuses[key]["prop_status"] for key in self.statuses.keys()]
         
         self.path_dict = {}
         self.path_dict["length"] = len(paths)
@@ -572,18 +573,18 @@ class MainContextMenu:
             "is_working_copy"               : is_working_copy,
             "is_in_a_or_a_working_copy"     : is_in_a_or_a_working_copy,
             "is_versioned"                  : is_versioned,
-            "is_normal"                     : lambda path: self.statuses[path] == "normal",
-            "is_added"                      : lambda path: self.statuses[path] == "added",
-            "is_modified"                   : lambda path: self.statuses[path] == "modified",
-            "is_deleted"                    : lambda path: self.statuses[path] == "deleted",
-            "is_ignored"                    : lambda path: self.statuses[path] == "ignored",
-            "is_locked"                     : lambda path: self.statuses[path] == "locked",
-            "is_missing"                    : lambda path: self.statuses[path] == "missing",
-            "is_conflicted"                 : lambda path: self.statuses[path] == "conflicted",
-            "is_obstructed"                 : lambda path: self.statuses[path] == "obstructed",
+            "is_normal"                     : lambda path: self.statuses[path]["text_status"] == "normal" and self.statuses[path]["prop_status"] == "normal",
+            "is_added"                      : lambda path: self.statuses[path]["text_status"] == "added",
+            "is_modified"                   : lambda path: self.statuses[path]["text_status"] == "modified" or self.statuses[path]["prop_status"] == "modified",
+            "is_deleted"                    : lambda path: self.statuses[path]["text_status"] == "deleted",
+            "is_ignored"                    : lambda path: self.statuses[path]["text_status"] == "ignored",
+            "is_locked"                     : lambda path: self.statuses[path]["text_status"] == "locked",
+            "is_missing"                    : lambda path: self.statuses[path]["text_status"] == "missing",
+            "is_conflicted"                 : lambda path: self.statuses[path]["text_status"] == "conflicted",
+            "is_obstructed"                 : lambda path: self.statuses[path]["text_status"] == "obstructed",
             "has_unversioned"               : lambda path: "unversioned" in self.text_statuses,
             "has_added"                     : lambda path: "added" in self.text_statuses,
-            "has_modified"                  : lambda path: "modified" in self.text_statuses,
+            "has_modified"                  : lambda path: "modified" in self.text_statuses or "modified" in self.prop_statuses,
             "has_deleted"                   : lambda path: "deleted" in self.text_statuses,
             "has_ignored"                   : lambda path: "ignored" in self.text_statuses,
             "has_locked"                    : lambda path: "locked" in self.text_statuses,
