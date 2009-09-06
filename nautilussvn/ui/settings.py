@@ -141,6 +141,10 @@ class Settings(InterfaceView):
             self.get_widget("diff_tool_swap").get_active()
         )
         self.settings.set(
+            "external", "repo_browser",
+            self.get_widget("repo_browser").get_text()
+        )
+        self.settings.set(
             "cache", "number_repositories",
             self.get_widget("cache_number_repositories").get_text()
         )
