@@ -141,8 +141,9 @@ class Commit(InterfaceView):
         for item in self.items:
             checked = True
             
-            # Some types of files should not be checked off
-            if (not item.is_versioned 
+            # Some types of files should not be checked off, but if the user
+            # selected the file itself it should always be checked.
+            if (not item.path in self.paths and not item.is_versioned 
                     or item.text_status == self.vcs.STATUS["missing"]):
                 checked = False
             
