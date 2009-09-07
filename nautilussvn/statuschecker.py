@@ -12,7 +12,14 @@ import pysvn
 import nautilussvn.util.vcs
 
 # FIXME: debug
-import time
+from nautilussvn.lib.log import Log
+log = Log("nautilussvn.statuschecker")
+# import time
+
+# FIXME: hard coded
+# NOTE: try changing this to a few hundred, or a few thousand to check operation
+# The debugging statements below will tell you how many items are being cached
+MAX_CACHE_SIZE = 1000000 # Items
 
 class StatusChecker(threading.Thread):
     #: The queue will be populated with 4-ples of
@@ -27,15 +34,30 @@ class StatusChecker(threading.Thread):
     #: This isn't a tree (yet) and looks like:::
     #:
     #:     __status_tree = {
-    #:         "/foo": {"text_status": "normal", "prop_status": "normal"},
-    #:         "/foo/bar": {"text_status": "normal", "prop_status": "normal"},
-    #:         "/foo/bar/baz": {"text_status": "added", "prop_status": "normal"}
+    #:         "/foo": {"age": 1,
+    #:                  "status": {"text_status": "normal", "prop_status": "normal"}},
+    #:         "/foo/bar": {"age": 2,
+    #:                      "status": {"text_status": "normal", "prop_status": "normal"}},
+    #:         "/foo/bar/baz": {"age": 2,
+    #:                          "status": {"text_status": "added", "prop_status": "normal"}}
     #:     }
     #:
     #: As you can see it's not a tree (yet) and the way statuses are 
     #: collected as by iterating through the dictionary.
+    #:
+    #: The age parameter is used for limiting the size of the cache. Yes, it is
+    #: meant to be repeated. Yes, it is actually the opposite of age, in that
+    #: higher = newer. But of course, you read this comment before you tried to
+    #: do anything with it, didn't you. DIDN'T YOU?
+    #:
+    #: The "age" parameter should be based on when the path was requested, so
+    #: even if this triggers many recursive additions to the cache, all ages for
+    #: those paths should be the same.
+    #: 
+    #: I was worried that, being a number, this could overflow. But the Python
+    #: library reference states that: "long integers have unlimited precision."
     __status_tree = dict()
-    
+        
     #: Need a re-entrant lock here, look at check_status/add_path_to_check
     __status_tree_lock = threading.RLock()
     
@@ -76,7 +98,7 @@ class StatusChecker(threading.Thread):
              locked OR if the queue is blocking. In the meantime, the thread 
              will pop the path from the queue and look it up.
         """
-        # log.debug("Status checker: %s (inv: %s)" % (path, invalidate))
+        log.debug("Status checker: %s (inv: %s)" % (path, invalidate))
         # log.debug("SC Thread: %s" % threading.currentThread())
         
         statuses = {}
@@ -88,10 +110,14 @@ class StatusChecker(threading.Thread):
                     statuses = self.__get_path_statuses(path)
                 else:
                     # log.debug("SC: we need to calculate the status")
-                    statuses[path] = {"text_status": "calculating", "prop_status": "calculating"}
+                    # TODO: abstract this
+                    statuses[path] = {"text_status": "calculating",
+                                      "prop_status": "calculating"}
+                                      
                     self.__paths_to_check.put((path, recurse, invalidate, callback))
             else:
-                statuses[path] = {"text_status": "unknown", "prop_status": "unknown"}
+                statuses[path] = {"text_status": "unknown",
+                                  "prop_status": "unknown"}
  
         return statuses
         
@@ -115,7 +141,7 @@ class StatusChecker(threading.Thread):
         with self.__status_tree_lock:
             for another_path in self.__status_tree.keys():
                 if another_path.startswith(path):
-                    statuses[another_path] = self.__status_tree[another_path]
+                    statuses[another_path] = self.__status_tree[another_path]["status"]
         
         return statuses
         
@@ -144,14 +170,59 @@ class StatusChecker(threading.Thread):
         testlist = list(self.vcs_client.status(path, recurse=recurse))
                 
         statuses = [(status.path, str(status.text_status), str(status.prop_status)) 
-                        for status in self.vcs_client.status(path, recurse=recurse)]
-        
+                        for status in self.vcs_client.status(path, recurse=recurse)]       
+                
         with self.__status_tree_lock:
+            age = self.__get_max_age() + 1
             for path, text_status, prop_status in statuses:
-                self.__status_tree[path] = {"text_status" : text_status,
-                                            "prop_status" : prop_status}
+                self.__status_tree[path] = {"age":  age,
+                                            "status":
+                                                {"text_status" : text_status,
+                                                 "prop_status" : prop_status}}
+            self.__clean_status_cache()
         
         # Remember: these callbacks will block THIS thread from calculating the
         # next path on the "to do" list.
         if callback: callback(path, self.__get_path_statuses(path))
     
+    def __get_max_age(self):
+        with self.__status_tree_lock:
+            ages = [data["age"] for (path, data) in self.__status_tree.items()]
+            if ages:
+                age = max(data["age"] for (path, data) in self.__status_tree.items())
+            else:
+                age = 0
+                
+            return age
+
+    def __get_min_age(self):
+        with self.__status_tree_lock:
+            ages = [data["age"] for (path, data) in self.__status_tree.items()]
+            if ages:
+                age = min(data["age"] for (path, data) in self.__status_tree.items())
+            else:
+                age = 0
+                
+            return age
+
+    
+    def __clean_status_cache(self):
+        """
+        Tries to ensure the status cache remains under a certain size. This will
+        not enforce a strict limit. The actual limit of the cache is:
+            max( largest WC status tree checked in one go , MAX_CACHE_SIZE )
+        """
+        with self.__status_tree_lock:
+            # We only care if the cache is bigger than the max size BUT we don't
+            # want to delete the entire cache every time.
+            log.debug("Status cache size: %i" % len(self.__status_tree))
+            
+            max_age = self.__get_max_age()
+            min_age = min([data["age"] for (path, data) in self.__status_tree.items()])
+            
+            while len(self.__status_tree) > MAX_CACHE_SIZE and min_age != max_age:
+                paths = [path for path in self.__status_tree.keys() if self.__status_tree[path]["age"] == min_age]
+                for path in paths:
+                    del self.__status_tree[path]
+                min_age = min([data["age"] for (path, data) in self.__status_tree.items()])
+                log.debug("Removed %i paths from status cache" % len(paths))
