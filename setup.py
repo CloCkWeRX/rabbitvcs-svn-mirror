@@ -67,7 +67,6 @@ python_nautilus_extensions_path = subprocess.Popen(
 
 # Some distros don't actually return anything useful from the command
 # above (pkg-config), so let's make sure we have something.
-# TODO: maybe Fedora's package is called python-nautilus?
 python_lib_path = os.path.normpath(distutils.sysconfig.get_python_lib(1) + "../../../nautilus")
 if python_nautilus_extensions_path == "":
     python_nautilus_extensions_path = python_nautilus_extensions_path = python_lib_path + "/extensions-2.0/python"
