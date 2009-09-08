@@ -15,7 +15,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-05-13 06:52+0000\n"
+"X-Launchpad-Export-Date: 2009-09-08 09:16+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-Language: French\n"
@@ -450,6 +450,16 @@ msgstr "Fusion terminée"
 #: ui/merge.py:93
 msgid "Merge"
 msgstr "Fusionner"
+
+#: ui/checkout.py:52
+#, python-format
+msgid "Checkout - %s"
+msgstr ""
+
+#: ui/checkout.py:100 ui/glade/checkout.glade.h:5
+#: lib/extensions/nautilus/NautilusSvn.py:536
+msgid "Checkout"
+msgstr ""
 
 #: ui/checkout.py:101
 msgid "Running Checkout Command..."
@@ -985,6 +995,10 @@ msgstr "Propriété"
 msgid "Property:"
 msgstr "Propriété:"
 
+#: ui/glade/dialogs.glade.h:25
+msgid "Realm:"
+msgstr ""
+
 #: ui/glade/dialogs.glade.h:26
 msgid "Save Authentication"
 msgstr "Sauvegarder l'authentification"
@@ -1004,6 +1018,10 @@ msgstr "Valeur:"
 #: ui/glade/checkout.glade.h:6
 msgid "Destination:"
 msgstr "Destination:"
+
+#: ui/glade/checkout.glade.h:8 ui/glade/update.glade.h:4
+msgid "Omit Externals"
+msgstr ""
 
 #: ui/glade/checkout.glade.h:12
 msgid "URL:"
@@ -1045,6 +1063,10 @@ msgstr "Fermer le service"
 msgid "Bugs"
 msgstr "Bugs"
 
+#: lib/extensions/nautilus/NautilusSvn.py:435
+msgid "Test Asynchronicity"
+msgstr ""
+
 #: lib/extensions/nautilus/NautilusSvn.py:453
 msgid "Open Shell"
 msgstr "Ouvrir un terminal"
@@ -1056,6 +1078,10 @@ msgstr "Rafraîchir le statut"
 #: lib/extensions/nautilus/NautilusSvn.py:486
 msgid "Debug Revert"
 msgstr "Debug inversé"
+
+#: lib/extensions/nautilus/NautilusSvn.py:487
+msgid "Reverts everything it sees"
+msgstr ""
 
 #: lib/extensions/nautilus/NautilusSvn.py:502
 msgid "Invalidate"
@@ -1334,29 +1360,3 @@ msgstr "Réuni"
 #: lib/vcs/svn/__init__.py:151
 msgid "Conflicted"
 msgstr "En conflit"
-
-#: ui/checkout.py:52
-#, python-format
-msgid "Checkout - %s"
-msgstr ""
-
-#: ui/checkout.py:100 ui/glade/checkout.glade.h:5
-#: lib/extensions/nautilus/NautilusSvn.py:536
-msgid "Checkout"
-msgstr ""
-
-#: ui/glade/dialogs.glade.h:25
-msgid "Realm:"
-msgstr ""
-
-#: ui/glade/checkout.glade.h:8 ui/glade/update.glade.h:4
-msgid "Omit Externals"
-msgstr ""
-
-#: lib/extensions/nautilus/NautilusSvn.py:435
-msgid "Test Asynchronicity"
-msgstr ""
-
-#: lib/extensions/nautilus/NautilusSvn.py:487
-msgid "Reverts everything it sees"
-msgstr ""

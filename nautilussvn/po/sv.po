@@ -9,13 +9,13 @@ msgstr ""
 "Project-Id-Version: nautilussvn 0.12\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-03-04 14:35-0500\n"
-"PO-Revision-Date: 2009-03-19 06:54+0000\n"
-"Last-Translator: Niklas Söderlund <Unknown>\n"
+"PO-Revision-Date: 2009-08-22 14:54+0000\n"
+"Last-Translator: Martin Lindhe <Unknown>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-05-13 06:52+0000\n"
+"X-Launchpad-Export-Date: 2009-09-08 09:16+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ui/branch.py:71
@@ -23,12 +23,12 @@ msgid ""
 "There have been modifications to your working copy.  If you copy from the "
 "HEAD revision you will lose your changes."
 msgstr ""
-"Det har skett ändringar i din arbets kopia. Om du kopierar från HEAD "
-"versionen kommer du förlorar dina ändringar."
+"Det har skett ändringar i din arbetskopia. Om du kopierar från HEAD-"
+"versionen kommer du att förlora dina ändringar."
 
 #: ui/branch.py:89
 msgid "You must supply a destination path."
-msgstr "Du måste ange en destinations sökväg."
+msgstr "Du måste ange en destinationssökväg."
 
 #: ui/branch.py:99
 msgid "The from revision field is required."
@@ -36,31 +36,31 @@ msgstr "Från versions fältet krävs,"
 
 #: ui/branch.py:108
 msgid "Invalid revision information"
-msgstr "Ogiltig versions information"
+msgstr "Ogiltig versionsinformation"
 
 #: ui/branch.py:123 ui/glade/branch.glade.h:4
 msgid "Branch/tag"
-msgstr "Gren/tag"
+msgstr "Gren/tagg"
 
 #: ui/branch.py:124
 msgid "Running Branch/tag Command..."
-msgstr "Kör Gren/tag..."
+msgstr "Kör Gren/tagg kommando..."
 
 #: ui/branch.py:126
 msgid "Completed Branch/tag"
-msgstr "Färdig Gren/tag..."
+msgstr "Färdig Gren/tagg..."
 
 #: ui/updateto.py:70
 msgid "Update To Revision"
-msgstr "Updatera till version"
+msgstr "Uppdatera till revision"
 
 #: ui/updateto.py:71 ui/update.py:54
 msgid "Updating..."
-msgstr "Updaterar..."
+msgstr "Uppdaterar..."
 
 #: ui/updateto.py:79 ui/update.py:57
 msgid "Completed Update"
-msgstr "Färdig Updatera"
+msgstr "Uppdatering färdig"
 
 #: ui/rename.py:59
 msgid "The new name field is required"
@@ -76,7 +76,7 @@ msgstr "Kör Byt namn..."
 
 #: ui/rename.py:78
 msgid "Completed Rename"
-msgstr "Färdig Byt namn"
+msgstr "Namnbyte genomfört"
 
 #: ui/annotate.py:51
 msgid "Cannot annotate a directory"
@@ -95,7 +95,7 @@ msgstr "Rad"
 #: ui/glade/merge.glade.h:17 ui/glade/checkout.glade.h:10
 #: ui/glade/update.glade.h:6
 msgid "Revision"
-msgstr "Version"
+msgstr "Revision"
 
 #: ui/annotate.py:71 ui/log.py:80
 msgid "Author"
@@ -139,7 +139,7 @@ msgstr "Arkivets sökvägar rensade"
 
 #: ui/settings.py:185
 msgid "Are you sure you want to clear your previous messages?"
-msgstr "Är du säker på att du vill rensa din tidigare meddelanden?"
+msgstr "Är du säker på att du vill rensa dina tidigare meddelanden?"
 
 #: ui/settings.py:192
 msgid "Previous messages cleared"
@@ -147,15 +147,15 @@ msgstr "Tidigare meddelanden rensade"
 
 #: ui/settings.py:196
 msgid "Are you sure you want to clear your authentication information?"
-msgstr "Är du säker på att du vill rensa din autentiserings information?"
+msgstr "Är du säker på att du vill rensa din autentiseringsinformation?"
 
 #: ui/settings.py:213
 msgid "Authentication information cleared"
-msgstr "Autentiserings information rensad"
+msgstr "Autentiseringsinformation rensad"
 
 #: ui/cleanup.py:54 lib/extensions/nautilus/NautilusSvn.py:831
 msgid "Cleanup"
-msgstr "Rensning"
+msgstr "Rensa"
 
 #: ui/cleanup.py:55 ui/glade/cleanup.glade.h:1
 msgid "Cleaning Up..."
@@ -163,23 +163,23 @@ msgstr "Rensar upp..."
 
 #: ui/cleanup.py:57
 msgid "Completed Cleanup"
-msgstr "Färdig Rensning"
+msgstr "Rensning färdig"
 
 #: ui/relocate.py:76
 msgid "The from and to url fields are both required."
-msgstr "Från och till URL fälteb är båda nödvändig."
+msgstr "Både från och till url-fälten krävs."
 
 #: ui/relocate.py:86 ui/glade/relocate.glade.h:3
 msgid "Relocate"
-msgstr "Flytta"
+msgstr "Omlokalisera"
 
 #: ui/relocate.py:87
 msgid "Running Relocate Command..."
-msgstr "Kör Flytta..."
+msgstr "Kör omlokalisering..."
 
 #: ui/relocate.py:94
 msgid "Completed Relocate"
-msgstr "Färdig Flytta"
+msgstr "Omlokalisering färdig"
 
 #: ui/add.py:64 ui/lock.py:66 ui/resolve.py:55 ui/action.py:66 ui/commit.py:73
 #: ui/unlock.py:55 ui/log.py:89 ui/revert.py:55
@@ -189,7 +189,7 @@ msgstr "Sökväg"
 #: ui/add.py:64 ui/lock.py:66 ui/resolve.py:55 ui/commit.py:73 ui/unlock.py:55
 #: ui/revert.py:55
 msgid "Extension"
-msgstr "Förlängning"
+msgstr "Tillägg"
 
 #: ui/add.py:78 ui/lock.py:96 ui/commit.py:97 ui/unlock.py:70 ui/log.py:253
 #: ui/glade/log.glade.h:6
@@ -267,7 +267,7 @@ msgstr "Hämta lås"
 
 #: ui/lock.py:145
 msgid "Running Lock Command..."
-msgstr "Klr Hämta lås"
+msgstr "Kör Hämta lås..."
 
 #: ui/lock.py:154
 msgid "Completed Lock"
@@ -285,7 +285,7 @@ msgstr "Visa Diff"
 #: ui/glade/merge.glade.h:18 ui/glade/checkout.glade.h:11
 #: ui/glade/update.glade.h:7
 msgid "Show log"
-msgstr "Visa log"
+msgstr "Visa logg"
 
 #: ui/export.py:40
 #, python-format
@@ -327,7 +327,7 @@ msgstr "Åtgärd"
 
 #: ui/action.py:66
 msgid "Mime Type"
-msgstr "Mime typ"
+msgstr "Mime-typ"
 
 #: ui/action.py:135
 msgid "Empty Message"
@@ -344,11 +344,11 @@ msgstr "%s - Färdigt"
 
 #: ui/commit.py:66
 msgid "The given path is not a working copy"
-msgstr "Den angivna sökvägen är inte en arbets kopia"
+msgstr "Den angivna sökvägen är inte en arbetskopia"
 
 #: ui/commit.py:74
 msgid "Text Status"
-msgstr "Text status"
+msgstr "Textstatus"
 
 #: ui/commit.py:74
 msgid "Property Status"
@@ -398,7 +398,7 @@ msgstr "Är du säker på att du vill fortsätta?"
 
 #: ui/dialog.py:257
 msgid "the selected item(s)"
-msgstr "dom markerade objekten"
+msgstr "de markerade objekten"
 
 #: ui/switch.py:65
 msgid "The repository location is a required field."
@@ -430,11 +430,11 @@ msgstr "Färdig Lås upp"
 
 #: ui/merge.py:81
 msgid "Running Merge Test"
-msgstr "Kör Sammanfognings test..."
+msgstr "Kör Sammanfogningstest..."
 
 #: ui/merge.py:82
 msgid "Completed Merge Test"
-msgstr "Färdig Sammanfognings test"
+msgstr "Färdig Sammanfogningstest"
 
 #: ui/merge.py:84
 msgid "Running Merge Command"
@@ -469,7 +469,7 @@ msgstr "Färdig Hämta"
 #: ui/log.py:63
 #, python-format
 msgid "Log - %s"
-msgstr "Log - %s"
+msgstr "Logg - %s"
 
 #: ui/log.py:90
 msgid "Copy From Path"
@@ -485,7 +485,7 @@ msgstr "Avbruten"
 
 #: ui/log.py:236 ui/log.py:237 ui/glade/log.glade.h:8
 msgid "N/A"
-msgstr "N/A"
+msgstr "Ej tillgänglig"
 
 #: ui/log.py:284
 msgid "(no author)"
@@ -519,7 +519,7 @@ msgstr "Färdig Återställ"
 #: ui/update.py:53 ui/glade/update.glade.h:8
 #: lib/extensions/nautilus/NautilusSvn.py:552
 msgid "Update"
-msgstr "Updatera"
+msgstr "Uppdatera"
 
 #: ui/create.py:49
 msgid "Repository successfully created"
@@ -536,7 +536,7 @@ msgstr ""
 #: ui/glade/switch.glade.h:1 ui/glade/checkout.glade.h:3
 #: ui/glade/update.glade.h:1
 msgid "<b>Revision</b>"
-msgstr "<b>Version</b>"
+msgstr "<b>Revision</b>"
 
 #: ui/glade/switch.glade.h:2
 msgid "<b>Switch Details</b>"
@@ -559,7 +559,7 @@ msgstr "Till:"
 
 #: ui/glade/notification.glade.h:1
 msgid "Notification Messages"
-msgstr "Notifierings Meddelanden"
+msgstr "Notifieringsmeddelanden"
 
 #: ui/glade/commit.glade.h:1 ui/glade/branch.glade.h:1
 msgid "<b>Add Message</b>"
@@ -624,11 +624,11 @@ msgstr "URL/Sökväg:"
 
 #: ui/glade/annotate.glade.h:1
 msgid "<b>From Revision</b>"
-msgstr "<b>Från version</b>"
+msgstr "<b>Från revision</b>"
 
 #: ui/glade/annotate.glade.h:2
 msgid "<b>To Revision</b>"
-msgstr "<b>Till version</b>"
+msgstr "<b>Till revision</b>"
 
 #: ui/glade/annotate.glade.h:3
 msgid "Annotate"
@@ -640,7 +640,7 @@ msgstr "<b>Länkar</b>"
 
 #: ui/glade/about.glade.h:2
 msgid "<b>Version Information</b>"
-msgstr "<b>Versions information</b>"
+msgstr "<b>Versionsinformation</b>"
 
 #: ui/glade/about.glade.h:3
 msgid "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
@@ -652,7 +652,7 @@ msgstr "Om"
 
 #: ui/glade/about.glade.h:5
 msgid "Authors:"
-msgstr "Författare:"
+msgstr "Upphovsmän:"
 
 #: ui/glade/about.glade.h:6
 msgid "Thanks:"
@@ -669,7 +669,7 @@ msgstr "<b>Skapa kopia från</b>"
 #: ui/glade/branch.glade.h:3 ui/glade/checkout.glade.h:2
 #: ui/glade/import.glade.h:2
 msgid "<b>Repository</b>"
-msgstr "<b>Arkivet</b>"
+msgstr "<b>Arkiv</b>"
 
 #: ui/glade/branch.glade.h:5
 msgid "Copy from HEAD"
@@ -677,11 +677,11 @@ msgstr "Kopiera från HEAD"
 
 #: ui/glade/branch.glade.h:6
 msgid "Copy from revision"
-msgstr "Kopiera från version"
+msgstr "Kopiera från revision"
 
 #: ui/glade/branch.glade.h:7
 msgid "Copy from working copy"
-msgstr "Kopiera från arbets kopia"
+msgstr "Kopiera från arbetskopia"
 
 #: ui/glade/log.glade.h:1
 msgid "100"
@@ -697,7 +697,7 @@ msgstr "<b>Meddelande</b>"
 
 #: ui/glade/log.glade.h:4
 msgid "<b>Revisions Table</b>"
-msgstr "<b>Versions tabell</b>"
+msgstr "<b>Revisionstabell</b>"
 
 #: ui/glade/log.glade.h:5
 msgid "Limit:"
@@ -705,15 +705,15 @@ msgstr "Gräns:"
 
 #: ui/glade/log.glade.h:7
 msgid "Log"
-msgstr "Log"
+msgstr "Logg"
 
 #: ui/glade/log.glade.h:9
 msgid "Refresh"
-msgstr "Updatera"
+msgstr "Uppdatera"
 
 #: ui/glade/log.glade.h:10
 msgid "Showing Revisions:"
-msgstr "Visar versioner:"
+msgstr "Visar revisioner:"
 
 #: ui/glade/log.glade.h:11
 msgid "Stop on copy"
@@ -725,7 +725,7 @@ msgstr "<b>Från URL</b>"
 
 #: ui/glade/merge.glade.h:2
 msgid "<b>From: (URL and revision to merge)</b>"
-msgstr "<b>Från: (URL och version sammanfogning)</b>"
+msgstr "<b>Från: (URL och revision sammanfogning)</b>"
 
 #: ui/glade/merge.glade.h:3 ui/glade/checkout.glade.h:1
 msgid "<b>Options</b>"
@@ -733,11 +733,11 @@ msgstr "<b>Alternativ</b>"
 
 #: ui/glade/merge.glade.h:4
 msgid "<b>Revision Range</b>"
-msgstr "<b>Versions span</b>"
+msgstr "<b>Revisionsspan</b>"
 
 #: ui/glade/merge.glade.h:5
 msgid "<b>To: (URL and revision to merge)</b>"
-msgstr "<b>Till: (URL och version att sammanfoga)</b>"
+msgstr "<b>Till: (URL och revision att sammanfoga)</b>"
 
 #: ui/glade/merge.glade.h:6
 msgid "<b>URL to merge from</b>"
@@ -745,7 +745,7 @@ msgstr "<b>URL att sammanfoga från</b>"
 
 #: ui/glade/merge.glade.h:7
 msgid "<b>Working Copy</b>"
-msgstr "<b>Arbets kopia</b>"
+msgstr "<b>Arbetskopia</b>"
 
 #: ui/glade/merge.glade.h:8
 msgid ""
@@ -760,8 +760,8 @@ msgid ""
 "Choose this method if you wish to merge two different branches into your "
 "working copy."
 msgstr ""
-"Välj den här metoden om du vill sammanfoga två olika grenar i din arbets "
-"kopia."
+"Välj den här metoden om du vill sammanfoga två olika grenar i din "
+"arbetskopia."
 
 #: ui/glade/merge.glade.h:11
 msgid "Ignore ancestry"
@@ -769,11 +769,11 @@ msgstr "Ignorera anor"
 
 #: ui/glade/merge.glade.h:12
 msgid "Merge Assistant"
-msgstr "Sammanfognings assistent"
+msgstr "Sammanfogningsassistent"
 
 #: ui/glade/merge.glade.h:13
 msgid "Merge a range of revisions"
-msgstr "Sammanfoga ett span av versioner"
+msgstr "Sammanfoga ett span av revisioner"
 
 #: ui/glade/merge.glade.h:14
 msgid "Merge two different trees"
@@ -802,13 +802,13 @@ msgid ""
 "\n"
 "To merge all revisions, leave the box empty."
 msgstr ""
-"Använd log dialogrutan för att välja de versioner som du vill sammanfoga. "
-"Eller skriv ut versionerna manuellt, separerade med ett kommatecken. Du kan "
-"ange et versions span med ett bindestreck.\n"
+"Använd logg dialogrutan för att välja de revisioner som du vill sammanfoga. "
+"Eller skriv ut revisionerna manuellt, separerade med ett kommatecken. Du kan "
+"ange ett revisionsspan med ett bindestreck.\n"
 "\n"
 "Exempel: 4-7,9,11,15-HEAD\n"
 "\n"
-"För att sammanfoga alla versioner, lämna rutan tom."
+"För att sammanfoga alla revisioner, lämna rutan tom."
 
 #: ui/glade/settings.glade.h:1
 msgid "<b>Authentication</b>"
@@ -836,7 +836,7 @@ msgstr "<b>Program som används för att jämföra filer</b>"
 
 #: ui/glade/settings.glade.h:7
 msgid "<b>URL History</b>"
-msgstr "<b>URL Historia</b>"
+msgstr "<b>URL Historik</b>"
 
 #: ui/glade/settings.glade.h:8 ui/glade/checkout.glade.h:4
 msgid "Browse..."
@@ -844,7 +844,7 @@ msgstr "Bläddra..."
 
 #: ui/glade/settings.glade.h:9
 msgid "Clear your authentication information"
-msgstr "Rensa autentiserings information"
+msgstr "Rensa autentiseringsinformation"
 
 #: ui/glade/settings.glade.h:10
 msgid "Enable emblems"
@@ -860,7 +860,7 @@ msgstr "Aktivera rekursiva statuskontroller"
 
 #: ui/glade/settings.glade.h:13
 msgid "External Programs"
-msgstr "Externa Program"
+msgstr "Externa program"
 
 #: ui/glade/settings.glade.h:14
 msgid "General"
@@ -876,7 +876,7 @@ msgstr "Loggning"
 
 #: ui/glade/settings.glade.h:17
 msgid "Minimum level to log"
-msgstr "Lägsta nivå för att logga"
+msgstr "Lägsta nivå att logga"
 
 #: ui/glade/settings.glade.h:18
 msgid "Number of URLs to remember"
@@ -888,7 +888,7 @@ msgstr "Antal meddelande att minnas"
 
 #: ui/glade/settings.glade.h:20
 msgid "Saved Data"
-msgstr "Spara data"
+msgstr "Sparad data"
 
 #: ui/glade/settings.glade.h:21 lib/extensions/nautilus/NautilusSvn.py:1043
 msgid "Settings"
@@ -914,15 +914,15 @@ msgstr ""
 
 #: ui/glade/dialogs.glade.h:1
 msgid "<b>Certificate Details</b>"
-msgstr "<b>Certifikat detaljer</b>"
+msgstr "<b>Certifikatdetaljer</b>"
 
 #: ui/glade/dialogs.glade.h:2
 msgid "<b>Edit Property Details</b>"
-msgstr "<b>Redigera egenskaps detaljer</b>"
+msgstr "<b>Redigera egenskapsdetaljer</b>"
 
 #: ui/glade/dialogs.glade.h:4
 msgid "<b>Please add your authentication details</b>"
-msgstr "<b>Lägg till autentiserings detaljer</b>"
+msgstr "<b>Lägg till autentiseringsdetaljer</b>"
 
 #: ui/glade/dialogs.glade.h:5
 msgid "<b>Previous Messages</b>"
@@ -936,7 +936,7 @@ msgstr ""
 
 #: ui/glade/dialogs.glade.h:8
 msgid "Accept Forever"
-msgstr "Acceptera förevigt"
+msgstr "Acceptera för alltid"
 
 #: ui/glade/dialogs.glade.h:9
 msgid "Accept Once"
@@ -1004,7 +1004,7 @@ msgstr "Dessa objekt kommer att skickas till papperskorgen."
 
 #: ui/glade/dialogs.glade.h:28
 msgid "Valid:"
-msgstr "Gäller:"
+msgstr "Giltig:"
 
 #: ui/glade/dialogs.glade.h:29
 msgid "Value:"
@@ -1012,11 +1012,11 @@ msgstr "Värde:"
 
 #: ui/glade/checkout.glade.h:6
 msgid "Destination:"
-msgstr "Destination:"
+msgstr "Mål:"
 
 #: ui/glade/checkout.glade.h:8 ui/glade/update.glade.h:4
 msgid "Omit Externals"
-msgstr "Uteslut ytrre objekt"
+msgstr "Uteslut externa"
 
 #: ui/glade/checkout.glade.h:12
 msgid "URL:"
@@ -1032,15 +1032,15 @@ msgstr "Inkludera ignorerade filer"
 
 #: ui/glade/update.glade.h:2
 msgid "<b>Update Depth</b>"
-msgstr "<b>Uppdaterings djup</b>"
+msgstr "<b>Uppdateringsdjup</b>"
 
 #: ui/glade/relocate.glade.h:1
 msgid "<b>Change the repository of your working copy</b>"
-msgstr "<b>Ändra akriv till din arbets kopia</b>"
+msgstr "<b>Ändra arkiv till din arbetskopia</b>"
 
 #: lib/extensions/nautilus/NautilusSvn.py:362
 msgid "Debug"
-msgstr "Debug"
+msgstr "Felsök"
 
 #: lib/extensions/nautilus/NautilusSvn.py:375
 msgid "DBus"
@@ -1048,7 +1048,7 @@ msgstr "DBus"
 
 #: lib/extensions/nautilus/NautilusSvn.py:388
 msgid "Start/Restart Service"
-msgstr "Start/Startaom tjänsten"
+msgstr "Starta/Starta om tjänsten"
 
 #: lib/extensions/nautilus/NautilusSvn.py:404
 msgid "Exit Service"
@@ -1056,7 +1056,7 @@ msgstr "Avsluta tjänsten"
 
 #: lib/extensions/nautilus/NautilusSvn.py:422
 msgid "Bugs"
-msgstr "Bugs"
+msgstr "Buggar"
 
 #: lib/extensions/nautilus/NautilusSvn.py:435
 msgid "Test Asynchronicity"
@@ -1068,7 +1068,7 @@ msgstr "Öppna Skal"
 
 #: lib/extensions/nautilus/NautilusSvn.py:469
 msgid "Refresh Status"
-msgstr "Updatera Status"
+msgstr "Uppdatera Status"
 
 #: lib/extensions/nautilus/NautilusSvn.py:486
 msgid "Debug Revert"
@@ -1096,11 +1096,11 @@ msgstr "Lägg till ett emblem"
 
 #: lib/extensions/nautilus/NautilusSvn.py:537
 msgid "Check out a working copy"
-msgstr "Hämta en arbets kopia"
+msgstr "Hämta en arbetskopia"
 
 #: lib/extensions/nautilus/NautilusSvn.py:553
 msgid "Update a working copy"
-msgstr "Updatera en arbets kopia"
+msgstr "Uppdatera en arbetskopia"
 
 #: lib/extensions/nautilus/NautilusSvn.py:569
 msgid "Commit modifications to the repository"
@@ -1116,11 +1116,11 @@ msgstr "Visa ändringar som gjorts i en fil"
 
 #: lib/extensions/nautilus/NautilusSvn.py:613
 msgid "Show Log"
-msgstr "Visa Log"
+msgstr "Visa Logg"
 
 #: lib/extensions/nautilus/NautilusSvn.py:614
 msgid "Show a file's log information"
-msgstr "Visa en filens logginformation"
+msgstr "Visa en fils logginformation"
 
 #: lib/extensions/nautilus/NautilusSvn.py:639
 msgid "Schedule an item to be added to the repository"
@@ -1136,11 +1136,11 @@ msgstr "Ignorera alla filer med denna filändelse"
 
 #: lib/extensions/nautilus/NautilusSvn.py:703
 msgid "Update to revision..."
-msgstr "Updatera till version..."
+msgstr "Uppdatera till revision..."
 
 #: lib/extensions/nautilus/NautilusSvn.py:704
 msgid "Update a file to a specific revision"
-msgstr "Updatera till angiven version"
+msgstr "Uppdatera till angiven version"
 
 #: lib/extensions/nautilus/NautilusSvn.py:719
 msgid "Rename..."
@@ -1164,11 +1164,11 @@ msgstr "Markera ett tvistande objektet som löst"
 
 #: lib/extensions/nautilus/NautilusSvn.py:783
 msgid "Relocate..."
-msgstr "Flytta.."
+msgstr "Flytta..."
 
 #: lib/extensions/nautilus/NautilusSvn.py:784
 msgid "Relocate your working copy"
-msgstr "Flytta din arbets kopia"
+msgstr "Flytta din arbetskopia"
 
 #: lib/extensions/nautilus/NautilusSvn.py:799
 msgid "Get Lock..."
@@ -1188,11 +1188,11 @@ msgstr "Släpp lås på ett objekt"
 
 #: lib/extensions/nautilus/NautilusSvn.py:832
 msgid "Clean up working copy"
-msgstr "Rensa upp din arbets kopia"
+msgstr "Rensa upp arbetskopia"
 
 #: lib/extensions/nautilus/NautilusSvn.py:857
 msgid "Export a working copy or repository with no versioning information"
-msgstr "Exportera en fungerande kopia eller arkiv utan versions information"
+msgstr "Exportera en fungerande kopia eller arkiv utan versionsinformation"
 
 #: lib/extensions/nautilus/NautilusSvn.py:872
 msgid "Create Repository here"
@@ -1208,7 +1208,7 @@ msgstr "Importera ett objekt till ett arkiv"
 
 #: lib/extensions/nautilus/NautilusSvn.py:913
 msgid "Branch/tag..."
-msgstr "Gren/tag..."
+msgstr "Gren/tagg..."
 
 #: lib/extensions/nautilus/NautilusSvn.py:914
 msgid "Copy an item to another location in the repository"
@@ -1232,7 +1232,7 @@ msgstr "En guide med åtgärder för sammanfogning"
 
 #: lib/extensions/nautilus/NautilusSvn.py:970
 msgid "Annotate..."
-msgstr "Kommentar..."
+msgstr "Kommentera..."
 
 #: lib/extensions/nautilus/NautilusSvn.py:971
 msgid "Annotate a file"
@@ -1277,11 +1277,11 @@ msgstr "Återställd"
 
 #: lib/vcs/svn/__init__.py:115
 msgid "Reverted"
-msgstr "Återställd"
+msgstr "Backad"
 
 #: lib/vcs/svn/__init__.py:116
 msgid "Failed Revert"
-msgstr "Misslyckad återställning"
+msgstr "Misslyckad backning"
 
 #: lib/vcs/svn/__init__.py:117
 msgid "Resolved"
@@ -1289,11 +1289,11 @@ msgstr "Löst"
 
 #: lib/vcs/svn/__init__.py:118
 msgid "Skipped"
-msgstr "Över hoppad"
+msgstr "Överhoppad"
 
 #: lib/vcs/svn/__init__.py:121
 msgid "Updated"
-msgstr "Updaterad"
+msgstr "Uppdaterad"
 
 #: lib/vcs/svn/__init__.py:123 lib/vcs/svn/__init__.py:125
 msgid "External"

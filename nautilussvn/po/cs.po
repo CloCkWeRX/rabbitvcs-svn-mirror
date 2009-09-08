@@ -14,12 +14,26 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-05-13 06:52+0000\n"
+"X-Launchpad-Export-Date: 2009-09-08 09:16+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
+
+#: ui/branch.py:71
+msgid ""
+"There have been modifications to your working copy.  If you copy from the "
+"HEAD revision you will lose your changes."
+msgstr ""
+
+#: ui/branch.py:89
+msgid "You must supply a destination path."
+msgstr ""
 
 #: ui/branch.py:99
 msgid "The from revision field is required."
 msgstr "Políčko z revize je povinné."
+
+#: ui/branch.py:108
+msgid "Invalid revision information"
+msgstr ""
 
 #: ui/branch.py:123 ui/glade/branch.glade.h:4
 msgid "Branch/tag"
@@ -169,6 +183,11 @@ msgstr "Přesunutí dokončeno"
 msgid "Path"
 msgstr "Cesta"
 
+#: ui/add.py:64 ui/lock.py:66 ui/resolve.py:55 ui/commit.py:73 ui/unlock.py:55
+#: ui/revert.py:55
+msgid "Extension"
+msgstr ""
+
 #: ui/add.py:78 ui/lock.py:96 ui/commit.py:97 ui/unlock.py:70 ui/log.py:253
 #: ui/glade/log.glade.h:6
 msgid "Loading..."
@@ -183,6 +202,10 @@ msgstr "Našel %d položek"
 #: lib/extensions/nautilus/NautilusSvn.py:638
 msgid "Add"
 msgstr "Přidat"
+
+#: ui/add.py:116
+msgid "Running Add Command..."
+msgstr ""
 
 #: ui/add.py:118
 msgid "Completed Add"
@@ -210,10 +233,22 @@ msgstr "Přídat na ignore list"
 msgid "Import - %s"
 msgstr "Importovat - %s"
 
+#: ui/import.py:68
+msgid "The repository URL field is required."
+msgstr ""
+
 #: ui/import.py:80 ui/glade/import.glade.h:3
 #: lib/extensions/nautilus/NautilusSvn.py:888
 msgid "Import"
 msgstr "Import"
+
+#: ui/import.py:81
+msgid "Running Import Command..."
+msgstr ""
+
+#: ui/import.py:89
+msgid "Completed Import"
+msgstr ""
 
 #: ui/lock.py:67 lib/vcs/svn/__init__.py:132
 msgid "Locked"
@@ -222,6 +257,18 @@ msgstr "Zamčeno"
 #: ui/lock.py:90 ui/lock.py:107
 msgid "Yes"
 msgstr "Ano"
+
+#: ui/lock.py:144
+msgid "Get Lock"
+msgstr ""
+
+#: ui/lock.py:145
+msgid "Running Lock Command..."
+msgstr ""
+
+#: ui/lock.py:154
+msgid "Completed Lock"
+msgstr ""
 
 #: ui/lock.py:176
 msgid "Remove Lock"
@@ -242,544 +289,13 @@ msgstr "Zobrazit log"
 msgid "Export - %s"
 msgstr "Exportovat  - %s"
 
-#: ui/export.py:79 lib/extensions/nautilus/NautilusSvn.py:856
-msgid "Export"
-msgstr "Export"
-
-#: ui/action.py:66 ui/log.py:89
-msgid "Action"
-msgstr "Akce"
-
-#: ui/action.py:66
-msgid "Mime Type"
-msgstr "Mime Type"
-
-#: ui/action.py:135
-msgid "Empty Message"
-msgstr "Prázdná zpráva"
-
-#: ui/action.py:249 ui/log.py:309
-msgid "Finished"
-msgstr "Dokončeno"
-
-#: ui/action.py:253
-#, python-format
-msgid "%s - Finished"
-msgstr "%s - Dokončeno"
-
-#: ui/commit.py:74
-msgid "Text Status"
-msgstr "Status"
-
-#: ui/commit.py:188 ui/glade/commit.glade.h:4
-#: lib/extensions/nautilus/NautilusSvn.py:568
-msgid "Commit"
-msgstr "Commit"
-
-#: ui/commit.py:289
-msgid "Restore"
-msgstr "Obnovit"
-
-#: ui/dialog.py:47 ui/log.py:81 ui/glade/dialogs.glade.h:20
-msgid "Message"
-msgstr "Zpráva"
-
-#: ui/dialog.py:88
-msgid "Select a Folder"
-msgstr "Zvolit adresář"
-
-#: ui/dialog.py:210
-msgid "Select a File"
-msgstr "Zvolit soubor"
-
-#: ui/dialog.py:229 ui/glade/dialogs.glade.h:10
-msgid "Are you sure you want to continue?"
-msgstr "Opravdu chcete pokračovat?"
-
-#: ui/dialog.py:257
-msgid "the selected item(s)"
-msgstr "zvolené(á) položky(a)"
-
-#: ui/switch.py:81 ui/glade/switch.glade.h:7
-msgid "Switch"
-msgstr "Switch"
-
-#: ui/log.py:63
-#, python-format
-msgid "Log - %s"
-msgstr "Log - %s"
-
-#: ui/log.py:112
-msgid "Cancelled"
-msgstr "Zrušeno"
-
-#: ui/log.py:236 ui/log.py:237 ui/glade/log.glade.h:8
-msgid "N/A"
-msgstr "N/A"
-
-#: ui/log.py:284
-msgid "(no author)"
-msgstr "(autor neznámý)"
-
-#: ui/properties.py:53
-#, python-format
-msgid "Properties - %s"
-msgstr "Vlastnosti - %s"
-
-#: ui/properties.py:61
-msgid "Name"
-msgstr "Jméno"
-
-#: ui/properties.py:61
-msgid "Value"
-msgstr "Hodnota"
-
-#: ui/update.py:53 ui/glade/update.glade.h:8
-#: lib/extensions/nautilus/NautilusSvn.py:552
-msgid "Update"
-msgstr "Update"
-
-#: ui/create.py:49
-msgid "Repository successfully created"
-msgstr "Repozitory bylo úspěšně vytvořeno"
-
-#: ui/glade/switch.glade.h:1 ui/glade/checkout.glade.h:3
-#: ui/glade/update.glade.h:1
-msgid "<b>Revision</b>"
-msgstr "<b>Revize</b>"
-
-#: ui/glade/switch.glade.h:3 ui/glade/branch.glade.h:8
-#: ui/glade/relocate.glade.h:2
-msgid "From:"
-msgstr "Od:"
-
-#: ui/glade/switch.glade.h:4 ui/glade/merge.glade.h:10
-#: ui/glade/checkout.glade.h:7 ui/glade/update.glade.h:3
-msgid "HEAD"
-msgstr "HEAD"
-
-#: ui/glade/switch.glade.h:8 ui/glade/branch.glade.h:11
-#: ui/glade/relocate.glade.h:4
-msgid "To:"
-msgstr "Do:"
-
-#: ui/glade/commit.glade.h:1 ui/glade/branch.glade.h:1
-msgid "<b>Add Message</b>"
-msgstr "<b>Přidat zprávu</b>"
-
-#: ui/glade/commit.glade.h:3
-msgid "<b>Commit to:</b>"
-msgstr "<b>Commit do:</b>"
-
-#: ui/glade/commit.glade.h:5 ui/glade/lock.glade.h:4 ui/glade/branch.glade.h:9
-#: ui/glade/dialogs.glade.h:22 ui/glade/import.glade.h:5
-msgid "Previous Messages"
-msgstr "Předchozí zprávy"
-
-#: ui/glade/commit.glade.h:6 ui/glade/lock.glade.h:5 ui/glade/add.glade.h:2
-msgid "Select / Deselect all"
-msgstr "Vybrat / zrušit vše"
-
-#: ui/glade/lock.glade.h:1
-msgid "<b>Files to lock</b>"
-msgstr "<b>Soubory k uzamknutí</b>"
-
-#: ui/glade/properties.glade.h:1
-msgid "<b>Properties for:</b>"
-msgstr "<b>Vlastnosti pro:</b>"
-
-#: ui/glade/properties.glade.h:3
-msgid "Edit..."
-msgstr "Upravit..."
-
-#: ui/glade/properties.glade.h:4
-msgid "New..."
-msgstr "Nový..."
-
-#: ui/glade/properties.glade.h:5 lib/extensions/nautilus/NautilusSvn.py:995
-msgid "Properties"
-msgstr "Vlastnosti"
-
-#: ui/glade/properties.glade.h:6
-msgid "URL/Path:"
-msgstr "URL/cesta:"
-
-#: ui/glade/about.glade.h:1
-msgid "<b>Links</b>"
-msgstr "<b>Odkazy</b>"
-
-#: ui/glade/about.glade.h:2
-msgid "<b>Version Information</b>"
-msgstr "<b>Informace o verzi</b>"
-
-#: ui/glade/about.glade.h:3
-msgid "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
-msgstr "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
-
-#: ui/glade/about.glade.h:5
-msgid "Authors:"
-msgstr "Autoři:"
-
-#: ui/glade/about.glade.h:6
-msgid "Thanks:"
-msgstr "Děkujeme:"
-
-#: ui/glade/rename.glade.h:1
-msgid "New Name:"
-msgstr "Nové jméno:"
-
-#: ui/glade/branch.glade.h:3 ui/glade/checkout.glade.h:2
-#: ui/glade/import.glade.h:2
-msgid "<b>Repository</b>"
-msgstr "<b>Repozitory</b>"
-
-#: ui/glade/log.glade.h:5
-msgid "Limit:"
-msgstr "Limit:"
-
-#: ui/glade/log.glade.h:7
-msgid "Log"
-msgstr "Log"
-
-#: ui/glade/log.glade.h:9
-msgid "Refresh"
-msgstr "Obnovit"
-
-#: ui/glade/merge.glade.h:1
-msgid "<b>From URL</b>"
-msgstr "<b>Z URL</b>"
-
-#: ui/glade/merge.glade.h:3 ui/glade/checkout.glade.h:1
-msgid "<b>Options</b>"
-msgstr "<b>Volby</b>"
-
-#: ui/glade/settings.glade.h:8 ui/glade/checkout.glade.h:4
-msgid "Browse..."
-msgstr "Procházet..."
-
-#: ui/glade/settings.glade.h:14
-msgid "General"
-msgstr "Obecné"
-
-#: ui/glade/settings.glade.h:15
-msgid "Language:"
-msgstr "Jazyk:"
-
-#: ui/glade/settings.glade.h:16
-msgid "Logging"
-msgstr "Logování"
-
-#: ui/glade/settings.glade.h:17
-msgid "Minimum level to log"
-msgstr "Minimální úroveň pro logování"
-
-#: ui/glade/settings.glade.h:20
-msgid "Saved Data"
-msgstr "Uložená data"
-
-#: ui/glade/settings.glade.h:21 lib/extensions/nautilus/NautilusSvn.py:1043
-msgid "Settings"
-msgstr "Nastavení"
-
-#: ui/glade/settings.glade.h:23
-msgid "Type:"
-msgstr "Typ"
-
-#: ui/glade/dialogs.glade.h:5
-msgid "<b>Previous Messages</b>"
-msgstr "<b>Předchozí zprávy</b>"
-
-#: ui/glade/dialogs.glade.h:7
-msgid ""
-"<span size=\"large\"><b>Are you sure you want to delete %item%?</b></span>"
-msgstr "<span size=\"large\"><b>Opravdu chcete smazat %item%?</b></span>"
-
-#: ui/glade/dialogs.glade.h:8
-msgid "Accept Forever"
-msgstr "Přijmout natrvalo"
-
-#: ui/glade/dialogs.glade.h:9
-msgid "Accept Once"
-msgstr "Přijmout jednou"
-
-#: ui/glade/dialogs.glade.h:11
-msgid "Authentication"
-msgstr "Authentikace"
-
-#: ui/glade/dialogs.glade.h:12
-msgid "Check Certificate"
-msgstr "Kontrola certifikátu"
-
-#: ui/glade/dialogs.glade.h:13
-msgid "Confirmation"
-msgstr "Potvrzení"
-
-#: ui/glade/dialogs.glade.h:14
-msgid "Delete Confirmation"
-msgstr "Smazat potvrzení"
-
-#: ui/glade/dialogs.glade.h:15
-msgid "Deny"
-msgstr "Zakázané"
-
-#: ui/glade/dialogs.glade.h:16
-msgid "Fingerprint:"
-msgstr "Fingerprint:"
-
-#: ui/glade/dialogs.glade.h:17
-msgid "Host:"
-msgstr "Host"
-
-#: ui/glade/dialogs.glade.h:18
-msgid "Issuer:"
-msgstr "Vydavatel:"
-
-#: ui/glade/dialogs.glade.h:19
-msgid "Login:"
-msgstr "Jméno:"
-
-#: ui/glade/dialogs.glade.h:21
-msgid "Password:"
-msgstr "Heslo:"
-
-#: ui/glade/dialogs.glade.h:23
-msgid "Property"
-msgstr "Vlastnost"
-
-#: ui/glade/dialogs.glade.h:24
-msgid "Property:"
-msgstr "Vlastnost:"
-
-#: ui/glade/dialogs.glade.h:25
-msgid "Realm:"
-msgstr "Realm"
-
-#: ui/glade/dialogs.glade.h:26
-msgid "Save Authentication"
-msgstr "Uložit autentikaci"
-
-#: ui/glade/dialogs.glade.h:28
-msgid "Valid:"
-msgstr "Platné:"
-
-#: ui/glade/dialogs.glade.h:29
-msgid "Value:"
-msgstr "Hodnota:"
-
-#: ui/glade/checkout.glade.h:12
-msgid "URL:"
-msgstr "URL:"
-
-#: lib/extensions/nautilus/NautilusSvn.py:362
-msgid "Debug"
-msgstr "Debug:"
-
-#: lib/extensions/nautilus/NautilusSvn.py:375
-msgid "DBus"
-msgstr "DBus:"
-
-#: lib/extensions/nautilus/NautilusSvn.py:388
-msgid "Start/Restart Service"
-msgstr "Start/Restart Service"
-
-#: lib/extensions/nautilus/NautilusSvn.py:404
-msgid "Exit Service"
-msgstr "Exit Service"
-
-#: lib/extensions/nautilus/NautilusSvn.py:422
-msgid "Bugs"
-msgstr "Bugy"
-
-#: lib/extensions/nautilus/NautilusSvn.py:435
-msgid "Test Asynchronicity"
-msgstr "Test Asynchronicity"
-
-#: lib/extensions/nautilus/NautilusSvn.py:453
-msgid "Open Shell"
-msgstr "Otevřít shell"
-
-#: lib/extensions/nautilus/NautilusSvn.py:469
-msgid "Refresh Status"
-msgstr "Obnovit status"
-
-#: lib/extensions/nautilus/NautilusSvn.py:486
-msgid "Debug Revert"
-msgstr "Debug Revert"
-
-#: lib/extensions/nautilus/NautilusSvn.py:502
-msgid "Invalidate"
-msgstr "Nevalidní"
-
-#: lib/extensions/nautilus/NautilusSvn.py:518
-msgid "Add Emblem"
-msgstr "Přidat emblem"
-
-#: lib/extensions/nautilus/NautilusSvn.py:519
-msgid "Add an emblem"
-msgstr "Přidat emblem"
-
-#: lib/extensions/nautilus/NautilusSvn.py:537
-msgid "Check out a working copy"
-msgstr "Check out pracovní kopie"
-
-#: lib/extensions/nautilus/NautilusSvn.py:553
-msgid "Update a working copy"
-msgstr "Update pracovní kopie"
-
-#: lib/extensions/nautilus/NautilusSvn.py:569
-msgid "Commit modifications to the repository"
-msgstr "Commit změn do repozitory"
-
-#: lib/extensions/nautilus/NautilusSvn.py:584
-msgid "NautilusSvn"
-msgstr "NautilusSvn"
-
-#: lib/extensions/nautilus/NautilusSvn.py:613
-msgid "Show Log"
-msgstr "Zobrazit log"
-
-#: lib/extensions/nautilus/NautilusSvn.py:703
-msgid "Update to revision..."
-msgstr "Update na revizi..."
-
-#: lib/extensions/nautilus/NautilusSvn.py:719
-msgid "Rename..."
-msgstr "Přejmenovat"
-
-#: lib/extensions/nautilus/NautilusSvn.py:783
-msgid "Relocate..."
-msgstr "Relocate..."
-
-#: lib/extensions/nautilus/NautilusSvn.py:913
-msgid "Branch/tag..."
-msgstr "Branch/tag"
-
-#: lib/extensions/nautilus/NautilusSvn.py:929
-msgid "Switch..."
-msgstr "Switch..."
-
-#: lib/extensions/nautilus/NautilusSvn.py:945
-msgid "Merge..."
-msgstr "Merge..."
-
-#: lib/extensions/nautilus/NautilusSvn.py:970
-msgid "Annotate..."
-msgstr "Anotace..."
-
-#: lib/extensions/nautilus/NautilusSvn.py:971
-msgid "Annotate a file"
-msgstr "Anotace souboru"
-
-#: lib/extensions/nautilus/NautilusSvn.py:1027
-msgid "Help"
-msgstr "Help"
-
-#: lib/extensions/nautilus/NautilusSvn.py:1028
-msgid "View help"
-msgstr "Zobrazit nápovědu"
-
-#: lib/vcs/svn/__init__.py:118
-msgid "Skipped"
-msgstr "Přeskočeno"
-
-#: lib/vcs/svn/__init__.py:121
-msgid "Updated"
-msgstr "Aktualizováno"
-
-#: lib/vcs/svn/__init__.py:123 lib/vcs/svn/__init__.py:125
-msgid "External"
-msgstr "Externí"
-
-#: lib/vcs/svn/__init__.py:126
-msgid "Modified"
-msgstr "Modifikováno"
-
-#: lib/vcs/svn/__init__.py:129
-msgid "Replaced"
-msgstr "Přepsáno"
-
-#: lib/vcs/svn/__init__.py:130 lib/vcs/svn/__init__.py:149
-msgid "Changed"
-msgstr "Změněno"
-
-#: lib/vcs/svn/__init__.py:131
-msgid "Annotated"
-msgstr "Anotováno"
-
-#: lib/vcs/svn/__init__.py:133
-msgid "Unlocked"
-msgstr "Odemčeno"
-
-#: lib/vcs/svn/__init__.py:134
-msgid "Failed Lock"
-msgstr "Zámek selhal"
-
-#: lib/vcs/svn/__init__.py:135
-msgid "Failed Unlock"
-msgstr "Odemčení selhalo"
-
-#: lib/vcs/svn/__init__.py:145
-msgid "Unknown"
-msgstr "Neznámé"
-
-#: lib/vcs/svn/__init__.py:147
-msgid "Missing"
-msgstr "Chybějící"
-
-#: lib/vcs/svn/__init__.py:150
-msgid "Merged"
-msgstr "Spojeno"
-
-#: ui/branch.py:71
-msgid ""
-"There have been modifications to your working copy.  If you copy from the "
-"HEAD revision you will lose your changes."
-msgstr ""
-
-#: ui/branch.py:89
-msgid "You must supply a destination path."
-msgstr ""
-
-#: ui/branch.py:108
-msgid "Invalid revision information"
-msgstr ""
-
-#: ui/add.py:64 ui/lock.py:66 ui/resolve.py:55 ui/commit.py:73 ui/unlock.py:55
-#: ui/revert.py:55
-msgid "Extension"
-msgstr ""
-
-#: ui/add.py:116
-msgid "Running Add Command..."
-msgstr ""
-
-#: ui/import.py:68
-msgid "The repository URL field is required."
-msgstr ""
-
-#: ui/import.py:81
-msgid "Running Import Command..."
-msgstr ""
-
-#: ui/import.py:89
-msgid "Completed Import"
-msgstr ""
-
-#: ui/lock.py:144
-msgid "Get Lock"
-msgstr ""
-
-#: ui/lock.py:145
-msgid "Running Lock Command..."
-msgstr ""
-
-#: ui/lock.py:154
-msgid "Completed Lock"
-msgstr ""
-
 #: ui/export.py:58 ui/checkout.py:82
 msgid "The repository URL and destination path are both required fields."
 msgstr ""
+
+#: ui/export.py:79 lib/extensions/nautilus/NautilusSvn.py:856
+msgid "Export"
+msgstr "Export"
 
 #: ui/export.py:80
 msgid "Running Export Command..."
@@ -802,13 +318,43 @@ msgstr ""
 msgid "Completed Resolve"
 msgstr ""
 
+#: ui/action.py:66 ui/log.py:89
+msgid "Action"
+msgstr "Akce"
+
+#: ui/action.py:66
+msgid "Mime Type"
+msgstr "Mime Type"
+
+#: ui/action.py:135
+msgid "Empty Message"
+msgstr "Prázdná zpráva"
+
+#: ui/action.py:249 ui/log.py:309
+msgid "Finished"
+msgstr "Dokončeno"
+
+#: ui/action.py:253
+#, python-format
+msgid "%s - Finished"
+msgstr "%s - Dokončeno"
+
 #: ui/commit.py:66
 msgid "The given path is not a working copy"
 msgstr ""
 
 #: ui/commit.py:74
+msgid "Text Status"
+msgstr "Status"
+
+#: ui/commit.py:74
 msgid "Property Status"
 msgstr ""
+
+#: ui/commit.py:188 ui/glade/commit.glade.h:4
+#: lib/extensions/nautilus/NautilusSvn.py:568
+msgid "Commit"
+msgstr "Commit"
 
 #: ui/commit.py:189
 msgid "Running Commit Command..."
@@ -823,13 +369,41 @@ msgstr ""
 msgid "Revert"
 msgstr ""
 
+#: ui/commit.py:289
+msgid "Restore"
+msgstr "Obnovit"
+
+#: ui/dialog.py:47 ui/log.py:81 ui/glade/dialogs.glade.h:20
+msgid "Message"
+msgstr "Zpráva"
+
+#: ui/dialog.py:88
+msgid "Select a Folder"
+msgstr "Zvolit adresář"
+
 #: ui/dialog.py:117 ui/glade/log.glade.h:12
 msgid "to"
 msgstr ""
 
+#: ui/dialog.py:210
+msgid "Select a File"
+msgstr "Zvolit soubor"
+
+#: ui/dialog.py:229 ui/glade/dialogs.glade.h:10
+msgid "Are you sure you want to continue?"
+msgstr "Opravdu chcete pokračovat?"
+
+#: ui/dialog.py:257
+msgid "the selected item(s)"
+msgstr "zvolené(á) položky(a)"
+
 #: ui/switch.py:65
 msgid "The repository location is a required field."
 msgstr ""
+
+#: ui/switch.py:81 ui/glade/switch.glade.h:7
+msgid "Switch"
+msgstr "Switch"
 
 #: ui/switch.py:82
 msgid "Running Switch Command..."
@@ -889,6 +463,11 @@ msgstr ""
 msgid "Completed Checkout"
 msgstr ""
 
+#: ui/log.py:63
+#, python-format
+msgid "Log - %s"
+msgstr "Log - %s"
+
 #: ui/log.py:90
 msgid "Copy From Path"
 msgstr ""
@@ -897,9 +476,34 @@ msgstr ""
 msgid "Copy From Revision"
 msgstr ""
 
+#: ui/log.py:112
+msgid "Cancelled"
+msgstr "Zrušeno"
+
+#: ui/log.py:236 ui/log.py:237 ui/glade/log.glade.h:8
+msgid "N/A"
+msgstr "N/A"
+
+#: ui/log.py:284
+msgid "(no author)"
+msgstr "(autor neznámý)"
+
 #: ui/log.py:313
 msgid "Retrieving Log Information..."
 msgstr ""
+
+#: ui/properties.py:53
+#, python-format
+msgid "Properties - %s"
+msgstr "Vlastnosti - %s"
+
+#: ui/properties.py:61
+msgid "Name"
+msgstr "Jméno"
+
+#: ui/properties.py:61
+msgid "Value"
+msgstr "Hodnota"
 
 #: ui/revert.py:76
 msgid "Running Revert Command..."
@@ -909,27 +513,77 @@ msgstr ""
 msgid "Completed Revert"
 msgstr ""
 
+#: ui/update.py:53 ui/glade/update.glade.h:8
+#: lib/extensions/nautilus/NautilusSvn.py:552
+msgid "Update"
+msgstr "Update"
+
+#: ui/create.py:49
+msgid "Repository successfully created"
+msgstr "Repozitory bylo úspěšně vytvořeno"
+
 #: ui/create.py:51
 msgid ""
 "There was an error creating the repository.  Make sure the given folder is "
 "empty."
 msgstr ""
 
+#: ui/glade/switch.glade.h:1 ui/glade/checkout.glade.h:3
+#: ui/glade/update.glade.h:1
+msgid "<b>Revision</b>"
+msgstr "<b>Revize</b>"
+
 #: ui/glade/switch.glade.h:2
 msgid "<b>Switch Details</b>"
 msgstr ""
+
+#: ui/glade/switch.glade.h:3 ui/glade/branch.glade.h:8
+#: ui/glade/relocate.glade.h:2
+msgid "From:"
+msgstr "Od:"
+
+#: ui/glade/switch.glade.h:4 ui/glade/merge.glade.h:10
+#: ui/glade/checkout.glade.h:7 ui/glade/update.glade.h:3
+msgid "HEAD"
+msgstr "HEAD"
+
+#: ui/glade/switch.glade.h:8 ui/glade/branch.glade.h:11
+#: ui/glade/relocate.glade.h:4
+msgid "To:"
+msgstr "Do:"
 
 #: ui/glade/notification.glade.h:1
 msgid "Notification Messages"
 msgstr ""
 
+#: ui/glade/commit.glade.h:1 ui/glade/branch.glade.h:1
+msgid "<b>Add Message</b>"
+msgstr "<b>Přidat zprávu</b>"
+
 #: ui/glade/commit.glade.h:2
 msgid "<b>Changed Files</b> (double-click to see diff)"
 msgstr ""
 
+#: ui/glade/commit.glade.h:3
+msgid "<b>Commit to:</b>"
+msgstr "<b>Commit do:</b>"
+
+#: ui/glade/commit.glade.h:5 ui/glade/lock.glade.h:4 ui/glade/branch.glade.h:9
+#: ui/glade/dialogs.glade.h:22 ui/glade/import.glade.h:5
+msgid "Previous Messages"
+msgstr "Předchozí zprávy"
+
+#: ui/glade/commit.glade.h:6 ui/glade/lock.glade.h:5 ui/glade/add.glade.h:2
+msgid "Select / Deselect all"
+msgstr "Vybrat / zrušit vše"
+
 #: ui/glade/commit.glade.h:7
 msgid "Show unversioned files"
 msgstr ""
+
+#: ui/glade/lock.glade.h:1
+msgid "<b>Files to lock</b>"
+msgstr "<b>Soubory k uzamknutí</b>"
 
 #: ui/glade/lock.glade.h:2
 msgid "<b>Please describe why you are locking these files</b>"
@@ -943,6 +597,26 @@ msgstr ""
 msgid "Steal the locks"
 msgstr ""
 
+#: ui/glade/properties.glade.h:1
+msgid "<b>Properties for:</b>"
+msgstr "<b>Vlastnosti pro:</b>"
+
+#: ui/glade/properties.glade.h:3
+msgid "Edit..."
+msgstr "Upravit..."
+
+#: ui/glade/properties.glade.h:4
+msgid "New..."
+msgstr "Nový..."
+
+#: ui/glade/properties.glade.h:5 lib/extensions/nautilus/NautilusSvn.py:995
+msgid "Properties"
+msgstr "Vlastnosti"
+
+#: ui/glade/properties.glade.h:6
+msgid "URL/Path:"
+msgstr "URL/cesta:"
+
 #: ui/glade/annotate.glade.h:1
 msgid "<b>From Revision</b>"
 msgstr ""
@@ -955,13 +629,42 @@ msgstr ""
 msgid "Annotate"
 msgstr ""
 
+#: ui/glade/about.glade.h:1
+msgid "<b>Links</b>"
+msgstr "<b>Odkazy</b>"
+
+#: ui/glade/about.glade.h:2
+msgid "<b>Version Information</b>"
+msgstr "<b>Informace o verzi</b>"
+
+#: ui/glade/about.glade.h:3
+msgid "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
+msgstr "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
+
 #: ui/glade/about.glade.h:4 lib/extensions/nautilus/NautilusSvn.py:1059
 msgid "About"
 msgstr ""
 
+#: ui/glade/about.glade.h:5
+msgid "Authors:"
+msgstr "Autoři:"
+
+#: ui/glade/about.glade.h:6
+msgid "Thanks:"
+msgstr "Děkujeme:"
+
+#: ui/glade/rename.glade.h:1
+msgid "New Name:"
+msgstr "Nové jméno:"
+
 #: ui/glade/branch.glade.h:2
 msgid "<b>Create copy from</b>"
 msgstr ""
+
+#: ui/glade/branch.glade.h:3 ui/glade/checkout.glade.h:2
+#: ui/glade/import.glade.h:2
+msgid "<b>Repository</b>"
+msgstr "<b>Repozitory</b>"
 
 #: ui/glade/branch.glade.h:5
 msgid "Copy from HEAD"
@@ -991,6 +694,18 @@ msgstr ""
 msgid "<b>Revisions Table</b>"
 msgstr ""
 
+#: ui/glade/log.glade.h:5
+msgid "Limit:"
+msgstr "Limit:"
+
+#: ui/glade/log.glade.h:7
+msgid "Log"
+msgstr "Log"
+
+#: ui/glade/log.glade.h:9
+msgid "Refresh"
+msgstr "Obnovit"
+
 #: ui/glade/log.glade.h:10
 msgid "Showing Revisions:"
 msgstr ""
@@ -999,9 +714,17 @@ msgstr ""
 msgid "Stop on copy"
 msgstr ""
 
+#: ui/glade/merge.glade.h:1
+msgid "<b>From URL</b>"
+msgstr "<b>Z URL</b>"
+
 #: ui/glade/merge.glade.h:2
 msgid "<b>From: (URL and revision to merge)</b>"
 msgstr ""
+
+#: ui/glade/merge.glade.h:3 ui/glade/checkout.glade.h:1
+msgid "<b>Options</b>"
+msgstr "<b>Volby</b>"
 
 #: ui/glade/merge.glade.h:4
 msgid "<b>Revision Range</b>"
@@ -1099,6 +822,10 @@ msgstr ""
 msgid "<b>URL History</b>"
 msgstr ""
 
+#: ui/glade/settings.glade.h:8 ui/glade/checkout.glade.h:4
+msgid "Browse..."
+msgstr "Procházet..."
+
 #: ui/glade/settings.glade.h:9
 msgid "Clear your authentication information"
 msgstr ""
@@ -1119,6 +846,22 @@ msgstr ""
 msgid "External Programs"
 msgstr ""
 
+#: ui/glade/settings.glade.h:14
+msgid "General"
+msgstr "Obecné"
+
+#: ui/glade/settings.glade.h:15
+msgid "Language:"
+msgstr "Jazyk:"
+
+#: ui/glade/settings.glade.h:16
+msgid "Logging"
+msgstr "Logování"
+
+#: ui/glade/settings.glade.h:17
+msgid "Minimum level to log"
+msgstr "Minimální úroveň pro logování"
+
 #: ui/glade/settings.glade.h:18
 msgid "Number of URLs to remember"
 msgstr ""
@@ -1127,9 +870,21 @@ msgstr ""
 msgid "Number of messages to remember"
 msgstr ""
 
+#: ui/glade/settings.glade.h:20
+msgid "Saved Data"
+msgstr "Uložená data"
+
+#: ui/glade/settings.glade.h:21 lib/extensions/nautilus/NautilusSvn.py:1043
+msgid "Settings"
+msgstr "Nastavení"
+
 #: ui/glade/settings.glade.h:22
 msgid "Show new version on the right side"
 msgstr ""
+
+#: ui/glade/settings.glade.h:23
+msgid "Type:"
+msgstr "Typ"
 
 #: ui/glade/cleanup.glade.h:2
 msgid ""
@@ -1150,9 +905,90 @@ msgstr ""
 msgid "<b>Please add your authentication details</b>"
 msgstr ""
 
+#: ui/glade/dialogs.glade.h:5
+msgid "<b>Previous Messages</b>"
+msgstr "<b>Předchozí zprávy</b>"
+
+#: ui/glade/dialogs.glade.h:7
+msgid ""
+"<span size=\"large\"><b>Are you sure you want to delete %item%?</b></span>"
+msgstr "<span size=\"large\"><b>Opravdu chcete smazat %item%?</b></span>"
+
+#: ui/glade/dialogs.glade.h:8
+msgid "Accept Forever"
+msgstr "Přijmout natrvalo"
+
+#: ui/glade/dialogs.glade.h:9
+msgid "Accept Once"
+msgstr "Přijmout jednou"
+
+#: ui/glade/dialogs.glade.h:11
+msgid "Authentication"
+msgstr "Authentikace"
+
+#: ui/glade/dialogs.glade.h:12
+msgid "Check Certificate"
+msgstr "Kontrola certifikátu"
+
+#: ui/glade/dialogs.glade.h:13
+msgid "Confirmation"
+msgstr "Potvrzení"
+
+#: ui/glade/dialogs.glade.h:14
+msgid "Delete Confirmation"
+msgstr "Smazat potvrzení"
+
+#: ui/glade/dialogs.glade.h:15
+msgid "Deny"
+msgstr "Zakázané"
+
+#: ui/glade/dialogs.glade.h:16
+msgid "Fingerprint:"
+msgstr "Fingerprint:"
+
+#: ui/glade/dialogs.glade.h:17
+msgid "Host:"
+msgstr "Host"
+
+#: ui/glade/dialogs.glade.h:18
+msgid "Issuer:"
+msgstr "Vydavatel:"
+
+#: ui/glade/dialogs.glade.h:19
+msgid "Login:"
+msgstr "Jméno:"
+
+#: ui/glade/dialogs.glade.h:21
+msgid "Password:"
+msgstr "Heslo:"
+
+#: ui/glade/dialogs.glade.h:23
+msgid "Property"
+msgstr "Vlastnost"
+
+#: ui/glade/dialogs.glade.h:24
+msgid "Property:"
+msgstr "Vlastnost:"
+
+#: ui/glade/dialogs.glade.h:25
+msgid "Realm:"
+msgstr "Realm"
+
+#: ui/glade/dialogs.glade.h:26
+msgid "Save Authentication"
+msgstr "Uložit autentikaci"
+
 #: ui/glade/dialogs.glade.h:27
 msgid "The item(s) will be sent to the trash can."
 msgstr ""
+
+#: ui/glade/dialogs.glade.h:28
+msgid "Valid:"
+msgstr "Platné:"
+
+#: ui/glade/dialogs.glade.h:29
+msgid "Value:"
+msgstr "Hodnota:"
 
 #: ui/glade/checkout.glade.h:6
 msgid "Destination:"
@@ -1161,6 +997,10 @@ msgstr ""
 #: ui/glade/checkout.glade.h:8 ui/glade/update.glade.h:4
 msgid "Omit Externals"
 msgstr ""
+
+#: ui/glade/checkout.glade.h:12
+msgid "URL:"
+msgstr "URL:"
 
 #: ui/glade/import.glade.h:1
 msgid "<b>Import Message</b>"
@@ -1178,17 +1018,85 @@ msgstr ""
 msgid "<b>Change the repository of your working copy</b>"
 msgstr ""
 
+#: lib/extensions/nautilus/NautilusSvn.py:362
+msgid "Debug"
+msgstr "Debug:"
+
+#: lib/extensions/nautilus/NautilusSvn.py:375
+msgid "DBus"
+msgstr "DBus:"
+
+#: lib/extensions/nautilus/NautilusSvn.py:388
+msgid "Start/Restart Service"
+msgstr "Start/Restart Service"
+
+#: lib/extensions/nautilus/NautilusSvn.py:404
+msgid "Exit Service"
+msgstr "Exit Service"
+
+#: lib/extensions/nautilus/NautilusSvn.py:422
+msgid "Bugs"
+msgstr "Bugy"
+
+#: lib/extensions/nautilus/NautilusSvn.py:435
+msgid "Test Asynchronicity"
+msgstr "Test Asynchronicity"
+
+#: lib/extensions/nautilus/NautilusSvn.py:453
+msgid "Open Shell"
+msgstr "Otevřít shell"
+
+#: lib/extensions/nautilus/NautilusSvn.py:469
+msgid "Refresh Status"
+msgstr "Obnovit status"
+
+#: lib/extensions/nautilus/NautilusSvn.py:486
+msgid "Debug Revert"
+msgstr "Debug Revert"
+
 #: lib/extensions/nautilus/NautilusSvn.py:487
 msgid "Reverts everything it sees"
 msgstr ""
+
+#: lib/extensions/nautilus/NautilusSvn.py:502
+msgid "Invalidate"
+msgstr "Nevalidní"
 
 #: lib/extensions/nautilus/NautilusSvn.py:503
 msgid "Force an invalidate_extension_info() call"
 msgstr ""
 
+#: lib/extensions/nautilus/NautilusSvn.py:518
+msgid "Add Emblem"
+msgstr "Přidat emblem"
+
+#: lib/extensions/nautilus/NautilusSvn.py:519
+msgid "Add an emblem"
+msgstr "Přidat emblem"
+
+#: lib/extensions/nautilus/NautilusSvn.py:537
+msgid "Check out a working copy"
+msgstr "Check out pracovní kopie"
+
+#: lib/extensions/nautilus/NautilusSvn.py:553
+msgid "Update a working copy"
+msgstr "Update pracovní kopie"
+
+#: lib/extensions/nautilus/NautilusSvn.py:569
+msgid "Commit modifications to the repository"
+msgstr "Commit změn do repozitory"
+
+#: lib/extensions/nautilus/NautilusSvn.py:584
+msgid "NautilusSvn"
+msgstr "NautilusSvn"
+
 #: lib/extensions/nautilus/NautilusSvn.py:598
 msgid "View the modifications made to a file"
 msgstr ""
+
+#: lib/extensions/nautilus/NautilusSvn.py:613
+msgid "Show Log"
+msgstr "Zobrazit log"
 
 #: lib/extensions/nautilus/NautilusSvn.py:614
 msgid "Show a file's log information"
@@ -1206,9 +1114,17 @@ msgstr ""
 msgid "Ignore all files with this extension"
 msgstr ""
 
+#: lib/extensions/nautilus/NautilusSvn.py:703
+msgid "Update to revision..."
+msgstr "Update na revizi..."
+
 #: lib/extensions/nautilus/NautilusSvn.py:704
 msgid "Update a file to a specific revision"
 msgstr ""
+
+#: lib/extensions/nautilus/NautilusSvn.py:719
+msgid "Rename..."
+msgstr "Přejmenovat"
 
 #: lib/extensions/nautilus/NautilusSvn.py:720
 msgid "Schedule an item to be renamed on the repository"
@@ -1225,6 +1141,10 @@ msgstr ""
 #: lib/extensions/nautilus/NautilusSvn.py:768
 msgid "Mark a conflicted item as resolved"
 msgstr ""
+
+#: lib/extensions/nautilus/NautilusSvn.py:783
+msgid "Relocate..."
+msgstr "Relocate..."
 
 #: lib/extensions/nautilus/NautilusSvn.py:784
 msgid "Relocate your working copy"
@@ -1266,21 +1186,49 @@ msgstr ""
 msgid "Import an item into a repository"
 msgstr ""
 
+#: lib/extensions/nautilus/NautilusSvn.py:913
+msgid "Branch/tag..."
+msgstr "Branch/tag"
+
 #: lib/extensions/nautilus/NautilusSvn.py:914
 msgid "Copy an item to another location in the repository"
 msgstr ""
+
+#: lib/extensions/nautilus/NautilusSvn.py:929
+msgid "Switch..."
+msgstr "Switch..."
 
 #: lib/extensions/nautilus/NautilusSvn.py:930
 msgid "Change the repository location of a working copy"
 msgstr ""
 
+#: lib/extensions/nautilus/NautilusSvn.py:945
+msgid "Merge..."
+msgstr "Merge..."
+
 #: lib/extensions/nautilus/NautilusSvn.py:946
 msgid "A wizard with steps for merging"
 msgstr ""
 
+#: lib/extensions/nautilus/NautilusSvn.py:970
+msgid "Annotate..."
+msgstr "Anotace..."
+
+#: lib/extensions/nautilus/NautilusSvn.py:971
+msgid "Annotate a file"
+msgstr "Anotace souboru"
+
 #: lib/extensions/nautilus/NautilusSvn.py:996
 msgid "View the properties of an item"
 msgstr ""
+
+#: lib/extensions/nautilus/NautilusSvn.py:1027
+msgid "Help"
+msgstr "Help"
+
+#: lib/extensions/nautilus/NautilusSvn.py:1028
+msgid "View help"
+msgstr "Zobrazit nápovědu"
 
 #: lib/extensions/nautilus/NautilusSvn.py:1044
 msgid "View or change NautilusSvn settings"
@@ -1319,17 +1267,69 @@ msgstr ""
 msgid "Resolved"
 msgstr ""
 
+#: lib/vcs/svn/__init__.py:118
+msgid "Skipped"
+msgstr "Přeskočeno"
+
+#: lib/vcs/svn/__init__.py:121
+msgid "Updated"
+msgstr "Aktualizováno"
+
+#: lib/vcs/svn/__init__.py:123 lib/vcs/svn/__init__.py:125
+msgid "External"
+msgstr "Externí"
+
+#: lib/vcs/svn/__init__.py:126
+msgid "Modified"
+msgstr "Modifikováno"
+
+#: lib/vcs/svn/__init__.py:129
+msgid "Replaced"
+msgstr "Přepsáno"
+
+#: lib/vcs/svn/__init__.py:130 lib/vcs/svn/__init__.py:149
+msgid "Changed"
+msgstr "Změněno"
+
+#: lib/vcs/svn/__init__.py:131
+msgid "Annotated"
+msgstr "Anotováno"
+
+#: lib/vcs/svn/__init__.py:133
+msgid "Unlocked"
+msgstr "Odemčeno"
+
+#: lib/vcs/svn/__init__.py:134
+msgid "Failed Lock"
+msgstr "Zámek selhal"
+
+#: lib/vcs/svn/__init__.py:135
+msgid "Failed Unlock"
+msgstr "Odemčení selhalo"
+
 #: lib/vcs/svn/__init__.py:144
 msgid "Inapplicable"
 msgstr ""
+
+#: lib/vcs/svn/__init__.py:145
+msgid "Unknown"
+msgstr "Neznámé"
 
 #: lib/vcs/svn/__init__.py:146
 msgid "Unchanged"
 msgstr ""
 
+#: lib/vcs/svn/__init__.py:147
+msgid "Missing"
+msgstr "Chybějící"
+
 #: lib/vcs/svn/__init__.py:148
 msgid "Obstructed"
 msgstr ""
+
+#: lib/vcs/svn/__init__.py:150
+msgid "Merged"
+msgstr "Spojeno"
 
 #: lib/vcs/svn/__init__.py:151
 msgid "Conflicted"

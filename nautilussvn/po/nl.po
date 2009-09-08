@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: nautilussvn\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-03-04 14:35-0500\n"
-"PO-Revision-Date: 2009-05-12 12:42+0000\n"
-"Last-Translator: Erik van Oosten <e.vanoosten@grons.nl>\n"
+"PO-Revision-Date: 2009-07-11 00:44+0000\n"
+"Last-Translator: JurgenDK <Unknown>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-05-13 06:52+0000\n"
+"X-Launchpad-Export-Date: 2009-09-08 09:16+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: ui/branch.py:71
@@ -22,58 +22,60 @@ msgid ""
 "There have been modifications to your working copy.  If you copy from the "
 "HEAD revision you will lose your changes."
 msgstr ""
+"Er zijn wijzigingen in jouw werkkopie. Als je kopieert van de HEAD revisie "
+"gaan deze wijzigingen verloren."
 
 #: ui/branch.py:89
 msgid "You must supply a destination path."
-msgstr ""
+msgstr "Een doel pad is verplicht."
 
 #: ui/branch.py:99
 msgid "The from revision field is required."
-msgstr ""
+msgstr "De 'vanaf' revisie is verplicht."
 
 #: ui/branch.py:108
 msgid "Invalid revision information"
-msgstr ""
+msgstr "Ongeldige revisie informatie"
 
 #: ui/branch.py:123 ui/glade/branch.glade.h:4
 msgid "Branch/tag"
-msgstr ""
+msgstr "Branch/tag"
 
 #: ui/branch.py:124
 msgid "Running Branch/tag Command..."
-msgstr ""
+msgstr "Branch/tag wordt uitgevoerd..."
 
 #: ui/branch.py:126
 msgid "Completed Branch/tag"
-msgstr ""
+msgstr "Branch/tag is klaar"
 
 #: ui/updateto.py:70
 msgid "Update To Revision"
-msgstr ""
+msgstr "Update naar revisie"
 
 #: ui/updateto.py:71 ui/update.py:54
 msgid "Updating..."
-msgstr ""
+msgstr "Updaten..."
 
 #: ui/updateto.py:79 ui/update.py:57
 msgid "Completed Update"
-msgstr ""
+msgstr "Update is klaar"
 
 #: ui/rename.py:59
 msgid "The new name field is required"
-msgstr ""
+msgstr "Het veld 'nieuwe naam' is verplicht."
 
 #: ui/rename.py:70 ui/glade/rename.glade.h:2
 msgid "Rename"
-msgstr ""
+msgstr "Hernoemen"
 
 #: ui/rename.py:71
 msgid "Running Rename Command..."
-msgstr ""
+msgstr "Wordt hernoemd..."
 
 #: ui/rename.py:78
 msgid "Completed Rename"
-msgstr ""
+msgstr "Hernoemen is klaar"
 
 #: ui/annotate.py:51
 msgid "Cannot annotate a directory"
@@ -108,7 +110,7 @@ msgstr "Tekst"
 
 #: ui/annotate.py:112
 msgid "The from revision field must be an integer"
-msgstr ""
+msgstr "De 'vanaf' revisie moet een integer zijn."
 
 #: ui/annotate.py:122
 msgid "Generating Annotation..."
@@ -128,182 +130,182 @@ msgstr "Selecteer een programma"
 
 #: ui/settings.py:174
 msgid "Are you sure you want to clear your repository paths?"
-msgstr ""
+msgstr "De repository paden wissen?"
 
 #: ui/settings.py:181
 msgid "Repository paths cleared"
-msgstr ""
+msgstr "Repository paden gewist"
 
 #: ui/settings.py:185
 msgid "Are you sure you want to clear your previous messages?"
-msgstr ""
+msgstr "De vorige berichten wissen?"
 
 #: ui/settings.py:192
 msgid "Previous messages cleared"
-msgstr ""
+msgstr "Vorige berichten gewist"
 
 #: ui/settings.py:196
 msgid "Are you sure you want to clear your authentication information?"
-msgstr ""
+msgstr "Authenticatie informatie wissen?"
 
 #: ui/settings.py:213
 msgid "Authentication information cleared"
-msgstr ""
+msgstr "Authenticatie informatie gewist"
 
 #: ui/cleanup.py:54 lib/extensions/nautilus/NautilusSvn.py:831
 msgid "Cleanup"
-msgstr ""
+msgstr "Opruimen"
 
 #: ui/cleanup.py:55 ui/glade/cleanup.glade.h:1
 msgid "Cleaning Up..."
-msgstr ""
+msgstr "Wordt opgeruimd..."
 
 #: ui/cleanup.py:57
 msgid "Completed Cleanup"
-msgstr ""
+msgstr "Opruimen is klaar"
 
 #: ui/relocate.py:76
 msgid "The from and to url fields are both required."
-msgstr ""
+msgstr "De 'vanaf' en 'tot' url velden zijn beide verplicht."
 
 #: ui/relocate.py:86 ui/glade/relocate.glade.h:3
 msgid "Relocate"
-msgstr ""
+msgstr "Verplaatsen"
 
 #: ui/relocate.py:87
 msgid "Running Relocate Command..."
-msgstr ""
+msgstr "Wordt verplaatst..."
 
 #: ui/relocate.py:94
 msgid "Completed Relocate"
-msgstr ""
+msgstr "Verplaatsen klaar"
 
 #: ui/add.py:64 ui/lock.py:66 ui/resolve.py:55 ui/action.py:66 ui/commit.py:73
 #: ui/unlock.py:55 ui/log.py:89 ui/revert.py:55
 msgid "Path"
-msgstr ""
+msgstr "Pad"
 
 #: ui/add.py:64 ui/lock.py:66 ui/resolve.py:55 ui/commit.py:73 ui/unlock.py:55
 #: ui/revert.py:55
 msgid "Extension"
-msgstr ""
+msgstr "Extensie"
 
 #: ui/add.py:78 ui/lock.py:96 ui/commit.py:97 ui/unlock.py:70 ui/log.py:253
 #: ui/glade/log.glade.h:6
 msgid "Loading..."
-msgstr ""
+msgstr "Laden..."
 
 #: ui/add.py:81 ui/lock.py:99 ui/commit.py:100 ui/unlock.py:91
 #, python-format
 msgid "Found %d item(s)"
-msgstr ""
+msgstr "Vond %d item(s)"
 
 #: ui/add.py:115 ui/commit.py:269 ui/glade/add.glade.h:1
 #: lib/extensions/nautilus/NautilusSvn.py:638
 msgid "Add"
-msgstr ""
+msgstr "Toevoegen"
 
 #: ui/add.py:116
 msgid "Running Add Command..."
-msgstr ""
+msgstr "Wordt toegevoegd..."
 
 #: ui/add.py:118
 msgid "Completed Add"
-msgstr ""
+msgstr "Toevoegen klaar"
 
 #: ui/add.py:141 ui/lock.py:206 ui/commit.py:239
 msgid "Open"
-msgstr ""
+msgstr "Open"
 
 #: ui/add.py:150 ui/lock.py:216 ui/commit.py:249
 msgid "Browse to"
-msgstr ""
+msgstr "Browse naar"
 
 #: ui/add.py:159 ui/commit.py:259 ui/glade/properties.glade.h:2
 #: lib/extensions/nautilus/NautilusSvn.py:735
 msgid "Delete"
-msgstr ""
+msgstr "Verwijderen"
 
 #: ui/add.py:168 ui/commit.py:299 lib/extensions/nautilus/NautilusSvn.py:654
 msgid "Add to ignore list"
-msgstr ""
+msgstr "Voeg toe aan negeer lijst"
 
 #: ui/import.py:41
 #, python-format
 msgid "Import - %s"
-msgstr ""
+msgstr "Importeer - %s"
 
 #: ui/import.py:68
 msgid "The repository URL field is required."
-msgstr ""
+msgstr "Het repository URL veld is verplicht."
 
 #: ui/import.py:80 ui/glade/import.glade.h:3
 #: lib/extensions/nautilus/NautilusSvn.py:888
 msgid "Import"
-msgstr ""
+msgstr "Importeer"
 
 #: ui/import.py:81
 msgid "Running Import Command..."
-msgstr ""
+msgstr "Wordt geïmporteerd..."
 
 #: ui/import.py:89
 msgid "Completed Import"
-msgstr ""
+msgstr "Importeren klaar"
 
 #: ui/lock.py:67 lib/vcs/svn/__init__.py:132
 msgid "Locked"
-msgstr ""
+msgstr "Vergrendeld"
 
 #: ui/lock.py:90 ui/lock.py:107
 msgid "Yes"
-msgstr ""
+msgstr "Ja"
 
 #: ui/lock.py:144
 msgid "Get Lock"
-msgstr ""
+msgstr "Vergrendelen"
 
 #: ui/lock.py:145
 msgid "Running Lock Command..."
-msgstr ""
+msgstr "Wordt vergrendeld..."
 
 #: ui/lock.py:154
 msgid "Completed Lock"
-msgstr ""
+msgstr "Vergrendelen is klaar"
 
 #: ui/lock.py:176
 msgid "Remove Lock"
-msgstr ""
+msgstr "Verwijder vergrendeling"
 
 #: ui/lock.py:186 ui/commit.py:229 lib/extensions/nautilus/NautilusSvn.py:597
 msgid "View Diff"
-msgstr ""
+msgstr "Toon verschillen"
 
 #: ui/lock.py:196 ui/glade/switch.glade.h:6 ui/glade/branch.glade.h:10
 #: ui/glade/merge.glade.h:18 ui/glade/checkout.glade.h:11
 #: ui/glade/update.glade.h:7
 msgid "Show log"
-msgstr ""
+msgstr "Toon log"
 
 #: ui/export.py:40
 #, python-format
 msgid "Export - %s"
-msgstr ""
+msgstr "Exporteer - %s"
 
 #: ui/export.py:58 ui/checkout.py:82
 msgid "The repository URL and destination path are both required fields."
-msgstr ""
+msgstr "De repository URL en doel pad velden zijn beide verplicht."
 
 #: ui/export.py:79 lib/extensions/nautilus/NautilusSvn.py:856
 msgid "Export"
-msgstr ""
+msgstr "Exporteren"
 
 #: ui/export.py:80
 msgid "Running Export Command..."
-msgstr ""
+msgstr "Wordt geëxporteerd..."
 
 #: ui/export.py:91
 msgid "Completed Export"
-msgstr ""
+msgstr "Export is klaar"
 
 #: ui/resolve.py:45 ui/resolve.py:76
 #: lib/extensions/nautilus/NautilusSvn.py:767
@@ -320,32 +322,32 @@ msgstr ""
 
 #: ui/action.py:66 ui/log.py:89
 msgid "Action"
-msgstr ""
+msgstr "Actie"
 
 #: ui/action.py:66
 msgid "Mime Type"
-msgstr ""
+msgstr "Mime type"
 
 #: ui/action.py:135
 msgid "Empty Message"
-msgstr ""
+msgstr "Leeg bericht"
 
 #: ui/action.py:249 ui/log.py:309
 msgid "Finished"
-msgstr ""
+msgstr "Klaar"
 
 #: ui/action.py:253
 #, python-format
 msgid "%s - Finished"
-msgstr ""
+msgstr "%s - klaar"
 
 #: ui/commit.py:66
 msgid "The given path is not a working copy"
-msgstr ""
+msgstr "Het gegeven pad is geen werk kopie"
 
 #: ui/commit.py:74
 msgid "Text Status"
-msgstr ""
+msgstr "Tekst status"
 
 #: ui/commit.py:74
 msgid "Property Status"
@@ -367,35 +369,35 @@ msgstr ""
 #: ui/commit.py:279 ui/revert.py:45 ui/revert.py:75
 #: lib/extensions/nautilus/NautilusSvn.py:751
 msgid "Revert"
-msgstr ""
+msgstr "Terugdraaien"
 
 #: ui/commit.py:289
 msgid "Restore"
-msgstr ""
+msgstr "Terugzetten"
 
 #: ui/dialog.py:47 ui/log.py:81 ui/glade/dialogs.glade.h:20
 msgid "Message"
-msgstr ""
+msgstr "Boodschap"
 
 #: ui/dialog.py:88
 msgid "Select a Folder"
-msgstr ""
+msgstr "Selecteer een map"
 
 #: ui/dialog.py:117 ui/glade/log.glade.h:12
 msgid "to"
-msgstr ""
+msgstr "naar"
 
 #: ui/dialog.py:210
 msgid "Select a File"
-msgstr ""
+msgstr "Selecteer een bestand"
 
 #: ui/dialog.py:229 ui/glade/dialogs.glade.h:10
 msgid "Are you sure you want to continue?"
-msgstr ""
+msgstr "Weet je zeker dat je wil verdergaan?"
 
 #: ui/dialog.py:257
 msgid "the selected item(s)"
-msgstr ""
+msgstr "De geselecteerde items"
 
 #: ui/switch.py:65
 msgid "The repository location is a required field."
@@ -403,7 +405,7 @@ msgstr ""
 
 #: ui/switch.py:81 ui/glade/switch.glade.h:7
 msgid "Switch"
-msgstr ""
+msgstr "Wisselen"
 
 #: ui/switch.py:82
 msgid "Running Switch Command..."
@@ -415,7 +417,7 @@ msgstr ""
 
 #: ui/unlock.py:45 ui/unlock.py:109
 msgid "Unlock"
-msgstr ""
+msgstr "Ontgrendelen"
 
 #: ui/unlock.py:110
 msgid "Running Unlock Command..."
@@ -443,7 +445,7 @@ msgstr ""
 
 #: ui/merge.py:93
 msgid "Merge"
-msgstr ""
+msgstr "Samenvoegen"
 
 #: ui/checkout.py:52
 #, python-format
@@ -470,23 +472,23 @@ msgstr ""
 
 #: ui/log.py:90
 msgid "Copy From Path"
-msgstr ""
+msgstr "Kopiëren van pad"
 
 #: ui/log.py:90
 msgid "Copy From Revision"
-msgstr ""
+msgstr "Kopiëren van revisie"
 
 #: ui/log.py:112
 msgid "Cancelled"
-msgstr ""
+msgstr "Geannuleerd"
 
 #: ui/log.py:236 ui/log.py:237 ui/glade/log.glade.h:8
 msgid "N/A"
-msgstr ""
+msgstr "N.v.t."
 
 #: ui/log.py:284
 msgid "(no author)"
-msgstr ""
+msgstr "(geen auteur)"
 
 #: ui/log.py:313
 msgid "Retrieving Log Information..."
@@ -499,11 +501,11 @@ msgstr ""
 
 #: ui/properties.py:61
 msgid "Name"
-msgstr ""
+msgstr "Naam"
 
 #: ui/properties.py:61
 msgid "Value"
-msgstr ""
+msgstr "Waarde"
 
 #: ui/revert.py:76
 msgid "Running Revert Command..."
@@ -516,7 +518,7 @@ msgstr ""
 #: ui/update.py:53 ui/glade/update.glade.h:8
 #: lib/extensions/nautilus/NautilusSvn.py:552
 msgid "Update"
-msgstr ""
+msgstr "Updaten"
 
 #: ui/create.py:49
 msgid "Repository successfully created"
@@ -540,7 +542,7 @@ msgstr ""
 #: ui/glade/switch.glade.h:3 ui/glade/branch.glade.h:8
 #: ui/glade/relocate.glade.h:2
 msgid "From:"
-msgstr ""
+msgstr "Van:"
 
 #: ui/glade/switch.glade.h:4 ui/glade/merge.glade.h:10
 #: ui/glade/checkout.glade.h:7 ui/glade/update.glade.h:3
@@ -550,15 +552,15 @@ msgstr ""
 #: ui/glade/switch.glade.h:8 ui/glade/branch.glade.h:11
 #: ui/glade/relocate.glade.h:4
 msgid "To:"
-msgstr ""
+msgstr "Naar:"
 
 #: ui/glade/notification.glade.h:1
 msgid "Notification Messages"
-msgstr ""
+msgstr "Meldingen"
 
 #: ui/glade/commit.glade.h:1 ui/glade/branch.glade.h:1
 msgid "<b>Add Message</b>"
-msgstr ""
+msgstr "<b>Boodschap Toevoegen</b>"
 
 #: ui/glade/commit.glade.h:2
 msgid "<b>Changed Files</b> (double-click to see diff)"
@@ -571,7 +573,7 @@ msgstr ""
 #: ui/glade/commit.glade.h:5 ui/glade/lock.glade.h:4 ui/glade/branch.glade.h:9
 #: ui/glade/dialogs.glade.h:22 ui/glade/import.glade.h:5
 msgid "Previous Messages"
-msgstr ""
+msgstr "Vorige boodschappen"
 
 #: ui/glade/commit.glade.h:6 ui/glade/lock.glade.h:5 ui/glade/add.glade.h:2
 msgid "Select / Deselect all"
@@ -583,15 +585,15 @@ msgstr ""
 
 #: ui/glade/lock.glade.h:1
 msgid "<b>Files to lock</b>"
-msgstr ""
+msgstr "<b>Te vergrendelen bestanden</b>"
 
 #: ui/glade/lock.glade.h:2
 msgid "<b>Please describe why you are locking these files</b>"
-msgstr ""
+msgstr "<b>Beschrijf waarom u deze bestanden vergrendelt</b>"
 
 #: ui/glade/lock.glade.h:3
 msgid "Lock Files"
-msgstr ""
+msgstr "Bestanden vergrendelen"
 
 #: ui/glade/lock.glade.h:6
 msgid "Steal the locks"
@@ -599,43 +601,43 @@ msgstr ""
 
 #: ui/glade/properties.glade.h:1
 msgid "<b>Properties for:</b>"
-msgstr ""
+msgstr "<b>Eigenschappen voor:</b>"
 
 #: ui/glade/properties.glade.h:3
 msgid "Edit..."
-msgstr ""
+msgstr "Bewerken..."
 
 #: ui/glade/properties.glade.h:4
 msgid "New..."
-msgstr ""
+msgstr "Nieuw…"
 
 #: ui/glade/properties.glade.h:5 lib/extensions/nautilus/NautilusSvn.py:995
 msgid "Properties"
-msgstr ""
+msgstr "Eigenschappen"
 
 #: ui/glade/properties.glade.h:6
 msgid "URL/Path:"
-msgstr ""
+msgstr "URL/Pad:"
 
 #: ui/glade/annotate.glade.h:1
 msgid "<b>From Revision</b>"
-msgstr ""
+msgstr "<b>Van Revisie</b>"
 
 #: ui/glade/annotate.glade.h:2
 msgid "<b>To Revision</b>"
-msgstr ""
+msgstr "<b>Naar Revisie</b>"
 
 #: ui/glade/annotate.glade.h:3
 msgid "Annotate"
-msgstr ""
+msgstr "Annoteren"
 
 #: ui/glade/about.glade.h:1
 msgid "<b>Links</b>"
-msgstr ""
+msgstr "<b>Koppelingen</b>"
 
 #: ui/glade/about.glade.h:2
 msgid "<b>Version Information</b>"
-msgstr ""
+msgstr "<b>Versie Informatie</b>"
 
 #: ui/glade/about.glade.h:3
 msgid "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
@@ -643,11 +645,11 @@ msgstr ""
 
 #: ui/glade/about.glade.h:4 lib/extensions/nautilus/NautilusSvn.py:1059
 msgid "About"
-msgstr ""
+msgstr "Over"
 
 #: ui/glade/about.glade.h:5
 msgid "Authors:"
-msgstr ""
+msgstr "Auteurs:"
 
 #: ui/glade/about.glade.h:6
 msgid "Thanks:"

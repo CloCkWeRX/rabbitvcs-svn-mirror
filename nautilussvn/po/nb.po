@@ -14,115 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-05-13 06:52+0000\n"
+"X-Launchpad-Export-Date: 2009-09-08 09:16+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
-
-#: ui/updateto.py:71 ui/update.py:54
-msgid "Updating..."
-msgstr "Oppdaterer..."
-
-#: ui/annotate.py:72 ui/dialog.py:47 ui/log.py:81
-msgid "Date"
-msgstr "Dato"
-
-#: ui/annotate.py:72
-msgid "Text"
-msgstr "Tekst"
-
-#: ui/settings.py:156 ui/settings.py:165
-msgid "Select a program"
-msgstr "Velg et program"
-
-#: ui/add.py:141 ui/lock.py:206 ui/commit.py:239
-msgid "Open"
-msgstr "Åpne"
-
-#: ui/add.py:159 ui/commit.py:259 ui/glade/properties.glade.h:2
-#: lib/extensions/nautilus/NautilusSvn.py:735
-msgid "Delete"
-msgstr "Slett"
-
-#: ui/lock.py:90 ui/lock.py:107
-msgid "Yes"
-msgstr "Ja"
-
-#: ui/properties.py:61
-msgid "Name"
-msgstr "Navn"
-
-#: ui/glade/switch.glade.h:3 ui/glade/branch.glade.h:8
-#: ui/glade/relocate.glade.h:2
-msgid "From:"
-msgstr "Fra:"
-
-#: ui/glade/switch.glade.h:8 ui/glade/branch.glade.h:11
-#: ui/glade/relocate.glade.h:4
-msgid "To:"
-msgstr "Til:"
-
-#: ui/glade/properties.glade.h:4
-msgid "New..."
-msgstr "Ny..."
-
-#: ui/glade/about.glade.h:4 lib/extensions/nautilus/NautilusSvn.py:1059
-msgid "About"
-msgstr "Om"
-
-#: ui/glade/log.glade.h:1
-msgid "100"
-msgstr "100"
-
-#: ui/glade/log.glade.h:3 ui/glade/dialogs.glade.h:3
-msgid "<b>Message</b>"
-msgstr "<b>Melding</b>"
-
-#: ui/glade/merge.glade.h:1
-msgid "<b>From URL</b>"
-msgstr "<b>Fra URL</b>"
-
-#: ui/glade/settings.glade.h:4
-msgid "<b>NautilusSvn</b>"
-msgstr "<b>NautilusSvn</b>"
-
-#: ui/glade/settings.glade.h:15
-msgid "Language:"
-msgstr "Språk:"
-
-#: ui/glade/dialogs.glade.h:21
-msgid "Password:"
-msgstr "Passord:"
-
-#: ui/glade/checkout.glade.h:12
-msgid "URL:"
-msgstr "URL:"
-
-#: lib/extensions/nautilus/NautilusSvn.py:375
-msgid "DBus"
-msgstr "DBus"
-
-#: lib/extensions/nautilus/NautilusSvn.py:584
-msgid "NautilusSvn"
-msgstr "NautilusSvn"
-
-#: lib/extensions/nautilus/NautilusSvn.py:613
-msgid "Show Log"
-msgstr "Vis logg"
-
-#: lib/extensions/nautilus/NautilusSvn.py:1027
-msgid "Help"
-msgstr "Hjelp"
-
-#: lib/vcs/svn/__init__.py:112 lib/vcs/svn/__init__.py:128
-msgid "Copied"
-msgstr "Kopiert"
-
-#: lib/vcs/svn/__init__.py:113 lib/vcs/svn/__init__.py:119
-msgid "Deleted"
-msgstr "Slettet"
-
-#: lib/vcs/svn/__init__.py:145
-msgid "Unknown"
-msgstr "Ukjent"
 
 #: ui/branch.py:71
 msgid ""
@@ -157,6 +50,10 @@ msgstr ""
 #: ui/updateto.py:70
 msgid "Update To Revision"
 msgstr ""
+
+#: ui/updateto.py:71 ui/update.py:54
+msgid "Updating..."
+msgstr "Oppdaterer..."
 
 #: ui/updateto.py:79 ui/update.py:57
 msgid "Completed Update"
@@ -201,6 +98,14 @@ msgstr ""
 msgid "Author"
 msgstr ""
 
+#: ui/annotate.py:72 ui/dialog.py:47 ui/log.py:81
+msgid "Date"
+msgstr "Dato"
+
+#: ui/annotate.py:72
+msgid "Text"
+msgstr "Tekst"
+
 #: ui/annotate.py:112
 msgid "The from revision field must be an integer"
 msgstr ""
@@ -216,6 +121,10 @@ msgstr ""
 #: ui/settings.py:50
 msgid "English"
 msgstr ""
+
+#: ui/settings.py:156 ui/settings.py:165
+msgid "Select a program"
+msgstr "Velg et program"
 
 #: ui/settings.py:174
 msgid "Are you sure you want to clear your repository paths?"
@@ -302,9 +211,18 @@ msgstr ""
 msgid "Completed Add"
 msgstr ""
 
+#: ui/add.py:141 ui/lock.py:206 ui/commit.py:239
+msgid "Open"
+msgstr "Åpne"
+
 #: ui/add.py:150 ui/lock.py:216 ui/commit.py:249
 msgid "Browse to"
 msgstr ""
+
+#: ui/add.py:159 ui/commit.py:259 ui/glade/properties.glade.h:2
+#: lib/extensions/nautilus/NautilusSvn.py:735
+msgid "Delete"
+msgstr "Slett"
 
 #: ui/add.py:168 ui/commit.py:299 lib/extensions/nautilus/NautilusSvn.py:654
 msgid "Add to ignore list"
@@ -335,6 +253,10 @@ msgstr ""
 #: ui/lock.py:67 lib/vcs/svn/__init__.py:132
 msgid "Locked"
 msgstr ""
+
+#: ui/lock.py:90 ui/lock.py:107
+msgid "Yes"
+msgstr "Ja"
 
 #: ui/lock.py:144
 msgid "Get Lock"
@@ -576,6 +498,10 @@ msgid "Properties - %s"
 msgstr ""
 
 #: ui/properties.py:61
+msgid "Name"
+msgstr "Navn"
+
+#: ui/properties.py:61
 msgid "Value"
 msgstr ""
 
@@ -611,10 +537,20 @@ msgstr ""
 msgid "<b>Switch Details</b>"
 msgstr ""
 
+#: ui/glade/switch.glade.h:3 ui/glade/branch.glade.h:8
+#: ui/glade/relocate.glade.h:2
+msgid "From:"
+msgstr "Fra:"
+
 #: ui/glade/switch.glade.h:4 ui/glade/merge.glade.h:10
 #: ui/glade/checkout.glade.h:7 ui/glade/update.glade.h:3
 msgid "HEAD"
 msgstr ""
+
+#: ui/glade/switch.glade.h:8 ui/glade/branch.glade.h:11
+#: ui/glade/relocate.glade.h:4
+msgid "To:"
+msgstr "Til:"
 
 #: ui/glade/notification.glade.h:1
 msgid "Notification Messages"
@@ -669,6 +605,10 @@ msgstr ""
 msgid "Edit..."
 msgstr ""
 
+#: ui/glade/properties.glade.h:4
+msgid "New..."
+msgstr "Ny..."
+
 #: ui/glade/properties.glade.h:5 lib/extensions/nautilus/NautilusSvn.py:995
 msgid "Properties"
 msgstr ""
@@ -700,6 +640,10 @@ msgstr ""
 #: ui/glade/about.glade.h:3
 msgid "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
 msgstr ""
+
+#: ui/glade/about.glade.h:4 lib/extensions/nautilus/NautilusSvn.py:1059
+msgid "About"
+msgstr "Om"
 
 #: ui/glade/about.glade.h:5
 msgid "Authors:"
@@ -734,9 +678,17 @@ msgstr ""
 msgid "Copy from working copy"
 msgstr ""
 
+#: ui/glade/log.glade.h:1
+msgid "100"
+msgstr "100"
+
 #: ui/glade/log.glade.h:2
 msgid "<b>Affected File(s)</b>"
 msgstr ""
+
+#: ui/glade/log.glade.h:3 ui/glade/dialogs.glade.h:3
+msgid "<b>Message</b>"
+msgstr "<b>Melding</b>"
 
 #: ui/glade/log.glade.h:4
 msgid "<b>Revisions Table</b>"
@@ -761,6 +713,10 @@ msgstr ""
 #: ui/glade/log.glade.h:11
 msgid "Stop on copy"
 msgstr ""
+
+#: ui/glade/merge.glade.h:1
+msgid "<b>From URL</b>"
+msgstr "<b>Fra URL</b>"
 
 #: ui/glade/merge.glade.h:2
 msgid "<b>From: (URL and revision to merge)</b>"
@@ -850,6 +806,10 @@ msgstr ""
 msgid "<b>Logging Options</b>"
 msgstr ""
 
+#: ui/glade/settings.glade.h:4
+msgid "<b>NautilusSvn</b>"
+msgstr "<b>NautilusSvn</b>"
+
 #: ui/glade/settings.glade.h:5
 msgid "<b>Program used to browse repositories</b>"
 msgstr ""
@@ -889,6 +849,10 @@ msgstr ""
 #: ui/glade/settings.glade.h:14
 msgid "General"
 msgstr ""
+
+#: ui/glade/settings.glade.h:15
+msgid "Language:"
+msgstr "Språk:"
 
 #: ui/glade/settings.glade.h:16
 msgid "Logging"
@@ -994,6 +958,10 @@ msgstr ""
 msgid "Login:"
 msgstr ""
 
+#: ui/glade/dialogs.glade.h:21
+msgid "Password:"
+msgstr "Passord:"
+
 #: ui/glade/dialogs.glade.h:23
 msgid "Property"
 msgstr ""
@@ -1030,6 +998,10 @@ msgstr ""
 msgid "Omit Externals"
 msgstr ""
 
+#: ui/glade/checkout.glade.h:12
+msgid "URL:"
+msgstr "URL:"
+
 #: ui/glade/import.glade.h:1
 msgid "<b>Import Message</b>"
 msgstr ""
@@ -1049,6 +1021,10 @@ msgstr ""
 #: lib/extensions/nautilus/NautilusSvn.py:362
 msgid "Debug"
 msgstr ""
+
+#: lib/extensions/nautilus/NautilusSvn.py:375
+msgid "DBus"
+msgstr "DBus"
 
 #: lib/extensions/nautilus/NautilusSvn.py:388
 msgid "Start/Restart Service"
@@ -1110,9 +1086,17 @@ msgstr ""
 msgid "Commit modifications to the repository"
 msgstr ""
 
+#: lib/extensions/nautilus/NautilusSvn.py:584
+msgid "NautilusSvn"
+msgstr "NautilusSvn"
+
 #: lib/extensions/nautilus/NautilusSvn.py:598
 msgid "View the modifications made to a file"
 msgstr ""
+
+#: lib/extensions/nautilus/NautilusSvn.py:613
+msgid "Show Log"
+msgstr "Vis logg"
 
 #: lib/extensions/nautilus/NautilusSvn.py:614
 msgid "Show a file's log information"
@@ -1238,6 +1222,10 @@ msgstr ""
 msgid "View the properties of an item"
 msgstr ""
 
+#: lib/extensions/nautilus/NautilusSvn.py:1027
+msgid "Help"
+msgstr "Hjelp"
+
 #: lib/extensions/nautilus/NautilusSvn.py:1028
 msgid "View help"
 msgstr ""
@@ -1254,6 +1242,14 @@ msgstr ""
 #: lib/vcs/svn/__init__.py:127
 msgid "Added"
 msgstr ""
+
+#: lib/vcs/svn/__init__.py:112 lib/vcs/svn/__init__.py:128
+msgid "Copied"
+msgstr "Kopiert"
+
+#: lib/vcs/svn/__init__.py:113 lib/vcs/svn/__init__.py:119
+msgid "Deleted"
+msgstr "Slettet"
 
 #: lib/vcs/svn/__init__.py:114
 msgid "Restored"
@@ -1314,6 +1310,10 @@ msgstr ""
 #: lib/vcs/svn/__init__.py:144
 msgid "Inapplicable"
 msgstr ""
+
+#: lib/vcs/svn/__init__.py:145
+msgid "Unknown"
+msgstr "Ukjent"
 
 #: lib/vcs/svn/__init__.py:146
 msgid "Unchanged"
