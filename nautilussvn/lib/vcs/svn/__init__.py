@@ -725,7 +725,7 @@ class SVN:
         
         elif kind == "number":
             if number is None:
-                print "In svn.py revision(),kind = number, but number not given"
+                log.warning("In svn.py revision(),kind = number, but number not given")
                 return None
         
             returner = pysvn.Revision(pysvn_obj, number)
