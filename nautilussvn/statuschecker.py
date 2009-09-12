@@ -98,19 +98,16 @@ class StatusChecker(threading.Thread):
              locked OR if the queue is blocking. In the meantime, the thread 
              will pop the path from the queue and look it up.
         """
-        log.debug("Status checker: %s (inv: %s)" % (path, invalidate))
-        # log.debug("SC Thread: %s" % threading.currentThread())
         
         statuses = {}
         
         with self.__status_tree_lock:
             if nautilussvn.util.vcs.is_in_a_or_a_working_copy(path):
                 if not invalidate and path in self.__status_tree:
-                    # log.debug("SC: we're good, so return the status")
+                    # We're good, so return the status
                     statuses = self.__get_path_statuses(path)
                 else:
-                    # log.debug("SC: we need to calculate the status")
-                    # TODO: abstract this
+                    # We need to calculate the status
                     statuses[path] = {"text_status": "calculating",
                                       "prop_status": "calculating"}
                                       
@@ -146,7 +143,6 @@ class StatusChecker(threading.Thread):
         return statuses
         
     def __update_path_status(self, path, recurse=False, invalidate=False, callback=None):
-        # log.debug("UPS Thread: %s" % threading.currentThread())
         statuses = {}
         
         # Uncomment this for useful simulation of a looooong status check :) 
@@ -164,9 +160,7 @@ class StatusChecker(threading.Thread):
                 return
         
         # Otherwise actually do a status check
-        # FIXME: Get propchanges from here...
-        
-        
+               
         testlist = list(self.vcs_client.status(path, recurse=recurse))
                 
         statuses = [(status.path, str(status.text_status), str(status.prop_status)) 
