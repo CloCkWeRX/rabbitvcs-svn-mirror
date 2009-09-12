@@ -96,7 +96,8 @@ class CreatePatch(InterfaceView):
     def load(self):
         gtk.gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
-        self.items = self.vcs.get_items(self.paths, self.vcs.STATUSES_FOR_COMMIT)
+        self.items = filter(lambda item: self.vcs.is_versioned(item.path),
+                            self.vcs.get_items(self.paths, self.vcs.STATUSES_FOR_COMMIT))    
         self.populate_files_from_original()
         self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
         gtk.gdk.threads_leave()
