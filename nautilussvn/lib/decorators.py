@@ -36,6 +36,10 @@ See:
 import time
 import warnings
 
+from nautilussvn.lib.log import Log
+log = Log("nautilussvn.lib.decorators")
+
+
 import gtk
 
 def update_func_meta(fake_func, real_func):
@@ -90,7 +94,7 @@ def timeit(func):
         start_time = time.time()
         result = func(*args, **kwargs)
         duration = (time.time() - start_time) * 1000.0
-        print "Debug: %s() took %0.4f milliseconds" % (func.__name__, duration)
+        log.info("%s() took %0.4f milliseconds" % (func.__name__, duration))
         return result
         
     return update_func_meta(newfunc, func)
