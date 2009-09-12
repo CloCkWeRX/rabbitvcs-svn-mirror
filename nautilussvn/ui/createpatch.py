@@ -29,7 +29,8 @@ import gobject
 import gtk
 import gio
 import os
-from tempfile import NamedTemporaryFile
+import tempfile
+import shutil
 
 from nautilussvn.ui import InterfaceView
 from nautilussvn.ui.action import VCSAction
@@ -160,6 +161,7 @@ class CreatePatch(InterfaceView):
             None,
             gtk.FILE_CHOOSER_ACTION_SAVE,(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                                           gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+        dialog.set_do_overwrite_confirmation(True)
         dialog.set_default_response(gtk.RESPONSE_OK)
         dialog.set_current_folder_uri(
             gnomevfs.get_uri_from_local_path(get_common_directory(self.paths))
@@ -195,7 +197,7 @@ class CreatePatch(InterfaceView):
         if not path:
             self.close()
             return
-        
+      
         ticks = len(items)*2
         self.action = nautilussvn.ui.action.VCSAction(
             self.vcs,
@@ -207,18 +209,24 @@ class CreatePatch(InterfaceView):
         
         fileObj = open(path,"w")
         
+        # PySVN takes a path to create its own temp files...
+        temp_dir = tempfile.mkdtemp(prefix=nautilussvn.TEMP_DIR_PREFIX)
+        
         # Add to the Patch file only the selected items
         for item in items:
             try:
-                temp = NamedTemporaryFile()
-                rel_path = nautilussvn.lib.helper.get_relative_path(self.common, item)
-                diff_text = self.vcs.diff(temp.name, rel_path)
-                print item
+                # FIXME: will "item" always be absolute path?
+                diff_text = self.vcs.diff(temp_dir, item)
                 fileObj.write(diff_text)
             except Exception, e:
-                print str(e)
-        
+                # FIXME: probably not needed, but leave here for now
+                log.exception(e)
+
         fileObj.close()
+
+        # Note: if we don't want to ignore errors here, we could define a
+        # function that logs failures.
+        shutil.rmtree(temp_dir, ignore_errors = True)
         
         self.action.append(self.action.set_status, _("Patch File Created"))
         self.action.append(self.action.finish)
