@@ -41,7 +41,7 @@ _ = gettext.gettext
 
 class ApplyPatch(InterfaceNonView):
     """
-    This class provides a handler to Delete functionality.
+    This class provides a handler to the apply patch functionality.
     
     """
 
@@ -85,7 +85,10 @@ class ApplyPatch(InterfaceNonView):
         self.action.append(self.action.set_header, _("Apply Patch"))
         self.action.append(self.action.set_status, _("Applying Patch File..."))
         
-        subprocess.Popen(["patch", "-p0", "-i", str(path), "--directory", self.common])
+        self.action.append(subprocess.Popen,
+                           ["patch", "-p0", "-i", str(path), "--directory", self.common],
+                            stdout = subprocess.PIPE,
+                            stderr = subprocess.PIPE)
         
         self.action.append(self.action.set_status, _("Patch File Applied"))
         self.action.append(self.action.finish)
@@ -112,4 +115,5 @@ if __name__ == "__main__":
     window = ApplyPatch(paths)
     window.register_gtk_quit()
     window.start()
+    gtk.main()
     
