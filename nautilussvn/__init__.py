@@ -26,6 +26,7 @@ from locale import getdefaultlocale
 
 version = "0.12-beta1"
 APP_NAME = "NautilusSvn"
+TEMP_DIR_PREFIX = "nsvn-"
 LOCALE_DIR = "%s/locale" % os.path.dirname(os.path.abspath(__file__))
 if not os.path.exists(LOCALE_DIR):
     LOCALE_DIR = "/usr/share/locale"
