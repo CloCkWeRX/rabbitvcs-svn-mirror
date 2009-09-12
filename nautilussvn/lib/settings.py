@@ -111,13 +111,13 @@ class SettingsManager:
         # if validation fails!
         # See:
         # http://www.voidspace.org.uk/python/articles/configobj.shtml#validation
-        if not (valid is True):
+        if valid is not True:
             # What to do here?
             # We could only get to this point if:
             #   1. The user config file existed
             #   2. It was invalid
             # One option is to copy it to a different file and recreate it...
-            print "User configuration not valid. Backing up and recreating."
+            log.warning("User configuration not valid. Backing up and recreating.")
             self.backup_and_rewrite_config()
         
 
