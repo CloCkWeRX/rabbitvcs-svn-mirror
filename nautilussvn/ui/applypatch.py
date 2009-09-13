@@ -27,7 +27,6 @@ import gobject
 import gtk
 import os
 import commands
-import subprocess
 
 from nautilussvn.ui import InterfaceNonView
 from nautilussvn.ui.action import VCSAction
@@ -84,12 +83,7 @@ class ApplyPatch(InterfaceNonView):
         self.action.set_pbar_ticks(ticks)
         self.action.append(self.action.set_header, _("Apply Patch"))
         self.action.append(self.action.set_status, _("Applying Patch File..."))
-        
-        self.action.append(subprocess.Popen,
-                           ["patch", "-p0", "-i", str(path), "--directory", self.common],
-                            stdout = subprocess.PIPE,
-                            stderr = subprocess.PIPE)
-        
+        self.action.append(self.vcs.apply_patch, path, self.common)
         self.action.append(self.action.set_status, _("Patch File Applied"))
         self.action.append(self.action.finish)
         self.action.start()

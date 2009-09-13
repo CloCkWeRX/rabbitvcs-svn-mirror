@@ -27,6 +27,7 @@ Concrete VCS implementation for Subversion functionality.
 """
 
 import traceback
+import subprocess
 import os.path
 from os.path import isdir, isfile, dirname
 
@@ -1167,6 +1168,39 @@ class SVN:
         
         return self.client.diff(*args, **kwargs)
     
+    def apply_patch(self, patch_file, base_dir):
+        """
+        Applies a patch created for this WC.
+        
+        @type patch_file: string
+        @param patch_file: the path to the patch file
+        
+        @type base_dir: string
+        @param base_dir: the base directory from which to interpret the paths in
+                         the patch file
+        """
+        # PATCH flags...
+        # -N: always assume forward diff
+        # -t: batch mode:
+        #    skip patches whose headers do not contain file
+        #    names (the same as -f); skip patches for which
+        #    the file has the wrong version for the Prereq:
+        #    line in the patch; and assume that patches are
+        #    reversed if they look like they are.
+        patch_proc = subprocess.Popen(["patch", "-N", "-t", "-p0", "-i", str(patch_file), "--directory", base_dir],
+                                      stdout = subprocess.PIPE,
+                                      stderr = subprocess.PIPE)
+        
+        line = patch_proc.stdout.readline()
+        
+        while line:
+            log.debug("Patch stdout: %s" % line)    
+            line = patch_proc.stdout.readline()
+        
+        retcode = patch_proc.wait()
+        
+        log.debug("Retcode: %i" % retcode)
+
     def is_version_less_than(self, version):
         """
         @type   version: tuple
