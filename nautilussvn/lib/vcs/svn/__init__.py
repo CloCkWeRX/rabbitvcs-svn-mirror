@@ -307,17 +307,6 @@ class SVN:
             return True
         
         return False
-
-    def is_versioned(self, path):
-        if self.is_working_copy(path):
-            return True
-        else:
-            # info will return nothing for an unversioned file inside a working copy
-            if (self.is_working_copy(os.path.split(path)[0]) and
-                    self.client.info(path)): 
-                return True
-                
-            return False
     
     def is_normal(self, path):
         return self.is_status(path, pysvn.wc_status_kind.normal)
