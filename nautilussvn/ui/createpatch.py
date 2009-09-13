@@ -213,15 +213,13 @@ class CreatePatch(InterfaceView):
         # PySVN takes a path to create its own temp files...
         temp_dir = tempfile.mkdtemp(prefix=nautilussvn.TEMP_DIR_PREFIX)
         
+        os.chdir(self.common)
+       
         # Add to the Patch file only the selected items
         for item in items:
-            try:
-                # FIXME: will "item" always be absolute path?
-                diff_text = self.vcs.diff(temp_dir, item)
-                fileObj.write(diff_text)
-            except Exception, e:
-                # FIXME: probably not needed, but leave here for now
-                log.exception(e)
+            rel_path = nautilussvn.lib.helper.get_relative_path(self.common, item)
+            diff_text = self.vcs.diff(temp_dir, rel_path)
+            fileObj.write(diff_text)
 
         fileObj.close()
 
@@ -234,7 +232,7 @@ class CreatePatch(InterfaceView):
         self.action.start()
         
         # TODO: Open the diff file (meld is going to add support in a future version :()
-        nautilussvn.lib.helper.launch_diff_tool(path)
+        # nautilussvn.lib.helper.launch_diff_tool(path)
         
     def on_toggle_show_all_toggled(self, widget, data=None):
         self.TOGGLE_ALL = not self.TOGGLE_ALL
