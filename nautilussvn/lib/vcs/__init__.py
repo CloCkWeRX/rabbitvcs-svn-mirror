@@ -23,6 +23,12 @@
 from nautilussvn.lib.vcs.svn import SVN
 from nautilussvn.lib.decorators import deprecated
 
+from nautilussvn import gettext
+_ = gettext.gettext
+
+EXT_UTIL_ERROR = _("The output from '%s' was not able to be processed.\n%s")
+
+
 class VCS:
     pass
     
@@ -42,3 +48,17 @@ def create_vcs_instance():
     """
     # TODO: we'll figure this out later by looking at the working copy.
     return SVN()
+
+class ExternalUtilError(Exception):
+    """ Represents an error caused by unexpected output from an external
+    program.
+    """ 
+        
+    def __init__(self, program, output):
+        """ Initialises the error with the external tool and the unexpected
+        output.
+        """
+        Exception.__init__(self,
+                           EXT_UTIL_ERROR % (program, output))
+        self.program = program
+        self.output = output
