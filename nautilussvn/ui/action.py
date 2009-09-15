@@ -228,10 +228,14 @@ class VCSAction(threading.Thread):
             data["mime_type"]
         ])
         
-        if data["action"] in self.client.NOTIFY_ACTIONS_COMPLETE:
-            self.notification.append(
-                ["", "Revision %s" % data["revision"].number, ""]
-            )
+        #FIXME: this is crap
+        try:
+            if data["action"] in self.client.NOTIFY_ACTIONS_COMPLETE:
+                self.notification.append(
+                    ["", "Revision %s" % data["revision"].number, ""]
+                )
+        except AttributeError, e:
+            pass
     
     def finish(self, message=None):
         """
