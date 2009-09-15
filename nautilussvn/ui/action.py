@@ -217,9 +217,9 @@ class VCSAction(threading.Thread):
                 frac = 1
             self.notification.pbar.update(frac)
         
-        try:
+        if self.client.NOTIFY_ACTIONS.has_key(data["action"]):
             action = self.client.NOTIFY_ACTIONS[data["action"]]
-        except:
+        else:
             action = data["action"]
             
         self.notification.append([
