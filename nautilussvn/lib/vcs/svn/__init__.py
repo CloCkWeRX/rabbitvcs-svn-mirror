@@ -840,7 +840,7 @@ class SVN:
         """
         This will add the given path to version control, and any parent
         directories that themselves require adding. It is essential that "path"
-        contains a WC somewhere in its heirarchy.
+        contains a WC somewhere in its hierarchy.
         
         @param path: the path to add to version control
         @type path: string  
