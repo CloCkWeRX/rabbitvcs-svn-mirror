@@ -51,7 +51,7 @@ class ApplyPatch(InterfaceNonView):
         self.common = nautilussvn.lib.helper.get_common_directory(paths)
 
     def choose_patch_path(self):
-        path = ""
+        path = None
         
         dialog = gtk.FileChooserDialog(
             _("Apply Patch"),
@@ -67,13 +67,36 @@ class ApplyPatch(InterfaceNonView):
         
         return path
     
+    def choose_patch_dir(self):
+        dir = None
+        
+        dialog = gtk.FileChooserDialog(
+                    _("Apply Patch To Directory..."),
+                    None,
+                    gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
+                    (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                     gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+        dialog.set_default_response(gtk.RESPONSE_OK)
+        
+        response = dialog.run()
+        
+        if response == gtk.RESPONSE_OK:
+            dir = dialog.get_filename()
+            
+        dialog.destroy()
+        
+        return dir
+    
     def start(self):
     
         path = self.choose_patch_path()
-        
         # If empty path, means we've cancelled
-        if not len(path):
+        if not path:
             return
+        
+        base_dir = self.choose_patch_dir()
+        if not base_dir:
+            return        
         
         ticks = 2
         self.action = nautilussvn.ui.action.VCSAction(
@@ -83,7 +106,7 @@ class ApplyPatch(InterfaceNonView):
         self.action.set_pbar_ticks(ticks)
         self.action.append(self.action.set_header, _("Apply Patch"))
         self.action.append(self.action.set_status, _("Applying Patch File..."))
-        self.action.append(self.vcs.apply_patch, path, self.common)
+        self.action.append(self.vcs.apply_patch, path, base_dir)
         self.action.append(self.action.set_status, _("Patch File Applied"))
         self.action.append(self.action.finish)
         self.action.start()
