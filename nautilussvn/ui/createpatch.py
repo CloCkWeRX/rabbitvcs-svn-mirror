@@ -208,24 +208,27 @@ class CreatePatch(InterfaceView):
         self.action.append(self.action.set_header, _("Create Patch"))
         self.action.append(self.action.set_status, _("Creating Patch File..."))
         
-        fileObj = open(path,"w")
+        def create_patch_action(patch_path, patch_items, base_dir):
+            fileObj = open(patch_path,"w")
+            
+            # PySVN takes a path to create its own temp files...
+            temp_dir = tempfile.mkdtemp(prefix=nautilussvn.TEMP_DIR_PREFIX)
+            
+            os.chdir(base_dir)
+           
+            # Add to the Patch file only the selected items
+            for item in patch_items:
+                rel_path = nautilussvn.lib.helper.get_relative_path(base_dir, item)
+                diff_text = self.vcs.diff(temp_dir, rel_path)
+                fileObj.write(diff_text)
+    
+            fileObj.close()            
         
-        # PySVN takes a path to create its own temp files...
-        temp_dir = tempfile.mkdtemp(prefix=nautilussvn.TEMP_DIR_PREFIX)
+            # Note: if we don't want to ignore errors here, we could define a
+            # function that logs failures.
+            shutil.rmtree(temp_dir, ignore_errors = True)
         
-        os.chdir(self.common)
-       
-        # Add to the Patch file only the selected items
-        for item in items:
-            rel_path = nautilussvn.lib.helper.get_relative_path(self.common, item)
-            diff_text = self.vcs.diff(temp_dir, rel_path)
-            fileObj.write(diff_text)
-
-        fileObj.close()
-
-        # Note: if we don't want to ignore errors here, we could define a
-        # function that logs failures.
-        shutil.rmtree(temp_dir, ignore_errors = True)
+        self.action.append(create_patch_action, path, items, self.common)
         
         self.action.append(self.action.set_status, _("Patch File Created"))
         self.action.append(self.action.finish)
