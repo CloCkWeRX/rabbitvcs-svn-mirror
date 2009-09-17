@@ -27,7 +27,6 @@ import gnomevfs
 import pygtk
 import gobject
 import gtk
-import gio
 import os
 import tempfile
 import shutil
