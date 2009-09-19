@@ -455,10 +455,16 @@ def launch_ui_window(filename, args=[]):
     
     # Hackish.  Get's the helper module's path, then assumes it is in
     # the lib folder.  Removes the /lib part of the path.
-    basedir = os.path.dirname(os.path.realpath(__file__))[0:-4]
+    basedir, head = os.path.split(
+                        os.path.dirname(
+                            os.path.realpath(__file__)))
+    
+    if not head == "lib":
+        log.warning("Helper module (%s) not in \"lib\" dir" % __file__)
 
     # Puts the whole path together.
-    path = "%s/ui/%s.py" % (basedir, filename)
+    # path = "%s/ui/%s.py" % (basedir, filename)
+    path = os.path.join(basedir, "ui", filename + ".py")
 
     if os.path.exists(path): 
         return subprocess.Popen(["/usr/bin/python", path] + args).pid
