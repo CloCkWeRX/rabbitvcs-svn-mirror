@@ -46,6 +46,23 @@ ngettext = gettext.ngettext
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S" # for log files
 LOCAL_DATETIME_FORMAT = locale.nl_langinfo(locale.D_T_FMT) # for UIs
 
+def in_rich_compare(item, list):
+    """ Tests whether the item is in the given list. This is mainly to work
+    around the rich-compare bug in pysvn. This is not identical to the "in"
+    operator when used for substring testing.
+    """
+    
+    in_list = False
+    
+    if list is not None:
+        for thing in list:
+            try:
+                in_list = item == thing
+            except AttributeError, e:
+                pass
+    
+    return in_list
+
 def initialize_locale():
     _locale, encoding = locale.getdefaultlocale()
     if _locale is None:

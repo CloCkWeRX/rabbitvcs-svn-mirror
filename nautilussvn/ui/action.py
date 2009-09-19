@@ -229,13 +229,12 @@ class VCSAction(threading.Thread):
         ])
         
         #FIXME: this is crap
-        try:
-            if data["action"] in self.client.NOTIFY_ACTIONS_COMPLETE:
-                self.notification.append(
-                    ["", "Revision %s" % data["revision"].number, ""]
-                )
-        except AttributeError, e:
-            pass
+        if nautilussvn.lib.helper.in_rich_compare(
+                data["action"],
+                self.client.NOTIFY_ACTIONS_COMPLETE):
+            self.notification.append(
+                ["", "Revision %s" % data["revision"].number, ""]
+            )
     
     def finish(self, message=None):
         """
