@@ -6,6 +6,7 @@ sesion bus.
 """
 
 import os.path
+import sys
 import traceback
 import subprocess
 import time
@@ -54,7 +55,7 @@ def start():
     except dbus.DBusException:
         # FIXME: there must be a better way
         dbus_service_path = os.path.abspath(__file__)
-        subprocess.Popen(["/usr/bin/python", dbus_service_path]).pid
+        subprocess.Popen([sys.executable, dbus_service_path]).pid
         # FIXME: hangs Nautilus when booting
         time.sleep(1)
         return True

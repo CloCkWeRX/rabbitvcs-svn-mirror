@@ -29,6 +29,7 @@ All sorts of helper functions.
 import locale
 import os
 import os.path
+import sys
 import subprocess
 import re
 import datetime
@@ -484,7 +485,7 @@ def launch_ui_window(filename, args=[]):
     path = os.path.join(basedir, "ui", filename + ".py")
 
     if os.path.exists(path): 
-        return subprocess.Popen(["/usr/bin/python", path] + args).pid
+        return subprocess.Popen([sys.executable, path] + args).pid
 
 def get_log_messages_limit():
     sm = nautilussvn.lib.settings.SettingsManager()
