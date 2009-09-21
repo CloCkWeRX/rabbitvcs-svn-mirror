@@ -225,7 +225,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         """
         
         if not self.valid_uri(item.get_uri()): return
-        path = unicode(realpath(gnomevfs.get_local_path_from_uri(uri)))
+        path = unicode(realpath(gnomevfs.get_local_path_from_uri(item.get_uri())))
         
         # log.debug("update_file_info() called for %s" % path)
         
