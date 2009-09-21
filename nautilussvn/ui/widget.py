@@ -26,50 +26,89 @@ import gtk
 
 import nautilussvn.lib.helper
 
+from nautilussvn.lib.log import Log
+
+log = Log("nautilussvn.ui.widget")
+
 TOGGLE_BUTTON = 'TOGGLE_BUTTON'
+PATH_ENTRY = 'PATH_ENTRY'
+
+from pprint import pformat
+
+def path_filter(model, iter, column, user_data):
+    base_dir = user_data["base_dir"]
+    path_entries = user_data["path_entries"]
+    
+    data = model.get_model().get_value(
+                model.convert_iter_to_child_iter(iter),
+                column)
+
+    if column in path_entries:
+        return nautilussvn.lib.helper.get_relative_path(base_dir, data)
+    else:
+        return data 
 
 class Table:
-    def __init__(self, treeview, coltypes, colnames, values=[]):
-        self.liststore = gtk.ListStore(*coltypes)
-        for row in values:
-            self.liststore.append(row)
-
-        self.treeview = treeview
-        self.treeview.set_model(self.liststore)
-
-        self.cols = []
-
-        # FIXME: where is this used?
-        self.cells = {}
+    def __init__(self, treeview, coltypes, colnames, values=[], base_dir=None, path_entries=[]):
+        # The list given as "path_entries" should contain the 0-indexed
+        # positions of the path columns, so that the can be expressed relative
+        # to "base_dir".
         
-        i = 0
+    
+        self.treeview = treeview
+
+        i = 0       
         for name in colnames:
             if name == TOGGLE_BUTTON:
                 cell = gtk.CellRendererToggle()
                 cell.set_property('activatable', True)
                 cell.connect("toggled", self.toggled_cb, i)
                 col = gtk.TreeViewColumn("", cell)
-                col.set_attributes(cell, active=i)
+                col.set_attributes(cell, active=i)  
             else:
                 cell = gtk.CellRendererText()
                 cell.set_property('yalign', 0)
                 col = gtk.TreeViewColumn(name, cell)
                 col.set_attributes(cell, text=i)
 
+
             self.treeview.append_column(col)
             i += 1
+        
+        self.data = gtk.ListStore(*coltypes)
+        
+        # self.filter == filtered data (abs paths -> rel paths)
+        # self.data == actual data
+        
+        # The filter is there to change the way data is displayed. The data
+        # should always be accessed via self.data, NOT self.filter.
+        self.filter = self.data.filter_new()
+        
+        user_data = {"base_dir" : base_dir,
+                     "path_entries" : path_entries}
+        self.filter.set_modify_func(
+                        coltypes,
+                        path_filter,
+                        user_data)
+        
+        self.treeview.set_model(self.filter)
+                        
+        for row in values:
+            self.data.append(row)
+        
+        assert self.treeview.get_model().get_model() == self.data
     
         self.set_resizable()
 
     def toggled_cb(self, cell, path, column):
-        model = self.treeview.get_model()
+        model = self.data
         model[path][column] = not model[path][column]
 
     def append(self, row):
-        self.liststore.append(row)
+        self.data.append(row)
 
     def remove(self, index):
-        model = self.treeview.get_model()
+        model = self.data
         del model[index]
 
     def remove_multiple(self, rows):
@@ -83,17 +122,17 @@ class Table:
             i += 1     
 
     def get_items(self):
-        return self.treeview.get_model()
+        return self.data
 
     def clear(self):
-        self.treeview.get_model().clear()
+        self.data.clear()
         
     def get_row(self, index):
-        model = self.treeview.get_model()
+        model = self.data
         return model[index]
     
     def set_row(self, index, row):
-        model = self.treeview.get_model()
+        model = self.data
         model[index] = row
         
     def allow_multiple(self):
@@ -101,7 +140,7 @@ class Table:
         
     def get_activated_rows(self, column=None):
         returner = []
-        for row in self.treeview.get_model():
+        for row in self.data:
             if row[0]:
                 item = row
                 if column is not None:
