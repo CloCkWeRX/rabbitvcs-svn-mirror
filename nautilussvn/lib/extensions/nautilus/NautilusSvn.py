@@ -375,12 +375,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
 
         if len(paths) == 0: return []
         
-        # Use the selected path to determine Nautilus's cwd
-        # If more than one files are selected, make sure to use get_common_directory
-        #path_to_use = (len(paths) > 1 and get_common_directory(paths) or paths[0])
-        #os.chdir(os.path.split(path_to_use)[0])
-        
-        return MainContextMenu(paths, self).construct_menu()
+        return MainContextMenu(window.get_data("base_dir"), paths, self).construct_menu()
         
     
     #~ @disable
@@ -407,9 +402,9 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
         # log.debug("get_background_items() called")
         
-        #os.chdir(path)
-        return MainContextMenu([path], self).construct_menu()
+        window.set_data("base_dir", path)
         
+        return MainContextMenu(path, [path], self).construct_menu()
     
     #
     # Helper functions
@@ -551,7 +546,8 @@ class MainContextMenu:
     
     SEPARATOR = u'\u2015' * 10
     
-    def __init__(self, paths, nautilussvn_extension):
+    def __init__(self, base_dir, paths, nautilussvn_extension):
+        self.base_dir = base_dir
         self.paths = paths
         self.nautilussvn_extension = nautilussvn_extension
         self.vcs_client = SVN()
@@ -1639,7 +1635,7 @@ class MainContextMenu:
         self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
 
     def callback_commit(self, menu_item, paths):
-        pid = launch_ui_window("commit", paths)
+        pid = launch_ui_window("commit", [self.base_dir] + paths)
         self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
 
     def callback_add(self, menu_item, paths):

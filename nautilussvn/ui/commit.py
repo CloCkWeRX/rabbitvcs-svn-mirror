@@ -52,7 +52,7 @@ class Commit(InterfaceView):
     TOGGLE_ALL = False
     SHOW_UNVERSIONED = True
 
-    def __init__(self, paths):
+    def __init__(self, base_dir, paths):
         """
         
         @type  paths:   list of strings
@@ -75,6 +75,8 @@ class Commit(InterfaceView):
                 gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
                 _("Text Status"), _("Property Status")],
+            base_dir=base_dir,
+            path_entries=[1]
         )
         self.last_row_clicked = None
         
@@ -443,8 +445,8 @@ class Commit(InterfaceView):
 if __name__ == "__main__":
     from os import getcwd
     from sys import argv
-
-    args = argv[1:]
+    
+    args = argv[2:]
 
     # Convert "." to current working directory
     paths = args
@@ -458,6 +460,6 @@ if __name__ == "__main__":
     if not paths:
         paths = [getcwd()]
         
-    window = Commit(paths)
+    window = Commit(argv[1], paths)
     window.register_gtk_quit()
     gtk.main()
