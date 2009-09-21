@@ -225,7 +225,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         """
         
         if not self.valid_uri(item.get_uri()): return
-        path = realpath(gnomevfs.get_local_path_from_uri(item.get_uri()))
+        path = unicode(realpath(gnomevfs.get_local_path_from_uri(uri)), 'utf-8')
         
         # log.debug("update_file_info() called for %s" % path)
         
@@ -369,7 +369,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         paths = []
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = realpath(gnomevfs.get_local_path_from_uri(item.get_uri()))
+                path = unicode(realpath(gnomevfs.get_local_path_from_uri(item.get_uri())))
                 paths.append(path)
                 self.nautilusVFSFile_table[path] = item
 
@@ -402,7 +402,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         """
         
         if not self.valid_uri(item.get_uri()): return
-        path = realpath(gnomevfs.get_local_path_from_uri(item.get_uri()))
+        path = unicode(realpath(gnomevfs.get_local_path_from_uri(item.get_uri())))
         self.nautilusVFSFile_table[path] = item
         
         # log.debug("get_background_items() called")
