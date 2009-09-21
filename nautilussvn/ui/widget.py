@@ -71,7 +71,6 @@ class Table:
                 col = gtk.TreeViewColumn(name, cell)
                 col.set_attributes(cell, text=i)
 
-
             self.treeview.append_column(col)
             i += 1
         
@@ -96,8 +95,6 @@ class Table:
         for row in values:
             self.data.append(row)
         
-        assert self.treeview.get_model().get_model() == self.data
-    
         self.set_resizable()
 
     def toggled_cb(self, cell, path, column):
