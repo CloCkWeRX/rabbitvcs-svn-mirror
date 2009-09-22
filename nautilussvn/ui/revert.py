@@ -41,7 +41,7 @@ from nautilussvn import gettext
 _ = gettext.gettext
 
 class Revert(Add):
-    def __init__(self, paths):
+    def __init__(self, paths, base_dir=None):
         InterfaceView.__init__(self, "add", "Add")
 
         self.window = self.get_widget("Add")
@@ -55,7 +55,9 @@ class Revert(Add):
         self.files_table = nautilussvn.ui.widget.Table(
             self.get_widget("files_table"), 
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")]
+            [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
+            base_dir=base_dir,
+            path_entries=[1]
         )
 
         try:
@@ -93,23 +95,9 @@ class Revert(Add):
         return False
 
 if __name__ == "__main__":
-    from os import getcwd
-    from sys import argv
+    from nautilussvn.ui import main
+    (options, paths) = main()
 
-    args = argv[1:]
-
-    # Convert "." to current working directory
-    paths = args
-    i = 0
-    for arg in args:
-        paths[i] = arg
-        if paths[i] == ".":
-            paths[i] = getcwd()
-        i += 1
-   
-    if not paths:
-        paths = [getcwd()]
-
-    window = Revert(paths)
+    window = Revert(paths, options.base_dir)
     window.register_gtk_quit()
     gtk.main()

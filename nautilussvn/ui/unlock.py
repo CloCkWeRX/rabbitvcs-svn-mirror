@@ -142,22 +142,8 @@ class UnlockQuick(InterfaceNonView):
         self.vcs.unlock(self.path, force=True)
         
 if __name__ == "__main__":
-    from os import getcwd
-    from sys import argv
-
-    args = argv[1:]
-
-    # Convert "." to current working directory
-    paths = args
-    i = 0
-    for arg in args:
-        paths[i] = arg
-        if paths[i] == ".":
-            paths[i] = getcwd()
-        i += 1
-   
-    if not paths:
-        paths = [getcwd()]
+    from nautilussvn.ui import main
+    (options, paths) = main()
         
     window = Unlock(paths)
     window.register_gtk_quit()

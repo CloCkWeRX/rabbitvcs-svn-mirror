@@ -443,26 +443,8 @@ class Commit(InterfaceView):
         return os.path.isfile(path)
 
 if __name__ == "__main__":
-    from os import getcwd
-    from sys import argv
-    from optparse import OptionParser
-    from nautilussvn.lib.helper import get_common_directory
-    
-    parser = OptionParser()
-    parser.add_option("--base-dir")
-    (options, args) = parser.parse_args(argv)
-    
-    # Convert "." to current working directory
-    paths = args[1:]
-    for i in range(0, len(paths)):
-        if paths[i] == ".":
-            paths[i] = getcwd()
-        
-    if not paths:
-        paths = [getcwd()]
-        
-    if not options.base_dir: 
-        options.base_dir = get_common_directory(paths)
+    from nautilussvn.ui import main
+    (options, paths) = main()
         
     window = Commit(paths, options.base_dir)
     window.register_gtk_quit()

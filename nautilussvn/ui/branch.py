@@ -148,15 +148,9 @@ class Branch(InterfaceView):
             self.get_widget("from_revision_number").set_text(data)
 
 if __name__ == "__main__":
-    from os import getcwd
-    from sys import argv
+    from nautilussvn.ui import main
+    (options, paths) = main()
 
-    args = argv[1:]
-    path = getcwd()
-    if args:
-        if args[0] != ".":
-            path = args[0]
-
-    window = Branch(path)
+    window = Branch(paths[0])
     window.register_gtk_quit()
     gtk.main()

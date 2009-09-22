@@ -96,15 +96,9 @@ class Relocate(InterfaceView):
         self.action.start()
 
 if __name__ == "__main__":
-    from os import getcwd
-    from sys import argv
-    
-    args = argv[1:]
-    path = getcwd()
-    if args:
-        if args[0] != ".":
-            path = args[0]
+    from nautilussvn.ui import main
+    (options, paths) = main()
             
-    window = Relocate(path)
+    window = Relocate(paths[0])
     window.register_gtk_quit()
     gtk.main()

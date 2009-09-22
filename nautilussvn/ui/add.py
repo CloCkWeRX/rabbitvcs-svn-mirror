@@ -53,7 +53,7 @@ class Add(InterfaceView):
 
     TOGGLE_ALL = True
 
-    def __init__(self, paths):
+    def __init__(self, paths, base_dir=None):
         InterfaceView.__init__(self, "add", "Add")
         
         self.paths = paths
@@ -64,7 +64,9 @@ class Add(InterfaceView):
         self.files_table = nautilussvn.ui.widget.Table(
             self.get_widget("files_table"), 
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")]
+            [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
+            base_dir=base_dir,
+            path_entries=[1]
         )
 
         try:
@@ -245,23 +247,9 @@ class Add(InterfaceView):
         return os.path.isfile(path)
         
 if __name__ == "__main__":
-    from os import getcwd
-    from sys import argv
-    
-    args = argv[1:]
+    from nautilussvn.ui import main
+    (options, paths) = main()
 
-    # Convert "." to current working directory
-    paths = args
-    i = 0
-    for arg in args:
-        paths[i] = arg
-        if paths[i] == ".":
-            paths[i] = getcwd()
-        i += 1
-   
-    if not paths:
-        paths = [getcwd()]
-
-    window = Add(paths)
+    window = Add(paths, options.base_dir)
     window.register_gtk_quit()
     gtk.main()

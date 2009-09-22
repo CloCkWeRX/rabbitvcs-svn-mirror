@@ -100,3 +100,28 @@ class InterfaceNonView:
     
     def gtk_quit_is_set(self):
         return self.do_gtk_quit
+
+def main():
+    from os import getcwd
+    from sys import argv
+    from optparse import OptionParser
+    from nautilussvn.lib.helper import get_common_directory
+    
+    parser = OptionParser()
+    parser.add_option("--base-dir")
+    (options, args) = parser.parse_args(argv)
+    
+    # Convert "." to current working directory
+    paths = args[1:]
+    for i in range(0, len(paths)):
+        if paths[i] == ".":
+            paths[i] = getcwd()
+        
+    if not paths:
+        paths = [getcwd()]
+        
+    if not options.base_dir: 
+        options.base_dir = get_common_directory(paths)
+        
+    return (options, paths)
+    
