@@ -464,8 +464,6 @@ if __name__ == "__main__":
     if not options.base_dir: 
         options.base_dir = get_common_directory(paths)
         
-    print options
-    
     window = Commit(paths, options.base_dir)
     window.register_gtk_quit()
     gtk.main()
