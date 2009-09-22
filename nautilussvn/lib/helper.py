@@ -387,7 +387,12 @@ def delete_item(path):
     @param  path: A file path.
     """
 
-    subprocess.Popen(["gvfs-trash", os.path.abspath(path)]).pid
+    try:
+        # If the gvfs-trash program is not found, an OSError exception will 
+        # be thrown, and rm will be used instead
+        subprocess.Popen(["gvfs-trash", os.path.abspath(path)]).pid
+    except OSError:
+        subprocess.Popen(["rm", "-rf", os.path.abspath(path)]).pid
     
 def save_log_message(message):
     """
@@ -573,7 +578,8 @@ def get_relative_path(p1, p2):
     if len(l1) > 0:
         p = [ '../' * len(l1) ]
     p = p + l2
-    return os.path.join( *p )
+    
+    return os.sep.join(p)
     
 def initialize_locale():
     _locale, encoding = locale.getdefaultlocale()

@@ -62,6 +62,7 @@ class Commit(InterfaceView):
         InterfaceView.__init__(self, "commit", "Commit")
 
         self.paths = paths
+        self.base_dir = base_dir
         self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
         self.common = nautilussvn.lib.helper.get_common_directory(paths)
 
@@ -345,7 +346,6 @@ class Commit(InterfaceView):
         self.refresh_row_status()
 
     def on_context_revert_activated(self, widget, data=None):
-        print data
         self.vcs.revert(data[1])
         self.refresh_row_status()
 
@@ -373,14 +373,14 @@ class Commit(InterfaceView):
         prop_name = self.vcs.PROPERTIES["ignore"]
         prop_value = os.path.basename(data[1])
 
-        if self.vcs.propset(data[1], prop_name, prop_value):
+        if self.vcs.propset(self.base_dir, prop_name, prop_value):
             self.refresh_row_status()
         
     def on_subcontext_ignore_by_fileext_activated(self, widget, data=None):
         prop_name = self.vcs.PROPERTIES["ignore"]
         prop_value = "*%s" % data[2]
         
-        if self.vcs.propset(data[1], prop_name, prop_value):
+        if self.vcs.propset(self.base_dir, prop_name, prop_value):
             self.refresh_row_status()
 
     def on_context_restore_activated(self, widget, data=None):
@@ -446,7 +446,7 @@ class Commit(InterfaceView):
 if __name__ == "__main__":
     from nautilussvn.ui import main
     (options, paths) = main()
-        
+
     window = Commit(paths, options.base_dir)
     window.register_gtk_quit()
     gtk.main()
