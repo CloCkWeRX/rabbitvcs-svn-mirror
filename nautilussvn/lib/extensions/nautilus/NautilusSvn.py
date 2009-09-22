@@ -1635,7 +1635,7 @@ class MainContextMenu:
         self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
 
     def callback_commit(self, menu_item, paths):
-        pid = launch_ui_window("commit", [self.base_dir] + paths)
+        pid = launch_ui_window("commit", ["--base-dir=" + self.base_dir] + paths)
         self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
 
     def callback_add(self, menu_item, paths):

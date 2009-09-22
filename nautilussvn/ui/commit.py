@@ -52,7 +52,7 @@ class Commit(InterfaceView):
     TOGGLE_ALL = False
     SHOW_UNVERSIONED = True
 
-    def __init__(self, base_dir, paths):
+    def __init__(self, paths, base_dir=None):
         """
         
         @type  paths:   list of strings
@@ -445,21 +445,27 @@ class Commit(InterfaceView):
 if __name__ == "__main__":
     from os import getcwd
     from sys import argv
+    from optparse import OptionParser
+    from nautilussvn.lib.helper import get_common_directory
     
-    args = argv[2:]
-
+    parser = OptionParser()
+    parser.add_option("--base-dir")
+    (options, args) = parser.parse_args(argv)
+    
     # Convert "." to current working directory
-    paths = args
-    i = 0
-    for arg in args:
-        paths[i] = arg
+    paths = args[1:]
+    for i in range(0, len(paths)):
         if paths[i] == ".":
             paths[i] = getcwd()
-        i += 1
-   
+        
     if not paths:
         paths = [getcwd()]
         
-    window = Commit(argv[1], paths)
+    if not options.base_dir: 
+        options.base_dir = get_common_directory(paths)
+        
+    print options
+    
+    window = Commit(paths, options.base_dir)
     window.register_gtk_quit()
     gtk.main()
