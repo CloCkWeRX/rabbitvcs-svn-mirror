@@ -137,7 +137,7 @@ class Add(InterfaceView):
                 treeview.grab_focus()
                 treeview.set_cursor(path, col, 0)
                 
-                treeview_model = treeview.get_model()
+                treeview_model = treeview.get_model().get_model()
                 fileinfo = treeview_model[path]
 
                 self.last_row_clicked = path[0]

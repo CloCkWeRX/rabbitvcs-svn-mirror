@@ -226,7 +226,7 @@ class Commit(InterfaceView):
             path, col, cellx, celly = pathinfo
             treeview.grab_focus()
             treeview.set_cursor(path, col, 0)
-            treeview_model = treeview.get_model()
+            treeview_model = treeview.get_model().get_model()
             fileinfo = treeview_model[path]
             
             if event.button == 3:
@@ -334,9 +334,9 @@ class Commit(InterfaceView):
     def on_files_table_row_doubleclicked(self, treeview, event, col):
         treeview.grab_focus()
         treeview.set_cursor(event[0], col, 0)
-        treeview_model = treeview.get_model()
+        treeview_model = treeview.get_model().get_model()
         fileinfo = treeview_model[event[0]]
-        
+
         nautilussvn.lib.helper.launch_diff_tool(fileinfo[1])
 
     def on_context_add_activated(self, widget, data=None):
@@ -345,6 +345,7 @@ class Commit(InterfaceView):
         self.refresh_row_status()
 
     def on_context_revert_activated(self, widget, data=None):
+        print data
         self.vcs.revert(data[1])
         self.refresh_row_status()
 

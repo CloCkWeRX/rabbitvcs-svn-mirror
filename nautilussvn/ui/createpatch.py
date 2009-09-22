@@ -252,7 +252,7 @@ class CreatePatch(InterfaceView):
             path, col, cellx, celly = pathinfo
             treeview.grab_focus()
             treeview.set_cursor(path, col, 0)
-            treeview_model = treeview.get_model()
+            treeview_model = treeview.get_model().get_model()
             fileinfo = treeview_model[path]
             
             if event.button == 3:
@@ -360,7 +360,7 @@ class CreatePatch(InterfaceView):
     def on_files_table_row_doubleclicked(self, treeview, event, col):
         treeview.grab_focus()
         treeview.set_cursor(event[0], col, 0)
-        treeview_model = treeview.get_model()
+        treeview_model = treeview.get_model().get_model()
         fileinfo = treeview_model[event[0]]
         
         nautilussvn.lib.helper.launch_diff_tool(fileinfo[1])
