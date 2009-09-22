@@ -47,4 +47,4 @@ for arg in args:
     args[index] = os.path.realpath(os.path.abspath(arg))
     index += 1
 
-launch_ui_window(module, args)
+launch_ui_window(module,  ["--base-dir=" + os.getcwd()] + args)
