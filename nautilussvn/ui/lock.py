@@ -22,6 +22,7 @@
 
 import thread
 
+import os
 import pygtk
 import gobject
 import gtk
@@ -50,7 +51,7 @@ class Lock(InterfaceView):
 
     TOGGLE_ALL = False
 
-    def __init__(self, paths):
+    def __init__(self, paths, base_dir):
         """
         @type:  paths: list
         @param: paths: A list of paths to search for versioned files
@@ -60,6 +61,7 @@ class Lock(InterfaceView):
         InterfaceView.__init__(self, "lock", "Lock")
 
         self.paths = paths
+        self.base_dir = base_dir
         self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
 
         self.files_table = nautilussvn.ui.widget.Table(
@@ -68,6 +70,8 @@ class Lock(InterfaceView):
                 gobject.TYPE_STRING], 
             [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
                 _("Locked")],
+            base_dir=base_dir,
+            path_entries=[1]
         )
         self.last_row_clicked = None
 
@@ -279,6 +283,6 @@ if __name__ == "__main__":
     from nautilussvn.ui import main
     (options, paths) = main()
 
-    window = Lock(paths)
+    window = Lock(paths, options.base_dir)
     window.register_gtk_quit()
     gtk.main()

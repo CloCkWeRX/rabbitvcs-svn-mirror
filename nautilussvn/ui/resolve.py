@@ -41,13 +41,14 @@ from nautilussvn import gettext
 _ = gettext.gettext
 
 class Resolve(Add):
-    def __init__(self, paths):
+    def __init__(self, paths, base_dir):
         InterfaceView.__init__(self, "add", "Add")
 
         self.window = self.get_widget("Add")
         self.window.set_title(_("Resolve"))
 
         self.paths = paths
+        self.base_dir = base_dir
         self.last_row_clicked = None
         self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
         self.items = None
@@ -55,7 +56,9 @@ class Resolve(Add):
         self.files_table = nautilussvn.ui.widget.Table(
             self.get_widget("files_table"), 
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")]
+            [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
+            base_dir=base_dir,
+            path_entries=[1]
         )
 
         try:
@@ -98,6 +101,6 @@ if __name__ == "__main__":
     from nautilussvn.ui import main
     (options, paths) = main()
 
-    window = Resolve(paths)
+    window = Resolve(paths, options.base_dir)
     window.register_gtk_quit()
     gtk.main()

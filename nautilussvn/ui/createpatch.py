@@ -56,7 +56,7 @@ class CreatePatch(InterfaceView):
     TOGGLE_ALL = False
     SHOW_UNVERSIONED = False
 
-    def __init__(self, paths):
+    def __init__(self, paths, base_dir):
         """
         
         @type  paths:   list of strings
@@ -66,6 +66,7 @@ class CreatePatch(InterfaceView):
         InterfaceView.__init__(self, "createpatch", "CreatePatch")
 
         self.paths = paths
+        self.base_dir = base_dir
         self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
         self.common = nautilussvn.lib.helper.get_common_directory(paths)
 
@@ -79,6 +80,8 @@ class CreatePatch(InterfaceView):
                 gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
                 _("Text Status"), _("Property Status")],
+            base_dir=base_dir,
+            path_entries=[1]
         )
         self.last_row_clicked = None
         
@@ -398,14 +401,14 @@ class CreatePatch(InterfaceView):
         prop_name = self.vcs.PROPERTIES["ignore"]
         prop_value = os.path.basename(data[1])
 
-        if self.vcs.propset(data[1], prop_name, prop_value):
+        if self.vcs.propset(self.base_dir, prop_name, prop_value):
             self.refresh_row_status()
         
     def on_subcontext_ignore_by_fileext_activated(self, widget, data=None):
         prop_name = self.vcs.PROPERTIES["ignore"]
         prop_value = "*%s" % data[2]
         
-        if self.vcs.propset(data[1], prop_name, prop_value):
+        if self.vcs.propset(self.base_dir, prop_name, prop_value):
             self.refresh_row_status()
 
     def on_context_restore_activated(self, widget, data=None):
@@ -467,6 +470,6 @@ if __name__ == "__main__":
     from nautilussvn.ui import main
     (options, paths) = main()
         
-    window = CreatePatch(paths)
+    window = CreatePatch(paths, options.base_dir)
     window.register_gtk_quit()
     gtk.main()

@@ -57,6 +57,7 @@ class Add(InterfaceView):
         InterfaceView.__init__(self, "add", "Add")
         
         self.paths = paths
+        self.base_dir = base_dir
         self.last_row_clicked = None
         self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
         self.items = []
@@ -214,14 +215,14 @@ class Add(InterfaceView):
         prop_name = self.vcs.PROPERTIES["ignore"]
         prop_value = os.path.basename(data[1])
         
-        if self.vcs.propset(data[1], prop_name, prop_value):
+        if self.vcs.propset(self.base_dir, prop_name, prop_value):
             self.files_table.remove(self.last_row_clicked)
         
     def on_subcontext_ignore_by_fileext_activated(self, widget, data=None):
         prop_name = self.vcs.PROPERTIES["ignore"]
         prop_value = "*%s" % data[2]
         
-        if self.vcs.propset(data[1], prop_name, prop_value):
+        if self.vcs.propset(self.base_dir, prop_name, prop_value):
             # Ignored/Normal files should not be shown
             index = 0
             for item in self.files_table.get_items():
