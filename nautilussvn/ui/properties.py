@@ -140,7 +140,7 @@ class Properties(InterfaceView):
             self.get_widget("edit").set_sensitive(False)
             self.get_widget("delete").set_sensitive(True)
 
-    def on_refresh_clicked(self, widget):
+    def on_refresh_activate(self, widget):
         self.load()
 
     #
