@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Jul  7 20:48:14 2009 -->
+<!--Generated with glade3 3.4.5 on Wed Sep 23 12:42:40 2009 -->
 <glade-interface>
   <widget class="GtkDialog" id="Authentication">
     <property name="width_request">450</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Authentication</property>
-    <property name="window_position">center</property>
+    <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="icon_name">nautilussvn</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="has_separator">False</property>
@@ -217,7 +217,7 @@
     <property name="width_request">550</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Check Certificate</property>
-    <property name="window_position">center</property>
+    <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="icon_name">nautilussvn</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="has_separator">False</property>
@@ -491,7 +491,7 @@
     <property name="width_request">500</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Previous Messages</property>
-    <property name="window_position">center</property>
+    <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="default_width">450</property>
     <property name="icon_name">nautilussvn</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
@@ -636,7 +636,7 @@
     <property name="width_request">400</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Property</property>
-    <property name="window_position">center</property>
+    <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="icon_name">nautilussvn</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="has_separator">False</property>
@@ -736,13 +736,33 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkCheckButton" id="property_recurse">
+                      <widget class="GtkHBox" id="hbox17">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">Apply property recursively</property>
-                        <property name="response_id">0</property>
-                        <property name="active">True</property>
-                        <property name="draw_indicator">True</property>
+                        <child>
+                          <widget class="GtkLabel" id="label18">
+                            <property name="width_request">100</property>
+                            <property name="visible">True</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkCheckButton" id="property_recurse">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="label" translatable="yes">Apply property recursively</property>
+                            <property name="response_id">0</property>
+                            <property name="active">True</property>
+                            <property name="draw_indicator">True</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </widget>
                       <packing>
                         <property name="position">2</property>
@@ -805,7 +825,7 @@
   <widget class="GtkDialog" id="Confirmation">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Confirmation</property>
-    <property name="window_position">center</property>
+    <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="icon_name">nautilussvn</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="has_separator">False</property>
@@ -890,7 +910,7 @@
   <widget class="GtkDialog" id="MessageBox">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Message</property>
-    <property name="window_position">center</property>
+    <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="icon_name">nautilussvn</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="has_separator">False</property>
@@ -935,7 +955,7 @@
   <widget class="GtkDialog" id="CertAuthentication">
     <property name="width_request">450</property>
     <property name="border_width">5</property>
-    <property name="window_position">center</property>
+    <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="icon_name">nautilussvn</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="has_separator">False</property>
@@ -1115,7 +1135,7 @@
   <widget class="GtkDialog" id="DeleteConfirmation">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Delete Confirmation</property>
-    <property name="window_position">center</property>
+    <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="icon_name">nautilussvn</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="has_separator">False</property>
