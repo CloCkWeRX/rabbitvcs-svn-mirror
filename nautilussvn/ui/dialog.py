@@ -203,7 +203,7 @@ class Property(InterfaceView):
             self.save()
         
         self.dialog.destroy()
-        return (self.save_name, self.save_value, self.save_recurse)
+        return (self.save_name, self.save_value, self.recurse.get_active())
     
     def save(self):
         self.save_name = self.name.get_text()
