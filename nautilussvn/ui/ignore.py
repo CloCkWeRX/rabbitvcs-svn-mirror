@@ -46,18 +46,19 @@ class Ignore(InterfaceNonView):
         @param  pattern: Ignore items with the given pattern
         
         @type   glob: boolean
-        @param  glob: True iff the path to ignore is a wildcard "glob"
+        @param  glob: True if the path to ignore is a wildcard "glob"
         
         """
         
         InterfaceNonView.__init__(self)
         self.path = path
         self.pattern = pattern
+        self.glob = glob
         self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
 
     def start(self):
         prop = self.vcs.PROPERTIES["ignore"]
-        return self.vcs.propset(self.path, prop, self.pattern, recurse=glob)
+        return self.vcs.propset(self.path, prop, self.pattern, recurse=self.glob)
         
 if __name__ == "__main__":
     from os import getcwd
