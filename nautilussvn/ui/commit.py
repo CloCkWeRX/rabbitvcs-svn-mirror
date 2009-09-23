@@ -380,7 +380,7 @@ class Commit(InterfaceView):
         prop_name = self.vcs.PROPERTIES["ignore"]
         prop_value = "*%s" % data[2]
         
-        if self.vcs.propset(self.base_dir, prop_name, prop_value):
+        if self.vcs.propset(self.base_dir, prop_name, prop_value, recurse=True):
             self.refresh_row_status()
 
     def on_context_restore_activated(self, widget, data=None):
