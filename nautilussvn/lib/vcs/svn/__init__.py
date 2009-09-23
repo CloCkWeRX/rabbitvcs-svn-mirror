@@ -610,7 +610,7 @@ class SVN:
 
         return path_to_use
         
-    def propset(self, path, prop_name, prop_value, overwrite=False, recurse=True):
+    def propset(self, path, prop_name, prop_value, overwrite=False, recurse=False):
         """
         Adds an svn property to a path.  If the item is unversioned,
         add a recursive property to the parent path
