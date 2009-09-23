@@ -386,13 +386,18 @@ def delete_item(path):
     @type   path: string
     @param  path: A file path.
     """
+    
+    abspath = os.path.abspath(path)
 
     try:
         # If the gvfs-trash program is not found, an OSError exception will 
         # be thrown, and rm will be used instead
-        subprocess.Popen(["gvfs-trash", os.path.abspath(path)]).pid
+        subprocess.Popen(["gvfs-trash", abspath]).pid
     except OSError:
-        subprocess.Popen(["rm", "-rf", os.path.abspath(path)]).pid
+        if os.path.isdir(abspath):
+            shutil.rmtree(abspath, True)
+        else:
+            os.remove(abspath)
     
 def save_log_message(message):
     """
