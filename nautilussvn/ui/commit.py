@@ -107,11 +107,13 @@ class Commit(InterfaceView):
         gtk.gdk.threads_leave()
     
     def refresh_row_status(self):
-        status = self.get_last_status()
-        self.files_table.get_row(self.last_row_clicked)[3] =  status
+        status = self.vcs.status_with_cache(self.get_last_path(), invalidate=True).pop()
+
+        self.files_table.get_row(self.last_row_clicked)[3] = status["text_status"]
+        self.files_table.get_row(self.last_row_clicked)[4] = status["prop_status"]
         
         # Files newly marked as deleted should be checked off
-        if status == self.vcs.STATUS["deleted"]:
+        if status["text_status"] == self.vcs.STATUS["deleted"]:
             self.files_table.get_row(self.last_row_clicked)[0] = True
         
         # Ignored/Normal files should not be shown
@@ -119,6 +121,7 @@ class Commit(InterfaceView):
         for item in self.files_table.get_items():
             if (self.vcs.is_normal(item[1]) or
                     self.vcs.is_ignored(item[1])):
+
                 self.files_table.remove(index)
                 del self.items[index]
                 index -= 1
@@ -126,17 +129,6 @@ class Commit(InterfaceView):
     
     def get_last_path(self):
         return self.files_table.get_row(self.last_row_clicked)[1]
-    
-    def get_last_status(self):
-        path = self.get_last_path()
-        
-        text_status = None
-        try:
-            text_status = self.vcs.status(path)[0].text_status
-        except Exception, e:
-            print str(e)
-
-        return text_status
 
     def populate_files_from_original(self):
         self.files_table.clear()
@@ -400,40 +392,35 @@ class Commit(InterfaceView):
     # Conditions
     
     def condition_add(self):
+        path = self.get_last_path()
         return (
-            self.get_last_status() in [
-                self.vcs.STATUS["unversioned"]
-            ]
+            not self.vcs.is_versioned(path)
         )
     
     def condition_revert(self):
+        path = self.get_last_path()
         return (
-            self.get_last_status() in [
-                self.vcs.STATUS["added"],
-                self.vcs.STATUS["deleted"],
-                self.vcs.STATUS["modified"]
-            ]
+            self.vcs.is_added(path) or
+            self.vcs.is_deleted(path) or
+            self.vcs.is_modified(path)
         )
 
     def condition_view_diff(self):
+        path = self.get_last_path()
         return (
-            self.get_last_status() in [
-                self.vcs.STATUS["modified"]
-            ]
+            self.vcs.is_modified(path)
         )
 
     def condition_restore(self):
+        path = self.get_last_path()
         return (
-            self.get_last_status() in [
-                self.vcs.STATUS["missing"]
-            ]
+            self.vcs.is_missing(path)
         )
 
     def condition_delete(self):
+        path = self.get_last_path()
         return (
-            self.get_last_status() not in [
-                self.vcs.STATUS["deleted"]
-            ]
+            not self.vcs.is_deleted(path)
         )
     
     def condition_ignore_by_fileext(self):
@@ -446,6 +433,9 @@ class Commit(InterfaceView):
 if __name__ == "__main__":
     from nautilussvn.ui import main
     (options, paths) = main()
+    
+    if options.base_dir is not None:
+        os.chdir(options.base_dir)
 
     window = Commit(paths, options.base_dir)
     window.register_gtk_quit()
