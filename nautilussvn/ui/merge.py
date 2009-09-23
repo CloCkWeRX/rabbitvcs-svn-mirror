@@ -247,8 +247,6 @@ class Merge(InterfaceView):
         ready = True
         if self.get_widget("mergerange_from_url").get_text() == "":
             ready = False
-        if self.get_widget("mergerange_revisions").get_text() == "":
-            ready = False
 
         self.assistant.set_page_complete(self.page, ready)
 
