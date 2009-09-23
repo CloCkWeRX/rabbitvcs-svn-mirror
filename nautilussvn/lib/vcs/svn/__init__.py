@@ -387,19 +387,23 @@ class SVN:
                 
             return False
     
-    def is_status(self, path, text_status):
+    def is_status(self, path, status_kind):
         try:
             status = self.status_with_cache(path, recurse=False)[-1]
         except Exception, e:
             log.exception("is_status exception for %s" % path)
             return False
-        
-        if status.data["text_status"] == text_status:
-            return True
-        
-        if status.data["prop_status"] == text_status:
-            return True
-        
+
+        # If looking for "NORMAL", then both statuses must be normal (or propstatus=none)
+        # Otherwise, it is an either or situation
+        if status_kind == pysvn.wc_status_kind.normal:
+            return (status.data["text_status"] == status_kind
+                and (status.data["prop_status"] == status_kind
+                    or status.data["prop_status"] == pysvn.wc_status_kind.none))
+        else:
+            return (status.data["text_status"] == status_kind
+                or status.data["prop_status"] == status_kind)
+
         return False
     
     def is_normal(self, path):
@@ -440,7 +444,7 @@ class SVN:
     # has
     #
     
-    def has_status(self, path, text_status):
+    def has_status(self, path, status_kind):
         try:
             statuses = self.status_with_cache(path, recurse=True)[:-1]
         except Exception, e:
@@ -448,10 +452,17 @@ class SVN:
             return False
         
         for status in statuses:
-            if status.data["text_status"] == text_status:
-                return True
-            if status.data["prop_status"] == text_status:
-                return True
+            # If looking for "NORMAL", then both statuses must be normal (or propstatus=none)
+            # Otherwise, it is an either or situation
+            if status_kind == pysvn.wc_status_kind.normal:
+                if (status.data["text_status"] == status_kind
+                        and (status.data["prop_status"] == status_kind
+                            or status.data["prop_status"] == pysvn.wc_status_kind.none)):
+                    return True
+            else:
+                if (status.data["text_status"] == status_kind
+                        or status.data["prop_status"] == status_kind):
+                    return True
                 
         return False
         
