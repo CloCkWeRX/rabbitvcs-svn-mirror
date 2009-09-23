@@ -433,9 +433,6 @@ class Commit(InterfaceView):
 if __name__ == "__main__":
     from nautilussvn.ui import main
     (options, paths) = main()
-    
-    if options.base_dir is not None:
-        os.chdir(options.base_dir)
 
     window = Commit(paths, options.base_dir)
     window.register_gtk_quit()
