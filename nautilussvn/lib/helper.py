@@ -594,3 +594,13 @@ def initialize_locale():
         encoding = "utf8"
         
     locale.setlocale(locale.LC_ALL, (_locale, encoding))
+
+def launch_repo_browser(uri):
+    sm = nautilussvn.lib.settings.SettingsManager()
+    repo_browser = sm.get("external", "repo_browser")
+    
+    if repo_browser is not None:
+        subprocess.Popen([
+            repo_browser, 
+            uri
+        ])

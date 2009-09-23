@@ -158,9 +158,12 @@ class Checkout(InterfaceView):
         self.complete = False
         if url:
             self.complete = True
-        
+
         self.get_widget("show_log").set_sensitive(self.complete)
         self.get_widget("ok").set_sensitive(self.complete)
+
+    def on_repo_chooser_clicked(self, widget, data=None):
+        nautilussvn.lib.helper.launch_repo_browser(self.get_widget("url").get_text())
 
 if __name__ == "__main__":
     from nautilussvn.ui import main
