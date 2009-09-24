@@ -8,13 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-20 21:02+0200\n"
+"POT-Creation-Date: 2009-09-24 15:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: ui/branch.py:71
 msgid ""
@@ -74,46 +75,46 @@ msgstr ""
 msgid "Completed Rename"
 msgstr ""
 
-#: ui/annotate.py:51
+#: ui/annotate.py:55
 msgid "Cannot annotate a directory"
 msgstr ""
 
-#: ui/annotate.py:58
+#: ui/annotate.py:62
 #, python-format
 msgid "Annotate - %s"
 msgstr ""
 
-#: ui/annotate.py:71
+#: ui/annotate.py:75
 msgid "Line"
 msgstr ""
 
-#: ui/annotate.py:71 ui/log.py:81 ui/glade/switch.glade.h:5
+#: ui/annotate.py:75 ui/log.py:81 ui/glade/switch.glade.h:5
 #: ui/glade/merge.glade.h:17 ui/glade/checkout.glade.h:10
-#: ui/glade/update.glade.h:6
+#: ui/glade/update.glade.h:6 lib/extensions/nautilus/NautilusSvn.py:183
 msgid "Revision"
 msgstr ""
 
-#: ui/annotate.py:71 ui/log.py:81
+#: ui/annotate.py:75 ui/log.py:81 lib/extensions/nautilus/NautilusSvn.py:195
 msgid "Author"
 msgstr ""
 
-#: ui/annotate.py:72 ui/dialog.py:47 ui/log.py:82
+#: ui/annotate.py:76 ui/dialog.py:47 ui/log.py:82
 msgid "Date"
 msgstr ""
 
-#: ui/annotate.py:72
+#: ui/annotate.py:76
 msgid "Text"
 msgstr ""
 
-#: ui/annotate.py:112
+#: ui/annotate.py:116
 msgid "The from revision field must be an integer"
 msgstr ""
 
-#: ui/annotate.py:122
+#: ui/annotate.py:126
 msgid "Generating Annotation..."
 msgstr ""
 
-#: ui/annotate.py:138 lib/vcs/svn/__init__.py:122 lib/vcs/svn/__init__.py:124
+#: ui/annotate.py:142 lib/vcs/svn/__init__.py:216 lib/vcs/svn/__init__.py:218
 msgid "Completed"
 msgstr ""
 
@@ -121,35 +122,35 @@ msgstr ""
 msgid "English"
 msgstr ""
 
-#: ui/settings.py:156 ui/settings.py:165
+#: ui/settings.py:167 ui/settings.py:176
 msgid "Select a program"
 msgstr ""
 
-#: ui/settings.py:174
+#: ui/settings.py:185
 msgid "Are you sure you want to clear your repository paths?"
 msgstr ""
 
-#: ui/settings.py:181
+#: ui/settings.py:192
 msgid "Repository paths cleared"
 msgstr ""
 
-#: ui/settings.py:185
+#: ui/settings.py:196
 msgid "Are you sure you want to clear your previous messages?"
 msgstr ""
 
-#: ui/settings.py:192
+#: ui/settings.py:203
 msgid "Previous messages cleared"
 msgstr ""
 
-#: ui/settings.py:196
+#: ui/settings.py:207
 msgid "Are you sure you want to clear your authentication information?"
 msgstr ""
 
-#: ui/settings.py:213
+#: ui/settings.py:224
 msgid "Authentication information cleared"
 msgstr ""
 
-#: ui/cleanup.py:54 lib/extensions/nautilus/NautilusSvn.py:1022
+#: ui/cleanup.py:54 lib/extensions/nautilus/NautilusSvn.py:1019
 msgid "Cleanup"
 msgstr ""
 
@@ -177,55 +178,55 @@ msgstr ""
 msgid "Completed Relocate"
 msgstr ""
 
-#: ui/add.py:67 ui/lock.py:69 ui/resolve.py:58 ui/action.py:67 ui/commit.py:76
-#: ui/createpatch.py:75 ui/unlock.py:58 ui/log.py:90 ui/revert.py:58
+#: ui/add.py:68 ui/lock.py:71 ui/resolve.py:59 ui/action.py:67 ui/commit.py:77
+#: ui/createpatch.py:81 ui/unlock.py:59 ui/log.py:90 ui/revert.py:58
 msgid "Path"
 msgstr ""
 
-#: ui/add.py:67 ui/lock.py:69 ui/resolve.py:58 ui/commit.py:76
-#: ui/createpatch.py:75 ui/unlock.py:58 ui/revert.py:58
+#: ui/add.py:68 ui/lock.py:71 ui/resolve.py:59 ui/commit.py:77
+#: ui/createpatch.py:81 ui/unlock.py:59 ui/revert.py:58
 msgid "Extension"
 msgstr ""
 
-#: ui/add.py:81 ui/lock.py:99 ui/commit.py:100 ui/createpatch.py:92
-#: ui/unlock.py:73 ui/log.py:255 ui/glade/log.glade.h:6
+#: ui/add.py:84 ui/lock.py:103 ui/commit.py:103 ui/createpatch.py:100
+#: ui/unlock.py:76 ui/log.py:260 ui/glade/log.glade.h:6
 msgid "Loading..."
 msgstr ""
 
-#: ui/add.py:84 ui/lock.py:102 ui/commit.py:103 ui/createpatch.py:95
-#: ui/unlock.py:94
+#: ui/add.py:87 ui/lock.py:106 ui/commit.py:106 ui/createpatch.py:104
+#: ui/unlock.py:97
 #, python-format
 msgid "Found %d item(s)"
 msgstr ""
 
-#: ui/add.py:118 ui/commit.py:273 ui/createpatch.py:288 ui/glade/add.glade.h:1
-#: lib/extensions/nautilus/NautilusSvn.py:829
+#: ui/add.py:121 ui/commit.py:269 ui/createpatch.py:297 ui/glade/add.glade.h:1
+#: lib/extensions/nautilus/NautilusSvn.py:826
 msgid "Add"
 msgstr ""
 
-#: ui/add.py:119
+#: ui/add.py:122
 msgid "Running Add Command..."
 msgstr ""
 
-#: ui/add.py:121
+#: ui/add.py:124
 msgid "Completed Add"
 msgstr ""
 
-#: ui/add.py:144 ui/lock.py:209 ui/commit.py:243 ui/createpatch.py:258
+#: ui/add.py:147 ui/lock.py:213 ui/commit.py:239 ui/createpatch.py:267
 msgid "Open"
 msgstr ""
 
-#: ui/add.py:153 ui/lock.py:219 ui/commit.py:253 ui/createpatch.py:268
+#: ui/add.py:156 ui/lock.py:223 ui/commit.py:249 ui/createpatch.py:277
 msgid "Browse to"
 msgstr ""
 
-#: ui/add.py:162 ui/commit.py:263 ui/createpatch.py:278
-#: ui/glade/properties.glade.h:2 lib/extensions/nautilus/NautilusSvn.py:926
+#: ui/add.py:165 ui/commit.py:259 ui/createpatch.py:287
+#: ui/glade/properties.glade.h:3 lib/extensions/nautilus/NautilusSvn.py:923
 msgid "Delete"
 msgstr ""
 
-#: ui/add.py:171 ui/commit.py:303 ui/createpatch.py:318
-#: lib/extensions/nautilus/NautilusSvn.py:845
+#: ui/add.py:174 ui/commit.py:299 ui/createpatch.py:327
+#: lib/extensions/nautilus/NautilusSvn.py:842
 msgid "Add to ignore list"
 msgstr ""
 
@@ -239,7 +240,7 @@ msgid "The repository URL field is required."
 msgstr ""
 
 #: ui/import.py:80 ui/glade/import.glade.h:3
-#: lib/extensions/nautilus/NautilusSvn.py:1079
+#: lib/extensions/nautilus/NautilusSvn.py:1076
 msgid "Import"
 msgstr ""
 
@@ -251,72 +252,72 @@ msgstr ""
 msgid "Completed Import"
 msgstr ""
 
-#: ui/lock.py:70 lib/vcs/svn/__init__.py:132
+#: ui/lock.py:72 lib/vcs/svn/__init__.py:226
 msgid "Locked"
 msgstr ""
 
-#: ui/lock.py:93 ui/lock.py:110
+#: ui/lock.py:97 ui/lock.py:114
 msgid "Yes"
 msgstr ""
 
-#: ui/lock.py:147
+#: ui/lock.py:151
 msgid "Get Lock"
 msgstr ""
 
-#: ui/lock.py:148
+#: ui/lock.py:152
 msgid "Running Lock Command..."
 msgstr ""
 
-#: ui/lock.py:157
+#: ui/lock.py:161
 msgid "Completed Lock"
 msgstr ""
 
-#: ui/lock.py:179
+#: ui/lock.py:183
 msgid "Remove Lock"
 msgstr ""
 
-#: ui/lock.py:189 ui/commit.py:233 ui/createpatch.py:248
-#: lib/extensions/nautilus/NautilusSvn.py:788
+#: ui/lock.py:193 ui/commit.py:229 ui/createpatch.py:257
+#: lib/extensions/nautilus/NautilusSvn.py:785
 msgid "View Diff"
 msgstr ""
 
-#: ui/lock.py:199 ui/glade/switch.glade.h:6 ui/glade/branch.glade.h:10
+#: ui/lock.py:203 ui/glade/switch.glade.h:6 ui/glade/branch.glade.h:10
 #: ui/glade/merge.glade.h:18 ui/glade/checkout.glade.h:11
 #: ui/glade/update.glade.h:7
 msgid "Show log"
 msgstr ""
 
-#: ui/export.py:40
+#: ui/export.py:42
 #, python-format
 msgid "Export - %s"
 msgstr ""
 
-#: ui/export.py:58 ui/checkout.py:82
+#: ui/export.py:60 ui/checkout.py:82
 msgid "The repository URL and destination path are both required fields."
 msgstr ""
 
-#: ui/export.py:79 lib/extensions/nautilus/NautilusSvn.py:1047
+#: ui/export.py:89 lib/extensions/nautilus/NautilusSvn.py:1044
 msgid "Export"
 msgstr ""
 
-#: ui/export.py:80
+#: ui/export.py:90
 msgid "Running Export Command..."
 msgstr ""
 
-#: ui/export.py:91
+#: ui/export.py:101
 msgid "Completed Export"
 msgstr ""
 
-#: ui/resolve.py:48 ui/resolve.py:79
-#: lib/extensions/nautilus/NautilusSvn.py:958
+#: ui/resolve.py:48 ui/resolve.py:82
+#: lib/extensions/nautilus/NautilusSvn.py:955
 msgid "Resolve"
 msgstr ""
 
-#: ui/resolve.py:80
+#: ui/resolve.py:83
 msgid "Running Resolve Command..."
 msgstr ""
 
-#: ui/resolve.py:83
+#: ui/resolve.py:86
 msgid "Completed Resolve"
 msgstr ""
 
@@ -328,66 +329,62 @@ msgstr ""
 msgid "Mime Type"
 msgstr ""
 
-#: ui/action.py:136
-msgid "Empty Message"
-msgstr ""
-
-#: ui/action.py:250 ui/log.py:311
+#: ui/action.py:253 ui/log.py:316
 msgid "Finished"
 msgstr ""
 
-#: ui/action.py:254
+#: ui/action.py:257
 #, python-format
 msgid "%s - Finished"
 msgstr ""
 
-#: ui/commit.py:69 ui/createpatch.py:68
+#: ui/commit.py:70 ui/createpatch.py:74
 msgid "The given path is not a working copy"
 msgstr ""
 
-#: ui/commit.py:77 ui/createpatch.py:76
+#: ui/commit.py:78 ui/createpatch.py:82
 msgid "Text Status"
 msgstr ""
 
-#: ui/commit.py:77 ui/createpatch.py:76
+#: ui/commit.py:78 ui/createpatch.py:82
 msgid "Property Status"
 msgstr ""
 
-#: ui/commit.py:191 ui/glade/commit.glade.h:4
-#: lib/extensions/nautilus/NautilusSvn.py:759
+#: ui/commit.py:187 ui/glade/commit.glade.h:4
+#: lib/extensions/nautilus/NautilusSvn.py:756
 msgid "Commit"
 msgstr ""
 
-#: ui/commit.py:192
+#: ui/commit.py:188
 msgid "Running Commit Command..."
 msgstr ""
 
-#: ui/commit.py:198
+#: ui/commit.py:194
 msgid "Completed Commit"
 msgstr ""
 
-#: ui/commit.py:283 ui/createpatch.py:298 ui/revert.py:48 ui/revert.py:78
-#: lib/extensions/nautilus/NautilusSvn.py:942
+#: ui/commit.py:279 ui/createpatch.py:307 ui/revert.py:48 ui/revert.py:80
+#: lib/extensions/nautilus/NautilusSvn.py:939
 msgid "Revert"
 msgstr ""
 
-#: ui/commit.py:293 ui/createpatch.py:308
+#: ui/commit.py:289 ui/createpatch.py:317
 msgid "Restore"
 msgstr ""
 
-#: ui/createpatch.py:160 ui/createpatch.py:207 ui/glade/createpatch.glade.h:2
+#: ui/createpatch.py:155 ui/createpatch.py:202 ui/glade/createpatch.glade.h:2
 msgid "Create Patch"
 msgstr ""
 
-#: ui/createpatch.py:208
+#: ui/createpatch.py:203
 msgid "Creating Patch File..."
 msgstr ""
 
-#: ui/createpatch.py:218
+#: ui/createpatch.py:227
 msgid "Patch File Created"
 msgstr ""
 
-#: ui/dialog.py:47 ui/log.py:82 ui/glade/dialogs.glade.h:20
+#: ui/dialog.py:47 ui/log.py:82 ui/glade/dialogs.glade.h:21
 msgid "Message"
 msgstr ""
 
@@ -399,15 +396,15 @@ msgstr ""
 msgid "to"
 msgstr ""
 
-#: ui/dialog.py:210
+#: ui/dialog.py:214
 msgid "Select a File"
 msgstr ""
 
-#: ui/dialog.py:229 ui/glade/dialogs.glade.h:10
+#: ui/dialog.py:233 ui/glade/dialogs.glade.h:11
 msgid "Are you sure you want to continue?"
 msgstr ""
 
-#: ui/dialog.py:257
+#: ui/dialog.py:261
 msgid "the selected item(s)"
 msgstr ""
 
@@ -427,35 +424,35 @@ msgstr ""
 msgid "Completed Switch"
 msgstr ""
 
-#: ui/unlock.py:48 ui/unlock.py:112
+#: ui/unlock.py:48 ui/unlock.py:115
 msgid "Unlock"
 msgstr ""
 
-#: ui/unlock.py:113
+#: ui/unlock.py:116
 msgid "Running Unlock Command..."
 msgstr ""
 
-#: ui/unlock.py:116
+#: ui/unlock.py:119
 msgid "Completed Unlock"
 msgstr ""
 
-#: ui/merge.py:81
+#: ui/merge.py:86
 msgid "Running Merge Test"
 msgstr ""
 
-#: ui/merge.py:82
+#: ui/merge.py:87
 msgid "Completed Merge Test"
 msgstr ""
 
-#: ui/merge.py:84
+#: ui/merge.py:89
 msgid "Running Merge Command"
 msgstr ""
 
-#: ui/merge.py:85
+#: ui/merge.py:90
 msgid "Completed Merge"
 msgstr ""
 
-#: ui/merge.py:93
+#: ui/merge.py:101
 msgid "Merge"
 msgstr ""
 
@@ -464,16 +461,16 @@ msgstr ""
 msgid "Checkout - %s"
 msgstr ""
 
-#: ui/checkout.py:100 ui/glade/checkout.glade.h:5
-#: lib/extensions/nautilus/NautilusSvn.py:727
+#: ui/checkout.py:102 ui/glade/checkout.glade.h:5
+#: lib/extensions/nautilus/NautilusSvn.py:724
 msgid "Checkout"
 msgstr ""
 
-#: ui/checkout.py:101
+#: ui/checkout.py:103
 msgid "Running Checkout Command..."
 msgstr ""
 
-#: ui/checkout.py:111
+#: ui/checkout.py:113
 msgid "Completed Checkout"
 msgstr ""
 
@@ -494,15 +491,15 @@ msgstr ""
 msgid "Cancelled"
 msgstr ""
 
-#: ui/log.py:237 ui/log.py:238 ui/glade/log.glade.h:8
+#: ui/log.py:242 ui/log.py:243 ui/glade/log.glade.h:8
 msgid "N/A"
 msgstr ""
 
-#: ui/log.py:286
+#: ui/log.py:291
 msgid "(no author)"
 msgstr ""
 
-#: ui/log.py:315
+#: ui/log.py:320
 msgid "Retrieving Log Information..."
 msgstr ""
 
@@ -519,16 +516,16 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#: ui/revert.py:79
+#: ui/revert.py:81
 msgid "Running Revert Command..."
 msgstr ""
 
-#: ui/revert.py:81
+#: ui/revert.py:83
 msgid "Completed Revert"
 msgstr ""
 
 #: ui/update.py:53 ui/glade/update.glade.h:8
-#: lib/extensions/nautilus/NautilusSvn.py:743
+#: lib/extensions/nautilus/NautilusSvn.py:740
 msgid "Update"
 msgstr ""
 
@@ -583,7 +580,7 @@ msgid "<b>Commit to:</b>"
 msgstr ""
 
 #: ui/glade/commit.glade.h:5 ui/glade/lock.glade.h:4 ui/glade/branch.glade.h:9
-#: ui/glade/dialogs.glade.h:22 ui/glade/import.glade.h:5
+#: ui/glade/dialogs.glade.h:23 ui/glade/import.glade.h:5
 msgid "Previous Messages"
 msgstr ""
 
@@ -592,7 +589,7 @@ msgstr ""
 msgid "Select / Deselect all"
 msgstr ""
 
-#: ui/glade/commit.glade.h:7 ui/glade/createpatch.glade.h:4
+#: ui/glade/commit.glade.h:7
 msgid "Show unversioned files"
 msgstr ""
 
@@ -616,19 +613,27 @@ msgstr ""
 msgid "<b>Properties for:</b>"
 msgstr ""
 
-#: ui/glade/properties.glade.h:3
-msgid "Edit..."
+#: ui/glade/properties.glade.h:2
+msgid "<i>Selected properties will be applied recursively.</i>"
 msgstr ""
 
 #: ui/glade/properties.glade.h:4
-msgid "New..."
+msgid "Delete properties recursively"
 msgstr ""
 
-#: ui/glade/properties.glade.h:5 lib/extensions/nautilus/NautilusSvn.py:1218
-msgid "Properties"
+#: ui/glade/properties.glade.h:5
+msgid "Edit..."
 msgstr ""
 
 #: ui/glade/properties.glade.h:6
+msgid "New..."
+msgstr ""
+
+#: ui/glade/properties.glade.h:7 lib/extensions/nautilus/NautilusSvn.py:1215
+msgid "Properties"
+msgstr ""
+
+#: ui/glade/properties.glade.h:8
 msgid "URL/Path:"
 msgstr ""
 
@@ -656,7 +661,7 @@ msgstr ""
 msgid "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
 msgstr ""
 
-#: ui/glade/about.glade.h:4 lib/extensions/nautilus/NautilusSvn.py:1282
+#: ui/glade/about.glade.h:4 lib/extensions/nautilus/NautilusSvn.py:1279
 msgid "About"
 msgstr ""
 
@@ -889,15 +894,23 @@ msgstr ""
 msgid "Saved Data"
 msgstr ""
 
-#: ui/glade/settings.glade.h:21 lib/extensions/nautilus/NautilusSvn.py:1266
+#: ui/glade/settings.glade.h:21 lib/extensions/nautilus/NautilusSvn.py:1263
 msgid "Settings"
 msgstr ""
 
 #: ui/glade/settings.glade.h:22
-msgid "Show new version on the right side"
+msgid "Show NautilusSVN debugging tools"
 msgstr ""
 
 #: ui/glade/settings.glade.h:23
+msgid "Show new version on the right side"
+msgstr ""
+
+#: ui/glade/settings.glade.h:24
+msgid "The debug menu is used to diagnose problems with NautilusSVN itself"
+msgstr ""
+
+#: ui/glade/settings.glade.h:25
 msgid "Type:"
 msgstr ""
 
@@ -937,71 +950,75 @@ msgstr ""
 msgid "Accept Once"
 msgstr ""
 
-#: ui/glade/dialogs.glade.h:11
-msgid "Authentication"
+#: ui/glade/dialogs.glade.h:10
+msgid "Apply property recursively"
 msgstr ""
 
 #: ui/glade/dialogs.glade.h:12
-msgid "Check Certificate"
+msgid "Authentication"
 msgstr ""
 
 #: ui/glade/dialogs.glade.h:13
-msgid "Confirmation"
+msgid "Check Certificate"
 msgstr ""
 
 #: ui/glade/dialogs.glade.h:14
-msgid "Delete Confirmation"
+msgid "Confirmation"
 msgstr ""
 
 #: ui/glade/dialogs.glade.h:15
-msgid "Deny"
+msgid "Delete Confirmation"
 msgstr ""
 
 #: ui/glade/dialogs.glade.h:16
-msgid "Fingerprint:"
+msgid "Deny"
 msgstr ""
 
 #: ui/glade/dialogs.glade.h:17
-msgid "Host:"
+msgid "Fingerprint:"
 msgstr ""
 
 #: ui/glade/dialogs.glade.h:18
-msgid "Issuer:"
+msgid "Host:"
 msgstr ""
 
 #: ui/glade/dialogs.glade.h:19
+msgid "Issuer:"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:20
 msgid "Login:"
 msgstr ""
 
-#: ui/glade/dialogs.glade.h:21
+#: ui/glade/dialogs.glade.h:22
 msgid "Password:"
 msgstr ""
 
-#: ui/glade/dialogs.glade.h:23
+#: ui/glade/dialogs.glade.h:24
 msgid "Property"
 msgstr ""
 
-#: ui/glade/dialogs.glade.h:24
+#: ui/glade/dialogs.glade.h:25
 msgid "Property:"
 msgstr ""
 
-#: ui/glade/dialogs.glade.h:25
+#: ui/glade/dialogs.glade.h:26
 msgid "Realm:"
 msgstr ""
 
-#: ui/glade/dialogs.glade.h:26
+#: ui/glade/dialogs.glade.h:27
 msgid "Save Authentication"
 msgstr ""
 
-#: ui/glade/dialogs.glade.h:27
+#: ui/glade/dialogs.glade.h:28
 msgid "The item(s) will be sent to the trash can."
 msgstr ""
 
-#: ui/glade/dialogs.glade.h:28
+#: ui/glade/dialogs.glade.h:29
 msgid "Valid:"
 msgstr ""
 
-#: ui/glade/dialogs.glade.h:29
+#: ui/glade/dialogs.glade.h:30
 msgid "Value:"
 msgstr ""
 
@@ -1033,323 +1050,392 @@ msgstr ""
 msgid "<b>Change the repository of your working copy</b>"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:601
+#: lib/extensions/nautilus/NautilusSvn.py:177
+msgid "Status"
+msgstr ""
+
+#: lib/extensions/nautilus/NautilusSvn.py:189
+msgid "URL"
+msgstr ""
+
+#: lib/extensions/nautilus/NautilusSvn.py:201
+msgid "Age"
+msgstr ""
+
+#: lib/extensions/nautilus/NautilusSvn.py:613
 msgid "Debug"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:614
+#: lib/extensions/nautilus/NautilusSvn.py:626
 msgid "Bugs"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:627
-msgid "Test Asynchronicity"
-msgstr ""
-
-#: lib/extensions/nautilus/NautilusSvn.py:645
+#: lib/extensions/nautilus/NautilusSvn.py:642
 msgid "Open Shell"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:661
+#: lib/extensions/nautilus/NautilusSvn.py:658
 msgid "Refresh Status"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:677
+#: lib/extensions/nautilus/NautilusSvn.py:674
 msgid "Debug Revert"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:678
+#: lib/extensions/nautilus/NautilusSvn.py:675
 msgid "Reverts everything it sees"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:693
+#: lib/extensions/nautilus/NautilusSvn.py:690
 msgid "Invalidate"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:694
+#: lib/extensions/nautilus/NautilusSvn.py:691
 msgid "Force an invalidate_extension_info() call"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:709
+#: lib/extensions/nautilus/NautilusSvn.py:706
 msgid "Add Emblem"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:710
+#: lib/extensions/nautilus/NautilusSvn.py:707
 msgid "Add an emblem"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:728
+#: lib/extensions/nautilus/NautilusSvn.py:725
 msgid "Check out a working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:744
+#: lib/extensions/nautilus/NautilusSvn.py:741
 msgid "Update a working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:760
+#: lib/extensions/nautilus/NautilusSvn.py:757
 msgid "Commit modifications to the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:775
+#: lib/extensions/nautilus/NautilusSvn.py:772
 msgid "NautilusSvn"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:789
+#: lib/extensions/nautilus/NautilusSvn.py:786
 msgid "View the modifications made to a file"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:804
+#: lib/extensions/nautilus/NautilusSvn.py:801
 msgid "Show Log"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:805
+#: lib/extensions/nautilus/NautilusSvn.py:802
 msgid "Show a file's log information"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:830
+#: lib/extensions/nautilus/NautilusSvn.py:827
 msgid "Schedule an item to be added to the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:854
+#: lib/extensions/nautilus/NautilusSvn.py:851
 msgid "Ignore an item"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:869
+#: lib/extensions/nautilus/NautilusSvn.py:866
 msgid "Ignore all files with this extension"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:894
+#: lib/extensions/nautilus/NautilusSvn.py:891
 msgid "Update to revision..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:895
+#: lib/extensions/nautilus/NautilusSvn.py:892
 msgid "Update a file to a specific revision"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:910
+#: lib/extensions/nautilus/NautilusSvn.py:907
 msgid "Rename..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:911
+#: lib/extensions/nautilus/NautilusSvn.py:908
 msgid "Schedule an item to be renamed on the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:927
+#: lib/extensions/nautilus/NautilusSvn.py:924
 msgid "Schedule an item to be deleted from the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:943
+#: lib/extensions/nautilus/NautilusSvn.py:940
 msgid "Revert an item to its unmodified state"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:959
+#: lib/extensions/nautilus/NautilusSvn.py:956
 msgid "Mark a conflicted item as resolved"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:974
+#: lib/extensions/nautilus/NautilusSvn.py:971
 msgid "Relocate..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:975
+#: lib/extensions/nautilus/NautilusSvn.py:972
 msgid "Relocate your working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:990
+#: lib/extensions/nautilus/NautilusSvn.py:987
 msgid "Get Lock..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:991
+#: lib/extensions/nautilus/NautilusSvn.py:988
 msgid "Locally lock items"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1006
+#: lib/extensions/nautilus/NautilusSvn.py:1003
 msgid "Release Lock..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1007
+#: lib/extensions/nautilus/NautilusSvn.py:1004
 msgid "Release lock on an item"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1023
+#: lib/extensions/nautilus/NautilusSvn.py:1020
 msgid "Clean up working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1048
+#: lib/extensions/nautilus/NautilusSvn.py:1045
 msgid "Export a working copy or repository with no versioning information"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1063
+#: lib/extensions/nautilus/NautilusSvn.py:1060
 msgid "Create Repository here"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1064
+#: lib/extensions/nautilus/NautilusSvn.py:1061
 msgid "Create a repository in a folder"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1080
+#: lib/extensions/nautilus/NautilusSvn.py:1077
 msgid "Import an item into a repository"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1104
+#: lib/extensions/nautilus/NautilusSvn.py:1101
 msgid "Branch/tag..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1105
+#: lib/extensions/nautilus/NautilusSvn.py:1102
 msgid "Copy an item to another location in the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1120
+#: lib/extensions/nautilus/NautilusSvn.py:1117
 msgid "Switch..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1121
+#: lib/extensions/nautilus/NautilusSvn.py:1118
 msgid "Change the repository location of a working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1136
+#: lib/extensions/nautilus/NautilusSvn.py:1133
 msgid "Merge..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1137
+#: lib/extensions/nautilus/NautilusSvn.py:1134
 msgid "A wizard with steps for merging"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1161
+#: lib/extensions/nautilus/NautilusSvn.py:1158
 msgid "Annotate..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1162
+#: lib/extensions/nautilus/NautilusSvn.py:1159
 msgid "Annotate a file"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1186
+#: lib/extensions/nautilus/NautilusSvn.py:1183
 msgid "Create Patch..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1187
+#: lib/extensions/nautilus/NautilusSvn.py:1184
 msgid "Creates a unified diff file with all changes you made"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1202
+#: lib/extensions/nautilus/NautilusSvn.py:1199
 msgid "Apply Patch..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1203
+#: lib/extensions/nautilus/NautilusSvn.py:1200
 msgid "Applies a unified diff file to the working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1219
+#: lib/extensions/nautilus/NautilusSvn.py:1216
 msgid "View the properties of an item"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1250
+#: lib/extensions/nautilus/NautilusSvn.py:1247
 msgid "Help"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1251
+#: lib/extensions/nautilus/NautilusSvn.py:1248
 msgid "View help"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1267
+#: lib/extensions/nautilus/NautilusSvn.py:1264
 msgid "View or change NautilusSvn settings"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1283
+#: lib/extensions/nautilus/NautilusSvn.py:1280
 msgid "About NautilusSvn"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:111 lib/vcs/svn/__init__.py:120
-#: lib/vcs/svn/__init__.py:127
+#: lib/vcs/svn/__init__.py:205 lib/vcs/svn/__init__.py:214
+#: lib/vcs/svn/__init__.py:221
 msgid "Added"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:112 lib/vcs/svn/__init__.py:128
+#: lib/vcs/svn/__init__.py:206 lib/vcs/svn/__init__.py:222
 msgid "Copied"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:113 lib/vcs/svn/__init__.py:119
+#: lib/vcs/svn/__init__.py:207 lib/vcs/svn/__init__.py:213
 msgid "Deleted"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:114
+#: lib/vcs/svn/__init__.py:208
 msgid "Restored"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:115
+#: lib/vcs/svn/__init__.py:209
 msgid "Reverted"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:116
+#: lib/vcs/svn/__init__.py:210
 msgid "Failed Revert"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:117
+#: lib/vcs/svn/__init__.py:211
 msgid "Resolved"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:118
+#: lib/vcs/svn/__init__.py:212
 msgid "Skipped"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:121
+#: lib/vcs/svn/__init__.py:215
 msgid "Updated"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:123 lib/vcs/svn/__init__.py:125
+#: lib/vcs/svn/__init__.py:217 lib/vcs/svn/__init__.py:219
 msgid "External"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:126
+#: lib/vcs/svn/__init__.py:220
 msgid "Modified"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:129
+#: lib/vcs/svn/__init__.py:223
 msgid "Replaced"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:130 lib/vcs/svn/__init__.py:149
+#: lib/vcs/svn/__init__.py:224 lib/vcs/svn/__init__.py:243
 msgid "Changed"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:131
+#: lib/vcs/svn/__init__.py:225
 msgid "Annotated"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:133
+#: lib/vcs/svn/__init__.py:227
 msgid "Unlocked"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:134
+#: lib/vcs/svn/__init__.py:228
 msgid "Failed Lock"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:135
+#: lib/vcs/svn/__init__.py:229
 msgid "Failed Unlock"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:144
+#: lib/vcs/svn/__init__.py:238
 msgid "Inapplicable"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:145
+#: lib/vcs/svn/__init__.py:239
 msgid "Unknown"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:146
+#: lib/vcs/svn/__init__.py:240
 msgid "Unchanged"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:147
+#: lib/vcs/svn/__init__.py:241
 msgid "Missing"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:148
+#: lib/vcs/svn/__init__.py:242
 msgid "Obstructed"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:150
+#: lib/vcs/svn/__init__.py:244
 msgid "Merged"
 msgstr ""
 
-#: lib/vcs/svn/__init__.py:151
+#: lib/vcs/svn/__init__.py:245
 msgid "Conflicted"
 msgstr ""
+
+#: lib/vcs/svn/__init__.py:1325
+msgid "Patched"
+msgstr ""
+
+#: lib/vcs/svn/__init__.py:1329
+msgid "Patch Failed"
+msgstr ""
+
+#: lib/vcs/svn/__init__.py:1337
+msgid "Rejected Patch"
+msgstr ""
+
+#: lib/helper.py:548
+#, python-format
+msgid "%i second"
+msgid_plural "%i seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/helper.py:551
+#, python-format
+msgid "%i minute"
+msgid_plural "%i minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/helper.py:554
+#, python-format
+msgid "%i hour"
+msgid_plural "%i hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/helper.py:557
+#, python-format
+msgid "%i day"
+msgid_plural "%i days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/helper.py:560
+#, python-format
+msgid "%i week"
+msgid_plural "%i weeks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/helper.py:563
+#, python-format
+msgid "%i month"
+msgid_plural "%i months"
+msgstr[0] ""
+msgstr[1] ""
+
+#: lib/helper.py:566
+#, python-format
+msgid "%i year"
+msgid_plural "%i years"
+msgstr[0] ""
+msgstr[1] ""
