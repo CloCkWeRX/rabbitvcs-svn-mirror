@@ -35,9 +35,8 @@ langs = []
 language = os.environ.get('LANGUAGE', None)
 if language:
     langs += language.split(":")
-langs += [getdefaultlocale()[0]]
-if not langs:
-    langs = ["en_US"]
+if getdefaultlocale()[0] != None: 
+    langs += [getdefaultlocale()[0]]
 
 _gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
 _gettext.textdomain(APP_NAME)
