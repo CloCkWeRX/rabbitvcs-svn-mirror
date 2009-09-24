@@ -215,12 +215,7 @@ class Log(InterfaceView):
             return ""
 
     def check_previous_sensitive(self):
-        sensitive = True
-        if self.rev_start >= (self.rev_max - self.limit):
-            sensitive = False
-        if len(self.revision_items) <= self.limit:
-            sensitive = False
-
+        sensitive = (self.rev_start < self.rev_max)
         self.get_widget("previous").set_sensitive(sensitive)
 
     def check_next_sensitive(self):
@@ -229,7 +224,7 @@ class Log(InterfaceView):
             sensitive = False
         if len(self.revision_items) <= self.limit:
             sensitive = False
-            
+
         self.get_widget("next").set_sensitive(sensitive)
     
     def set_start_revision(self, rev):
@@ -246,7 +241,6 @@ class Log(InterfaceView):
     # Log-loading callback methods
     #
     
-    @gtk_unsafe
     def refresh(self):
         """
         Refresh the items in the main log table that shows Revision/Author/etc.
@@ -334,7 +328,7 @@ class Log(InterfaceView):
             self.vcs.log, 
             self.path,
             revision_start=start,
-            limit=self.limit,
+            limit=self.limit+1,
             discover_changed_paths=True
         )
         self.action.append(self.pbar.stop_pulsate)
