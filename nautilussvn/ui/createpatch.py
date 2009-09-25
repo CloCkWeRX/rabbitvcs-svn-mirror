@@ -69,6 +69,7 @@ class CreatePatch(InterfaceView):
         self.base_dir = base_dir
         self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
         self.common = nautilussvn.lib.helper.get_common_directory(paths)
+        self.activated_cache = {}
 
         if not self.vcs.get_versioned_path(self.common):
             nautilussvn.ui.dialog.MessageBox(_("The given path is not a working copy"))
@@ -86,67 +87,95 @@ class CreatePatch(InterfaceView):
         self.last_row_clicked = None
         
         self.items = None
-        try:
-            thread.start_new_thread(self.load, ())
-        except Exception, e:
-            log.exception()
+        self.initialize_items()
 
     #
     # Helper functions
     # 
 
     def load(self):
+        """
+          - Gets a listing of file items that are valid for the commit window.
+          - Determines which items should be "activated" by default
+          - Populates the files table with the retrieved items
+          - Updates the status area        
+        """
+        
         gtk.gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
-        self.items = filter(lambda item: self.vcs.is_versioned(item.path),
-                            self.vcs.get_items(self.paths, self.vcs.STATUSES_FOR_COMMIT))    
-        self.populate_files_from_original()
+        self.items = self.vcs.get_items(self.paths, self.vcs.STATUSES_FOR_COMMIT)
+
+        if len(self.activated_cache) == 0:
+            for item in self.items:
+                self.activated_cache[item.path] = self.should_item_be_activated(item)
+
+        self.populate_files_table()
         self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
         gtk.gdk.threads_leave()
-    
-    def refresh_row_status(self):
-        status = self.vcs.status_with_cache(self.get_last_path(), invalidate=True).pop()
 
-        self.files_table.get_row(self.last_row_clicked)[3] = status["text_status"]
-        self.files_table.get_row(self.last_row_clicked)[4] = status["prop_status"]
-        
-        # Files newly marked as deleted should be checked off
-        if status["text_status"] == self.vcs.STATUS["deleted"]:
-            self.files_table.get_row(self.last_row_clicked)[0] = True
-        
-        # Ignored/Normal files should not be shown
-        index = 0
-        for item in self.files_table.get_items():
-            if (self.vcs.is_normal(item[1]) or
-                    self.vcs.is_ignored(item[1])):
-
-                self.files_table.remove(index)
-                del self.items[index]
-                index -= 1
-            index += 1
     
     def get_last_path(self):
         return self.files_table.get_row(self.last_row_clicked)[1]
 
-    def populate_files_from_original(self):
+    def should_item_be_activated(self, item):
+        """
+        Determines if a file should be activated or not
+        """
+        
+        if (item.path in self.paths
+                or item.is_versioned):
+            return True
+
+        return False
+
+    def initialize_activated_cache(self):
+        """
+        Resets and populates the activated cache based on the existing state
+        of the files table.
+        
+        The activated cache is used to "remember" which items are checked off
+        before it populates (and possibly changes) the files table entries
+        """
+        
+        self.activated_cache = {}
+
+        for row in self.files_table.get_items():
+            self.activated_cache[row[1]] = row[0]
+
+    def populate_files_table(self):
+        """
+        First clears and then populates the files table based on the items
+        retrieved in self.load()
+        
+        """
+        
         self.files_table.clear()
 
         for item in self.items:
-            checked = True
+            if item.path in self.activated_cache:
+                checked = self.activated_cache[item.path]
+            else:
+                self.activated_cache[item.path] = self.should_item_be_activated(item)
+                checked = self.activated_cache[item.path]
             
-            # Some types of files should not be checked off
-            if (not item.is_versioned 
-                    or item.text_status == self.vcs.STATUS["missing"]):
-                checked = False
-            
-            if self.SHOW_UNVERSIONED or item.is_versioned:
-                self.files_table.append([
-                    checked,
-                    item.path, 
-                    nautilussvn.lib.helper.get_file_extension(item.path),
-                    item.text_status,
-                    item.prop_status
-                ])
+            self.files_table.append([
+                checked,
+                item.path, 
+                nautilussvn.lib.helper.get_file_extension(item.path),
+                item.text_status,
+                item.prop_status
+            ])
+
+    def initialize_items(self):
+        """
+        Initializes the activated cache and loads the file items in a new thread
+        """
+        
+        try:
+            self.initialize_activated_cache()
+            thread.start_new_thread(self.load, ())
+        except Exception, e:
+            log.exception()
     
     def choose_patch_path(self):
         path = ""
@@ -334,7 +363,7 @@ class CreatePatch(InterfaceView):
                                         "args": fileinfo
                                      }
                                  },
-                                "condition": (lambda: True)
+                                "condition": self.condition_ignore
                             },
                             {
                                 "label": "*%s"%fileinfo[2],
@@ -347,7 +376,7 @@ class CreatePatch(InterfaceView):
                                 "condition": self.condition_ignore_by_fileext
                             }
                         ],
-                        "condition": (lambda: True)
+                        "condition": self.condition_ignore
                     }
                 ])
                 context_menu.show(event)
@@ -363,11 +392,11 @@ class CreatePatch(InterfaceView):
     def on_context_add_activated(self, widget, data=None):
         self.vcs.add(data[1])
         self.files_table.get_row(self.last_row_clicked)[0] = True
-        self.refresh_row_status()
+        self.initialize_items()
 
     def on_context_revert_activated(self, widget, data=None):
         self.vcs.revert(data[1])
-        self.refresh_row_status()
+        self.initialize_items()
 
     def on_context_diff_activated(self, widget, data=None):
         nautilussvn.lib.helper.launch_diff_tool(data[1])
@@ -381,7 +410,7 @@ class CreatePatch(InterfaceView):
     def on_context_delete_activated(self, widget, data=None):
         if self.vcs.is_versioned(data[1]):
             self.vcs.remove(data[1], force=True)
-            self.refresh_row_status()
+            self.initialize_items()
         else:
             confirm = nautilussvn.ui.dialog.DeleteConfirmation(data[1])
             
@@ -394,14 +423,14 @@ class CreatePatch(InterfaceView):
         prop_value = os.path.basename(data[1])
 
         if self.vcs.propset(self.base_dir, prop_name, prop_value):
-            self.refresh_row_status()
+            self.initialize_items()
         
     def on_subcontext_ignore_by_fileext_activated(self, widget, data=None):
         prop_name = self.vcs.PROPERTIES["ignore"]
         prop_value = "*%s" % data[2]
         
         if self.vcs.propset(self.base_dir, prop_name, prop_value, recurse=True):
-            self.refresh_row_status()
+            self.initialize_items()
 
     def on_context_restore_activated(self, widget, data=None):
         nautilussvn.lib.helper.launch_ui_window(
@@ -409,7 +438,7 @@ class CreatePatch(InterfaceView):
             [data[1]],
             return_immmediately=False
         )
-        self.refresh_row_status()
+        self.initialize_items()
         
     
     # Conditions
@@ -445,6 +474,13 @@ class CreatePatch(InterfaceView):
         return (
             not self.vcs.is_deleted(path)
         )
+
+    def condition_ignore(self):
+        path = self.get_last_path()
+        if path == self.base_dir:
+            return False
+        
+        return True
     
     def condition_ignore_by_fileext(self):
         return os.path.isfile(self.get_last_path())
