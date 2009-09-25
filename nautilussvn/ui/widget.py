@@ -24,6 +24,8 @@ import pygtk
 import gobject
 import gtk
 
+from os.path import basename
+
 import nautilussvn.lib.helper
 
 from nautilussvn.lib.log import Log
@@ -44,7 +46,10 @@ def path_filter(model, iter, column, user_data):
                 column)
 
     if column in path_entries:
-        return nautilussvn.lib.helper.get_relative_path(base_dir, data)
+        relpath = nautilussvn.lib.helper.get_relative_path(base_dir, data)
+        if relpath == "":
+            relpath = basename(data)
+        return relpath
     else:
         return data 
 
