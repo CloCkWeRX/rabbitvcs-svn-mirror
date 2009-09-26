@@ -36,6 +36,8 @@ import datetime
 import time
 import shutil
 
+import gobject
+
 import nautilussvn.lib.settings
 
 from nautilussvn.lib.log import Log
@@ -495,7 +497,9 @@ def launch_ui_window(filename, args=[]):
     path = os.path.join(basedir, "ui", filename + ".py")
 
     if os.path.exists(path): 
-        return subprocess.Popen([sys.executable, path] + args).pid
+        proc = subprocess.Popen([sys.executable, path] + args)
+        gobject.timeout_add_seconds(1, proc.wait)
+        return proc.pid
 
 def get_log_messages_limit():
     sm = nautilussvn.lib.settings.SettingsManager()
