@@ -496,9 +496,13 @@ def launch_ui_window(filename, args=[]):
     # path = "%s/ui/%s.py" % (basedir, filename)
     path = os.path.join(basedir, "ui", filename + ".py")
 
+    def wait_for_end(proc):
+        proc.wait()
+        log.debug("Process %s ended" % proc.pid)
+
     if os.path.exists(path): 
         proc = subprocess.Popen([sys.executable, path] + args)
-        gobject.timeout_add_seconds(1, proc.wait)
+        gobject.idle_add(wait_for_end, proc)
         return proc.pid
 
 def get_log_messages_limit():
