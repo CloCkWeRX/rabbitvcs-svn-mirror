@@ -23,22 +23,15 @@ mkdir $BUILDPATH
 
 # Export
 BUILDSRC=$BUILDPATH/$PACKAGE_ID
-svn export $SOURCEDIR $BUILDSRC
+if [ -d ${SOURCEDIR}/.svn ]; then
+    svn export $SOURCEDIR $BUILDSRC
+else
+    cp -R $SOURCEDIR $BUILDSRC
+fi
 
 # Zip up the original source code
-(cd $BUILDPATH && tar zcvf $PACKAGE_FILE.orig.tar.gz $PACKAGE_ID)
-
-# Update the changelog (be sure to commit this afterwards)
-(cd $BUILDSRC/packages/ubuntu/ && debchange -i)
-cp -v {$BUILDSRC,$SOURCEDIR}/packages/ubuntu/debian/changelog
+(cd $BUILDPATH && tar zcvf $PACKAGE_FILE.tar.gz $PACKAGE_ID)
 
 # Copy the Debian directory into place and build the directory
-cp -R $BUILDSRC{/packages/ubuntu/debian/,/}
+cp -R $BUILDSRC/packages/ubuntu/debian/ $BUILDSRC/debian
 (cd $BUILDSRC && debuild)
-
-# Let the user know he should commit
-echo 
-echo "================================================================="
-echo " PLEASE COMMIT THE NEW CHANGELOG"
-echo "================================================================="
-echo 
