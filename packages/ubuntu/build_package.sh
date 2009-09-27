@@ -30,7 +30,7 @@ else
 fi
 
 # Zip up the original source code
-(cd $BUILDPATH && tar zcvf $PACKAGE_FILE.tar.gz $PACKAGE_ID)
+(cd $BUILDPATH && tar zcvf $PACKAGE_FILE.orig.tar.gz $PACKAGE_ID)
 
 # Copy the Debian directory into place and build the directory
 cp -R $BUILDSRC/packages/ubuntu/debian/ $BUILDSRC/debian
