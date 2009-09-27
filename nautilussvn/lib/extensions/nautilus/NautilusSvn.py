@@ -768,7 +768,7 @@ class MainContextMenu:
                 "identifier": "NautilusSvn::NautilusSvn",
                 "label": _("NautilusSvn"),
                 "tooltip": "",
-                "icon": "nautilussvn",
+                "icon": "rabbitvcs",
                 "signals": {
                     "activate": {
                         "callback": None,
