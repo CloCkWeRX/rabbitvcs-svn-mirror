@@ -427,10 +427,10 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
     # Some methods to help with keeping emblems up-to-date
     #
     
-    def rescan_after_process_exit(self, pid, paths):
+    def rescan_after_process_exit(self, proc, paths):
         """ 
         Rescans all of the items on our C{monitored_files} list after the
-        process specified by C{pid} completes. Also checks the paths
+        process specified by C{proc} completes. Also checks the paths
         that were passed.
         
         TODO: the monitored_files list could grow quite large if somebody
@@ -450,36 +450,33 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             for path in paths:
                 statuses = self.status_checker.check_status(path, recurse=True, invalidate=True)
             
-        self.execute_after_process_exit(pid, do_check)
+        self.execute_after_process_exit(proc, do_check)
         
-    def execute_after_process_exit(self, pid, func):
-        
-        def is_process_still_alive():
-            log.debug("is_process_still_alive() for pid: %i" % pid)
-            
-            # First we need to see if the commit process is still running
-            if os.path.exists("/proc/" + str(pid)):
-                # If so, check its status by reading the status file from /proc
-                f = open("/proc/%d/status" % pid).readlines()
-                # If it's a zombie process, then we can waitpid() on it to end the process
-                if "zombie" in f[1]:
-                    os.waitpid(pid, 0)
+    def execute_after_process_exit(self, proc, func = None):
 
-                # Return true to get another callback after the next timeout
-                return True
-            else:
-                # Our job is done :-)
+        def is_process_still_alive():
+            log.debug("is_process_still_alive() for pid: %i" % proc.pid)
+            # First we need to see if the commit process is still running
+
+            retval = proc.poll()
+            
+            log.debug("%s" % retval)
+            
+            still_going = (retval is None)
+
+            if not still_going and callable(func):
                 func()
-                return False
+            
+            return still_going
 
         # Add our callback function on a 1 second timeout
-        gobject.timeout_add(1000, is_process_still_alive)
+        gobject.timeout_add_seconds(1, is_process_still_alive)
         
     # 
     # Some other methods
     # 
     
-    def reload_settings(self, pid):
+    def reload_settings(self, proc):
         """
         Used to re-load settings after the settings dialog has been closed.
         
@@ -493,7 +490,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
             globals()["log"] = reload_log_settings()("nautilussvn.lib.extensions.nautilus")
             log.debug("Re-scanning settings")
             
-        self.execute_after_process_exit(pid, do_reload_settings)
+        self.execute_after_process_exit(proc, do_reload_settings)
         
         
     # 
@@ -1627,54 +1624,60 @@ class MainContextMenu:
     # End debugging callbacks
 
     def callback_checkout(self, menu_item, paths):
-        pid = launch_ui_window("checkout", paths)
-        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
+        proc = launch_ui_window("checkout", paths)
+        self.nautilussvn_extension.rescan_after_process_exit(proc, paths)
     
     def callback_update(self, menu_item, paths):
-        pid = launch_ui_window("update", paths)
-        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
+        proc = launch_ui_window("update", paths)
+        self.nautilussvn_extension.rescan_after_process_exit(proc, paths)
 
     def callback_commit(self, menu_item, paths):
-        pid = launch_ui_window("commit", ["--base-dir=" + self.base_dir] + paths)
-        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
+        proc = launch_ui_window("commit", ["--base-dir=" + self.base_dir] + paths)
+        self.nautilussvn_extension.rescan_after_process_exit(proc, paths)
 
     def callback_add(self, menu_item, paths):
-        pid = launch_ui_window("add", paths)
-        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
+        proc = launch_ui_window("add", paths)
+        # self.nautilussvn_extension.rescan_after_process_exit(proc, paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
 
     def callback_delete(self, menu_item, paths):
-        pid = launch_ui_window("delete", paths)
-        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
+        proc = launch_ui_window("delete", paths)
+        self.nautilussvn_extension.rescan_after_process_exit(proc, paths)
 
     def callback_revert(self, menu_item, paths):
-        pid = launch_ui_window("revert", paths)
-        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
+        proc = launch_ui_window("revert", paths)
+        self.nautilussvn_extension.rescan_after_process_exit(proc, paths)
 
     def callback_diff(self, menu_item, paths):
         launch_diff_tool(*paths)
     
     def callback_show_log(self, menu_item, paths):
-        launch_ui_window("log", paths)
+        proc = launch_ui_window("log", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
 
     def callback_rename(self, menu_item, paths):
         launch_ui_window("rename", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
 
     def callback_createpatch(self, menu_item, paths):
-        pid = launch_ui_window("createpatch", paths)
+        proc = launch_ui_window("createpatch", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
     
     def callback_applypatch(self, menu_item, paths):
-        pid = launch_ui_window("applypatch", paths)
-        self.nautilussvn_extension.rescan_after_process_exit(pid, paths)
+        proc = launch_ui_window("applypatch", paths)
+        self.nautilussvn_extension.rescan_after_process_exit(proc, paths)
     
     def callback_properties(self, menu_item, paths):
         launch_ui_window("properties", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
 
     def callback_about(self, menu_item, paths):
         launch_ui_window("about")
+        self.nautilussvn_extension.execute_after_process_exit(proc)
         
     def callback_settings(self, menu_item, paths):
-        pid = launch_ui_window("settings")
-        self.nautilussvn_extension.reload_settings(pid)
+        proc = launch_ui_window("settings")
+        self.nautilussvn_extension.reload_settings(proc)
     
     def callback_ignore_filename(self, menu_item, paths):
         from nautilussvn.ui.ignore import Ignore
@@ -1688,39 +1691,52 @@ class MainContextMenu:
 
     def callback_lock(self, menu_item, paths):
         launch_ui_window("lock", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
 
     def callback_branch(self, menu_item, paths):
         launch_ui_window("branch", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
 
     def callback_switch(self, menu_item, paths):
         launch_ui_window("switch", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
 
     def callback_merge(self, menu_item, paths):
         launch_ui_window("merge", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
 
     def callback_import(self, menu_item, paths):
         launch_ui_window("import", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
 
     def callback_export(self, menu_item, paths):
         launch_ui_window("export", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
 
     def callback_updateto(self, menu_item, paths):
         launch_ui_window("updateto", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
     
     def callback_resolve(self, menu_item, paths):
         launch_ui_window("resolve", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
         
     def callback_annotate(self, menu_item, paths):
         launch_ui_window("annotate", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
 
     def callback_unlock(self, menu_item, paths):
         launch_ui_window("unlock", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
         
     def callback_create_repository(self, menu_item, paths):
         launch_ui_window("create", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
     
     def callback_relocate(self, menu_item, paths):
         launch_ui_window("relocate", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)
 
     def callback_cleanup(self, menu_item, paths):
         launch_ui_window("cleanup", paths)
+        self.nautilussvn_extension.execute_after_process_exit(proc)

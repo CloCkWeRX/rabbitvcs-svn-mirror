@@ -496,14 +496,11 @@ def launch_ui_window(filename, args=[]):
     # path = "%s/ui/%s.py" % (basedir, filename)
     path = os.path.join(basedir, "ui", filename + ".py")
 
-    def wait_for_end(proc):
-        proc.wait()
-        log.debug("Process %s ended" % proc.pid)
-
     if os.path.exists(path): 
         proc = subprocess.Popen([sys.executable, path] + args)
-        gobject.idle_add(wait_for_end, proc)
-        return proc.pid
+        return proc
+    else:
+        return None
 
 def get_log_messages_limit():
     sm = nautilussvn.lib.settings.SettingsManager()
