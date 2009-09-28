@@ -1,5 +1,7 @@
-#!/bin/sh
-set -e
+#!/bin/sh -e
+
+# Source debconf module
+. /usr/share/debconf/confmodule
 
 # Identifies the point in the file at which debhelper will insert automatically 
 # added snippets.
@@ -18,11 +20,18 @@ gtk-update-icon-cache /usr/share/icons/hicolor/
 
 UPDATENOTIFIERDIR=/var/lib/update-notifier/user.d
 
-# Fix some permissions
-# This should be fixed via the added binary-install target in debian/rules
-# chmod +x /usr/share/nautilussvn/do-nautilussvn-restart-nautilus
+# Ask if the user would like to restart nautilus...
+db_get nautilussvn/nautilus-restart-required
 
-echo "You need to run 'nautilus -q && nautilus &' to restart Nautilus."
+# Note that I tried something like using a boolean value in the debconf template
+# coupled with this:
+#
+#if [ "$RET" = "true" ]; then
+#    nautilus -q
+#fi
+#
+# ...But of course, since we're running as root, this has no effect on the user
+# instance of nautilus.
 
 # FIXME: this only works after running apt-get update (so it doesn't when 
 # somebody manually installs the Debian package using dpkg -i).
