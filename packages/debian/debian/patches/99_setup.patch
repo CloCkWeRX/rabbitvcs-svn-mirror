@@ -1,6 +1,6 @@
-diff -Nur -x '*.orig' -x '*~' nautilussvn-0.12/setup.py nautilussvn-0.12.new/setup.py
---- nautilussvn-0.12/setup.py	2009-09-28 20:11:45.000000000 +0800
-+++ nautilussvn-0.12.new/setup.py	2009-09-28 20:18:56.000000000 +0800
+diff -Nur -x '*.orig' -x '*~' rabbitvcs-0.12/setup.py rabbitvcs-0.12.new/setup.py
+--- rabbitvcs-0.12/setup.py	2009-09-28 20:11:45.000000000 +0800
++++ rabbitvcs-0.12.new/setup.py	2009-09-28 20:18:56.000000000 +0800
 @@ -125,10 +125,11 @@
  )]
  

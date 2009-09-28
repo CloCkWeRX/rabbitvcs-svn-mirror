@@ -1,3 +1,9 @@
+rabbitvcs (0.12.beta1.2-4) unstable; urgency=low
+
+  * Renamed to RabbitVCS.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Mon, 28 Sep 2009 21:26:54 +0800
+
 nautilussvn (0.12.beta1.2-3) unstable; urgency=low
 
   * Included patch from upstream to fix problem with settings dialog.

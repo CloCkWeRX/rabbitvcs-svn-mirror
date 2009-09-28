@@ -1,4 +1,4 @@
-Source: nautilussvn
+Source: rabbitvcs
 Maintainer: Jason Heeris <jason.heeris@gmail.com>
 Section: devel
 Priority: optional
@@ -10,9 +10,9 @@ Build-Depends-Indep: python-support (>= 0.5.3),
                      pkg-config (>= 0.20),
                      patchutils (>= 0.2.31)
 Standards-Version: 3.8.2
-Homepage: http://code.google.com/p/nautilussvn
+Homepage: http://code.google.com/p/rabbitvcs
 
-Package: nautilussvn
+Package: rabbitvcs
 Architecture: all
 Depends: ${misc:Depends},
          ${python:Depends},
@@ -26,9 +26,9 @@ Depends: ${misc:Depends},
          meld (>=1.1.2), 
          ipython (>=0.7.1),
          hicolor-icon-theme (>= 0.10-2)
-Description: Integrated Subversion support for Nautilus
- An extension to Nautilus to allow better integration with the Subversion source
- control system. NautilusSVN adds Subversion related commands to the Nautilus
- context menu, and Subversion-controlled directories will be detected
- automatically and decorated with appropriate emblems. It is similar to the
- TortoiseSVN project on Windows.
+Description: Integrated version control support for Nautilus
+ An extension to Nautilus to allow better integration with various source
+ control systems (currently only Subversion). RabbitVCS adds version control
+ related commands to the Nautilus context menu, and controlled directories
+ will be detected automatically and decorated with appropriate emblems. It
+ is similar to the TortoiseSVN project on Windows.
