@@ -8,7 +8,7 @@
     <property name="window_position">center</property>
     <property name="default_width">640</property>
     <property name="default_height">640</property>
-    <property name="icon_name">rabbitvcs</property>
+    <property name="icon_name">rabbitvcs-small</property>
     <signal name="destroy" handler="on_destroy"/>
     <child>
       <widget class="GtkVBox" id="vbox4">

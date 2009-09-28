@@ -8,7 +8,7 @@
     <property name="title" translatable="yes">Checkout</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
     <property name="default_width">450</property>
-    <property name="icon_name">rabbitvcs</property>
+    <property name="icon_name">rabbitvcs-small</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <signal name="destroy" handler="on_destroy"/>
     <child>
