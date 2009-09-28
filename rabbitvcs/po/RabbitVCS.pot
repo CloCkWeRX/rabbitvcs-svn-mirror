@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-24 15:25+0200\n"
+"POT-Creation-Date: 2009-09-28 13:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -150,7 +150,7 @@ msgstr ""
 msgid "Authentication information cleared"
 msgstr ""
 
-#: ui/cleanup.py:54 lib/extensions/nautilus/RabbitVCS.py:1019
+#: ui/cleanup.py:54 lib/extensions/nautilus/RabbitVCS.py:1016
 msgid "Cleanup"
 msgstr ""
 
@@ -178,29 +178,29 @@ msgstr ""
 msgid "Completed Relocate"
 msgstr ""
 
-#: ui/add.py:68 ui/lock.py:71 ui/resolve.py:59 ui/action.py:67 ui/commit.py:77
-#: ui/createpatch.py:81 ui/unlock.py:59 ui/log.py:90 ui/revert.py:58
+#: ui/add.py:68 ui/lock.py:71 ui/resolve.py:59 ui/action.py:67 ui/commit.py:78
+#: ui/createpatch.py:82 ui/unlock.py:59 ui/log.py:90 ui/revert.py:58
 msgid "Path"
 msgstr ""
 
-#: ui/add.py:68 ui/lock.py:71 ui/resolve.py:59 ui/commit.py:77
-#: ui/createpatch.py:81 ui/unlock.py:59 ui/revert.py:58
+#: ui/add.py:68 ui/lock.py:71 ui/resolve.py:59 ui/commit.py:78
+#: ui/createpatch.py:82 ui/unlock.py:59 ui/revert.py:58
 msgid "Extension"
 msgstr ""
 
-#: ui/add.py:84 ui/lock.py:103 ui/commit.py:103 ui/createpatch.py:100
-#: ui/unlock.py:76 ui/log.py:260 ui/glade/log.glade.h:6
+#: ui/add.py:84 ui/lock.py:103 ui/commit.py:108 ui/createpatch.py:105
+#: ui/unlock.py:76 ui/log.py:254 ui/glade/log.glade.h:6
 msgid "Loading..."
 msgstr ""
 
-#: ui/add.py:87 ui/lock.py:106 ui/commit.py:106 ui/createpatch.py:104
+#: ui/add.py:87 ui/lock.py:106 ui/commit.py:116 ui/createpatch.py:113
 #: ui/unlock.py:97
 #, python-format
 msgid "Found %d item(s)"
 msgstr ""
 
-#: ui/add.py:121 ui/commit.py:269 ui/createpatch.py:297 ui/glade/add.glade.h:1
-#: lib/extensions/nautilus/RabbitVCS.py:826
+#: ui/add.py:121 ui/commit.py:300 ui/createpatch.py:326 ui/glade/add.glade.h:1
+#: lib/extensions/nautilus/RabbitVCS.py:823
 msgid "Add"
 msgstr ""
 
@@ -212,21 +212,21 @@ msgstr ""
 msgid "Completed Add"
 msgstr ""
 
-#: ui/add.py:147 ui/lock.py:213 ui/commit.py:239 ui/createpatch.py:267
+#: ui/add.py:147 ui/lock.py:213 ui/commit.py:270 ui/createpatch.py:296
 msgid "Open"
 msgstr ""
 
-#: ui/add.py:156 ui/lock.py:223 ui/commit.py:249 ui/createpatch.py:277
+#: ui/add.py:156 ui/lock.py:223 ui/commit.py:280 ui/createpatch.py:306
 msgid "Browse to"
 msgstr ""
 
-#: ui/add.py:165 ui/commit.py:259 ui/createpatch.py:287
-#: ui/glade/properties.glade.h:3 lib/extensions/nautilus/RabbitVCS.py:923
+#: ui/add.py:165 ui/commit.py:290 ui/createpatch.py:316
+#: ui/glade/properties.glade.h:3 lib/extensions/nautilus/RabbitVCS.py:920
 msgid "Delete"
 msgstr ""
 
-#: ui/add.py:174 ui/commit.py:299 ui/createpatch.py:327
-#: lib/extensions/nautilus/RabbitVCS.py:842
+#: ui/add.py:174 ui/commit.py:330 ui/createpatch.py:356
+#: lib/extensions/nautilus/RabbitVCS.py:839
 msgid "Add to ignore list"
 msgstr ""
 
@@ -240,7 +240,7 @@ msgid "The repository URL field is required."
 msgstr ""
 
 #: ui/import.py:80 ui/glade/import.glade.h:3
-#: lib/extensions/nautilus/RabbitVCS.py:1076
+#: lib/extensions/nautilus/RabbitVCS.py:1073
 msgid "Import"
 msgstr ""
 
@@ -276,8 +276,8 @@ msgstr ""
 msgid "Remove Lock"
 msgstr ""
 
-#: ui/lock.py:193 ui/commit.py:229 ui/createpatch.py:257
-#: lib/extensions/nautilus/RabbitVCS.py:785
+#: ui/lock.py:193 ui/commit.py:260 ui/createpatch.py:286
+#: lib/extensions/nautilus/RabbitVCS.py:782
 msgid "View Diff"
 msgstr ""
 
@@ -296,7 +296,7 @@ msgstr ""
 msgid "The repository URL and destination path are both required fields."
 msgstr ""
 
-#: ui/export.py:89 lib/extensions/nautilus/RabbitVCS.py:1044
+#: ui/export.py:89 lib/extensions/nautilus/RabbitVCS.py:1041
 msgid "Export"
 msgstr ""
 
@@ -308,8 +308,7 @@ msgstr ""
 msgid "Completed Export"
 msgstr ""
 
-#: ui/resolve.py:48 ui/resolve.py:82
-#: lib/extensions/nautilus/RabbitVCS.py:955
+#: ui/resolve.py:48 ui/resolve.py:82 lib/extensions/nautilus/RabbitVCS.py:952
 msgid "Resolve"
 msgstr ""
 
@@ -329,7 +328,7 @@ msgstr ""
 msgid "Mime Type"
 msgstr ""
 
-#: ui/action.py:253 ui/log.py:316
+#: ui/action.py:253 ui/log.py:310
 msgid "Finished"
 msgstr ""
 
@@ -338,49 +337,49 @@ msgstr ""
 msgid "%s - Finished"
 msgstr ""
 
-#: ui/commit.py:70 ui/createpatch.py:74
+#: ui/commit.py:71 ui/createpatch.py:75
 msgid "The given path is not a working copy"
 msgstr ""
 
-#: ui/commit.py:78 ui/createpatch.py:82
+#: ui/commit.py:79 ui/createpatch.py:83
 msgid "Text Status"
 msgstr ""
 
-#: ui/commit.py:78 ui/createpatch.py:82
+#: ui/commit.py:79 ui/createpatch.py:83
 msgid "Property Status"
 msgstr ""
 
-#: ui/commit.py:187 ui/glade/commit.glade.h:4
-#: lib/extensions/nautilus/RabbitVCS.py:756
+#: ui/commit.py:217 ui/glade/commit.glade.h:4
+#: lib/extensions/nautilus/RabbitVCS.py:753
 msgid "Commit"
 msgstr ""
 
-#: ui/commit.py:188
+#: ui/commit.py:218
 msgid "Running Commit Command..."
 msgstr ""
 
-#: ui/commit.py:194
+#: ui/commit.py:224
 msgid "Completed Commit"
 msgstr ""
 
-#: ui/commit.py:279 ui/createpatch.py:307 ui/revert.py:48 ui/revert.py:80
-#: lib/extensions/nautilus/RabbitVCS.py:939
+#: ui/commit.py:310 ui/createpatch.py:336 ui/revert.py:48 ui/revert.py:80
+#: lib/extensions/nautilus/RabbitVCS.py:936
 msgid "Revert"
 msgstr ""
 
-#: ui/commit.py:289 ui/createpatch.py:317
+#: ui/commit.py:320 ui/createpatch.py:346
 msgid "Restore"
 msgstr ""
 
-#: ui/createpatch.py:155 ui/createpatch.py:202 ui/glade/createpatch.glade.h:2
+#: ui/createpatch.py:184 ui/createpatch.py:231 ui/glade/createpatch.glade.h:2
 msgid "Create Patch"
 msgstr ""
 
-#: ui/createpatch.py:203
+#: ui/createpatch.py:232
 msgid "Creating Patch File..."
 msgstr ""
 
-#: ui/createpatch.py:227
+#: ui/createpatch.py:256
 msgid "Patch File Created"
 msgstr ""
 
@@ -462,7 +461,7 @@ msgid "Checkout - %s"
 msgstr ""
 
 #: ui/checkout.py:102 ui/glade/checkout.glade.h:5
-#: lib/extensions/nautilus/RabbitVCS.py:724
+#: lib/extensions/nautilus/RabbitVCS.py:721
 msgid "Checkout"
 msgstr ""
 
@@ -491,15 +490,15 @@ msgstr ""
 msgid "Cancelled"
 msgstr ""
 
-#: ui/log.py:242 ui/log.py:243 ui/glade/log.glade.h:8
+#: ui/log.py:237 ui/log.py:238 ui/glade/log.glade.h:8
 msgid "N/A"
 msgstr ""
 
-#: ui/log.py:291
+#: ui/log.py:285
 msgid "(no author)"
 msgstr ""
 
-#: ui/log.py:320
+#: ui/log.py:314
 msgid "Retrieving Log Information..."
 msgstr ""
 
@@ -525,7 +524,7 @@ msgid "Completed Revert"
 msgstr ""
 
 #: ui/update.py:53 ui/glade/update.glade.h:8
-#: lib/extensions/nautilus/RabbitVCS.py:740
+#: lib/extensions/nautilus/RabbitVCS.py:737
 msgid "Update"
 msgstr ""
 
@@ -629,7 +628,7 @@ msgstr ""
 msgid "New..."
 msgstr ""
 
-#: ui/glade/properties.glade.h:7 lib/extensions/nautilus/RabbitVCS.py:1215
+#: ui/glade/properties.glade.h:7 lib/extensions/nautilus/RabbitVCS.py:1212
 msgid "Properties"
 msgstr ""
 
@@ -661,7 +660,7 @@ msgstr ""
 msgid "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
 msgstr ""
 
-#: ui/glade/about.glade.h:4 lib/extensions/nautilus/RabbitVCS.py:1279
+#: ui/glade/about.glade.h:4 lib/extensions/nautilus/RabbitVCS.py:1276
 msgid "About"
 msgstr ""
 
@@ -827,15 +826,15 @@ msgid "<b>Logging Options</b>"
 msgstr ""
 
 #: ui/glade/settings.glade.h:4
-msgid "<b>RabbitVCS</b>"
-msgstr ""
-
-#: ui/glade/settings.glade.h:5
 msgid "<b>Program used to browse repositories</b>"
 msgstr ""
 
-#: ui/glade/settings.glade.h:6
+#: ui/glade/settings.glade.h:5
 msgid "<b>Program used to compare files</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:6
+msgid "<b>RabbitVCS</b>"
 msgstr ""
 
 #: ui/glade/settings.glade.h:7
@@ -894,7 +893,7 @@ msgstr ""
 msgid "Saved Data"
 msgstr ""
 
-#: ui/glade/settings.glade.h:21 lib/extensions/nautilus/RabbitVCS.py:1263
+#: ui/glade/settings.glade.h:21 lib/extensions/nautilus/RabbitVCS.py:1260
 msgid "Settings"
 msgstr ""
 
@@ -1062,223 +1061,223 @@ msgstr ""
 msgid "Age"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:613
+#: lib/extensions/nautilus/RabbitVCS.py:610
 msgid "Debug"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:626
+#: lib/extensions/nautilus/RabbitVCS.py:623
 msgid "Bugs"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:642
+#: lib/extensions/nautilus/RabbitVCS.py:639
 msgid "Open Shell"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:658
+#: lib/extensions/nautilus/RabbitVCS.py:655
 msgid "Refresh Status"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:674
+#: lib/extensions/nautilus/RabbitVCS.py:671
 msgid "Debug Revert"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:675
+#: lib/extensions/nautilus/RabbitVCS.py:672
 msgid "Reverts everything it sees"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:690
+#: lib/extensions/nautilus/RabbitVCS.py:687
 msgid "Invalidate"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:691
+#: lib/extensions/nautilus/RabbitVCS.py:688
 msgid "Force an invalidate_extension_info() call"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:706
+#: lib/extensions/nautilus/RabbitVCS.py:703
 msgid "Add Emblem"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:707
+#: lib/extensions/nautilus/RabbitVCS.py:704
 msgid "Add an emblem"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:725
+#: lib/extensions/nautilus/RabbitVCS.py:722
 msgid "Check out a working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:741
+#: lib/extensions/nautilus/RabbitVCS.py:738
 msgid "Update a working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:757
+#: lib/extensions/nautilus/RabbitVCS.py:754
 msgid "Commit modifications to the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:772
+#: lib/extensions/nautilus/RabbitVCS.py:769
 msgid "RabbitVCS"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:786
+#: lib/extensions/nautilus/RabbitVCS.py:783
 msgid "View the modifications made to a file"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:801
+#: lib/extensions/nautilus/RabbitVCS.py:798
 msgid "Show Log"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:802
+#: lib/extensions/nautilus/RabbitVCS.py:799
 msgid "Show a file's log information"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:827
+#: lib/extensions/nautilus/RabbitVCS.py:824
 msgid "Schedule an item to be added to the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:851
+#: lib/extensions/nautilus/RabbitVCS.py:848
 msgid "Ignore an item"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:866
+#: lib/extensions/nautilus/RabbitVCS.py:863
 msgid "Ignore all files with this extension"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:891
+#: lib/extensions/nautilus/RabbitVCS.py:888
 msgid "Update to revision..."
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:892
+#: lib/extensions/nautilus/RabbitVCS.py:889
 msgid "Update a file to a specific revision"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:907
+#: lib/extensions/nautilus/RabbitVCS.py:904
 msgid "Rename..."
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:908
+#: lib/extensions/nautilus/RabbitVCS.py:905
 msgid "Schedule an item to be renamed on the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:924
+#: lib/extensions/nautilus/RabbitVCS.py:921
 msgid "Schedule an item to be deleted from the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:940
+#: lib/extensions/nautilus/RabbitVCS.py:937
 msgid "Revert an item to its unmodified state"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:956
+#: lib/extensions/nautilus/RabbitVCS.py:953
 msgid "Mark a conflicted item as resolved"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:971
+#: lib/extensions/nautilus/RabbitVCS.py:968
 msgid "Relocate..."
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:972
+#: lib/extensions/nautilus/RabbitVCS.py:969
 msgid "Relocate your working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:987
+#: lib/extensions/nautilus/RabbitVCS.py:984
 msgid "Get Lock..."
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:988
+#: lib/extensions/nautilus/RabbitVCS.py:985
 msgid "Locally lock items"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1003
+#: lib/extensions/nautilus/RabbitVCS.py:1000
 msgid "Release Lock..."
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1004
+#: lib/extensions/nautilus/RabbitVCS.py:1001
 msgid "Release lock on an item"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1020
+#: lib/extensions/nautilus/RabbitVCS.py:1017
 msgid "Clean up working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1045
+#: lib/extensions/nautilus/RabbitVCS.py:1042
 msgid "Export a working copy or repository with no versioning information"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1060
+#: lib/extensions/nautilus/RabbitVCS.py:1057
 msgid "Create Repository here"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1061
+#: lib/extensions/nautilus/RabbitVCS.py:1058
 msgid "Create a repository in a folder"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1077
+#: lib/extensions/nautilus/RabbitVCS.py:1074
 msgid "Import an item into a repository"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1101
+#: lib/extensions/nautilus/RabbitVCS.py:1098
 msgid "Branch/tag..."
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1102
+#: lib/extensions/nautilus/RabbitVCS.py:1099
 msgid "Copy an item to another location in the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1117
+#: lib/extensions/nautilus/RabbitVCS.py:1114
 msgid "Switch..."
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1118
+#: lib/extensions/nautilus/RabbitVCS.py:1115
 msgid "Change the repository location of a working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1133
+#: lib/extensions/nautilus/RabbitVCS.py:1130
 msgid "Merge..."
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1134
+#: lib/extensions/nautilus/RabbitVCS.py:1131
 msgid "A wizard with steps for merging"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1158
+#: lib/extensions/nautilus/RabbitVCS.py:1155
 msgid "Annotate..."
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1159
+#: lib/extensions/nautilus/RabbitVCS.py:1156
 msgid "Annotate a file"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1183
+#: lib/extensions/nautilus/RabbitVCS.py:1180
 msgid "Create Patch..."
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1184
+#: lib/extensions/nautilus/RabbitVCS.py:1181
 msgid "Creates a unified diff file with all changes you made"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1199
+#: lib/extensions/nautilus/RabbitVCS.py:1196
 msgid "Apply Patch..."
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1200
+#: lib/extensions/nautilus/RabbitVCS.py:1197
 msgid "Applies a unified diff file to the working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1216
+#: lib/extensions/nautilus/RabbitVCS.py:1213
 msgid "View the properties of an item"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1247
+#: lib/extensions/nautilus/RabbitVCS.py:1244
 msgid "Help"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1248
+#: lib/extensions/nautilus/RabbitVCS.py:1245
 msgid "View help"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1264
+#: lib/extensions/nautilus/RabbitVCS.py:1261
 msgid "View or change RabbitVCS settings"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:1280
+#: lib/extensions/nautilus/RabbitVCS.py:1277
 msgid "About RabbitVCS"
 msgstr ""
 
@@ -1391,49 +1390,49 @@ msgstr ""
 msgid "Rejected Patch"
 msgstr ""
 
-#: lib/helper.py:548
+#: lib/helper.py:553
 #, python-format
 msgid "%i second"
 msgid_plural "%i seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/helper.py:551
+#: lib/helper.py:556
 #, python-format
 msgid "%i minute"
 msgid_plural "%i minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/helper.py:554
+#: lib/helper.py:559
 #, python-format
 msgid "%i hour"
 msgid_plural "%i hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/helper.py:557
+#: lib/helper.py:562
 #, python-format
 msgid "%i day"
 msgid_plural "%i days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/helper.py:560
+#: lib/helper.py:565
 #, python-format
 msgid "%i week"
 msgid_plural "%i weeks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/helper.py:563
+#: lib/helper.py:568
 #, python-format
 msgid "%i month"
 msgid_plural "%i months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/helper.py:566
+#: lib/helper.py:571
 #, python-format
 msgid "%i year"
 msgid_plural "%i years"
