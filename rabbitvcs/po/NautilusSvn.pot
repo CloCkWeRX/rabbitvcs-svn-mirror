@@ -90,11 +90,11 @@ msgstr ""
 
 #: ui/annotate.py:75 ui/log.py:81 ui/glade/switch.glade.h:5
 #: ui/glade/merge.glade.h:17 ui/glade/checkout.glade.h:10
-#: ui/glade/update.glade.h:6 lib/extensions/nautilus/NautilusSvn.py:183
+#: ui/glade/update.glade.h:6 lib/extensions/nautilus/RabbitVCS.py:183
 msgid "Revision"
 msgstr ""
 
-#: ui/annotate.py:75 ui/log.py:81 lib/extensions/nautilus/NautilusSvn.py:195
+#: ui/annotate.py:75 ui/log.py:81 lib/extensions/nautilus/RabbitVCS.py:195
 msgid "Author"
 msgstr ""
 
@@ -150,7 +150,7 @@ msgstr ""
 msgid "Authentication information cleared"
 msgstr ""
 
-#: ui/cleanup.py:54 lib/extensions/nautilus/NautilusSvn.py:1019
+#: ui/cleanup.py:54 lib/extensions/nautilus/RabbitVCS.py:1019
 msgid "Cleanup"
 msgstr ""
 
@@ -200,7 +200,7 @@ msgid "Found %d item(s)"
 msgstr ""
 
 #: ui/add.py:121 ui/commit.py:269 ui/createpatch.py:297 ui/glade/add.glade.h:1
-#: lib/extensions/nautilus/NautilusSvn.py:826
+#: lib/extensions/nautilus/RabbitVCS.py:826
 msgid "Add"
 msgstr ""
 
@@ -221,12 +221,12 @@ msgid "Browse to"
 msgstr ""
 
 #: ui/add.py:165 ui/commit.py:259 ui/createpatch.py:287
-#: ui/glade/properties.glade.h:3 lib/extensions/nautilus/NautilusSvn.py:923
+#: ui/glade/properties.glade.h:3 lib/extensions/nautilus/RabbitVCS.py:923
 msgid "Delete"
 msgstr ""
 
 #: ui/add.py:174 ui/commit.py:299 ui/createpatch.py:327
-#: lib/extensions/nautilus/NautilusSvn.py:842
+#: lib/extensions/nautilus/RabbitVCS.py:842
 msgid "Add to ignore list"
 msgstr ""
 
@@ -240,7 +240,7 @@ msgid "The repository URL field is required."
 msgstr ""
 
 #: ui/import.py:80 ui/glade/import.glade.h:3
-#: lib/extensions/nautilus/NautilusSvn.py:1076
+#: lib/extensions/nautilus/RabbitVCS.py:1076
 msgid "Import"
 msgstr ""
 
@@ -277,7 +277,7 @@ msgid "Remove Lock"
 msgstr ""
 
 #: ui/lock.py:193 ui/commit.py:229 ui/createpatch.py:257
-#: lib/extensions/nautilus/NautilusSvn.py:785
+#: lib/extensions/nautilus/RabbitVCS.py:785
 msgid "View Diff"
 msgstr ""
 
@@ -296,7 +296,7 @@ msgstr ""
 msgid "The repository URL and destination path are both required fields."
 msgstr ""
 
-#: ui/export.py:89 lib/extensions/nautilus/NautilusSvn.py:1044
+#: ui/export.py:89 lib/extensions/nautilus/RabbitVCS.py:1044
 msgid "Export"
 msgstr ""
 
@@ -309,7 +309,7 @@ msgid "Completed Export"
 msgstr ""
 
 #: ui/resolve.py:48 ui/resolve.py:82
-#: lib/extensions/nautilus/NautilusSvn.py:955
+#: lib/extensions/nautilus/RabbitVCS.py:955
 msgid "Resolve"
 msgstr ""
 
@@ -351,7 +351,7 @@ msgid "Property Status"
 msgstr ""
 
 #: ui/commit.py:187 ui/glade/commit.glade.h:4
-#: lib/extensions/nautilus/NautilusSvn.py:756
+#: lib/extensions/nautilus/RabbitVCS.py:756
 msgid "Commit"
 msgstr ""
 
@@ -364,7 +364,7 @@ msgid "Completed Commit"
 msgstr ""
 
 #: ui/commit.py:279 ui/createpatch.py:307 ui/revert.py:48 ui/revert.py:80
-#: lib/extensions/nautilus/NautilusSvn.py:939
+#: lib/extensions/nautilus/RabbitVCS.py:939
 msgid "Revert"
 msgstr ""
 
@@ -462,7 +462,7 @@ msgid "Checkout - %s"
 msgstr ""
 
 #: ui/checkout.py:102 ui/glade/checkout.glade.h:5
-#: lib/extensions/nautilus/NautilusSvn.py:724
+#: lib/extensions/nautilus/RabbitVCS.py:724
 msgid "Checkout"
 msgstr ""
 
@@ -525,7 +525,7 @@ msgid "Completed Revert"
 msgstr ""
 
 #: ui/update.py:53 ui/glade/update.glade.h:8
-#: lib/extensions/nautilus/NautilusSvn.py:740
+#: lib/extensions/nautilus/RabbitVCS.py:740
 msgid "Update"
 msgstr ""
 
@@ -629,7 +629,7 @@ msgstr ""
 msgid "New..."
 msgstr ""
 
-#: ui/glade/properties.glade.h:7 lib/extensions/nautilus/NautilusSvn.py:1215
+#: ui/glade/properties.glade.h:7 lib/extensions/nautilus/RabbitVCS.py:1215
 msgid "Properties"
 msgstr ""
 
@@ -658,10 +658,10 @@ msgid "<b>Version Information</b>"
 msgstr ""
 
 #: ui/glade/about.glade.h:3
-msgid "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
+msgid "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
 msgstr ""
 
-#: ui/glade/about.glade.h:4 lib/extensions/nautilus/NautilusSvn.py:1279
+#: ui/glade/about.glade.h:4 lib/extensions/nautilus/RabbitVCS.py:1279
 msgid "About"
 msgstr ""
 
@@ -827,7 +827,7 @@ msgid "<b>Logging Options</b>"
 msgstr ""
 
 #: ui/glade/settings.glade.h:4
-msgid "<b>NautilusSvn</b>"
+msgid "<b>RabbitVCS</b>"
 msgstr ""
 
 #: ui/glade/settings.glade.h:5
@@ -894,12 +894,12 @@ msgstr ""
 msgid "Saved Data"
 msgstr ""
 
-#: ui/glade/settings.glade.h:21 lib/extensions/nautilus/NautilusSvn.py:1263
+#: ui/glade/settings.glade.h:21 lib/extensions/nautilus/RabbitVCS.py:1263
 msgid "Settings"
 msgstr ""
 
 #: ui/glade/settings.glade.h:22
-msgid "Show NautilusSVN debugging tools"
+msgid "Show RabbitVCS debugging tools"
 msgstr ""
 
 #: ui/glade/settings.glade.h:23
@@ -907,7 +907,7 @@ msgid "Show new version on the right side"
 msgstr ""
 
 #: ui/glade/settings.glade.h:24
-msgid "The debug menu is used to diagnose problems with NautilusSVN itself"
+msgid "The debug menu is used to diagnose problems with RabbitVCS itself"
 msgstr ""
 
 #: ui/glade/settings.glade.h:25
@@ -1050,236 +1050,236 @@ msgstr ""
 msgid "<b>Change the repository of your working copy</b>"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:177
+#: lib/extensions/nautilus/RabbitVCS.py:177
 msgid "Status"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:189
+#: lib/extensions/nautilus/RabbitVCS.py:189
 msgid "URL"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:201
+#: lib/extensions/nautilus/RabbitVCS.py:201
 msgid "Age"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:613
+#: lib/extensions/nautilus/RabbitVCS.py:613
 msgid "Debug"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:626
+#: lib/extensions/nautilus/RabbitVCS.py:626
 msgid "Bugs"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:642
+#: lib/extensions/nautilus/RabbitVCS.py:642
 msgid "Open Shell"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:658
+#: lib/extensions/nautilus/RabbitVCS.py:658
 msgid "Refresh Status"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:674
+#: lib/extensions/nautilus/RabbitVCS.py:674
 msgid "Debug Revert"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:675
+#: lib/extensions/nautilus/RabbitVCS.py:675
 msgid "Reverts everything it sees"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:690
+#: lib/extensions/nautilus/RabbitVCS.py:690
 msgid "Invalidate"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:691
+#: lib/extensions/nautilus/RabbitVCS.py:691
 msgid "Force an invalidate_extension_info() call"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:706
+#: lib/extensions/nautilus/RabbitVCS.py:706
 msgid "Add Emblem"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:707
+#: lib/extensions/nautilus/RabbitVCS.py:707
 msgid "Add an emblem"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:725
+#: lib/extensions/nautilus/RabbitVCS.py:725
 msgid "Check out a working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:741
+#: lib/extensions/nautilus/RabbitVCS.py:741
 msgid "Update a working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:757
+#: lib/extensions/nautilus/RabbitVCS.py:757
 msgid "Commit modifications to the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:772
-msgid "NautilusSvn"
+#: lib/extensions/nautilus/RabbitVCS.py:772
+msgid "RabbitVCS"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:786
+#: lib/extensions/nautilus/RabbitVCS.py:786
 msgid "View the modifications made to a file"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:801
+#: lib/extensions/nautilus/RabbitVCS.py:801
 msgid "Show Log"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:802
+#: lib/extensions/nautilus/RabbitVCS.py:802
 msgid "Show a file's log information"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:827
+#: lib/extensions/nautilus/RabbitVCS.py:827
 msgid "Schedule an item to be added to the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:851
+#: lib/extensions/nautilus/RabbitVCS.py:851
 msgid "Ignore an item"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:866
+#: lib/extensions/nautilus/RabbitVCS.py:866
 msgid "Ignore all files with this extension"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:891
+#: lib/extensions/nautilus/RabbitVCS.py:891
 msgid "Update to revision..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:892
+#: lib/extensions/nautilus/RabbitVCS.py:892
 msgid "Update a file to a specific revision"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:907
+#: lib/extensions/nautilus/RabbitVCS.py:907
 msgid "Rename..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:908
+#: lib/extensions/nautilus/RabbitVCS.py:908
 msgid "Schedule an item to be renamed on the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:924
+#: lib/extensions/nautilus/RabbitVCS.py:924
 msgid "Schedule an item to be deleted from the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:940
+#: lib/extensions/nautilus/RabbitVCS.py:940
 msgid "Revert an item to its unmodified state"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:956
+#: lib/extensions/nautilus/RabbitVCS.py:956
 msgid "Mark a conflicted item as resolved"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:971
+#: lib/extensions/nautilus/RabbitVCS.py:971
 msgid "Relocate..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:972
+#: lib/extensions/nautilus/RabbitVCS.py:972
 msgid "Relocate your working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:987
+#: lib/extensions/nautilus/RabbitVCS.py:987
 msgid "Get Lock..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:988
+#: lib/extensions/nautilus/RabbitVCS.py:988
 msgid "Locally lock items"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1003
+#: lib/extensions/nautilus/RabbitVCS.py:1003
 msgid "Release Lock..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1004
+#: lib/extensions/nautilus/RabbitVCS.py:1004
 msgid "Release lock on an item"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1020
+#: lib/extensions/nautilus/RabbitVCS.py:1020
 msgid "Clean up working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1045
+#: lib/extensions/nautilus/RabbitVCS.py:1045
 msgid "Export a working copy or repository with no versioning information"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1060
+#: lib/extensions/nautilus/RabbitVCS.py:1060
 msgid "Create Repository here"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1061
+#: lib/extensions/nautilus/RabbitVCS.py:1061
 msgid "Create a repository in a folder"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1077
+#: lib/extensions/nautilus/RabbitVCS.py:1077
 msgid "Import an item into a repository"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1101
+#: lib/extensions/nautilus/RabbitVCS.py:1101
 msgid "Branch/tag..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1102
+#: lib/extensions/nautilus/RabbitVCS.py:1102
 msgid "Copy an item to another location in the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1117
+#: lib/extensions/nautilus/RabbitVCS.py:1117
 msgid "Switch..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1118
+#: lib/extensions/nautilus/RabbitVCS.py:1118
 msgid "Change the repository location of a working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1133
+#: lib/extensions/nautilus/RabbitVCS.py:1133
 msgid "Merge..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1134
+#: lib/extensions/nautilus/RabbitVCS.py:1134
 msgid "A wizard with steps for merging"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1158
+#: lib/extensions/nautilus/RabbitVCS.py:1158
 msgid "Annotate..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1159
+#: lib/extensions/nautilus/RabbitVCS.py:1159
 msgid "Annotate a file"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1183
+#: lib/extensions/nautilus/RabbitVCS.py:1183
 msgid "Create Patch..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1184
+#: lib/extensions/nautilus/RabbitVCS.py:1184
 msgid "Creates a unified diff file with all changes you made"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1199
+#: lib/extensions/nautilus/RabbitVCS.py:1199
 msgid "Apply Patch..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1200
+#: lib/extensions/nautilus/RabbitVCS.py:1200
 msgid "Applies a unified diff file to the working copy"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1216
+#: lib/extensions/nautilus/RabbitVCS.py:1216
 msgid "View the properties of an item"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1247
+#: lib/extensions/nautilus/RabbitVCS.py:1247
 msgid "Help"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1248
+#: lib/extensions/nautilus/RabbitVCS.py:1248
 msgid "View help"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1264
-msgid "View or change NautilusSvn settings"
+#: lib/extensions/nautilus/RabbitVCS.py:1264
+msgid "View or change RabbitVCS settings"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:1280
-msgid "About NautilusSvn"
+#: lib/extensions/nautilus/RabbitVCS.py:1280
+msgid "About RabbitVCS"
 msgstr ""
 
 #: lib/vcs/svn/__init__.py:205 lib/vcs/svn/__init__.py:214

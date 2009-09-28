@@ -1,11 +1,11 @@
-# Slovak translation for nautilussvn
+# Slovak translation for rabbitvcs
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
-# This file is distributed under the same license as the nautilussvn package.
+# This file is distributed under the same license as the rabbitvcs package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilussvn\n"
+"Project-Id-Version: rabbitvcs\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-03-04 14:35-0500\n"
 "PO-Revision-Date: 2009-06-09 15:34+0000\n"
@@ -152,7 +152,7 @@ msgstr "Ste si istí, že chcete vymazať vaše autentizačný údaje?"
 msgid "Authentication information cleared"
 msgstr "Autentizačný údaje vymazané"
 
-#: ui/cleanup.py:54 lib/extensions/nautilus/NautilusSvn.py:831
+#: ui/cleanup.py:54 lib/extensions/nautilus/RabbitVCS.py:831
 msgid "Cleanup"
 msgstr "Čistenie"
 
@@ -201,7 +201,7 @@ msgid "Found %d item(s)"
 msgstr "Nájdená %d položka(y)"
 
 #: ui/add.py:115 ui/commit.py:269 ui/glade/add.glade.h:1
-#: lib/extensions/nautilus/NautilusSvn.py:638
+#: lib/extensions/nautilus/RabbitVCS.py:638
 msgid "Add"
 msgstr "Pridať"
 
@@ -222,11 +222,11 @@ msgid "Browse to"
 msgstr "Prehľadávať"
 
 #: ui/add.py:159 ui/commit.py:259 ui/glade/properties.glade.h:2
-#: lib/extensions/nautilus/NautilusSvn.py:735
+#: lib/extensions/nautilus/RabbitVCS.py:735
 msgid "Delete"
 msgstr "Odstrániť"
 
-#: ui/add.py:168 ui/commit.py:299 lib/extensions/nautilus/NautilusSvn.py:654
+#: ui/add.py:168 ui/commit.py:299 lib/extensions/nautilus/RabbitVCS.py:654
 msgid "Add to ignore list"
 msgstr "Pridať do zoznamu ignorovaných"
 
@@ -240,7 +240,7 @@ msgid "The repository URL field is required."
 msgstr ""
 
 #: ui/import.py:80 ui/glade/import.glade.h:3
-#: lib/extensions/nautilus/NautilusSvn.py:888
+#: lib/extensions/nautilus/RabbitVCS.py:888
 msgid "Import"
 msgstr "Import"
 
@@ -276,7 +276,7 @@ msgstr "Zamknutie ukončené"
 msgid "Remove Lock"
 msgstr "Odstrániť zámok"
 
-#: ui/lock.py:186 ui/commit.py:229 lib/extensions/nautilus/NautilusSvn.py:597
+#: ui/lock.py:186 ui/commit.py:229 lib/extensions/nautilus/RabbitVCS.py:597
 msgid "View Diff"
 msgstr "Zobraziť záznam"
 
@@ -295,7 +295,7 @@ msgstr "Export - %s"
 msgid "The repository URL and destination path are both required fields."
 msgstr ""
 
-#: ui/export.py:79 lib/extensions/nautilus/NautilusSvn.py:856
+#: ui/export.py:79 lib/extensions/nautilus/RabbitVCS.py:856
 msgid "Export"
 msgstr "Export"
 
@@ -308,7 +308,7 @@ msgid "Completed Export"
 msgstr "Export ukončený"
 
 #: ui/resolve.py:45 ui/resolve.py:76
-#: lib/extensions/nautilus/NautilusSvn.py:767
+#: lib/extensions/nautilus/RabbitVCS.py:767
 msgid "Resolve"
 msgstr "Riešenie"
 
@@ -354,7 +354,7 @@ msgid "Property Status"
 msgstr "Stav objektu"
 
 #: ui/commit.py:188 ui/glade/commit.glade.h:4
-#: lib/extensions/nautilus/NautilusSvn.py:568
+#: lib/extensions/nautilus/RabbitVCS.py:568
 msgid "Commit"
 msgstr "Odovzdať"
 
@@ -367,7 +367,7 @@ msgid "Completed Commit"
 msgstr "Odovzdanie ukončené"
 
 #: ui/commit.py:279 ui/revert.py:45 ui/revert.py:75
-#: lib/extensions/nautilus/NautilusSvn.py:751
+#: lib/extensions/nautilus/RabbitVCS.py:751
 msgid "Revert"
 msgstr "Späť"
 
@@ -453,7 +453,7 @@ msgid "Checkout - %s"
 msgstr "Vyskúšanie - %s"
 
 #: ui/checkout.py:100 ui/glade/checkout.glade.h:5
-#: lib/extensions/nautilus/NautilusSvn.py:536
+#: lib/extensions/nautilus/RabbitVCS.py:536
 msgid "Checkout"
 msgstr "Vyskúšanie"
 
@@ -516,7 +516,7 @@ msgid "Completed Revert"
 msgstr "Návrat ukončený"
 
 #: ui/update.py:53 ui/glade/update.glade.h:8
-#: lib/extensions/nautilus/NautilusSvn.py:552
+#: lib/extensions/nautilus/RabbitVCS.py:552
 msgid "Update"
 msgstr "Aktualizácia"
 
@@ -613,7 +613,7 @@ msgstr "Editovať..."
 msgid "New..."
 msgstr "Nový..."
 
-#: ui/glade/properties.glade.h:5 lib/extensions/nautilus/NautilusSvn.py:995
+#: ui/glade/properties.glade.h:5 lib/extensions/nautilus/RabbitVCS.py:995
 msgid "Properties"
 msgstr "Vlastnosti"
 
@@ -642,10 +642,10 @@ msgid "<b>Version Information</b>"
 msgstr "<b>Informácie o verzii</b>"
 
 #: ui/glade/about.glade.h:3
-msgid "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
-msgstr "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
+msgid "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
+msgstr "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
 
-#: ui/glade/about.glade.h:4 lib/extensions/nautilus/NautilusSvn.py:1059
+#: ui/glade/about.glade.h:4 lib/extensions/nautilus/RabbitVCS.py:1059
 msgid "About"
 msgstr "O"
 
@@ -815,8 +815,8 @@ msgid "<b>Logging Options</b>"
 msgstr "<b>Možnosti zaznamenávania</b>"
 
 #: ui/glade/settings.glade.h:4
-msgid "<b>NautilusSvn</b>"
-msgstr "<b>NautilusSvn</b>"
+msgid "<b>RabbitVCS</b>"
+msgstr "<b>RabbitVCS</b>"
 
 #: ui/glade/settings.glade.h:5
 msgid "<b>Program used to browse repositories</b>"
@@ -882,7 +882,7 @@ msgstr "Počet správ k zapamätaniu"
 msgid "Saved Data"
 msgstr "Uložené údaje"
 
-#: ui/glade/settings.glade.h:21 lib/extensions/nautilus/NautilusSvn.py:1043
+#: ui/glade/settings.glade.h:21 lib/extensions/nautilus/RabbitVCS.py:1043
 msgid "Settings"
 msgstr "Nastavenia"
 
@@ -1029,225 +1029,225 @@ msgstr ""
 msgid "<b>Change the repository of your working copy</b>"
 msgstr "<b>Zmeniť repozitár vašej pracovnej kópie</b>"
 
-#: lib/extensions/nautilus/NautilusSvn.py:362
+#: lib/extensions/nautilus/RabbitVCS.py:362
 msgid "Debug"
 msgstr "Správa o ladení"
 
-#: lib/extensions/nautilus/NautilusSvn.py:375
+#: lib/extensions/nautilus/RabbitVCS.py:375
 msgid "DBus"
 msgstr "DBus"
 
-#: lib/extensions/nautilus/NautilusSvn.py:388
+#: lib/extensions/nautilus/RabbitVCS.py:388
 msgid "Start/Restart Service"
 msgstr "Spustiť/Reštartovať službu"
 
-#: lib/extensions/nautilus/NautilusSvn.py:404
+#: lib/extensions/nautilus/RabbitVCS.py:404
 msgid "Exit Service"
 msgstr "Ukončiť službu"
 
-#: lib/extensions/nautilus/NautilusSvn.py:422
+#: lib/extensions/nautilus/RabbitVCS.py:422
 msgid "Bugs"
 msgstr "Chyby"
 
-#: lib/extensions/nautilus/NautilusSvn.py:435
+#: lib/extensions/nautilus/RabbitVCS.py:435
 msgid "Test Asynchronicity"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:453
+#: lib/extensions/nautilus/RabbitVCS.py:453
 msgid "Open Shell"
 msgstr "Otvoriť shell"
 
-#: lib/extensions/nautilus/NautilusSvn.py:469
+#: lib/extensions/nautilus/RabbitVCS.py:469
 msgid "Refresh Status"
 msgstr "Obnoviť stav"
 
-#: lib/extensions/nautilus/NautilusSvn.py:486
+#: lib/extensions/nautilus/RabbitVCS.py:486
 msgid "Debug Revert"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:487
+#: lib/extensions/nautilus/RabbitVCS.py:487
 msgid "Reverts everything it sees"
 msgstr "Vráti všetko viditeľné"
 
-#: lib/extensions/nautilus/NautilusSvn.py:502
+#: lib/extensions/nautilus/RabbitVCS.py:502
 msgid "Invalidate"
 msgstr "Zruší"
 
-#: lib/extensions/nautilus/NautilusSvn.py:503
+#: lib/extensions/nautilus/RabbitVCS.py:503
 msgid "Force an invalidate_extension_info() call"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:518
+#: lib/extensions/nautilus/RabbitVCS.py:518
 msgid "Add Emblem"
 msgstr "Pridať znak"
 
-#: lib/extensions/nautilus/NautilusSvn.py:519
+#: lib/extensions/nautilus/RabbitVCS.py:519
 msgid "Add an emblem"
 msgstr "Pridať nejaký znak"
 
-#: lib/extensions/nautilus/NautilusSvn.py:537
+#: lib/extensions/nautilus/RabbitVCS.py:537
 msgid "Check out a working copy"
 msgstr "Pozrite sa na pracovnú kópiu"
 
-#: lib/extensions/nautilus/NautilusSvn.py:553
+#: lib/extensions/nautilus/RabbitVCS.py:553
 msgid "Update a working copy"
 msgstr "Aktualizovať pracovnú kópiu"
 
-#: lib/extensions/nautilus/NautilusSvn.py:569
+#: lib/extensions/nautilus/RabbitVCS.py:569
 msgid "Commit modifications to the repository"
 msgstr "Rešpektovať zmeny repozitára"
 
-#: lib/extensions/nautilus/NautilusSvn.py:584
-msgid "NautilusSvn"
-msgstr "NautilusSvn"
+#: lib/extensions/nautilus/RabbitVCS.py:584
+msgid "RabbitVCS"
+msgstr "RabbitVCS"
 
-#: lib/extensions/nautilus/NautilusSvn.py:598
+#: lib/extensions/nautilus/RabbitVCS.py:598
 msgid "View the modifications made to a file"
 msgstr "Zobrazenie zmien do súboru"
 
-#: lib/extensions/nautilus/NautilusSvn.py:613
+#: lib/extensions/nautilus/RabbitVCS.py:613
 msgid "Show Log"
 msgstr "Zobraziť záznam"
 
-#: lib/extensions/nautilus/NautilusSvn.py:614
+#: lib/extensions/nautilus/RabbitVCS.py:614
 msgid "Show a file's log information"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:639
+#: lib/extensions/nautilus/RabbitVCS.py:639
 msgid "Schedule an item to be added to the repository"
 msgstr "Rozvrh položiek, ktoré majú byť pridané do repozitára"
 
-#: lib/extensions/nautilus/NautilusSvn.py:663
+#: lib/extensions/nautilus/RabbitVCS.py:663
 msgid "Ignore an item"
 msgstr "Ignorovať položku"
 
-#: lib/extensions/nautilus/NautilusSvn.py:678
+#: lib/extensions/nautilus/RabbitVCS.py:678
 msgid "Ignore all files with this extension"
 msgstr "Ignorovať všetky súbory s rozšírením"
 
-#: lib/extensions/nautilus/NautilusSvn.py:703
+#: lib/extensions/nautilus/RabbitVCS.py:703
 msgid "Update to revision..."
 msgstr "Aktualizácia revízie"
 
-#: lib/extensions/nautilus/NautilusSvn.py:704
+#: lib/extensions/nautilus/RabbitVCS.py:704
 msgid "Update a file to a specific revision"
 msgstr "Aktualizácia súboru do určenej revízie"
 
-#: lib/extensions/nautilus/NautilusSvn.py:719
+#: lib/extensions/nautilus/RabbitVCS.py:719
 msgid "Rename..."
 msgstr "Premenovať"
 
-#: lib/extensions/nautilus/NautilusSvn.py:720
+#: lib/extensions/nautilus/RabbitVCS.py:720
 msgid "Schedule an item to be renamed on the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:736
+#: lib/extensions/nautilus/RabbitVCS.py:736
 msgid "Schedule an item to be deleted from the repository"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:752
+#: lib/extensions/nautilus/RabbitVCS.py:752
 msgid "Revert an item to its unmodified state"
 msgstr "Vrátiť položku do jej nezmeneného stavu"
 
-#: lib/extensions/nautilus/NautilusSvn.py:768
+#: lib/extensions/nautilus/RabbitVCS.py:768
 msgid "Mark a conflicted item as resolved"
 msgstr "Označiť položku v rozpore ako vyriešenú"
 
-#: lib/extensions/nautilus/NautilusSvn.py:783
+#: lib/extensions/nautilus/RabbitVCS.py:783
 msgid "Relocate..."
 msgstr "Premiestniť..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:784
+#: lib/extensions/nautilus/RabbitVCS.py:784
 msgid "Relocate your working copy"
 msgstr "Premiestniť vašu pracovnú kópiu"
 
-#: lib/extensions/nautilus/NautilusSvn.py:799
+#: lib/extensions/nautilus/RabbitVCS.py:799
 msgid "Get Lock..."
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:800
+#: lib/extensions/nautilus/RabbitVCS.py:800
 msgid "Locally lock items"
 msgstr "Lokálny zámok položky"
 
-#: lib/extensions/nautilus/NautilusSvn.py:815
+#: lib/extensions/nautilus/RabbitVCS.py:815
 msgid "Release Lock..."
 msgstr "Vydanie zámku ..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:816
+#: lib/extensions/nautilus/RabbitVCS.py:816
 msgid "Release lock on an item"
 msgstr "Vydanie zámku na položku"
 
-#: lib/extensions/nautilus/NautilusSvn.py:832
+#: lib/extensions/nautilus/RabbitVCS.py:832
 msgid "Clean up working copy"
 msgstr "Vyčistiť pracovnú kópiu"
 
-#: lib/extensions/nautilus/NautilusSvn.py:857
+#: lib/extensions/nautilus/RabbitVCS.py:857
 msgid "Export a working copy or repository with no versioning information"
 msgstr "Exportovať pracovnú kópiu alebo repozitáre bez informácie o verzii"
 
-#: lib/extensions/nautilus/NautilusSvn.py:872
+#: lib/extensions/nautilus/RabbitVCS.py:872
 msgid "Create Repository here"
 msgstr "Vytvoriť repozitáre tu"
 
-#: lib/extensions/nautilus/NautilusSvn.py:873
+#: lib/extensions/nautilus/RabbitVCS.py:873
 msgid "Create a repository in a folder"
 msgstr "Vytvoriť repozitáre v priečinku"
 
-#: lib/extensions/nautilus/NautilusSvn.py:889
+#: lib/extensions/nautilus/RabbitVCS.py:889
 msgid "Import an item into a repository"
 msgstr "Importovať položky do repozitára"
 
-#: lib/extensions/nautilus/NautilusSvn.py:913
+#: lib/extensions/nautilus/RabbitVCS.py:913
 msgid "Branch/tag..."
 msgstr "Branch/tag..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:914
+#: lib/extensions/nautilus/RabbitVCS.py:914
 msgid "Copy an item to another location in the repository"
 msgstr "Kopírovať položku na iné miesto v repozitári"
 
-#: lib/extensions/nautilus/NautilusSvn.py:929
+#: lib/extensions/nautilus/RabbitVCS.py:929
 msgid "Switch..."
 msgstr "Prepni..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:930
+#: lib/extensions/nautilus/RabbitVCS.py:930
 msgid "Change the repository location of a working copy"
 msgstr "Zmeniť umiestnenie repozitára pracovnej kópie"
 
-#: lib/extensions/nautilus/NautilusSvn.py:945
+#: lib/extensions/nautilus/RabbitVCS.py:945
 msgid "Merge..."
 msgstr "Zlúčiť..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:946
+#: lib/extensions/nautilus/RabbitVCS.py:946
 msgid "A wizard with steps for merging"
 msgstr "A sprievodca s krokmi pre zlúčenie"
 
-#: lib/extensions/nautilus/NautilusSvn.py:970
+#: lib/extensions/nautilus/RabbitVCS.py:970
 msgid "Annotate..."
 msgstr "Komentovať..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:971
+#: lib/extensions/nautilus/RabbitVCS.py:971
 msgid "Annotate a file"
 msgstr "Komentovať súbor"
 
-#: lib/extensions/nautilus/NautilusSvn.py:996
+#: lib/extensions/nautilus/RabbitVCS.py:996
 msgid "View the properties of an item"
 msgstr "Pozrieť vlastnosti položky"
 
-#: lib/extensions/nautilus/NautilusSvn.py:1027
+#: lib/extensions/nautilus/RabbitVCS.py:1027
 msgid "Help"
 msgstr "Pomocník"
 
-#: lib/extensions/nautilus/NautilusSvn.py:1028
+#: lib/extensions/nautilus/RabbitVCS.py:1028
 msgid "View help"
 msgstr "Pozrieť pomocníka"
 
-#: lib/extensions/nautilus/NautilusSvn.py:1044
-msgid "View or change NautilusSvn settings"
-msgstr "Pozrieť alebo zmeniť nastavenia NautilusSvn"
+#: lib/extensions/nautilus/RabbitVCS.py:1044
+msgid "View or change RabbitVCS settings"
+msgstr "Pozrieť alebo zmeniť nastavenia RabbitVCS"
 
-#: lib/extensions/nautilus/NautilusSvn.py:1060
-msgid "About NautilusSvn"
-msgstr "O NautilusSvn"
+#: lib/extensions/nautilus/RabbitVCS.py:1060
+msgid "About RabbitVCS"
+msgstr "O RabbitVCS"
 
 #: lib/vcs/svn/__init__.py:111 lib/vcs/svn/__init__.py:120
 #: lib/vcs/svn/__init__.py:127

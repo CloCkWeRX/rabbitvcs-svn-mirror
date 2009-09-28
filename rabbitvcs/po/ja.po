@@ -1,11 +1,11 @@
-# Japanese translation for nautilussvn
+# Japanese translation for rabbitvcs
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
-# This file is distributed under the same license as the nautilussvn package.
+# This file is distributed under the same license as the rabbitvcs package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilussvn\n"
+"Project-Id-Version: rabbitvcs\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-03-04 14:35-0500\n"
 "PO-Revision-Date: 2009-03-25 06:02+0000\n"
@@ -150,7 +150,7 @@ msgstr "本当に認証情報を削除しますか?"
 msgid "Authentication information cleared"
 msgstr "認証情報は削除されました"
 
-#: ui/cleanup.py:54 lib/extensions/nautilus/NautilusSvn.py:831
+#: ui/cleanup.py:54 lib/extensions/nautilus/RabbitVCS.py:831
 msgid "Cleanup"
 msgstr "クリーンアップ"
 
@@ -199,7 +199,7 @@ msgid "Found %d item(s)"
 msgstr "%d個のアイテムが見つかりました"
 
 #: ui/add.py:115 ui/commit.py:269 ui/glade/add.glade.h:1
-#: lib/extensions/nautilus/NautilusSvn.py:638
+#: lib/extensions/nautilus/RabbitVCS.py:638
 msgid "Add"
 msgstr "追加"
 
@@ -220,11 +220,11 @@ msgid "Browse to"
 msgstr "参照"
 
 #: ui/add.py:159 ui/commit.py:259 ui/glade/properties.glade.h:2
-#: lib/extensions/nautilus/NautilusSvn.py:735
+#: lib/extensions/nautilus/RabbitVCS.py:735
 msgid "Delete"
 msgstr "削除"
 
-#: ui/add.py:168 ui/commit.py:299 lib/extensions/nautilus/NautilusSvn.py:654
+#: ui/add.py:168 ui/commit.py:299 lib/extensions/nautilus/RabbitVCS.py:654
 msgid "Add to ignore list"
 msgstr "無視リストに追加"
 
@@ -238,7 +238,7 @@ msgid "The repository URL field is required."
 msgstr "レポジトリURLを入力してください"
 
 #: ui/import.py:80 ui/glade/import.glade.h:3
-#: lib/extensions/nautilus/NautilusSvn.py:888
+#: lib/extensions/nautilus/RabbitVCS.py:888
 msgid "Import"
 msgstr "インポート"
 
@@ -274,7 +274,7 @@ msgstr "ロック完了"
 msgid "Remove Lock"
 msgstr "ロックを削除"
 
-#: ui/lock.py:186 ui/commit.py:229 lib/extensions/nautilus/NautilusSvn.py:597
+#: ui/lock.py:186 ui/commit.py:229 lib/extensions/nautilus/RabbitVCS.py:597
 msgid "View Diff"
 msgstr "差分を見る"
 
@@ -293,7 +293,7 @@ msgstr "エクスポート - %s"
 msgid "The repository URL and destination path are both required fields."
 msgstr "レポジトリのURLとチェックアウト先の両方の入力が必要です．"
 
-#: ui/export.py:79 lib/extensions/nautilus/NautilusSvn.py:856
+#: ui/export.py:79 lib/extensions/nautilus/RabbitVCS.py:856
 msgid "Export"
 msgstr "エクスポート"
 
@@ -306,7 +306,7 @@ msgid "Completed Export"
 msgstr "エクスポート完了"
 
 #: ui/resolve.py:45 ui/resolve.py:76
-#: lib/extensions/nautilus/NautilusSvn.py:767
+#: lib/extensions/nautilus/RabbitVCS.py:767
 msgid "Resolve"
 msgstr "解消"
 
@@ -352,7 +352,7 @@ msgid "Property Status"
 msgstr "属性の状態"
 
 #: ui/commit.py:188 ui/glade/commit.glade.h:4
-#: lib/extensions/nautilus/NautilusSvn.py:568
+#: lib/extensions/nautilus/RabbitVCS.py:568
 msgid "Commit"
 msgstr "コミット"
 
@@ -365,7 +365,7 @@ msgid "Completed Commit"
 msgstr "コミット完了"
 
 #: ui/commit.py:279 ui/revert.py:45 ui/revert.py:75
-#: lib/extensions/nautilus/NautilusSvn.py:751
+#: lib/extensions/nautilus/RabbitVCS.py:751
 msgid "Revert"
 msgstr "元に戻す"
 
@@ -451,7 +451,7 @@ msgid "Checkout - %s"
 msgstr "チェックアウト - %s"
 
 #: ui/checkout.py:100 ui/glade/checkout.glade.h:5
-#: lib/extensions/nautilus/NautilusSvn.py:536
+#: lib/extensions/nautilus/RabbitVCS.py:536
 msgid "Checkout"
 msgstr "チェックアウト"
 
@@ -514,7 +514,7 @@ msgid "Completed Revert"
 msgstr "元に戻しました"
 
 #: ui/update.py:53 ui/glade/update.glade.h:8
-#: lib/extensions/nautilus/NautilusSvn.py:552
+#: lib/extensions/nautilus/RabbitVCS.py:552
 msgid "Update"
 msgstr "更新"
 
@@ -609,7 +609,7 @@ msgstr "編集..."
 msgid "New..."
 msgstr "新規..."
 
-#: ui/glade/properties.glade.h:5 lib/extensions/nautilus/NautilusSvn.py:995
+#: ui/glade/properties.glade.h:5 lib/extensions/nautilus/RabbitVCS.py:995
 msgid "Properties"
 msgstr "属性"
 
@@ -638,10 +638,10 @@ msgid "<b>Version Information</b>"
 msgstr "バージョン情報"
 
 #: ui/glade/about.glade.h:3
-msgid "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
-msgstr "<span size=\"xx-large\"><b>NautilusSvn</b></span>"
+msgid "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
+msgstr "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
 
-#: ui/glade/about.glade.h:4 lib/extensions/nautilus/NautilusSvn.py:1059
+#: ui/glade/about.glade.h:4 lib/extensions/nautilus/RabbitVCS.py:1059
 msgid "About"
 msgstr "About"
 
@@ -813,8 +813,8 @@ msgid "<b>Logging Options</b>"
 msgstr "<b>ログオプション</b>"
 
 #: ui/glade/settings.glade.h:4
-msgid "<b>NautilusSvn</b>"
-msgstr "<b>NautilusSvn</b>"
+msgid "<b>RabbitVCS</b>"
+msgstr "<b>RabbitVCS</b>"
 
 #: ui/glade/settings.glade.h:5
 msgid "<b>Program used to browse repositories</b>"
@@ -880,7 +880,7 @@ msgstr "記録するメッセージの数"
 msgid "Saved Data"
 msgstr "データの保存"
 
-#: ui/glade/settings.glade.h:21 lib/extensions/nautilus/NautilusSvn.py:1043
+#: ui/glade/settings.glade.h:21 lib/extensions/nautilus/RabbitVCS.py:1043
 msgid "Settings"
 msgstr "設定"
 
@@ -1027,225 +1027,225 @@ msgstr "<b>更新</b>"
 msgid "<b>Change the repository of your working copy</b>"
 msgstr "<b>作業コピーのレポジトリを変更する</b>"
 
-#: lib/extensions/nautilus/NautilusSvn.py:362
+#: lib/extensions/nautilus/RabbitVCS.py:362
 msgid "Debug"
 msgstr "デバッグ"
 
-#: lib/extensions/nautilus/NautilusSvn.py:375
+#: lib/extensions/nautilus/RabbitVCS.py:375
 msgid "DBus"
 msgstr "DBus"
 
-#: lib/extensions/nautilus/NautilusSvn.py:388
+#: lib/extensions/nautilus/RabbitVCS.py:388
 msgid "Start/Restart Service"
 msgstr "サービスを開始/再開する"
 
-#: lib/extensions/nautilus/NautilusSvn.py:404
+#: lib/extensions/nautilus/RabbitVCS.py:404
 msgid "Exit Service"
 msgstr "サービスを終了する"
 
-#: lib/extensions/nautilus/NautilusSvn.py:422
+#: lib/extensions/nautilus/RabbitVCS.py:422
 msgid "Bugs"
 msgstr "バグ"
 
-#: lib/extensions/nautilus/NautilusSvn.py:435
+#: lib/extensions/nautilus/RabbitVCS.py:435
 msgid "Test Asynchronicity"
 msgstr "非同期テスト"
 
-#: lib/extensions/nautilus/NautilusSvn.py:453
+#: lib/extensions/nautilus/RabbitVCS.py:453
 msgid "Open Shell"
 msgstr "シェルを開く"
 
-#: lib/extensions/nautilus/NautilusSvn.py:469
+#: lib/extensions/nautilus/RabbitVCS.py:469
 msgid "Refresh Status"
 msgstr "状態を更新"
 
-#: lib/extensions/nautilus/NautilusSvn.py:486
+#: lib/extensions/nautilus/RabbitVCS.py:486
 msgid "Debug Revert"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:487
+#: lib/extensions/nautilus/RabbitVCS.py:487
 msgid "Reverts everything it sees"
 msgstr ""
 
-#: lib/extensions/nautilus/NautilusSvn.py:502
+#: lib/extensions/nautilus/RabbitVCS.py:502
 msgid "Invalidate"
 msgstr "無効にする"
 
-#: lib/extensions/nautilus/NautilusSvn.py:503
+#: lib/extensions/nautilus/RabbitVCS.py:503
 msgid "Force an invalidate_extension_info() call"
 msgstr "invalidate_extension_info() 呼び出しを強制する"
 
-#: lib/extensions/nautilus/NautilusSvn.py:518
+#: lib/extensions/nautilus/RabbitVCS.py:518
 msgid "Add Emblem"
 msgstr "エンブレムを追加"
 
-#: lib/extensions/nautilus/NautilusSvn.py:519
+#: lib/extensions/nautilus/RabbitVCS.py:519
 msgid "Add an emblem"
 msgstr "エンブレムを追加"
 
-#: lib/extensions/nautilus/NautilusSvn.py:537
+#: lib/extensions/nautilus/RabbitVCS.py:537
 msgid "Check out a working copy"
 msgstr "作業コピーをチェックアウト"
 
-#: lib/extensions/nautilus/NautilusSvn.py:553
+#: lib/extensions/nautilus/RabbitVCS.py:553
 msgid "Update a working copy"
 msgstr "作業コピーを更新"
 
-#: lib/extensions/nautilus/NautilusSvn.py:569
+#: lib/extensions/nautilus/RabbitVCS.py:569
 msgid "Commit modifications to the repository"
 msgstr "レポジトリへの変更をコミット"
 
-#: lib/extensions/nautilus/NautilusSvn.py:584
-msgid "NautilusSvn"
-msgstr "NautilusSvn"
+#: lib/extensions/nautilus/RabbitVCS.py:584
+msgid "RabbitVCS"
+msgstr "RabbitVCS"
 
-#: lib/extensions/nautilus/NautilusSvn.py:598
+#: lib/extensions/nautilus/RabbitVCS.py:598
 msgid "View the modifications made to a file"
 msgstr "ファイルに対する変更を見る"
 
-#: lib/extensions/nautilus/NautilusSvn.py:613
+#: lib/extensions/nautilus/RabbitVCS.py:613
 msgid "Show Log"
 msgstr "ログを表示"
 
-#: lib/extensions/nautilus/NautilusSvn.py:614
+#: lib/extensions/nautilus/RabbitVCS.py:614
 msgid "Show a file's log information"
 msgstr "ファイルのログ情報を見る"
 
-#: lib/extensions/nautilus/NautilusSvn.py:639
+#: lib/extensions/nautilus/RabbitVCS.py:639
 msgid "Schedule an item to be added to the repository"
 msgstr "レポジトリへのアイテムの追加を予定する"
 
-#: lib/extensions/nautilus/NautilusSvn.py:663
+#: lib/extensions/nautilus/RabbitVCS.py:663
 msgid "Ignore an item"
 msgstr "アイテムを無視する"
 
-#: lib/extensions/nautilus/NautilusSvn.py:678
+#: lib/extensions/nautilus/RabbitVCS.py:678
 msgid "Ignore all files with this extension"
 msgstr "この拡張子をもつファイル全てを無視する"
 
-#: lib/extensions/nautilus/NautilusSvn.py:703
+#: lib/extensions/nautilus/RabbitVCS.py:703
 msgid "Update to revision..."
 msgstr "特定のリビジョンへ更新..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:704
+#: lib/extensions/nautilus/RabbitVCS.py:704
 msgid "Update a file to a specific revision"
 msgstr "特定のリビジョンへ更新..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:719
+#: lib/extensions/nautilus/RabbitVCS.py:719
 msgid "Rename..."
 msgstr "リネーム..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:720
+#: lib/extensions/nautilus/RabbitVCS.py:720
 msgid "Schedule an item to be renamed on the repository"
 msgstr "レポジトリへのアイテムのリネームを予定する"
 
-#: lib/extensions/nautilus/NautilusSvn.py:736
+#: lib/extensions/nautilus/RabbitVCS.py:736
 msgid "Schedule an item to be deleted from the repository"
 msgstr "レポジトリへのアイテムの削除を予定する"
 
-#: lib/extensions/nautilus/NautilusSvn.py:752
+#: lib/extensions/nautilus/RabbitVCS.py:752
 msgid "Revert an item to its unmodified state"
 msgstr "未変更の状態に戻す"
 
-#: lib/extensions/nautilus/NautilusSvn.py:768
+#: lib/extensions/nautilus/RabbitVCS.py:768
 msgid "Mark a conflicted item as resolved"
 msgstr "競合するアイテムを解決済みにマークする"
 
-#: lib/extensions/nautilus/NautilusSvn.py:783
+#: lib/extensions/nautilus/RabbitVCS.py:783
 msgid "Relocate..."
 msgstr "再配置..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:784
+#: lib/extensions/nautilus/RabbitVCS.py:784
 msgid "Relocate your working copy"
 msgstr "作業コピーを再配置"
 
-#: lib/extensions/nautilus/NautilusSvn.py:799
+#: lib/extensions/nautilus/RabbitVCS.py:799
 msgid "Get Lock..."
 msgstr "ロックを取得..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:800
+#: lib/extensions/nautilus/RabbitVCS.py:800
 msgid "Locally lock items"
 msgstr "ローカルでアイテムをロック"
 
-#: lib/extensions/nautilus/NautilusSvn.py:815
+#: lib/extensions/nautilus/RabbitVCS.py:815
 msgid "Release Lock..."
 msgstr "ロックを開放..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:816
+#: lib/extensions/nautilus/RabbitVCS.py:816
 msgid "Release lock on an item"
 msgstr "アイテム上でロックを開放"
 
-#: lib/extensions/nautilus/NautilusSvn.py:832
+#: lib/extensions/nautilus/RabbitVCS.py:832
 msgid "Clean up working copy"
 msgstr "作業コピーをクリーンアップ"
 
-#: lib/extensions/nautilus/NautilusSvn.py:857
+#: lib/extensions/nautilus/RabbitVCS.py:857
 msgid "Export a working copy or repository with no versioning information"
 msgstr "バージョン情報無しで，作業コピーまたはレポジトリをエクスポートする"
 
-#: lib/extensions/nautilus/NautilusSvn.py:872
+#: lib/extensions/nautilus/RabbitVCS.py:872
 msgid "Create Repository here"
 msgstr "ここにレポジトリを作成"
 
-#: lib/extensions/nautilus/NautilusSvn.py:873
+#: lib/extensions/nautilus/RabbitVCS.py:873
 msgid "Create a repository in a folder"
 msgstr "フォルダ内にレポジトリを作成"
 
-#: lib/extensions/nautilus/NautilusSvn.py:889
+#: lib/extensions/nautilus/RabbitVCS.py:889
 msgid "Import an item into a repository"
 msgstr "レポジトリにアイテムをインポート"
 
-#: lib/extensions/nautilus/NautilusSvn.py:913
+#: lib/extensions/nautilus/RabbitVCS.py:913
 msgid "Branch/tag..."
 msgstr "ブランチ/タグ..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:914
+#: lib/extensions/nautilus/RabbitVCS.py:914
 msgid "Copy an item to another location in the repository"
 msgstr "レポジトリ内の別の場所にアイテムをコピーする"
 
-#: lib/extensions/nautilus/NautilusSvn.py:929
+#: lib/extensions/nautilus/RabbitVCS.py:929
 msgid "Switch..."
 msgstr "切り替え..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:930
+#: lib/extensions/nautilus/RabbitVCS.py:930
 msgid "Change the repository location of a working copy"
 msgstr "作業コピーのレポジトリの場所を変更する"
 
-#: lib/extensions/nautilus/NautilusSvn.py:945
+#: lib/extensions/nautilus/RabbitVCS.py:945
 msgid "Merge..."
 msgstr "マージ..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:946
+#: lib/extensions/nautilus/RabbitVCS.py:946
 msgid "A wizard with steps for merging"
 msgstr "マージウィザード"
 
-#: lib/extensions/nautilus/NautilusSvn.py:970
+#: lib/extensions/nautilus/RabbitVCS.py:970
 msgid "Annotate..."
 msgstr "注釈..."
 
-#: lib/extensions/nautilus/NautilusSvn.py:971
+#: lib/extensions/nautilus/RabbitVCS.py:971
 msgid "Annotate a file"
 msgstr "ファイルに注釈"
 
-#: lib/extensions/nautilus/NautilusSvn.py:996
+#: lib/extensions/nautilus/RabbitVCS.py:996
 msgid "View the properties of an item"
 msgstr "アイテムのプロパティを見る"
 
-#: lib/extensions/nautilus/NautilusSvn.py:1027
+#: lib/extensions/nautilus/RabbitVCS.py:1027
 msgid "Help"
 msgstr "ヘルプ"
 
-#: lib/extensions/nautilus/NautilusSvn.py:1028
+#: lib/extensions/nautilus/RabbitVCS.py:1028
 msgid "View help"
 msgstr "ヘルプの閲覧"
 
-#: lib/extensions/nautilus/NautilusSvn.py:1044
-msgid "View or change NautilusSvn settings"
-msgstr "NautilusSvnの設定"
+#: lib/extensions/nautilus/RabbitVCS.py:1044
+msgid "View or change RabbitVCS settings"
+msgstr "RabbitVCSの設定"
 
-#: lib/extensions/nautilus/NautilusSvn.py:1060
-msgid "About NautilusSvn"
-msgstr "NautilusSvnについて"
+#: lib/extensions/nautilus/RabbitVCS.py:1060
+msgid "About RabbitVCS"
+msgstr "RabbitVCSについて"
 
 #: lib/vcs/svn/__init__.py:111 lib/vcs/svn/__init__.py:120
 #: lib/vcs/svn/__init__.py:127
