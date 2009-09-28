@@ -18,12 +18,12 @@ import dbus.glib # FIXME: this might actually already set the default loop
 import dbus.mainloop.glib
 import dbus.service
 
-import nautilussvn.util.locale
-from nautilussvn.dbus.statuschecker import StatusChecker
+import rabbitvcs.util.locale
+from rabbitvcs.dbus.statuschecker import StatusChecker
 
-INTERFACE = "org.google.code.nautilussvn.Service"
-OBJECT_PATH = "/org/google/code/nautilussvn/Service"
-SERVICE = "org.google.code.nautilussvn.RabbitVCS"
+INTERFACE = "org.google.code.rabbitvcs.Service"
+OBJECT_PATH = "/org/google/code/rabbitvcs/Service"
+SERVICE = "org.google.code.rabbitvcs.RabbitVCS"
 
 class Service(dbus.service.Object):
     
@@ -76,7 +76,7 @@ def exit():
         traceback.print_exc()
 
 if __name__ == "__main__":
-    nautilussvn.util.locale.initialize_locale()
+    rabbitvcs.util.locale.initialize_locale()
     
     # We need this to for the client to be able to do asynchronous calls
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)

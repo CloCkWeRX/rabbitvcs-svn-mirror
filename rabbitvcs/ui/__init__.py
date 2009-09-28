@@ -33,7 +33,7 @@ import gobject
 import gtk
 import gtk.glade
 
-from nautilussvn import APP_NAME, LOCALE_DIR
+from rabbitvcs import APP_NAME, LOCALE_DIR
 
 class InterfaceView:
     """
@@ -105,7 +105,7 @@ def main():
     from os import getcwd
     from sys import argv
     from optparse import OptionParser
-    from nautilussvn.lib.helper import get_common_directory
+    from rabbitvcs.lib.helper import get_common_directory
     
     parser = OptionParser()
     parser.add_option("--base-dir")

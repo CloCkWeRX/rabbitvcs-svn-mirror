@@ -24,13 +24,13 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-from nautilussvn.ui.log import LogDialog
-from nautilussvn.ui.action import VCSAction
-import nautilussvn.ui.widget
-import nautilussvn.ui.dialog
+from rabbitvcs.ui import InterfaceView
+from rabbitvcs.ui.log import LogDialog
+from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.ui.widget
+import rabbitvcs.ui.dialog
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class UpdateToRevision(InterfaceView):
@@ -43,7 +43,7 @@ class UpdateToRevision(InterfaceView):
     def __init__(self, path):
         InterfaceView.__init__(self, "update", "Update")
         self.path = path
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
 
     def on_destroy(self, widget):
         self.close()
@@ -92,7 +92,7 @@ class UpdateToRevision(InterfaceView):
             self.get_widget("revision_number").set_text(data)
 
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
             
     window = UpdateToRevision(paths[0])

@@ -34,14 +34,14 @@ from os.path import isdir, isfile, dirname
 
 import pysvn
 
-import nautilussvn.lib.vcs
-from nautilussvn.lib.helper import abspaths
-from nautilussvn.lib.decorators import timeit
-from nautilussvn.lib.log import Log
+import rabbitvcs.lib.vcs
+from rabbitvcs.lib.helper import abspaths
+from rabbitvcs.lib.decorators import timeit
+from rabbitvcs.lib.log import Log
 
-log = Log("nautilussvn.lib.vcs.svn")
+log = Log("rabbitvcs.lib.vcs.svn")
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 PATCHING_RE = re.compile(r"patching file (.*)")
@@ -89,7 +89,7 @@ def parse_patch_output(patch_file, base_dir):
         # sort.
         patch_proc.wait()
         output = line + patch_proc.stdout.read()
-        raise nautilussvn.lib.vcs.ExternalUtilError("patch", output)
+        raise rabbitvcs.lib.vcs.ExternalUtilError("patch", output)
         # Note the excluded case: empty line. This falls through, skips the loop
         # and returns.
     

@@ -9,11 +9,11 @@ from Queue import Queue
 
 import pysvn
 
-import nautilussvn.util.vcs
+import rabbitvcs.util.vcs
 
 # FIXME: debug
-from nautilussvn.lib.log import Log
-log = Log("nautilussvn.statuschecker")
+from rabbitvcs.lib.log import Log
+log = Log("rabbitvcs.statuschecker")
 # import time
 
 # FIXME: hard coded
@@ -62,7 +62,7 @@ class StatusChecker(threading.Thread):
     __status_tree_lock = threading.RLock()
     
     # In here to avoid circular imports
-    # from nautilussvn.lib.extensions.nautilus.RabbitVCS import log
+    # from rabbitvcs.lib.extensions.nautilus.RabbitVCS import log
 
     def __init__(self):
         threading.Thread.__init__(self)
@@ -102,7 +102,7 @@ class StatusChecker(threading.Thread):
         statuses = {}
         
         with self.__status_tree_lock:
-            if nautilussvn.util.vcs.is_in_a_or_a_working_copy(path):
+            if rabbitvcs.util.vcs.is_in_a_or_a_working_copy(path):
                 if not invalidate and path in self.__status_tree:
                     # We're good, so return the status
                     statuses = self.__get_path_statuses(path)

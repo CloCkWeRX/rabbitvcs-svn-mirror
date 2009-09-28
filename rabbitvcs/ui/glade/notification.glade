@@ -7,7 +7,7 @@
     <property name="can_focus">True</property>
     <property name="title" translatable="yes">Notification Messages</property>
     <property name="window_position">center</property>
-    <property name="icon_name">nautilussvn</property>
+    <property name="icon_name">rabbitvcs</property>
     <property name="gravity">GDK_GRAVITY_CENTER</property>
     <signal name="destroy" handler="on_destroy"/>
     <child>

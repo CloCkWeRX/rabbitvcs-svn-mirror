@@ -26,12 +26,12 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-from nautilussvn.ui.action import VCSAction
-from nautilussvn.ui.dialog import MessageBox
-import nautilussvn.lib.vcs
+from rabbitvcs.ui import InterfaceView
+from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.dialog import MessageBox
+import rabbitvcs.lib.vcs
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Rename(InterfaceView):
@@ -39,7 +39,7 @@ class Rename(InterfaceView):
         InterfaceView.__init__(self, "rename", "Rename")
         
         
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         
         self.path = path
         (self.dir, self.filename) = os.path.split(self.path)
@@ -62,7 +62,7 @@ class Rename(InterfaceView):
         new_path = os.path.join(self.dir, new_name)
         
         self.hide()
-        self.action = nautilussvn.ui.action.VCSAction(
+        self.action = rabbitvcs.ui.action.VCSAction(
             self.vcs,
             register_gtk_quit=self.gtk_quit_is_set()
         )
@@ -80,7 +80,7 @@ class Rename(InterfaceView):
         self.action.start()
         
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
             
     window = Rename(paths[0])

@@ -27,17 +27,17 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-from nautilussvn.ui.action import VCSAction
-import nautilussvn.ui.widget
-import nautilussvn.ui.dialog
-import nautilussvn.lib
-import nautilussvn.lib.helper
-from nautilussvn.lib.log import Log
+from rabbitvcs.ui import InterfaceView
+from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.ui.widget
+import rabbitvcs.ui.dialog
+import rabbitvcs.lib
+import rabbitvcs.lib.helper
+from rabbitvcs.lib.log import Log
 
-log = Log("nautilussvn.ui.commit")
+log = Log("rabbitvcs.ui.commit")
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 gtk.gdk.threads_init()
@@ -63,26 +63,26 @@ class Commit(InterfaceView):
 
         self.paths = paths
         self.base_dir = base_dir
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
-        self.common = nautilussvn.lib.helper.get_common_directory(paths)
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.common = rabbitvcs.lib.helper.get_common_directory(paths)
         self.activated_cache = {}
 
         if not self.vcs.get_versioned_path(self.common):
-            nautilussvn.ui.dialog.MessageBox(_("The given path is not a working copy"))
+            rabbitvcs.ui.dialog.MessageBox(_("The given path is not a working copy"))
             raise SystemExit()
 
-        self.files_table = nautilussvn.ui.widget.Table(
+        self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
+            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
                 _("Text Status"), _("Property Status")],
             base_dir=base_dir,
             path_entries=[1]
         )
         self.last_row_clicked = None
         
-        self.message = nautilussvn.ui.widget.TextView(
+        self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message")
         )
         self.get_widget("to").set_text(
@@ -164,7 +164,7 @@ class Commit(InterfaceView):
             self.files_table.append([
                 checked,
                 item.path, 
-                nautilussvn.lib.helper.get_file_extension(item.path),
+                rabbitvcs.lib.helper.get_file_extension(item.path),
                 item.text_status,
                 item.prop_status
             ])
@@ -209,7 +209,7 @@ class Commit(InterfaceView):
 
         ticks = added + len(items)*2
 
-        self.action = nautilussvn.ui.action.VCSAction(
+        self.action = rabbitvcs.ui.action.VCSAction(
             self.vcs,
             register_gtk_quit=self.gtk_quit_is_set()
         )
@@ -217,7 +217,7 @@ class Commit(InterfaceView):
         self.action.append(self.action.set_header, _("Commit"))
         self.action.append(self.action.set_status, _("Running Commit Command..."))
         self.action.append(
-            nautilussvn.lib.helper.save_log_message, 
+            rabbitvcs.lib.helper.save_log_message, 
             self.message.get_text()
         )
         self.action.append(self.vcs.commit, items, self.message.get_text())
@@ -255,7 +255,7 @@ class Commit(InterfaceView):
             
             if event.button == 3:
                 self.last_row_clicked = path
-                context_menu = nautilussvn.ui.widget.ContextMenu([
+                context_menu = rabbitvcs.ui.widget.ContextMenu([
                     {
                         "label": _("View Diff"),
                         "signals": {
@@ -361,7 +361,7 @@ class Commit(InterfaceView):
         treeview_model = treeview.get_model().get_model()
         fileinfo = treeview_model[event[0]]
 
-        nautilussvn.lib.helper.launch_diff_tool(fileinfo[1])
+        rabbitvcs.lib.helper.launch_diff_tool(fileinfo[1])
 
     def on_context_add_activated(self, widget, data=None):
         self.vcs.add(data[1])
@@ -373,23 +373,23 @@ class Commit(InterfaceView):
         self.initialize_items()
 
     def on_context_diff_activated(self, widget, data=None):
-        nautilussvn.lib.helper.launch_diff_tool(data[1])
+        rabbitvcs.lib.helper.launch_diff_tool(data[1])
 
     def on_context_open_activated(self, widget, data=None):
-        nautilussvn.lib.helper.open_item(data[1])
+        rabbitvcs.lib.helper.open_item(data[1])
         
     def on_context_browse_activated(self, widget, data=None):
-        nautilussvn.lib.helper.browse_to_item(data[1])
+        rabbitvcs.lib.helper.browse_to_item(data[1])
 
     def on_context_delete_activated(self, widget, data=None):
         if self.vcs.is_versioned(data[1]):
             self.vcs.remove(data[1], force=True)
             self.initialize_items()
         else:
-            confirm = nautilussvn.ui.dialog.DeleteConfirmation(data[1])
+            confirm = rabbitvcs.ui.dialog.DeleteConfirmation(data[1])
             
             if confirm.run():
-                nautilussvn.lib.helper.delete_item(data[1])
+                rabbitvcs.lib.helper.delete_item(data[1])
                 self.files_table.remove(self.last_row_clicked)
             
     def on_subcontext_ignore_by_filename_activated(self, widget, data=None):
@@ -407,7 +407,7 @@ class Commit(InterfaceView):
             self.initialize_items()
 
     def on_context_restore_activated(self, widget, data=None):
-        nautilussvn.lib.helper.launch_ui_window(
+        rabbitvcs.lib.helper.launch_ui_window(
             "update", 
             [data[1]],
             return_immmediately=False
@@ -415,7 +415,7 @@ class Commit(InterfaceView):
         self.initialize_items()
         
     def on_previous_messages_clicked(self, widget, data=None):
-        dialog = nautilussvn.ui.dialog.PreviousMessages()
+        dialog = rabbitvcs.ui.dialog.PreviousMessages()
         message = dialog.run()
         if message is not None:
             self.message.set_text(message)
@@ -469,7 +469,7 @@ class Commit(InterfaceView):
         return os.path.isfile(path)
 
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
 
     window = Commit(paths, options.base_dir)

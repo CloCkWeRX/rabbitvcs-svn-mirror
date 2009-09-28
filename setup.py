@@ -25,8 +25,8 @@
 #
 # Common directories
 # See: http://standards.freedesktop.org/basedir-spec/basedir-spec-0.6.html
-# Configuration information goes in: ~/.config/nautilussvn/
-# Data goes in: ~/.local/share/nautilussvn
+# Configuration information goes in: ~/.config/rabbitvcs/
+# Data goes in: ~/.local/share/rabbitvcs
 
 import sys
 import os
@@ -42,13 +42,13 @@ import distutils.sysconfig
 # Some descriptive variables
 # This will eventually be passed to the setup function, but we already need them
 # for doing some other stuff so we have to declare them here.
-name                = "nautilussvn"
+name                = "rabbitvcs"
 version             = "0.12"
 description         = "Integrated Subversion support for Nautilus"
 long_description    = """An extension to Nautilus to allow better integration with the Subversion source control system. Similar to the TortoiseSVN project on Windows."""
 author              = "Bruce van der Kooij"
 author_email        = "brucevdkooij@gmail.com"
-url                 = "http://code.google.com/p/nautilussvn"
+url                 = "http://code.google.com/p/rabbitvcs"
 license             = "GNU General Public License version 2 or later"
 
 #==============================================================================
@@ -95,43 +95,43 @@ def include_by_pattern(directory, directory_to_install, pattern):
 
 # Packages
 packages = []
-for root, dirs, files in os.walk("nautilussvn"):
+for root, dirs, files in os.walk("rabbitvcs"):
     if "__init__.py" in files:
         packages.append(root.replace(os.path.sep, "."))
         
 # Nautilus extension
 nautilus_extension = [(
     python_nautilus_extensions_path, 
-    ["nautilussvn/lib/extensions/nautilus/RabbitVCS.py"]
+    ["rabbitvcs/lib/extensions/nautilus/RabbitVCS.py"]
 )]
 
 # Command-line tool
 command_line_tool = [(
     "/usr/bin",
-    ["bin/nautilussvn"]
+    ["bin/rabbitvcs"]
 )]
 
 # Translation
-translations = include_by_pattern("nautilussvn/locale", locale_directory, ".mo")
+translations = include_by_pattern("rabbitvcs/locale", locale_directory, ".mo")
 
 # Icons
-icons = include_by_pattern("nautilussvn/data/icons/hicolor", icon_theme_directory, ".svg")
+icons = include_by_pattern("rabbitvcs/data/icons/hicolor", icon_theme_directory, ".svg")
 
 # Config parsing specification
 config_spec = [(
     # FIXME: hard coded prefix!
-    "/usr/share/nautilussvn",
-    ["nautilussvn/lib/configspec/configspec.ini"]
+    "/usr/share/rabbitvcs",
+    ["rabbitvcs/lib/configspec/configspec.ini"]
 )]
 
 # Update notifier
-update_notifier = [("/usr/share/nautilussvn", [
-    "packages/ubuntu/debian/nautilussvn-restart-required.update-notifier",
-    "packages/ubuntu/debian/do-nautilussvn-restart-nautilus"
+update_notifier = [("/usr/share/rabbitvcs", [
+    "packages/ubuntu/debian/rabbitvcs-restart-required.update-notifier",
+    "packages/ubuntu/debian/do-rabbitvcs-restart-nautilus"
 ])]
 
 # Documentation
-documentation = [("/usr/share/doc/nautilussvn", [
+documentation = [("/usr/share/doc/rabbitvcs", [
     "AUTHORS",
     "MAINTAINERS",
     "CREDITS",
@@ -144,7 +144,7 @@ documentation = [("/usr/share/doc/nautilussvn", [
 
 # Calling the setup function will actually install RabbitVCS and also creates 
 # an .egg-info file in /usr/lib/python<version>/site-packages/ or 
-# /usr/share/python-support/nautilussvn when generating a Debian package.
+# /usr/share/python-support/rabbitvcs when generating a Debian package.
 dist = setup(
     # The following arguments will be included in the .egg.info file,
     # for a list of available arguments and their descriptions see:
@@ -166,7 +166,7 @@ dist = setup(
     packages=packages,
     include_package_data=True,
     package_data={
-        "nautilussvn": [
+        "rabbitvcs": [
             # Include our Glade UI files right into the package
             "ui/glade/*.glade"
         ]

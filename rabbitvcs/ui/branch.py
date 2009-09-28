@@ -24,15 +24,15 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-from nautilussvn.ui.log import LogDialog
-import nautilussvn.ui.widget
-import nautilussvn.ui.dialog
-import nautilussvn.ui.action
-import nautilussvn.lib.helper
-import nautilussvn.lib.vcs
+from rabbitvcs.ui import InterfaceView
+from rabbitvcs.ui.log import LogDialog
+import rabbitvcs.ui.widget
+import rabbitvcs.ui.dialog
+import rabbitvcs.ui.action
+import rabbitvcs.lib.helper
+import rabbitvcs.lib.vcs
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Branch(InterfaceView):
@@ -48,7 +48,7 @@ class Branch(InterfaceView):
         InterfaceView.__init__(self, "branch", "Branch")
         
         
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         
         self.path = path
         url = self.vcs.get_repo_url(path)
@@ -56,12 +56,12 @@ class Branch(InterfaceView):
         self.get_widget("from_url").set_text(url)
         self.get_widget("to_url").set_text(url)
         
-        self.message = nautilussvn.ui.widget.TextView(
+        self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message")
         )
-        self.urls = nautilussvn.ui.widget.ComboBox(
+        self.urls = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("to_urls"), 
-            nautilussvn.lib.helper.get_repository_paths()
+            rabbitvcs.lib.helper.get_repository_paths()
         )
         
         if self.vcs.has_modified(path) or self.vcs.is_modified(path):
@@ -86,7 +86,7 @@ class Branch(InterfaceView):
         dest = self.get_widget("to_url").get_text()
         
         if dest == "":
-            nautilussvn.ui.dialog.MessageBox(_("You must supply a destination path."))
+            rabbitvcs.ui.dialog.MessageBox(_("You must supply a destination path."))
             return
         
         revision = None
@@ -96,7 +96,7 @@ class Branch(InterfaceView):
             rev_num = self.get_widget("from_revision_number").get_text()
             
             if rev_num == "":
-                nautilussvn.ui.dialog.MessageBox(_("The from revision field is required."))
+                rabbitvcs.ui.dialog.MessageBox(_("The from revision field is required."))
                 return
             
             revision = self.vcs.revision("number", number=rev_num)
@@ -105,18 +105,18 @@ class Branch(InterfaceView):
             revision = self.vcs.revision("working")
 
         if revision is None:
-            nautilussvn.ui.dialog.MessageBox(_("Invalid revision information"))
+            rabbitvcs.ui.dialog.MessageBox(_("Invalid revision information"))
             return
 
         self.hide()
-        self.action = nautilussvn.ui.action.VCSAction(
+        self.action = rabbitvcs.ui.action.VCSAction(
             self.vcs,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         self.action.set_log_message(self.message.get_text())
         
         self.action.append(
-            nautilussvn.lib.helper.save_log_message, 
+            rabbitvcs.lib.helper.save_log_message, 
             self.message.get_text()
         )
         
@@ -134,7 +134,7 @@ class Branch(InterfaceView):
         self.get_widget("from_revision_number_opt").set_active(True)
 
     def on_previous_messages_clicked(self, widget, data=None):
-        dialog = nautilussvn.ui.dialog.PreviousMessages()
+        dialog = rabbitvcs.ui.dialog.PreviousMessages()
         message = dialog.run()
         if message is not None:
             self.message.set_text(message)
@@ -148,7 +148,7 @@ class Branch(InterfaceView):
             self.get_widget("from_revision_number").set_text(data)
 
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
 
     window = Branch(paths[0])

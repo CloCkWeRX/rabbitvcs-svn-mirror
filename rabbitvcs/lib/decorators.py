@@ -36,8 +36,8 @@ See:
 import time
 import warnings
 
-from nautilussvn.lib.log import Log
-log = Log("nautilussvn.lib.decorators")
+from rabbitvcs.lib.log import Log
+log = Log("rabbitvcs.lib.decorators")
 
 
 import gtk

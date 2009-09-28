@@ -27,9 +27,9 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-import nautilussvn.ui.widget
-import nautilussvn.lib.helper
+from rabbitvcs.ui import InterfaceView
+import rabbitvcs.ui.widget
+import rabbitvcs.lib.helper
 
 GLADE = 'dialogs'
 
@@ -37,16 +37,16 @@ class PreviousMessages(InterfaceView):
     def __init__(self):
         InterfaceView.__init__(self, GLADE, "PreviousMessages")
 
-        self.message = nautilussvn.ui.widget.TextView(
+        self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("prevmes_message")
         )
 
-        self.message_table = nautilussvn.ui.widget.Table(
+        self.message_table = rabbitvcs.ui.widget.Table(
             self.get_widget("prevmes_table"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [_("Date"), _("Message")]
         )
-        self.entries = nautilussvn.lib.helper.get_previous_messages()
+        self.entries = rabbitvcs.lib.helper.get_previous_messages()
         if self.entries is None:
             return None
         
@@ -187,7 +187,7 @@ class Property(InterfaceView):
         self.name = self.get_widget("property_name")
         self.name.set_text(name)
         
-        self.value = nautilussvn.ui.widget.TextView(
+        self.value = rabbitvcs.ui.widget.TextView(
             self.get_widget("property_value"), 
             value
         )

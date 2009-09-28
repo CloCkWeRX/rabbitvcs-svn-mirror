@@ -27,17 +27,17 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-import nautilussvn.ui.widget
-import nautilussvn.ui.dialog
-import nautilussvn.ui.action
-import nautilussvn.lib.helper
-import nautilussvn.lib.vcs
-from nautilussvn.lib.log import Log
+from rabbitvcs.ui import InterfaceView
+import rabbitvcs.ui.widget
+import rabbitvcs.ui.dialog
+import rabbitvcs.ui.action
+import rabbitvcs.lib.helper
+import rabbitvcs.lib.vcs
+from rabbitvcs.lib.log import Log
 
-log = Log("nautilussvn.ui.add")
+log = Log("rabbitvcs.ui.add")
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 gtk.gdk.threads_init()
@@ -59,13 +59,13 @@ class Add(InterfaceView):
         self.paths = paths
         self.base_dir = base_dir
         self.last_row_clicked = None
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         self.items = []
         self.statuses = [self.vcs.STATUS["unversioned"], self.vcs.STATUS["obstructed"]]
-        self.files_table = nautilussvn.ui.widget.Table(
+        self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"), 
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
+            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
             base_dir=base_dir,
             path_entries=[1]
         )
@@ -93,7 +93,7 @@ class Add(InterfaceView):
             self.files_table.append([
                 True, 
                 item.path, 
-                nautilussvn.lib.helper.get_file_extension(item.path)
+                rabbitvcs.lib.helper.get_file_extension(item.path)
             ])
     
     #
@@ -114,7 +114,7 @@ class Add(InterfaceView):
 
         self.hide()
 
-        self.action = nautilussvn.ui.action.VCSAction(
+        self.action = rabbitvcs.ui.action.VCSAction(
             self.vcs,
             register_gtk_quit=self.gtk_quit_is_set()
         )
@@ -143,7 +143,7 @@ class Add(InterfaceView):
 
                 self.last_row_clicked = path[0]
                 
-                context_menu = nautilussvn.ui.widget.ContextMenu([{
+                context_menu = rabbitvcs.ui.widget.ContextMenu([{
                         "label": _("Open"),
                         "signals": {
                             "activate": {
@@ -199,16 +199,16 @@ class Add(InterfaceView):
                 context_menu.show(event)
                 
     def on_context_open_activated(self, widget, data=None):
-        nautilussvn.lib.helper.open_item(data[1])
+        rabbitvcs.lib.helper.open_item(data[1])
         
     def on_context_browse_activated(self, widget, data=None):
-        nautilussvn.lib.helper.browse_to_item(data[1])
+        rabbitvcs.lib.helper.browse_to_item(data[1])
 
     def on_context_delete_activated(self, widget, data=None):
-        confirm = nautilussvn.ui.dialog.DeleteConfirmation(data[1])
+        confirm = rabbitvcs.ui.dialog.DeleteConfirmation(data[1])
         
         if confirm.run():
-            nautilussvn.lib.helper.delete_item(data[1])
+            rabbitvcs.lib.helper.delete_item(data[1])
             self.files_table.remove(self.last_row_clicked)
 
     def on_subcontext_ignore_by_filename_activated(self, widget, data=None):
@@ -248,7 +248,7 @@ class Add(InterfaceView):
         return os.path.isfile(path)
         
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
 
     window = Add(paths, options.base_dir)

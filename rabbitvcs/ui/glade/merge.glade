@@ -8,7 +8,7 @@
     <property name="border_width">12</property>
     <property name="title" translatable="yes">Merge Assistant</property>
     <property name="window_position">center</property>
-    <property name="icon_name">nautilussvn</property>
+    <property name="icon_name">rabbitvcs</property>
     <property name="gravity">GDK_GRAVITY_CENTER</property>
     <signal name="close" handler="on_close_clicked"/>
     <signal name="destroy" handler="on_destroy"/>
@@ -197,7 +197,7 @@
                               <widget class="GtkImage" id="image1">
                                 <property name="visible">True</property>
                                 <property name="pixel_size">24</property>
-                                <property name="icon_name">nautilussvn-show_log</property>
+                                <property name="icon_name">rabbitvcs-show_log</property>
                               </widget>
                             </child>
                           </widget>
@@ -357,7 +357,7 @@ To merge all revisions, leave the box empty.</property>
                           <widget class="GtkImage" id="image2">
                             <property name="visible">True</property>
                             <property name="pixel_size">24</property>
-                            <property name="icon_name">nautilussvn-show_log</property>
+                            <property name="icon_name">rabbitvcs-show_log</property>
                           </widget>
                         </child>
                       </widget>
@@ -536,7 +536,7 @@ To merge all revisions, leave the box empty.</property>
                                   <widget class="GtkImage" id="image3">
                                     <property name="visible">True</property>
                                     <property name="pixel_size">24</property>
-                                    <property name="icon_name">nautilussvn-show_log</property>
+                                    <property name="icon_name">rabbitvcs-show_log</property>
                                   </widget>
                                 </child>
                               </widget>
@@ -672,7 +672,7 @@ To merge all revisions, leave the box empty.</property>
                                   <widget class="GtkImage" id="image4">
                                     <property name="visible">True</property>
                                     <property name="pixel_size">24</property>
-                                    <property name="icon_name">nautilussvn-show_log</property>
+                                    <property name="icon_name">rabbitvcs-show_log</property>
                                   </widget>
                                 </child>
                               </widget>

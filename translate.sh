@@ -5,7 +5,7 @@
 # 2. Extract gettext strings from py files
 # 3. Delete the glade .h files
 
-cd nautilussvn
+cd rabbitvcs
 
 for i in `find . | grep '\.glade' | grep -v '\.svn'`;
 do

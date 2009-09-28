@@ -26,14 +26,14 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceNonView
-from nautilussvn.ui.action import VCSAction
-import nautilussvn.lib.vcs
-from nautilussvn.lib.log import Log
+from rabbitvcs.ui import InterfaceNonView
+from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.lib.vcs
+from rabbitvcs.lib.log import Log
 
-log = Log("nautilussvn.ui.delete")
+log = Log("rabbitvcs.ui.delete")
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Delete(InterfaceNonView):
@@ -45,7 +45,7 @@ class Delete(InterfaceNonView):
     def __init__(self, paths):
         InterfaceNonView.__init__(self)
         self.paths = paths
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
 
     def start(self):
     
@@ -65,7 +65,7 @@ class Delete(InterfaceNonView):
             item = None
             if len(unversioned) == 1:
                 item = unversioned[0]
-            confirm = nautilussvn.ui.dialog.DeleteConfirmation(item)
+            confirm = rabbitvcs.ui.dialog.DeleteConfirmation(item)
             result = confirm.run()
 
         # If the user wants to continue (or there are no unversioned files)
@@ -80,10 +80,10 @@ class Delete(InterfaceNonView):
             
             if unversioned:
                 for path in unversioned:
-                    nautilussvn.lib.helper.delete_item(path)
+                    rabbitvcs.lib.helper.delete_item(path)
         
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
 
     window = Delete(paths)

@@ -38,12 +38,12 @@ import shutil
 
 import gobject
 
-import nautilussvn.lib.settings
+import rabbitvcs.lib.settings
 
-from nautilussvn.lib.log import Log
-log = Log("nautilussvn.lib.helper")
+from rabbitvcs.lib.log import Log
+log = Log("rabbitvcs.lib.helper")
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 ngettext = gettext.ngettext
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S" # for log files
@@ -93,7 +93,7 @@ def get_home_folder():
         "XDG_CONFIG_HOME", 
         os.path.join(os.path.expanduser("~"), ".config")
     )
-    config_home = os.path.join(xdg_config_home, "nautilussvn")
+    config_home = os.path.join(xdg_config_home, "rabbitvcs")
     
     # Make sure the directories are there
     if not os.path.isdir(config_home):
@@ -280,7 +280,7 @@ def get_diff_tool():
     @return:    A dictionary with the diff tool path and swap boolean value.
     """
     
-    sm = nautilussvn.lib.settings.SettingsManager()
+    sm = rabbitvcs.lib.settings.SettingsManager()
     diff_tool = sm.get("external", "diff_tool")
     diff_tool_swap = sm.get("external", "diff_tool_swap")
     
@@ -503,11 +503,11 @@ def launch_ui_window(filename, args=[]):
         return None
 
 def get_log_messages_limit():
-    sm = nautilussvn.lib.settings.SettingsManager()
+    sm = rabbitvcs.lib.settings.SettingsManager()
     return int(sm.get("cache", "number_messages"))
 
 def get_repository_paths_limit():
-    sm = nautilussvn.lib.settings.SettingsManager()
+    sm = rabbitvcs.lib.settings.SettingsManager()
     return int(sm.get("cache", "number_repositories"))
 
 def get_common_directory(paths):
@@ -601,7 +601,7 @@ def initialize_locale():
     locale.setlocale(locale.LC_ALL, (_locale, encoding))
 
 def launch_repo_browser(uri):
-    sm = nautilussvn.lib.settings.SettingsManager()
+    sm = rabbitvcs.lib.settings.SettingsManager()
     repo_browser = sm.get("external", "repo_browser")
     
     if repo_browser is not None:

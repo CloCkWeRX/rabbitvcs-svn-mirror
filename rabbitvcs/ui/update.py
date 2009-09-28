@@ -24,13 +24,13 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceNonView
-from nautilussvn.ui.log import LogDialog
-from nautilussvn.ui.action import VCSAction
-import nautilussvn.ui.widget
-import nautilussvn.ui.dialog
+from rabbitvcs.ui import InterfaceNonView
+from rabbitvcs.ui.log import LogDialog
+from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.ui.widget
+import rabbitvcs.ui.dialog
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Update(InterfaceNonView):
@@ -43,7 +43,7 @@ class Update(InterfaceNonView):
 
     def __init__(self, paths):
         self.paths = paths
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
 
     def start(self):
         self.action = VCSAction(
@@ -59,7 +59,7 @@ class Update(InterfaceNonView):
         self.action.start()
 
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
 
     window = Update(paths)

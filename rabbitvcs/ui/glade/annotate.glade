@@ -8,7 +8,7 @@
     <property name="visible">True</property>
     <property name="title" translatable="yes">Annotate</property>
     <property name="window_position">center</property>
-    <property name="icon_name">nautilussvn</property>
+    <property name="icon_name">rabbitvcs</property>
     <signal name="destroy" handler="on_destroy"/>
     <child>
       <widget class="GtkVBox" id="vbox1">
@@ -84,7 +84,7 @@
                                 <child>
                                   <widget class="GtkImage" id="image2">
                                     <property name="visible">True</property>
-                                    <property name="icon_name">nautilussvn-show_log</property>
+                                    <property name="icon_name">rabbitvcs-show_log</property>
                                   </widget>
                                 </child>
                               </widget>
@@ -134,7 +134,7 @@
                                 <child>
                                   <widget class="GtkImage" id="image1">
                                     <property name="visible">True</property>
-                                    <property name="icon_name">nautilussvn-show_log</property>
+                                    <property name="icon_name">rabbitvcs-show_log</property>
                                   </widget>
                                 </child>
                               </widget>
@@ -154,7 +154,7 @@
                                 <child>
                                   <widget class="GtkImage" id="image3">
                                     <property name="visible">True</property>
-                                    <property name="icon_name">nautilussvn-update</property>
+                                    <property name="icon_name">rabbitvcs-update</property>
                                   </widget>
                                 </child>
                               </widget>

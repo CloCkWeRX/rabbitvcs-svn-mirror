@@ -23,9 +23,9 @@
 import os
 import subprocess
 
-import nautilussvn.ui.dialog
+import rabbitvcs.ui.dialog
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Create:
@@ -46,9 +46,9 @@ class Create:
         # Let svnadmin return a bad value if a repo already exists there
         ret = subprocess.call(["/usr/bin/svnadmin", "create", path])
         if ret == 0:
-            nautilussvn.ui.dialog.MessageBox(_("Repository successfully created"))
+            rabbitvcs.ui.dialog.MessageBox(_("Repository successfully created"))
         else:
-            nautilussvn.ui.dialog.MessageBox(_("There was an error creating the repository.  Make sure the given folder is empty."))
+            rabbitvcs.ui.dialog.MessageBox(_("There was an error creating the repository.  Make sure the given folder is empty."))
         
 if __name__ == "__main__":
     from os import getcwd

@@ -21,7 +21,7 @@
 #
 
 """
-Unit tests for the top-level nautilussvn package.
+Unit tests for the top-level rabbitvcs package.
 
 """
 
@@ -36,8 +36,8 @@ import traceback
 
 import nautilus
 import pysvn
-import nautilussvn
-from nautilussvn.lib.extensions.nautilus import RabbitVCS
+import rabbitvcs
+from rabbitvcs.lib.extensions.nautilus import RabbitVCS
 
 
 class RabbitVCSTest(TestCase):
@@ -47,12 +47,12 @@ class RabbitVCSTest(TestCase):
     """
     def test_package_name(self):
         """Make sure the package name is reported properly."""
-        result = nautilussvn.package_name()
-        self.assertEqual(result, "nautilussvn")
+        result = rabbitvcs.package_name()
+        self.assertEqual(result, "rabbitvcs")
 
     def test_package_version(self):
         """Make sure the package version is reported properly."""
-        result = nautilussvn.package_version()
+        result = rabbitvcs.package_version()
         for character in result:
             if not (character.isdigit() or character == '.'):
                 self.fail("Not all characters in package version "
@@ -60,9 +60,9 @@ class RabbitVCSTest(TestCase):
 
     def test_package_identifier(self):
         """Make sure the package identifier is reported properly."""
-        result = nautilussvn.package_identifier()
-        version = nautilussvn.package_version()
-        self.assertEqual(result, "nautilussvn-%s" % version)
+        result = rabbitvcs.package_identifier()
+        version = rabbitvcs.package_version()
+        self.assertEqual(result, "rabbitvcs-%s" % version)
 
 
 class FakeVersion(object):
@@ -141,7 +141,7 @@ class RabbitVCSPySvnTest(TestCase):
         pysvn.Client = FakeClient
         FakeClient.instance_count = 0
         self.oldLog = RabbitVCS.log
-        self.logger = FakeLog("nautilussvn")
+        self.logger = FakeLog("rabbitvcs")
         RabbitVCS.log = self.logger
         self.nsvn = RabbitVCS.NautilusSvn()
 
@@ -149,7 +149,7 @@ class RabbitVCSPySvnTest(TestCase):
         """
         Test the behavior of update_columns() when the info() call
         returns None.
-        See http://code.google.com/p/nautilussvn/issues/detail?id=119
+        See http://code.google.com/p/rabbitvcs/issues/detail?id=119
 
         The desired behavior is that an error message is logged which
         indicates that the given path is not under source control.

@@ -39,29 +39,29 @@ import pysvn
 import gobject
 import gtk
 
-from nautilussvn.lib.vcs.svn import SVN
+from rabbitvcs.lib.vcs.svn import SVN
 
-from nautilussvn.util.vcs import *
-from nautilussvn.lib.helper import launch_ui_window, launch_diff_tool
-from nautilussvn.lib.helper import get_file_extension, get_common_directory
-from nautilussvn.lib.helper import pretty_timedelta
-from nautilussvn.lib.decorators import timeit, disable
+from rabbitvcs.util.vcs import *
+from rabbitvcs.lib.helper import launch_ui_window, launch_diff_tool
+from rabbitvcs.lib.helper import get_file_extension, get_common_directory
+from rabbitvcs.lib.helper import pretty_timedelta
+from rabbitvcs.lib.decorators import timeit, disable
 
-from nautilussvn.lib.log import Log, reload_log_settings
-log = Log("nautilussvn.lib.extensions.nautilus")
+from rabbitvcs.lib.log import Log, reload_log_settings
+log = Log("rabbitvcs.lib.extensions.nautilus")
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
-from nautilussvn.lib.settings import SettingsManager
+from rabbitvcs.lib.settings import SettingsManager
 settings = SettingsManager()
 
-import nautilussvn.dbus.service
-from nautilussvn.dbus.statuschecker import StatusCheckerStub as StatusChecker
+import rabbitvcs.dbus.service
+from rabbitvcs.dbus.statuschecker import StatusCheckerStub as StatusChecker
 
 # Start up our DBus service if it's not already started, if this fails
 # we can't really do anything.
-nautilussvn.dbus.service.start()
+rabbitvcs.dbus.service.start()
 
 class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnProvider):
     """ 
@@ -72,23 +72,23 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
     #: Maps statuses to emblems.
     #: TODO: should probably be possible to create this dynamically
     EMBLEMS = {
-        "added" :       "nautilussvn-added",
-        "deleted":      "nautilussvn-deleted",
-        "removed":      "nautilussvn-deleted",
-        "modified":     "nautilussvn-modified",
-        "conflicted":   "nautilussvn-conflicted",
-        "missing":      "nautilussvn-conflicted",
-        "normal":       "nautilussvn-normal",
-        "clean":        "nautilussvn-normal",
-        "ignored":      "nautilussvn-ignored",
-        "locked":       "nautilussvn-locked",
-        "read_only":    "nautilussvn-read_only",
-        "obstructed":   "nautilussvn-obstructed",
-        "incomplete":   "nautilussvn-incomplete",
-        "unversioned":  "nautilussvn-unversioned",
-        "unknown":      "nautilussvn-unknown",
-        "calculating":  "nautilussvn-calculating",
-        "error":        "nautilussvn-error"
+        "added" :       "rabbitvcs-added",
+        "deleted":      "rabbitvcs-deleted",
+        "removed":      "rabbitvcs-deleted",
+        "modified":     "rabbitvcs-modified",
+        "conflicted":   "rabbitvcs-conflicted",
+        "missing":      "rabbitvcs-conflicted",
+        "normal":       "rabbitvcs-normal",
+        "clean":        "rabbitvcs-normal",
+        "ignored":      "rabbitvcs-ignored",
+        "locked":       "rabbitvcs-locked",
+        "read_only":    "rabbitvcs-read_only",
+        "obstructed":   "rabbitvcs-obstructed",
+        "incomplete":   "rabbitvcs-incomplete",
+        "unversioned":  "rabbitvcs-unversioned",
+        "unknown":      "rabbitvcs-unknown",
+        "calculating":  "rabbitvcs-calculating",
+        "error":        "rabbitvcs-error"
     }
     
     #: A list of statuses which count as modified (for a directory) in 
@@ -487,7 +487,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
     
         def do_reload_settings():
             globals()["settings"] = SettingsManager()
-            globals()["log"] = reload_log_settings()("nautilussvn.lib.extensions.nautilus")
+            globals()["log"] = reload_log_settings()("rabbitvcs.lib.extensions.nautilus")
             log.debug("Re-scanning settings")
             
         self.execute_after_process_exit(proc, do_reload_settings)
@@ -533,7 +533,7 @@ class MainContextMenu:
     
     A class that represents our context menu.
     
-    See: http://code.google.com/p/nautilussvn/wiki/ContextMenuStructure
+    See: http://code.google.com/p/rabbitvcs/wiki/ContextMenuStructure
     
     FIXME: There's currently a problem with the order in which menu items 
     appear, even though a list such as C{[<Update>, <Commit>, <RabbitVCS>]} 
@@ -543,10 +543,10 @@ class MainContextMenu:
     
     SEPARATOR = u'\u2015' * 10
     
-    def __init__(self, base_dir, paths, nautilussvn_extension):
+    def __init__(self, base_dir, paths, rabbitvcs_extension):
         self.base_dir = base_dir
         self.paths = paths
-        self.nautilussvn_extension = nautilussvn_extension
+        self.rabbitvcs_extension = nautilussvn_extension
         self.vcs_client = SVN()
         
         self.status_checker = StatusChecker()
@@ -609,7 +609,7 @@ class MainContextMenu:
                 "identifier": "RabbitVCS::Debug",
                 "label": _("Debug"),
                 "tooltip": "",
-                "icon": "nautilussvn-monkey",
+                "icon": "rabbitvcs-monkey",
                 "signals": {
                     "activate": {
                         "callback": None,
@@ -622,7 +622,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Bugs",
                         "label": _("Bugs"),
                         "tooltip": "",
-                        "icon": "nautilussvn-bug",
+                        "icon": "rabbitvcs-bug",
                         "signals": {
                             "activate": {
                                 "callback": None,
@@ -654,7 +654,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Refresh_Status",
                         "label": _("Refresh Status"),
                         "tooltip": "",
-                        "icon": "nautilussvn-refresh",
+                        "icon": "rabbitvcs-refresh",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_refresh_status,
@@ -670,7 +670,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Debug_Revert",
                         "label": _("Debug Revert"),
                         "tooltip": _("Reverts everything it sees"),
-                        "icon": "nautilussvn-revert",
+                        "icon": "rabbitvcs-revert",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_debug_revert,
@@ -686,7 +686,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Debug_Invalidate",
                         "label": _("Invalidate"),
                         "tooltip": _("Force an invalidate_extension_info() call"),
-                        "icon": "nautilussvn-clear",
+                        "icon": "rabbitvcs-clear",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_debug_invalidate,
@@ -702,7 +702,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Debug_Add_Emblem",
                         "label": _("Add Emblem"),
                         "tooltip": _("Add an emblem"),
-                        "icon": "nautilussvn-emblems",
+                        "icon": "rabbitvcs-emblems",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_debug_add_emblem,
@@ -720,7 +720,7 @@ class MainContextMenu:
                 "identifier": "RabbitVCS::Checkout",
                 "label": _("Checkout"),
                 "tooltip": _("Check out a working copy"),
-                "icon": "nautilussvn-checkout",
+                "icon": "rabbitvcs-checkout",
                 "signals": {
                     "activate": {
                         "callback": self.callback_checkout,
@@ -736,7 +736,7 @@ class MainContextMenu:
                 "identifier": "RabbitVCS::Update",
                 "label": _("Update"),
                 "tooltip": _("Update a working copy"),
-                "icon": "nautilussvn-update",
+                "icon": "rabbitvcs-update",
                 "signals": {
                     "activate": {
                         "callback": self.callback_update,
@@ -752,7 +752,7 @@ class MainContextMenu:
                 "identifier": "RabbitVCS::Commit",
                 "label": _("Commit"),
                 "tooltip": _("Commit modifications to the repository"),
-                "icon": "nautilussvn-commit",
+                "icon": "rabbitvcs-commit",
                 "signals": {
                     "activate": {
                         "callback": self.callback_commit,
@@ -781,7 +781,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Diff",
                         "label": _("View Diff"),
                         "tooltip": _("View the modifications made to a file"),
-                        "icon": "nautilussvn-diff",
+                        "icon": "rabbitvcs-diff",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_diff,
@@ -797,7 +797,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Show_Log",
                         "label": _("Show Log"),
                         "tooltip": _("Show a file's log information"),
-                        "icon": "nautilussvn-show_log",
+                        "icon": "rabbitvcs-show_log",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_show_log,
@@ -822,7 +822,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Add",
                         "label": _("Add"),
                         "tooltip": _("Schedule an item to be added to the repository"),
-                        "icon": "nautilussvn-add",
+                        "icon": "rabbitvcs-add",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_add,
@@ -887,7 +887,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::UpdateToRevision",
                         "label": _("Update to revision..."),
                         "tooltip": _("Update a file to a specific revision"),
-                        "icon": "nautilussvn-update",
+                        "icon": "rabbitvcs-update",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_updateto,
@@ -903,7 +903,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Rename",
                         "label": _("Rename..."),
                         "tooltip": _("Schedule an item to be renamed on the repository"),
-                        "icon": "nautilussvn-rename",
+                        "icon": "rabbitvcs-rename",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_rename,
@@ -919,7 +919,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Delete",
                         "label": _("Delete"),
                         "tooltip": _("Schedule an item to be deleted from the repository"),
-                        "icon": "nautilussvn-delete",
+                        "icon": "rabbitvcs-delete",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_delete,
@@ -935,7 +935,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Revert",
                         "label": _("Revert"),
                         "tooltip": _("Revert an item to its unmodified state"),
-                        "icon": "nautilussvn-revert",
+                        "icon": "rabbitvcs-revert",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_revert,
@@ -951,7 +951,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Resolve",
                         "label": _("Resolve"),
                         "tooltip": _("Mark a conflicted item as resolved"),
-                        "icon": "nautilussvn-resolve",
+                        "icon": "rabbitvcs-resolve",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_resolve,
@@ -967,7 +967,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Relocate",
                         "label": _("Relocate..."),
                         "tooltip": _("Relocate your working copy"),
-                        "icon": "nautilussvn-relocate",
+                        "icon": "rabbitvcs-relocate",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_relocate,
@@ -983,7 +983,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::GetLock",
                         "label": _("Get Lock..."),
                         "tooltip": _("Locally lock items"),
-                        "icon": "nautilussvn-lock",
+                        "icon": "rabbitvcs-lock",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_lock,
@@ -999,7 +999,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Unlock",
                         "label": _("Release Lock..."),
                         "tooltip": _("Release lock on an item"),
-                        "icon": "nautilussvn-unlock",
+                        "icon": "rabbitvcs-unlock",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_unlock,
@@ -1015,7 +1015,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Cleanup",
                         "label": _("Cleanup"),
                         "tooltip": _("Clean up working copy"),
-                        "icon": "nautilussvn-cleanup",
+                        "icon": "rabbitvcs-cleanup",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_cleanup,
@@ -1040,7 +1040,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Export",
                         "label": _("Export"),
                         "tooltip": _("Export a working copy or repository with no versioning information"),
-                        "icon": "nautilussvn-export",
+                        "icon": "rabbitvcs-export",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_export,
@@ -1056,7 +1056,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Create_Repository",
                         "label": _("Create Repository here"),
                         "tooltip": _("Create a repository in a folder"),
-                        "icon": "nautilussvn-run",
+                        "icon": "rabbitvcs-run",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_create_repository,
@@ -1072,7 +1072,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Import",
                         "label": _("Import"),
                         "tooltip": _("Import an item into a repository"),
-                        "icon": "nautilussvn-import",
+                        "icon": "rabbitvcs-import",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_import,
@@ -1097,7 +1097,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::BranchTag",
                         "label": _("Branch/tag..."),
                         "tooltip": _("Copy an item to another location in the repository"),
-                        "icon": "nautilussvn-branch",
+                        "icon": "rabbitvcs-branch",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_branch,
@@ -1113,7 +1113,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Switch",
                         "label": _("Switch..."),
                         "tooltip": _("Change the repository location of a working copy"),
-                        "icon": "nautilussvn-switch",
+                        "icon": "rabbitvcs-switch",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_switch,
@@ -1129,7 +1129,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Merge",
                         "label": _("Merge..."),
                         "tooltip": _("A wizard with steps for merging"),
-                        "icon": "nautilussvn-merge",
+                        "icon": "rabbitvcs-merge",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_merge,
@@ -1154,7 +1154,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Annotate",
                         "label": _("Annotate..."),
                         "tooltip": _("Annotate a file"),
-                        "icon": "nautilussvn-annotate",
+                        "icon": "rabbitvcs-annotate",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_annotate,
@@ -1179,7 +1179,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::CreatePatch",
                         "label": _("Create Patch..."),
                         "tooltip": _("Creates a unified diff file with all changes you made"),
-                        "icon": "nautilussvn-createpatch",
+                        "icon": "rabbitvcs-createpatch",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_createpatch,
@@ -1195,7 +1195,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::ApplyPatch",
                         "label": _("Apply Patch..."),
                         "tooltip": _("Applies a unified diff file to the working copy"),
-                        "icon": "nautilussvn-applypatch",
+                        "icon": "rabbitvcs-applypatch",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_applypatch,
@@ -1211,7 +1211,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Properties",
                         "label": _("Properties"),
                         "tooltip": _("View the properties of an item"),
-                        "icon": "nautilussvn-properties",
+                        "icon": "rabbitvcs-properties",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_properties,
@@ -1243,7 +1243,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Help",
                         "label": _("Help"),
                         "tooltip": _("View help"),
-                        "icon": "nautilussvn-help",
+                        "icon": "rabbitvcs-help",
                         "signals": {
                             "activate": {
                                 "callback": None,
@@ -1259,7 +1259,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::Settings",
                         "label": _("Settings"),
                         "tooltip": _("View or change RabbitVCS settings"),
-                        "icon": "nautilussvn-settings",
+                        "icon": "rabbitvcs-settings",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_settings,
@@ -1275,7 +1275,7 @@ class MainContextMenu:
                         "identifier": "RabbitVCS::About",
                         "label": _("About"),
                         "tooltip": _("About RabbitVCS"),
-                        "icon": "nautilussvn-about",
+                        "icon": "rabbitvcs-about",
                         "signals": {
                             "activate": {
                                 "callback": self.callback_about,
@@ -1569,7 +1569,7 @@ class MainContextMenu:
         
         """
         import gtk
-        from nautilussvn.debug.ipython_view import IPythonView
+        from rabbitvcs.debug.ipython_view import IPythonView
         
         window = gtk.Window()
         window.set_size_request(750,550)
@@ -1599,8 +1599,8 @@ class MainContextMenu:
             client.revert(path, recurse=True)
         
     def callback_debug_invalidate(self, menu_item, paths):
-        nautilussvn_extension = self.nautilussvn_extension
-        nautilusVFSFile_table = nautilussvn_extension.nautilusVFSFile_table
+        rabbitvcs_extension = self.nautilussvn_extension
+        nautilusVFSFile_table = rabbitvcs_extension.nautilusVFSFile_table
         for path in paths:
             log.debug("callback_debug_invalidate() called for %s" % path)
             if path in nautilusVFSFile_table:
@@ -1612,8 +1612,8 @@ class MainContextMenu:
             command = ["zenity", "--entry", "--title=RabbitVCS", "--text=Emblem to add:"]
             emblem = Popen(command, stdout=PIPE).communicate()[0].replace("\n", "")
             
-            nautilussvn_extension = self.nautilussvn_extension
-            nautilusVFSFile_table = nautilussvn_extension.nautilusVFSFile_table
+            rabbitvcs_extension = self.nautilussvn_extension
+            nautilusVFSFile_table = rabbitvcs_extension.nautilusVFSFile_table
             for path in paths:
                 if path in nautilusVFSFile_table:
                     nautilusVFSFile_table[path].add_emblem(emblem)
@@ -1625,118 +1625,118 @@ class MainContextMenu:
 
     def callback_checkout(self, menu_item, paths):
         proc = launch_ui_window("checkout", paths)
-        self.nautilussvn_extension.rescan_after_process_exit(proc, paths)
+        self.rabbitvcs_extension.rescan_after_process_exit(proc, paths)
     
     def callback_update(self, menu_item, paths):
         proc = launch_ui_window("update", paths)
-        self.nautilussvn_extension.rescan_after_process_exit(proc, paths)
+        self.rabbitvcs_extension.rescan_after_process_exit(proc, paths)
 
     def callback_commit(self, menu_item, paths):
         proc = launch_ui_window("commit", ["--base-dir=" + self.base_dir] + paths)
-        self.nautilussvn_extension.rescan_after_process_exit(proc, paths)
+        self.rabbitvcs_extension.rescan_after_process_exit(proc, paths)
 
     def callback_add(self, menu_item, paths):
         proc = launch_ui_window("add", paths)
-        # self.nautilussvn_extension.rescan_after_process_exit(proc, paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        # self.rabbitvcs_extension.rescan_after_process_exit(proc, paths)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_delete(self, menu_item, paths):
         proc = launch_ui_window("delete", paths)
-        self.nautilussvn_extension.rescan_after_process_exit(proc, paths)
+        self.rabbitvcs_extension.rescan_after_process_exit(proc, paths)
 
     def callback_revert(self, menu_item, paths):
         proc = launch_ui_window("revert", paths)
-        self.nautilussvn_extension.rescan_after_process_exit(proc, paths)
+        self.rabbitvcs_extension.rescan_after_process_exit(proc, paths)
 
     def callback_diff(self, menu_item, paths):
         launch_diff_tool(*paths)
     
     def callback_show_log(self, menu_item, paths):
         proc = launch_ui_window("log", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_rename(self, menu_item, paths):
         launch_ui_window("rename", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_createpatch(self, menu_item, paths):
         proc = launch_ui_window("createpatch", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
     
     def callback_applypatch(self, menu_item, paths):
         proc = launch_ui_window("applypatch", paths)
-        self.nautilussvn_extension.rescan_after_process_exit(proc, paths)
+        self.rabbitvcs_extension.rescan_after_process_exit(proc, paths)
     
     def callback_properties(self, menu_item, paths):
         launch_ui_window("properties", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_about(self, menu_item, paths):
         launch_ui_window("about")
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
         
     def callback_settings(self, menu_item, paths):
         proc = launch_ui_window("settings")
-        self.nautilussvn_extension.reload_settings(proc)
+        self.rabbitvcs_extension.reload_settings(proc)
     
     def callback_ignore_filename(self, menu_item, paths):
-        from nautilussvn.ui.ignore import Ignore
+        from rabbitvcs.ui.ignore import Ignore
         ignore = Ignore(paths[0], basename(paths[0]))
         ignore.start()
 
     def callback_ignore_ext(self, menu_item, paths):
-        from nautilussvn.ui.ignore import Ignore
+        from rabbitvcs.ui.ignore import Ignore
         ignore = Ignore(paths[0], "*%s" % get_file_extension(paths[0]), glob=True)
         ignore.start()
 
     def callback_lock(self, menu_item, paths):
         launch_ui_window("lock", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_branch(self, menu_item, paths):
         launch_ui_window("branch", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_switch(self, menu_item, paths):
         launch_ui_window("switch", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_merge(self, menu_item, paths):
         launch_ui_window("merge", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_import(self, menu_item, paths):
         launch_ui_window("import", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_export(self, menu_item, paths):
         launch_ui_window("export", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_updateto(self, menu_item, paths):
         launch_ui_window("updateto", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
     
     def callback_resolve(self, menu_item, paths):
         launch_ui_window("resolve", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
         
     def callback_annotate(self, menu_item, paths):
         launch_ui_window("annotate", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_unlock(self, menu_item, paths):
         launch_ui_window("unlock", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
         
     def callback_create_repository(self, menu_item, paths):
         launch_ui_window("create", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
     
     def callback_relocate(self, menu_item, paths):
         launch_ui_window("relocate", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_cleanup(self, menu_item, paths):
         launch_ui_window("cleanup", paths)
-        self.nautilussvn_extension.execute_after_process_exit(proc)
+        self.rabbitvcs_extension.execute_after_process_exit(proc)

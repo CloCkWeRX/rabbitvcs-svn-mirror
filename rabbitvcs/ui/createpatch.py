@@ -31,18 +31,18 @@ import os
 import tempfile
 import shutil
 
-from nautilussvn.ui import InterfaceView
-from nautilussvn.ui.action import VCSAction
-import nautilussvn.ui.widget
-import nautilussvn.ui.dialog
-import nautilussvn.lib
-import nautilussvn.lib.helper
-from nautilussvn.lib.helper import get_common_directory
-from nautilussvn.lib.log import Log
+from rabbitvcs.ui import InterfaceView
+from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.ui.widget
+import rabbitvcs.ui.dialog
+import rabbitvcs.lib
+import rabbitvcs.lib.helper
+from rabbitvcs.lib.helper import get_common_directory
+from rabbitvcs.lib.log import Log
 
-log = Log("nautilussvn.ui.createpatch")
+log = Log("rabbitvcs.ui.createpatch")
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 gtk.gdk.threads_init()
@@ -67,19 +67,19 @@ class CreatePatch(InterfaceView):
 
         self.paths = paths
         self.base_dir = base_dir
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
-        self.common = nautilussvn.lib.helper.get_common_directory(paths)
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.common = rabbitvcs.lib.helper.get_common_directory(paths)
         self.activated_cache = {}
 
         if not self.vcs.get_versioned_path(self.common):
-            nautilussvn.ui.dialog.MessageBox(_("The given path is not a working copy"))
+            rabbitvcs.ui.dialog.MessageBox(_("The given path is not a working copy"))
             raise SystemExit()
 
-        self.files_table = nautilussvn.ui.widget.Table(
+        self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
+            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
                 _("Text Status"), _("Property Status")],
             base_dir=base_dir,
             path_entries=[1]
@@ -161,7 +161,7 @@ class CreatePatch(InterfaceView):
             self.files_table.append([
                 checked,
                 item.path, 
-                nautilussvn.lib.helper.get_file_extension(item.path),
+                rabbitvcs.lib.helper.get_file_extension(item.path),
                 item.text_status,
                 item.prop_status
             ])
@@ -223,7 +223,7 @@ class CreatePatch(InterfaceView):
             return
       
         ticks = len(items)*2
-        self.action = nautilussvn.ui.action.VCSAction(
+        self.action = rabbitvcs.ui.action.VCSAction(
             self.vcs,
             register_gtk_quit=self.gtk_quit_is_set()
         )
@@ -235,13 +235,13 @@ class CreatePatch(InterfaceView):
             fileObj = open(patch_path,"w")
             
             # PySVN takes a path to create its own temp files...
-            temp_dir = tempfile.mkdtemp(prefix=nautilussvn.TEMP_DIR_PREFIX)
+            temp_dir = tempfile.mkdtemp(prefix=rabbitvcs.TEMP_DIR_PREFIX)
             
             os.chdir(base_dir)
            
             # Add to the Patch file only the selected items
             for item in patch_items:
-                rel_path = nautilussvn.lib.helper.get_relative_path(base_dir, item)
+                rel_path = rabbitvcs.lib.helper.get_relative_path(base_dir, item)
                 diff_text = self.vcs.diff(temp_dir, rel_path)
                 fileObj.write(diff_text)
     
@@ -258,7 +258,7 @@ class CreatePatch(InterfaceView):
         self.action.start()
         
         # TODO: Open the diff file (meld is going to add support in a future version :()
-        # nautilussvn.lib.helper.launch_diff_tool(path)
+        # rabbitvcs.lib.helper.launch_diff_tool(path)
         
     def on_toggle_show_all_toggled(self, widget, data=None):
         self.TOGGLE_ALL = not self.TOGGLE_ALL
@@ -281,7 +281,7 @@ class CreatePatch(InterfaceView):
             
             if event.button == 3:
                 self.last_row_clicked = path
-                context_menu = nautilussvn.ui.widget.ContextMenu([
+                context_menu = rabbitvcs.ui.widget.ContextMenu([
                     {
                         "label": _("View Diff"),
                         "signals": {
@@ -387,7 +387,7 @@ class CreatePatch(InterfaceView):
         treeview_model = treeview.get_model().get_model()
         fileinfo = treeview_model[event[0]]
         
-        nautilussvn.lib.helper.launch_diff_tool(fileinfo[1])
+        rabbitvcs.lib.helper.launch_diff_tool(fileinfo[1])
 
     def on_context_add_activated(self, widget, data=None):
         self.vcs.add(data[1])
@@ -399,23 +399,23 @@ class CreatePatch(InterfaceView):
         self.initialize_items()
 
     def on_context_diff_activated(self, widget, data=None):
-        nautilussvn.lib.helper.launch_diff_tool(data[1])
+        rabbitvcs.lib.helper.launch_diff_tool(data[1])
 
     def on_context_open_activated(self, widget, data=None):
-        nautilussvn.lib.helper.open_item(data[1])
+        rabbitvcs.lib.helper.open_item(data[1])
         
     def on_context_browse_activated(self, widget, data=None):
-        nautilussvn.lib.helper.browse_to_item(data[1])
+        rabbitvcs.lib.helper.browse_to_item(data[1])
 
     def on_context_delete_activated(self, widget, data=None):
         if self.vcs.is_versioned(data[1]):
             self.vcs.remove(data[1], force=True)
             self.initialize_items()
         else:
-            confirm = nautilussvn.ui.dialog.DeleteConfirmation(data[1])
+            confirm = rabbitvcs.ui.dialog.DeleteConfirmation(data[1])
             
             if confirm.run():
-                nautilussvn.lib.helper.delete_item(data[1])
+                rabbitvcs.lib.helper.delete_item(data[1])
                 self.files_table.remove(self.last_row_clicked)
             
     def on_subcontext_ignore_by_filename_activated(self, widget, data=None):
@@ -433,7 +433,7 @@ class CreatePatch(InterfaceView):
             self.initialize_items()
 
     def on_context_restore_activated(self, widget, data=None):
-        nautilussvn.lib.helper.launch_ui_window(
+        rabbitvcs.lib.helper.launch_ui_window(
             "update", 
             [data[1]],
             return_immmediately=False
@@ -490,7 +490,7 @@ class CreatePatch(InterfaceView):
         return os.path.isfile(path)
 
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
         
     window = CreatePatch(paths, options.base_dir)

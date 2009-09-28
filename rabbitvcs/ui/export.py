@@ -26,13 +26,13 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-from nautilussvn.ui.checkout import Checkout
-from nautilussvn.ui.dialog import MessageBox
-from nautilussvn.ui.action import VCSAction
-import nautilussvn.lib.helper
+from rabbitvcs.ui import InterfaceView
+from rabbitvcs.ui.checkout import Checkout
+from rabbitvcs.ui.dialog import MessageBox
+from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.lib.helper
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Export(Checkout):
@@ -88,7 +88,7 @@ class Export(Checkout):
         
         self.action.append(self.action.set_header, _("Export"))
         self.action.append(self.action.set_status, _("Running Export Command..."))
-        self.action.append(nautilussvn.lib.helper.save_repository_path, url)
+        self.action.append(rabbitvcs.lib.helper.save_repository_path, url)
         self.action.append(
             self.vcs.export,
             url,
@@ -103,7 +103,7 @@ class Export(Checkout):
         self.action.start()
         
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
             
     window = Export(paths[0])

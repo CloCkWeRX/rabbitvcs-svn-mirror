@@ -53,7 +53,7 @@ def get_home_folder():
         "XDG_CONFIG_HOME", 
         os.path.join(os.path.expanduser("~"), ".config")
     )
-    config_home = os.path.join(xdg_config_home, "nautilussvn")
+    config_home = os.path.join(xdg_config_home, "rabbitvcs")
     
     # Make sure the directories are there
     if not os.path.isdir(config_home):
@@ -69,8 +69,8 @@ def find_configspec():
     configspec = os.path.join(dirname(__file__), "configspec/configspec.ini")
     if os.path.exists(configspec):
         return configspec
-    elif os.path.exists("/usr/share/nautilussvn/configspec.ini"):
-        return "/usr/share/nautilussvn/configspec.ini"
+    elif os.path.exists("/usr/share/rabbitvcs/configspec.ini"):
+        return "/usr/share/rabbitvcs/configspec.ini"
     else:
         # FIXME: what if we can't find anything?
         return None

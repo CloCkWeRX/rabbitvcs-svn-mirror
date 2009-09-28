@@ -26,15 +26,15 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-from nautilussvn.ui.log import LogDialog
-import nautilussvn.ui.widget
-import nautilussvn.ui.dialog
-import nautilussvn.ui.action
-import nautilussvn.lib.helper
-import nautilussvn.lib.vcs
+from rabbitvcs.ui import InterfaceView
+from rabbitvcs.ui.log import LogDialog
+import rabbitvcs.ui.widget
+import rabbitvcs.ui.dialog
+import rabbitvcs.ui.action
+import rabbitvcs.lib.helper
+import rabbitvcs.lib.vcs
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Checkout(InterfaceView):
@@ -52,11 +52,11 @@ class Checkout(InterfaceView):
         self.get_widget("Checkout").set_title(_("Checkout - %s") % path)
         
         self.path = path
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
 
-        self.repositories = nautilussvn.ui.widget.ComboBox(
+        self.repositories = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("repositories"), 
-            nautilussvn.lib.helper.get_repository_paths()
+            rabbitvcs.lib.helper.get_repository_paths()
         )
         self.destination = path
         self.get_widget("destination").set_text(path)
@@ -79,7 +79,7 @@ class Checkout(InterfaceView):
         recursive = self.get_widget("recursive").get_active()
         
         if not url or not path:
-            nautilussvn.ui.dialog.MessageBox(_("The repository URL and destination path are both required fields."))
+            rabbitvcs.ui.dialog.MessageBox(_("The repository URL and destination path are both required fields."))
             return
 
         if path.startswith("file://"):
@@ -95,13 +95,13 @@ class Checkout(InterfaceView):
             )
     
         self.hide()
-        self.action = nautilussvn.ui.action.VCSAction(
+        self.action = rabbitvcs.ui.action.VCSAction(
             self.vcs,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         self.action.append(self.action.set_header, _("Checkout"))
         self.action.append(self.action.set_status, _("Running Checkout Command..."))
-        self.action.append(nautilussvn.lib.helper.save_repository_path, url)
+        self.action.append(rabbitvcs.lib.helper.save_repository_path, url)
         self.action.append(
             self.vcs.checkout,
             url,
@@ -119,7 +119,7 @@ class Checkout(InterfaceView):
             self.get_widget("revision_number_opt").set_active(True)
 
     def on_file_chooser_clicked(self, widget, data=None):
-        chooser = nautilussvn.ui.dialog.FolderChooser()
+        chooser = rabbitvcs.ui.dialog.FolderChooser()
         path = chooser.run()
         if path is not None:
             self.get_widget("destination").set_text(path)
@@ -163,10 +163,10 @@ class Checkout(InterfaceView):
         self.get_widget("ok").set_sensitive(self.complete)
 
     def on_repo_chooser_clicked(self, widget, data=None):
-        nautilussvn.lib.helper.launch_repo_browser(self.get_widget("url").get_text())
+        rabbitvcs.lib.helper.launch_repo_browser(self.get_widget("url").get_text())
 
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
             
     window = Checkout(paths[0])

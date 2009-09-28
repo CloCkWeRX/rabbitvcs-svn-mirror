@@ -24,9 +24,9 @@
 
 import os.path
 import sys
-from nautilussvn.lib.helper import launch_ui_window
+from rabbitvcs.lib.helper import launch_ui_window
 
-usage = """usage: nautilussvn <module> [path1] [path2] ...
+usage = """usage: rabbitvcs <module> [path1] [path2] ...
 
 Available Modules
 ------------------

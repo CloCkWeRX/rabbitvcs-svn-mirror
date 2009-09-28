@@ -26,11 +26,11 @@ import gtk
 
 from os.path import basename
 
-import nautilussvn.lib.helper
+import rabbitvcs.lib.helper
 
-from nautilussvn.lib.log import Log
+from rabbitvcs.lib.log import Log
 
-log = Log("nautilussvn.ui.widget")
+log = Log("rabbitvcs.ui.widget")
 
 TOGGLE_BUTTON = 'TOGGLE_BUTTON'
 PATH_ENTRY = 'PATH_ENTRY'
@@ -46,7 +46,7 @@ def path_filter(model, iter, column, user_data):
                 column)
 
     if column in path_entries:
-        relpath = nautilussvn.lib.helper.get_relative_path(base_dir, data)
+        relpath = rabbitvcs.lib.helper.get_relative_path(base_dir, data)
         if relpath == "":
             relpath = basename(data)
         return relpath

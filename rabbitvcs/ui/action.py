@@ -27,15 +27,15 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-import nautilussvn.ui.widget
-import nautilussvn.ui.dialog
-import nautilussvn.lib
-import nautilussvn.lib.vcs
-import nautilussvn.lib.helper
-from nautilussvn.lib.decorators import gtk_unsafe
+from rabbitvcs.ui import InterfaceView
+import rabbitvcs.ui.widget
+import rabbitvcs.ui.dialog
+import rabbitvcs.lib
+import rabbitvcs.lib.vcs
+import rabbitvcs.lib.helper
+from rabbitvcs.lib.decorators import gtk_unsafe
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 gtk.gdk.threads_init()
@@ -61,13 +61,13 @@ class Notification(InterfaceView):
         if visible:
             self.show()
     
-        self.table = nautilussvn.ui.widget.Table(
+        self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [_("Action"), _("Path"), _("Mime Type")]
         )
         
-        self.pbar = nautilussvn.ui.widget.ProgressBar(
+        self.pbar = rabbitvcs.ui.widget.ProgressBar(
             self.get_widget("pbar")
         )
         self.pbar.start_pulsate()
@@ -143,7 +143,7 @@ class VCSAction(threading.Thread):
         self.client.set_callback_ssl_server_trust_prompt(self.get_ssl_trust)
         self.client.set_callback_ssl_client_cert_password_prompt(self.get_ssl_password)
         
-        self.queue = nautilussvn.lib.FunctionQueue()
+        self.queue = rabbitvcs.lib.FunctionQueue()
         
         self.login_tries = 0
         self.cancel = False
@@ -229,7 +229,7 @@ class VCSAction(threading.Thread):
         ])
         
         #FIXME: this is crap
-        if nautilussvn.lib.helper.in_rich_compare(
+        if rabbitvcs.lib.helper.in_rich_compare(
                 data["action"],
                 self.client.NOTIFY_ACTIONS_COMPLETE):
             self.notification.append(
@@ -307,7 +307,7 @@ class VCSAction(threading.Thread):
             return (False, "", "", False)
     
         gtk.gdk.threads_enter()
-        dialog = nautilussvn.ui.dialog.Authentication(
+        dialog = rabbitvcs.ui.dialog.Authentication(
             realm,
             may_save
         )
@@ -344,7 +344,7 @@ class VCSAction(threading.Thread):
         if not data:
             return (False, 0, False)
 
-        dialog = nautilussvn.ui.dialog.Certificate(
+        dialog = rabbitvcs.ui.dialog.Certificate(
             data["realm"],
             data["hostname"],
             data["issuer_dname"],
@@ -384,7 +384,7 @@ class VCSAction(threading.Thread):
         """
         
         gtk.gdk.threads_enter()
-        dialog = nautilussvn.ui.dialog.CertAuthentication(
+        dialog = rabbitvcs.ui.dialog.CertAuthentication(
             realm,
             may_save
         )

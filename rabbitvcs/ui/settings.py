@@ -26,13 +26,13 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-import nautilussvn.ui.widget
-import nautilussvn.ui.dialog
-import nautilussvn.lib.settings
-import nautilussvn.lib.helper
+from rabbitvcs.ui import InterfaceView
+import rabbitvcs.ui.widget
+import rabbitvcs.ui.dialog
+import rabbitvcs.lib.settings
+import rabbitvcs.lib.helper
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Settings(InterfaceView):
@@ -43,9 +43,9 @@ class Settings(InterfaceView):
     
         InterfaceView.__init__(self, "settings", "Settings")
 
-        self.settings = nautilussvn.lib.settings.SettingsManager()
+        self.settings = rabbitvcs.lib.settings.SettingsManager()
         
-        self.language = nautilussvn.ui.widget.ComboBox(
+        self.language = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("language"), 
             [_("English")]
         )
@@ -80,7 +80,7 @@ class Settings(InterfaceView):
             str(self.settings.get("cache", "number_messages"))
         )
         
-        self.logging_type = nautilussvn.ui.widget.ComboBox(
+        self.logging_type = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("logging_type"), 
             ["None", "Console", "File", "Both"]
         )
@@ -89,7 +89,7 @@ class Settings(InterfaceView):
             val = "Console"
         self.logging_type.set_active_from_value(val)
 
-        self.logging_level = nautilussvn.ui.widget.ComboBox(
+        self.logging_level = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("logging_level"), 
             ["Debug", "Info", "Warning", "Error", "Critical"]
         )
@@ -163,7 +163,7 @@ class Settings(InterfaceView):
         self.settings.write()
 
     def on_external_diff_tool_browse_clicked(self, widget):
-        chooser = nautilussvn.ui.dialog.FileChooser(
+        chooser = rabbitvcs.ui.dialog.FileChooser(
             _("Select a program"), "/usr/bin"
         )
         path = chooser.run()
@@ -172,7 +172,7 @@ class Settings(InterfaceView):
             self.get_widget("diff_tool").set_text(path)
 
     def on_external_repo_browser_browse_clicked(self, widget):
-        chooser = nautilussvn.ui.dialog.FileChooser(
+        chooser = rabbitvcs.ui.dialog.FileChooser(
             _("Select a program"), "/usr/bin"
         )
         path = chooser.run()
@@ -181,33 +181,33 @@ class Settings(InterfaceView):
             self.get_widget("repo_browser").set_text(path)
 
     def on_cache_clear_repositories_clicked(self, widget):
-        confirmation = nautilussvn.ui.dialog.Confirmation(
+        confirmation = rabbitvcs.ui.dialog.Confirmation(
             _("Are you sure you want to clear your repository paths?")
         )
         if confirmation.run() == 1:
-            path = nautilussvn.lib.helper.get_repository_paths_path()
+            path = rabbitvcs.lib.helper.get_repository_paths_path()
             fh = open(path, "w")
             fh.write("")
             fh.close()
-            nautilussvn.ui.dialog.MessageBox(_("Repository paths cleared"))
+            rabbitvcs.ui.dialog.MessageBox(_("Repository paths cleared"))
 
     def on_cache_clear_messages_clicked(self, widget):
-        confirmation = nautilussvn.ui.dialog.Confirmation(
+        confirmation = rabbitvcs.ui.dialog.Confirmation(
             _("Are you sure you want to clear your previous messages?")
         )
         if confirmation.run() == 1:
-            path = nautilussvn.lib.helper.get_previous_messages_path()
+            path = rabbitvcs.lib.helper.get_previous_messages_path()
             fh = open(path, "w")
             fh.write("")
             fh.close()
-            nautilussvn.ui.dialog.MessageBox(_("Previous messages cleared"))
+            rabbitvcs.ui.dialog.MessageBox(_("Previous messages cleared"))
 
     def on_cache_clear_authentication_clicked(self, widget):
-        confirmation = nautilussvn.ui.dialog.Confirmation(
+        confirmation = rabbitvcs.ui.dialog.Confirmation(
             _("Are you sure you want to clear your authentication information?")
         )
         if confirmation.run() == 1:
-            home_dir = nautilussvn.lib.helper.get_user_path()
+            home_dir = rabbitvcs.lib.helper.get_user_path()
             subpaths = [
                 '/.subversion/auth/svn.simple',
                 '/.subversion/auth/svn.ssl.server',
@@ -221,7 +221,7 @@ class Settings(InterfaceView):
                         filepath = "%s/%s" % (path, filename)
                         os.remove(filepath)
 
-            nautilussvn.ui.dialog.MessageBox(_("Authentication information cleared"))
+            rabbitvcs.ui.dialog.MessageBox(_("Authentication information cleared"))
                 
 
 if __name__ == "__main__":

@@ -24,15 +24,15 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-import nautilussvn.ui.widget
-import nautilussvn.ui.dialog
-import nautilussvn.lib.vcs
-from nautilussvn.lib.log import Log
+from rabbitvcs.ui import InterfaceView
+import rabbitvcs.ui.widget
+import rabbitvcs.ui.dialog
+import rabbitvcs.lib.vcs
+from rabbitvcs.lib.log import Log
 
-log = Log("nautilussvn.ui.properties")
+log = Log("rabbitvcs.ui.properties")
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Properties(InterfaceView):
@@ -58,14 +58,14 @@ class Properties(InterfaceView):
         
         self.get_widget("path").set_text(path)
         
-        self.table = nautilussvn.ui.widget.Table(
+        self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Name"), _("Value")]
+            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Name"), _("Value")]
         )
         self.table.allow_multiple()
         
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         self.load()
 
     #
@@ -93,14 +93,14 @@ class Properties(InterfaceView):
                              overwrite=True, recurse=row[0])
         
     def on_new_clicked(self, widget):
-        dialog = nautilussvn.ui.dialog.Property()
+        dialog = rabbitvcs.ui.dialog.Property()
         name,value,recurse = dialog.run()
         if name is not None:
             self.table.append([recurse,name,value])
     
     def on_edit_clicked(self, widget):
         (recurse,name,value) = self.get_selected_name_value()
-        dialog = nautilussvn.ui.dialog.Property(name, value)
+        dialog = rabbitvcs.ui.dialog.Property(name, value)
         name,value,recurse = dialog.run()
         if name is not None:
             self.set_selected_name_value(name, value, recurse)
@@ -161,7 +161,7 @@ class Properties(InterfaceView):
         try:
             self.proplist = self.vcs.proplist(self.get_widget("path").get_text())
         except Exception, e:
-            nautilussvn.ui.dialog.MessageBox("Unable to retrieve properties list")
+            rabbitvcs.ui.dialog.MessageBox("Unable to retrieve properties list")
             self.proplist = []
         
         if self.proplist:
@@ -169,7 +169,7 @@ class Properties(InterfaceView):
                 self.table.append([False, key,val.rstrip()])
 
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
             
     window = Properties(paths[0])

@@ -24,13 +24,13 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-from nautilussvn.ui.action import VCSAction
-import nautilussvn.ui.widget
-import nautilussvn.ui.dialog
-import nautilussvn.lib.helper
+from rabbitvcs.ui import InterfaceView
+from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.ui.widget
+import rabbitvcs.ui.dialog
+import rabbitvcs.lib.helper
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Import(InterfaceView):
@@ -41,17 +41,17 @@ class Import(InterfaceView):
         self.get_widget("Import").set_title(_("Import - %s") % path)
         
         self.path = path
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         
         if self.vcs.is_in_a_or_a_working_copy(path):
             self.get_widget("repository").set_text(self.vcs.get_repo_url(path))
         
-        self.repositories = nautilussvn.ui.widget.ComboBox(
+        self.repositories = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("repositories"), 
-            nautilussvn.lib.helper.get_repository_paths()
+            rabbitvcs.lib.helper.get_repository_paths()
         )
         
-        self.message = nautilussvn.ui.widget.TextView(
+        self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message")
         )
 
@@ -65,14 +65,14 @@ class Import(InterfaceView):
         
         url = self.get_widget("repository").get_text()
         if not url:
-            nautilussvn.ui.dialog.MessageBox(_("The repository URL field is required."))
+            rabbitvcs.ui.dialog.MessageBox(_("The repository URL field is required."))
             return
             
         ignore = not self.get_widget("include_ignored").get_active()
         
         self.hide()
 
-        self.action = nautilussvn.ui.action.VCSAction(
+        self.action = rabbitvcs.ui.action.VCSAction(
             self.vcs,
             register_gtk_quit=self.gtk_quit_is_set()
         )
@@ -91,13 +91,13 @@ class Import(InterfaceView):
         self.action.start()
 
     def on_previous_messages_clicked(self, widget, data=None):
-        dialog = nautilussvn.ui.dialog.PreviousMessages()
+        dialog = rabbitvcs.ui.dialog.PreviousMessages()
         message = dialog.run()
         if message is not None:
             self.message.set_text(message)
 
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
             
     window = Import(paths[0])

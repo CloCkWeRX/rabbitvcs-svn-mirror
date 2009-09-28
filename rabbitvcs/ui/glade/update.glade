@@ -7,7 +7,7 @@
     <property name="visible">True</property>
     <property name="title" translatable="yes">Update</property>
     <property name="window_position">center</property>
-    <property name="icon_name">nautilussvn</property>
+    <property name="icon_name">rabbitvcs</property>
     <signal name="destroy" handler="on_destroy"/>
     <child>
       <widget class="GtkVBox" id="vbox25">
@@ -101,7 +101,7 @@
                               <widget class="GtkImage" id="image1">
                                 <property name="visible">True</property>
                                 <property name="pixel_size">24</property>
-                                <property name="icon_name">nautilussvn-show_log</property>
+                                <property name="icon_name">rabbitvcs-show_log</property>
                               </widget>
                             </child>
                           </widget>

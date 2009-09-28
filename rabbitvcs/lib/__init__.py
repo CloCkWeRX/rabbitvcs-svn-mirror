@@ -20,9 +20,9 @@
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from nautilussvn.lib.log import Log
+from rabbitvcs.lib.log import Log
 
-log = Log("nautilussvn.lib.__init__")
+log = Log("rabbitvcs.lib.__init__")
 
 class Function:
     """

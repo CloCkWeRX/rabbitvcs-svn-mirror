@@ -28,14 +28,14 @@ import gtk
 import os
 import commands
 
-from nautilussvn.ui import InterfaceNonView
-from nautilussvn.ui.action import VCSAction
-import nautilussvn.lib.vcs
-from nautilussvn.lib.log import Log
+from rabbitvcs.ui import InterfaceNonView
+from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.lib.vcs
+from rabbitvcs.lib.log import Log
 
-log = Log("nautilussvn.ui.applypatch")
+log = Log("rabbitvcs.ui.applypatch")
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class ApplyPatch(InterfaceNonView):
@@ -47,8 +47,8 @@ class ApplyPatch(InterfaceNonView):
     def __init__(self, paths):
         InterfaceNonView.__init__(self)
         self.paths = paths
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
-        self.common = nautilussvn.lib.helper.get_common_directory(paths)
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.common = rabbitvcs.lib.helper.get_common_directory(paths)
 
     def choose_patch_path(self):
         path = None
@@ -99,7 +99,7 @@ class ApplyPatch(InterfaceNonView):
             return        
         
         ticks = 2
-        self.action = nautilussvn.ui.action.VCSAction(
+        self.action = rabbitvcs.ui.action.VCSAction(
             self.vcs,
             register_gtk_quit=self.gtk_quit_is_set()
         )
@@ -112,7 +112,7 @@ class ApplyPatch(InterfaceNonView):
         self.action.start()
     
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
 
     window = ApplyPatch(paths)

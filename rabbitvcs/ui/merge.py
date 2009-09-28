@@ -24,14 +24,14 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-from nautilussvn.ui.log import LogDialog
-from nautilussvn.ui.action import VCSAction
-import nautilussvn.lib.vcs
-import nautilussvn.ui.widget
-import nautilussvn.lib.helper
+from rabbitvcs.ui import InterfaceView
+from rabbitvcs.ui.log import LogDialog
+from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.lib.vcs
+import rabbitvcs.ui.widget
+import rabbitvcs.lib.helper
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Merge(InterfaceView):
@@ -45,7 +45,7 @@ class Merge(InterfaceView):
         
         self.page = self.assistant.get_nth_page(0)
         
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         
         if not self.vcs.has_merge2():
             self.get_widget("mergetype_range_opt").set_sensitive(False)
@@ -55,7 +55,7 @@ class Merge(InterfaceView):
         self.assistant.set_page_complete(self.page, True)
         self.assistant.set_forward_page_func(self.on_forward_clicked)
         
-        self.repo_paths = nautilussvn.lib.helper.get_repository_paths()
+        self.repo_paths = rabbitvcs.lib.helper.get_repository_paths()
         
         # Keeps track of which stages should be marked as complete
         self.type = None
@@ -219,7 +219,7 @@ class Merge(InterfaceView):
     
     def on_mergerange_prepare(self):
         if not hasattr(self, "mergerange_repos"):
-            self.mergerange_repos = nautilussvn.ui.widget.ComboBox(
+            self.mergerange_repos = rabbitvcs.ui.widget.ComboBox(
                 self.get_widget("mergerange_from_urls"), 
                 self.repo_paths
             )
@@ -261,7 +261,7 @@ class Merge(InterfaceView):
 
     def on_mergebranch_prepare(self):
         if not hasattr(self, "mergebranch_repos"):
-            self.mergebranch_repos = nautilussvn.ui.widget.ComboBox(
+            self.mergebranch_repos = rabbitvcs.ui.widget.ComboBox(
                 self.get_widget("mergebranch_from_urls"), 
                 self.repo_paths
             )
@@ -289,11 +289,11 @@ class Merge(InterfaceView):
     
     def on_mergetree_prepare(self):
         if not hasattr(self, "mergetree_from_repos"):
-            self.mergetree_from_repos = nautilussvn.ui.widget.ComboBox(
+            self.mergetree_from_repos = rabbitvcs.ui.widget.ComboBox(
                 self.get_widget("mergetree_from_urls"), 
                 self.repo_paths
             )
-            self.mergetree_to_repos = nautilussvn.ui.widget.ComboBox(
+            self.mergetree_to_repos = rabbitvcs.ui.widget.ComboBox(
                 self.get_widget("mergetree_to_urls"), 
                 self.repo_paths
             )
@@ -353,7 +353,7 @@ class Merge(InterfaceView):
         self.assistant.set_page_complete(self.page, True)
 
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
             
     window = Merge(paths[0])

@@ -24,14 +24,14 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-from nautilussvn.ui.log import LogDialog
-from nautilussvn.ui.action import VCSAction
-import nautilussvn.ui.widget
-import nautilussvn.ui.dialog
-import nautilussvn.lib.helper
+from rabbitvcs.ui import InterfaceView
+from rabbitvcs.ui.log import LogDialog
+from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.ui.widget
+import rabbitvcs.ui.dialog
+import rabbitvcs.lib.helper
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Switch(InterfaceView):
@@ -40,16 +40,16 @@ class Switch(InterfaceView):
 
 
         self.path = path
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         
         self.get_widget("path").set_text(self.path)
         self.get_widget("repository").set_text(
             self.vcs.get_repo_url(self.path)
         )
         
-        self.repositories = nautilussvn.ui.widget.ComboBox(
+        self.repositories = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("repositories"), 
-            nautilussvn.lib.helper.get_repository_paths()
+            rabbitvcs.lib.helper.get_repository_paths()
         )
 
     def on_destroy(self, widget):
@@ -62,7 +62,7 @@ class Switch(InterfaceView):
         url = self.get_widget("repository").get_text()
         
         if not url or not self.path:
-            nautilussvn.ui.dialog.MessageBox(_("The repository location is a required field."))
+            rabbitvcs.ui.dialog.MessageBox(_("The repository location is a required field."))
             return
 
         revision = self.vcs.revision("head")
@@ -73,14 +73,14 @@ class Switch(InterfaceView):
             )
     
         self.hide()
-        self.action = nautilussvn.ui.action.VCSAction(
+        self.action = rabbitvcs.ui.action.VCSAction(
             self.vcs,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         
         self.action.append(self.action.set_header, _("Switch"))
         self.action.append(self.action.set_status, _("Running Switch Command..."))
-        self.action.append(nautilussvn.lib.helper.save_repository_path, url)
+        self.action.append(rabbitvcs.lib.helper.save_repository_path, url)
         self.action.append(
             self.vcs.switch,
             self.path,
@@ -104,7 +104,7 @@ class Switch(InterfaceView):
 
 
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
             
     window = Switch(paths[0])

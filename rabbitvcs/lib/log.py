@@ -33,7 +33,7 @@ be specified in the user's settings.  So to set up your module to log do the
 following:
 
 Usage:
-    from nautilussvn.lib.log import Log
+    from rabbitvcs.lib.log import Log
 
     log = Log("my.module")
     log.debug("a debug message")
@@ -45,7 +45,7 @@ from os.path import expanduser
 import logging
 import logging.handlers
 
-from nautilussvn.lib.settings import SettingsManager, get_home_folder
+from rabbitvcs.lib.settings import SettingsManager, get_home_folder
 
 LEVELS = {
     "debug":    logging.DEBUG,
@@ -194,7 +194,7 @@ class ConsoleLog(BaseLog):
     command line/standard output.
     
     Usage:
-        clog = ConsoleLog("nautilussvn.ui.commit")
+        clog = ConsoleLog("rabbitvcs.ui.commit")
         clog.debug("This function needs refactoring")
         clog.error("You just screwed the pooch!")
     
@@ -219,7 +219,7 @@ class FileLog(BaseLog):
     which is automatically rotated every day and keeps seven days worth of data.
     
     Usage:
-        flog = FileLog("nautilussvn.ui.commit")
+        flog = FileLog("rabbitvcs.ui.commit")
         flog.debug("This function needs refactoring")
         flog.error("You just screwed the pooch!")
     
@@ -248,7 +248,7 @@ class DualLog(BaseLog):
     day.
     
     Usage:
-        dlog = DualLog("nautilussvn.ui.commit")
+        dlog = DualLog("rabbitvcs.ui.commit")
         dlog.debug("This function needs refactoring")
         dlog.error("You just screwed the pooch!")
     

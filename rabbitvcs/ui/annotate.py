@@ -28,18 +28,18 @@ import gtk
 
 from datetime import datetime
 
-from nautilussvn.ui import InterfaceView
-from nautilussvn.ui.log import LogDialog
-from nautilussvn.ui.action import VCSAction
-import nautilussvn.ui.widget
-from nautilussvn.ui.dialog import MessageBox
-import nautilussvn.lib.helper
-import nautilussvn.lib.vcs
+from rabbitvcs.ui import InterfaceView
+from rabbitvcs.ui.log import LogDialog
+from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.ui.widget
+from rabbitvcs.ui.dialog import MessageBox
+import rabbitvcs.lib.helper
+import rabbitvcs.lib.vcs
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
-DATETIME_FORMAT = nautilussvn.lib.helper.LOCAL_DATETIME_FORMAT
+DATETIME_FORMAT = rabbitvcs.lib.helper.LOCAL_DATETIME_FORMAT
 
 class Annotate(InterfaceView):
     """
@@ -61,14 +61,14 @@ class Annotate(InterfaceView):
 
         self.get_widget("Annotate").set_title(_("Annotate - %s") % path)
         
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         
         self.path = path
-        self.pbar = nautilussvn.ui.widget.ProgressBar(self.get_widget("pbar"))
+        self.pbar = rabbitvcs.ui.widget.ProgressBar(self.get_widget("pbar"))
         self.get_widget("from").set_text(str(1))
         self.get_widget("to").set_text("HEAD")        
 
-        self.table = nautilussvn.ui.widget.Table(
+        self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING, gobject.TYPE_STRING], 
@@ -170,7 +170,7 @@ class Annotate(InterfaceView):
             ])
 
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
             
     window = Annotate(paths[0])

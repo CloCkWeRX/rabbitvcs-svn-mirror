@@ -7,7 +7,7 @@
     <property name="visible">True</property>
     <property name="title" translatable="yes">Rename</property>
     <property name="window_position">center</property>
-    <property name="icon_name">nautilussvn</property>
+    <property name="icon_name">rabbitvcs</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <signal name="destroy" handler="on_destroy"/>
     <child>

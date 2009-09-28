@@ -26,18 +26,18 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView, InterfaceNonView
-from nautilussvn.ui.add import Add
-from nautilussvn.ui.action import VCSAction
-import nautilussvn.ui.widget
-import nautilussvn.ui.dialog
-import nautilussvn.ui.action
-import nautilussvn.lib.helper
-from nautilussvn.lib.log import Log
+from rabbitvcs.ui import InterfaceView, InterfaceNonView
+from rabbitvcs.ui.add import Add
+from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.ui.widget
+import rabbitvcs.ui.dialog
+import rabbitvcs.ui.action
+import rabbitvcs.lib.helper
+from rabbitvcs.lib.log import Log
 
-log = Log("nautilussvn.ui.unlock")
+log = Log("rabbitvcs.ui.unlock")
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Unlock(Add):
@@ -50,13 +50,13 @@ class Unlock(Add):
         self.paths = paths
         self.base_dir = base_dir
         self.last_row_clicked = None
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         self.items = None
         self.statuses = None
-        self.files_table = nautilussvn.ui.widget.Table(
+        self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"), 
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
+            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
             base_dir=base_dir,
             path_entries=[1]
         )
@@ -90,7 +90,7 @@ class Unlock(Add):
             self.files_table.append([
                 True, 
                 item.path, 
-                nautilussvn.lib.helper.get_file_extension(item.path)
+                rabbitvcs.lib.helper.get_file_extension(item.path)
             ])
             found += 1
             
@@ -107,7 +107,7 @@ class Unlock(Add):
             return
         self.hide()
 
-        self.action = nautilussvn.ui.action.VCSAction(
+        self.action = rabbitvcs.ui.action.VCSAction(
             self.vcs,
             register_gtk_quit=self.gtk_quit_is_set()
         )
@@ -139,13 +139,13 @@ class UnlockQuick(InterfaceNonView):
     def __init__(self, path):
         InterfaceNonView.__init__(self)
         self.path = path
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
 
     def start(self):
         self.vcs.unlock(self.path, force=True)
         
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
         
     window = Unlock(paths, options.base_dir)

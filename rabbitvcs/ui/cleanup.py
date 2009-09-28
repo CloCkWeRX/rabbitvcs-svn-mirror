@@ -24,11 +24,11 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceNonView
-from nautilussvn.ui.action import VCSAction
-import nautilussvn.lib.vcs
+from rabbitvcs.ui import InterfaceNonView
+from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.lib.vcs
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Cleanup(InterfaceNonView):
@@ -43,7 +43,7 @@ class Cleanup(InterfaceNonView):
     def __init__(self, path):
         InterfaceNonView.__init__(self)
         self.path = path
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
 
     def start(self):
         self.action = VCSAction(
@@ -60,7 +60,7 @@ class Cleanup(InterfaceNonView):
 
         
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
             
     window = Cleanup(paths[0])

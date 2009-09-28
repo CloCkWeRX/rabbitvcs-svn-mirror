@@ -20,10 +20,10 @@
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from nautilussvn.lib.vcs.svn import SVN
-from nautilussvn.lib.decorators import deprecated
+from rabbitvcs.lib.vcs.svn import SVN
+from rabbitvcs.lib.decorators import deprecated
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 EXT_UTIL_ERROR = _("The output from '%s' was not able to be processed.\n%s")

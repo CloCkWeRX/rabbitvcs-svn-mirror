@@ -27,13 +27,13 @@ import pygtk
 import gobject
 import gtk
 
-import nautilussvn
-from nautilussvn.ui import InterfaceView
-import nautilussvn.ui.widget
+import rabbitvcs
+from rabbitvcs.ui import InterfaceView
+import rabbitvcs.ui.widget
 import pysvn
 import configobj
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class About(InterfaceView):
@@ -51,10 +51,10 @@ class About(InterfaceView):
     def __init__(self):
         InterfaceView.__init__(self, "about", "About")
         
-        doc_path = "/usr/share/doc/nautilussvn"
+        doc_path = "/usr/share/doc/rabbitvcs"
         if not os.path.exists(doc_path):
             # Assumes the user is running RabbitVCS through an svn checkout
-            # and the doc files are two directories up (from nautilussvn/ui).
+            # and the doc files are two directories up (from rabbitvcs/ui).
             doc_path = os.path.dirname(os.path.realpath(__file__)).split('/')
             doc_path = '/'.join(doc_path[:-2])
         
@@ -65,13 +65,13 @@ class About(InterfaceView):
         thanks = open(thanks_path, "r").read()
         
         self.get_widget("authors").set_text(authors)
-        thanks_widget = nautilussvn.ui.widget.TextView(
+        thanks_widget = rabbitvcs.ui.widget.TextView(
             self.get_widget("thanks"),
             thanks
         )
         
         versions = []
-        versions.append("RabbitVCS - %s" % str(nautilussvn.version))
+        versions.append("RabbitVCS - %s" % str(rabbitvcs.version))
         versions.append("Subversion - %s" % string.join(map(str,pysvn.svn_version), "."))
         versions.append("Pysvn - %s" % string.join(map(str,pysvn.version), "."))
         versions.append("ConfigObj - %s" % str(configobj.__version__))

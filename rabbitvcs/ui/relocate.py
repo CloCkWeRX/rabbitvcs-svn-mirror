@@ -24,13 +24,13 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-from nautilussvn.ui.action import VCSAction
-from nautilussvn.ui.dialog import MessageBox
-import nautilussvn.lib.vcs
-import nautilussvn.lib.helper
+from rabbitvcs.ui import InterfaceView
+from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.dialog import MessageBox
+import rabbitvcs.lib.vcs
+import rabbitvcs.lib.helper
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Relocate(InterfaceView):
@@ -50,15 +50,15 @@ class Relocate(InterfaceView):
         
 
         self.path = path
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         
         repo = self.vcs.get_repo_url(self.path)
         self.get_widget("from_url").set_text(repo)
         self.get_widget("to_url").set_text(repo)
         
-        self.repositories = nautilussvn.ui.widget.ComboBox(
+        self.repositories = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("to_urls"), 
-            nautilussvn.lib.helper.get_repository_paths()
+            rabbitvcs.lib.helper.get_repository_paths()
         )
 
     def on_destroy(self, widget):
@@ -96,7 +96,7 @@ class Relocate(InterfaceView):
         self.action.start()
 
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
             
     window = Relocate(paths[0])

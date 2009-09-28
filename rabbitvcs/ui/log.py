@@ -28,18 +28,18 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-from nautilussvn.ui.action import VCSAction
-from nautilussvn.ui.dialog import MessageBox
-import nautilussvn.ui.widget
-import nautilussvn.lib.helper
-import nautilussvn.lib.vcs
-from nautilussvn.lib.decorators import gtk_unsafe
+from rabbitvcs.ui import InterfaceView
+from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.dialog import MessageBox
+import rabbitvcs.ui.widget
+import rabbitvcs.lib.helper
+import rabbitvcs.lib.vcs
+from rabbitvcs.lib.decorators import gtk_unsafe
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
-DATETIME_FORMAT = nautilussvn.lib.helper.LOCAL_DATETIME_FORMAT
+DATETIME_FORMAT = rabbitvcs.lib.helper.LOCAL_DATETIME_FORMAT
 
 class Log(InterfaceView):
     """
@@ -62,7 +62,7 @@ class Log(InterfaceView):
         InterfaceView.__init__(self, "log", "Log")
 
         self.get_widget("Log").set_title(_("Log - %s") % path)
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         
         self.path = path
         self.cache = LogCache()
@@ -74,7 +74,7 @@ class Log(InterfaceView):
         
         self.get_widget("limit").set_text(str(self.limit))
         
-        self.revisions_table = nautilussvn.ui.widget.Table(
+        self.revisions_table = rabbitvcs.ui.widget.Table(
             self.get_widget("revisions_table"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING, gobject.TYPE_STRING], 
@@ -83,7 +83,7 @@ class Log(InterfaceView):
         )
         self.revisions_table.allow_multiple()
 
-        self.paths_table = nautilussvn.ui.widget.Table(
+        self.paths_table = rabbitvcs.ui.widget.Table(
             self.get_widget("paths_table"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING, gobject.TYPE_STRING], 
@@ -91,11 +91,11 @@ class Log(InterfaceView):
                 _("Copy From Path"), _("Copy From Revision")]
         )
 
-        self.message = nautilussvn.ui.widget.TextView(
+        self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message")
         )
 
-        self.pbar = nautilussvn.ui.widget.ProgressBar(self.get_widget("pbar"))
+        self.pbar = rabbitvcs.ui.widget.ProgressBar(self.get_widget("pbar"))
         
         self.stop_on_copy = False
         self.load_or_refresh()
@@ -206,7 +206,7 @@ class Log(InterfaceView):
             revisions.append(int(self.revisions_table.get_row(row)[0]))
 
         revisions.sort()
-        return nautilussvn.lib.helper.encode_revisions(revisions)
+        return rabbitvcs.lib.helper.encode_revisions(revisions)
 
     def get_selected_revision_number(self):
         if len(self.selected_rows):
@@ -380,7 +380,7 @@ class LogCache:
         self.cache = {}
 
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
             
     window = Log(paths[0])

@@ -24,11 +24,11 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceNonView
-from nautilussvn.ui.action import VCSAction
-import nautilussvn.lib.vcs
+from rabbitvcs.ui import InterfaceNonView
+from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.lib.vcs
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Ignore(InterfaceNonView):
@@ -54,7 +54,7 @@ class Ignore(InterfaceNonView):
         self.path = path
         self.pattern = pattern
         self.glob = glob
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
 
     def start(self):
         prop = self.vcs.PROPERTIES["ignore"]

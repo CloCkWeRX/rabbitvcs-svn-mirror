@@ -27,18 +27,18 @@ import pygtk
 import gobject
 import gtk
 
-from nautilussvn.ui import InterfaceView
-from nautilussvn.ui.action import VCSAction
-from nautilussvn.ui.log import LogDialog
-import nautilussvn.ui.widget
-import nautilussvn.ui.dialog
-import nautilussvn.lib.vcs
-import nautilussvn.lib.helper
-from nautilussvn.lib.log import Log
+from rabbitvcs.ui import InterfaceView
+from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.log import LogDialog
+import rabbitvcs.ui.widget
+import rabbitvcs.ui.dialog
+import rabbitvcs.lib.vcs
+import rabbitvcs.lib.helper
+from rabbitvcs.lib.log import Log
 
-log = Log("nautilussvn.ui.lock")
+log = Log("rabbitvcs.ui.lock")
 
-from nautilussvn import gettext
+from rabbitvcs import gettext
 _ = gettext.gettext
 
 gtk.gdk.threads_init()
@@ -62,20 +62,20 @@ class Lock(InterfaceView):
 
         self.paths = paths
         self.base_dir = base_dir
-        self.vcs = nautilussvn.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
 
-        self.files_table = nautilussvn.ui.widget.Table(
+        self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING], 
-            [nautilussvn.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
+            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
                 _("Locked")],
             base_dir=base_dir,
             path_entries=[1]
         )
         self.last_row_clicked = None
 
-        self.message = nautilussvn.ui.widget.TextView(
+        self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message")
         )
 
@@ -118,7 +118,7 @@ class Lock(InterfaceView):
             self.files_table.append([
                 False, 
                 item.path, 
-                nautilussvn.lib.helper.get_file_extension(item.path),
+                rabbitvcs.lib.helper.get_file_extension(item.path),
                 locked
             ])
             
@@ -143,14 +143,14 @@ class Lock(InterfaceView):
         
         self.hide()
 
-        self.action = nautilussvn.ui.action.VCSAction(
+        self.action = rabbitvcs.ui.action.VCSAction(
             self.vcs,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         
         self.action.append(self.action.set_header, _("Get Lock"))
         self.action.append(self.action.set_status, _("Running Lock Command..."))
-        self.action.append(nautilussvn.lib.helper.save_log_message, message)
+        self.action.append(rabbitvcs.lib.helper.save_log_message, message)
         for path in items:
             self.action.append(
                 self.vcs.lock, 
@@ -178,7 +178,7 @@ class Lock(InterfaceView):
             
             if event.button == 3:
                 self.last_row_clicked = path
-                context_menu = nautilussvn.ui.widget.ContextMenu([
+                context_menu = rabbitvcs.ui.widget.ContextMenu([
                     {
                         "label": _("Remove Lock"),
                         "signals": {
@@ -236,7 +236,7 @@ class Lock(InterfaceView):
         pass
 
     def on_previous_messages_clicked(self, widget, data=None):
-        dialog = nautilussvn.ui.dialog.PreviousMessages()
+        dialog = rabbitvcs.ui.dialog.PreviousMessages()
         message = dialog.run()
         if message is not None:
             self.message.set_text(message)
@@ -249,16 +249,16 @@ class Lock(InterfaceView):
         LogDialog(data[1])
 
     def on_context_diff_activated(self, widget, data=None):
-        nautilussvn.lib.helper.launch_diff_tool(data[1])
+        rabbitvcs.lib.helper.launch_diff_tool(data[1])
 
     def on_context_open_activated(self, widget, data=None):
-        nautilussvn.lib.helper.open_item(data[1])
+        rabbitvcs.lib.helper.open_item(data[1])
         
     def on_context_browse_activated(self, widget, data=None):
-        nautilussvn.lib.helper.browse_to_item(data[1])
+        rabbitvcs.lib.helper.browse_to_item(data[1])
 
     def on_context_remove_lock_activated(self, widget, data=None):
-        from nautilussvn.ui.unlock import UnlockQuick
+        from rabbitvcs.ui.unlock import UnlockQuick
         unlock = UnlockQuick(data[1])
         unlock.start()
         self.refresh_row_status()
@@ -280,7 +280,7 @@ class Lock(InterfaceView):
         return os.path.isfile(path)
     
 if __name__ == "__main__":
-    from nautilussvn.ui import main
+    from rabbitvcs.ui import main
     (options, paths) = main()
 
     window = Lock(paths, options.base_dir)

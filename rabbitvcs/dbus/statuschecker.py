@@ -5,11 +5,11 @@ import thread
 import dbus
 import dbus.service
 
-from nautilussvn.statuschecker import StatusChecker as RealStatusChecker
+from rabbitvcs.statuschecker import StatusChecker as RealStatusChecker
 
-INTERFACE = "org.google.code.nautilussvn.StatusChecker"
-OBJECT_PATH = "/org/google/code/nautilussvn/StatusChecker"
-SERVICE = "org.google.code.nautilussvn.RabbitVCS"
+INTERFACE = "org.google.code.rabbitvcs.StatusChecker"
+OBJECT_PATH = "/org/google/code/rabbitvcs/StatusChecker"
+SERVICE = "org.google.code.rabbitvcs.RabbitVCS"
 TIMEOUT = 60*15 # seconds
 
 class StatusChecker(dbus.service.Object):
@@ -52,7 +52,7 @@ class StatusCheckerStub:
             # An exception here is probably caused by large amounts of data
             # triggering a timeout. We could make the timeout arbitrarily large,
             # but I don't know if that's wise. -JH
-            from nautilussvn.lib.extensions.nautilus.RabbitVCS import log
+            from rabbitvcs.lib.extensions.nautilus.RabbitVCS import log
             log.exception(ex)
             status = {path: {"text_status": "client_error", "prop_status": "client_error"}}
         return status
