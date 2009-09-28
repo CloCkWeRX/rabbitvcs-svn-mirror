@@ -16,6 +16,13 @@ commands = {
     "official" : "Build an official source and binary from a tarball and current packaging.",
 }
 
+def package_id():
+    import rabbitvcs
+    package_name = rabbitvcs.package_name()
+    package_version = rabbitvcs.package_version()
+    return (package_name, package_version)
+
+
 def get_distros(basepath = None):
     if not basepath:
         basepath = os.path.dirname(__file__)
@@ -64,7 +71,7 @@ class Debian:
             shutil.copytree(self.working_copy, self.package_dir)
             print "Copied file tree."
         
-    def prepare_orig(self):
+    def compress_orig(self):
         ark_name = self.name + "_" + self.version + ".orig.tar.gz"
         ark_path = os.path.join(self.build_area, ark_name)
 
@@ -102,7 +109,41 @@ class Debian:
         shutil.copytree(control_dir,
                         os.path.join(self.package_dir,
                                      Debian.control_dir))
+
+    def build_source(self, stdout = None, stderr = None):
+        print "Running dpkg-source to create Debian source package..."
         
+        retval = subprocess.Popen(
+            ["dpkg-source", "-b", self.package_dir_rel],
+            stdout = stdout, stderr = stderr,
+            cwd = self.build_area).wait()
+    
+    def build_binary(self, stdout = None, stderr = None):
+        print "Running debuild to create an unsigned Debian binary package..."
+    
+        retval = subprocess.Popen(
+            ["debuild", "-us", "-uc", "-b"],
+            stdout = stdout, stderr = stderr,
+            cwd = self.package_dir).wait()
+            
+    
+    def build_current_source(self):
+        """ Builds a Debian (like) source package from the current state of the
+        tree.
+        """
+        self.copy_source()
+        self.compress_orig()
+        self.debianise()
+        self.build_source()
+        
+    def build_current_binary(self):
+        """ Builds a Debian (like) binary package from the current state of the
+        tree.
+        """
+        self.copy_source()
+        self.compress_orig()
+        self.debianise()
+        self.build_binary()
 
 if __name__ == "__main__":
     
@@ -128,21 +169,16 @@ if __name__ == "__main__":
     if command not in commands.keys():
         print "Command not valid!"
 
-    print "Using root dir: %s" % root_dir
+    print "Original working dir: %s" % root_dir
+  
+    package_name, package_ver = package_id()
 
-    temp_dir = tempfile.mkdtemp(prefix="nsvn-")
+    temp_dir = tempfile.mkdtemp(prefix=(package_name+"-"))
     
     print "Using temp dir: %s" % temp_dir
-
-    import nautilussvn
-    packageid = nautilussvn.package_identifier()
-    
-    package_name, package_ver = packageid.split("-", 1)
 
     print "Detected package name: %s, version: %s" % (package_name, package_ver)
 
     dbuilder = Debian(root_dir, temp_dir, distro, package_name, package_ver)
     
-    dbuilder.copy_source()
-    dbuilder.prepare_orig()
-    dbuilder.debianise()
+    dbuilder.build_current_binary()
