@@ -1,7 +1,7 @@
 Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=48
-Name: nautilussvn
+Name: rabbitvcs
 Maintainer: Jason Heeris <jason.heeris@gmail.com>
-Source: http://code.google.com/p/nautilussvn/
+Source: http://code.google.com/p/rabbitvcs/
 
 Files: *
 Copyright: 2006-2008, Jason Field <jason@jasonfield.com>
@@ -22,14 +22,14 @@ License: GPL-3+
     License can be found in the `/usr/share/common-licenses/GPL-3'
     file.
 
-Files: nautilussvn/data/icons/hicolor/scalable/emblems/*.svg
+Files: rabbitvcs/data/icons/hicolor/scalable/emblems/*.svg
 Copyright: TortoiseSVN <http://tortoisesvn.tigris.org/>
 License: GPL-2+
     On Debian systems the full text of the GNU General Public
     License can be found in the `/usr/share/common-licenses/GPL-2'
     file.
 
-Files: nautilussvn/lib/decorators.py
+Files: rabbitvcs/lib/decorators.py
 Copyright: 2006-2008, Jason Field <jason@jasonfield.com>
            2007-2008, Bruce van der Kooij <brucevdkooij@gmail.com>
            2008-2008, Adam Plumb <adamplumb@gmail.com>
@@ -39,7 +39,7 @@ License: GPL-2+
     License can be found in the `/usr/share/common-licenses/GPL-2'
     file.
 
-Files: nautilussvn/debug/ipython_view.py
+Files: rabbitvcs/debug/ipython_view.py
 Copyright: 2007, IBM Corporation
 License: BSD
     On Debian systems the full text of the BSD License can be found in

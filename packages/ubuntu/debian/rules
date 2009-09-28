@@ -2,15 +2,9 @@
 
 DEB_PYTHON_SYSTEM=pysupport
 
-# I thought that the first would work, but it didn't.
-# DEB_FIXPERMS_EXCLUDE=debian/do-nautilussvn-restart-nautilus
-
-# ...so then I tried this out... but it didn't work!
-# DEB_FIXPERMS_EXCLUDE=debian/nautilussvn/usr/share/nautilussvn/do-nautilussvn-restart-nautilus
-
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/class/python-distutils.mk
 
-# This is the answer...
-binary-install/nautilussvn::
-	chmod a+x debian/nautilussvn/usr/share/nautilussvn/do-nautilussvn-restart-nautilus
+# Fix up some permissions...
+binary-install/rabbitvcs::
+	chmod a+x debian/rabbitvcs/usr/share/rabbitvcs/do-rabbitvcs-restart-nautilus
