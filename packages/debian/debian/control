@@ -1,0 +1,34 @@
+Source: nautilussvn
+Maintainer: Jason Heeris <jason.heeris@gmail.com>
+Section: devel
+Priority: optional
+Build-Depends: debhelper (>= 6.0.4),
+               cdbs (>= 0.4.51),
+               python-dev (>= 2.5.2),
+Build-Depends-Indep: python-support (>= 0.5.3),
+                     python-central (>= 0.6.5),
+                     pkg-config (>= 0.20),
+                     patchutils (>= 0.2.31)
+Standards-Version: 3.8.2
+Homepage: http://code.google.com/p/nautilussvn
+
+Package: nautilussvn
+Architecture: all
+Depends: ${misc:Depends},
+         ${python:Depends},
+         python-nautilus (>= 0.5.0),
+         python-gtk2 (>= 2.12.1),
+         python-glade2 (>= 2.12.1),
+         python-gobject (>= 2.14.1),
+         python-svn (>= 1.5.2),
+         python-configobj (>= 4.4.0),
+         subversion (>= 1.4.6),
+         meld (>=1.1.2), 
+         ipython (>=0.7.1),
+         hicolor-icon-theme (>= 0.10-2)
+Description: Integrated Subversion support for Nautilus
+ An extension to Nautilus to allow better integration with the Subversion source
+ control system. NautilusSVN adds Subversion related commands to the Nautilus
+ context menu, and Subversion-controlled directories will be detected
+ automatically and decorated with appropriate emblems. It is similar to the
+ TortoiseSVN project on Windows.

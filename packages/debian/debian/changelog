@@ -1,0 +1,18 @@
+nautilussvn (0.12.beta1.2-3) unstable; urgency=low
+
+  * Included patch from upstream to fix problem with settings dialog.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Wed, 08 Jul 2009 17:49:26 +0800
+
+nautilussvn (0.12.beta1.2-2) unstable; urgency=low
+
+  * Included patches from upstream trunk to use config file specification and
+  to allow disabling of debug menu.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Sat, 04 Jul 2009 19:34:45 +0800
+
+nautilussvn (0.12.beta1.2-1) unstable; urgency=low
+
+  * Packaged for Debian. Closes: #469181.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Sun, 17 May 2009 22:23:39 +0800
