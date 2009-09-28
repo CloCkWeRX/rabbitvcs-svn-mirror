@@ -546,7 +546,7 @@ class MainContextMenu:
     def __init__(self, base_dir, paths, rabbitvcs_extension):
         self.base_dir = base_dir
         self.paths = paths
-        self.rabbitvcs_extension = nautilussvn_extension
+        self.rabbitvcs_extension = rabbitvcs_extension
         self.vcs_client = SVN()
         
         self.status_checker = StatusChecker()
@@ -1599,7 +1599,7 @@ class MainContextMenu:
             client.revert(path, recurse=True)
         
     def callback_debug_invalidate(self, menu_item, paths):
-        rabbitvcs_extension = self.nautilussvn_extension
+        rabbitvcs_extension = self.rabbitvcs_extension
         nautilusVFSFile_table = rabbitvcs_extension.nautilusVFSFile_table
         for path in paths:
             log.debug("callback_debug_invalidate() called for %s" % path)
@@ -1612,7 +1612,7 @@ class MainContextMenu:
             command = ["zenity", "--entry", "--title=RabbitVCS", "--text=Emblem to add:"]
             emblem = Popen(command, stdout=PIPE).communicate()[0].replace("\n", "")
             
-            rabbitvcs_extension = self.nautilussvn_extension
+            rabbitvcs_extension = self.rabbitvcs_extension
             nautilusVFSFile_table = rabbitvcs_extension.nautilusVFSFile_table
             for path in paths:
                 if path in nautilusVFSFile_table:

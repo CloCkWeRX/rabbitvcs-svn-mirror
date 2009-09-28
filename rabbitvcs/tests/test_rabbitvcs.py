@@ -143,7 +143,7 @@ class RabbitVCSPySvnTest(TestCase):
         self.oldLog = RabbitVCS.log
         self.logger = FakeLog("rabbitvcs")
         RabbitVCS.log = self.logger
-        self.nsvn = RabbitVCS.NautilusSvn()
+        self.nsvn = RabbitVCS.RabbitVCS()
 
     def test_update_columns_missing_info(self):
         """
