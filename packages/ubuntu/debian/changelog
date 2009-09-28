@@ -1,5 +1,6 @@
-rabbitvcs (0.12-1ubuntu3) intrepid; urgency=low
+rabbitvcs (0.12-1ubuntu1) intrepid; urgency=low
 
+  * New upstream release.
   * Renamed to RabbitVCS.
 
  -- Jason Heeris <jason.heeris@gmail.com>  Mon, 28 Sep 2009 20:42:02 +0800

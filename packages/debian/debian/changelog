@@ -1,5 +1,6 @@
-rabbitvcs (0.12.beta1.2-4) unstable; urgency=low
+rabbitvcs (0.12-1) unstable; urgency=low
 
+  * New upstream release.
   * Renamed to RabbitVCS.
 
  -- Jason Heeris <jason.heeris@gmail.com>  Mon, 28 Sep 2009 21:26:54 +0800
