@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Wed Sep 23 15:08:51 2009 -->
+<!--Generated with glade3 3.4.5 on Mon Sep 28 16:16:24 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="Checkout">
     <property name="width_request">550</property>
@@ -61,6 +61,7 @@
                             <property name="visible">True</property>
                             <child internal-child="entry">
                               <widget class="GtkEntry" id="url">
+                                <property name="width_chars">4</property>
                                 <signal name="changed" handler="on_url_changed"/>
                               </widget>
                             </child>
@@ -82,7 +83,7 @@
                               <widget class="GtkImage" id="image3">
                                 <property name="visible">True</property>
                                 <property name="stock">gtk-find</property>
-                                <property name="icon_size">2</property>
+                                <property name="icon_size">1</property>
                               </widget>
                             </child>
                           </widget>
@@ -93,6 +94,10 @@
                           </packing>
                         </child>
                       </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                      </packing>
                     </child>
                     <child>
                       <widget class="GtkHBox" id="hbox3">
