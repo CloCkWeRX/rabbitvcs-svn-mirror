@@ -2,7 +2,12 @@
 
 from optparse import OptionParser
 import os, os.path, sys, shutil
-import tempfile
+import tempfile, subprocess, tarfile
+
+import pysvn
+
+CHANGELOG_ENTRY = "Local build via packaging script."
+PACKAGE_FILES_SUBDIR = "packages"
 
 
 commands = {
@@ -36,25 +41,70 @@ def usage():
     
     return ustr
 
-class DebianLike:
+class Debian:
     
-    def __init__(self, packagedir, workarea, name, version):
-        self.packagedir = packagedir
-        self.workarea = workarea
+    control_dir = "debian"
+    
+    def __init__(self, working_copy, build_area, distro, name, version):
+        self.working_copy = working_copy
+        self.build_area = build_area
+        self.distro = distro
+
         self.name = name
         self.version = version
+        self.package_dir_rel = self.name + "-" + self.version        
+        self.package_dir = os.path.join(build_area, self.package_dir_rel)
+                        
+    def copy_source(self):               
+        try:
+            svn_client = pysvn.Client()
+            svn_client.export(self.working_copy, self.package_dir)
+            print "Exported SVN working copy."
+        except pysvn.ClientError, e:
+            shutil.copytree(self.working_copy, self.package_dir)
+            print "Copied file tree."
         
-    def build_quick(self):
-        print "Copying source tree..."
-        dirname = self.name + "-" + self.version
-        shutil.copytree(self.packagedir, os.path.join(
-                                            self.workarea,
-                                            dirname))        
+    def prepare_orig(self):
+        ark_name = self.name + "_" + self.version + ".orig.tar.gz"
+        ark_path = os.path.join(self.build_area, ark_name)
+
+        print "Creating orig archive... ",
+
+        retval = subprocess.Popen(
+                    ["tar", "-czf", ark_path, self.package_dir_rel],
+                    cwd = self.build_area).wait()
+
+        # This doesn't work: uses absolute paths unless we chdir
+        # ark = tarfile.open(
+        #         os.path.join(self.build_area, ark_name),
+        #         mode = "w:gz")
+        # ark.add(self.package_dir)
+        # ark.close()
+
+        if retval == 0:
+            print "Done."
+        else:
+            print "Failed!"
+            raise RuntimeException("Failed to create orig archive!")
+
+        assert os.path.isfile(ark_path)
+        
+        print "Archive created: %s" % ark_path
+    
+    def debianise(self):
+        print "Debianising source... ",
+        
+        control_dir = os.path.join(self.package_dir,
+                                   PACKAGE_FILES_SUBDIR,
+                                   distro,
+                                   Debian.control_dir)
+                                   
+        shutil.copytree(control_dir,
+                        os.path.join(self.package_dir,
+                                     Debian.control_dir))
+        
 
 if __name__ == "__main__":
-    
-    print "WARNING! This script is unfinished! Do not use!"
-    sys.exit(1)
     
     parser = OptionParser(usage = usage())
     
@@ -91,5 +141,8 @@ if __name__ == "__main__":
 
     print "Detected package name: %s, version: %s" % (package_name, package_ver)
 
-    dbuilder = DebianLike(root_dir, temp_dir, package_name, package_ver)
-    dbuilder.build_quick()
+    dbuilder = Debian(root_dir, temp_dir, distro, package_name, package_ver)
+    
+    dbuilder.copy_source()
+    dbuilder.prepare_orig()
+    dbuilder.debianise()
