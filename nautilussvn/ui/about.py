@@ -6,18 +6,18 @@
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2008 by Adam Plumb <adamplumb@gmail.com>
 # 
-# NautilusSvn is free software; you can redistribute it and/or modify
+# RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 # 
-# NautilusSvn is distributed in the hope that it will be useful,
+# RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
-# along with NautilusSvn;  If not, see <http://www.gnu.org/licenses/>.
+# along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
 import os.path
@@ -53,7 +53,7 @@ class About(InterfaceView):
         
         doc_path = "/usr/share/doc/nautilussvn"
         if not os.path.exists(doc_path):
-            # Assumes the user is running NautilusSvn through an svn checkout
+            # Assumes the user is running RabbitVCS through an svn checkout
             # and the doc files are two directories up (from nautilussvn/ui).
             doc_path = os.path.dirname(os.path.realpath(__file__)).split('/')
             doc_path = '/'.join(doc_path[:-2])
@@ -71,7 +71,7 @@ class About(InterfaceView):
         )
         
         versions = []
-        versions.append("NautilusSvn - %s" % str(nautilussvn.version))
+        versions.append("RabbitVCS - %s" % str(nautilussvn.version))
         versions.append("Subversion - %s" % string.join(map(str,pysvn.svn_version), "."))
         versions.append("Pysvn - %s" % string.join(map(str,pysvn.version), "."))
         versions.append("ConfigObj - %s" % str(configobj.__version__))

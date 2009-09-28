@@ -23,7 +23,7 @@
             <child>
               <widget class="GtkLabel" id="label1">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">&lt;span size="xx-large"&gt;&lt;b&gt;NautilusSvn&lt;/b&gt;&lt;/span&gt;</property>
+                <property name="label" translatable="yes">&lt;span size="xx-large"&gt;&lt;b&gt;RabbitVCS&lt;/b&gt;&lt;/span&gt;</property>
                 <property name="use_markup">True</property>
               </widget>
             </child>

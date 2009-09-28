@@ -6,18 +6,18 @@
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2008 by Adam Plumb <adamplumb@gmail.com>
 #
-# NautilusSvn is free software; you can redistribute it and/or modify
+# RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 #
-# NautilusSvn is distributed in the hope that it will be useful,
+# RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with NautilusSvn;  If not, see <http://www.gnu.org/licenses/>.
+# along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
 """
@@ -37,12 +37,12 @@ import traceback
 import nautilus
 import pysvn
 import nautilussvn
-from nautilussvn.lib.extensions.nautilus import NautilusSvn
+from nautilussvn.lib.extensions.nautilus import RabbitVCS
 
 
-class NautilusSvnTest(TestCase):
+class RabbitVCSTest(TestCase):
     """
-    Main NautilusSvn tests.
+    Main RabbitVCS tests.
 
     """
     def test_package_name(self):
@@ -130,9 +130,9 @@ class FakeLog(object):
         self.messages.append(info)
 
 
-class NautilusSvnPySvnTest(TestCase):
+class RabbitVCSPySvnTest(TestCase):
     """
-    NautilusSvn tests that involve pysvn in such a way that we need to
+    RabbitVCS tests that involve pysvn in such a way that we need to
     fiddle with pysvn stuff for the tests to work.
 
     """
@@ -140,10 +140,10 @@ class NautilusSvnPySvnTest(TestCase):
         self.oldClient = pysvn.Client
         pysvn.Client = FakeClient
         FakeClient.instance_count = 0
-        self.oldLog = NautilusSvn.log
+        self.oldLog = RabbitVCS.log
         self.logger = FakeLog("nautilussvn")
-        NautilusSvn.log = self.logger
-        self.nsvn = NautilusSvn.NautilusSvn()
+        RabbitVCS.log = self.logger
+        self.nsvn = RabbitVCS.NautilusSvn()
 
     def test_update_columns_missing_info(self):
         """
@@ -183,7 +183,7 @@ class NautilusSvnPySvnTest(TestCase):
             self.fail()
 
     def tearDown(self):
-        NautilusSvn.log = self.oldLog
+        RabbitVCS.log = self.oldLog
         pysvn.Client = self.oldClient
 
 

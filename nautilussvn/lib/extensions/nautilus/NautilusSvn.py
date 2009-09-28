@@ -6,18 +6,18 @@
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2008 by Adam Plumb <adamplumb@gmail.com>
 # 
-# NautilusSvn is free software; you can redistribute it and/or modify
+# RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 # 
-# NautilusSvn is distributed in the hope that it will be useful,
+# RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
-# along with NautilusSvn;  If not, see <http://www.gnu.org/licenses/>.
+# along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
 """
@@ -63,7 +63,7 @@ from nautilussvn.dbus.statuschecker import StatusCheckerStub as StatusChecker
 # we can't really do anything.
 nautilussvn.dbus.service.start()
 
-class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnProvider):
+class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnProvider):
     """ 
     This is the main class that implements all of our awesome features.
     
@@ -172,31 +172,31 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
         
         return (
             nautilus.Column(
-                "NautilusSvn::status_column",
+                "RabbitVCS::status_column",
                 "status",
                 _("Status"),
                 ""
             ),
             nautilus.Column(
-                "NautilusSvn::revision_column",
+                "RabbitVCS::revision_column",
                 "revision",
                 _("Revision"),
                 ""
             ),
             nautilus.Column(
-                "NautilusSvn::url_column",
+                "RabbitVCS::url_column",
                 "url",
                 _("URL"),
                 ""
             ),
             nautilus.Column(
-                "NautilusSvn::author_column",
+                "RabbitVCS::author_column",
                 "author",
                 _("Author"),
                 ""
             ),
             nautilus.Column(
-                "NautilusSvn::age_column",
+                "RabbitVCS::age_column",
                 "age",
                 _("Age"),
                 ""
@@ -305,8 +305,8 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
 
                 # If the text status shows it isn't modified, but the properties
                 # DO, let them take priority.
-                if status["text_status"] not in NautilusSvn.MODIFIED_TEXT_STATUSES \
-                  and status["prop_status"] in NautilusSvn.MODIFIED_TEXT_STATUSES:
+                if status["text_status"] not in RabbitVCS.MODIFIED_TEXT_STATUSES \
+                  and status["prop_status"] in RabbitVCS.MODIFIED_TEXT_STATUSES:
                     values["status"] = status["prop_status"]
 
                 values["revision"] = str(info["commit_revision"].number)
@@ -412,7 +412,7 @@ class NautilusSvn(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnP
     
     def valid_uri(self, uri):
         """
-        Check whether or not it's a good idea to have NautilusSvn do
+        Check whether or not it's a good idea to have RabbitVCS do
         its magic for this URI. Some examples of URI schemes:
         
         x-nautilus-desktop:/// # e.g. mounted devices on the desktop
@@ -536,8 +536,8 @@ class MainContextMenu:
     See: http://code.google.com/p/nautilussvn/wiki/ContextMenuStructure
     
     FIXME: There's currently a problem with the order in which menu items 
-    appear, even though a list such as C{[<Update>, <Commit>, <NautilusSvn>]} 
-    would be returned it might end up as C{[<NautilusSvn>, <Update>, <Commit>]}.
+    appear, even though a list such as C{[<Update>, <Commit>, <RabbitVCS>]} 
+    would be returned it might end up as C{[<RabbitVCS>, <Update>, <Commit>]}.
     
     """
     
@@ -606,7 +606,7 @@ class MainContextMenu:
         # The following dictionary defines the complete contextmenu
         menu_definition = [
             {
-                "identifier": "NautilusSvn::Debug",
+                "identifier": "RabbitVCS::Debug",
                 "label": _("Debug"),
                 "tooltip": "",
                 "icon": "nautilussvn-monkey",
@@ -619,7 +619,7 @@ class MainContextMenu:
                 "condition": (lambda: settings.get("general", "show_debug")),
                 "submenus": [
                     {
-                        "identifier": "NautilusSvn::Bugs",
+                        "identifier": "RabbitVCS::Bugs",
                         "label": _("Bugs"),
                         "tooltip": "",
                         "icon": "nautilussvn-bug",
@@ -635,7 +635,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Debug_Shell",
+                        "identifier": "RabbitVCS::Debug_Shell",
                         "label": _("Open Shell"),
                         "tooltip": "",
                         "icon": "gnome-terminal",
@@ -651,7 +651,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Refresh_Status",
+                        "identifier": "RabbitVCS::Refresh_Status",
                         "label": _("Refresh Status"),
                         "tooltip": "",
                         "icon": "nautilussvn-refresh",
@@ -667,7 +667,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Debug_Revert",
+                        "identifier": "RabbitVCS::Debug_Revert",
                         "label": _("Debug Revert"),
                         "tooltip": _("Reverts everything it sees"),
                         "icon": "nautilussvn-revert",
@@ -683,7 +683,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Debug_Invalidate",
+                        "identifier": "RabbitVCS::Debug_Invalidate",
                         "label": _("Invalidate"),
                         "tooltip": _("Force an invalidate_extension_info() call"),
                         "icon": "nautilussvn-clear",
@@ -699,7 +699,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Debug_Add_Emblem",
+                        "identifier": "RabbitVCS::Debug_Add_Emblem",
                         "label": _("Add Emblem"),
                         "tooltip": _("Add an emblem"),
                         "icon": "nautilussvn-emblems",
@@ -717,7 +717,7 @@ class MainContextMenu:
                 ]
             },
             {
-                "identifier": "NautilusSvn::Checkout",
+                "identifier": "RabbitVCS::Checkout",
                 "label": _("Checkout"),
                 "tooltip": _("Check out a working copy"),
                 "icon": "nautilussvn-checkout",
@@ -733,7 +733,7 @@ class MainContextMenu:
                 ]
             },
             {
-                "identifier": "NautilusSvn::Update",
+                "identifier": "RabbitVCS::Update",
                 "label": _("Update"),
                 "tooltip": _("Update a working copy"),
                 "icon": "nautilussvn-update",
@@ -749,7 +749,7 @@ class MainContextMenu:
                 ]
             },
             {
-                "identifier": "NautilusSvn::Commit",
+                "identifier": "RabbitVCS::Commit",
                 "label": _("Commit"),
                 "tooltip": _("Commit modifications to the repository"),
                 "icon": "nautilussvn-commit",
@@ -765,8 +765,8 @@ class MainContextMenu:
                 ]
             },
             {
-                "identifier": "NautilusSvn::NautilusSvn",
-                "label": _("NautilusSvn"),
+                "identifier": "RabbitVCS::RabbitVCS",
+                "label": _("RabbitVCS"),
                 "tooltip": "",
                 "icon": "rabbitvcs",
                 "signals": {
@@ -778,7 +778,7 @@ class MainContextMenu:
                 "condition": (lambda: True),
                 "submenus": [
                     {
-                        "identifier": "NautilusSvn::Diff",
+                        "identifier": "RabbitVCS::Diff",
                         "label": _("View Diff"),
                         "tooltip": _("View the modifications made to a file"),
                         "icon": "nautilussvn-diff",
@@ -794,7 +794,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Show_Log",
+                        "identifier": "RabbitVCS::Show_Log",
                         "label": _("Show Log"),
                         "tooltip": _("Show a file's log information"),
                         "icon": "nautilussvn-show_log",
@@ -810,7 +810,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Separator1",
+                        "identifier": "RabbitVCS::Separator1",
                         "label": self.SEPARATOR,
                         "tooltip": "",
                         "icon": None,
@@ -819,7 +819,7 @@ class MainContextMenu:
                         "submenus": []
                     },
                     {
-                        "identifier": "NautilusSvn::Add",
+                        "identifier": "RabbitVCS::Add",
                         "label": _("Add"),
                         "tooltip": _("Schedule an item to be added to the repository"),
                         "icon": "nautilussvn-add",
@@ -835,7 +835,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::AddToIgnoreList",
+                        "identifier": "RabbitVCS::AddToIgnoreList",
                         "label": _("Add to ignore list"),
                         "tooltip": "",
                         "icon": None,
@@ -843,7 +843,7 @@ class MainContextMenu:
                         "condition": self.condition_add_to_ignore_list,
                         "submenus": [
                             {
-                                "identifier": "NautilusSvn::AddToIgnoreFile",
+                                "identifier": "RabbitVCS::AddToIgnoreFile",
                                 "label": basename(self.paths[0]),
                                 "tooltip": _("Ignore an item"),
                                 "icon": None,
@@ -858,7 +858,7 @@ class MainContextMenu:
                                 ]
                             },
                             {
-                                "identifier": "NautilusSvn::AddToIgnoreExt",
+                                "identifier": "RabbitVCS::AddToIgnoreExt",
                                 "label": "*%s" % get_file_extension(self.paths[0]),
                                 "tooltip": _("Ignore all files with this extension"),
                                 "icon": None,
@@ -875,7 +875,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::SeparatorAdd",
+                        "identifier": "RabbitVCS::SeparatorAdd",
                         "label": self.SEPARATOR,
                         "tooltip": "",
                         "icon": None,
@@ -884,7 +884,7 @@ class MainContextMenu:
                         "submenus": []
                     },
                     {
-                        "identifier": "NautilusSvn::UpdateToRevision",
+                        "identifier": "RabbitVCS::UpdateToRevision",
                         "label": _("Update to revision..."),
                         "tooltip": _("Update a file to a specific revision"),
                         "icon": "nautilussvn-update",
@@ -900,7 +900,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Rename",
+                        "identifier": "RabbitVCS::Rename",
                         "label": _("Rename..."),
                         "tooltip": _("Schedule an item to be renamed on the repository"),
                         "icon": "nautilussvn-rename",
@@ -916,7 +916,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Delete",
+                        "identifier": "RabbitVCS::Delete",
                         "label": _("Delete"),
                         "tooltip": _("Schedule an item to be deleted from the repository"),
                         "icon": "nautilussvn-delete",
@@ -932,7 +932,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Revert",
+                        "identifier": "RabbitVCS::Revert",
                         "label": _("Revert"),
                         "tooltip": _("Revert an item to its unmodified state"),
                         "icon": "nautilussvn-revert",
@@ -948,7 +948,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Resolve",
+                        "identifier": "RabbitVCS::Resolve",
                         "label": _("Resolve"),
                         "tooltip": _("Mark a conflicted item as resolved"),
                         "icon": "nautilussvn-resolve",
@@ -964,7 +964,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Relocate",
+                        "identifier": "RabbitVCS::Relocate",
                         "label": _("Relocate..."),
                         "tooltip": _("Relocate your working copy"),
                         "icon": "nautilussvn-relocate",
@@ -980,7 +980,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::GetLock",
+                        "identifier": "RabbitVCS::GetLock",
                         "label": _("Get Lock..."),
                         "tooltip": _("Locally lock items"),
                         "icon": "nautilussvn-lock",
@@ -996,7 +996,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Unlock",
+                        "identifier": "RabbitVCS::Unlock",
                         "label": _("Release Lock..."),
                         "tooltip": _("Release lock on an item"),
                         "icon": "nautilussvn-unlock",
@@ -1012,7 +1012,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Cleanup",
+                        "identifier": "RabbitVCS::Cleanup",
                         "label": _("Cleanup"),
                         "tooltip": _("Clean up working copy"),
                         "icon": "nautilussvn-cleanup",
@@ -1028,7 +1028,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Separator2",
+                        "identifier": "RabbitVCS::Separator2",
                         "label": self.SEPARATOR,
                         "tooltip": "",
                         "icon": None,
@@ -1037,7 +1037,7 @@ class MainContextMenu:
                         "submenus": []
                     },
                     {
-                        "identifier": "NautilusSvn::Export",
+                        "identifier": "RabbitVCS::Export",
                         "label": _("Export"),
                         "tooltip": _("Export a working copy or repository with no versioning information"),
                         "icon": "nautilussvn-export",
@@ -1053,7 +1053,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Create_Repository",
+                        "identifier": "RabbitVCS::Create_Repository",
                         "label": _("Create Repository here"),
                         "tooltip": _("Create a repository in a folder"),
                         "icon": "nautilussvn-run",
@@ -1069,7 +1069,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Import",
+                        "identifier": "RabbitVCS::Import",
                         "label": _("Import"),
                         "tooltip": _("Import an item into a repository"),
                         "icon": "nautilussvn-import",
@@ -1085,7 +1085,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Separator3",
+                        "identifier": "RabbitVCS::Separator3",
                         "label": self.SEPARATOR,
                         "tooltip": "",
                         "icon": None,
@@ -1094,7 +1094,7 @@ class MainContextMenu:
                         "submenus": []
                     },
                     {
-                        "identifier": "NautilusSvn::BranchTag",
+                        "identifier": "RabbitVCS::BranchTag",
                         "label": _("Branch/tag..."),
                         "tooltip": _("Copy an item to another location in the repository"),
                         "icon": "nautilussvn-branch",
@@ -1110,7 +1110,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Switch",
+                        "identifier": "RabbitVCS::Switch",
                         "label": _("Switch..."),
                         "tooltip": _("Change the repository location of a working copy"),
                         "icon": "nautilussvn-switch",
@@ -1126,7 +1126,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Merge",
+                        "identifier": "RabbitVCS::Merge",
                         "label": _("Merge..."),
                         "tooltip": _("A wizard with steps for merging"),
                         "icon": "nautilussvn-merge",
@@ -1142,7 +1142,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Separator4",
+                        "identifier": "RabbitVCS::Separator4",
                         "label": self.SEPARATOR,
                         "tooltip": "",
                         "icon": None,
@@ -1151,7 +1151,7 @@ class MainContextMenu:
                         "submenus": []
                     },
                     {
-                        "identifier": "NautilusSvn::Annotate",
+                        "identifier": "RabbitVCS::Annotate",
                         "label": _("Annotate..."),
                         "tooltip": _("Annotate a file"),
                         "icon": "nautilussvn-annotate",
@@ -1167,7 +1167,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Separator5",
+                        "identifier": "RabbitVCS::Separator5",
                         "label": self.SEPARATOR,
                         "tooltip": "",
                         "icon": None,
@@ -1176,7 +1176,7 @@ class MainContextMenu:
                         "submenus": []
                     },
                    {
-                        "identifier": "NautilusSvn::CreatePatch",
+                        "identifier": "RabbitVCS::CreatePatch",
                         "label": _("Create Patch..."),
                         "tooltip": _("Creates a unified diff file with all changes you made"),
                         "icon": "nautilussvn-createpatch",
@@ -1192,7 +1192,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::ApplyPatch",
+                        "identifier": "RabbitVCS::ApplyPatch",
                         "label": _("Apply Patch..."),
                         "tooltip": _("Applies a unified diff file to the working copy"),
                         "icon": "nautilussvn-applypatch",
@@ -1208,7 +1208,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Properties",
+                        "identifier": "RabbitVCS::Properties",
                         "label": _("Properties"),
                         "tooltip": _("View the properties of an item"),
                         "icon": "nautilussvn-properties",
@@ -1224,7 +1224,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Separator6",
+                        "identifier": "RabbitVCS::Separator6",
                         "label": self.SEPARATOR,
                         "tooltip": "",
                         "icon": None,
@@ -1240,7 +1240,7 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Help",
+                        "identifier": "RabbitVCS::Help",
                         "label": _("Help"),
                         "tooltip": _("View help"),
                         "icon": "nautilussvn-help",
@@ -1256,9 +1256,9 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::Settings",
+                        "identifier": "RabbitVCS::Settings",
                         "label": _("Settings"),
-                        "tooltip": _("View or change NautilusSvn settings"),
+                        "tooltip": _("View or change RabbitVCS settings"),
                         "icon": "nautilussvn-settings",
                         "signals": {
                             "activate": {
@@ -1272,9 +1272,9 @@ class MainContextMenu:
                         ]
                     },
                     {
-                        "identifier": "NautilusSvn::About",
+                        "identifier": "RabbitVCS::About",
                         "label": _("About"),
-                        "tooltip": _("About NautilusSvn"),
+                        "tooltip": _("About RabbitVCS"),
                         "icon": "nautilussvn-about",
                         "signals": {
                             "activate": {
@@ -1301,7 +1301,7 @@ class MainContextMenu:
         A single menu item definition looks like::
         
             {
-                "identifier": "NautilusSvn::Identifier",
+                "identifier": "RabbitVCS::Identifier",
                 "label": "",
                 "tooltip": "",
                 "icon": "",

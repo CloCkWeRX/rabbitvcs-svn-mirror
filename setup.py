@@ -16,11 +16,11 @@
 
 # NOTES:
 # System-wide directories:
-# NautilusSvn goes in: /usr/lib/nautilus/extensions-<version>/python/
+# RabbitVCS goes in: /usr/lib/nautilus/extensions-<version>/python/
 # Scalable emblems go in: /usr/share/icons/hicolor/scalable/emblems
 #
 # User-specific directories:
-# NautilusSvn goes in: ~/.nautilus/python-extensions/
+# RabbitVCS goes in: ~/.nautilus/python-extensions/
 # Scalable emblems go in: ~/.icons/hicolor/scalable
 #
 # Common directories
@@ -55,9 +55,9 @@ license             = "GNU General Public License version 2 or later"
 # Paths
 #==============================================================================
 
-# NautilusSvn goes in: /usr/lib/nautilus/extensions-<version>/python/
+# RabbitVCS goes in: /usr/lib/nautilus/extensions-<version>/python/
 # We'll use `pkg-config` to find out the extension directory instead of hard-coding it.
-# However, this won't guarantee NautilusSvn will actually work (e.g. in the case of 
+# However, this won't guarantee RabbitVCS will actually work (e.g. in the case of 
 # API/ABI changes it might not). The variable is read by `pkg-config` from: 
 # - /usr/lib/pkgconfig/nautilus-python.pc
 python_nautilus_extensions_path = subprocess.Popen(
@@ -102,7 +102,7 @@ for root, dirs, files in os.walk("nautilussvn"):
 # Nautilus extension
 nautilus_extension = [(
     python_nautilus_extensions_path, 
-    ["nautilussvn/lib/extensions/nautilus/NautilusSvn.py"]
+    ["nautilussvn/lib/extensions/nautilus/RabbitVCS.py"]
 )]
 
 # Command-line tool
@@ -142,7 +142,7 @@ documentation = [("/usr/share/doc/nautilussvn", [
 # Ready to install
 #==============================================================================
 
-# Calling the setup function will actually install NautilusSvn and also creates 
+# Calling the setup function will actually install RabbitVCS and also creates 
 # an .egg-info file in /usr/lib/python<version>/site-packages/ or 
 # /usr/share/python-support/nautilussvn when generating a Debian package.
 dist = setup(

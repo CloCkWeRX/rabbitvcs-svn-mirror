@@ -62,7 +62,7 @@ class StatusChecker(threading.Thread):
     __status_tree_lock = threading.RLock()
     
     # In here to avoid circular imports
-    # from nautilussvn.lib.extensions.nautilus.NautilusSvn import log
+    # from nautilussvn.lib.extensions.nautilus.RabbitVCS import log
 
     def __init__(self):
         threading.Thread.__init__(self)

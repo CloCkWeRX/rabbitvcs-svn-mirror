@@ -6,18 +6,18 @@
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2008 by Adam Plumb <adamplumb@gmail.com>
 # 
-# NautilusSvn is free software; you can redistribute it and/or modify
+# RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 # 
-# NautilusSvn is distributed in the hope that it will be useful,
+# RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 # 
 # You should have received a copy of the GNU General Public License
-# along with NautilusSvn;  If not, see <http://www.gnu.org/licenses/>.
+# along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
 """
@@ -74,7 +74,7 @@ if not DEFAULT_LOG_TYPE:
 if changed:
     settings.write()
 
-LOG_PATH = os.path.join(get_home_folder(), "NautilusSvn.log")
+LOG_PATH = os.path.join(get_home_folder(), "RabbitVCS.log")
 if not os.path.exists(LOG_PATH): open(LOG_PATH, "a").close()
 DEFAULT_FORMAT = "%(message)s"
 FILE_FORMAT = "%(asctime)s %(levelname)s\t%(name)s\t%(message)s"

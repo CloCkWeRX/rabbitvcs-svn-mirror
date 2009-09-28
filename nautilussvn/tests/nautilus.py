@@ -1,6 +1,6 @@
 """
 Dummy nautilus module for testing.  It should provide the bare minimum
-to get the NautilusSvn extension to load properly.
+to get the RabbitVCS extension to load properly.
 
 """
 

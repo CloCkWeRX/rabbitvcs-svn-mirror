@@ -12,7 +12,7 @@ do
 	intltool-extract --type=gettext/glade $i
 done
 
-xgettext -L Python --keyword=_ --keyword=N_ -o po/NautilusSvn.pot -f po/POTFILES.in
+xgettext -L Python --keyword=_ --keyword=N_ -o po/RabbitVCS.pot -f po/POTFILES.in
 
 for i in `find . | grep '\.glade\.h' | grep -v '\.svn'`;
 do
@@ -20,7 +20,7 @@ do
 done
 
 # Create binary a .mo file from a .po file
-# msgfmt --output-file=locale/en_US/LC_MESSAGES/NautilusSvn.mo po/en_US.po
+# msgfmt --output-file=locale/en_US/LC_MESSAGES/RabbitVCS.mo po/en_US.po
 
 # Generate a new .po file for another language
-# msginit --input=po/NautilusSvn.pot --locale=en_CA
+# msginit --input=po/RabbitVCS.pot --locale=en_CA

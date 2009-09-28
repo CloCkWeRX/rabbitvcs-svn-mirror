@@ -23,7 +23,7 @@ from nautilussvn.dbus.statuschecker import StatusChecker
 
 INTERFACE = "org.google.code.nautilussvn.Service"
 OBJECT_PATH = "/org/google/code/nautilussvn/Service"
-SERVICE = "org.google.code.nautilussvn.NautilusSvn"
+SERVICE = "org.google.code.nautilussvn.RabbitVCS"
 
 class Service(dbus.service.Object):
     
