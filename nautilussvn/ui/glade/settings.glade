@@ -129,8 +129,8 @@
                                   <widget class="GtkCheckButton" id="show_debug">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="tooltip" translatable="yes">The debug menu is used to diagnose problems with NautilusSVN itself</property>
-                                    <property name="label" translatable="yes">Show NautilusSVN debugging tools</property>
+                                    <property name="tooltip" translatable="yes">The debug menu is used to diagnose problems with RabbitVCS itself</property>
+                                    <property name="label" translatable="yes">Show RabbitVCS debugging tools</property>
                                     <property name="response_id">0</property>
                                     <property name="draw_indicator">True</property>
                                   </widget>

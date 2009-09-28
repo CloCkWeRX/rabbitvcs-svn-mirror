@@ -156,7 +156,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
     ])
     
     def __init__(self):
-        threading.currentThread().setName("NautilusSVN extension thread")
+        threading.currentThread().setName("RabbitVCS extension thread")
         
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = SVN()
@@ -1609,7 +1609,7 @@ class MainContextMenu:
     def callback_debug_add_emblem(self, menu_item, paths):
         def add_emblem_dialog():
             from subprocess import Popen, PIPE
-            command = ["zenity", "--entry", "--title=NautilusSVN", "--text=Emblem to add:"]
+            command = ["zenity", "--entry", "--title=RabbitVCS", "--text=Emblem to add:"]
             emblem = Popen(command, stdout=PIPE).communicate()[0].replace("\n", "")
             
             nautilussvn_extension = self.nautilussvn_extension
