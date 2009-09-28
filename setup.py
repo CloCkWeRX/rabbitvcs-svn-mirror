@@ -133,9 +133,7 @@ update_notifier = [("/usr/share/rabbitvcs", [
 # Documentation
 documentation = [("/usr/share/doc/rabbitvcs", [
     "AUTHORS",
-    "MAINTAINERS",
-    "CREDITS",
-    "THANKS"
+    "MAINTAINERS"
 ])]
 
 #==============================================================================
