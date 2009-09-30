@@ -36,20 +36,24 @@ import configobj
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class About(InterfaceView):
+class About:
     """
     This class provides an interface to the About window.
-    
-    Displays:
-    
-      - Authors/Credits
-      - Version Information
-      - Links
     
     """
 
     def __init__(self):
-        InterfaceView.__init__(self, "about", "About")
+    
+        def url_hook(dialog, url):
+            rabbitvcs.lib.helper.launch_url_in_webbrowser(url)
+    
+        gtk.about_dialog_set_url_hook(url_hook)
+        self.about = gtk.AboutDialog()
+        self.about.set_name(rabbitvcs.APP_NAME)
+        self.about.set_program_name(rabbitvcs.APP_NAME)
+        self.about.set_version(rabbitvcs.version)
+        self.about.set_website("http://www.rabbitvcs.org")
+        self.about.set_website_label("http://www.rabbitvcs.org")
         
         doc_path = "/usr/share/doc/rabbitvcs"
         if not os.path.exists(doc_path):
@@ -59,32 +63,22 @@ class About(InterfaceView):
             doc_path = '/'.join(doc_path[:-2])
         
         authors_path = os.path.join(doc_path, "AUTHORS")
-        thanks_path = os.path.join(doc_path, "THANKS")
-        
         authors = open(authors_path, "r").read()
-        thanks = open(thanks_path, "r").read()
-        
-        self.get_widget("authors").set_text(authors)
-        thanks_widget = rabbitvcs.ui.widget.TextView(
-            self.get_widget("thanks"),
-            thanks
-        )
+
+        self.about.set_authors(authors.split("\n"))
         
         versions = []
-        versions.append("RabbitVCS - %s" % str(rabbitvcs.version))
         versions.append("Subversion - %s" % string.join(map(str,pysvn.svn_version), "."))
         versions.append("Pysvn - %s" % string.join(map(str,pysvn.version), "."))
         versions.append("ConfigObj - %s" % str(configobj.__version__))
         
-        self.get_widget("versions").set_text("\n".join(versions))
-
-    def on_destroy(self, widget):
-        self.close()
-
-    def on_close_clicked(self, widget):
-        self.close()
-        
+        self.about.set_comments("\n".join(versions))
+    
+    def run(self):
+        self.about.show_all()
+        self.about.run()
+        self.about.destroy()
+    
 if __name__ == "__main__":
     window = About()
-    window.register_gtk_quit()
-    gtk.main()
+    window.run()
