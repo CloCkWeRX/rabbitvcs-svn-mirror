@@ -609,3 +609,7 @@ def launch_repo_browser(uri):
             repo_browser, 
             uri
         ])
+
+def launch_url_in_webbrowser(url):
+    import webbrowser
+    webbrowser.open(url)
