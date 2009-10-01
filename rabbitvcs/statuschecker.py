@@ -141,7 +141,13 @@ class StatusChecker(threading.Thread):
                     statuses[another_path] = self.__status_tree[another_path]["status"]
         
         return statuses
-        
+    
+    def __invalidate_path(self, path):
+        with self.__status_tree_lock:
+            for another_path in self.__status_tree.keys():
+                if another_path.startswith(path):
+                    del self.__status_tree[another_path]
+    
     def __update_path_status(self, path, recurse=False, invalidate=False, callback=None):
         statuses = {}
 
@@ -149,7 +155,7 @@ class StatusChecker(threading.Thread):
         # have been renamed/deleted, and so we will end up with orphaned items
         # in the status cache that cause inaccurate results for parent folders
         if invalidate:
-            self.__status_tree = dict()
+            self.__invalidate_path(path)
 
         # Uncomment this for useful simulation of a looooong status check :) 
         # log.debug("Sleeping for 10s...")
