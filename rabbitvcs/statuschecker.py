@@ -144,7 +144,13 @@ class StatusChecker(threading.Thread):
         
     def __update_path_status(self, path, recurse=False, invalidate=False, callback=None):
         statuses = {}
-        
+
+        # We can't trust the cache when we invalidate, because some items may
+        # have been renamed/deleted, and so we will end up with orphaned items
+        # in the status cache that cause inaccurate results for parent folders
+        if invalidate:
+            self.__status_tree = dict()
+
         # Uncomment this for useful simulation of a looooong status check :) 
         # log.debug("Sleeping for 10s...")
         # time.sleep(5)
