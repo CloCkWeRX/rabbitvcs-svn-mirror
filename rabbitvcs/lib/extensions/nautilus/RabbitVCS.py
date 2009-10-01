@@ -1414,12 +1414,7 @@ class MainContextMenu:
                     self.path_dict["is_deleted"] or
                     not self.path_dict["is_versioned"]):
                 return True
-            elif (self.path_dict["is_dir"] and
-                    (self.path_dict["has_added"] or
-                    self.path_dict["has_modified"] or
-                    self.path_dict["has_deleted"] or
-                    self.path_dict["has_unversioned"] or
-                    self.path_dict["has_missing"])):
+            elif (self.path_dict["is_dir"]):
                 return True
         return False
         
