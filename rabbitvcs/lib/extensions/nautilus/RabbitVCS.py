@@ -1656,7 +1656,7 @@ class MainContextMenu:
         self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_rename(self, menu_item, paths):
-        launch_ui_window("rename", paths)
+        proc = launch_ui_window("rename", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_createpatch(self, menu_item, paths):
@@ -1668,12 +1668,11 @@ class MainContextMenu:
         self.rabbitvcs_extension.rescan_after_process_exit(proc, paths)
     
     def callback_properties(self, menu_item, paths):
-        launch_ui_window("properties", paths)
+        proc = launch_ui_window("properties", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_about(self, menu_item, paths):
         launch_ui_window("about")
-        self.rabbitvcs_extension.execute_after_process_exit(proc)
         
     def callback_settings(self, menu_item, paths):
         proc = launch_ui_window("settings")
@@ -1690,53 +1689,53 @@ class MainContextMenu:
         ignore.start()
 
     def callback_lock(self, menu_item, paths):
-        launch_ui_window("lock", paths)
+        proc = launch_ui_window("lock", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_branch(self, menu_item, paths):
-        launch_ui_window("branch", paths)
+        proc = launch_ui_window("branch", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_switch(self, menu_item, paths):
-        launch_ui_window("switch", paths)
+        proc = launch_ui_window("switch", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_merge(self, menu_item, paths):
-        launch_ui_window("merge", paths)
+        proc = launch_ui_window("merge", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_import(self, menu_item, paths):
-        launch_ui_window("import", paths)
+        proc = launch_ui_window("import", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_export(self, menu_item, paths):
-        launch_ui_window("export", paths)
+        proc = launch_ui_window("export", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_updateto(self, menu_item, paths):
-        launch_ui_window("updateto", paths)
+        proc = launch_ui_window("updateto", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
     
     def callback_resolve(self, menu_item, paths):
-        launch_ui_window("resolve", paths)
+        proc = launch_ui_window("resolve", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
         
     def callback_annotate(self, menu_item, paths):
-        launch_ui_window("annotate", paths)
+        proc = launch_ui_window("annotate", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_unlock(self, menu_item, paths):
-        launch_ui_window("unlock", paths)
+        proc = launch_ui_window("unlock", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
         
     def callback_create_repository(self, menu_item, paths):
-        launch_ui_window("create", paths)
+        proc = launch_ui_window("create", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
     
     def callback_relocate(self, menu_item, paths):
-        launch_ui_window("relocate", paths)
+        proc = launch_ui_window("relocate", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
 
     def callback_cleanup(self, menu_item, paths):
-        launch_ui_window("cleanup", paths)
+        proc = launch_ui_window("cleanup", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
