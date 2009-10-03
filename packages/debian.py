@@ -1,58 +1,7 @@
-#!/usr/bin/python
-
-from optparse import OptionParser
-import os, os.path, sys, shutil, re
-import tempfile, subprocess, tarfile
-
+import os, os.path, shutil, subprocess
 import pysvn
 
-CHANGELOG_ENTRY = "Local build via packaging script."
 PACKAGE_FILES_SUBDIR = "packages"
-
-COMMANDS = {
-    "binary" : 
-        {"desc" : "Build a binary package from the current state of the source tree.",
-         "method" : "build_current_binary"},
-    "source" :
-        {"desc" : "Build a source package from the current state of the source tree.",
-         "method" : "build_current_source"},
-    
-#    "official" :
-#        {"desc" : "Build an official source and binary from a tarball and current packaging.",
-#         "method" : "build_official_package"}
-    }
-
-def package_id():
-    import rabbitvcs
-    package_name = rabbitvcs.package_name()
-    package_version = rabbitvcs.package_version()
-    return (package_name, package_version)
-
-
-def get_distros(basepath = None):
-    if not basepath:
-        basepath = os.path.dirname(__file__)
-    
-    dirs = os.walk(basepath).next()[1]
-    
-    # Remove hidden dirs
-    dirs = [dir for dir in dirs if not dir.startswith(".")]
-    
-    return dirs
-
-def usage():
-    ustr = "usage: %prog distro command [options]\n\n"
-    
-    ustr += "Detected distros are: " + ", ".join(get_distros())
-    
-    ustr += "\n\n"
-    
-    ustr += "Available commands are:\n"
-    
-    for cmd, info in COMMANDS.items():
-        ustr += cmd + ": " + info["desc"] + "\n"
-    
-    return ustr
 
 class Debian:
     """ A builder for all Debian-like distributions.
@@ -119,7 +68,7 @@ class Debian:
         
         control_dir = os.path.join(self.package_dir,
                                    PACKAGE_FILES_SUBDIR,
-                                   distro,
+                                   self.distro,
                                    Debian.control_dir)
                                    
         shutil.copytree(control_dir,
@@ -166,88 +115,3 @@ class Debian:
         self._debianise()
         self._build_binary()
         self._copy_results()
-
-
-CLASSES = [Debian]
-
-if __name__ == "__main__":
-    
-    parser = OptionParser(usage = usage())
-    
-    parser.add_option("-o", "--output-dir", dest="output_dir",
-                      help = "directory for package files")
-    
-    (options, args) = parser.parse_args()
-
-    output_dir = options.output_dir
-
-    if len(args) < 2:
-        parser.error("You must specify a distro and a command!")
-
-    distro = sys.argv[1]
-    command = sys.argv[2]
-    
-    root_dir = os.path.split(os.path.abspath(os.path.dirname(__file__)))[0]
-    
-    # If no output dir is given, use ".."
-    if not output_dir:
-        output_dir = os.path.split(root_dir)[0]
-    
-    temp_dir = None
-    
-    try:
-    
-        if os.path.lexists(output_dir) and not os.path.isdir(output_dir):
-            print "Output dir already exists, but is not a directory!"
-            sys.exit(1)
-
-        if not os.path.lexists(output_dir):
-            os.mkdir(output_dir)
-        
-        print "Output dir: %s" % output_dir
-        
-        print "Distro: %s" % distro
-        
-        if distro not in get_distros():
-            print "Distro not found!"
-        
-        print "Command: %s" % command
-        
-        if command not in COMMANDS.keys():
-            print "Command not valid!"
-            sys.exit(2)
-        
-        print "Original working dir: %s" % root_dir
-      
-        package_name, package_ver = package_id()
-
-        temp_dir = tempfile.mkdtemp(prefix=(package_name+"-"))
-        
-        print "Using temp dir: %s" % temp_dir
-
-        print "Detected package name: %s, version: %s" % (package_name, package_ver)
-
-        bld_class = None
-
-        for cls in CLASSES:
-            for dst in cls.distros:
-                regex = re.compile(dst)
-                if regex.match(distro):
-                    bld_class = cls
-                    break
-        
-        if bld_class is None:
-            print "Could not find a builder for that distro!"
-            sys.exit(1)
-
-        print "Using build class: %s" % bld_class
-
-        builder = bld_class(root_dir, temp_dir, output_dir, distro, package_name, package_ver)
-        
-        getattr(builder, COMMANDS[command]["method"])()
-
-        sys.exit(0)
-    
-    finally: 
-        if temp_dir:
-            shutil.rmtree(temp_dir)
