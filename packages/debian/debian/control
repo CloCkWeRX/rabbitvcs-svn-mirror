@@ -28,7 +28,9 @@ Depends: ${misc:Depends},
          hicolor-icon-theme (>= 0.10-2)
 Description: Integrated version control support for Nautilus
  An extension to Nautilus to allow better integration with various source
- control systems (currently only Subversion). RabbitVCS adds version control
- related commands to the Nautilus context menu, and controlled directories
- will be detected automatically and decorated with appropriate emblems. It
- is similar to the TortoiseSVN project on Windows.
+ control systems. RabbitVCS adds version control related commands to the
+ Nautilus context menu, and controlled directories will be detected
+ automatically and decorated with appropriate emblems. It is similar to the
+ TortoiseSVN project on Windows.
+
+ RabbitVCS currently only supports Subversion.
