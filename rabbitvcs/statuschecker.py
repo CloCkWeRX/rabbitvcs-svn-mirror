@@ -4,7 +4,7 @@
 
 from __future__ import with_statement
 
-import threading
+import threading, os.path
 from Queue import Queue
 
 import pysvn
@@ -20,6 +20,17 @@ log = Log("rabbitvcs.statuschecker")
 # NOTE: try changing this to a few hundred, or a few thousand to check operation
 # The debugging statements below will tell you how many items are being cached
 MAX_CACHE_SIZE = 1000000 # Items
+
+def is_under_dir(base_path, other_path):
+    base_path = os.path.normpath(base_path)
+    other_path = os.path.normpath(other_path)
+    # Warning: os.path.isdir may not work if we get a relative path
+    # This should not be a problem, but will throw out simple tests if
+    # you are not careful.
+    return base_path == other_path or \
+            os.path.isdir(base_path) and other_path.startswith(
+                                                    os.path.join(base_path, "")
+                                                              )
 
 class StatusChecker(threading.Thread):
     #: The queue will be populated with 4-ples of
@@ -137,7 +148,7 @@ class StatusChecker(threading.Thread):
         statuses = {}
         with self.__status_tree_lock:
             for another_path in self.__status_tree.keys():
-                if another_path.startswith(path):
+                if is_under_dir(path, another_path):
                     statuses[another_path] = self.__status_tree[another_path]["status"]
         
         return statuses
@@ -145,7 +156,7 @@ class StatusChecker(threading.Thread):
     def __invalidate_path(self, path):
         with self.__status_tree_lock:
             for another_path in self.__status_tree.keys():
-                if another_path.startswith(path):
+                if is_under_dir(path, another_path):
                     del self.__status_tree[another_path]
     
     def __update_path_status(self, path, recurse=False, invalidate=False, callback=None):
