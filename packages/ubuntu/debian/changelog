@@ -1,11 +1,11 @@
-rabbitvcs (0.12-1ubuntu1) intrepid; urgency=low
+rabbitvcs (0.12-1) intrepid; urgency=low
 
   * New upstream release.
   * Renamed to RabbitVCS.
 
  -- Jason Heeris <jason.heeris@gmail.com>  Mon, 28 Sep 2009 20:42:02 +0800
 
-nautilussvn (0.12-1ubuntu2) intrepid; urgency=low
+nautilussvn (0.12~1ubuntu2) intrepid; urgency=low
 
   * Updated version dependencies in control file so the package can
       be installed under Ubuntu 8.04. See Issue #100.
@@ -16,7 +16,7 @@ nautilussvn (0.12-1ubuntu2) intrepid; urgency=low
 
  -- Bruce van der Kooij <brucevdkooij@gmail.com>  Tue, 17 Mar 2009 00:08:38 +0100
 
-nautilussvn (0.12-1ubuntu1) intrepid; urgency=low
+nautilussvn (0.12~1ubuntu1) intrepid; urgency=low
 
   * Improved status checking and emblem support.
   * Complete rewrite of extension and user interface layer.
