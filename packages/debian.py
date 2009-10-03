@@ -5,7 +5,7 @@ import shutil, subprocess, os.path
 class Debian(Generic):
     """ A builder for all Debian-like distributions.
     """   
-    
+        
     # Distributions to which this class may be applied
     distros = ["debian.*", "ubuntu.*"]
 
@@ -13,11 +13,14 @@ class Debian(Generic):
     
     def __init__(self, *args, **kwargs):
         Generic.__init__(self, *args, **kwargs)
+        
+        self.pbuilder = kwargs.has_key('use_pbuilder') and kwargs['use_pbuilder']
+        
         self.orig_ark = None
         self.orig_ark_name = self.name + "_" + self.version + ".orig.tar.gz"
        
     def _debianise(self):
-        print "Debianising source... ",
+        print "Debianising source... "
         
         control_dir = os.path.join(self.package_dir,
                                    Generic.PACKAGE_FILES_SUBDIR,
@@ -40,13 +43,27 @@ class Debian(Generic):
             ["dpkg-source", "-b", self.package_dir, self.orig_ark],
             cwd = self.build_area).wait()
     
-    def _build_binary(self, sign = False):
+    def _build_binary_pdebuild(self, sign = False):
+        print "Running pdebuild to create an unsigned Debian binary package..."
+        
+        retval = subprocess.Popen(
+            ["pdebuild", "--buildresult", self.build_area],
+            cwd = self.package_dir).wait()
+        
+    
+    def _build_binary_debuild(self, sign = False):
         print "Running debuild to create an unsigned Debian binary package..."
     
         retval = subprocess.Popen(
             ["debuild", "-us", "-uc", "-b"],
             cwd = self.package_dir).wait()
-        
+    
+    def _build_binary(self, sign = False):
+        if self.pbuilder:
+            self._build_binary_pdebuild(sign)
+        else:
+            self._build_binary_debuild(sign)
+    
     def build_current_source(self):
         """ Builds a Debian (like) source package from the current state of the
         tree.

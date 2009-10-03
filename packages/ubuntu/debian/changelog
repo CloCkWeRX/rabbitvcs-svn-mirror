@@ -1,4 +1,4 @@
-rabbitvcs (0.12-1) intrepid; urgency=low
+rabbitvcs (0.12~pre-1) intrepid; urgency=low
 
   * New upstream release.
   * Renamed to RabbitVCS.

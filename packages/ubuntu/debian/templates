@@ -1,6 +1,4 @@
 Template: rabbitvcs/rabbitvcs-restart-required
 Type: text
-Description: You need to run 'nautilus -q && nautilus &' to restart Nautilus.
-  RabbitVCS will not take effect until Nautilus is restarted, or until the
-  next time you log in. You can restart nautilus using the command "nautilus
-  -q".
+Description: RabbitVCS will not take effect until Nautilus is restarted, or until the next time you log in.
+ RabbitVCS will not take effect until Nautilus is restarted, or until the next time you log in.

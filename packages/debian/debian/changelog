@@ -1,4 +1,4 @@
-rabbitvcs (0.12-1) unstable; urgency=low
+rabbitvcs (0.12~pre1-1) unstable; urgency=low
 
   * New upstream release.
   * Renamed to RabbitVCS.

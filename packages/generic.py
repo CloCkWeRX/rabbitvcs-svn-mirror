@@ -7,7 +7,7 @@ class Generic(object):
 
     distros = ["generic"]
     
-    def __init__(self, working_copy, build_area, output_dir, distro, name, version):
+    def __init__(self, working_copy, build_area, output_dir, distro, name, version, **kawrgs):
         self.working_copy = working_copy
         self.build_area = build_area
         self.output_dir = output_dir

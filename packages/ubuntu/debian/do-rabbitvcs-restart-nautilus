@@ -7,4 +7,5 @@
 #
 
 nautilus -q
+pgrep -f service.py | xargs kill
 nohup nautilus > /dev/null &

@@ -65,6 +65,10 @@ if __name__ == "__main__":
     parser.add_option("-o", "--output-dir", dest="output_dir",
                       help = "directory for package files")
     
+    parser.add_option("-p", "--pbuilder", dest="pbuilder", action="store_true",
+                      default = False,
+                      help = "use pbuilder for Debian/Ubuntu packages")
+    
     (options, args) = parser.parse_args()
 
     output_dir = options.output_dir
@@ -131,7 +135,13 @@ if __name__ == "__main__":
         
         print "Using build class: %s" % bld_class
 
-        builder = bld_class(root_dir, temp_dir, output_dir, distro, package_name, package_ver)
+        builder = bld_class(root_dir,
+                            temp_dir,
+                            output_dir,
+                            distro,
+                            package_name,
+                            package_ver,
+                            use_pbuilder = options.pbuilder)
         
         try:
             getattr(builder, COMMANDS[command]["method"])()
