@@ -32,5 +32,5 @@ Description: Integrated version control support for Nautilus
  Nautilus context menu, and controlled directories will be detected
  automatically and decorated with appropriate emblems. It is similar to the
  TortoiseSVN project on Windows.
-
+ .
  RabbitVCS currently only supports Subversion.
