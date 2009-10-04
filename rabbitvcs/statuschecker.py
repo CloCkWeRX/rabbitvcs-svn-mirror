@@ -25,9 +25,9 @@ def is_under_dir(base_path, other_path):
     # Warning: os.path.isdir may not work if we get a relative path
     # This should not be a problem, but will throw out simple tests if
     # you are not careful.
-    return (base_path == other_path) or \
-                (other_path.startswith(os.path.join(base_path, "")) and \
-                 os.path.isdir(base_path))
+    return (base_path == other_path or
+                other_path.startswith(os.path.join(base_path, "")) and
+                os.path.isdir(base_path))
 
 class StatusChecker(threading.Thread):
     #: The queue will be populated with 4-ples of
