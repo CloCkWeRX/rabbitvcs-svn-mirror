@@ -27,6 +27,8 @@ Depends: ${misc:Depends},
          ipython (>=0.7.1),
          hicolor-icon-theme (>= 0.10),
          libgtk2.0-bin (>= 2.8.20)
+Conflicts: nautilussvn
+Replaces: nautilussvn
 Description: Integrated version control support for Nautilus
  An extension to Nautilus to allow better integration with various source
  control systems. RabbitVCS adds version control related commands to the
