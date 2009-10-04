@@ -22,15 +22,14 @@ log = Log("rabbitvcs.statuschecker")
 MAX_CACHE_SIZE = 1000000 # Items
 
 def is_under_dir(base_path, other_path):
-    base_path = os.path.normpath(base_path)
-    other_path = os.path.normpath(other_path)
+    if not other_path.startswith(base_path): return False
+    
     # Warning: os.path.isdir may not work if we get a relative path
     # This should not be a problem, but will throw out simple tests if
     # you are not careful.
-    return base_path == other_path or \
-            os.path.isdir(base_path) and other_path.startswith(
-                                                    os.path.join(base_path, "")
-                                                              )
+    return (base_path == other_path or 
+                (os.path.isdir(base_path) and 
+                    other_path.startswith(os.path.join(base_path, ""))))
 
 class StatusChecker(threading.Thread):
     #: The queue will be populated with 4-ples of
