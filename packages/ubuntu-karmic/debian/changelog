@@ -1,9 +1,9 @@
-rabbitvcs (0.12-1) intrepid; urgency=low
+rabbitvcs (0.12-1) karmic; urgency=low
 
   * New upstream release.
   * Renamed to RabbitVCS.
 
- -- Jason Heeris <jason.heeris@gmail.com>  Mon, 28 Sep 2009 20:42:02 +0800
+ -- Jason Heeris <jason.heeris@gmail.com>  Mon, 05 Oct 2009 22:13:33 +0800
 
 nautilussvn (0.12~1ubuntu2) intrepid; urgency=low
 
