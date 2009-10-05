@@ -4,13 +4,13 @@ Section: devel
 Priority: optional
 Build-Depends: debhelper (>= 6.0.4),
                cdbs (>= 0.4.51),
-               python-dev (>= 2.5.2),
+               python-dev (>= 2.5.2)
 Build-Depends-Indep: python-support (>= 0.5.3),
                      python-central (>= 0.6.5),
                      pkg-config (>= 0.20),
                      patchutils (>= 0.2.31)
 Standards-Version: 3.8.3
-Homepage: http://code.google.com/p/rabbitvcs
+Homepage: http://www.rabbitvcs.org
 
 Package: rabbitvcs
 Architecture: all
