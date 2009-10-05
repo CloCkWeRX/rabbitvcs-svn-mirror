@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Restart Nautilus so extensions are reloaded.
+#
+# This script gets called from the update-notifier hook, but never automatically
+# only through a visual dialog (see rabbitvcs-restart-required.update-notifier).
+#
+
+nautilus -q
+pgrep -f service.py | xargs kill
+nohup nautilus > /dev/null &
