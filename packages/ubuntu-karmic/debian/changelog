@@ -1,4 +1,4 @@
-rabbitvcs (0.12-1) karmic; urgency=low
+rabbitvcs (0.12-1~karmic) karmic; urgency=low
 
   * New upstream release.
   * Renamed to RabbitVCS.
