@@ -28,7 +28,7 @@ class Generic(object):
 
     def _compress(self, ark_name = None):
         if not ark_name:
-            ark_name = self.name + "_" + self.version + ".tar.gz"
+            ark_name = self.name + "-" + self.version + ".tar.gz"
         
         ark_path = os.path.join(self.build_area, ark_name)
 
