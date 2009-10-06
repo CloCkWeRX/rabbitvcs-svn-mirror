@@ -12,11 +12,7 @@ Group:          Development/Languages
 License:        GPLv2+
 URL:            http://code.google.com/p/rabbitvcs/
 
-# The source for this package was pulled from upstream's vcs.  Use the
-# following commands to generate the tarball:
-#  svn export -r 1724 http://rabbitvcs.googlecode.com/svn/trunk/ rabbitvcs-0.12
-#  tar -czvf rabbitvcs-0.12.tar.gz rabbitvcs-0.12 --exclude='.svn'
-Source0:        %{name}-%{version}.tar.gz
+Source0:        http://%{name}.googlecode.com/files/%{name}-%{version}.tar.gz
 
 BuildRoot:      %(mktemp -ud %{_tmppath}/%{name}-%{release}-XXXXXX)
 
@@ -75,25 +71,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+
 * Sat Oct 3 2009 Juan Rodriguez <nushio@fedoraproject.org> - 0.12-1
-- Took Snapshot from svn. Rev 1724. 
+- Took Snapshot from svn. Rev 1743. 
 - Renamed from NautilusSVN to RabbitVCS to match upstream. 
 - Package is now noarch
 - Calls gtk-update-icon-cache to regenerate the icon cache
-
-* Mon Sep 7 2009 Juan Rodriguez <nushio@fedoraproject.org> - 0.12-4.20090907svn
-- Took Snapshot from svn. Rev 1534 
-- Removed Patch. Its part of the source now. 
-
-* Wed Aug 12 2009 Juan Rodriguez <nushio@fedoraproject.org> - 0.12-3.20090712svn
-- Took Snapshot from svn. 
-
-* Tue Aug 11 2009 Juan Rodriguez <nushio@fedoraproject.org> - 2.12-beta1-2
-- Fixes nautilussvn lib dependencies
-
-* Mon Aug 3 2009 Juan Rodriguez <nushio@fedoraproject.org> - 1.12-beta1-2
-- Adds patch to allow compiling on x86_64
-
-* Mon Aug 3 2009 Juan Rodriguez <nushio@fedoraproject.org> - 0.12-beta1-2
-- Initial RPM release
-
