@@ -45,7 +45,7 @@ class Checkout(InterfaceView):
     
     """
 
-    def __init__(self, path):
+    def __init__(self, path=None, url=None, revision=None):
         InterfaceView.__init__(self, "checkout", "Checkout")
 
 
@@ -58,9 +58,21 @@ class Checkout(InterfaceView):
             self.get_widget("repositories"), 
             rabbitvcs.lib.helper.get_repository_paths()
         )
-        self.destination = path
-        self.get_widget("destination").set_text(path)
+        
+        self.destination = rabbitvcs.lib.helper.get_user_path()
+        if path is not None:
+            self.destination = path
+            self.get_widget("destination").set_text(path)
+        
+        if url is not None:
+            self.repositories.set_child_text(url)
+        
+        if revision is not None:
+            self.get_widget("revision_number_opt").set_active(True)
+            self.get_widget("revision_number").set_text(str(revision))
+        
         self.complete = False
+        self.check_form()
         
     #
     # UI Signal Callback Methods
@@ -73,7 +85,7 @@ class Checkout(InterfaceView):
         self.close()
 
     def on_ok_clicked(self, widget):
-        url = self.get_widget("url").get_text()
+        url = self.repositories.get_active_text()
         path = self.get_widget("destination").get_text()
         omit_externals = self.get_widget("omit_externals").get_active()
         recursive = self.get_widget("recursive").get_active()
@@ -126,7 +138,7 @@ class Checkout(InterfaceView):
 
     def on_show_log_clicked(self, widget, data=None):
         LogDialog(
-            self.get_widget("url").get_text(), 
+            self.repositories.get_active_text(), 
             ok_callback=self.on_log_closed
         )
     
@@ -135,9 +147,8 @@ class Checkout(InterfaceView):
             self.get_widget("revision_number_opt").set_active(True)
             self.get_widget("revision_number").set_text(data)
     
-    def on_url_changed(self, widget, data=None):
-    
-        url = self.get_widget("url").get_text()
+    def on_repositories_changed(self, widget, data=None):
+        url = self.repositories.get_active_text()
         tmp = url.replace("//", "/").split("/")[1:]
         append = ""
         prev = ""
@@ -154,16 +165,24 @@ class Checkout(InterfaceView):
         self.get_widget("destination").set_text(
             os.path.join(self.destination, append)
         )
-    
-        self.complete = False
-        if url:
-            self.complete = True
+        
+        self.check_form()
 
-        self.get_widget("show_log").set_sensitive(self.complete)
-        self.get_widget("ok").set_sensitive(self.complete)
+    def on_destination_changed(self, widget, data=None):
+        self.check_form()
 
     def on_repo_chooser_clicked(self, widget, data=None):
-        rabbitvcs.lib.helper.launch_repo_browser(self.get_widget("url").get_text())
+        rabbitvcs.lib.helper.launch_repo_browser(self.repositories.get_active_text())
+
+    def check_form(self):
+        self.complete = True
+        if self.repositories.get_active_text() == "":
+            self.complete = False
+        if self.get_widget("destination").get_text() == "":
+            self.complete = False
+        
+        self.get_widget("show_log").set_sensitive(self.complete)
+        self.get_widget("ok").set_sensitive(self.complete)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main

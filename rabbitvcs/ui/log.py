@@ -51,6 +51,8 @@ class Log(InterfaceView):
     selected_row = []
     
     limit = 100
+    
+    SEPARATOR = u'\u2015' * 10
 
     def __init__(self, path):
         """
@@ -141,6 +143,71 @@ class Log(InterfaceView):
             return
 
         item = self.revision_items[self.selected_rows[0]]
+
+        if data is not None and data.button == 3:
+            context_menu = rabbitvcs.ui.widget.ContextMenu([
+                {
+                    "label": _("View diff against working copy"),
+                    "signals": None,
+                    "condition": (lambda: False)
+                },
+                {
+                    "label": _("View diff against previous revision"),
+                    "signals": None,
+                    "condition": (lambda: False)
+                },
+                {
+                    "label": self.SEPARATOR,
+                    "signals": None,
+                    "condition": (lambda: False)
+                },
+                {
+                    "label": _("Update to revision"),
+                    "signals": None,
+                    "condition": (lambda: False)
+                },
+                {
+                    "label": _("Rollback to revision"),
+                    "signals": None,
+                    "condition": (lambda: False)
+                },
+                {
+                    "label": _("Checkout..."),
+                    "signals": {
+                        "activate": {
+                            "callback": self.on_context_checkout_activated,
+                            "args": None
+                        }
+                    },
+                    "condition": self.condition_checkout
+                },
+                {
+                    "label": _("Copy/Branch..."),
+                    "signals": None,
+                    "condition": (lambda: False)
+                },
+                {
+                    "label": _("Export..."),
+                    "signals": None,
+                    "condition": (lambda: False)
+                },
+                {
+                    "label": self.SEPARATOR,
+                    "signals": None,
+                    "condition": (lambda: False)
+                },
+                {
+                    "label": _("Edit author..."),
+                    "signals": None,
+                    "condition": (lambda: False)
+                },
+                {
+                    "label": _("Edit log message..."),
+                    "signals": None,
+                    "condition": (lambda: False)
+                },
+            ])
+            context_menu.show(data)
 
         self.paths_table.clear()
         if len(self.selected_rows) == 1:
@@ -337,6 +404,25 @@ class Log(InterfaceView):
 
     def set_loading(self, loading):
         self.is_loading = loading
+
+
+    #
+    # Context menu item callbacks
+    #
+
+    def on_context_checkout_activated(self, widget, data=None):
+        from rabbitvcs.ui.checkout import Checkout
+        item = self.revision_items[self.selected_rows[0]]
+        revision = item.revision.number
+        url = self.vcs.get_repo_url(self.path)
+        Checkout(url=url, revision=str(revision)).show()
+
+    #
+    # Context menu item conditions for being visible
+    #
+    
+    def condition_checkout(self):
+        return (len(self.selected_rows) == 1)
 
 class LogDialog(Log):
     def __init__(self, path, ok_callback=None, multiple=False):
