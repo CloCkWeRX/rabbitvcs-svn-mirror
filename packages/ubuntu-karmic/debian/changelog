@@ -1,3 +1,9 @@
+rabbitvcs (0.12-2~karmic) karmic; urgency=low
+
+  * Added required po-debconf stuff.
+
+ -- Jason Heeris <jason_h@localhost>  Wed, 07 Oct 2009 09:18:55 +0800
+
 rabbitvcs (0.12-1~karmic) karmic; urgency=low
 
   * New upstream release.

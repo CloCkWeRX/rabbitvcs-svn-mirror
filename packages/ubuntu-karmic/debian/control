@@ -8,7 +8,8 @@ Build-Depends: debhelper (>= 6.0.4),
 Build-Depends-Indep: python-support (>= 0.5.3),
                      python-central (>= 0.6.5),
                      pkg-config (>= 0.20),
-                     patchutils (>= 0.2.31)
+                     patchutils (>= 0.2.31),
+                     po-debconf
 Standards-Version: 3.8.3
 Homepage: http://www.rabbitvcs.org
 

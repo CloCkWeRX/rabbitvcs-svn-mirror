@@ -8,7 +8,8 @@ Build-Depends: debhelper (>= 6.0.4),
 Build-Depends-Indep: python-support (>= 0.5.3),
                      python-central (>= 0.6.5),
                      pkg-config (>= 0.20),
-                     libgtk2.0-bin (>= 2.8.20)
+                     libgtk2.0-bin (>= 2.8.20),
+                     po-debconf
 Standards-Version: 3.8.1
 Homepage: http://www.rabbitvcs.org/
 
