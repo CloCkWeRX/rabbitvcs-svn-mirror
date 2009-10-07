@@ -202,7 +202,10 @@ class ComboBox:
         return self.cb.get_active_text()     
     
     def set_active(self, index):
-        self.cb.set_active(index)       
+        self.cb.set_active(index)
+    
+    def set_child_text(self, text):
+        self.cb.child.set_text(text)
         
 class TextView:
     def __init__(self, widget=None, value=""):
@@ -235,7 +238,7 @@ class ContextMenu:
                 continue
                 
             menuitem = gtk.MenuItem(item["label"])
-            if "signals" in item:
+            if "signals" in item and item["signals"] is not None:
                 for signal, info in item["signals"].items():
                     menuitem.connect(signal, info["callback"], info["args"])
             
