@@ -176,7 +176,33 @@ class CertAuthentication(InterfaceView):
             return (True, password, save)
         else:
             return (False, "", False)
+
+class SSLClientCertPrompt(InterfaceView):
+    def __init__(self, realm="", may_save=True):
+        InterfaceView.__init__(self, GLADE, "SSLClientCertPrompt")
         
+        self.get_widget("sslclientcert_realm").set_label(realm)
+        self.get_widget("sslclientcert_save").set_sensitive(may_save)
+    
+    def on_sslclientcert_browse_clicked(self, widget, data=None):
+        filechooser = FileChooser()
+        cert = filechooser.run()
+        if cert is not None:
+            self.get_widget("sslclientcert_path").set_text(cert)
+ 
+    def run(self):
+        self.dialog = self.get_widget("SSLClientCertPrompt")
+        result = self.dialog.run()
+        
+        cert = self.get_widget("sslclientcert_path").get_text()
+        save = self.get_widget("sslclientcert_save").get_active()
+        self.dialog.destroy()
+        
+        if result == 1:
+            return (True, cert, save)
+        else:
+            return (False, "", False)
+
 class Property(InterfaceView):
     def __init__(self, name="", value="", recurse=True):
         InterfaceView.__init__(self, GLADE, "Property")

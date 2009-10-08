@@ -142,6 +142,7 @@ class VCSAction(threading.Thread):
         self.client.set_callback_get_login(self.get_login)
         self.client.set_callback_ssl_server_trust_prompt(self.get_ssl_trust)
         self.client.set_callback_ssl_client_cert_password_prompt(self.get_ssl_password)
+        self.client.set_callback_ssl_client_cert_prompt(self.get_client_cert)
         
         self.queue = rabbitvcs.lib.FunctionQueue()
         
@@ -392,7 +393,35 @@ class VCSAction(threading.Thread):
         gtk.gdk.threads_leave()
 
         return result
+    
+    def get_client_cert(self, realm, may_save):
+        """
+        A callback method that is used to get an ssl certificate.
         
+        The dialog must be called from within a threaded block, otherwise it
+        will not be responsive.       
+
+        @type   realm:      string
+        @param  realm:      The certificate realm.
+        
+        @type   may_save:   boolean
+        @param  may_save:   Whether or not the passphrase can be saved.
+        
+        @rtype:             (boolean, string, boolean)
+        @return:            (True=continue/False=cancel, password, may save)
+        
+        """
+        
+        gtk.gdk.threads_enter()
+        dialog = rabbitvcs.ui.dialog.SSLClientCertPrompt(
+            realm,
+            may_save
+        )
+        result = dialog.run()
+        gtk.gdk.threads_leave()
+
+        return result
+    
     def set_log_message(self, message):
         """
         Set this action's log message from the UI interface.  self.message

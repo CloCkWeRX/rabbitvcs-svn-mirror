@@ -777,6 +777,9 @@ class SVN:
     
     def set_callback_ssl_client_cert_password_prompt(self, func):
         self.client.callback_ssl_client_cert_password_prompt = func
+
+    def set_callback_ssl_client_cert_prompt(self, func):
+        self.client.callback_ssl_client_cert_prompt = func
     
     #
     # revision
