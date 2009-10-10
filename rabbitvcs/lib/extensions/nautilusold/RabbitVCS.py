@@ -254,7 +254,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                 if os.path.isdir(os.path.join(os.path.split(path)[0], ".svn")):
                     items = [('NautilusPython::svnadd_file_item', 'Add' , 'Add %s to the repository.'%file.get_name(), self.OnAdd, "rabbitvcs-add")]
                 else:
-                    return
+		            items = [('NautilusPython::svncheckout_file_item', 'Checkout' , 'Checkout code from an SVN repository', self.OnCheckout, "rabbitvcs-checkout")]
 
         else:
             # We're a file, so lets check if we're in a versioned folder
