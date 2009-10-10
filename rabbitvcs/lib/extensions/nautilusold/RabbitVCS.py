@@ -25,6 +25,7 @@ TODO
     1. Integrate translations
     2. Add more of the v0.12 menu items
     3.  or figure out a way to use the regular nautilus extension's menu items/logic
+    4.  or clean up the current menuitem logic in some other way
 """
 
 __version__ = "0.12"
@@ -320,24 +321,29 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         return self.create_menu(window, items, [file])
 
     def create_menu(self, window, items, paths):
+        """
+        While I can add submenu items in nautilus-python 0.5.0, I can't get
+        the submenu item activate signal to connect to a callback method
+        
         menuitem = nautilus.MenuItem('NautilusPython::Svn', 'RabbitVCS', '', "rabbitvcs")
         if hasattr(menuitem, "set_submenu"):
             submenu = nautilus.Menu()
             menuitem.set_submenu(submenu)
             for item in items:
                 i = nautilus.MenuItem( item[0], item[1], item[2], item[4] )
-                i.connect( 'activate', item[3], window, paths)
+                i.connect('activate', item[3], window, paths)
                 submenu.append_item( i )
 
             return menuitem,
-        else:
-            menuitems = []
-            for item in items:
-                i = nautilus.MenuItem( item[0], item[1], item[2], item[4] )
-                i.connect( 'activate', item[3], window, paths)
-                menuitems.append(i)
+		"""
+		
+        menuitems = []
+        for item in items:
+            i = nautilus.MenuItem( item[0], item[1], item[2], item[4] )
+            i.connect('activate', item[3], window, paths)
+            menuitems.append(i)
 
-            return menuitems
+        return menuitems
             
     #--------------------------------------------------------------------------
     def RescanFilesAfterProcess(self, pid):
