@@ -95,14 +95,14 @@ class Properties(InterfaceView):
     def on_new_clicked(self, widget):
         dialog = rabbitvcs.ui.dialog.Property()
         name,value,recurse = dialog.run()
-        if name is not None:
+        if name:
             self.table.append([recurse,name,value])
     
     def on_edit_clicked(self, widget):
         (recurse,name,value) = self.get_selected_name_value()
         dialog = rabbitvcs.ui.dialog.Property(name, value)
         name,value,recurse = dialog.run()
-        if name is not None:
+        if name:
             self.set_selected_name_value(name, value, recurse)
 
     
