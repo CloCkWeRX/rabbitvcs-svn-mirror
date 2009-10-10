@@ -24,7 +24,6 @@
 TODO
     1. Integrate translations
     2. Add more of the v0.12 menu items
-    3. Add icons to the menu items
 """
 
 __version__ = "0.12"
@@ -37,12 +36,7 @@ import gtk
 import nautilus
 import os
 import pysvn
-import shutil
 import sys
-
-#import wx
-#import wx.xrc
-#from wx.xrc import XRCCTRL
 
 # RabbitVCS is actually more than just this module so we need to add the entire
 # directory to the path to be able to find our other modules. Because on import
@@ -224,14 +218,13 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
 
         path = gnomevfs.get_local_path_from_uri(file.get_uri())
 
-        items = [ ('NautilusPython::svndelete_file_item', 'Delete' , 'Remove files from the repository.', self.OnDelete),
-                  ('NautilusPython::svnrefreshstatus_file_item', 'Refresh Status', 'Refresh the display status of the selected files.', self.OnRefreshStatus),
+        items = [ ('NautilusPython::svndelete_file_item', 'Delete' , 'Remove files from the repository.', self.OnDelete, "rabbitvcs-delete"),
+                  ('NautilusPython::svnrefreshstatus_file_item', 'Refresh Status', 'Refresh the display status of the selected files.', self.OnRefreshStatus, "rabbitvcs-refresh"),
         ]
 
         if len( files ) == 1:
-            items += [    ('NautilusPython::svnlog_file_item', 'Log' , 'Log of %s' % file.get_name(), self.OnShowLog),
-                        ('NautilusPython::svnupdate_file_item', 'Update' , 'Get the latest code from the repository.', self.OnUpdate),
-                        ('NautilusPython::svnproperties_file_item', 'Properties', 'File properties for %s.'%file.get_name(), self.OnProperties),
+            items += [    ('NautilusPython::svnlog_file_item', 'Log' , 'Log of %s' % file.get_name(), self.OnShowLog, "rabbitvcs-show_log"),
+                        ('NautilusPython::svnupdate_file_item', 'Update' , 'Get the latest code from the repository.', self.OnUpdate, "rabbitvcs-update")
             ]
 
         # Check if this is a folder, and if so if it's under source control
@@ -247,15 +240,21 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                             pysvn.wc_status_kind.deleted])
                 if len( t & statuses ):
                     # If so, add some useful menu items
-                    items += [    ('NautilusPython::svnmkdiff_file_item', 'Patch', 'Create a patch of %s from the repository version'%file.get_name(), self.OnMkDiff), 
-                                ('NautilusPython::svncommit_file_item', 'Commit' , 'Commit %s to the repository.' % file.get_name(), self.OnCommit),
-                                ('NautilusPython::svnrevert_file_item', 'Revert' , 'Revert %s back to the repository version.'%file.get_name(), self.OnRevert),]
+                    items += [    ('NautilusPython::svnmkdiff_file_item', 'Patch', 'Create a patch of %s from the repository version'%file.get_name(), self.OnMkDiff, "rabbitvcs-diff"), 
+                                ('NautilusPython::svncommit_file_item', 'Commit' , 'Commit %s to the repository.' % file.get_name(), self.OnCommit, "rabbitvcs-commit"),
+                                ('NautilusPython::svnrevert_file_item', 'Revert' , 'Revert %s back to the repository version.'%file.get_name(), self.OnRevert, "rabbitvcs-revert"),]
+
+                items += [
+                    ('NautilusPython::svnproperties_file_item', 'Properties', 'File properties for %s.'%file.get_name(), self.OnProperties, "rabbitvcs-properties")
+                ]
+
             else:
                 # Check if the parent is under source control
                 if os.path.isdir(os.path.join(os.path.split(path)[0], ".svn")):
-                    items = [('NautilusPython::svnadd_file_item', 'Add' , 'Add %s to the repository.'%file.get_name(), self.OnAdd)]
+                    items = [('NautilusPython::svnadd_file_item', 'Add' , 'Add %s to the repository.'%file.get_name(), self.OnAdd, "rabbitvcs-add")]
                 else:
                     return
+
         else:
             # We're a file, so lets check if we're in a versioned folder
             if os.path.isdir(os.path.join(os.path.split(path)[0], ".svn")):
@@ -264,33 +263,38 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                 st = c.status(path)[0]
                 if not st.is_versioned:
                     # If not, we can only offer to add the file.
-                    items = [('NautilusPython::svnadd_file_item', 'Add' , 'Add %s to the repository.'%file.get_name(), self.OnAdd)]
+                    items = [('NautilusPython::svnadd_file_item', 'Add' , 'Add %s to the repository.'%file.get_name(), self.OnAdd, "rabbitvcs-add")]
 
                 # Add the revert and diff items if we've changed from the repos version
                 if st.text_status in [pysvn.wc_status_kind.added, pysvn.wc_status_kind.modified]:
-                    items += [    ('NautilusPython::svnrevert_file_item', 'Revert' , 'Revert %s back to the repository version.'%file.get_name(), self.OnRevert), ]
+                    items += [    ('NautilusPython::svnrevert_file_item', 'Revert' , 'Revert %s back to the repository version.'%file.get_name(), self.OnRevert, "rabbitvcs-revert"), ]
 
                     if len(files) == 1:
-                        items += [    ('NautilusPython::svncommit_file_item', 'Commit' , 'Commit %s to the repository.' % file.get_name(), self.OnCommit),
-                                    ('NautilusPython::svndiff_file_item', 'Diff' , 'Diff %s against the repository version' % file.get_name(), self.OnShowDiff),
-                                    ('NautilusPython::svnmkdiff_file_item', 'Patch', 'Create a patch of %s from the repository version'%file.get_name(), self.OnMkDiff), 
+                        items += [    ('NautilusPython::svncommit_file_item', 'Commit' , 'Commit %s to the repository.' % file.get_name(), self.OnCommit, "rabbitvcs-commit"),
+                                    ('NautilusPython::svndiff_file_item', 'Diff' , 'Diff %s against the repository version' % file.get_name(), self.OnShowDiff, "rabbitvcs-diff"),
+                                    ('NautilusPython::svnmkdiff_file_item', 'Patch', 'Create a patch of %s from the repository version'%file.get_name(), self.OnMkDiff, "rabbitvcs-createpatch"), 
 	            ]
 
                 # Add the conflict resolution menu items
                 if st.text_status in [pysvn.wc_status_kind.conflicted]:
-                    items += [    ('NautilusPython::svnrevert_file_item', 'Revert' , 'Revert %s back to the repository version.'%file.get_name(), self.OnRevert), ]
+                    items += [    ('NautilusPython::svnrevert_file_item', 'Revert' , 'Revert %s back to the repository version.'%file.get_name(), self.OnRevert, "rabbitvcs-revert"), ]
 
                     if len(files) == 1:
-                        items += [  ('NautilusPython::svneditconflict_file_item', 'Edit Conflicts' , 'Edit the conflicts found when updating %s.'%file.get_name(), self.OnEditConflicts),
-                                    ('NautilusPython::svnresolveconflict_file_item', 'Resolved' , 'Mark %s as resolved.'%file.get_name(), self.OnResolveConflicts), ]
+                        items += [  ('NautilusPython::svneditconflict_file_item', 'Edit Conflicts' , 'Edit the conflicts found when updating %s.'%file.get_name(), self.OnEditConflicts, None),
+                                    ('NautilusPython::svnresolveconflict_file_item', 'Resolved' , 'Mark %s as resolved.'%file.get_name(), self.OnResolveConflicts, "rabbitvcs-resolve")]
+
+                items += [
+                    ('NautilusPython::svnproperties_file_item', 'Properties', 'File properties for %s.'%file.get_name(), self.OnProperties, "rabbitvcs-properties")
+                ]
+
             else:
                 items = []
 
-        menuitem = nautilus.MenuItem('NautilusPython::Svn', 'RabbitVCS', '')
+        menuitem = nautilus.MenuItem('NautilusPython::Svn', 'RabbitVCS', '', "rabbitvcs")
         submenu = nautilus.Menu()
         menuitem.set_submenu(submenu)
         for item in items:
-            i = nautilus.MenuItem( item[0], item[1], item[2] )
+            i = nautilus.MenuItem(item[0], item[1], item[2], item[4])
             i.connect( 'activate', item[3], window, files )
             submenu.append_item( i )
 
@@ -309,21 +313,22 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         window.set_data("base_dir", os.path.realpath(unicode(path)))
 
         if not os.path.isdir(os.path.join(path,".svn")):
-            items = [     ('NautilusPython::svncheckout_file_item', 'Checkout' , 'Checkout code from an SVN repository', self.OnCheckout)
+            items = [     ('NautilusPython::svncheckout_file_item', 'Checkout' , 'Checkout code from an SVN repository', self.OnCheckout, "rabbitvcs-checkout")
                     ]
         else:
-            items = [     ('NautilusPython::svnlog_file_item', 'Log' , 'SVN Log of %s' % file.get_name(), self.OnShowLog),
-                        ('NautilusPython::svncommit_file_item', 'Commit' , 'Commit %s back to the repository.' % file.get_name(), self.OnCommit),
-                        ('NautilusPython::svnupdate_file_item', 'Update' , 'Get the latest code from the repository.', self.OnUpdate),
-                        ('NautilusPython::svnrefreshstatus_file_item', 'Refresh', 'Refresh the display status of %s.'%file.get_name(), self.OnRefreshStatus),
-                        ('NautilusPython::svnmkdiffdir_file_item', 'Patch', 'Create a patch of %s from the repository version'%file.get_name(), self.OnMkDiffDir)
-                    ]
+            items = [     ('NautilusPython::svnlog_file_item', 'Log' , 'SVN Log of %s' % file.get_name(), self.OnShowLog, "rabbitvcs-show_log"),
+                        ('NautilusPython::svncommit_file_item', 'Commit' , 'Commit %s back to the repository.' % file.get_name(), self.OnCommit, "rabbitvcs-commit"),
+                        ('NautilusPython::svnupdate_file_item', 'Update' , 'Get the latest code from the repository.', self.OnUpdate, "rabbitvcs-update"),
+                        ('NautilusPython::svnrefreshstatus_file_item', 'Refresh', 'Refresh the display status of %s.'%file.get_name(), self.OnRefreshStatus, "rabbitvcs-refresh"),
+                        ('NautilusPython::svnmkdiffdir_file_item', 'Patch', 'Create a patch of %s from the repository version'%file.get_name(), self.OnMkDiffDir, "rabbitvcs-diff"),
+                ('NautilusPython::svnproperties_file_item', 'Properties', 'File properties for %s.'%file.get_name(), self.OnProperties, "rabbitvcs-properties")
+            ]
 
-        menuitem = nautilus.MenuItem('NautilusPython::Svn', 'RabbitVCS', '')
+        menuitem = nautilus.MenuItem('NautilusPython::Svn', 'RabbitVCS', '', "rabbitvcs")
         submenu = nautilus.Menu()
         menuitem.set_submenu(submenu)
         for item in items:
-            i = nautilus.MenuItem( item[0], item[1], item[2] )
+            i = nautilus.MenuItem( item[0], item[1], item[2], item[4] )
             i.connect( 'activate', item[3], window, [file])
             submenu.append_item( i )
 
