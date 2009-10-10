@@ -170,19 +170,20 @@ def get_previous_messages():
     returner = []
     date = None
     msg = ""
+    regex = re.compile(r"-- ([\d\-]+ [\d\:]+) --")
     for line in lines:
-        m = re.compile(r"-- ([\d\-]+ [\d\:]+) --").match(line)
+        m = regex.match(line)
         if m:
             cur_entry = m.groups()[0]
             if date:
-                returner.append((date, msg.replace("\n", "")))
+                returner.append((date, msg.rstrip()))
                 msg = ""
             date = cur_entry
         else:
             msg += line
 
     if date and msg:
-        returner.append((date, msg.replace("\n", "")))
+        returner.append((date, msg.rstrip()))
 
     returner.reverse()
     
