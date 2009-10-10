@@ -24,6 +24,7 @@
 TODO
     1. Integrate translations
     2. Add more of the v0.12 menu items
+    3.  or figure out a way to use the regular nautilus extension's menu items/logic
 """
 
 __version__ = "0.12"
@@ -290,15 +291,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
             else:
                 items = []
 
-        menuitem = nautilus.MenuItem('NautilusPython::Svn', 'RabbitVCS', '', "rabbitvcs")
-        submenu = nautilus.Menu()
-        menuitem.set_submenu(submenu)
-        for item in items:
-            i = nautilus.MenuItem(item[0], item[1], item[2], item[4])
-            i.connect( 'activate', item[3], window, files )
-            submenu.append_item( i )
-
-        return menuitem,
+        return self.create_menu(window, items, files)
 
     #-------------------------------------------------------------------------- 
     def get_background_items(self, window, file):
@@ -324,16 +317,28 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                 ('NautilusPython::svnproperties_file_item', 'Properties', 'File properties for %s.'%file.get_name(), self.OnProperties, "rabbitvcs-properties")
             ]
 
+        return self.create_menu(window, items, [file])
+
+    def create_menu(self, window, items, paths):
         menuitem = nautilus.MenuItem('NautilusPython::Svn', 'RabbitVCS', '', "rabbitvcs")
-        submenu = nautilus.Menu()
-        menuitem.set_submenu(submenu)
-        for item in items:
-            i = nautilus.MenuItem( item[0], item[1], item[2], item[4] )
-            i.connect( 'activate', item[3], window, [file])
-            submenu.append_item( i )
+        if hasattr(menuitem, "set_submenu"):
+            submenu = nautilus.Menu()
+            menuitem.set_submenu(submenu)
+            for item in items:
+                i = nautilus.MenuItem( item[0], item[1], item[2], item[4] )
+                i.connect( 'activate', item[3], window, paths)
+                submenu.append_item( i )
 
-        return menuitem,
+            return menuitem,
+        else:
+            menuitems = []
+            for item in items:
+                i = nautilus.MenuItem( item[0], item[1], item[2], item[4] )
+                i.connect( 'activate', item[3], window, paths)
+                menuitems.append(i)
 
+            return menuitems
+            
     #--------------------------------------------------------------------------
     def RescanFilesAfterProcess(self, pid):
         """ Rescans all of the files on our *monitoredFiles* list after the
