@@ -24,9 +24,9 @@ import os
 import gettext as _gettext
 from locale import getdefaultlocale
 
-version = "0.12-beta1"
+version = "0.13~pre"
 APP_NAME = "RabbitVCS"
-TEMP_DIR_PREFIX = "nsvn-"
+TEMP_DIR_PREFIX = "rabbitvcs-"
 LOCALE_DIR = "%s/locale" % os.path.dirname(os.path.abspath(__file__))
 if not os.path.exists(LOCALE_DIR):
     LOCALE_DIR = "/usr/share/locale"
