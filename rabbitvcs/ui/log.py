@@ -198,8 +198,13 @@ class Log(InterfaceView):
                 },
                 {
                     "label": _("Branch/tag..."),
-                    "signals": None,
-                    "condition": (lambda: False)
+                    "signals": {
+                        "activate": {
+                            "callback": self.on_context_branch_activated,
+                            "args": None
+                        }
+                    },
+                    "condition": (lambda: True)
                 },
                 {
                     "label": _("Export"),
@@ -451,6 +456,12 @@ class Log(InterfaceView):
         from rabbitvcs.ui.updateto import UpdateToRevision
         item = self.revision_items[self.selected_rows[0]]
         UpdateToRevision(self.path, item.revision.number)
+
+    def on_context_branch_activated(self, widget, data=None):
+        from rabbitvcs.ui.branch import Branch
+        item = self.revision_items[self.selected_rows[0]]
+        revision = item.revision.number
+        Branch(self.path, revision=str(revision)).show()
 
     #
     # Context menu item conditions for being visible
