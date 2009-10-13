@@ -148,13 +148,23 @@ class Log(InterfaceView):
             context_menu = rabbitvcs.ui.widget.ContextMenu([
                 {
                     "label": _("View diff against working copy"),
-                    "signals": None,
-                    "condition": (lambda: False)
+                    "signals": {
+                        "activate": {
+                            "callback": self.on_context_diff_wc,
+                            "args": None
+                        }
+                    },
+                    "condition": (lambda: True)
                 },
                 {
                     "label": _("View diff against previous revision"),
-                    "signals": None,
-                    "condition": (lambda: False)
+                    "signals": {
+                        "activate": {
+                            "callback": self.on_context_diff_previous_revision,
+                            "args": None
+                        }
+                    },
+                    "condition": self.condition_diff_previous_revision
                 },
                 {
                     "label": self.SEPARATOR,
@@ -417,12 +427,34 @@ class Log(InterfaceView):
         url = self.vcs.get_repo_url(self.path)
         Checkout(url=url, revision=str(revision)).show()
 
+    def on_context_diff_wc(self, widget, data=None):
+        from rabbitvcs.ui.diff import SVNDiff
+        
+        item = self.revision_items[self.selected_rows[0]]
+        SVNDiff(self.path, item.revision.number)
+
+    def on_context_diff_previous_revision(self, widget, data=None):
+        from rabbitvcs.ui.diff import SVNDiff
+
+        item = self.revision_items[self.selected_rows[0]]
+        next_item = self.revision_items[self.selected_rows[0]+1]
+        next_rev = next_item.revision.number
+            
+        SVNDiff(self.path, item.revision.number, self.path, next_rev)
+
     #
     # Context menu item conditions for being visible
     #
     
     def condition_checkout(self):
         return (len(self.selected_rows) == 1)
+
+    def condition_diff_previous_revision(self):
+        try:
+            item = self.revision_items[self.selected_rows[0]+1]
+            return True
+        except IndexError:
+            return False
 
 class LogDialog(Log):
     def __init__(self, path, ok_callback=None, multiple=False):
