@@ -99,7 +99,7 @@ class UpdateToRevision(InterfaceView):
 if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, args) = main()
-    print options,args
+ 
     revision = None
     if options.revision is not None:
         revision = options.revision
