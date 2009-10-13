@@ -221,6 +221,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         path = gnomevfs.get_local_path_from_uri(file.get_uri())
 
         items = [ ('NautilusPython::svndelete_file_item', 'Delete' , 'Remove files from the repository.', self.OnDelete, "rabbitvcs-delete"),
+		          ('NautilusPython::svnrename_file_item', 'Rename' , 'Rename a file in the repository', self.OnRename, "rabbitvcs-rename"),
                   ('NautilusPython::svnrefreshstatus_file_item', 'Refresh Status', 'Refresh the display status of the selected files.', self.OnRefreshStatus, "rabbitvcs-refresh"),
         ]
 
@@ -460,6 +461,14 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         pid = rabbitvcs.lib.helper.launch_ui_window("delete", paths)
         self.RescanFilesAfterProcess(pid)
 
+    #-------------------------------------------------------------------------- 
+    def OnRename(self, menuitem, window, files):
+        """ Delete menu handler.
+        """
+
+        paths = self.get_paths_from_files(files)
+        pid = rabbitvcs.lib.helper.launch_ui_window("rename", paths)
+        self.RescanFilesAfterProcess(pid)
         
     #--------------------------------------------------------------------------
     def OnRefreshStatus(self, menuitem, window, files):
