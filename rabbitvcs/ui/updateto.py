@@ -104,6 +104,6 @@ if __name__ == "__main__":
     if options.revision is not None:
         revision = options.revision
 
-    window = UpdateToRevision(args[0], revision)
+    window = UpdateToRevision(args[0], revision=revision)
     window.register_gtk_quit()
     gtk.main()

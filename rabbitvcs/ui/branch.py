@@ -44,13 +44,13 @@ class Branch(InterfaceView):
     
     """
     
-    def __init__(self, path):
+    def __init__(self, path, revision=None):
         InterfaceView.__init__(self, "branch", "Branch")
-        
         
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         
         self.path = path
+        self.revision = revision
         url = self.vcs.get_repo_url(path)
         
         self.get_widget("from_url").set_text(url)
@@ -64,16 +64,22 @@ class Branch(InterfaceView):
             rabbitvcs.lib.helper.get_repository_paths()
         )
         
-        if self.vcs.has_modified(path) or self.vcs.is_modified(path):
+        if (self.vcs.has_modified(path) 
+                or self.vcs.is_modified(path)
+                or revision is not None):
             self.tooltips = gtk.Tooltips()
             self.tooltips.set_tip(
                 self.get_widget("from_revision_number_opt"),
                 _("There have been modifications to your working copy.  If you copy from the HEAD revision you will lose your changes.")
             )
             self.set_revision_number_opt_active()
-            self.get_widget("from_revision_number").set_text(
-                str(self.vcs.get_revision(path))
-            )
+            
+            if revision is None:
+                self.get_widget("from_revision_number").set_text(
+                    str(self.vcs.get_revision(path))
+                )
+            else:
+                self.get_widget("from_revision_number").set_text(revision)
 
     def on_destroy(self, widget):
         self.close()
@@ -149,8 +155,8 @@ class Branch(InterfaceView):
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, paths) = main()
+    (options, args) = main()
 
-    window = Branch(paths[0])
+    window = Branch(args[0], options.revision)
     window.register_gtk_quit()
     gtk.main()

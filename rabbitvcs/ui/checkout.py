@@ -186,8 +186,8 @@ class Checkout(InterfaceView):
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, paths) = main()
-            
-    window = Checkout(paths[0])
+    (options, args) = main()
+    
+    window = Checkout(args[0], revision=options.revision)
     window.register_gtk_quit()
     gtk.main()
