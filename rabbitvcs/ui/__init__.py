@@ -109,6 +109,7 @@ def main():
     
     parser = OptionParser()
     parser.add_option("--base-dir")
+    parser.add_option("-r", "--revision", help="specify the revision number")
     (options, args) = parser.parse_args(argv)
     
     # Convert "." to current working directory

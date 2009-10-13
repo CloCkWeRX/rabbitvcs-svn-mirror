@@ -24,6 +24,8 @@
 
 import os.path
 import sys
+from optparse import OptionParser
+
 from rabbitvcs.lib.helper import launch_ui_window
 
 usage = """usage: rabbitvcs <module> [path1] [path2] ...
@@ -39,7 +41,11 @@ resolve, revert, settings, switch, unlock, update, updateto
 if len(sys.argv) < 2:
     raise SystemExit(usage)
 
-args = sys.argv[1:]
+parser = OptionParser()
+parser.add_option("-r", "--revision", help="specify the revision number")
+(options, args) = parser.parse_args(sys.argv)
+
+args.pop(0)
 module = args.pop(0)
 
 index = 0
@@ -47,4 +53,9 @@ for arg in args:
     args[index] = os.path.realpath(os.path.abspath(arg))
     index += 1
 
-launch_ui_window(module,  ["--base-dir=" + os.getcwd()] + args)
+args_all = ["--base-dir=" + os.getcwd()]
+if options.revision is not None:
+    args_all += ["--revision=" + options.revision]
+args_all += args
+
+launch_ui_window(module, args_all)
