@@ -40,10 +40,15 @@ class UpdateToRevision(InterfaceView):
     
     """
 
-    def __init__(self, path):
+    def __init__(self, path, revision=None):
         InterfaceView.__init__(self, "update", "Update")
         self.path = path
+        self.revision = revision
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+
+        if self.revision is not None:
+            self.get_widget("revision_number_opt").set_active(True)
+            self.get_widget("revision_number").set_text(str(self.revision))
 
     def on_destroy(self, widget):
         self.close()
@@ -93,8 +98,12 @@ class UpdateToRevision(InterfaceView):
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, paths) = main()
-            
-    window = UpdateToRevision(paths[0])
+    (options, args) = main()
+    print options,args
+    revision = None
+    if options.revision is not None:
+        revision = options.revision
+
+    window = UpdateToRevision(args[0], revision)
     window.register_gtk_quit()
     gtk.main()
