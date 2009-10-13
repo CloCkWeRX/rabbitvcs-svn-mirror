@@ -172,17 +172,17 @@ class Log(InterfaceView):
                     "condition": (lambda: False)
                 },
                 {
-                    "label": _("Update to revision"),
+                    "label": _("Update to revision..."),
                     "signals": None,
                     "condition": (lambda: False)
                 },
                 {
-                    "label": _("Rollback to revision"),
+                    "label": _("Rollback to revision..."),
                     "signals": None,
                     "condition": (lambda: False)
                 },
                 {
-                    "label": _("Checkout..."),
+                    "label": _("Checkout"),
                     "signals": {
                         "activate": {
                             "callback": self.on_context_checkout_activated,
@@ -192,12 +192,12 @@ class Log(InterfaceView):
                     "condition": self.condition_checkout
                 },
                 {
-                    "label": _("Copy/Branch..."),
+                    "label": _("Branch/tag..."),
                     "signals": None,
                     "condition": (lambda: False)
                 },
                 {
-                    "label": _("Export..."),
+                    "label": _("Export"),
                     "signals": None,
                     "condition": (lambda: False)
                 },
