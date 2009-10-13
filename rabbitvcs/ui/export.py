@@ -36,22 +36,22 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Export(Checkout):
-    def __init__(self, path):
-        Checkout.__init__(self, path)
+    def __init__(self, path=None, revision=None):
+        Checkout.__init__(self, path, url=None, revision=revision)
         
         self.get_widget("Checkout").set_title(_("Export - %s") % path)
         
         # If the given path is a working copy, then export FROM the path
         # Otherwise export TO the path
         if self.vcs.is_in_a_or_a_working_copy(path):
-            self.get_widget("url").set_text(path)
+            self.repositories.set_child_text(path)
             self.get_widget("destination").set_text("")
         else:
-            self.get_widget("url").set_text("")
+            self.repositories.set_child_text("")
             self.get_widget("destination").set_text(path)
 
     def on_ok_clicked(self, widget):
-        url = self.get_widget("url").get_text()
+        url = self.repositories.get_active_text()
         path = self.get_widget("destination").get_text()
         omit_externals = self.get_widget("omit_externals").get_active()
         recursive = self.get_widget("recursive").get_active()
@@ -106,6 +106,6 @@ if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main()
             
-    window = Export(paths[0])
+    window = Export(paths[0], revision=options.revision)
     window.register_gtk_quit()
     gtk.main()

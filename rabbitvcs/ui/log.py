@@ -208,8 +208,13 @@ class Log(InterfaceView):
                 },
                 {
                     "label": _("Export"),
-                    "signals": None,
-                    "condition": (lambda: False)
+                    "signals": {
+                        "activate": {
+                            "callback": self.on_context_export_activated,
+                            "args": None
+                        }
+                    },
+                    "condition": (lambda: True)
                 },
                 {
                     "label": self.SEPARATOR,
@@ -435,7 +440,7 @@ class Log(InterfaceView):
         item = self.revision_items[self.selected_rows[0]]
         revision = item.revision.number
         url = self.vcs.get_repo_url(self.path)
-        Checkout(url=url, revision=str(revision)).show()
+        Checkout(url=url, revision=revision).show()
 
     def on_context_diff_wc(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
@@ -448,8 +453,7 @@ class Log(InterfaceView):
 
         item = self.revision_items[self.selected_rows[0]]
         next_item = self.revision_items[self.selected_rows[0]+1]
-        next_rev = next_item.revision.number
-            
+        next_rev = next_item.revision.number 
         SVNDiff(self.path, item.revision.number, self.path, next_rev)
 
     def on_context_update_to(self, widget, data=None):
@@ -460,8 +464,12 @@ class Log(InterfaceView):
     def on_context_branch_activated(self, widget, data=None):
         from rabbitvcs.ui.branch import Branch
         item = self.revision_items[self.selected_rows[0]]
-        revision = item.revision.number
-        Branch(self.path, revision=str(revision)).show()
+        Branch(self.path, revision=item.revision.number).show()
+
+    def on_context_export_activated(self, widget, data=None):
+        from rabbitvcs.ui.export import Export
+        item = self.revision_items[self.selected_rows[0]]
+        Export(self.path, revision=item.revision.number).show()
 
     #
     # Context menu item conditions for being visible

@@ -79,7 +79,7 @@ class Branch(InterfaceView):
                     str(self.vcs.get_revision(path))
                 )
             else:
-                self.get_widget("from_revision_number").set_text(revision)
+                self.get_widget("from_revision_number").set_text(str(revision))
 
     def on_destroy(self, widget):
         self.close()
