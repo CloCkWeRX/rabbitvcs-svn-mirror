@@ -169,12 +169,17 @@ class Log(InterfaceView):
                 {
                     "label": self.SEPARATOR,
                     "signals": None,
-                    "condition": (lambda: False)
+                    "condition": (lambda: True)
                 },
                 {
                     "label": _("Update to revision..."),
-                    "signals": None,
-                    "condition": (lambda: False)
+                    "signals": {
+                        "activate": {
+                            "callback": self.on_context_update_to,
+                            "args": None
+                        }
+                    },
+                    "condition": (lambda: True)
                 },
                 {
                     "label": _("Rollback to revision..."),
@@ -441,6 +446,11 @@ class Log(InterfaceView):
         next_rev = next_item.revision.number
             
         SVNDiff(self.path, item.revision.number, self.path, next_rev)
+
+    def on_context_update_to(self, widget, data=None):
+        from rabbitvcs.ui.updateto import UpdateToRevision
+        item = self.revision_items[self.selected_rows[0]]
+        UpdateToRevision(self.path, item.revision.number)
 
     #
     # Context menu item conditions for being visible
