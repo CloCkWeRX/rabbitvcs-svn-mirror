@@ -252,7 +252,8 @@ class SVN:
         "committed":        pysvn.opt_revision_kind.committed,
         "previous":         pysvn.opt_revision_kind.previous,
         "working":          pysvn.opt_revision_kind.working,
-        "head":             pysvn.opt_revision_kind.head
+        "head":             pysvn.opt_revision_kind.head,
+        "base":             pysvn.opt_revision_kind.base
     }
     
     DEPTHS_FOR_CHECKOUT = { 
