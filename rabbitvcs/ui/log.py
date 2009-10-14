@@ -129,6 +129,13 @@ class Log(InterfaceView):
     def on_revisions_table_button_released(self, treeview, data=None):
         self.on_revisions_table_event(treeview, data)
 
+    def on_revisions_table_button_pressed(self, treeview, data=None):
+        # this allows us to retain multiple selections with a right-click
+        if data.button == 3:
+            selection = treeview.get_selection()
+            (liststore, indexes) = selection.get_selected_rows()
+            return (len(indexes) > 0)
+
     def on_revisions_table_event(self, treeview, data=None):
         selection = treeview.get_selection()
         (liststore, indexes) = selection.get_selected_rows()
@@ -136,7 +143,7 @@ class Log(InterfaceView):
         self.selected_rows = []
         for tup in indexes:
             self.selected_rows.append(tup[0])
-
+        
         if len(self.selected_rows) == 0:
             self.message.set_text("")
             self.paths_table.clear()
@@ -145,94 +152,7 @@ class Log(InterfaceView):
         item = self.revision_items[self.selected_rows[0]]
 
         if data is not None and data.button == 3:
-            context_menu = rabbitvcs.ui.widget.ContextMenu([
-                {
-                    "label": _("View diff against working copy"),
-                    "signals": {
-                        "activate": {
-                            "callback": self.on_context_diff_wc,
-                            "args": None
-                        }
-                    },
-                    "condition": (lambda: True)
-                },
-                {
-                    "label": _("View diff against previous revision"),
-                    "signals": {
-                        "activate": {
-                            "callback": self.on_context_diff_previous_revision,
-                            "args": None
-                        }
-                    },
-                    "condition": self.condition_diff_previous_revision
-                },
-                {
-                    "label": self.SEPARATOR,
-                    "signals": None,
-                    "condition": (lambda: True)
-                },
-                {
-                    "label": _("Update to revision..."),
-                    "signals": {
-                        "activate": {
-                            "callback": self.on_context_update_to,
-                            "args": None
-                        }
-                    },
-                    "condition": (lambda: True)
-                },
-                {
-                    "label": _("Rollback to revision..."),
-                    "signals": None,
-                    "condition": (lambda: False)
-                },
-                {
-                    "label": _("Checkout"),
-                    "signals": {
-                        "activate": {
-                            "callback": self.on_context_checkout_activated,
-                            "args": None
-                        }
-                    },
-                    "condition": self.condition_checkout
-                },
-                {
-                    "label": _("Branch/tag..."),
-                    "signals": {
-                        "activate": {
-                            "callback": self.on_context_branch_activated,
-                            "args": None
-                        }
-                    },
-                    "condition": (lambda: True)
-                },
-                {
-                    "label": _("Export"),
-                    "signals": {
-                        "activate": {
-                            "callback": self.on_context_export_activated,
-                            "args": None
-                        }
-                    },
-                    "condition": (lambda: True)
-                },
-                {
-                    "label": self.SEPARATOR,
-                    "signals": None,
-                    "condition": (lambda: False)
-                },
-                {
-                    "label": _("Edit author..."),
-                    "signals": None,
-                    "condition": (lambda: False)
-                },
-                {
-                    "label": _("Edit log message..."),
-                    "signals": None,
-                    "condition": (lambda: False)
-                },
-            ])
-            context_menu.show(data)
+            self.show_revisions_table_popup_menu(treeview, data)
 
         self.paths_table.clear()
         if len(self.selected_rows) == 1:
@@ -254,6 +174,106 @@ class Log(InterfaceView):
             
         else:
             self.message.set_text("")
+
+    def show_revisions_table_popup_menu(self, treeview, data):
+        context_menu = rabbitvcs.ui.widget.ContextMenu([
+            {
+                "label": _("View diff against working copy"),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_diff_wc,
+                        "args": None
+                    }
+                },
+                "condition": (lambda: True)
+            },
+            {
+                "label": _("View diff against previous revision"),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_diff_previous_revision,
+                        "args": None
+                    }
+                },
+                "condition": self.condition_diff_previous_revision
+            },
+            {
+                "label": self.SEPARATOR,
+                "signals": None,
+                "condition": (lambda: True)
+            },
+            {
+                "label": _("Update to revision..."),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_update_to,
+                        "args": None
+                    }
+                },
+                "condition": (lambda: True)
+            },
+            {
+                "label": _("Rollback to revision..."),
+                "signals": None,
+                "condition": (lambda: False)
+            },
+            {
+                "label": _("Checkout"),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_checkout_activated,
+                        "args": None
+                    }
+                },
+                "condition": self.condition_checkout
+            },
+            {
+                "label": _("Branch/tag..."),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_branch_activated,
+                        "args": None
+                    }
+                },
+                "condition": (lambda: True)
+            },
+            {
+                "label": _("Export"),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_export_activated,
+                        "args": None
+                    }
+                },
+                "condition": (lambda: True)
+            },
+            {
+                "label": self.SEPARATOR,
+                "signals": None,
+                "condition": (lambda: True)
+            },
+            {
+                "label": _("Edit author..."),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_edit_author,
+                        "args": None
+                    }
+                },
+                "condition": (lambda: True)
+            },
+            {
+                "label": _("Edit log message..."),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_edit_log_message,
+                        "args": None
+                    }
+                },
+                "condition": (lambda: True)
+            },
+        ])
+        context_menu.show(data)
             
     def on_previous_clicked(self, widget):
         self.rev_start = self.previous_starts.pop()
@@ -470,6 +490,60 @@ class Log(InterfaceView):
         from rabbitvcs.ui.export import Export
         item = self.revision_items[self.selected_rows[0]]
         Export(self.path, revision=item.revision.number).show()
+
+    def on_context_edit_log_message(self, widget, data=None):
+        message = ""
+        if len(self.selected_rows) == 1:
+            item = self.revision_items[self.selected_rows[0]]
+            message = item.message
+
+        from rabbitvcs.ui.dialog import TextChange
+        dialog = TextChange(_("Edit log message"), message)
+        (result, new_message) = dialog.run()
+
+        if result == 1:
+            self.edit_revprop("svn:log", new_message, self.on_log_message_edited)
+
+    def on_context_edit_author(self, widget, data=None):
+        message = ""
+        if len(self.selected_rows) == 1:
+            item = self.revision_items[self.selected_rows[0]]
+            author = item.author
+
+        from rabbitvcs.ui.dialog import TextChange
+        dialog = TextChange(_("Edit author"), author)
+        (result, new_author) = dialog.run()
+
+        if result == 1:
+            self.edit_revprop("svn:author", new_author, self.on_author_edited)
+
+    def edit_revprop(self, prop_name, prop_value, callback=None):
+        failure = False
+        url = self.vcs.get_repo_url(self.path)
+        for row in self.selected_rows:
+            item = self.revision_items[row]
+            if self.vcs.revpropset(
+                    prop_name,
+                    prop_value,
+                    url,
+                    item.revision):
+                
+                callback(row, prop_value)
+            else:
+                failure = True
+                break
+
+        if failure:
+            MessageBox(_("This repository has not been setup to allow revision property changes."))
+
+    def on_log_message_edited(self, index, val):
+        self.revision_items[index].message = val
+        self.revisions_table.set_row_item(index, 3, val)
+        self.message.set_text(val)
+
+    def on_author_edited(self, index, val):
+        self.revision_items[index].author = val
+        self.revisions_table.set_row_item(index, 1, val)
 
     #
     # Context menu item conditions for being visible

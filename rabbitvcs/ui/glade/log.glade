@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Thu Sep 24 11:31:58 2009 -->
+<!--Generated with glade3 3.4.1 on Wed Oct 14 10:19:31 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="Log">
     <property name="width_request">775</property>
@@ -122,6 +122,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="rubber_banding">True</property>
+                            <signal name="button_press_event" handler="on_revisions_table_button_pressed"/>
                             <signal name="button_release_event" handler="on_revisions_table_button_released"/>
                             <signal name="cursor_changed" handler="on_revisions_table_cursor_changed"/>
                             <signal name="key_release_event" handler="on_revisions_table_key_released"/>
