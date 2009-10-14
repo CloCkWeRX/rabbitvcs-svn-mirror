@@ -300,3 +300,22 @@ class DeleteConfirmation(InterfaceView):
         dialog.destroy()
         
         return result
+
+class TextChange(InterfaceView):
+    def __init__(self, title=None, message=""):
+        InterfaceView.__init__(self, GLADE, "TextChange")
+        if title:
+            self.get_widget("TextChange").set_title(title)
+        
+        self.textview = rabbitvcs.ui.widget.TextView(
+            self.get_widget("textchange_message"), 
+            message
+        )
+        
+    def run(self):
+        dialog = self.get_widget("TextChange")
+        result = dialog.run()
+        
+        dialog.destroy()
+        
+        return (result, self.textview.get_text())
