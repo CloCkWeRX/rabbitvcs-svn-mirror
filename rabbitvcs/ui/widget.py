@@ -148,7 +148,11 @@ class Table:
     def set_row(self, index, row):
         model = self.data
         model[index] = row
-        
+    
+    def set_row_item(self, row, column, val):
+        model = self.data
+        model[row][column] = val
+    
     def allow_multiple(self):
         self.treeview.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         
