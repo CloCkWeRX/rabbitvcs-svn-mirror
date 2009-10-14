@@ -621,7 +621,7 @@ class SVN:
             path_to_check = os.path.split(path_to_check)[0]
 
         return path_to_use
-        
+
     def propset(self, path, prop_name, prop_value, overwrite=False, recurse=False):
         """
         Adds an svn property to a path.  If the item is unversioned,
@@ -649,7 +649,6 @@ class SVN:
             props = self.propget(path, prop_name)
             props = "%s%s" % (props, prop_value)
         
-        returner = False
         try:
             self.client.propset(
                 prop_name, 
@@ -657,13 +656,13 @@ class SVN:
                 path, 
                 recurse=recurse
             )
-            returner = True
+            return True
         except pysvn.ClientError, e:
             log.exception("pysvn.ClientError exception in svn.py propset() for %s" % path)
         except TypeError, e:
             log.exception("TypeError exception in svn.py propset() %s" % path)
             
-        return returner
+        return False
         
     def proplist(self, path):
         """
@@ -752,7 +751,47 @@ class SVN:
             log.exception("TypeError exception in svn.py propdel() %s" % path)
         
         return returner
-    
+
+    def revpropset(self, prop_name, prop_value, url, rev=None, force=False):
+        """
+        Adds an svn property to a path.  If the item is unversioned,
+        add a recursive property to the parent path
+        
+        @type   url: string
+        @param  url: A url to attach the prop to
+        
+        @type   prop_name: string
+        @param  prop_name: An svn property name.
+        
+        @type   prop_value: string
+        @param  prop_value: An svn property value/pattern.
+        
+        @type   revision: pysvn.Revision object 
+        @param  revision: The revision to attach the prop to
+
+        @type   force: boolean
+        @param  force: If True, the property will be forced
+
+        """
+        try:
+            if rev is None:
+                rev = self.revision("head")
+                
+            self.client.revpropset(
+                prop_name, 
+                prop_value, 
+                url,
+                rev,
+                force
+            )
+            return True
+        except pysvn.ClientError, e:
+            log.exception("pysvn.ClientError exception in svn.py revpropset() for %s" % url)
+        except TypeError, e:
+            log.exception("TypeError exception in svn.py revpropset() %s" % url)
+            
+        return False
+
     #
     # callbacks
     #
