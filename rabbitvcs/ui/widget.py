@@ -26,6 +26,18 @@ import gtk
 
 from os.path import basename
 
+try:
+    import gtkspell
+    HAS_GTKSPELL = True
+except ImportError:
+    HAS_GTKSPELL = False
+
+try:
+    import gtksourceview
+    HAS_GTKSOURCEVIEW = True
+except ImportError:
+    HAS_GTKSOURCEVIEW = False
+
 import rabbitvcs.lib.helper
 
 from rabbitvcs.lib.log import Log
@@ -217,6 +229,9 @@ class TextView:
         self.view.set_buffer(self.buffer)
         self.buffer.set_text(value)
         
+        if HAS_GTKSPELL:
+            gtkspell.Spell(self.view)
+        
     def get_text(self):
         return self.buffer.get_text(
             self.buffer.get_start_iter(), 
@@ -225,7 +240,24 @@ class TextView:
         
     def set_text(self, text):
         self.buffer.set_text(text)
-        
+
+class SourceView(TextView):
+    def __init__(self, widget=None, value=""):
+        if HAS_GTKSOURCEVIEW:
+            if widget is None:
+                self.view = gtksourceview.SourceView(self.buffer)
+            else:
+                self.view = widget
+            self.buffer = gtksourceview.SourceBuffer()
+            self.buffer.set_text(value)
+
+            if HAS_GTKSPELL:
+                gtkspell.Spell(self.view)
+
+            self.view.show()
+        else:
+            TextView.__init__(self, widget, value)
+            
 class ContextMenu:
     def __init__(self, menu):
         if menu is None:
