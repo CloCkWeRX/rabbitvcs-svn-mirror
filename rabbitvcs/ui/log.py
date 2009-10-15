@@ -102,6 +102,7 @@ class Log(InterfaceView):
         self.pbar = rabbitvcs.ui.widget.ProgressBar(self.get_widget("pbar"))
         
         self.stop_on_copy = False
+        self.root_url = self.vcs.get_repo_root_url(self.path)
         self.load_or_refresh()
 
     #
@@ -350,27 +351,32 @@ class Log(InterfaceView):
             {
                 "label": _("Show changes"),
                 "signals": None,
-                "condition": (lambda: True)
+                "condition": (lambda: False)
             },
             {
                 "label": _("Show changes as annotation"),
                 "signals": None,
-                "condition": (lambda: True)
+                "condition": (lambda: False)
             },
             {
                 "label": _("Show changes as unified diff"),
-                "signals": None,
-                "condition": (lambda: True)
+                "signals": {
+                    "activate": {
+                        "callback": self.on_paths_context_show_changes_diff,
+                        "args": None
+                    }
+                },
+                "condition": self.condition_diff_previous_revision
             },
             {
                 "label": self.SEPARATOR,
                 "signals": None,
-                "condition": (lambda: True)
+                "condition": (lambda: False)
             },
             {
                 "label": _("Open"),
                 "signals": None,
-                "condition": (lambda: True)
+                "condition": (lambda: False)
             }
         ])
         context_menu.show(data)
@@ -548,9 +554,12 @@ class Log(InterfaceView):
         from rabbitvcs.ui.diff import SVNDiff
 
         item = self.revision_items[self.selected_rows[0]]
-        next_item = self.revision_items[self.selected_rows[0]+1]
-        next_rev = next_item.revision.number 
-        SVNDiff(self.path, item.revision.number, self.path, next_rev)
+        SVNDiff(
+            self.path, 
+            item.revision.number, 
+            self.path, 
+            item.revision.number-1
+        )
 
     def on_context_update_to(self, widget, data=None):
         from rabbitvcs.ui.updateto import UpdateToRevision
@@ -599,6 +608,20 @@ class Log(InterfaceView):
         url = self.vcs.get_repo_url(self.path)
         SVNRevisionProperties(url, item.revision)
 
+    def on_paths_context_show_changes_diff(self, widget, data=None):
+        from rabbitvcs.ui.diff import SVNDiff
+        
+        rev_item = self.revision_items[self.selected_rows[0]]
+        path_item = self.paths_table.get_row(self.paths_selected_rows[0])[1]
+        url = self.root_url + path_item
+        SVNDiff(
+            url, 
+            rev_item.revision.number, 
+            url, 
+            rev_item.revision.number-1
+        )
+
+
     #
     # Context menu item conditions for being visible
     #
@@ -607,11 +630,8 @@ class Log(InterfaceView):
         return (len(self.selected_rows) == 1)
 
     def condition_diff_previous_revision(self):
-        try:
-            item = self.revision_items[self.selected_rows[0]+1]
-            return True
-        except IndexError:
-            return False
+        item = self.revision_items[self.selected_rows[0]]
+        return (item.revision.number > 1)
 
     def condition_edit_revprops(self):
         return (len(self.selected_rows) == 1)
