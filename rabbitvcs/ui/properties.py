@@ -35,7 +35,7 @@ log = Log("rabbitvcs.ui.properties")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Properties(InterfaceView):
+class PropertiesBase(InterfaceView):
     """
     Provides an interface to add/edit/delete properties on versioned
     items in the working copy.
@@ -47,7 +47,6 @@ class Properties(InterfaceView):
 
     def __init__(self, path):
         InterfaceView.__init__(self, "properties", "Properties")
-
 
         self.path = path
         self.delete_stack = []
@@ -66,31 +65,20 @@ class Properties(InterfaceView):
         self.table.allow_multiple()
         
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
-        self.load()
 
     #
     # UI Signal Callbacks
     #
 
     def on_destroy(self, widget):
-        gtk.main_quit()
+        self.close()
 
     def on_cancel_clicked(self, widget):
-        gtk.main_quit()
+        self.close()
 
     def on_ok_clicked(self, widget):
         self.save()
-        gtk.main_quit()
-    
-    def save(self):
-        delete_recurse = self.get_widget("delete_recurse").get_active()
-        
-        for row in self.delete_stack:
-            self.vcs.propdel(self.path, row[1], recurse=delete_recurse)
-
-        for row in self.table.get_items():
-            self.vcs.propset(self.path, row[1], row[2],
-                             overwrite=True, recurse=row[0])
+        self.close()
         
     def on_new_clicked(self, widget):
         dialog = rabbitvcs.ui.dialog.Property()
@@ -155,23 +143,86 @@ class Properties(InterfaceView):
         if self.selected_rows is not None:
             returner = self.table.get_row(self.selected_rows[0])
         return returner
-        
+
+class SVNProperties(PropertiesBase):
+    def __init__(self, path):
+        PropertiesBase.__init__(self, path)
+        self.load()
+
     def load(self):
         self.table.clear()
         try:
             self.proplist = self.vcs.proplist(self.get_widget("path").get_text())
         except Exception, e:
-            rabbitvcs.ui.dialog.MessageBox("Unable to retrieve properties list")
+            log.exception(e)
+            rabbitvcs.ui.dialog.MessageBox(_("Unable to retrieve properties list"))
             self.proplist = []
         
         if self.proplist:
             for key,val in self.proplist.items():
                 self.table.append([False, key,val.rstrip()])
 
+    def save(self):
+        delete_recurse = self.get_widget("delete_recurse").get_active()
+        
+        for row in self.delete_stack:
+            self.vcs.propdel(self.path, row[1], recurse=delete_recurse)
+
+        failure = False
+        for row in self.table.get_items():
+            if (not self.vcs.propset(self.path, row[1], row[2],
+                             overwrite=True, recurse=row[0])):
+                failure = True
+                break
+        
+        if failure:
+            rabbitvcs.ui.dialog.MessageBox(_("There was a problem saving your properties."))
+
+class SVNRevisionProperties(PropertiesBase):
+    def __init__(self, path, revision=None):
+        PropertiesBase.__init__(self, path)
+        
+        self.revision = revision
+        self.revision_obj = None
+        if self.revision_obj is not None:
+            self.revision_obj = self.vcs.revision("number", revision)
+
+        self.load()
+
+    def load(self):
+        self.table.clear()
+        try:
+            self.proplist = self.vcs.revproplist(
+                self.get_widget("path").get_text(),
+                self.revision_obj
+            )
+        except Exception, e:
+            log.exception(e)
+            rabbitvcs.ui.dialog.MessageBox(_("Unable to retrieve properties list"))
+            self.proplist = {}
+        
+        if self.proplist:
+            for key,val in self.proplist.items():
+                self.table.append([False, key,val.rstrip()])
+
+    def save(self):
+        delete_recurse = self.get_widget("delete_recurse").get_active()
+        
+        for row in self.delete_stack:
+            self.vcs.revpropdel(self.path, row[1], self.revision_obj, force=True)
+
+        for row in self.table.get_items():
+            result = self.vcs.revpropset(row[1], row[2], self.path,
+                             self.revision_obj, force=True)
+            
+            if result != True:
+                msg = _("Error setting property: ") + row[1] + "\n\n" + str(result)
+                rabbitvcs.ui.dialog.MessageBox(msg)
+
 if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main()
-            
-    window = Properties(paths[0])
+    
+    window = SVNRevisionProperties(paths[0])
     window.register_gtk_quit()
     gtk.main()

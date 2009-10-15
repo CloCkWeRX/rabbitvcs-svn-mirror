@@ -766,8 +766,8 @@ class SVN:
         @type   prop_value: string
         @param  prop_value: An svn property value/pattern.
         
-        @type   revision: pysvn.Revision object 
-        @param  revision: The revision to attach the prop to
+        @type   rev: pysvn.Revision object 
+        @param  rev: The revision to attach the prop to
 
         @type   force: boolean
         @param  force: If True, the property will be forced
@@ -777,19 +777,112 @@ class SVN:
             if rev is None:
                 rev = self.revision("head")
                 
-            self.client.revpropset(
-                prop_name, 
-                prop_value, 
+            self.client.revpropset(prop_name, prop_value, url, revision=rev)
+            return True
+        except pysvn.ClientError, e:
+            log.exception(e)
+            return e
+        except TypeError, e:
+            log.exception(e)
+            return e
+
+    def revproplist(self, url, rev=None):
+        """
+        Retrieves a dictionary of properties for a url.
+        
+        @type   url:   string
+        @param  url:   A repository url
+
+        @type   rev: pysvn.Revision object 
+        @param  rev: The revision to attach the prop to
+        
+        @rtype:         tuple(revision object, propsdict)
+        @return:        A tuple with revision information and property dictionary
+        
+        """
+        
+        if rev is None:
+            rev = self.revision("head")
+
+        returner = None
+        try:
+
+            returner = self.client.revproplist(url, rev)
+            returner = returner[1]
+        except pysvn.ClientError, e:
+            log.exception(e)
+        except IndexError, e:
+            log.exception(e)
+            
+        return returner
+        
+    def revpropget(self, url, prop_name, rev=None):
+        """
+        Retrieves the revprop value for a specific url/propname/revision
+        
+        @type   url:       string
+        @param  url:       A repository url
+        
+        @type   prop_name:  string or self.PROPERTIES
+        @param  prop_name:  An svn property name.
+
+        @type   rev: pysvn.Revision object 
+        @param  rev: The revision to attach the prop to
+        
+        @rtype:         tuple(revision object, propsdict)
+        @return:        A tuple with revision information and property dictionary
+        
+        """
+
+        if rev is None:
+            rev = self.revision("head")
+        
+        returner = None
+        try:
+            returner = self.client.revpropget(
+                prop_name,
                 url,
-                rev,
-                force
+                revision=rev
+            )
+        except pysvn.ClientError, e:
+            log.exception("pysvn.ClientError exception in svn.py revpropget() for %s" % url)
+        
+        return returner
+        
+    def revpropdel(self, url, prop_name, rev=None, force=False):
+        """
+        Removes a property from a given path
+        
+        @type   url: string
+        @param  url: A repository url
+        
+        @type   prop_name: string or self.PROPERTIES
+        @param  prop_name: An svn property name.
+        
+        @type   rev: pysvn.Revision object 
+        @param  rev: The revision to attach the prop to
+
+        @type   force: boolean
+        @param  force: If True, the property deletion will be forced
+        
+        """
+
+        if rev is None:
+            rev = self.revision("head")
+        
+        try:
+            self.client.revpropdel(
+                prop_name,
+                url,
+                revision=rev,
+                force=force
             )
             return True
         except pysvn.ClientError, e:
-            log.exception("pysvn.ClientError exception in svn.py revpropset() for %s" % url)
+            log.exception("pysvn.ClientError exception in svn.py revpropdel() for %s" % url)
         except TypeError, e:
-            log.exception("TypeError exception in svn.py revpropset() %s" % url)
-            
+            log.exception("TypeError exception in svn.py revpropdel() %s" % url)
+        
         return False
 
     #

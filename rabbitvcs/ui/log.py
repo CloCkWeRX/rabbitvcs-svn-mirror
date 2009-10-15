@@ -272,6 +272,16 @@ class Log(InterfaceView):
                 },
                 "condition": (lambda: True)
             },
+            {
+                "label": _("Edit revision properties.."),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_edit_revprops,
+                        "args": None
+                    }
+                },
+                "condition": self.condition_edit_revprops
+            }
         ])
         context_menu.show(data)
             
@@ -517,6 +527,33 @@ class Log(InterfaceView):
         if result == 1:
             self.edit_revprop("svn:author", new_author, self.on_author_edited)
 
+    def on_context_edit_revprops(self, widget, data=None):
+        from rabbitvcs.ui.properties import SVNRevisionProperties
+        item = self.revision_items[self.selected_rows[0]]
+        url = self.vcs.get_repo_url(self.path)
+        SVNRevisionProperties(url, item.revision)
+
+    #
+    # Context menu item conditions for being visible
+    #
+    
+    def condition_checkout(self):
+        return (len(self.selected_rows) == 1)
+
+    def condition_diff_previous_revision(self):
+        try:
+            item = self.revision_items[self.selected_rows[0]+1]
+            return True
+        except IndexError:
+            return False
+
+    def condition_edit_revprops(self):
+        return (len(self.selected_rows) == 1)
+
+    #
+    # Other helper methods
+    #
+
     def edit_revprop(self, prop_name, prop_value, callback=None):
         failure = False
         url = self.vcs.get_repo_url(self.path)
@@ -544,20 +581,6 @@ class Log(InterfaceView):
     def on_author_edited(self, index, val):
         self.revision_items[index].author = val
         self.revisions_table.set_row_item(index, 1, val)
-
-    #
-    # Context menu item conditions for being visible
-    #
-    
-    def condition_checkout(self):
-        return (len(self.selected_rows) == 1)
-
-    def condition_diff_previous_revision(self):
-        try:
-            item = self.revision_items[self.selected_rows[0]+1]
-            return True
-        except IndexError:
-            return False
 
 class LogDialog(Log):
     def __init__(self, path, ok_callback=None, multiple=False):

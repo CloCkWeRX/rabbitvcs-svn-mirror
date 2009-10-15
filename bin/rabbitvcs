@@ -48,11 +48,6 @@ parser.add_option("-r", "--revision", help="specify the revision number")
 args.pop(0)
 module = args.pop(0)
 
-index = 0
-for arg in args:
-    args[index] = os.path.realpath(os.path.abspath(arg))
-    index += 1
-
 args_all = ["--base-dir=" + os.getcwd()]
 if options.revision is not None:
     args_all += ["--revision=" + options.revision]
