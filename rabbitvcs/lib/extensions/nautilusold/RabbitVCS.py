@@ -244,10 +244,10 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                 if len( t & statuses ):
                     # If so, add some useful menu items
                     items += [    ('NautilusPython::svnmkdiff_file_item', 'Patch', 'Create a patch of %s from the repository version'%file.get_name(), self.OnMkDiff, "rabbitvcs-diff"), 
-                                ('NautilusPython::svncommit_file_item', 'Commit' , 'Commit %s to the repository.' % file.get_name(), self.OnCommit, "rabbitvcs-commit"),
-                                ('NautilusPython::svnrevert_file_item', 'Revert' , 'Revert %s back to the repository version.'%file.get_name(), self.OnRevert, "rabbitvcs-revert"),]
+                                ('NautilusPython::svnrevert_file_item', 'Revert' , 'Revert %s back to the repository version.'%file.get_name(), self.OnRevert, "rabbitvcs-revert")]
 
                 items += [
+                    ('NautilusPython::svncommit_file_item', 'Commit' , 'Commit %s to the repository.' % file.get_name(), self.OnCommit, "rabbitvcs-commit"),
                     ('NautilusPython::svnproperties_file_item', 'Properties', 'File properties for %s.'%file.get_name(), self.OnProperties, "rabbitvcs-properties")
                 ]
 
