@@ -566,7 +566,35 @@ class SVN:
         try:
             returner = info["url"]
         except Exception, e:
-            log.exception("Exception in svn.py get_repo_url() for %s" % path)
+            log.exception(e)
+
+        return returner
+    
+    def get_repo_root_url(self, path):
+        """
+        Retrieve the repository URL for the given working copy path
+        FYI this method was not added until svn 1.6.x
+        
+        @type   path:   string
+        @param  path:   A working copy path.
+        
+        @rtype:         string
+        @return:        A repository URL.
+        
+        """
+        
+        # If the given path is not part of a working copy, keep trying the
+        # parent path to see if it is part of a working copy
+        path = self.get_versioned_path(os.path.abspath(path))
+        if not path:
+            return ""
+        
+        info = self.client.info(path)
+        returner = ""
+        try:
+            returner = info["repos"]
+        except Exception, e:
+            log.exception(e)
 
         return returner
     
