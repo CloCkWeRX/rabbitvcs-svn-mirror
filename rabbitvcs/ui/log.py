@@ -49,6 +49,7 @@ class Log(InterfaceView):
 
     selected_rows = []
     selected_row = []
+    paths_selected_rows = []
     
     limit = 100
     
@@ -92,6 +93,7 @@ class Log(InterfaceView):
             [_("Action"), _("Path"), 
                 _("Copy From Path"), _("Copy From Revision")]
         )
+        self.paths_table.allow_multiple()
 
         self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message")
@@ -123,6 +125,34 @@ class Log(InterfaceView):
             self.action.set_cancel(True)    
         self.close()
 
+    def on_previous_clicked(self, widget):
+        self.rev_start = self.previous_starts.pop()
+        self.load_or_refresh()
+                    
+    def on_next_clicked(self, widget):
+        self.override_limit = True
+        self.previous_starts.append(self.rev_start)
+        self.rev_start = self.rev_end - 1
+
+        if self.rev_start < 1:
+            self.rev_start = 1
+
+        self.load_or_refresh()
+    
+    def on_stop_on_copy_toggled(self, widget):
+        self.stop_on_copy = self.get_widget("stop_on_copy").get_active()
+        if not self.is_loading:
+            self.refresh()
+    
+    def on_refresh_clicked(self, widget):
+        self.limit = int(self.get_widget("limit").get_text())
+        self.cache.empty()
+        self.load()
+
+    #
+    # Revisions table callbacks
+    #
+    
     def on_revisions_table_cursor_changed(self, treeview, data=None):
         self.on_revisions_table_event(treeview, data)
 
@@ -218,7 +248,7 @@ class Log(InterfaceView):
                 "condition": (lambda: False)
             },
             {
-                "label": _("Checkout"),
+                "label": _("Checkout..."),
                 "signals": {
                     "activate": {
                         "callback": self.on_context_checkout_activated,
@@ -238,7 +268,7 @@ class Log(InterfaceView):
                 "condition": (lambda: True)
             },
             {
-                "label": _("Export"),
+                "label": _("Export..."),
                 "signals": {
                     "activate": {
                         "callback": self.on_context_export_activated,
@@ -284,40 +314,76 @@ class Log(InterfaceView):
             }
         ])
         context_menu.show(data)
-            
-    def on_previous_clicked(self, widget):
-        self.rev_start = self.previous_starts.pop()
-        self.load_or_refresh()
-                    
-    def on_next_clicked(self, widget):
-        self.override_limit = True
-        self.previous_starts.append(self.rev_start)
-        self.rev_start = self.rev_end - 1
 
-        if self.rev_start < 1:
-            self.rev_start = 1
+    #
+    # Paths table callbacks
+    #
 
-        self.load_or_refresh()
+    def on_paths_table_cursor_changed(self, treeview, data=None):
+        self.on_paths_table_event(treeview, data)
+
+    def on_paths_table_button_released(self, treeview, data=None):
+        self.on_paths_table_event(treeview, data)
+
+    def on_paths_table_button_pressed(self, treeview, data=None):
+        # this allows us to retain multiple selections with a right-click
+        if data.button == 3:
+            selection = treeview.get_selection()
+            (liststore, indexes) = selection.get_selected_rows()
+            return (len(indexes) > 0)
+
+    def on_paths_table_event(self, treeview, data=None):
+        selection = treeview.get_selection()
+        (liststore, indexes) = selection.get_selected_rows()
+
+        self.paths_selected_rows = []
+        for tup in indexes:
+            self.paths_selected_rows.append(tup[0])
+
+        item = self.paths_table.get_row(self.paths_selected_rows[0])
+
+        if data is not None and data.button == 3:
+            self.show_paths_table_popup_menu(treeview, data)
+
+    def show_paths_table_popup_menu(self, treeview, data):
+        context_menu = rabbitvcs.ui.widget.ContextMenu([
+            {
+                "label": _("Show changes"),
+                "signals": None,
+                "condition": (lambda: True)
+            },
+            {
+                "label": _("Show changes as annotation"),
+                "signals": None,
+                "condition": (lambda: True)
+            },
+            {
+                "label": _("Show changes as unified diff"),
+                "signals": None,
+                "condition": (lambda: True)
+            },
+            {
+                "label": self.SEPARATOR,
+                "signals": None,
+                "condition": (lambda: True)
+            },
+            {
+                "label": _("Open"),
+                "signals": None,
+                "condition": (lambda: True)
+            }
+        ])
+        context_menu.show(data)
     
+    #
+    # Helper methods
+    #
+
     def load_or_refresh(self):
         if self.cache.has(self.rev_start):
             self.refresh()
         else:
             self.load()
-    
-    def on_stop_on_copy_toggled(self, widget):
-        self.stop_on_copy = self.get_widget("stop_on_copy").get_active()
-        if not self.is_loading:
-            self.refresh()
-    
-    def on_refresh_clicked(self, widget):
-        self.limit = int(self.get_widget("limit").get_text())
-        self.cache.empty()
-        self.load()
-    
-    #
-    # Helper methods
-    #
           
     def get_selected_revision_numbers(self):
         if len(self.selected_rows) == 0:
