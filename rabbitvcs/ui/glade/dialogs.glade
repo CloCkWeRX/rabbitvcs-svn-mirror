@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.1 on Wed Oct 14 09:59:27 2009 -->
+<!--Generated with glade3 3.4.1 on Thu Oct 15 10:17:53 2009 -->
 <glade-interface>
   <widget class="GtkDialog" id="Authentication">
     <property name="width_request">450</property>
@@ -742,6 +742,7 @@
                                 <property name="height_request">100</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="wrap_mode">GTK_WRAP_WORD</property>
                               </widget>
                             </child>
                           </widget>
