@@ -20,6 +20,7 @@
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os.path
 import pygtk
 import gobject
 import gtk
@@ -63,6 +64,21 @@ class Compare(InterfaceView):
         self.second_revision_browse = self.get_widget("second_revision_browse")
         self.second_revision_opt.set_active(0)
 
+        if path1 is not None:
+            self.first_urls.set_child_text(path1)
+        if revision1 is not None:
+            self.first_revision_opt.set_active(1)
+            self.first_revision_number.set_text(str(revision1))
+
+        if path2 is not None:
+            self.second_urls.set_child_text(path2)
+        elif path1 is not None:
+            self.second_urls.set_child_text(path1)
+            
+        if revision2 is not None:
+            self.second_revision_opt.set_active(1)
+            self.second_revision_number.set_text(str(revision2))
+
         self.changes_table = rabbitvcs.ui.widget.Table(
             self.get_widget("changes_table"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
@@ -70,7 +86,6 @@ class Compare(InterfaceView):
         )
         
         self.pbar = rabbitvcs.ui.widget.ProgressBar(self.get_widget("pbar"))
-        
         self.check_ui()
         
         self.is_loading = False
@@ -90,9 +105,11 @@ class Compare(InterfaceView):
     
     def on_first_urls_changed(self, widget, data=None):
         self.check_first_urls()
+        self.check_refresh_button()
 
     def on_second_urls_changed(self, widget, data=None):
         self.check_second_urls()
+        self.check_refresh_button()
    
     def on_first_revision_opt_changed(self, widget, data=None):
         self.check_first_revision()
@@ -159,6 +176,24 @@ class Compare(InterfaceView):
         else:
             return "r" + self.first_revision_number.get_text()
 
+    def get_first_revision(self):
+        rev = self.vcs.revision("head")
+        if self.first_revision_opt.get_active() == 1:
+            rev = self.vcs.revision(
+                "number", 
+                number=int(self.first_revision_number.get_text())
+            )
+        return rev
+    
+    def get_second_revision(self):
+        rev = self.vcs.revision("head")
+        if self.second_revision_opt.get_active() == 1:
+            rev = self.vcs.revision(
+                "number", 
+                number=int(self.second_revision_number.get_text())
+            )
+        return rev
+
     def get_second_revision_string(self):
         if self.second_revision_opt.get_active() == 0:
             return self.second_revision_opt.get_active_text()
@@ -189,7 +224,12 @@ class Compare(InterfaceView):
             },
             {
                 "label": _("View unified diff"),
-                "signals": None,
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_view_diff,
+                        "args": None
+                    }
+                },
                 "condition": self.condition_view_diff
             },
             {
@@ -206,6 +246,7 @@ class Compare(InterfaceView):
         self.check_second_urls()
         self.check_first_revision()
         self.check_second_revision()
+        self.check_refresh_button()
     
     def can_first_browse_urls(self):
         return (self.first_urls.get_active_text() != "")
@@ -224,6 +265,14 @@ class Compare(InterfaceView):
             self.can_second_browse_urls()
             and (self.second_urls.get_active_text() != "")
         )
+    
+    def check_refresh_button(self):
+        can_click_refresh = (
+            self.can_first_browse_urls()
+            and self.can_second_browse_urls()
+        )
+        
+        self.get_widget("refresh").set_sensitive(can_click_refresh)
     
     def check_first_urls(self):
         can_browse_urls = self.can_first_browse_urls()
@@ -257,21 +306,9 @@ class Compare(InterfaceView):
         self.is_loading = loading
 
     def load(self):
-        first_rev = self.vcs.revision("head")
-        if self.first_revision_opt.get_active() == 1:
-            first_rev = self.vcs.revision(
-                "number", 
-                number=int(self.first_revision_number.get_text())
-            )
-
-        second_rev = self.vcs.revision("head")
-        if self.second_revision_opt.get_active() == 1:
-            second_rev = self.vcs.revision(
-                "number", 
-                number=int(self.second_revision_number.get_text())
-            )
-
         first_url = self.first_urls.get_active_text()
+        first_rev = self.get_first_revision()
+        second_rev = self.get_second_revision()        
         second_url = self.second_urls.get_active_text()
 
         self.set_loading(True)
@@ -281,7 +318,8 @@ class Compare(InterfaceView):
         self.action = VCSAction(
             self.vcs,
             register_gtk_quit=self.gtk_quit_is_set(),
-            notification=False
+            notification=False,
+            queue_exception_callback=self.vcsaction_exception_callback
         )    
 
         self.action.append(
@@ -299,6 +337,12 @@ class Compare(InterfaceView):
         self.action.append(self.populate_table)
         self.action.start()
 
+    def vcsaction_exception_callback(self, e):
+        self.pbar.stop_pulsate()
+        self.pbar.update(1)
+        self.pbar.set_text(_("Error"))
+        self.set_loading(False)
+
     def populate_table(self):
         # returns a list of dicts(path, summarize_kind, node_kind, prop_changed)
         summary = self.action.get_result(0)
@@ -313,16 +357,61 @@ class Compare(InterfaceView):
                 prop_changed
             ])
 
+    def open_item_from_revision(self, url, revision, dest):
+        self.set_loading(True)
+        self.pbar.set_text(_("Retrieving item..."))
+        self.pbar.start_pulsate()
+        
+        self.action = VCSAction(
+            self.vcs,
+            register_gtk_quit=self.gtk_quit_is_set(),
+            notification=False
+        )
+        self.action.append(
+            self.vcs.export,
+            url,
+            dest,
+            revision=revision
+        )
+        self.action.append(self.pbar.update, 1)
+        self.action.append(self.pbar.set_text, _("Completed"))
+        self.action.append(self.set_loading, False)
+        self.action.append(rabbitvcs.lib.helper.open_item, dest)
+        self.action.start()
+        
     #
     # Changes table context menu callbacks
     #
 
     def on_context_open_first(self, widget, data=None):
-        pass
+        url = self.vcs.get_repo_root_url(self.first_urls.get_active_text())
+        path = url + "/" + self.changes_table.get_row(self.selected_rows[0])[0]
+        rev = self.get_first_revision()
+        dest = "/tmp/rabbitvcs/" + self.get_first_revision_string() + "-" + os.path.basename(path)
+        self.open_item_from_revision(path, rev, dest)
 
     def on_context_open_second(self, widget, data=None):
-        pass
+        url = self.vcs.get_repo_root_url(self.second_urls.get_active_text())
+        path = url + "/" + self.changes_table.get_row(self.selected_rows[0])[0]
+        rev = self.get_second_revision()
+        dest = "/tmp/rabbitvcs/" + self.get_second_revision_string() + "-" + os.path.basename(path)
+        self.open_item_from_revision(path, rev, dest)
 
+    def on_context_view_diff(self, widget, data=None):
+        from rabbitvcs.ui.diff import SVNDiff
+        url = self.vcs.get_repo_root_url(self.first_urls.get_active_text())
+        url += "/" + self.changes_table.get_row(self.selected_rows[0])[0]
+        
+        rev1 = self.get_first_revision()
+        rev2 = self.get_second_revision()
+
+        SVNDiff(
+            url, 
+            (rev1.number is not None and rev1.number or "HEAD"), 
+            url, 
+            (rev2.number is not None and rev2.number or "HEAD")
+        )
+        
     #
     # Changes table condition callbacks
     #
