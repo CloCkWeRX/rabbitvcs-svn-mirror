@@ -28,12 +28,15 @@ from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
 import rabbitvcs.lib.helper
 from rabbitvcs.ui.log import LogDialog
+from rabbitvcs.ui.action import VCSAction
 from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Compare(InterfaceView):
     def __init__(self, path1=None, revision1=None, path2=None, revision2=None):
         InterfaceView.__init__(self, "compare", "Compare")
+        
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
 
         repo_paths = rabbitvcs.lib.helper.get_repository_paths()
         self.first_urls = rabbitvcs.ui.widget.ComboBox(
@@ -57,8 +60,19 @@ class Compare(InterfaceView):
         self.second_revision_number = self.get_widget("second_revision_number")
         self.second_revision_browse = self.get_widget("second_revision_browse")
         self.second_revision_opt.set_active(0)
+
+        self.changes_table = rabbitvcs.ui.widget.Table(
+            self.get_widget("changes_table"),
+            [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [_("Path"), _("Change"), _("Property Change")]
+        )
+        self.changes_table.allow_multiple()
+        
+        self.pbar = rabbitvcs.ui.widget.ProgressBar(self.get_widget("pbar"))
         
         self.check_ui()
+        
+        self.is_loading = False
 
     #
     # UI Signal Callback Methods
@@ -69,6 +83,9 @@ class Compare(InterfaceView):
 
     def on_close_clicked(self, widget):
         self.close()
+
+    def on_refresh_clicked(self, widget):
+        self.load()
     
     def on_first_urls_changed(self, widget, data=None):
         self.check_first_urls()
@@ -145,6 +162,66 @@ class Compare(InterfaceView):
         sensitive = (self.second_revision_opt.get_active() == 1)
         self.second_revision_number.set_sensitive(sensitive)
         self.second_revision_browse.set_sensitive(sensitive)
+
+    def set_loading(self, loading=True):
+        self.is_loading = loading
+
+    def load(self):
+        first_rev = self.vcs.revision("head")
+        if self.first_revision_opt.get_active() == 1:
+            first_rev = self.vcs.revision(
+                "number", 
+                number=int(self.first_revision_number.get_text())
+            )
+
+        second_rev = self.vcs.revision("head")
+        if self.second_revision_opt.get_active() == 1:
+            second_rev = self.vcs.revision(
+                "number", 
+                number=int(self.second_revision_number.get_text())
+            )
+
+        first_url = self.first_urls.get_active_text()
+        second_url = self.second_urls.get_active_text()
+
+        self.set_loading(True)
+        self.pbar.set_text(_("Generating Differences..."))
+        self.pbar.start_pulsate()
+
+        self.action = VCSAction(
+            self.vcs,
+            register_gtk_quit=self.gtk_quit_is_set(),
+            notification=False
+        )    
+
+        self.action.append(
+            self.vcs.diff_summarize,
+            first_url,
+            first_rev,
+            second_url,
+            second_rev
+        )
+        self.action.append(rabbitvcs.lib.helper.save_repository_path, first_url)
+        self.action.append(rabbitvcs.lib.helper.save_repository_path, second_url)
+        self.action.append(self.pbar.update, 1)
+        self.action.append(self.pbar.set_text, _("Completed"))
+        self.action.append(self.set_loading, False)
+        self.action.append(self.populate_table)
+        self.action.start()
+
+    def populate_table(self):
+        # returns a list of dicts(path, summarize_kind, node_kind, prop_changed)
+        summary = self.action.get_result(0)
+
+        self.changes_table.clear()
+        for item in summary:
+            prop_changed = (item["prop_changed"] == 1 and _("Yes") or _("No"))
+        
+            self.changes_table.append([
+                item["path"],
+                item["summarize_kind"],
+                prop_changed
+            ])
 
 def parse_path_revision_string(pathrev):
     index = pathrev.rfind("@")
