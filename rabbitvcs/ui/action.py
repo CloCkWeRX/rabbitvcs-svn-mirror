@@ -130,7 +130,7 @@ class VCSAction(threading.Thread):
     
     """
     
-    def __init__(self, client, register_gtk_quit=False, notification=True):
+    def __init__(self, client, register_gtk_quit=False, notification=True, queue_exception_callback=None):
         threading.Thread.__init__(self)
         
         self.message = ""
@@ -161,6 +161,10 @@ class VCSAction(threading.Thread):
         # Is used when the script is run from a command line
         if register_gtk_quit:
             self.notification.register_gtk_quit()
+
+        self.queue_exception_callback = None
+        if queue_exception_callback is not None:
+            self.queue_exception_callback = queue_exception_callback
 
     def set_pbar_ticks(self, num):
         """
@@ -472,9 +476,14 @@ class VCSAction(threading.Thread):
         return self.queue.get_result(index)
     
     def callback_queue_exception(self, e):
-        self.notification.append(
-            ["", str(e), ""]
-        )
+        if self.notification is not None:
+            self.notification.append(
+                ["", str(e), ""]
+            )
+        
+        if self.queue_exception_callback is not None:
+            self.queue_exception_callback(e)
+            
         self.finish()
     
     def run(self):
