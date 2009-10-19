@@ -1461,6 +1461,35 @@ class SVN:
         """
         
         return self.client.diff(*args, **kwargs)
+
+    def diff_summarize(self, *args, **kwargs):
+        """
+        Returns a summary of changed items between two paths/revisions
+        
+        @type   url_or_path1: string
+        @param  url_or_path1: First WC/URL location
+        
+        @type   revision1: pysvn.Revision
+        @param  revision1: Indicates the revision of the URL/Path (def: pysvn.Revision( opt_revision_kind.base ))
+        
+        @type   url_or_path2: string
+        @param  url_or_path2: Second WC/URL location
+        
+        @type   revision2: pysvn.Revision
+        @param  revision2: Indicates the revision of the URL/Path (def: pysvn.Revision( opt_revision_kind.working ))
+        
+        @type   recurse: boolean
+        @param  recurse: Whether or not to recurse into sub-directories. (def: True)
+        
+        @type   ignore_ancestry: boolean
+        @param  ignore_ancestry: Whether or not to recurse into sub-directories. (def: False)
+        
+        @type   depth: pysvn.depth enum
+        @param  depth: a replacement for recurse
+        
+        """
+        
+        return self.client.diff_summarize(*args, **kwargs)    
     
     def apply_patch(self, patch_file, base_dir):
         """
