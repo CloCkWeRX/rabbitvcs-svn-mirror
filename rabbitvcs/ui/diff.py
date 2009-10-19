@@ -56,14 +56,18 @@ class SVNDiff(Diff):
         
         if self.revision1 is None:
             r1 = vcs.revision("base")
+        elif self.revision1 == "HEAD":
+            r1 = vcs.revision("head")
         else:
             r1 = vcs.revision("number", number=self.revision1)
 
         if self.revision2 is None:
             r2 = vcs.revision("working")
+        elif self.revision2 == "HEAD":
+            r2 = vcs.revision("head")
         else:
             r2 = vcs.revision("number", number=self.revision2)
-            
+
         diff_text = vcs.diff(
             self.temp_dir,
             self.path1,
