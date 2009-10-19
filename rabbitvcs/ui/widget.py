@@ -215,7 +215,10 @@ class ComboBox:
             index += 1
     
     def get_active_text(self):
-        return self.cb.get_active_text()     
+        return self.cb.get_active_text()
+    
+    def get_active(self):
+        return self.cb.get_active()
     
     def set_active(self, index):
         self.cb.set_active(index)
