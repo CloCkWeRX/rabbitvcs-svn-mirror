@@ -271,6 +271,7 @@ class ContextMenu:
             return
         
         self.view = gtk.Menu()
+        self.num_items = 0
         for item in menu:
         
             if item["condition"]() is False:
@@ -285,11 +286,15 @@ class ContextMenu:
                 submenu = ContextMenu(item["submenu"])
                 menuitem.set_submenu(submenu.get_widget())
             
+            self.num_items += 1
             self.view.add(menuitem)
         
     def show(self, event):        
         self.view.show_all()
         self.view.popup(None, None, None, event.button, event.time)
+
+    def get_num_items(self):
+        return self.num_items
         
     def get_widget(self):
         return self.view
