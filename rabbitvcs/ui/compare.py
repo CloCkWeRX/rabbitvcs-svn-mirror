@@ -33,6 +33,8 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Compare(InterfaceView):
+    selected_rows = []
+
     def __init__(self, path1=None, revision1=None, path2=None, revision2=None):
         InterfaceView.__init__(self, "compare", "Compare")
         
@@ -66,7 +68,6 @@ class Compare(InterfaceView):
             [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [_("Path"), _("Change"), _("Property Change")]
         )
-        self.changes_table.allow_multiple()
         
         self.pbar = rabbitvcs.ui.widget.ProgressBar(self.get_widget("pbar"))
         
@@ -131,9 +132,74 @@ class Compare(InterfaceView):
             self.second_revision_opt.set_active(1)
             self.second_revision_number.set_text(data)
 
+    def on_changes_table_cursor_changed(self, treeview, data=None):
+        self.on_changes_table_event(treeview, data)
+
+    def on_changes_table_button_released(self, treeview, data=None):
+        self.on_changes_table_event(treeview, data)
+
+    def on_changes_table_event(self, treeview, data=None):
+        selection = treeview.get_selection()
+        (liststore, indexes) = selection.get_selected_rows()
+
+        self.selected_rows = []
+        for tup in indexes:
+            self.selected_rows.append(tup[0])
+
+        if data is not None and data.button == 3:
+            self.show_changes_table_popup_menu(treeview, data)
+
     #
     # Helper methods
     #
+    
+    def get_first_revision_string(self):
+        if self.first_revision_opt.get_active() == 0:
+            return self.first_revision_opt.get_active_text()
+        else:
+            return "r" + self.first_revision_number.get_text()
+
+    def get_second_revision_string(self):
+        if self.second_revision_opt.get_active() == 0:
+            return self.second_revision_opt.get_active_text()
+        else:
+            return "r" + self.second_revision_number.get_text()
+
+    def show_changes_table_popup_menu(self, treeview, data):
+        context_menu = rabbitvcs.ui.widget.ContextMenu([
+            {
+                "label": _("Open from %s") % self.get_first_revision_string(),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_open_first,
+                        "args": None
+                    }
+                },
+                "condition": self.condition_show_open_first_revision
+            },
+            {
+                "label": _("Open from %s") % self.get_second_revision_string(),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_open_second,
+                        "args": None
+                    }
+                },
+                "condition": self.condition_show_open_second_revision
+            },
+            {
+                "label": _("View unified diff"),
+                "signals": None,
+                "condition": self.condition_view_diff
+            },
+            {
+                "label": _("Show changes"),
+                "signals": None,
+                "condition": self.condition_show_changes
+            }
+        ])
+        if context_menu.get_num_items() > 0:
+            context_menu.show(data)
     
     def check_ui(self):
         self.check_first_urls()
@@ -141,27 +207,51 @@ class Compare(InterfaceView):
         self.check_first_revision()
         self.check_second_revision()
     
+    def can_first_browse_urls(self):
+        return (self.first_urls.get_active_text() != "")
+    
+    def can_first_browse_revisions(self):
+        return (
+            self.can_first_browse_urls()
+            and (self.first_urls.get_active_text() != "")
+        )
+    
+    def can_second_browse_urls(self):
+        return (self.second_urls.get_active_text() != "")
+    
+    def can_second_browse_revisions(self):
+        return (
+            self.can_second_browse_urls()
+            and (self.second_urls.get_active_text() != "")
+        )
+    
     def check_first_urls(self):
-        status = (self.first_urls.get_active_text() != "")
+        can_browse_urls = self.can_first_browse_urls()
+        can_browse_revisions = self.can_first_browse_revisions()
         
-        self.first_revision_browse.set_sensitive(status)
-        self.first_urls_browse.set_sensitive(status)
+        self.first_revision_browse.set_sensitive(can_browse_urls)
+        self.first_urls_browse.set_sensitive(can_browse_revisions)
         
     def check_second_urls(self):
-        status = (self.second_urls.get_active_text() != "")
+        can_browse_urls = self.can_second_browse_urls()
+        can_browse_revisions = self.can_second_browse_revisions()
         
-        self.second_revision_browse.set_sensitive(status)
-        self.second_urls_browse.set_sensitive(status)
+        self.second_revision_browse.set_sensitive(can_browse_urls)
+        self.second_urls_browse.set_sensitive(can_browse_revisions)
         
     def check_first_revision(self):
-        sensitive = (self.first_revision_opt.get_active() == 1)
-        self.first_revision_number.set_sensitive(sensitive)
-        self.first_revision_browse.set_sensitive(sensitive)
+        can_type_number = (self.first_revision_opt.get_active() == 1)
+        can_browse_revisions = self.can_first_browse_revisions()
+        
+        self.first_revision_number.set_sensitive(can_type_number)
+        self.first_revision_browse.set_sensitive(can_browse_revisions)
 
     def check_second_revision(self):
-        sensitive = (self.second_revision_opt.get_active() == 1)
-        self.second_revision_number.set_sensitive(sensitive)
-        self.second_revision_browse.set_sensitive(sensitive)
+        can_type_number = (self.second_revision_opt.get_active() == 1)
+        can_browse_revisions = self.can_second_browse_revisions()
+        
+        self.second_revision_number.set_sensitive(can_type_number)
+        self.second_revision_browse.set_sensitive(can_browse_revisions)
 
     def set_loading(self, loading=True):
         self.is_loading = loading
@@ -223,6 +313,41 @@ class Compare(InterfaceView):
                 prop_changed
             ])
 
+    #
+    # Changes table context menu callbacks
+    #
+
+    def on_context_open_first(self, widget, data=None):
+        pass
+
+    def on_context_open_second(self, widget, data=None):
+        pass
+
+    #
+    # Changes table condition callbacks
+    #
+
+    def condition_show_open_first_revision(self):
+        return (
+            len(self.selected_rows) == 1
+        )
+    
+    def condition_show_open_second_revision(self):
+        return (
+            len(self.selected_rows) == 1 
+            and self.get_first_revision_string() != self.get_second_revision_string()
+        )
+
+    def condition_view_diff(self):
+        return (
+            len(self.selected_rows) == 1
+        )
+
+    def condition_show_changes(self):
+        return (
+            len(self.selected_rows) == 1
+        )
+        
 def parse_path_revision_string(pathrev):
     index = pathrev.rfind("@")
     if index == -1:
