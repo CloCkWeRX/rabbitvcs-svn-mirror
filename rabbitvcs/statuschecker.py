@@ -180,8 +180,6 @@ class StatusChecker(threading.Thread):
                 return
         
         # Otherwise actually do a status check
-               
-        testlist = list(self.vcs_client.status(path, recurse=recurse))
                 
         statuses = [(status.path, str(status.text_status), str(status.prop_status)) 
                         for status in self.vcs_client.status(path, recurse=recurse)]       
