@@ -13,7 +13,7 @@ import rabbitvcs.util.vcs
 
 # FIXME: debug
 from rabbitvcs.lib.log import Log
-log = Log("rabbitvcs.statuschecker")
+log = Log("rabbitvcs.services.statuscache")
 # import time
 
 PICKLE_PROTOCOL = cPickle.HIGHEST_PROTOCOL
@@ -29,7 +29,7 @@ def is_under_dir(base_path, other_path):
     # you are not careful.
     return (base_path == other_path or other_path.startswith(base_path + "/"))
 
-class StatusChecker(threading.Thread):
+class StatusCache(threading.Thread):
     #: The queue will be populated with 4-ples of
     #: (path, recurse, invalidate, callback).
     __paths_to_check = Queue()
@@ -72,9 +72,10 @@ class StatusChecker(threading.Thread):
     # In here to avoid circular imports
     # from rabbitvcs.lib.extensions.nautilus.RabbitVCS import log
 
-    def __init__(self):
+    def __init__(self, checker):
         threading.Thread.__init__(self)
-        self.setName("Status checker thread")                
+        self.setName("Status cache thread")
+        self.checker = checker                
         # This means that the thread will die when everything else does. If
         # there are problems, we will need to add a flag to manually kill it.
         self.setDaemon(True)
@@ -104,6 +105,8 @@ class StatusChecker(threading.Thread):
              locked OR if the queue is blocking. In the meantime, the thread 
              will pop the path from the queue and look it up.
         """
+        log.debug("Status request for: %s" % path)
+        
         statuses = {}
        
         found_in_cache = False
@@ -163,6 +166,8 @@ class StatusChecker(threading.Thread):
         # We can't trust the cache when we invalidate, because some items may
         # have been renamed/deleted, and so we will end up with orphaned items
         # in the status cache that cause inaccurate results for parent folders
+        found_in_cache = False
+        
         if invalidate:
             self.__invalidate_path(path)
         else:
@@ -176,56 +181,27 @@ class StatusChecker(threading.Thread):
                     statuses = self.__get_path_statuses(path)
                     found_in_cache = True
 
-            if found_in_cache:
-                if callback: callback(path, statuses)
-                return
-
-
-        # Uncomment this for useful simulation of a looooong status check :) 
-        # log.debug("Sleeping for 10s...")
-        # time.sleep(5)
-        # log.debug("Done.")
-        
-        # Otherwise actually do a status check
-        statuses = self.__real_status_check(path, recurse)
-                
-        with self.__status_tree_lock:
-            age = self.__get_max_age() + 1
-            for path, text_status, prop_status in statuses:
-                self.__status_tree[path] = {"age":  age,
-                                            "status":
-                                                {"text_status" : text_status,
-                                                 "prop_status" : prop_status}}
-            self.__clean_status_cache()
-        
+        if not found_in_cache:
+            # Uncomment this for useful simulation of a looooong status check :) 
+            # log.debug("Sleeping for 10s...")
+            # time.sleep(5)
+            # log.debug("Done.")
+            
+            # Otherwise actually do a status check
+            statuses = self.checker.check_status(path, recurse)
+                    
+            with self.__status_tree_lock:
+                age = self.__get_max_age() + 1
+                for path, text_status, prop_status in statuses:
+                    self.__status_tree[path] = {"age":  age,
+                                                "status":
+                                                    {"text_status" : text_status,
+                                                     "prop_status" : prop_status}}
+                self.__clean_status_cache()
+            
         # Remember: these callbacks will block THIS thread from calculating the
         # next path on the "to do" list.
         if callback: callback(path, self.__get_path_statuses(path))
-    
-    def __real_status_check(self, path, recurse):
-        sc_process = subprocess.Popen([sys.executable,
-                                       os.path.join(os.path.dirname(__file__),
-                                                    "statuschecker_proc.py"),
-                                       path.encode("utf-8"),
-                                       str(recurse)],                                       
-                                       stdin = subprocess.PIPE,
-                                       stdout = subprocess.PIPE
-                                       )
-        # cPickle.dump((path, bool(recurse)), sc_process.stdin, protocol=PICKLE_PROTOCOL)
-        statuses = cPickle.load(sc_process.stdout)
-        return statuses
-        
-    
-    def __real_status_check_plain(self, path, recurse):
-        """
-        This is where we do the real status checking. It's in a separate method
-        so that it can be refactored easily.
-        """
-        vcs_client = pysvn.Client()
-        status_list = vcs_client.status(path, recurse=recurse)
-        statuses = [(status.path, str(status.text_status), str(status.prop_status)) 
-                        for status in status_list]
-        return statuses    
     
     def __get_max_age(self):
         with self.__status_tree_lock:

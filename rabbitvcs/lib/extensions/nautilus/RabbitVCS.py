@@ -56,12 +56,12 @@ _ = gettext.gettext
 from rabbitvcs.lib.settings import SettingsManager
 settings = SettingsManager()
 
-import rabbitvcs.dbus.service
-from rabbitvcs.dbus.statuschecker import StatusCheckerStub as StatusChecker
+import rabbitvcs.services.service
+from rabbitvcs.services.statuschecker import StatusCacheStub as StatusCache
 
 # Start up our DBus service if it's not already started, if this fails
 # we can't really do anything.
-rabbitvcs.dbus.service.start()
+rabbitvcs.services.service.start()
 
 class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnProvider):
     """ 
@@ -161,7 +161,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = SVN()
         
-        self.status_checker = StatusChecker(self.cb_status)
+        self.status_checker = StatusCache(self.cb_status)
         
         
     def get_columns(self):
@@ -549,7 +549,7 @@ class MainContextMenu:
         self.rabbitvcs_extension = rabbitvcs_extension
         self.vcs_client = SVN()
         
-        self.status_checker = StatusChecker()
+        self.status_checker = StatusCache()
         
         self.statuses = {}
         for path in self.paths:

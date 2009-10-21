@@ -25,6 +25,8 @@ At present the byte stream result of a pickle IS, in fact, ASCII data.
 
 import cPickle
 import sys
+import threading
+import subprocess
 from UserDict import UserDict
 
 import pysvn
@@ -36,25 +38,6 @@ log = Log("rabbitvcs.statuschecker_proc")
 
 PICKLE_PROTOCOL = cPickle.HIGHEST_PROTOCOL
 
-def Main(path, recurse):
-    """
-    Perform a VCS status check on the given path (recursive as indicated). The
-    results will be pickled and sent as a byte stream over stdout.
-    """
-    vcs_client = pysvn.Client()
-    # NOTE: we cannot pickle status_list directly. It needs to be processed
-    # here.
-    try:
-        status_list = vcs_client.status(path, recurse=recurse)
-        statuses = [(status.path, str(status.text_status), str(status.prop_status)) 
-                    for status in status_list]
-    except Exception, e:
-        statuses = [status_error(path)]
-    
-    cPickle.dump(statuses,
-                 sys.stdout,
-                 protocol=PICKLE_PROTOCOL)
-
 def status_error(path):
     """
     Create a pysvn-like status object that indicates an error.
@@ -65,18 +48,52 @@ def status_error(path):
     status.prop_status = "error"
     return status
 
+def Main(path, recurse):
+    """
+    Perform a VCS status check on the given path (recursive as indicated). The
+    results will be pickled and sent as a byte stream over stdout.
+    """
+    # NOTE: we cannot pickle status_list directly. It needs to be processed
+    # here.
+    try:
+        vcs_client = pysvn.Client()
+        status_list = vcs_client.status(path, recurse=recurse)
+        statuses = [(status.path, str(status.text_status), str(status.prop_status)) 
+                    for status in status_list]
+    except Exception, e:
+        statuses = [status_error(path)]
+    
+    cPickle.dump(statuses,
+                 sys.stdout,
+                 protocol=PICKLE_PROTOCOL)
+
+class StatusChecker(threading.Thread):
+    
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.setName("Status checker")
+        self.setDaemon(True)
+
+    def check_status(self, path, recurse):
+        sc_process = subprocess.Popen([sys.executable, __file__,
+                                       path.encode("utf-8"),
+                                       str(recurse)],
+                               stdin = subprocess.PIPE,
+                               stdout = subprocess.PIPE)
+        # cPickle.dump((path, bool(recurse)), sc_process.stdin, protocol=PICKLE_PROTOCOL)
+        statuses = cPickle.load(sc_process.stdout)
+        return statuses
+
 if __name__ == '__main__':
     # I have deliberately avoided rigourous input checking since this script is
     # only designed to be called from our extension code.
    
     rabbitvcs.util.locale.initialize_locale()
-
-    # This may be problematic, because I'm not sure how pipes work if the locale
-    # is different. I tried to use a pickle, but performance was terrible.
+    
+    # This is correct, and should work across all locales and encodings.
     path = unicode(sys.argv[1], "utf-8")
     recurse = (sys.argv[2] == "True")
     # (path, recurse) = cPickle.load(sys.stdin)
-    
-    log.debug("SCP path: %s" % path)
-    
+        
     Main(path, recurse)
+    

@@ -19,7 +19,7 @@ import dbus.mainloop.glib
 import dbus.service
 
 import rabbitvcs.util.locale
-from rabbitvcs.dbus.statuschecker import StatusChecker
+from rabbitvcs.services.statuschecker import StatusCacheService
 
 INTERFACE = "org.google.code.rabbitvcs.Service"
 OBJECT_PATH = "/org/google/code/rabbitvcs/Service"
@@ -31,7 +31,7 @@ class Service(dbus.service.Object):
         dbus.service.Object.__init__(self, connection, OBJECT_PATH)
         
         # Register our objects with the session bus by instantiating them
-        self.status_checker = StatusChecker(connection)
+        self.status_checker = StatusCacheService(connection)
     
     @dbus.service.method(INTERFACE, in_signature="", out_signature="")
     def Exit(self):
