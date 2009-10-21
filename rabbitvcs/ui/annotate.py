@@ -27,6 +27,7 @@ import gobject
 import gtk
 
 from datetime import datetime
+import time
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.log import LogDialog
@@ -158,8 +159,10 @@ class Annotate(InterfaceView):
             #   yet supported by strptime
             # * fractional could be parsed with "%f" since python 2.6 
             #   but this precision is not needed anyway 
+            # * the datetime module does not include strptime until python 2.4
+            #   so this workaround is required for now
             datestr = item["date"][0:-8]
-            date = datetime.strptime(datestr,"%Y-%m-%dT%H:%M:%S")
+            date = datetime(*time.strptime(datestr,"%Y-%m-%dT%H:%M:%S")[:-2])
                 
             self.table.append([
                 item["number"],
