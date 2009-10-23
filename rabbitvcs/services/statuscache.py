@@ -1,10 +1,25 @@
-"""
-
-"""
+#
+# Copyright (C) 2009 Jason Heeris <jason.heeris@gmail.com>
+# Copyright (C) 2009 by Bruce van der Kooij <brucevdkooij@gmail.com>
+# Copyright (C) 2009 by Adam Plumb <adamplumb@gmail.com>#
+# 
+# RabbitVCS is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# RabbitVCS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
+#
 
 from __future__ import with_statement
 
-import threading, os.path, subprocess, cPickle, sys
+import threading, os.path
 from Queue import Queue
 
 import pysvn
@@ -16,17 +31,15 @@ from rabbitvcs.lib.log import Log
 log = Log("rabbitvcs.services.statuscache")
 # import time
 
-PICKLE_PROTOCOL = cPickle.HIGHEST_PROTOCOL
-
 # FIXME: hard coded
 # NOTE: try changing this to a few hundred, or a few thousand to check operation
 # The debugging statements below will tell you how many items are being cached
 MAX_CACHE_SIZE = 1000000 # Items
 
 def is_under_dir(base_path, other_path):
-    # Warning: os.path.isdir may not work if we get a relative path
-    # This should not be a problem, but will throw out simple tests if
-    # you are not careful.
+    # Warning: this function is greatly simplified compared to something more
+    # rigorous. This is because the Python stdlib path manipulation functions
+    # are just too slow for proper use here.
     return (base_path == other_path or other_path.startswith(base_path + "/"))
 
 class StatusCache(threading.Thread):
