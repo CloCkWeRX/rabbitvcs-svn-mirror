@@ -4,8 +4,6 @@ This is our DBus service which registers all the objects we expose with the
 sesion bus.
 
 """
-
-import os.path
 import sys
 import traceback
 import subprocess
@@ -19,28 +17,12 @@ import dbus.mainloop.glib
 import dbus.service
 
 import rabbitvcs.util.locale
-from rabbitvcs.services.statuschecker import StatusCacheService
+import rabbitvcs.services.cacheservice
+from rabbitvcs.services.cacheservice import StatusCacheService
 
-INTERFACE = "org.google.code.rabbitvcs.Service"
-OBJECT_PATH = "/org/google/code/rabbitvcs/Service"
 SERVICE = "org.google.code.rabbitvcs.RabbitVCS"
 
-class Service(dbus.service.Object):
-    
-    def __init__(self, connection):
-        dbus.service.Object.__init__(self, connection, OBJECT_PATH)
-        
-        # Register our objects with the session bus by instantiating them
-        self.status_checker = StatusCacheService(connection)
-    
-    @dbus.service.method(INTERFACE, in_signature="", out_signature="")
-    def Exit(self):
-        self.status_monitor.Exit()
-        # TODO: we could add a quit call to the status checker here, so that it
-        # doesn't have to be daemonic.
-        loop.quit()
-
-def start():
+def start_service(script_file, dbus_object_path):
     """
     This function is used to start our service.
     
@@ -50,46 +32,26 @@ def start():
     
     try:
         session_bus = dbus.SessionBus()
-        session_bus.get_object(SERVICE, OBJECT_PATH)
+        session_bus.get_object(SERVICE, dbus_object_path)
         return True
     except dbus.DBusException:
         # FIXME: there must be a better way
-        dbus_service_path = os.path.abspath(__file__)
-        subprocess.Popen([sys.executable, dbus_service_path]).pid
+        subprocess.Popen([sys.executable, script_file]).pid
         # FIXME: hangs Nautilus when booting
         time.sleep(1)
         return True
         
     # Uh... unreachable?
     return False
-    
-def exit():
+
+def exit(dbus_object_path):
     """
     This function is used to exit a running service.
     """
     session_bus = dbus.SessionBus()
     try:
-        service = session_bus.get_object(SERVICE, OBJECT_PATH)
+        service = session_bus.get_object(SERVICE, dbus_object_path)
         service.Exit()
     except:
         # Probably not running...
         traceback.print_exc()
-
-if __name__ == "__main__":
-    rabbitvcs.util.locale.initialize_locale()
-    
-    # We need this to for the client to be able to do asynchronous calls
-    dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-    
-    # The following calls are required to make DBus thread-aware and therefor
-    # support the ability run threads.
-    gobject.threads_init()
-    dbus.glib.threads_init()
-    
-    # This registers our service name with the bus
-    session_bus = dbus.SessionBus()
-    name = dbus.service.BusName(SERVICE, session_bus) 
-    service = Service(session_bus)
-    
-    loop = gobject.MainLoop()
-    loop.run()

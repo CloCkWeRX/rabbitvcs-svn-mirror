@@ -57,11 +57,11 @@ from rabbitvcs.lib.settings import SettingsManager
 settings = SettingsManager()
 
 import rabbitvcs.services.service
-from rabbitvcs.services.statuschecker import StatusCacheStub as StatusCache
+from rabbitvcs.services.cacheservice import StatusCacheStub as StatusCache
 
 # Start up our DBus service if it's not already started, if this fails
 # we can't really do anything.
-rabbitvcs.services.service.start()
+rabbitvcs.services.cacheservice.start()
 
 class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnProvider):
     """ 
