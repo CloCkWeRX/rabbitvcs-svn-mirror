@@ -92,6 +92,9 @@ class Notification(InterfaceView):
     def on_ok_clicked(self, widget):
         self.close()
 
+    def close(self):
+        self.close()
+
     def toggle_ok_button(self, sensitive):
         gtk.gdk.threads_enter()
         self.finished = True
@@ -123,6 +126,49 @@ class Notification(InterfaceView):
     def focus_on_ok_button(self):
         self.get_widget("ok").grab_focus()
 
+class Loading(InterfaceView):
+    def __init__(self, callback_cancel=None):
+        InterfaceView.__init__(self, "dialogs", "Loading")
+        self.pbar = rabbitvcs.ui.widget.ProgressBar(
+            self.get_widget("pbar")
+        )
+        self.pbar.start_pulsate()
+        
+        self.callback_cancel = callback_cancel
+
+    def on_destroy(self, widget):
+        self.close()
+    
+    def on_loading_cancel_clicked(self, widget):
+        if self.callback_cancel is not None:
+            self.callback_cancel()
+
+        self.close();
+
+    def get_title(self):
+        return self.get_widget("Loading").get_title()
+    
+    def set_title(self, title):
+        gtk.gdk.threads_enter()
+        self.get_widget("Loading").set_title(title)
+        gtk.gdk.threads_leave()
+        
+    def set_header(self, header):
+        self.set_title(header)
+
+    def toggle_ok_button(self, sensitive):
+        pass
+            
+    def append(self, entry):
+        pass
+
+    def focus_on_ok_button(self):
+        pass
+    
+    def exception_callback(self, e):
+        from rabbitvcs.ui.dialog import MessageBox
+        MessageBox(str(e))
+
 class VCSAction(threading.Thread):
     """
     Provides a central interface to handle vcs actions & callbacks.
@@ -130,7 +176,8 @@ class VCSAction(threading.Thread):
     
     """
     
-    def __init__(self, client, register_gtk_quit=False, notification=True, queue_exception_callback=None):
+    def __init__(self, client, register_gtk_quit=False, 
+            notification=True, queue_exception_callback=None):
         threading.Thread.__init__(self)
         
         self.message = ""
@@ -148,12 +195,20 @@ class VCSAction(threading.Thread):
         
         self.login_tries = 0
         self.cancel = False
-
-        self.notification = Notification(
-            callback_cancel=self.set_cancel,
-            visible=notification
-        )
         
+        self.has_loader = False
+        self.has_notifier = False
+
+        if notification is True:
+            self.notification = Notification(
+                callback_cancel=self.set_cancel,
+                visible=notification
+            )
+            self.has_notifier = True
+        else:
+            self.notification = Loading(callback_cancel=self.set_cancel)
+            self.has_loader = True
+            
         self.pbar_ticks = None
         self.pbar_ticks_current = -1
         
@@ -215,31 +270,32 @@ class VCSAction(threading.Thread):
         
         """
 
-        if self.pbar_ticks is not None:
-            self.pbar_ticks_current += 1
-            frac = self.pbar_ticks_current / self.pbar_ticks
-            if frac > 1:
-                frac = 1
-            self.notification.pbar.update(frac)
-        
-        if self.client.NOTIFY_ACTIONS.has_key(data["action"]):
-            action = self.client.NOTIFY_ACTIONS[data["action"]]
-        else:
-            action = data["action"]
+        if self.has_notifier:
+            if self.pbar_ticks is not None:
+                self.pbar_ticks_current += 1
+                frac = self.pbar_ticks_current / self.pbar_ticks
+                if frac > 1:
+                    frac = 1
+                self.notification.pbar.update(frac)
             
-        self.notification.append([
-            action,
-            data["path"],
-            data["mime_type"]
-        ])
-        
-        #FIXME: this is crap
-        if rabbitvcs.lib.helper.in_rich_compare(
-                data["action"],
-                self.client.NOTIFY_ACTIONS_COMPLETE):
-            self.notification.append(
-                ["", "Revision %s" % data["revision"].number, ""]
-            )
+            if self.client.NOTIFY_ACTIONS.has_key(data["action"]):
+                action = self.client.NOTIFY_ACTIONS[data["action"]]
+            else:
+                action = data["action"]
+                
+            self.notification.append([
+                action,
+                data["path"],
+                data["mime_type"]
+            ])
+            
+            #FIXME: this is crap
+            if rabbitvcs.lib.helper.in_rich_compare(
+                    data["action"],
+                    self.client.NOTIFY_ACTIONS_COMPLETE):
+                self.notification.append(
+                    ["", "Revision %s" % data["revision"].number, ""]
+                )
     
     def finish(self, message=None):
         """
@@ -254,16 +310,17 @@ class VCSAction(threading.Thread):
         
         """
 
-        self.notification.append(
-            ["", _("Finished"), ""]
-        )
-        self.notification.focus_on_ok_button()
-        title = self.notification.get_title()
-        self.notification.set_title(_("%s - Finished") % title)
-        self.set_status(message)
-        self.notification.pbar.stop_pulsate()
-        self.notification.pbar.update(1)
-        self.notification.toggle_ok_button(True)
+        if self.has_notifier:
+            self.notification.append(
+                ["", _("Finished"), ""]
+            )
+            self.notification.focus_on_ok_button()
+            title = self.notification.get_title()
+            self.notification.set_title(_("%s - Finished") % title)
+            self.set_status(message)
+            self.notification.pbar.stop_pulsate()
+            self.notification.pbar.update(1)
+            self.notification.toggle_ok_button(True)
     
     def get_log_message(self):
         """
@@ -475,16 +532,27 @@ class VCSAction(threading.Thread):
         
         return self.queue.get_result(index)
     
-    def callback_queue_exception(self, e):
-        if self.notification is not None:
+    def __queue_exception_callback(self, e):
+        """
+        Used internally when an exception is raised within the queue
+        
+        @type   e: Exception
+        @param  e: The exception object passed by the FunctionQueue
+        
+        """
+        if self.has_notifier:
             self.notification.append(
                 ["", str(e), ""]
             )
+            self.finish()
         
+        # An external callback function may have been set up
         if self.queue_exception_callback is not None:
-            self.queue_exception_callback(e)
-            
-        self.finish()
+            self.stop()
+            self.queue_exception_callback(e)     
+    
+    def stop(self):
+        self.notification.close()
     
     def run(self):
         """
@@ -493,5 +561,8 @@ class VCSAction(threading.Thread):
         
         """
         
-        self.queue.set_exception_callback(self.callback_queue_exception)
+        if self.has_loader:
+            self.queue.append(self.notification.close)
+        
+        self.queue.set_exception_callback(self.__queue_exception_callback)
         self.queue.start()

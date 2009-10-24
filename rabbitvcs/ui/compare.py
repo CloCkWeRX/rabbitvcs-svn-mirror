@@ -30,6 +30,8 @@ import rabbitvcs.ui.widget
 import rabbitvcs.lib.helper
 from rabbitvcs.ui.log import LogDialog
 from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.dialog import MessageBox
+from rabbitvcs.lib.decorators import gtk_unsafe
 from rabbitvcs import gettext
 _ = gettext.gettext
 
@@ -84,11 +86,8 @@ class Compare(InterfaceView):
             [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [_("Path"), _("Change"), _("Property Change")]
         )
-        
-        self.pbar = rabbitvcs.ui.widget.ProgressBar(self.get_widget("pbar"))
+
         self.check_ui()
-        
-        self.is_loading = False
 
     #
     # UI Signal Callback Methods
@@ -302,22 +301,14 @@ class Compare(InterfaceView):
         self.second_revision_number.set_sensitive(can_type_number)
         self.second_revision_browse.set_sensitive(can_browse_revisions)
 
-    def set_loading(self, loading=True):
-        self.is_loading = loading
-
     def load(self):
         first_url = self.first_urls.get_active_text()
         first_rev = self.get_first_revision()
         second_rev = self.get_second_revision()        
         second_url = self.second_urls.get_active_text()
 
-        self.set_loading(True)
-        self.pbar.set_text(_("Generating Differences..."))
-        self.pbar.start_pulsate()
-
         self.action = VCSAction(
             self.vcs,
-            register_gtk_quit=self.gtk_quit_is_set(),
             notification=False,
             queue_exception_callback=self.vcsaction_exception_callback
         )    
@@ -331,17 +322,12 @@ class Compare(InterfaceView):
         )
         self.action.append(rabbitvcs.lib.helper.save_repository_path, first_url)
         self.action.append(rabbitvcs.lib.helper.save_repository_path, second_url)
-        self.action.append(self.pbar.update, 1)
-        self.action.append(self.pbar.set_text, _("Completed"))
-        self.action.append(self.set_loading, False)
         self.action.append(self.populate_table)
         self.action.start()
 
+    @gtk_unsafe
     def vcsaction_exception_callback(self, e):
-        self.pbar.stop_pulsate()
-        self.pbar.update(1)
-        self.pbar.set_text(_("Error"))
-        self.set_loading(False)
+        MessageBox(str(e))
 
     def populate_table(self):
         # returns a list of dicts(path, summarize_kind, node_kind, prop_changed)
@@ -358,14 +344,10 @@ class Compare(InterfaceView):
             ])
 
     def open_item_from_revision(self, url, revision, dest):
-        self.set_loading(True)
-        self.pbar.set_text(_("Retrieving item..."))
-        self.pbar.start_pulsate()
-        
         self.action = VCSAction(
             self.vcs,
-            register_gtk_quit=self.gtk_quit_is_set(),
-            notification=False
+            notification=False,
+            queue_exception_callback=self.vcsaction_exception_callback
         )
         self.action.append(
             self.vcs.export,
@@ -373,9 +355,6 @@ class Compare(InterfaceView):
             dest,
             revision=revision
         )
-        self.action.append(self.pbar.update, 1)
-        self.action.append(self.pbar.set_text, _("Completed"))
-        self.action.append(self.set_loading, False)
         self.action.append(rabbitvcs.lib.helper.open_item, dest)
         self.action.start()
         
@@ -387,14 +366,14 @@ class Compare(InterfaceView):
         url = self.vcs.get_repo_root_url(self.first_urls.get_active_text())
         path = url + "/" + self.changes_table.get_row(self.selected_rows[0])[0]
         rev = self.get_first_revision()
-        dest = "/tmp/rabbitvcs/" + self.get_first_revision_string() + "-" + os.path.basename(path)
+        dest = "/tmp/rabbitvcs-" + self.get_first_revision_string() + "-" + os.path.basename(path)
         self.open_item_from_revision(path, rev, dest)
 
     def on_context_open_second(self, widget, data=None):
         url = self.vcs.get_repo_root_url(self.second_urls.get_active_text())
         path = url + "/" + self.changes_table.get_row(self.selected_rows[0])[0]
         rev = self.get_second_revision()
-        dest = "/tmp/rabbitvcs/" + self.get_second_revision_string() + "-" + os.path.basename(path)
+        dest = "/tmp/rabbitvcs-" + self.get_second_revision_string() + "-" + os.path.basename(path)
         self.open_item_from_revision(path, rev, dest)
 
     def on_context_view_diff(self, widget, data=None):
@@ -405,12 +384,19 @@ class Compare(InterfaceView):
         rev1 = self.get_first_revision()
         rev2 = self.get_second_revision()
 
-        SVNDiff(
+        self.action = VCSAction(
+            self.vcs,
+            notification=False,
+            queue_exception_callback=self.vcsaction_exception_callback
+        )
+        self.action.append(
+            SVNDiff,
             url, 
             (rev1.number is not None and rev1.number or "HEAD"), 
             url, 
             (rev2.number is not None and rev2.number or "HEAD")
         )
+        self.action.start()
         
     #
     # Changes table condition callbacks

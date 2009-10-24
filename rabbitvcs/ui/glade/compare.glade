@@ -1,14 +1,14 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
+<!--Generated with glade3 3.4.1 on Sat Oct 24 12:32:00 2009 -->
 <glade-interface>
-  <!-- interface-requires gtk+ 2.16 -->
-  <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="Compare">
     <property name="width_request">640</property>
-    <property name="height_request">550</property>
+    <property name="height_request">500</property>
     <property name="visible">True</property>
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="title" translatable="yes">Compare</property>
-    <property name="window_position">center</property>
+    <property name="window_position">GTK_WIN_POS_CENTER</property>
     <signal name="destroy" handler="on_destroy"/>
     <child>
       <widget class="GtkVBox" id="vbox1">
@@ -37,7 +37,6 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -65,7 +64,6 @@
                               <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">False</property>
-                                <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
@@ -78,10 +76,11 @@
                                     <property name="visible">True</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                     <signal name="changed" handler="on_first_urls_changed"/>
+                                    <child internal-child="entry">
+                                      <widget class="GtkEntry" id="comboboxentry-entry1">
+                                      </widget>
+                                    </child>
                                   </widget>
-                                  <packing>
-                                    <property name="position">0</property>
-                                  </packing>
                                 </child>
                                 <child>
                                   <widget class="GtkButton" id="first_urls_browse">
@@ -89,12 +88,14 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                                    <property name="response_id">0</property>
                                     <signal name="clicked" handler="on_first_urls_browse_clicked"/>
                                     <child>
                                       <widget class="GtkImage" id="image5">
                                         <property name="visible">True</property>
                                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                         <property name="stock">gtk-zoom-fit</property>
+                                        <property name="icon_size">1</property>
                                       </widget>
                                     </child>
                                   </widget>
@@ -113,7 +114,6 @@
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
-                            <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
@@ -131,7 +131,6 @@
                               <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">False</property>
-                                <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
@@ -151,7 +150,6 @@ Number</property>
                                   <packing>
                                     <property name="expand">False</property>
                                     <property name="fill">False</property>
-                                    <property name="position">0</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -174,12 +172,14 @@ Number</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                                    <property name="response_id">0</property>
                                     <signal name="clicked" handler="on_first_revision_browse_clicked"/>
                                     <child>
                                       <widget class="GtkImage" id="image1">
                                         <property name="visible">True</property>
                                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                         <property name="stock">gtk-find</property>
+                                        <property name="icon_size">1</property>
                                       </widget>
                                     </child>
                                   </widget>
@@ -216,7 +216,6 @@ Number</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -235,7 +234,6 @@ Number</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -263,7 +261,6 @@ Number</property>
                               <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">False</property>
-                                <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
@@ -276,10 +273,11 @@ Number</property>
                                     <property name="visible">True</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                     <signal name="changed" handler="on_second_urls_changed"/>
+                                    <child internal-child="entry">
+                                      <widget class="GtkEntry" id="comboboxentry-entry2">
+                                      </widget>
+                                    </child>
                                   </widget>
-                                  <packing>
-                                    <property name="position">0</property>
-                                  </packing>
                                 </child>
                                 <child>
                                   <widget class="GtkButton" id="second_urls_browse">
@@ -287,12 +285,14 @@ Number</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                                    <property name="response_id">0</property>
                                     <signal name="clicked" handler="on_second_urls_browse_clicked"/>
                                     <child>
                                       <widget class="GtkImage" id="image7">
                                         <property name="visible">True</property>
                                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                         <property name="stock">gtk-zoom-fit</property>
+                                        <property name="icon_size">1</property>
                                       </widget>
                                     </child>
                                   </widget>
@@ -311,7 +311,6 @@ Number</property>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
-                            <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
@@ -329,7 +328,6 @@ Number</property>
                               <packing>
                                 <property name="expand">False</property>
                                 <property name="fill">False</property>
-                                <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
@@ -349,7 +347,6 @@ Number</property>
                                   <packing>
                                     <property name="expand">False</property>
                                     <property name="fill">False</property>
-                                    <property name="position">0</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -372,12 +369,14 @@ Number</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                                    <property name="response_id">0</property>
                                     <signal name="clicked" handler="on_second_revision_browse_clicked"/>
                                     <child>
                                       <widget class="GtkImage" id="image9">
                                         <property name="visible">True</property>
                                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                                         <property name="stock">gtk-find</property>
+                                        <property name="icon_size">1</property>
                                       </widget>
                                     </child>
                                   </widget>
@@ -420,7 +419,6 @@ Number</property>
             <child>
               <widget class="GtkVBox" id="vbox5">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
                 <child>
                   <widget class="GtkLabel" id="label4">
@@ -432,7 +430,6 @@ Number</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
@@ -445,24 +442,21 @@ Number</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                        <property name="hscrollbar_policy">automatic</property>
-                        <property name="vscrollbar_policy">automatic</property>
-                        <property name="shadow_type">etched-in</property>
+                        <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                        <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                        <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
                         <child>
                           <widget class="GtkTreeView" id="changes_table">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                             <signal name="button_press_event" handler="on_changes_table_button_pressed"/>
-                            <signal name="cursor_changed" handler="on_changes_table_cursor_changed"/>
                             <signal name="button_release_event" handler="on_changes_table_button_released"/>
+                            <signal name="cursor_changed" handler="on_changes_table_cursor_changed"/>
                             <signal name="key_release_event" handler="on_changes_table_key_released"/>
                           </widget>
                         </child>
                       </widget>
-                      <packing>
-                        <property name="position">0</property>
-                      </packing>
                     </child>
                   </widget>
                   <packing>
@@ -475,50 +469,58 @@ Number</property>
               </packing>
             </child>
           </widget>
-          <packing>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="GtkProgressBar" id="pbar">
-            <property name="visible">True</property>
-            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-          </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <widget class="GtkHButtonBox" id="hbuttonbox1">
             <property name="visible">True</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <property name="spacing">6</property>
-            <property name="layout_style">end</property>
+            <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>
               <widget class="GtkButton" id="refresh">
-                <property name="label" translatable="yes">gtk-refresh</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="response_id">0</property>
                 <signal name="clicked" handler="on_refresh_clicked"/>
+                <child>
+                  <widget class="GtkHBox" id="hbox4">
+                    <property name="visible">True</property>
+                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                    <child>
+                      <widget class="GtkImage" id="image2">
+                        <property name="visible">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                        <property name="stock">gtk-refresh</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label5">
+                        <property name="visible">True</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                        <property name="label" translatable="yes">Load/Refresh</property>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                </child>
               </widget>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
-                <property name="position">0</property>
               </packing>
             </child>
             <child>
               <widget class="GtkButton" id="close">
-                <property name="label" translatable="yes">gtk-close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                <property name="label" translatable="yes">gtk-close</property>
                 <property name="use_stock">True</property>
+                <property name="response_id">0</property>
                 <signal name="clicked" handler="on_close_clicked"/>
               </widget>
               <packing>
@@ -531,7 +533,7 @@ Number</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
-            <property name="position">2</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </widget>
