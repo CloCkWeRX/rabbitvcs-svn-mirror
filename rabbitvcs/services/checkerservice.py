@@ -7,6 +7,7 @@ from Queue import Queue
 
 import gobject
 
+import glib
 import dbus
 import dbus.glib # FIXME: this might actually already set the default loop
 import dbus.mainloop.glib
@@ -22,7 +23,7 @@ log = Log("rabbitvcs.services.checkerservice")
 INTERFACE = "org.google.code.rabbitvcs.StatusChecker"
 OBJECT_PATH = "/org/google/code/rabbitvcs/StatusChecker"
 SERVICE = "org.google.code.rabbitvcs.RabbitVCS.Checker"
-TIMEOUT = 60*15 # seconds
+TIMEOUT = 60*15*1000 # seconds
 
 class StatusCheckerService(dbus.service.Object):
     
@@ -49,12 +50,26 @@ class StatusCheckerStub:
             traceback.print_exc()
     
     def reply(self, reply):
-        self.result_queue.put(reply)
+        glib.idle_add(self.result_queue.put, reply)
         
     def error(self, error):
-        self.result_queue.put(error)
+        glib.idle_add(self.result_queue.put, error)
     
-    def check_status(self, path, recurse=False):
+    def check_status(self, *args, **kwargs):
+        return self.check_status_threaded(*args, **kwargs)
+    
+    def check_status_unthreaded(self, path, recurse=True):
+        try:
+            status = self.status_checker.CheckStatus(path, recurse,
+                                                     dbus_interface = INTERFACE,
+                                                     timeout = TIMEOUT)
+        except dbus.DBusException, ex:
+            log.exception(ex)
+            status = [status_error(path)]
+        
+        return status
+    
+    def check_status_threaded(self, path, recurse=True):
         
         # log.debug("Checking status: %s" % path)
         
