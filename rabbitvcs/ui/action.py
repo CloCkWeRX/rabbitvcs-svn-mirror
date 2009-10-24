@@ -41,7 +41,39 @@ _ = gettext.gettext
 
 gtk.gdk.threads_init()
 
-class Notification(InterfaceView):
+class VCSNotifier(InterfaceView):
+    """
+    Provides a base class to handle threaded/gtk_unsafe calls to our vcs
+    
+    """
+    
+    def __init__(self, glade_file, glade_id, callback_cancel=None, visible=True):
+        InterfaceView.__init__(self, glade_file, glade_id)
+
+        if visible:
+            self.show()
+
+        self.glade_id = glade_id
+        self.callback_cancel = callback_cancel
+        self.was_canceled_by_user = False
+        self.canceled = False
+
+    def on_destroy(self, widget):
+        self.close()
+
+    def set_canceled_by_user(self, was_canceled_by_user):
+        self.was_canceled_by_user = was_canceled_by_user
+
+    def toggle_ok_button(self, sensitive):
+        pass
+            
+    def append(self, entry):
+        pass
+
+    def focus_on_ok_button(self):
+        pass
+
+class MessageCallbackNotifier(VCSNotifier):
     """
     Provides an interface to handle the Notification UI.
     
@@ -57,11 +89,8 @@ class Notification(InterfaceView):
         
         """
         
-        InterfaceView.__init__(self, "notification", "Notification")
+        VCSNotifier.__init__(self, "notification", "Notification", callback_cancel, visible)
         
-        if visible:
-            self.show()
-    
         self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
@@ -72,14 +101,8 @@ class Notification(InterfaceView):
             self.get_widget("pbar")
         )
         self.pbar.start_pulsate()
-        
-        self.callback_cancel = callback_cancel
-        self.canceled = False
         self.finished = False
-            
-    def on_destroy(self, widget):
-        self.close()
-    
+
     def on_cancel_clicked(self, widget):
 
         if self.canceled or self.finished:
@@ -121,29 +144,22 @@ class Notification(InterfaceView):
     def focus_on_ok_button(self):
         self.get_widget("ok").grab_focus()
 
-    def set_canceled_by_user(self, was_canceled_by_user):
-        pass
-
     @gtk_unsafe
     def exception_callback(self, e):
         self.append(["", str(e), ""])
 
-class Loading(InterfaceView):
+class LoadingNotifier(VCSNotifier):
     def __init__(self, callback_cancel=None):
-        InterfaceView.__init__(self, "dialogs", "Loading")
+    
+        VCSNotifier.__init__(self, "dialogs", "Loading", callback_cancel, True)
+        
         self.pbar = rabbitvcs.ui.widget.ProgressBar(
             self.get_widget("pbar")
         )
         self.pbar.start_pulsate()
-        
-        self.callback_cancel = callback_cancel
-        self.was_canceled_by_user = False
 
-    def on_destroy(self, widget):
-        self.close()
-    
     def on_loading_cancel_clicked(self, widget):
-        self.was_canceled_by_user = True
+        self.set_canceled_by_user(True)
         if self.callback_cancel is not None:
             self.callback_cancel()
 
@@ -159,18 +175,6 @@ class Loading(InterfaceView):
     def set_header(self, header):
         self.set_title(header)
 
-    def toggle_ok_button(self, sensitive):
-        pass
-            
-    def append(self, entry):
-        pass
-
-    def focus_on_ok_button(self):
-        pass
-    
-    def set_canceled_by_user(self, was_canceled_by_user):
-        self.was_canceled_by_user = was_canceled_by_user
-    
     @gtk_unsafe
     def exception_callback(self, e):
         if not self.was_canceled_by_user:
@@ -206,13 +210,13 @@ class VCSAction(threading.Thread):
         self.has_notifier = False
 
         if notification is True:
-            self.notification = Notification(
-                callback_cancel=self.set_cancel,
-                visible=notification
+            self.notification = MessageCallbackNotifier(
+                self.set_cancel,
+                notification
             )
             self.has_notifier = True
         else:
-            self.notification = Loading(callback_cancel=self.set_cancel)
+            self.notification = LoadingNotifier(self.set_cancel)
             self.has_loader = True
             
         self.pbar_ticks = None

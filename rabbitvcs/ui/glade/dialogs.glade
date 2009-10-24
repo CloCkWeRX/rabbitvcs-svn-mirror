@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.1 on Sat Oct 24 12:29:48 2009 -->
+<!--Generated with glade3 3.4.1 on Sat Oct 24 13:10:09 2009 -->
 <glade-interface>
   <widget class="GtkDialog" id="Authentication">
     <property name="width_request">450</property>
