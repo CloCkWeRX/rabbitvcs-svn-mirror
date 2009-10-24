@@ -43,7 +43,7 @@ class StatusChecker():
         self.vcs_client = pysvn.Client()
 
     def check_status(self, path, recurse):
-        log.debug("Checking: %s" % path)
+
         try:
             status_list = self.vcs_client.status(path, recurse=recurse)
             statuses = [(status.path, str(status.text_status), str(status.prop_status)) 

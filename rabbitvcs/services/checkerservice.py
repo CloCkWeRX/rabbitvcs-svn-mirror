@@ -1,7 +1,7 @@
 import time
 import os.path
 import traceback
-import thread
+import threading
 
 from Queue import Queue
 
@@ -48,15 +48,31 @@ class StatusCheckerStub:
         except dbus.DBusException:
             traceback.print_exc()
     
+    def reply(self, reply):
+        self.result_queue.put(reply)
+        
+    def error(self, error):
+        self.result_queue.put(error)
+    
     def check_status(self, path, recurse=False):
-        try:
-            status = self.status_checker.CheckStatus(path, 
-                                                     recurse, 
-                                                     dbus_interface=INTERFACE, 
-                                                     timeout=TIMEOUT)
-        except dbus.DBusException, ex:
-            log.exception(ex)
-            status = [status_error(path)]
+        
+        # log.debug("Checking status: %s" % path)
+        
+        threading.Thread(target=self.status_checker.CheckStatus,
+                         args=[path, False],
+                         kwargs={"dbus_interface": INTERFACE, 
+                                 "timeout": TIMEOUT,
+                                 "reply_handler": self.reply,
+                                 "error_handler": self.error}).start()
+        
+        status = self.result_queue.get()
+        
+        # log.debug("Got status: %s" % status)
+        
+        if isinstance(status, dbus.DBusException):
+            log.exception(status)
+            status = [status_error(path)] 
+        
         return status
             
 def start():

@@ -22,7 +22,8 @@ from __future__ import with_statement
 import threading
 from Queue import Queue
 
-from rabbitvcs.services.checkerservice import StatusCheckerStub
+# from rabbitvcs.services.checkerservice import StatusCheckerStub
+from rabbitvcs.services.simplechecker import StatusChecker
 
 import rabbitvcs.util.vcs
 
@@ -88,7 +89,9 @@ class StatusCache(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
         self.setName("Status cache thread")
-        self.checker = StatusCheckerStub()
+        # self.checker = StatusCheckerStub()
+        self.checker = StatusChecker()
+        
         self.killed = threading.Event()
         # This means that the thread will die when everything else does. If
         # there are problems, we will need to add a flag to manually kill it.
@@ -119,7 +122,7 @@ class StatusCache(threading.Thread):
              locked OR if the queue is blocking. In the meantime, the thread 
              will pop the path from the queue and look it up.
         """
-        log.debug("Status request for: %s" % path)
+        # log.debug("Status request for: %s" % path)
         
         statuses = {}
        
@@ -249,7 +252,7 @@ class StatusCache(threading.Thread):
         with self.__status_tree_lock:
             # We only care if the cache is bigger than the max size BUT we don't
             # want to delete the entire cache every time.
-            log.debug("Status cache size: %i" % len(self.__status_tree))
+            # log.debug("Status cache size: %i" % len(self.__status_tree))
             
             max_age = self.__get_max_age()
             min_age = min([data["age"] for (path, data) in self.__status_tree.items()])
