@@ -1135,8 +1135,9 @@ class SVN:
 
         return self.client.checkin(paths, log_message, recurse, keep_locks)
     
-    def log(self, url_or_path, rev_start=Revision("head"), 
-            rev_end=Revision("number", 0), limit=0):
+    def log(self, url_or_path, revision_start=Revision("head"), 
+            revision_end=Revision("number", 0), limit=0, 
+            discover_changed_paths=True, strict_node_history=True):
         """
         Retrieve log items for a given path in the repository
         
@@ -1154,8 +1155,9 @@ class SVN:
         
         """
         
-        return self.client.log(url_or_path, rev_start.primitive(), 
-            rev_end.primitive(), limit)
+        return self.client.log(url_or_path, revision_start.primitive(), 
+            revision_end.primitive(), discover_changed_paths, 
+            strict_node_history, limit)
 
     def export(self, src_url_or_path, dest_path, revision=Revision("head"), 
             recurse=True, ignore_externals=False, force=False, native_eol=None):
