@@ -620,12 +620,19 @@ class Log(InterfaceView):
 
     def view_diff_for_path(self, url, revision_number):
         from rabbitvcs.ui.diff import SVNDiff
-        SVNDiff(
+
+        self.action = VCSAction(
+            self.vcs,
+            notification=False
+        )
+        self.action.append(
+            SVNDiff,
             url, 
             revision_number, 
             url, 
             revision_number-1
         )
+        self.action.start()
 
     def edit_revprop(self, prop_name, prop_value, callback=None):
         failure = False
