@@ -20,9 +20,10 @@ import rabbitvcs.util.locale
 import rabbitvcs.services.cacheservice
 from rabbitvcs.services.cacheservice import StatusCacheService
 
-SERVICE = "org.google.code.rabbitvcs.RabbitVCS"
+from rabbitvcs.lib.log import Log
+log = Log("rabbitvcs.services.service")
 
-def start_service(script_file, dbus_object_path):
+def start_service(script_file, dbus_service_name, dbus_object_path):
     """
     This function is used to start our service.
     
@@ -32,11 +33,12 @@ def start_service(script_file, dbus_object_path):
     
     try:
         session_bus = dbus.SessionBus()
-        session_bus.get_object(SERVICE, dbus_object_path)
+        obj = session_bus.get_object(dbus_service_name, dbus_object_path)
         return True
-    except dbus.DBusException:
+    except dbus.DBusException, e:
         # FIXME: there must be a better way
-        subprocess.Popen([sys.executable, script_file]).pid
+        pid = subprocess.Popen([sys.executable, script_file]).pid
+        log.debug("Started process: %s" % pid)
         # FIXME: hangs Nautilus when booting
         time.sleep(1)
         return True
@@ -44,14 +46,3 @@ def start_service(script_file, dbus_object_path):
     # Uh... unreachable?
     return False
 
-def exit(dbus_object_path):
-    """
-    This function is used to exit a running service.
-    """
-    session_bus = dbus.SessionBus()
-    try:
-        service = session_bus.get_object(SERVICE, dbus_object_path)
-        service.Exit()
-    except:
-        # Probably not running...
-        traceback.print_exc()

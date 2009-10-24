@@ -19,10 +19,10 @@
 
 from __future__ import with_statement
 
-import threading, os.path
+import threading
 from Queue import Queue
 
-import pysvn
+from rabbitvcs.services.checkerservice import StatusCheckerStub
 
 import rabbitvcs.util.vcs
 
@@ -85,14 +85,15 @@ class StatusCache(threading.Thread):
     # In here to avoid circular imports
     # from rabbitvcs.lib.extensions.nautilus.RabbitVCS import log
 
-    def __init__(self, checker):
+    def __init__(self):
         threading.Thread.__init__(self)
         self.setName("Status cache thread")
-        self.checker = checker                
+        self.checker = StatusCheckerStub()
+        self.killed = threading.Event()
         # This means that the thread will die when everything else does. If
         # there are problems, we will need to add a flag to manually kill it.
         self.setDaemon(True)
-    
+        
     def path_modified(self, path):
         """
         Alerts the status checker that the given path was modified. It will be
@@ -202,14 +203,16 @@ class StatusCache(threading.Thread):
             
             # Otherwise actually do a status check
             statuses = self.checker.check_status(path, recurse)
-                    
+            
             with self.__status_tree_lock:
                 age = self.__get_max_age() + 1
+            
                 for path, text_status, prop_status in statuses:
                     self.__status_tree[path] = {"age":  age,
                                                 "status":
                                                     {"text_status" : text_status,
                                                      "prop_status" : prop_status}}
+                    
                 self.__clean_status_cache()
             
         # Remember: these callbacks will block THIS thread from calculating the

@@ -59,10 +59,6 @@ settings = SettingsManager()
 import rabbitvcs.services.service
 from rabbitvcs.services.cacheservice import StatusCacheStub as StatusCache
 
-# Start up our DBus service if it's not already started, if this fails
-# we can't really do anything.
-rabbitvcs.services.cacheservice.start()
-
 class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnProvider):
     """ 
     This is the main class that implements all of our awesome features.
@@ -162,7 +158,6 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         self.vcs_client = SVN()
         
         self.status_checker = StatusCache(self.cb_status)
-        
         
     def get_columns(self):
         """

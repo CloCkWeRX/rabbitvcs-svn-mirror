@@ -1,9 +1,8 @@
-import time
 import os.path
+import sys
 import traceback
-import thread
 
-import gobject
+import gobject, glib
 
 import dbus
 import dbus.glib # FIXME: this might actually already set the default loop
@@ -12,16 +11,17 @@ import dbus.service
 
 
 import rabbitvcs.services.service
+from rabbitvcs.services.checkerservice import StatusCheckerStub
 from rabbitvcs.services.statuscache import StatusCache
-from rabbitvcs.services.statuschecker_proc import StatusChecker
+from rabbitvcs.services.statuschecker import StatusChecker
 
 from rabbitvcs.lib.log import Log
 log = Log("rabbitvcs.services.cacheservice")
 
 INTERFACE = "org.google.code.rabbitvcs.StatusCache"
 OBJECT_PATH = "/org/google/code/rabbitvcs/StatusCache"
-SERVICE = "org.google.code.rabbitvcs.RabbitVCS"
-TIMEOUT = 60*15 # seconds
+SERVICE = "org.google.code.rabbitvcs.RabbitVCS.Cache"
+TIMEOUT = 60*15*100 # seconds
 
 class StatusCacheService(dbus.service.Object):
     
@@ -29,7 +29,7 @@ class StatusCacheService(dbus.service.Object):
         dbus.service.Object.__init__(self, connection, OBJECT_PATH)
         
         # Start the status checking daemon so we can do requests in the background
-        self.status_cache = StatusCache(StatusChecker())
+        self.status_cache = StatusCache()
         self.status_cache.start()
         
     @dbus.service.signal(INTERFACE)
@@ -37,12 +37,15 @@ class StatusCacheService(dbus.service.Object):
         pass
         
     @dbus.service.method(INTERFACE)
-    def CheckStatus(self, path, recurse=False, invalidate=False, callback=True):
+    def CheckStatus(self, path, recurse=False, invalidate=False, callback=False):
         callback = self.CheckFinished if callback else None
         return self.status_cache.check_status(u"" + path, recurse=recurse, invalidate=invalidate, callback=callback)
         
 class StatusCacheStub:
     def __init__(self, status_callback=None):
+        
+        start()
+        
         self.session_bus = dbus.SessionBus()
         self.status_callback = status_callback
         
@@ -60,21 +63,19 @@ class StatusCacheStub:
             # Test client error problems :)
             # raise dbus.DBusException("Test")
         except dbus.DBusException, ex:
-            # An exception here is probably caused by large amounts of data
-            # triggering a timeout. We could make the timeout arbitrarily large,
-            # but I don't know if that's wise. -JH
-            from rabbitvcs.lib.extensions.nautilus.RabbitVCS import log
             log.exception(ex)
             status = {path: {"text_status": "client_error", "prop_status": "client_error"}}
         return status
-            
+    
 def start():
-    rabbitvcs.services.service.start_service(os.path.abspath(__file__), OBJECT_PATH)
+    rabbitvcs.services.service.start_service(os.path.abspath(__file__), SERVICE, OBJECT_PATH)
 
 if __name__ == "__main__":
     
-    log.debug("Starting service: %s" % OBJECT_PATH)
+    import os
     
+    log.debug("Cache: starting service: %s (%s)" % (OBJECT_PATH, os.getpid()))
+        
     rabbitvcs.util.locale.initialize_locale()
     
     # We need this to for the client to be able to do asynchronous calls
@@ -90,5 +91,7 @@ if __name__ == "__main__":
     name = dbus.service.BusName(SERVICE, session_bus) 
     service = StatusCacheService(session_bus)
     
-    loop = gobject.MainLoop()
-    loop.run()
+    mainloop = gobject.MainLoop()
+    mainloop.run()
+    
+    log.debug("End of main method!")
