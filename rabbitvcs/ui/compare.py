@@ -232,7 +232,12 @@ class Compare(InterfaceView):
             },
             {
                 "label": _("Show changes"),
-                "signals": None,
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_show_changes,
+                        "args": None
+                    }
+                },
                 "condition": self.condition_show_changes
             }
         ])
@@ -356,14 +361,14 @@ class Compare(InterfaceView):
     #
 
     def on_context_open_first(self, widget, data=None):
-        url = self.vcs.get_repo_root_url(self.first_urls.get_active_text())
+        url = self.vcs.get_repo_url(self.first_urls.get_active_text())
         path = url + "/" + self.changes_table.get_row(self.selected_rows[0])[0]
         rev = self.get_first_revision()
         dest = "/tmp/rabbitvcs-" + self.get_first_revision_string() + "-" + os.path.basename(path)
         self.open_item_from_revision(path, rev, dest)
 
     def on_context_open_second(self, widget, data=None):
-        url = self.vcs.get_repo_root_url(self.second_urls.get_active_text())
+        url = self.vcs.get_repo_url(self.second_urls.get_active_text())
         path = url + "/" + self.changes_table.get_row(self.selected_rows[0])[0]
         rev = self.get_second_revision()
         dest = "/tmp/rabbitvcs-" + self.get_second_revision_string() + "-" + os.path.basename(path)
@@ -371,7 +376,7 @@ class Compare(InterfaceView):
 
     def on_context_view_diff(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
-        url = self.vcs.get_repo_root_url(self.first_urls.get_active_text())
+        url = self.vcs.get_repo_url(self.first_urls.get_active_text())
         url += "/" + self.changes_table.get_row(self.selected_rows[0])[0]
         
         rev1 = self.get_first_revision()
@@ -387,6 +392,38 @@ class Compare(InterfaceView):
             (rev1.number is not None and rev1.number or "HEAD"), 
             url, 
             (rev2.number is not None and rev2.number or "HEAD")
+        )
+        self.action.start()
+
+    def on_context_show_changes(self, widget, data=None):
+        url = self.vcs.get_repo_url(self.second_urls.get_active_text())
+        path = url + "/" + self.changes_table.get_row(self.selected_rows[0])[0]
+
+        rev1 = self.get_first_revision()
+        dest1 = "/tmp/rabbitvcs-" + self.get_first_revision_string() + "-" + os.path.basename(path)
+        rev2 = self.get_second_revision()
+        dest2 = "/tmp/rabbitvcs-" + self.get_second_revision_string() + "-" + os.path.basename(path)
+
+        self.action = VCSAction(
+            self.vcs,
+            notification=False
+        )
+        self.action.append(
+            self.vcs.export,
+            path,
+            dest1,
+            revision=rev1
+        )
+        self.action.append(
+            self.vcs.export,
+            path,
+            dest2,
+            revision=rev2
+        )
+        self.action.append(
+            rabbitvcs.lib.helper.launch_diff_tool, 
+            dest1,
+            dest2
         )
         self.action.start()
         
