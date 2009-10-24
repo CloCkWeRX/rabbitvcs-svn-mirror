@@ -135,6 +135,52 @@ def parse_patch_output(patch_file, base_dir):
     patch_proc.wait() # Don't leave process running...
     return
 
+class Revision:
+    """
+    Implements a simple revision object as a wrapper around the pysvn revision
+    object.  This allows us to provide a standard interface to the object data.
+    """
+    
+    KINDS = {
+        "unspecified":      pysvn.opt_revision_kind.unspecified,
+        "number":           pysvn.opt_revision_kind.number,
+        "date":             pysvn.opt_revision_kind.date,
+        "committed":        pysvn.opt_revision_kind.committed,
+        "previous":         pysvn.opt_revision_kind.previous,
+        "working":          pysvn.opt_revision_kind.working,
+        "head":             pysvn.opt_revision_kind.head,
+        "base":             pysvn.opt_revision_kind.base
+    }
+
+    def __init__(self, kind, value=None):
+        self.kind = kind
+        self.value = value
+        
+        self.__revision_kind = self.KINDS[kind]
+        self.__revision = None
+        try:
+            if value is not None:
+                self.__revision = pysvn.Revision(self.__revision_kind, value)
+            else:
+                self.__revision = pysvn.Revision(self.__revision_kind)
+        except Exception, e:
+            log.exception(e)
+
+    def __unicode__(self):
+        if self.value:
+            return "r" + unicode(self.value)
+        else:
+            return self.kind
+
+    def __str__(self):
+        return self.__unicode__()
+
+    def __repr__(self):
+        return self.__unicode__()
+    
+    def primitive(self):
+        return self.__revision
+
 class SVN:
     """
     
@@ -244,18 +290,7 @@ class SVN:
         pysvn.wc_notify_state.merged:                   _("Merged"),
         pysvn.wc_notify_state.conflicted:               _("Conflicted")
     }
-    
-    REVISIONS = {
-        "unspecified":      pysvn.opt_revision_kind.unspecified,
-        "number":           pysvn.opt_revision_kind.number,
-        "date":             pysvn.opt_revision_kind.date,
-        "committed":        pysvn.opt_revision_kind.committed,
-        "previous":         pysvn.opt_revision_kind.previous,
-        "working":          pysvn.opt_revision_kind.working,
-        "head":             pysvn.opt_revision_kind.head,
-        "base":             pysvn.opt_revision_kind.base
-    }
-    
+ 
     DEPTHS_FOR_CHECKOUT = { 
         "Recursive": True, 
         "Not Recursive": False 
@@ -967,37 +1002,19 @@ class SVN:
         # TODO: Don't use kwargs for date/number, just accept a "value" as a
         #       regular arg
         
-        try:
-            pysvn_obj = self.REVISIONS[kind]
-        except KeyError, e:
-            log.exception("pysvn.ClientError exception in svn.py revision()")
-            return None
+        value = None
+        if date:
+            value = date
+        elif number:
+            value = number
         
-        returner = None
-        if kind == "date":
-            if date is None:
-                log.exception("In svn.py revision(),kind = date, but date not given")
-                return None
-            
-            returner = pysvn.Revision(pysvn_obj, date)
-        
-        elif kind == "number":
-            if number is None:
-                log.warning("In svn.py revision(),kind = number, but number not given")
-                return None
-        
-            returner = pysvn.Revision(pysvn_obj, number)
-        
-        else:
-            returner = pysvn.Revision(pysvn_obj)
-        
-        return returner
+        return Revision(kind, value)
         
     #
     # actions
     #
     
-    def add(self, *args, **kwargs):
+    def add(self, paths, recurse=True):
         """
         Add files or directories to the repository
         
@@ -1009,7 +1026,7 @@ class SVN:
         
         """
         
-        return self.client.add(*args, **kwargs)
+        return self.client.add(paths, recurse)
     
     def add_backwards(self, path):
         """
@@ -1037,7 +1054,7 @@ class SVN:
             head = os.path.join(head, tail)
             self.add(head, depth=pysvn.depth.empty)
     
-    def copy(self, *args, **kwargs):
+    def copy(self, src, dest, revision=Revision("head")):
         """
         Copy files/directories from src to dest.  src or dest may both be either
         a local path or a repository URL.  revision is a pysvn.Revision object.
@@ -1053,9 +1070,9 @@ class SVN:
         
         """
 
-        return self.client.copy(*args, **kwargs)
+        return self.client.copy(src, dest, revision.primitive())
     
-    def checkout(self, *args, **kwargs):
+    def checkout(self, url, path, recurse=True, ignore_externals=False):
         
         """
         Checkout a working copy from a vcs repository
@@ -1074,9 +1091,9 @@ class SVN:
         
         """
         
-        return self.client.checkout(*args, **kwargs)
+        return self.client.checkout(url, path, recurse, ignore_externals)
     
-    def cleanup(self, *args, **kwargs):
+    def cleanup(self, path):
         """
         Clean up a working copy.
         
@@ -1085,9 +1102,9 @@ class SVN:
         
         """
         
-        return self.client.cleanup(*args, **kwargs)
+        return self.client.cleanup(path)
         
-    def revert(self, *args, **kwargs):
+    def revert(self, paths):
         """
         Revert files or directories so they are unversioned
         
@@ -1096,9 +1113,9 @@ class SVN:
         
         """
         
-        return self.client.revert(*args, **kwargs)
+        return self.client.revert(paths)
 
-    def commit(self, *args, **kwargs):
+    def commit(self, paths, log_message="", recurse=True, keep_locks=False):
         """
         Commit a list of files to the repository.
         
@@ -1116,9 +1133,10 @@ class SVN:
         
         """
 
-        return self.client.checkin(*args, **kwargs)
+        return self.client.checkin(paths, log_message, recurse, keep_locks)
     
-    def log(self, *args, **kwargs):
+    def log(self, url_or_path, rev_start=Revision("head"), 
+            rev_end=Revision("number", 0), limit=0):
         """
         Retrieve log items for a given path in the repository
         
@@ -1136,9 +1154,11 @@ class SVN:
         
         """
         
-        return self.client.log(*args, **kwargs)
+        return self.client.log(url_or_path, rev_start.primitive(), 
+            rev_end.primitive(), limit)
 
-    def export(self, *args, **kwargs):
+    def export(self, src_url_or_path, dest_path, revision=Revision("head"), 
+            recurse=True, ignore_externals=False, force=False, native_eol=None):
         
         """
         Export files from either a working copy or repository into a local
@@ -1153,17 +1173,18 @@ class SVN:
         @type   revision: pysvn.Revision
         @param  revision: The revision to retrieve from the repository.
         
-        @type   recurse: boolean
-        @param  recurse: Whether or not to run a recursive checkout.
-        
         @type   ignore_externals: boolean
         @param  ignore_externals: Whether or not to ignore externals.
         
-        """
-        
-        return self.client.export(*args, **kwargs)
+        @type   recurse: boolean
+        @param  recurse: Whether or not to run a recursive checkout.        
 
-    def import_(self, *args, **kwargs):
+        """
+
+        return self.client.export(src_url_or_path, dest_path, force,
+            revision.primitive(), native_eol, ignore_externals, recurse)
+
+    def import_(self, path, url, log_message, ignore=False):
         
         """
         Import an unversioned file or directory structure into a repository.
@@ -1182,9 +1203,9 @@ class SVN:
         
         """
         
-        return self.client.import_(*args, **kwargs)
+        return self.client.import_(path, url, log_message, ignore)
 
-    def lock(self, *args, **kwargs):
+    def lock(self, url_or_path, lock_comment, force=False):
         
         """
         Lock a url or path.
@@ -1200,9 +1221,9 @@ class SVN:
         
         """
         
-        return self.client.lock(*args, **kwargs)
+        return self.client.lock(url_or_path, lock_comment, force)
 
-    def relocate(self, *args, **kwargs):
+    def relocate(self, from_url, to_url, path, recurse=True):
         
         """
         Relocate the working copy from from_url to to_url for path
@@ -1218,9 +1239,9 @@ class SVN:
         
         """
         
-        return self.client.relocate(*args, **kwargs)
+        return self.client.relocate(from_url, to_url, path, recurse)
         
-    def move(self, *args, **kwargs):
+    def move(self, src_url_or_path, dest_url_or_path, force=False):
         
         """
         Schedule a file to be moved around the repository
@@ -1236,9 +1257,9 @@ class SVN:
         
         """
         
-        return self.client.move(*args, **kwargs)
+        return self.client.move(src_url_or_path, dest_url_or_path, force)
 
-    def remove(self, *args, **kwargs):
+    def remove(self, url_or_path, force=False, keep_local=False):
         
         """
         Schedule a file to be removed from the repository
@@ -1254,9 +1275,9 @@ class SVN:
                 
         """
         
-        return self.client.remove(*args, **kwargs)
+        return self.client.remove(url_or_path, force, keep_local)
 
-    def revert(self, *args, **kwargs):
+    def revert(self, paths, recurse=False):
         """
         Revert files or directories from the repository
         
@@ -1268,9 +1289,9 @@ class SVN:
         
         """
         
-        return self.client.revert(*args, **kwargs)
+        return self.client.revert(paths, recurse)
 
-    def resolve(self, *args, **kwargs):
+    def resolve(self, path, recurse=True):
         """
         Mark conflicted files as resolved
         
@@ -1282,9 +1303,9 @@ class SVN:
         
         """
         
-        return self.client.resolved(*args, **kwargs)
+        return self.client.resolved(path, recurse)
 
-    def switch(self, *args, **kwargs):
+    def switch(self, path, url, revision=Revision("head")):
         """
         Switch the working copy to another repository source.
         
@@ -1299,9 +1320,9 @@ class SVN:
         
         """
         
-        return self.client.switch(*args, **kwargs)
+        return self.client.switch(path, url, revision.primitive())
 
-    def unlock(self, *args, **kwargs):
+    def unlock(self, path, force=False):
         """
         Unlock locked files.
         
@@ -1313,9 +1334,10 @@ class SVN:
         
         """
         
-        return self.client.unlock(*args, **kwargs)
+        return self.client.unlock(path, force)
 
-    def update(self, *args, **kwargs):
+    def update(self, path, recurse=True, revision=Revision("head"), 
+            ignore_externals=False):
         """
         Update a working copy.
         
@@ -1333,9 +1355,11 @@ class SVN:
         
         """
         
-        return self.client.update(*args, **kwargs)
+        return self.client.update(path, recurse, revision.primitive(), 
+            ignore_externals)
 
-    def annotate(self, *args, **kwargs):
+    def annotate(self, url_or_path, from_revision=Revision("number", 1), 
+            to_revision=Revision("head")):
         """
         Get the annotate results for the given file and revision range.
         
@@ -1350,9 +1374,12 @@ class SVN:
                 
         """
         
-        return self.client.annotate(*args, **kwargs)
+        return self.client.annotate(url_or_path, from_revision.primitive(),
+            to_revision.primitive())
 
-    def merge_ranges(self, *args, **kwargs):
+    def merge_ranges(self, sources, ranges_to_merge, peg_revision,
+            target_wcpath, notice_ancestry=False, force=False, dry_run=False,
+            record_only=True):
         """
         Merge a range of revisions.
         
@@ -1384,7 +1411,9 @@ class SVN:
         
         """
 
-        return self.client.merge_peg2(*args, **kwargs)
+        return self.client.merge_peg2(sources, ranges_to_merge, 
+            peg_revision.primitive(), target_wcpath, notice_ancestry, force,
+            dry_run, record_only)
     
     def has_merge2(self):
         """
@@ -1393,7 +1422,8 @@ class SVN:
         """
         return hasattr(self.client, "merge_peg2")
 
-    def merge_trees(self, *args, **kwargs):
+    def merge_trees(self, url_or_path1, revision1, url_or_path2, revision2, 
+            local_path, force=False, recurse=True, record_only=False):
         """
         Merge two trees into one.
 
@@ -1425,9 +1455,13 @@ class SVN:
         
         """
 
-        return self.client.merge(*args, **kwargs)
+        return self.client.merge(url_or_path1, revision1.primitive(), 
+            url_or_path2, revision2.primitive(), local_path, force, recurse, 
+            record_only)
 
-    def diff(self, *args, **kwargs):
+    def diff(self, tmp_path, url_or_path, revision1, url_or_path2, revision2, 
+            recurse=True, ignore_ancestry=False, diff_deleted=True, 
+            ignore_content_type=False):
         """
         Returns the diff text between the base code and the working copy.
         
@@ -1460,9 +1494,12 @@ class SVN:
         
         """
         
-        return self.client.diff(*args, **kwargs)
+        return self.client.diff(tmp_path, url_or_path, revision1.primitive(), 
+            url_or_path2, revision2.primitive(), recurse, ignore_ancestry, 
+            diff_deleted, ignore_content_type)
 
-    def diff_summarize(self, *args, **kwargs):
+    def diff_summarize(self, url_or_path1, revision1, url_or_path2, revision2, 
+            recurse=True, ignore_ancestry=False):
         """
         Returns a summary of changed items between two paths/revisions
         
@@ -1489,7 +1526,8 @@ class SVN:
         
         """
         
-        return self.client.diff_summarize(*args, **kwargs)    
+        return self.client.diff_summarize(url_or_path1, revision1.primitive(), 
+            url_or_path2, revision2.primitive(), recurse, ignore_ancestry)    
     
     def apply_patch(self, patch_file, base_dir):
         """
