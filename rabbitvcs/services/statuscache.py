@@ -31,7 +31,8 @@ import rabbitvcs.util.vcs
 # FIXME: debug
 from rabbitvcs.lib.log import Log
 log = Log("rabbitvcs.services.statuscache")
-# import time
+
+import time
 
 # FIXME: hard coded
 # NOTE: try changing this to a few hundred, or a few thousand to check operation

@@ -26,6 +26,7 @@ At present the byte stream result of a pickle IS, in fact, ASCII data.
 import cPickle
 import sys
 import subprocess
+import time
 
 from UserDict import UserDict
 
