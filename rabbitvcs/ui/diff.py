@@ -55,6 +55,7 @@ class SVNDiff(Diff):
         vcs = create_vcs_instance()
         
         if self.revision1 is None:
+        
             r1 = vcs.revision("base")
         elif self.revision1 == "HEAD":
             r1 = vcs.revision("head")
@@ -79,25 +80,18 @@ class SVNDiff(Diff):
         if diff_text == "":
             MessageBox(_("There are no differences"))
         else:
-            fh = tempfile.mkstemp("rabbitvcs")
+            fh = tempfile.mkstemp("-rabbitvcs-" + str(r1) + "-" + str(r2) + ".diff")
             os.write(fh[0], diff_text)
             os.close(fh[0])
             rabbitvcs.lib.helper.open_item(fh[1])
-
-def parse_path_revision_string(pathrev):
-    index = pathrev.rfind("@")
-    if index == -1:
-        return (pathrev,None)
-    else:
-        return (pathrev[0:index], pathrev[index+1:])
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, args) = main()
     
-    pathrev1 = parse_path_revision_string(args.pop(0))
+    pathrev1 = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
     pathrev2 = (None, None)
     if len(args) > 0:
-        pathrev2 = parse_path_revision_string(args.pop(0))
+        pathrev2 = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
 
     SVNDiff(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])

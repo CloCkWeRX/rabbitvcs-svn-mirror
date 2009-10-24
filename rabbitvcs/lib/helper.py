@@ -596,3 +596,10 @@ def launch_repo_browser(uri):
 def launch_url_in_webbrowser(url):
     import webbrowser
     webbrowser.open(url)
+
+def parse_path_revision_string(pathrev):
+    index = pathrev.rfind("@")
+    if index == -1:
+        return (pathrev,None)
+    else:
+        return (pathrev[0:index], pathrev[index+1:])

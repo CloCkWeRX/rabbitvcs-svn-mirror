@@ -168,12 +168,6 @@ class Compare(InterfaceView):
     # Helper methods
     #
     
-    def get_first_revision_string(self):
-        if self.first_revision_opt.get_active() == 0:
-            return self.first_revision_opt.get_active_text()
-        else:
-            return "r" + self.first_revision_number.get_text()
-
     def get_first_revision(self):
         rev = self.vcs.revision("head")
         if self.first_revision_opt.get_active() == 1:
@@ -192,16 +186,10 @@ class Compare(InterfaceView):
             )
         return rev
 
-    def get_second_revision_string(self):
-        if self.second_revision_opt.get_active() == 0:
-            return self.second_revision_opt.get_active_text()
-        else:
-            return "r" + self.second_revision_number.get_text()
-
     def show_changes_table_popup_menu(self, treeview, data):
         context_menu = rabbitvcs.ui.widget.ContextMenu([
             {
-                "label": _("Open from %s") % self.get_first_revision_string(),
+                "label": _("Open from %s") % str(self.get_first_revision()),
                 "signals": {
                     "activate": {
                         "callback": self.on_context_open_first,
@@ -211,7 +199,7 @@ class Compare(InterfaceView):
                 "condition": self.condition_show_open_first_revision
             },
             {
-                "label": _("Open from %s") % self.get_second_revision_string(),
+                "label": _("Open from %s") % str(self.get_second_revision()),
                 "signals": {
                     "activate": {
                         "callback": self.on_context_open_second,
@@ -314,8 +302,8 @@ class Compare(InterfaceView):
         self.action = VCSAction(
             self.vcs,
             notification=False
-        )    
-
+        )
+        
         self.action.append(
             self.vcs.diff_summarize,
             first_url,
@@ -364,14 +352,14 @@ class Compare(InterfaceView):
         url = self.vcs.get_repo_url(self.first_urls.get_active_text())
         path = url + "/" + self.changes_table.get_row(self.selected_rows[0])[0]
         rev = self.get_first_revision()
-        dest = "/tmp/rabbitvcs-" + self.get_first_revision_string() + "-" + os.path.basename(path)
+        dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(path)
         self.open_item_from_revision(path, rev, dest)
 
     def on_context_open_second(self, widget, data=None):
         url = self.vcs.get_repo_url(self.second_urls.get_active_text())
         path = url + "/" + self.changes_table.get_row(self.selected_rows[0])[0]
         rev = self.get_second_revision()
-        dest = "/tmp/rabbitvcs-" + self.get_second_revision_string() + "-" + os.path.basename(path)
+        dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(path)
         self.open_item_from_revision(path, rev, dest)
 
     def on_context_view_diff(self, widget, data=None):
@@ -389,9 +377,9 @@ class Compare(InterfaceView):
         self.action.append(
             SVNDiff,
             url, 
-            (rev1.number is not None and rev1.number or "HEAD"), 
+            (rev1.value and rev1.value or "HEAD"), 
             url, 
-            (rev2.number is not None and rev2.number or "HEAD")
+            (rev2.value and rev2.value or "HEAD")
         )
         self.action.start()
 
@@ -400,9 +388,9 @@ class Compare(InterfaceView):
         path = url + "/" + self.changes_table.get_row(self.selected_rows[0])[0]
 
         rev1 = self.get_first_revision()
-        dest1 = "/tmp/rabbitvcs-" + self.get_first_revision_string() + "-" + os.path.basename(path)
+        dest1 = "/tmp/rabbitvcs-" + str(rev1) + "-" + os.path.basename(path)
         rev2 = self.get_second_revision()
-        dest2 = "/tmp/rabbitvcs-" + self.get_second_revision_string() + "-" + os.path.basename(path)
+        dest2 = "/tmp/rabbitvcs-" + str(rev2) + "-" + os.path.basename(path)
 
         self.action = VCSAction(
             self.vcs,
@@ -439,7 +427,7 @@ class Compare(InterfaceView):
     def condition_show_open_second_revision(self):
         return (
             len(self.selected_rows) == 1 
-            and self.get_first_revision_string() != self.get_second_revision_string()
+            and str(self.get_first_revision()) != str(self.get_second_revision())
         )
 
     def condition_view_diff(self):
@@ -451,22 +439,15 @@ class Compare(InterfaceView):
         return (
             len(self.selected_rows) == 1
         )
-        
-def parse_path_revision_string(pathrev):
-    index = pathrev.rfind("@")
-    if index == -1:
-        return (pathrev,None)
-    else:
-        return (pathrev[0:index], pathrev[index+1:])
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, args) = main()
     
-    pathrev1 = parse_path_revision_string(args.pop(0))
+    pathrev1 = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
     pathrev2 = (None, None)
     if len(args) > 0:
-        pathrev2 = parse_path_revision_string(args.pop(0))
+        pathrev2 = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
 
     window = Compare(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])
     window.register_gtk_quit()
