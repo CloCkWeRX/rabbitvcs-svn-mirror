@@ -65,7 +65,6 @@ class Annotate(InterfaceView):
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         
         self.path = path
-        self.pbar = rabbitvcs.ui.widget.ProgressBar(self.get_widget("pbar"))
         self.get_widget("from").set_text(str(1))
         self.get_widget("to").set_text("HEAD")        
 
@@ -78,7 +77,6 @@ class Annotate(InterfaceView):
         )
         self.table.allow_multiple()
         
-        self.is_loading = False
         self.load()
         
     def on_destroy(self, widget):
@@ -122,14 +120,9 @@ class Annotate(InterfaceView):
         to_rev = self.vcs.revision("head")
         if to_rev_num.isdigit():
             to_rev = self.vcs.revision("number", number=int(to_rev_num))
-
-        self.set_loading(True)
-        self.pbar.set_text(_("Generating Annotation..."))
-        self.pbar.start_pulsate()
         
         self.action = VCSAction(
             self.vcs,
-            register_gtk_quit=self.gtk_quit_is_set(),
             notification=False
         )    
 
@@ -139,14 +132,8 @@ class Annotate(InterfaceView):
             from_rev,
             to_rev
         )
-        self.action.append(self.pbar.update, 1)
-        self.action.append(self.pbar.set_text, _("Completed"))
-        self.action.append(self.set_loading, False)
         self.action.append(self.populate_table)
         self.action.start()
-    
-    def set_loading(self, loading=True):
-        self.is_loading = loading
 
     def populate_table(self):
         blamedict = self.action.get_result(0)
