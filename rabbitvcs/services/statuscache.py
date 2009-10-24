@@ -45,7 +45,7 @@ def is_under_dir(base_path, other_path):
     # are just too slow for proper use here.
     return (base_path == other_path or other_path.startswith(base_path + "/"))
 
-class StatusCache(threading.Thread):
+class StatusCache():
     #: The queue will be populated with 4-ples of
     #: (path, recurse, invalidate, callback).
     __paths_to_check = Queue()
@@ -89,16 +89,16 @@ class StatusCache(threading.Thread):
     # from rabbitvcs.lib.extensions.nautilus.RabbitVCS import log
 
     def __init__(self):
-        threading.Thread.__init__(self)
-        self.setName("Status cache thread")
-        # self.checker = StatusCheckerStub()
-        self.checker = StatusChecker()
-        
-        self.killed = threading.Event()
+        self.worker = threading.Thread(target = self.status_update_loop,
+                                       name = "Status cache thread")
+
         # This means that the thread will die when everything else does. If
         # there are problems, we will need to add a flag to manually kill it.
-        self.setDaemon(True)
-        
+        # self.checker = StatusCheckerStub()
+        self.checker = StatusChecker()
+        self.worker.setDaemon(True)
+        self.worker.start()
+                
     def path_modified(self, path):
         """
         Alerts the status checker that the given path was modified. It will be
@@ -150,11 +150,7 @@ class StatusCache(threading.Thread):
          
         return statuses
         
-    def run(self):
-        """
-        Overrides the run method from Thread, so do not put any arguments in
-        here.
-        """
+    def status_update_loop(self):
         # This loop will stop when the thread is killed, which it will 
         # because it is daemonic.
         while True:

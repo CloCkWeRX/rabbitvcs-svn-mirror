@@ -30,7 +30,6 @@ class StatusCacheService(dbus.service.Object):
         
         # Start the status checking daemon so we can do requests in the background
         self.status_cache = StatusCache()
-        self.status_cache.start()
         
     @dbus.service.signal(INTERFACE)
     def CheckFinished(self, path, statuses):
