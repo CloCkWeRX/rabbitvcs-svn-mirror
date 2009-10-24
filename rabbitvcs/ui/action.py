@@ -92,9 +92,6 @@ class Notification(InterfaceView):
     def on_ok_clicked(self, widget):
         self.close()
 
-    def close(self):
-        self.close()
-
     def toggle_ok_button(self, sensitive):
         gtk.gdk.threads_enter()
         self.finished = True
