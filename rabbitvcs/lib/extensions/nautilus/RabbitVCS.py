@@ -48,7 +48,7 @@ from rabbitvcs.lib.helper import pretty_timedelta
 from rabbitvcs.lib.decorators import timeit, disable
 
 from rabbitvcs.lib.log import Log, reload_log_settings
-log = Log("rabbitvcs.lib.extensions.nautilus")
+log = Log("rabbitvcs.lib.extensions.nautilus.RabbitVCS")
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -218,7 +218,6 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         @param  item: 
         
         """
-        
         if not self.valid_uri(item.get_uri()): return
         path = realpath(unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8"))
         
@@ -274,7 +273,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         server.
 
         """
-        log.debug("update_colums called for %s" % path)
+        # log.debug("update_colums called for %s" % path)
 
         values = {
             "status": "",
@@ -340,7 +339,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                 item.add_emblem(self.EMBLEMS[summarized_status])
         
     #~ @disable
-    @timeit
+    # @timeit
     def get_file_items(self, window, items):
         """
         Menu activated with items selected. Nautilus also calls this function
