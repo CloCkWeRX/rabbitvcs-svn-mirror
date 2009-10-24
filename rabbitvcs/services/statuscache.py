@@ -22,6 +22,11 @@ from __future__ import with_statement
 import threading
 from Queue import Queue
 
+#    ATTENTION: Developers and hackers!
+# The following three lines allow you to select between three different status
+# checker implementations. Simply uncomment one to try it out - there's nothing
+# else you have to do.
+
 # from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 from rabbitvcs.services.simplechecker import StatusChecker
 # from rabbitvcs.services.loopedchecker import StatusChecker
