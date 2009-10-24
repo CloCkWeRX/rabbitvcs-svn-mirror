@@ -59,7 +59,7 @@ class StatusCheckerStub:
         # log.debug("Checking status: %s" % path)
         
         threading.Thread(target=self.status_checker.CheckStatus,
-                         args=[path, False],
+                         args=[path, recurse],
                          kwargs={"dbus_interface": INTERFACE, 
                                  "timeout": TIMEOUT,
                                  "reply_handler": self.reply,
