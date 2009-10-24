@@ -51,9 +51,14 @@ class StatusCacheStub:
         try:
             self.status_cache = self.session_bus.get_object(SERVICE, OBJECT_PATH)
             if self.status_callback:
-                self.status_cache.connect_to_signal("CheckFinished", self.status_callback, dbus_interface=INTERFACE)
+                self.status_cache.connect_to_signal("CheckFinished", self.glib_callback, dbus_interface=INTERFACE)
         except dbus.DBusException:
             traceback.print_exc()
+    
+    def glib_callback(self, *args, **kwargs):
+        glib.idle_add(self.status_callback, *args, **kwargs)
+        # Switch to this method to just call it straight from here:
+        # self.status_callback(*args, **kwargs)
     
     def check_status(self, path, recurse=False, invalidate=False, callback=True):
         status = None
@@ -72,7 +77,7 @@ def start():
 if __name__ == "__main__":
     
     import os
-    
+    log = Log("rabbitvcs.services.cacheservice:main")
     log.debug("Cache: starting service: %s (%s)" % (OBJECT_PATH, os.getpid()))
         
     rabbitvcs.util.locale.initialize_locale()
