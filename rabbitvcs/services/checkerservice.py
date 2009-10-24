@@ -81,7 +81,7 @@ def start():
 if __name__ == "__main__":
     
     import os
-    
+    log = Log("rabbitvcs.services.checkerservice:main")
     log.debug("Checker: starting service: %s (%s)" % (OBJECT_PATH, os.getpid()))
     
     rabbitvcs.util.locale.initialize_locale()
