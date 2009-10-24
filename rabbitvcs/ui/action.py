@@ -93,26 +93,23 @@ class Notification(InterfaceView):
     def on_ok_clicked(self, widget):
         self.close()
 
+    @gtk_unsafe
     def toggle_ok_button(self, sensitive):
-        gtk.gdk.threads_enter()
         self.finished = True
         self.get_widget("ok").set_sensitive(sensitive)
-        gtk.gdk.threads_leave()
             
+    @gtk_unsafe
     def append(self, entry):
-        gtk.gdk.threads_enter()
         self.table.append(entry)
         self.table.scroll_to_bottom()
-        gtk.gdk.threads_leave()
     
     def get_title(self):
         return self.get_widget("Notification").get_title()
     
+    @gtk_unsafe
     def set_title(self, title):
-        gtk.gdk.threads_enter()
         self.get_widget("Notification").set_title(title)
-        gtk.gdk.threads_leave()
-        
+    
     def set_header(self, header):
         self.set_title(header)
         gtk.gdk.threads_enter()
@@ -123,6 +120,9 @@ class Notification(InterfaceView):
 
     def focus_on_ok_button(self):
         self.get_widget("ok").grab_focus()
+
+    def set_canceled_by_user(self, was_canceled_by_user):
+        pass
 
     @gtk_unsafe
     def exception_callback(self, e):
@@ -152,10 +152,9 @@ class Loading(InterfaceView):
     def get_title(self):
         return self.get_widget("Loading").get_title()
     
+    @gtk_unsafe
     def set_title(self, title):
-        gtk.gdk.threads_enter()
         self.get_widget("Loading").set_title(title)
-        gtk.gdk.threads_leave()
         
     def set_header(self, header):
         self.set_title(header)
