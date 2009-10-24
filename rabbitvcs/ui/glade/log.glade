@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.1 on Thu Oct 15 12:14:06 2009 -->
+<!--Generated with glade3 3.4.1 on Sat Oct 24 12:53:24 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="Log">
     <property name="width_request">775</property>
@@ -238,17 +238,6 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkProgressBar" id="pbar">
-            <property name="visible">True</property>
-            <property name="text" translatable="yes">Loading...</property>
-          </widget>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">3</property>
-          </packing>
-        </child>
-        <child>
           <widget class="GtkHBox" id="hbox3">
             <property name="visible">True</property>
             <property name="spacing">12</property>
@@ -362,29 +351,15 @@
                 <property name="spacing">6</property>
                 <property name="layout_style">GTK_BUTTONBOX_END</property>
                 <child>
-                  <widget class="GtkButton" id="cancel">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="label">gtk-cancel</property>
-                    <property name="use_stock">True</property>
-                    <property name="response_id">0</property>
-                    <signal name="clicked" handler="on_cancel_clicked"/>
-                  </widget>
-                </child>
-                <child>
                   <widget class="GtkButton" id="ok">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="label">gtk-ok</property>
+                    <property name="label">gtk-close</property>
                     <property name="use_stock">True</property>
                     <property name="response_id">0</property>
-                    <signal name="clicked" handler="on_ok_clicked"/>
+                    <signal name="clicked" handler="on_close_clicked"/>
                   </widget>
-                  <packing>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
               </widget>
               <packing>
@@ -399,7 +374,7 @@
             <property name="expand">False</property>
             <property name="fill">False</property>
             <property name="pack_type">GTK_PACK_END</property>
-            <property name="position">4</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </widget>

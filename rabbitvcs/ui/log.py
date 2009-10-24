@@ -99,8 +99,6 @@ class Log(InterfaceView):
             self.get_widget("message")
         )
 
-        self.pbar = rabbitvcs.ui.widget.ProgressBar(self.get_widget("pbar"))
-        
         self.stop_on_copy = False
         self.root_url = self.vcs.get_repo_root_url(self.path)
         self.load_or_refresh()
@@ -112,18 +110,12 @@ class Log(InterfaceView):
     def on_destroy(self, widget, data=None):
         self.close()
 
-    def on_cancel_clicked(self, widget, data=None):
+    def on_close_clicked(self, widget, data=None):
         if self.is_loading:
             self.action.set_cancel(True)
-            self.pbar.set_text(_("Cancelled"))
-            self.pbar.update(1)
+            self.action.stop()
             self.set_loading(False)
-        else:
-            self.close()
-        
-    def on_ok_clicked(self, widget, data=None):
-        if self.is_loading:
-            self.action.set_cancel(True)    
+
         self.close()
 
     def on_previous_clicked(self, widget):
@@ -444,8 +436,7 @@ class Log(InterfaceView):
         self.revision_items = []
         self.revisions_table.clear()
         self.message.set_text("")
-        self.paths_table.clear()        
-        self.pbar.set_text(_("Loading..."))
+        self.paths_table.clear()
         
         if self.rev_start and self.cache.has(self.rev_start):
             self.revision_items = self.cache.get(self.rev_start)
@@ -467,10 +458,6 @@ class Log(InterfaceView):
         self.set_start_revision(self.rev_start)
         self.set_end_revision(self.rev_end)
 
-        total = len(self.revision_items)
-        inc = 1 / total
-        fraction = 0
-        
         for item in self.revision_items:
             msg = item.message.replace("\n", " ")
             if len(msg) > 80:
@@ -492,25 +479,17 @@ class Log(InterfaceView):
             if self.stop_on_copy:
                 for path in item.changed_paths:
                     if path.copyfrom_path is not None:
-                        self.pbar.update(1)
                         return
-
-            fraction += inc
-            self.pbar.update(fraction)
             
         self.check_previous_sensitive()
         self.check_next_sensitive()
         self.set_loading(False)
-        self.pbar.set_text(_("Finished"))
 
     def load(self):
         self.set_loading(True)
-        self.pbar.set_text(_("Retrieving Log Information..."))
-        self.pbar.start_pulsate()
         
         self.action = VCSAction(
             self.vcs,
-            register_gtk_quit=self.gtk_quit_is_set(),
             notification=False
         )        
 
@@ -525,13 +504,11 @@ class Log(InterfaceView):
             limit=self.limit+1,
             discover_changed_paths=True
         )
-        self.action.append(self.pbar.stop_pulsate)
         self.action.append(self.refresh)
         self.action.start()
 
     def set_loading(self, loading):
         self.is_loading = loading
-
 
     #
     # Context menu item callbacks

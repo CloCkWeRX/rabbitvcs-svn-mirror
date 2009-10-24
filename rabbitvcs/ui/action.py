@@ -33,6 +33,7 @@ import rabbitvcs.ui.dialog
 import rabbitvcs.lib
 import rabbitvcs.lib.vcs
 import rabbitvcs.lib.helper
+from rabbitvcs.ui.dialog import MessageBox
 from rabbitvcs.lib.decorators import gtk_unsafe
 
 from rabbitvcs import gettext
@@ -123,6 +124,10 @@ class Notification(InterfaceView):
     def focus_on_ok_button(self):
         self.get_widget("ok").grab_focus()
 
+    @gtk_unsafe
+    def exception_callback(self, e):
+        self.append(["", str(e), ""])
+
 class Loading(InterfaceView):
     def __init__(self, callback_cancel=None):
         InterfaceView.__init__(self, "dialogs", "Loading")
@@ -132,11 +137,13 @@ class Loading(InterfaceView):
         self.pbar.start_pulsate()
         
         self.callback_cancel = callback_cancel
+        self.was_canceled_by_user = False
 
     def on_destroy(self, widget):
         self.close()
     
     def on_loading_cancel_clicked(self, widget):
+        self.was_canceled_by_user = True
         if self.callback_cancel is not None:
             self.callback_cancel()
 
@@ -162,9 +169,13 @@ class Loading(InterfaceView):
     def focus_on_ok_button(self):
         pass
     
+    def set_canceled_by_user(self, was_canceled_by_user):
+        self.was_canceled_by_user = was_canceled_by_user
+    
+    @gtk_unsafe
     def exception_callback(self, e):
-        from rabbitvcs.ui.dialog import MessageBox
-        MessageBox(str(e))
+        if not self.was_canceled_by_user:
+            MessageBox(str(e))
 
 class VCSAction(threading.Thread):
     """
@@ -173,8 +184,7 @@ class VCSAction(threading.Thread):
     
     """
     
-    def __init__(self, client, register_gtk_quit=False, 
-            notification=True, queue_exception_callback=None):
+    def __init__(self, client, register_gtk_quit=False, notification=True):
         threading.Thread.__init__(self)
         
         self.message = ""
@@ -214,10 +224,6 @@ class VCSAction(threading.Thread):
         if register_gtk_quit:
             self.notification.register_gtk_quit()
 
-        self.queue_exception_callback = None
-        if queue_exception_callback is not None:
-            self.queue_exception_callback = queue_exception_callback
-
     def set_pbar_ticks(self, num):
         """
         Set the total number of ticks to represent in the progress bar.
@@ -252,6 +258,7 @@ class VCSAction(threading.Thread):
         """
         
         self.cancel = cancel
+        self.notification.set_canceled_by_user(True)
         self.queue.cancel_queue()
     
     def notify(self, data):
@@ -537,16 +544,12 @@ class VCSAction(threading.Thread):
         @param  e: The exception object passed by the FunctionQueue
         
         """
-        if self.has_notifier:
-            self.notification.append(
-                ["", str(e), ""]
-            )
-            self.finish()
+        self.notification.exception_callback(e)
         
-        # An external callback function may have been set up
-        if self.queue_exception_callback is not None:
+        if self.has_notifier:
+            self.finish()
+        if self.has_loader:
             self.stop()
-            self.queue_exception_callback(e)     
     
     def stop(self):
         self.notification.close()

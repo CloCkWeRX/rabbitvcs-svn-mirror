@@ -31,7 +31,6 @@ import rabbitvcs.lib.helper
 from rabbitvcs.ui.log import LogDialog
 from rabbitvcs.ui.action import VCSAction
 from rabbitvcs.ui.dialog import MessageBox
-from rabbitvcs.lib.decorators import gtk_unsafe
 from rabbitvcs import gettext
 _ = gettext.gettext
 
@@ -309,8 +308,7 @@ class Compare(InterfaceView):
 
         self.action = VCSAction(
             self.vcs,
-            notification=False,
-            queue_exception_callback=self.vcsaction_exception_callback
+            notification=False
         )    
 
         self.action.append(
@@ -324,10 +322,6 @@ class Compare(InterfaceView):
         self.action.append(rabbitvcs.lib.helper.save_repository_path, second_url)
         self.action.append(self.populate_table)
         self.action.start()
-
-    @gtk_unsafe
-    def vcsaction_exception_callback(self, e):
-        MessageBox(str(e))
 
     def populate_table(self):
         # returns a list of dicts(path, summarize_kind, node_kind, prop_changed)
@@ -346,8 +340,7 @@ class Compare(InterfaceView):
     def open_item_from_revision(self, url, revision, dest):
         self.action = VCSAction(
             self.vcs,
-            notification=False,
-            queue_exception_callback=self.vcsaction_exception_callback
+            notification=False
         )
         self.action.append(
             self.vcs.export,
@@ -386,8 +379,7 @@ class Compare(InterfaceView):
 
         self.action = VCSAction(
             self.vcs,
-            notification=False,
-            queue_exception_callback=self.vcsaction_exception_callback
+            notification=False
         )
         self.action.append(
             SVNDiff,
