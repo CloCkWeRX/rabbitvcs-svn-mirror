@@ -359,12 +359,7 @@ class Log(InterfaceView):
                 "condition": (lambda: False)
             },
             {
-                "label": _("Show changes as annotation"),
-                "signals": None,
-                "condition": (lambda: False)
-            },
-            {
-                "label": _("Show changes as unified diff"),
+                "label": _("View unified diff"),
                 "signals": {
                     "activate": {
                         "callback": self.on_paths_context_show_changes_diff,
