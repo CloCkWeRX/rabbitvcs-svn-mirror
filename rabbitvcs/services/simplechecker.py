@@ -46,6 +46,7 @@ def Main(path, recurse):
     """
     # NOTE: we cannot pickle status_list directly. It needs to be processed
     # here.
+    log.debug("Got request: %s (%s)" % (path, recurse))
     try:
         vcs_client = pysvn.Client()
         status_list = vcs_client.status(path, recurse=recurse)
@@ -53,21 +54,25 @@ def Main(path, recurse):
                     for status in status_list]
     except Exception, e:
         statuses = [status_error(path)]
-   
+    
+    log.debug("Sending reply: %s" % path)
+    
     cPickle.dump(statuses,
-                 sys.stdout,
-                 protocol=PICKLE_PROTOCOL)
+                 sys.stdout)
+    sys.stdout.flush()
 
 class StatusChecker():
    
     def check_status(self, path, recurse):
+        log.debug("Sending request: %s" % path)
         sc_process = subprocess.Popen([sys.executable, __file__,
                                        path.encode("utf-8"),
                                        str(recurse)],
                                stdin = subprocess.PIPE,
                                stdout = subprocess.PIPE)
-        # cPickle.dump((path, bool(recurse)), sc_process.stdin, protocol=PICKLE_PROTOCOL)
+        # cPickle.dump((path, bool(recurse)), sc_process.stdin)
         statuses = cPickle.load(sc_process.stdout)
+        log.debug("Got reply: %s" % path)
         return statuses
 
 if __name__ == '__main__':
