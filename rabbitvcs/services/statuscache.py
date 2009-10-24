@@ -22,8 +22,8 @@ from __future__ import with_statement
 import threading
 from Queue import Queue
 
-# from rabbitvcs.services.checkerservice import StatusCheckerStub
-from rabbitvcs.services.simplechecker import StatusChecker
+# from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
+# from rabbitvcs.services.simplechecker import StatusChecker
 # from rabbitvcs.services.loopedchecker import StatusChecker
 
 import rabbitvcs.util.vcs
