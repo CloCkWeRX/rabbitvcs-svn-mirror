@@ -83,7 +83,8 @@ if __name__ == '__main__':
    
     # This is correct, and should work across all locales and encodings.
     path = unicode(sys.argv[1], "utf-8")
-    recurse = (sys.argv[2] == "True")
+    log.debug("Recurse arg: %s" % sys.argv[2])
+    recurse = (sys.argv[2] in ["True", "1"])
     # (path, recurse) = cPickle.load(sys.stdin)
        
     Main(path, recurse)
