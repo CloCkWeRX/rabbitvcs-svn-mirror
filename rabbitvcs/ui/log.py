@@ -325,6 +325,19 @@ class Log(InterfaceView):
             (liststore, indexes) = selection.get_selected_rows()
             return (len(indexes) > 0)
 
+    def on_paths_table_row_doubleclicked(self, treeview, data=None, col=None):
+        selection = treeview.get_selection()
+        (liststore, indexes) = selection.get_selected_rows()
+
+        self.paths_selected_rows = []
+        for tup in indexes:
+            self.paths_selected_rows.append(tup[0])
+
+        rev_item = self.revision_items[self.selected_rows[0]]
+        path_item = self.paths_table.get_row(self.paths_selected_rows[0])[1]
+        url = self.root_url + path_item
+        self.view_diff_for_path(url, rev_item.revision.number)
+
     def on_paths_table_event(self, treeview, data=None):
         selection = treeview.get_selection()
         (liststore, indexes) = selection.get_selected_rows()
@@ -586,17 +599,10 @@ class Log(InterfaceView):
         SVNRevisionProperties(url, item.revision)
 
     def on_paths_context_show_changes_diff(self, widget, data=None):
-        from rabbitvcs.ui.diff import SVNDiff
-        
         rev_item = self.revision_items[self.selected_rows[0]]
         path_item = self.paths_table.get_row(self.paths_selected_rows[0])[1]
         url = self.root_url + path_item
-        SVNDiff(
-            url, 
-            rev_item.revision.number, 
-            url, 
-            rev_item.revision.number-1
-        )
+        self.view_diff_for_path(url, rev_item.revision.number)
 
 
     #
@@ -616,6 +622,15 @@ class Log(InterfaceView):
     #
     # Other helper methods
     #
+
+    def view_diff_for_path(self, url, revision_number):
+        from rabbitvcs.ui.diff import SVNDiff
+        SVNDiff(
+            url, 
+            revision_number, 
+            url, 
+            revision_number-1
+        )
 
     def edit_revprop(self, prop_name, prop_value, callback=None):
         failure = False
