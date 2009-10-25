@@ -35,6 +35,15 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Compare(InterfaceView):
+    """
+    Show how files and folders are different between revisions.
+    
+        TODO:
+            - Re-name to changes.py because that is what we're doing.
+            - Deal with the revision arguments in a smarter way so we can pass
+                in revisions like HEAD.  Currently, if a revision is passed it
+                assumes it is a number
+    """
     selected_rows = []
 
     def __init__(self, path1=None, revision1=None, path2=None, revision2=None):
