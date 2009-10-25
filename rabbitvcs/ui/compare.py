@@ -87,6 +87,9 @@ class Compare(InterfaceView):
         )
 
         self.check_ui()
+        
+        if path1 and revision1 and path2 and revision2:
+            self.load()
 
     #
     # UI Signal Callback Methods
