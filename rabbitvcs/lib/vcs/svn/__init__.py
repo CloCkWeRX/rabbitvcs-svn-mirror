@@ -840,7 +840,8 @@ class SVN:
             if rev is None:
                 rev = self.revision("head")
                 
-            self.client.revpropset(prop_name, prop_value, url, revision=rev)
+            self.client.revpropset(prop_name, prop_value, url, 
+                revision=rev.primitive())
             return True
         except pysvn.ClientError, e:
             log.exception(e)
@@ -870,7 +871,7 @@ class SVN:
         returner = None
         try:
 
-            returner = self.client.revproplist(url, rev)
+            returner = self.client.revproplist(url, rev.primitive())
             returner = returner[1]
         except pysvn.ClientError, e:
             log.exception(e)
@@ -905,7 +906,7 @@ class SVN:
             returner = self.client.revpropget(
                 prop_name,
                 url,
-                revision=rev
+                revision=rev.primitive()
             )
         except pysvn.ClientError, e:
             log.exception("pysvn.ClientError exception in svn.py revpropget() for %s" % url)
@@ -937,7 +938,7 @@ class SVN:
             self.client.revpropdel(
                 prop_name,
                 url,
-                revision=rev,
+                revision=rev.primitive(),
                 force=force
             )
             return True
