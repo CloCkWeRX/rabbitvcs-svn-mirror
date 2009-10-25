@@ -178,51 +178,10 @@ class SVNProperties(PropertiesBase):
         if failure:
             rabbitvcs.ui.dialog.MessageBox(_("There was a problem saving your properties."))
 
-class SVNRevisionProperties(PropertiesBase):
-    def __init__(self, path, revision=None):
-        PropertiesBase.__init__(self, path)
-        
-        self.revision = revision
-        self.revision_obj = None
-        if self.revision_obj is not None:
-            self.revision_obj = self.vcs.revision("number", revision)
-
-        self.load()
-
-    def load(self):
-        self.table.clear()
-        try:
-            self.proplist = self.vcs.revproplist(
-                self.get_widget("path").get_text(),
-                self.revision_obj
-            )
-        except Exception, e:
-            log.exception(e)
-            rabbitvcs.ui.dialog.MessageBox(_("Unable to retrieve properties list"))
-            self.proplist = {}
-        
-        if self.proplist:
-            for key,val in self.proplist.items():
-                self.table.append([False, key,val.rstrip()])
-
-    def save(self):
-        delete_recurse = self.get_widget("delete_recurse").get_active()
-        
-        for row in self.delete_stack:
-            self.vcs.revpropdel(self.path, row[1], self.revision_obj, force=True)
-
-        for row in self.table.get_items():
-            result = self.vcs.revpropset(row[1], row[2], self.path,
-                             self.revision_obj, force=True)
-            
-            if result != True:
-                msg = _("Error setting property: ") + row[1] + "\n\n" + str(result)
-                rabbitvcs.ui.dialog.MessageBox(msg)
-
 if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main()
     
-    window = SVNRevisionProperties(paths[0])
+    window = SVNProperties(paths[0])
     window.register_gtk_quit()
     gtk.main()
