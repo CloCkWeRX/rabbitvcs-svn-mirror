@@ -531,20 +531,34 @@ class Log(InterfaceView):
 
     def on_context_diff_wc(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
-        
         item = self.revision_items[self.selected_rows[0]]
-        SVNDiff(self.path, item.revision.number)
+        self.action = VCSAction(
+            self.vcs,
+            notification=False
+        )
+        self.action.append(
+            SVNDiff,
+            self.path, 
+            item.revision.number
+        )
+        self.action.start()
 
     def on_context_diff_previous_revision(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
 
         item = self.revision_items[self.selected_rows[0]]
-        SVNDiff(
+        self.action = VCSAction(
+            self.vcs,
+            notification=False
+        )
+        self.action.append(
+            SVNDiff,
             self.path, 
             item.revision.number, 
             self.path, 
             item.revision.number-1
         )
+        self.action.start()
 
     def on_context_update_to(self, widget, data=None):
         from rabbitvcs.ui.updateto import UpdateToRevision
