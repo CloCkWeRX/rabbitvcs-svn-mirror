@@ -602,7 +602,7 @@ class Log(InterfaceView):
             self.edit_revprop("svn:author", new_author, self.on_author_edited)
 
     def on_context_edit_revprops(self, widget, data=None):
-        from rabbitvcs.ui.properties import SVNRevisionProperties
+        from rabbitvcs.ui.revprops import SVNRevisionProperties
         item = self.revision_items[self.selected_rows[0]]
         url = self.vcs.get_repo_url(self.path)
         SVNRevisionProperties(url, item.revision)
