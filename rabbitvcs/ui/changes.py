@@ -34,12 +34,11 @@ from rabbitvcs.ui.dialog import MessageBox
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Compare(InterfaceView):
+class Changes(InterfaceView):
     """
     Show how files and folders are different between revisions.
     
         TODO:
-            - Re-name to changes.py because that is what we're doing.
             - Deal with the revision arguments in a smarter way so we can pass
                 in revisions like HEAD.  Currently, if a revision is passed it
                 assumes it is a number
@@ -47,7 +46,7 @@ class Compare(InterfaceView):
     selected_rows = []
 
     def __init__(self, path1=None, revision1=None, path2=None, revision2=None):
-        InterfaceView.__init__(self, "compare", "Compare")
+        InterfaceView.__init__(self, "changes", "Changes")
         
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
 
@@ -461,6 +460,6 @@ if __name__ == "__main__":
     if len(args) > 0:
         pathrev2 = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
 
-    window = Compare(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])
+    window = Changes(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])
     window.register_gtk_quit()
     gtk.main()
