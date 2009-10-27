@@ -690,10 +690,7 @@ class LogDialog(Log):
     def on_destroy(self, widget):
         pass
     
-    def on_cancel_clicked(self, widget, data=None):
-        self.hide()
-    
-    def on_ok_clicked(self, widget, data=None):
+    def on_close_clicked(self, widget, data=None):
         self.hide()
         if self.ok_callback is not None:
             if self.multiple == True:
