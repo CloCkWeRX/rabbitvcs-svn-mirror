@@ -34,6 +34,7 @@ import rabbitvcs.ui.dialog
 import rabbitvcs.lib
 import rabbitvcs.lib.helper
 from rabbitvcs.lib.log import Log
+from rabbitvcs.lib.decorators import gtk_unsafe
 
 log = Log("rabbitvcs.ui.commit")
 
@@ -96,6 +97,7 @@ class Commit(InterfaceView):
     # Helper functions
     # 
 
+    @gtk_unsafe
     def load(self):
         """
           - Gets a listing of file items that are valid for the commit window.
@@ -103,8 +105,7 @@ class Commit(InterfaceView):
           - Populates the files table with the retrieved items
           - Updates the status area        
         """
-        
-        gtk.gdk.threads_enter()
+
         self.get_widget("status").set_text(_("Loading..."))
         self.items = self.vcs.get_items(self.paths, self.vcs.STATUSES_FOR_COMMIT)
 
@@ -114,8 +115,6 @@ class Commit(InterfaceView):
 
         self.populate_files_table()
         self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
-        gtk.gdk.threads_leave()
-
     
     def get_last_path(self):
         return self.files_table.get_row(self.last_row_clicked)[1]
@@ -169,6 +168,7 @@ class Commit(InterfaceView):
                 item.prop_status
             ])
 
+    @gtk_unsafe
     def initialize_items(self):
         """
         Initializes the activated cache and loads the file items in a new thread
@@ -178,7 +178,7 @@ class Commit(InterfaceView):
             self.initialize_activated_cache()
             thread.start_new_thread(self.load, ())
         except Exception, e:
-            log.exception()
+            log.exception(e)
 
     #
     # Event handlers
