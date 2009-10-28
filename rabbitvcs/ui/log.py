@@ -372,15 +372,20 @@ class Log(InterfaceView):
     def show_paths_table_popup_menu(self, treeview, data):
         context_menu = rabbitvcs.ui.widget.ContextMenu([
             {
-                "label": _("Show changes"),
-                "signals": None,
-                "condition": (lambda: False)
-            },
-            {
-                "label": _("View unified diff"),
+                "label": _("View diff against previous revision"),
                 "signals": {
                     "activate": {
                         "callback": self.on_paths_context_show_changes_diff,
+                        "args": None
+                    }
+                },
+                "condition": self.condition_diff_previous_revision
+            },
+            {
+                "label": _("Compare with previous revision"),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_paths_context_compare,
                         "args": None
                     }
                 },
@@ -662,7 +667,19 @@ class Log(InterfaceView):
         path_item = self.paths_table.get_row(self.paths_selected_rows[0])[1]
         url = self.root_url + path_item
         self.view_diff_for_path(url, rev_item.revision.number)
+    
+    def on_paths_context_compare(self, widget ,data=None):
+        rev_item = self.revision_items[self.selected_rows[0]]
+        path_item = self.paths_table.get_row(self.paths_selected_rows[0])[1]
+        url = self.root_url + path_item
 
+        from rabbitvcs.ui.compare import Compare
+        Compare(
+            url, 
+            rev_item.revision.number-1, 
+            url, 
+            rev_item.revision.number
+        )
 
     #
     # Context menu item conditions for being visible
