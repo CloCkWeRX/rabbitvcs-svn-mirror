@@ -46,6 +46,7 @@ log = Log("rabbitvcs.ui.widget")
 
 TOGGLE_BUTTON = 'TOGGLE_BUTTON'
 PATH_ENTRY = 'PATH_ENTRY'
+SEPARATOR = u'\u2015' * 10
 
 from pprint import pformat
 
@@ -272,7 +273,19 @@ class ContextMenu:
         
         self.view = gtk.Menu()
         self.num_items = 0
+        is_last = False
+        is_first = True
+        index = 0
+        length = len(menu)
         for item in menu:
+            is_last = (index + 1 == length)
+
+            # If the item is a separator, don't show it if this is the first
+            # or last item, or if the previous item was a separator.
+            if (item["label"] == SEPARATOR and
+                    (is_first or is_last or previous_label == SEPARATOR)):
+                index += 1
+                continue
         
             if item["condition"]() is False:
                 continue
@@ -288,6 +301,14 @@ class ContextMenu:
             
             self.num_items += 1
             self.view.add(menuitem)
+
+            # The menu item above has just been added, so we can note that
+            # we're no longer on the first menu item.  And we'll keep
+            # track of this item so the next iteration can test if it should
+            # show a separator or not
+            is_first = False
+            previous_label = item["label"]
+            index += 1
         
     def show(self, event):        
         self.view.show_all()
