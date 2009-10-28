@@ -581,9 +581,9 @@ class Log(InterfaceView):
         self.action.append(
             SVNDiff,
             self.path, 
-            item.revision.number, 
+            item.revision.number-1, 
             self.path, 
-            item.revision.number-1
+            item.revision.number
         )
         self.action.start()
 
@@ -681,9 +681,9 @@ class Log(InterfaceView):
         self.action.append(
             SVNDiff,
             url, 
-            revision_number, 
+            revision_number-1, 
             url, 
-            revision_number-1
+            revision_number
         )
         self.action.start()
 
