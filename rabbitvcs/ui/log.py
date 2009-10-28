@@ -52,8 +52,6 @@ class Log(InterfaceView):
     paths_selected_rows = []
     
     limit = 100
-    
-    SEPARATOR = u'\u2015' * 10
 
     def __init__(self, path):
         """
@@ -231,7 +229,7 @@ class Log(InterfaceView):
                 "condition": self.condition_diff_previous_revision
             },
             {
-                "label": self.SEPARATOR,
+                "label": rabbitvcs.ui.widget.SEPARATOR,
                 "signals": None,
                 "condition": (lambda: True)
             },
@@ -281,7 +279,7 @@ class Log(InterfaceView):
                 "condition": self.condition_export
             },
             {
-                "label": self.SEPARATOR,
+                "label": rabbitvcs.ui.widget.SEPARATOR,
                 "signals": None,
                 "condition": (lambda: True)
             },
@@ -379,7 +377,7 @@ class Log(InterfaceView):
                 "condition": self.condition_diff_previous_revision
             },
             {
-                "label": self.SEPARATOR,
+                "label": rabbitvcs.ui.widget.SEPARATOR,
                 "signals": None,
                 "condition": (lambda: False)
             },
