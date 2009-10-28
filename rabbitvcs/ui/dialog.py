@@ -258,6 +258,25 @@ class FileChooser:
             returner = self.dialog.get_uri()
         self.dialog.destroy()
         return returner
+
+class FileSaveAs:
+    def __init__(self, title=_("Save As..."), folder=None):
+        self.dialog = gtk.FileChooserDialog(title, 
+            None, 
+            gtk.FILE_CHOOSER_ACTION_SAVE, 
+            (gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,
+                gtk.STOCK_SAVE,gtk.RESPONSE_OK))
+        if folder is not None:
+            self.dialog.set_current_folder(folder)
+        self.dialog.set_default_response(gtk.RESPONSE_OK)
+
+    def run(self):
+        returner = None
+        result = self.dialog.run()
+        if result == gtk.RESPONSE_OK:
+            returner = self.dialog.get_filename()
+        self.dialog.destroy()
+        return returner
         
 class Confirmation(InterfaceView):
     def __init__(self, message=_("Are you sure you want to continue?")):
