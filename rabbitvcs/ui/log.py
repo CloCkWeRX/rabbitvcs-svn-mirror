@@ -406,6 +406,16 @@ class Log(InterfaceView):
                     }
                 },
                 "condition": (lambda: True)
+            },
+            {
+                "label": _("Annotate"),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_paths_context_annotate,
+                        "args": None
+                    }
+                },
+                "condition": self.condition_paths_annotate
             }
         ])
         context_menu.show(data)
@@ -689,24 +699,38 @@ class Log(InterfaceView):
 
     def on_paths_context_open(self, widget, data=None):
         rev_item = self.revision_items[self.selected_rows[0]]
-        path_item = self.paths_table.get_row(self.paths_selected_rows[0])[1]
-        url = self.root_url + path_item
-        dest = "/tmp/rabbitvcs-" + str(rev_item.revision.number) + "-" + os.path.basename(path_item)
-
         revision = self.vcs.revision("number", number=rev_item.revision.number)
         self.action = VCSAction(
             self.vcs,
             notification=False
         )
-        self.action.append(
-            self.vcs.export,
-            url,
-            dest,
-            revision=revision
-        )
-        self.action.append(rabbitvcs.lib.helper.open_item, dest)
+
+        # This allows us to open multiple files at once
+        dests = []
+        for row in self.paths_selected_rows:
+            path = self.root_url + self.paths_table.get_row(row)[1]
+            dest = "/tmp/rabbitvcs-" + str(rev_item.revision.number) + "-" + os.path.basename(path)
+            self.action.append(
+                self.vcs.export,
+                path,
+                dest,
+                revision=revision
+            )
+            dests.append(dest)
+        
+        for dest in dests:
+            self.action.append(rabbitvcs.lib.helper.open_item, dest)
+            
         self.action.start()
 
+    def on_paths_context_annotate(self, widget, data=None):
+        rev_item = self.revision_items[self.selected_rows[0]]
+        path_item = self.paths_table.get_row(self.paths_selected_rows[0])[1]
+        url = self.root_url + path_item
+
+        from rabbitvcs.ui.annotate import Annotate
+        Annotate(url)
+        
     #
     # Context menu item conditions for being visible
     #
@@ -738,6 +762,9 @@ class Log(InterfaceView):
     
     def condition_compare_revisions(self):
         return (len(self.selected_rows) == 2)
+
+    def condition_paths_annotate(self):
+        return (len(self.selected_rows) == 1)
 
     #
     # Other helper methods
