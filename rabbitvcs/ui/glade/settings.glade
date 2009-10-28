@@ -12,6 +12,7 @@
     <signal name="destroy" handler="on_destroy"/>
     <child>
       <widget class="GtkVBox" id="vbox1">
+<property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="spacing">18</property>
@@ -21,9 +22,11 @@
             <property name="can_focus">True</property>
             <child>
               <widget class="GtkVBox" id="vbox3">
+<property name="orientation">vertical</property>
                 <property name="visible">True</property>
                 <child>
                   <widget class="GtkVBox" id="vbox4">
+<property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="border_width">12</property>
                     <property name="spacing">6</property>
@@ -45,6 +48,7 @@
                         <property name="left_padding">12</property>
                         <child>
                           <widget class="GtkVBox" id="vbox5">
+<property name="orientation">vertical</property>
                             <property name="visible">True</property>
                             <property name="spacing">6</property>
                             <child>
@@ -81,6 +85,7 @@
                             </child>
                             <child>
                               <widget class="GtkVBox" id="vbox13">
+<property name="orientation">vertical</property>
                                 <property name="visible">True</property>
                                 <child>
                                   <widget class="GtkCheckButton" id="enable_attributes">
@@ -175,11 +180,13 @@
             </child>
             <child>
               <widget class="GtkVBox" id="vbox2">
+<property name="orientation">vertical</property>
                 <property name="visible">True</property>
                 <property name="border_width">12</property>
                 <property name="spacing">18</property>
                 <child>
                   <widget class="GtkVBox" id="vbox7">
+<property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
@@ -200,6 +207,7 @@
                         <property name="left_padding">12</property>
                         <child>
                           <widget class="GtkVBox" id="vbox8">
+<property name="orientation">vertical</property>
                             <property name="visible">True</property>
                             <property name="spacing">6</property>
                             <child>
@@ -270,6 +278,7 @@
                 </child>
                 <child>
                   <widget class="GtkVBox" id="vbox9">
+<property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
@@ -353,11 +362,13 @@
             </child>
             <child>
               <widget class="GtkVBox" id="vbox6">
+<property name="orientation">vertical</property>
                 <property name="visible">True</property>
                 <property name="border_width">12</property>
                 <property name="spacing">18</property>
                 <child>
                   <widget class="GtkVBox" id="vbox10">
+<property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
@@ -432,6 +443,7 @@
                 </child>
                 <child>
                   <widget class="GtkVBox" id="vbox11">
+<property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
@@ -509,6 +521,7 @@
                 </child>
                 <child>
                   <widget class="GtkVBox" id="vbox12">
+<property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
@@ -589,6 +602,7 @@
             </child>
             <child>
               <widget class="GtkVBox" id="vbox14">
+<property name="orientation">vertical</property>
                 <property name="visible">True</property>
                 <property name="border_width">12</property>
                 <property name="spacing">6</property>
@@ -611,6 +625,7 @@
                     <property name="left_padding">12</property>
                     <child>
                       <widget class="GtkVBox" id="vbox16">
+<property name="orientation">vertical</property>
                         <property name="visible">True</property>
                         <property name="spacing">6</property>
                         <child>

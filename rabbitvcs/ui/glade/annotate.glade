@@ -1,17 +1,18 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.1 on Sat Oct 24 13:58:45 2009 -->
+<?xml version="1.0"?>
 <glade-interface>
+  <!-- interface-requires gtk+ 2.6 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="Annotate">
     <property name="width_request">750</property>
     <property name="height_request">550</property>
     <property name="visible">True</property>
     <property name="title" translatable="yes">Annotate</property>
-    <property name="window_position">GTK_WIN_POS_CENTER</property>
+    <property name="window_position">center</property>
     <property name="icon_name">rabbitvcs-small</property>
     <signal name="destroy" handler="on_destroy"/>
     <child>
       <widget class="GtkVBox" id="vbox1">
+<property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="spacing">18</property>
@@ -19,8 +20,8 @@
           <widget class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-            <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+            <property name="hscrollbar_policy">automatic</property>
+            <property name="vscrollbar_policy">automatic</property>
             <child>
               <widget class="GtkTreeView" id="table">
                 <property name="visible">True</property>
@@ -30,7 +31,7 @@
             </child>
           </widget>
           <packing>
-            <property name="position">1</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
@@ -38,6 +39,7 @@
             <property name="visible">True</property>
             <child>
               <widget class="GtkVBox" id="vbox2">
+<property name="orientation">vertical</property>
                 <property name="visible">True</property>
                 <property name="spacing">6</property>
                 <child>
@@ -46,6 +48,7 @@
                     <property name="spacing">12</property>
                     <child>
                       <widget class="GtkVBox" id="vbox3">
+<property name="orientation">vertical</property>
                         <property name="visible">True</property>
                         <property name="spacing">6</property>
                         <child>
@@ -55,6 +58,9 @@
                             <property name="label" translatable="yes">&lt;b&gt;From Revision&lt;/b&gt;</property>
                             <property name="use_markup">True</property>
                           </widget>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
                         </child>
                         <child>
                           <widget class="GtkHBox" id="hbox4">
@@ -66,13 +72,15 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                               </widget>
+                              <packing>
+                                <property name="position">0</property>
+                              </packing>
                             </child>
                             <child>
                               <widget class="GtkButton" id="from_show_log">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="response_id">0</property>
                                 <signal name="clicked" handler="on_from_show_log_clicked"/>
                                 <child>
                                   <widget class="GtkImage" id="image2">
@@ -93,9 +101,13 @@
                           </packing>
                         </child>
                       </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
                     </child>
                     <child>
                       <widget class="GtkVBox" id="vbox5">
+<property name="orientation">vertical</property>
                         <property name="visible">True</property>
                         <property name="spacing">6</property>
                         <child>
@@ -105,6 +117,9 @@
                             <property name="label" translatable="yes">&lt;b&gt;To Revision&lt;/b&gt;</property>
                             <property name="use_markup">True</property>
                           </widget>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
                         </child>
                         <child>
                           <widget class="GtkHBox" id="hbox3">
@@ -116,13 +131,15 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                               </widget>
+                              <packing>
+                                <property name="position">0</property>
+                              </packing>
                             </child>
                             <child>
                               <widget class="GtkButton" id="to_show_log">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="response_id">0</property>
                                 <signal name="clicked" handler="on_to_show_log_clicked"/>
                                 <child>
                                   <widget class="GtkImage" id="image1">
@@ -142,7 +159,6 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
-                                <property name="response_id">0</property>
                                 <signal name="clicked" handler="on_refresh_clicked"/>
                                 <child>
                                   <widget class="GtkImage" id="image3">
@@ -172,12 +188,17 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
               </widget>
+              <packing>
+                <property name="position">0</property>
+              </packing>
             </child>
             <child>
               <widget class="GtkVBox" id="vbox4">
+<property name="orientation">vertical</property>
                 <property name="visible">True</property>
                 <child>
                   <widget class="GtkLabel" id="label3">
@@ -190,29 +211,33 @@
                 <child>
                   <widget class="GtkHButtonBox" id="hbuttonbox1">
                     <property name="visible">True</property>
-                    <property name="layout_style">GTK_BUTTONBOX_END</property>
+                    <property name="layout_style">end</property>
                     <child>
                       <widget class="GtkButton" id="close">
+                        <property name="label">gtk-close</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="label">gtk-close</property>
                         <property name="use_stock">True</property>
-                        <property name="response_id">0</property>
                         <signal name="clicked" handler="on_close_clicked"/>
                       </widget>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
                     </child>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="pack_type">GTK_PACK_END</property>
+                    <property name="pack_type">end</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
               </widget>
               <packing>
-                <property name="pack_type">GTK_PACK_END</property>
+                <property name="pack_type">end</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -220,7 +245,8 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
-            <property name="pack_type">GTK_PACK_END</property>
+            <property name="pack_type">end</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </widget>

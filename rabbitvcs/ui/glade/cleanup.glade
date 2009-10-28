@@ -11,6 +11,7 @@
     <signal name="destroy" handler="on_destroy"/>
     <child>
       <widget class="GtkVBox" id="vbox24">
+<property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <child>

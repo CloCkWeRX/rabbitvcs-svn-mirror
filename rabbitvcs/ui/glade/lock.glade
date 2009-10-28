@@ -11,11 +11,13 @@
     <signal name="destroy" handler="on_destroy"/>
     <child>
       <widget class="GtkVBox" id="vbox1">
+<property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="spacing">18</property>
         <child>
           <widget class="GtkVBox" id="vbox3">
+<property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
@@ -36,6 +38,7 @@
                 <property name="left_padding">12</property>
                 <child>
                   <widget class="GtkVBox" id="vbox4">
+<property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
@@ -97,6 +100,7 @@
         </child>
         <child>
           <widget class="GtkVBox" id="vbox5">
+<property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
@@ -117,6 +121,7 @@
                 <property name="left_padding">12</property>
                 <child>
                   <widget class="GtkVBox" id="vbox2">
+<property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
@@ -139,6 +144,7 @@
                     </child>
                     <child>
                       <widget class="GtkVBox" id="vbox6">
+<property name="orientation">vertical</property>
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkCheckButton" id="select_all">

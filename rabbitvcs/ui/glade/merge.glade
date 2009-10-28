@@ -17,11 +17,13 @@
     <signal name="prepare" handler="on_prepare"/>
     <child>
       <widget class="GtkVBox" id="page1">
+<property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="spacing">18</property>
         <child>
           <widget class="GtkVBox" id="vbox3">
+<property name="orientation">vertical</property>
             <property name="visible">True</property>
             <child>
               <widget class="GtkRadioButton" id="mergetype_range_opt">
@@ -58,6 +60,7 @@
         </child>
         <child>
           <widget class="GtkVBox" id="vbox5">
+<property name="orientation">vertical</property>
             <property name="visible">True</property>
             <child>
               <widget class="GtkRadioButton" id="mergetype_tree_opt">
@@ -102,11 +105,13 @@
     </child>
     <child>
       <widget class="GtkVBox" id="page2a">
+<property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="spacing">18</property>
         <child>
           <widget class="GtkVBox" id="vbox8">
+<property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
@@ -152,6 +157,7 @@
         </child>
         <child>
           <widget class="GtkVBox" id="vbox9">
+<property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
@@ -172,6 +178,7 @@
                 <property name="left_padding">12</property>
                 <child>
                   <widget class="GtkVBox" id="vbox34">
+<property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
@@ -250,6 +257,7 @@ To merge all revisions, leave the box empty.</property>
         </child>
         <child>
           <widget class="GtkVBox" id="vbox10">
+<property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
@@ -301,11 +309,13 @@ To merge all revisions, leave the box empty.</property>
     </child>
     <child>
       <widget class="GtkVBox" id="page2b">
+<property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="spacing">18</property>
         <child>
           <widget class="GtkVBox" id="vbox11">
+<property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
@@ -385,6 +395,7 @@ To merge all revisions, leave the box empty.</property>
         </child>
         <child>
           <widget class="GtkVBox" id="vbox12">
+<property name="orientation">vertical</property>
             <property name="visible">True</property>
             <child>
               <widget class="GtkLabel" id="label7">
@@ -436,11 +447,13 @@ To merge all revisions, leave the box empty.</property>
     </child>
     <child>
       <widget class="GtkVBox" id="page2c">
+<property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="spacing">18</property>
         <child>
           <widget class="GtkVBox" id="vbox13">
+<property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
@@ -461,6 +474,7 @@ To merge all revisions, leave the box empty.</property>
                 <property name="left_padding">12</property>
                 <child>
                   <widget class="GtkVBox" id="vbox38">
+<property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
@@ -481,6 +495,7 @@ To merge all revisions, leave the box empty.</property>
                     </child>
                     <child>
                       <widget class="GtkVBox" id="vbox2">
+<property name="orientation">vertical</property>
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkRadioButton" id="mergetree_from_revision_head_opt">
@@ -577,6 +592,7 @@ To merge all revisions, leave the box empty.</property>
         </child>
         <child>
           <widget class="GtkVBox" id="vbox14">
+<property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
@@ -597,6 +613,7 @@ To merge all revisions, leave the box empty.</property>
                 <property name="left_padding">12</property>
                 <child>
                   <widget class="GtkVBox" id="vbox39">
+<property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
@@ -617,6 +634,7 @@ To merge all revisions, leave the box empty.</property>
                     </child>
                     <child>
                       <widget class="GtkVBox" id="vbox4">
+<property name="orientation">vertical</property>
                         <property name="visible">True</property>
                         <child>
                           <widget class="GtkRadioButton" id="mergetree_to_revision_head_opt">
@@ -714,6 +732,7 @@ To merge all revisions, leave the box empty.</property>
         </child>
         <child>
           <widget class="GtkVBox" id="vbox15">
+<property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
@@ -765,11 +784,13 @@ To merge all revisions, leave the box empty.</property>
     </child>
     <child>
       <widget class="GtkVBox" id="page3">
+<property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="spacing">18</property>
         <child>
           <widget class="GtkVBox" id="vbox1">
+<property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
@@ -790,6 +811,7 @@ To merge all revisions, leave the box empty.</property>
                 <property name="left_padding">12</property>
                 <child>
                   <widget class="GtkVBox" id="vbox41">
+<property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <child>
                       <widget class="GtkCheckButton" id="mergeoptions_recursive">
