@@ -34,7 +34,7 @@ from rabbitvcs.ui.dialog import MessageBox
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Changes(InterfaceView):
+class Compare(InterfaceView):
     """
     Show how files and folders are different between revisions.
     
@@ -46,7 +46,7 @@ class Changes(InterfaceView):
     selected_rows = []
 
     def __init__(self, path1=None, revision1=None, path2=None, revision2=None):
-        InterfaceView.__init__(self, "changes", "Changes")
+        InterfaceView.__init__(self, "compare", "Compare")
         
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
 
@@ -356,7 +356,7 @@ class Changes(InterfaceView):
         self.action.start()
         
     #
-    # Changes table context menu callbacks
+    # Compare table context menu callbacks
     #
 
     def on_context_open_first(self, widget, data=None):
@@ -427,7 +427,7 @@ class Changes(InterfaceView):
         self.action.start()
         
     #
-    # Changes table condition callbacks
+    # Compare table condition callbacks
     #
 
     def condition_show_open_first_revision(self):
@@ -460,6 +460,6 @@ if __name__ == "__main__":
     if len(args) > 0:
         pathrev2 = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
 
-    window = Changes(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])
+    window = Compare(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])
     window.register_gtk_quit()
     gtk.main()
