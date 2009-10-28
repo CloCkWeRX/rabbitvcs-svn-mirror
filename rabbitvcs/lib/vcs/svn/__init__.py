@@ -1073,7 +1073,8 @@ class SVN:
 
         return self.client.copy(src, dest, revision.primitive())
     
-    def checkout(self, url, path, recurse=True, ignore_externals=False):
+    def checkout(self, url, path, recurse=True, revision=Revision("head"), 
+            ignore_externals=False):
         
         """
         Checkout a working copy from a vcs repository
@@ -1092,7 +1093,8 @@ class SVN:
         
         """
         
-        return self.client.checkout(url, path, recurse, ignore_externals)
+        return self.client.checkout(url, path, recurse=recurse, 
+            revision=revision.primitive(), ignore_externals=ignore_externals)
     
     def cleanup(self, path):
         """
