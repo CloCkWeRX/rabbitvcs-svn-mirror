@@ -24,6 +24,7 @@ from __future__ import division
 import threading
 from datetime import datetime
 
+import os.path
 import pygtk
 import gobject
 import gtk
@@ -394,12 +395,17 @@ class Log(InterfaceView):
             {
                 "label": rabbitvcs.ui.widget.SEPARATOR,
                 "signals": None,
-                "condition": (lambda: False)
+                "condition": (lambda: True)
             },
             {
                 "label": _("Open"),
-                "signals": None,
-                "condition": (lambda: False)
+                "signals": {
+                    "activate": {
+                        "callback": self.on_paths_context_open,
+                        "args": None
+                    }
+                },
+                "condition": (lambda: True)
             }
         ])
         context_menu.show(data)
@@ -668,7 +674,7 @@ class Log(InterfaceView):
         url = self.root_url + path_item
         self.view_diff_for_path(url, rev_item.revision.number)
     
-    def on_paths_context_compare(self, widget ,data=None):
+    def on_paths_context_compare(self, widget, data=None):
         rev_item = self.revision_items[self.selected_rows[0]]
         path_item = self.paths_table.get_row(self.paths_selected_rows[0])[1]
         url = self.root_url + path_item
@@ -680,6 +686,26 @@ class Log(InterfaceView):
             url, 
             rev_item.revision.number
         )
+
+    def on_paths_context_open(self, widget, data=None):
+        rev_item = self.revision_items[self.selected_rows[0]]
+        path_item = self.paths_table.get_row(self.paths_selected_rows[0])[1]
+        url = self.root_url + path_item
+        dest = "/tmp/rabbitvcs-" + str(rev_item.revision.number) + "-" + os.path.basename(path_item)
+
+        revision = self.vcs.revision("number", number=rev_item.revision.number)
+        self.action = VCSAction(
+            self.vcs,
+            notification=False
+        )
+        self.action.append(
+            self.vcs.export,
+            url,
+            dest,
+            revision=revision
+        )
+        self.action.append(rabbitvcs.lib.helper.open_item, dest)
+        self.action.start()
 
     #
     # Context menu item conditions for being visible
