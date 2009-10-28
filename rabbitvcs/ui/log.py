@@ -211,6 +211,16 @@ class Log(InterfaceView):
                 "condition": (lambda: True)
             },
             {
+                "label": _("View diff between revisions"),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_diff_revisions,
+                        "args": None
+                    }
+                },
+                "condition": self.condition_diff_revisions
+            },
+            {
                 "label": _("View diff against previous revision"),
                 "signals": {
                     "activate": {
@@ -233,7 +243,7 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": (lambda: True)
+                "condition": self.condition_update_to
             },
             {
                 "label": _("Rollback to revision..."),
@@ -258,7 +268,7 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": (lambda: True)
+                "condition": self.condition_branch
             },
             {
                 "label": _("Export..."),
@@ -268,7 +278,7 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": (lambda: True)
+                "condition": self.condition_export
             },
             {
                 "label": self.SEPARATOR,
@@ -543,6 +553,25 @@ class Log(InterfaceView):
         )
         self.action.start()
 
+    def on_context_diff_revisions(self, widget, data=None):
+        from rabbitvcs.ui.diff import SVNDiff
+        
+        item1 = self.revision_items[self.selected_rows[0]]
+        item2 = self.revision_items[self.selected_rows[1]]
+        
+        self.action = VCSAction(
+            self.vcs,
+            notification=False
+        )
+        self.action.append(
+            SVNDiff,
+            self.vcs.get_repo_url(self.path), 
+            item1.revision.number, 
+            self.path, 
+            item2.revision.number
+        )
+        self.action.start()
+
     def on_context_diff_previous_revision(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
 
@@ -620,10 +649,22 @@ class Log(InterfaceView):
     
     def condition_checkout(self):
         return (len(self.selected_rows) == 1)
+    
+    def condition_export(self):
+        return self.condition_checkout()
+
+    def condition_branch(self):
+        return self.condition_checkout()
+
+    def condition_update_to(self):
+        return self.condition_checkout()
 
     def condition_diff_previous_revision(self):
         item = self.revision_items[self.selected_rows[0]]
         return (item.revision.number > 1)
+
+    def condition_diff_revisions(self):
+        return (len(self.selected_rows) == 2)
 
     def condition_edit_revprops(self):
         return (len(self.selected_rows) == 1)
