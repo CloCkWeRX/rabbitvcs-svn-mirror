@@ -144,7 +144,6 @@ class MessageCallbackNotifier(VCSNotifier):
     def focus_on_ok_button(self):
         self.get_widget("ok").grab_focus()
 
-    @gtk_unsafe
     def exception_callback(self, e):
         self.append(["", str(e), ""])
 
