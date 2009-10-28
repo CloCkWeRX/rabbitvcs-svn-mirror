@@ -334,9 +334,13 @@ class Compare(InterfaceView):
         self.changes_table.clear()
         for item in summary:
             prop_changed = (item["prop_changed"] == 1 and _("Yes") or _("No"))
-        
+            
+            path = item["path"]
+            if path == "":
+                path = self.first_urls.get_active_text()
+            
             self.changes_table.append([
-                item["path"],
+                path,
                 item["summarize_kind"],
                 prop_changed
             ])
@@ -360,23 +364,20 @@ class Compare(InterfaceView):
     #
 
     def on_context_open_first(self, widget, data=None):
-        url = self.vcs.get_repo_url(self.first_urls.get_active_text())
-        path = url + "/" + self.changes_table.get_row(self.selected_rows[0])[0]
+        path = self.changes_table.get_row(self.selected_rows[0])[0]
         rev = self.get_first_revision()
         dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(path)
         self.open_item_from_revision(path, rev, dest)
 
     def on_context_open_second(self, widget, data=None):
-        url = self.vcs.get_repo_url(self.second_urls.get_active_text())
-        path = url + "/" + self.changes_table.get_row(self.selected_rows[0])[0]
+        path = self.changes_table.get_row(self.selected_rows[0])[0]
         rev = self.get_second_revision()
         dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(path)
         self.open_item_from_revision(path, rev, dest)
 
     def on_context_view_diff(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
-        url = self.vcs.get_repo_url(self.first_urls.get_active_text())
-        url += "/" + self.changes_table.get_row(self.selected_rows[0])[0]
+        url = self.changes_table.get_row(self.selected_rows[0])[0]
         
         rev1 = self.get_first_revision()
         rev2 = self.get_second_revision()
@@ -395,8 +396,7 @@ class Compare(InterfaceView):
         self.action.start()
 
     def on_context_show_changes(self, widget, data=None):
-        url = self.vcs.get_repo_url(self.second_urls.get_active_text())
-        path = url + "/" + self.changes_table.get_row(self.selected_rows[0])[0]
+        path = self.changes_table.get_row(self.selected_rows[0])[0]
 
         rev1 = self.get_first_revision()
         dest1 = "/tmp/rabbitvcs-" + str(rev1) + "-" + os.path.basename(path)
