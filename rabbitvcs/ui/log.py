@@ -206,7 +206,17 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": (lambda: True)
+                "condition": self.condition_diff_working_copy
+            },
+            {
+                "label": _("View diff against previous revision"),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_diff_previous_revision,
+                        "args": None
+                    }
+                },
+                "condition": self.condition_diff_previous_revision
             },
             {
                 "label": _("View diff between revisions"),
@@ -219,14 +229,14 @@ class Log(InterfaceView):
                 "condition": self.condition_diff_revisions
             },
             {
-                "label": _("View diff against previous revision"),
+                "label": _("Compare revisions"),
                 "signals": {
                     "activate": {
-                        "callback": self.on_context_diff_previous_revision,
+                        "callback": self.on_context_compare_revisions,
                         "args": None
                     }
                 },
-                "condition": self.condition_diff_previous_revision
+                "condition": self.condition_compare_revisions
             },
             {
                 "label": rabbitvcs.ui.widget.SEPARATOR,
@@ -564,9 +574,9 @@ class Log(InterfaceView):
         self.action.append(
             SVNDiff,
             self.vcs.get_repo_url(self.path), 
-            item1.revision.number, 
+            item2.revision.number, 
             self.path, 
-            item2.revision.number
+            item1.revision.number
         )
         self.action.start()
 
@@ -586,6 +596,19 @@ class Log(InterfaceView):
             item.revision.number
         )
         self.action.start()
+
+    def on_context_compare_revisions(self, widget, data=None):
+        from rabbitvcs.ui.compare import Compare
+        item1 = self.revision_items[self.selected_rows[0]]
+        item2 = self.revision_items[self.selected_rows[1]]
+        path = self.vcs.get_repo_url(self.path)
+
+        Compare(
+            path, 
+            item2.revision.number, 
+            path, 
+            item1.revision.number
+        )
 
     def on_context_update_to(self, widget, data=None):
         from rabbitvcs.ui.updateto import UpdateToRevision
@@ -657,15 +680,21 @@ class Log(InterfaceView):
     def condition_update_to(self):
         return self.condition_checkout()
 
+    def condition_diff_working_copy(self):
+        return (len(self.selected_rows) == 1)
+
     def condition_diff_previous_revision(self):
         item = self.revision_items[self.selected_rows[0]]
-        return (item.revision.number > 1)
+        return (item.revision.number > 1 and len(self.selected_rows) == 1)
 
     def condition_diff_revisions(self):
         return (len(self.selected_rows) == 2)
 
     def condition_edit_revprops(self):
         return (len(self.selected_rows) == 1)
+    
+    def condition_compare_revisions(self):
+        return (len(self.selected_rows) == 2)
 
     #
     # Other helper methods
