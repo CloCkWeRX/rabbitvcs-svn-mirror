@@ -73,7 +73,7 @@ class Annotate(InterfaceView):
             [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [_("Line"), _("Revision"), _("Author"), 
-                _("Date"), _("Text")],
+                _("Date"), _("Text")]
         )
         self.table.allow_multiple()
         
@@ -84,6 +84,9 @@ class Annotate(InterfaceView):
         
     def on_close_clicked(self, widget):
         self.close()
+
+    def on_save_clicked(self, widget):
+        self.save()
 
     def on_refresh_clicked(self, widget):
         self.load()
@@ -133,6 +136,7 @@ class Annotate(InterfaceView):
             to_rev
         )
         self.action.append(self.populate_table)
+        self.action.append(self.enable_saveas)
         self.action.start()
 
     def populate_table(self):
@@ -158,6 +162,41 @@ class Annotate(InterfaceView):
                 datetime.strftime(date,DATETIME_FORMAT),
                 item["line"]
             ])
+            
+    def generate_string_from_result(self):
+        blamedict = self.action.get_result(0)
+        
+        text = ""
+        for item in blamedict:
+            datestr = item["date"][0:-8]
+            date = datetime(*time.strptime(datestr,"%Y-%m-%dT%H:%M:%S")[:-2])
+            
+            text += "%s\t%s\t%s\t%s\t%s\n" % (
+                item["number"],
+                item["revision"].number,
+                item["author"],
+                datetime.strftime(date,DATETIME_FORMAT),
+                item["line"]
+            )
+        
+        return text
+            
+    def enable_saveas(self):
+        self.get_widget("save").set_sensitive(True)
+
+    def disable_saveas(self):
+        self.get_widget("save").set_sensitive(False)
+
+    def save(self, path=None):
+        if path is None:
+            from rabbitvcs.ui.dialog import FileSaveAs
+            dialog = FileSaveAs()
+            path = dialog.run()
+
+        if path is not None:
+            fh = open(path, "w")
+            fh.write(self.generate_string_from_result())
+            fh.close()
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
