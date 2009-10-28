@@ -729,7 +729,7 @@ class Log(InterfaceView):
         url = self.root_url + path_item
 
         from rabbitvcs.ui.annotate import Annotate
-        Annotate(url)
+        Annotate(url, rev_item.revision.number)
         
     #
     # Context menu item conditions for being visible

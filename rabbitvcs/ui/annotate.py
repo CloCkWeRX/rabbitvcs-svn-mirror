@@ -51,7 +51,7 @@ class Annotate(InterfaceView):
     
     """
     
-    def __init__(self, path):
+    def __init__(self, path, revision=None):
         if os.path.isdir(path):
             MessageBox(_("Cannot annotate a directory"))
             raise SystemExit()
@@ -59,14 +59,16 @@ class Annotate(InterfaceView):
             
         InterfaceView.__init__(self, "annotate", "Annotate")
 
-
         self.get_widget("Annotate").set_title(_("Annotate - %s") % path)
         
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         
+        if revision is None:
+            revision = "HEAD"
+        
         self.path = path
         self.get_widget("from").set_text(str(1))
-        self.get_widget("to").set_text("HEAD")        
+        self.get_widget("to").set_text(str(revision))
 
         self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
@@ -200,8 +202,10 @@ class Annotate(InterfaceView):
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, paths) = main()
-            
-    window = Annotate(paths[0])
+    (options, args) = main()
+    
+    pathrev = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
+
+    window = Annotate(pathrev[0], pathrev[1])
     window.register_gtk_quit()
     gtk.main()
