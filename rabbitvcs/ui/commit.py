@@ -97,7 +97,6 @@ class Commit(InterfaceView):
     # Helper functions
     # 
 
-    @gtk_unsafe
     def load(self):
         """
           - Gets a listing of file items that are valid for the commit window.
@@ -144,6 +143,7 @@ class Commit(InterfaceView):
         for row in self.files_table.get_items():
             self.activated_cache[row[1]] = row[0]
 
+    @gtk_unsafe
     def populate_files_table(self):
         """
         First clears and then populates the files table based on the items
@@ -168,7 +168,6 @@ class Commit(InterfaceView):
                 item.prop_status
             ])
 
-    @gtk_unsafe
     def initialize_items(self):
         """
         Initializes the activated cache and loads the file items in a new thread
