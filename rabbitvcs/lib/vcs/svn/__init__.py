@@ -1087,6 +1087,9 @@ class SVN:
         
         @type   recurse: boolean
         @param  recurse: Whether or not to run a recursive checkout.
+
+        @type   revision: pysvn.Revision
+        @param  revision: Revision to checkout, defaults to HEAD.
         
         @type   ignore_externals: boolean
         @param  ignore_externals: Whether or not to ignore externals.
