@@ -577,7 +577,7 @@ class SVN:
                 items.append(st_item)
 
         return items
-        
+
     def get_repo_url(self, path):
         """
         Retrieve the repository URL for the given working copy path
@@ -590,12 +590,18 @@ class SVN:
         
         """
         
+        # If the given path is a URL, the user is passing a repository url
+        # In that case we already have the url
+        for proto in ("http://", "https://", "svn://", "svn+ssh://", "file://"):
+            if path.startswith(proto):
+                return path
+
         # If the given path is not part of a working copy, keep trying the
         # parent path to see if it is part of a working copy
         path = self.get_versioned_path(os.path.abspath(path))
         if not path:
             return ""
-        
+
         info = self.client.info(path)
         returner = ""
         try:
