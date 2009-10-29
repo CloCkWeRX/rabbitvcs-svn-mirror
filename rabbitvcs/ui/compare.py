@@ -225,7 +225,7 @@ class Compare(InterfaceView):
     def show_changes_table_popup_menu(self, treeview, data):
         context_menu = rabbitvcs.ui.widget.ContextMenu([
             {
-                "label": _("Open from %s") % str(self.get_first_revision()),
+                "label": _("Open from first revision"),
                 "signals": {
                     "activate": {
                         "callback": self.on_context_open_first,
@@ -235,7 +235,7 @@ class Compare(InterfaceView):
                 "condition": self.condition_show_open_first_revision
             },
             {
-                "label": _("Open from %s") % str(self.get_second_revision()),
+                "label": _("Open from second revision"),
                 "signals": {
                     "activate": {
                         "callback": self.on_context_open_second,
@@ -363,8 +363,8 @@ class Compare(InterfaceView):
             
             path = item["path"]
             if path == "":
-                path = self.first_urls.get_active_text()
-            
+                path = "."
+                
             self.changes_table.append([
                 path,
                 item["summarize_kind"],
@@ -397,20 +397,34 @@ class Compare(InterfaceView):
 
     def on_context_open_first(self, widget, data=None):
         path = self.changes_table.get_row(self.selected_rows[0])[0]
+        if path == ".":
+            path = ""
+
+        url = rabbitvcs.lib.helper.url_join(self.first_urls.get_active_text(), path)
         rev = self.get_first_revision()
-        dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(path)
-        self.open_item_from_revision(path, rev, dest)
+        dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(url)
+        self.open_item_from_revision(url, rev, dest)
 
     def on_context_open_second(self, widget, data=None):
         path = self.changes_table.get_row(self.selected_rows[0])[0]
+        if path == ".":
+            path = ""
+        
+        url = rabbitvcs.lib.helper.url_join(self.second_urls.get_active_text(), path)
         rev = self.get_second_revision()
-        dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(path)
-        self.open_item_from_revision(path, rev, dest)
+        dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(url)
+        self.open_item_from_revision(url, rev, dest)
 
     def on_context_view_diff(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
-        url = self.changes_table.get_row(self.selected_rows[0])[0]
-        
+        url1 = self.changes_table.get_row(self.selected_rows[0])[0]
+        url2 = url1
+        if url1 == ".":
+            url1 = ""
+            url2 = ""
+
+        url1 = rabbitvcs.lib.helper.url_join(self.first_urls.get_active_text(), url1)
+        url2 = rabbitvcs.lib.helper.url_join(self.second_urls.get_active_text(), url2)
         rev1 = self.get_first_revision()
         rev2 = self.get_second_revision()
 
@@ -420,34 +434,39 @@ class Compare(InterfaceView):
         )
         self.action.append(
             SVNDiff,
-            url, 
+            url1, 
             (rev1.value and rev1.value or "HEAD"), 
-            url, 
+            url2, 
             (rev2.value and rev2.value or "HEAD")
         )
         self.action.start()
 
     def on_context_show_changes(self, widget, data=None):
-        path = self.changes_table.get_row(self.selected_rows[0])[0]
+        url1 = self.changes_table.get_row(self.selected_rows[0])[0]
+        url2 = url1
+        if url1 == ".":
+            url1 = ""
+            url2 = ""
 
+        url1 = rabbitvcs.lib.helper.url_join(self.first_urls.get_active_text(), url1)
+        url2 = rabbitvcs.lib.helper.url_join(self.second_urls.get_active_text(), url2)
         rev1 = self.get_first_revision()
-        dest1 = "/tmp/rabbitvcs-" + str(rev1) + "-" + os.path.basename(path)
+        dest1 = "/tmp/rabbitvcs-1-" + str(rev1) + "-" + os.path.basename(url1)
         rev2 = self.get_second_revision()
-        dest2 = "/tmp/rabbitvcs-" + str(rev2) + "-" + os.path.basename(path)
-
+        dest2 = "/tmp/rabbitvcs-2-" + str(rev2) + "-" + os.path.basename(url2)
         self.action = VCSAction(
             self.vcs,
             notification=False
         )
         self.action.append(
             self.vcs.export,
-            path,
+            url1,
             dest1,
             revision=rev1
         )
         self.action.append(
             self.vcs.export,
-            path,
+            url2,
             dest2,
             revision=rev2
         )
@@ -470,7 +489,10 @@ class Compare(InterfaceView):
     def condition_show_open_second_revision(self):
         return (
             len(self.selected_rows) == 1 
-            and str(self.get_first_revision()) != str(self.get_second_revision())
+            and (
+                str(self.get_first_revision()) != str(self.get_second_revision())
+                or self.first_urls.get_active_text() != self.second_urls.get_active_text()
+            )
         )
 
     def condition_view_diff(self):
