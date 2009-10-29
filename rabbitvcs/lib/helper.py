@@ -603,3 +603,6 @@ def parse_path_revision_string(pathrev):
         return (pathrev,None)
     else:
         return (pathrev[0:index], pathrev[index+1:])
+
+def url_join(path, *args):
+    return "/".join([path.rstrip("/")] + list(args))
