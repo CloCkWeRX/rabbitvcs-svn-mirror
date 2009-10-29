@@ -226,6 +226,9 @@ class ComboBox:
     
     def set_child_text(self, text):
         self.cb.child.set_text(text)
+    
+    def set_sensitive(self, val):
+        self.cb.set_sensitive(val)
         
 class TextView:
     def __init__(self, widget=None, value=""):
