@@ -44,11 +44,26 @@ class Compare(InterfaceView):
                 assumes it is a number
     """
     selected_rows = []
+    MORE_ACTIONS_ITEMS = [
+        _("More Actions..."),
+        _("View unified diff")
+    ]
 
     def __init__(self, path1=None, revision1=None, path2=None, revision2=None):
         InterfaceView.__init__(self, "compare", "Compare")
         
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+
+        self.MORE_ACTIONS_CALLBACKS = [
+            None,
+            self.on_more_actions_view_unified_diff
+        ]
+
+        self.more_actions = rabbitvcs.ui.widget.ComboBox(
+            self.get_widget("more_actions"),
+            self.MORE_ACTIONS_ITEMS
+        )
+        self.more_actions.set_active(0)
 
         repo_paths = rabbitvcs.lib.helper.get_repository_paths()
         self.first_urls = rabbitvcs.ui.widget.ComboBox(
@@ -174,6 +189,16 @@ class Compare(InterfaceView):
 
         if data is not None and data.button == 3:
             self.show_changes_table_popup_menu(treeview, data)
+
+    def on_more_actions_changed(self, widget, data=None):
+        index = self.more_actions.get_active()
+        if index < 0:
+            return
+            
+        callback = self.MORE_ACTIONS_CALLBACKS[index]
+        
+        if callback is not None:
+            callback()
 
     #
     # Helper methods
@@ -314,7 +339,7 @@ class Compare(InterfaceView):
             self.vcs,
             notification=False
         )
-        
+        self.action.append(self.disable_more_actions)
         self.action.append(
             self.vcs.diff_summarize,
             first_url,
@@ -325,11 +350,12 @@ class Compare(InterfaceView):
         self.action.append(rabbitvcs.lib.helper.save_repository_path, first_url)
         self.action.append(rabbitvcs.lib.helper.save_repository_path, second_url)
         self.action.append(self.populate_table)
+        self.action.append(self.enable_more_actions)
         self.action.start()
 
     def populate_table(self):
         # returns a list of dicts(path, summarize_kind, node_kind, prop_changed)
-        summary = self.action.get_result(0)
+        summary = self.action.get_result(1)
 
         self.changes_table.clear()
         for item in summary:
@@ -344,6 +370,12 @@ class Compare(InterfaceView):
                 item["summarize_kind"],
                 prop_changed
             ])
+
+    def enable_more_actions(self):
+        self.more_actions.set_sensitive(True)
+
+    def disable_more_actions(self):
+        self.more_actions.set_sensitive(False)
 
     def open_item_from_revision(self, url, revision, dest):
         self.action = VCSAction(
@@ -425,7 +457,7 @@ class Compare(InterfaceView):
             dest2
         )
         self.action.start()
-        
+
     #
     # Compare table condition callbacks
     #
@@ -450,6 +482,31 @@ class Compare(InterfaceView):
         return (
             len(self.selected_rows) == 1
         )
+
+    #
+    # More Actions callbacks
+    #
+
+    def on_more_actions_view_unified_diff(self):
+        from rabbitvcs.ui.diff import SVNDiff
+        
+        first_url = self.first_urls.get_active_text()
+        first_rev = self.get_first_revision()
+        second_rev = self.get_second_revision()        
+        second_url = self.second_urls.get_active_text()
+
+        self.action = VCSAction(
+            self.vcs,
+            notification=False
+        )
+        self.action.append(
+            SVNDiff,
+            first_url, 
+            (first_rev.value and first_rev.value or "HEAD"), 
+            second_url, 
+            (second_rev.value and second_rev.value or "HEAD")
+        )
+        self.action.start()
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
