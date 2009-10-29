@@ -30,7 +30,6 @@ from rabbitvcs import TEMP_DIR_PREFIX
 from rabbitvcs.ui import InterfaceNonView
 from rabbitvcs.lib.vcs import create_vcs_instance
 import rabbitvcs.lib.helper
-from rabbitvcs.ui.dialog import MessageBox
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -77,13 +76,10 @@ class SVNDiff(Diff):
             r2
         )
         
-        if diff_text == "":
-            MessageBox(_("There are no differences"))
-        else:
-            fh = tempfile.mkstemp("-rabbitvcs-" + str(r1) + "-" + str(r2) + ".diff")
-            os.write(fh[0], diff_text)
-            os.close(fh[0])
-            rabbitvcs.lib.helper.open_item(fh[1])
+        fh = tempfile.mkstemp("-rabbitvcs-" + str(r1) + "-" + str(r2) + ".diff")
+        os.write(fh[0], diff_text)
+        os.close(fh[0])
+        rabbitvcs.lib.helper.open_item(fh[1])
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
