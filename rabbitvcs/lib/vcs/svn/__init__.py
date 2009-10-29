@@ -592,9 +592,8 @@ class SVN:
         
         # If the given path is a URL, the user is passing a repository url
         # In that case we already have the url
-        for proto in ("http://", "https://", "svn://", "svn+ssh://", "file://"):
-            if path.startswith(proto):
-                return path
+        if self.is_path_repository_url(path):
+            return path
 
         # If the given path is not part of a working copy, keep trying the
         # parent path to see if it is part of a working copy
@@ -638,6 +637,13 @@ class SVN:
             log.exception(e)
 
         return returner
+    
+    def is_path_repository_url(self, path):
+        for proto in ("http://", "https://", "svn://", "svn+ssh://", "file://"):
+            if path.startswith(proto):
+                return True
+        
+        return False
     
     def get_revision(self, path):
         """
