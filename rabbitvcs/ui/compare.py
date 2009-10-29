@@ -89,15 +89,15 @@ class Compare(InterfaceView):
         self.second_revision_opt.set_active(0)
 
         if path1 is not None:
-            self.first_urls.set_child_text(path1)
+            self.first_urls.set_child_text(self.vcs.get_repo_url(path1))
         if revision1 is not None:
             self.first_revision_opt.set_active(1)
             self.first_revision_number.set_text(str(revision1))
 
         if path2 is not None:
-            self.second_urls.set_child_text(path2)
+            self.second_urls.set_child_text(self.vcs.get_repo_url(path1))
         elif path1 is not None:
-            self.second_urls.set_child_text(path1)
+            self.second_urls.set_child_text(self.vcs.get_repo_url(path1))
             
         if revision2 is not None:
             self.second_revision_opt.set_active(1)
