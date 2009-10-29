@@ -440,7 +440,7 @@ Number</property>
                       <widget class="GtkLabel" id="label4">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Differences&lt;/b&gt;</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Differences&lt;/b&gt; (double-click to see diff)</property>
                         <property name="use_markup">True</property>
                       </widget>
                       <packing>
@@ -476,6 +476,7 @@ Number</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                             <signal name="button_press_event" handler="on_changes_table_button_pressed"/>
                             <signal name="cursor_changed" handler="on_changes_table_cursor_changed"/>
+                            <signal name="row_activated" handler="on_changes_table_row_doubleclicked"/>
                             <signal name="button_release_event" handler="on_changes_table_button_released"/>
                             <signal name="key_release_event" handler="on_changes_table_key_released"/>
                           </widget>

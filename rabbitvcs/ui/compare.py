@@ -200,6 +200,16 @@ class Compare(InterfaceView):
         if callback is not None:
             callback()
 
+    def on_changes_table_row_doubleclicked(self, treeview, data=None, col=None):
+        selection = treeview.get_selection()
+        (liststore, indexes) = selection.get_selected_rows()
+
+        self.selected_rows = []
+        for tup in indexes:
+            self.selected_rows.append(tup[0])
+
+        self.view_selected_diff()
+
     #
     # Helper methods
     #
@@ -390,6 +400,32 @@ class Compare(InterfaceView):
         )
         self.action.append(rabbitvcs.lib.helper.open_item, dest)
         self.action.start()
+    
+    def view_selected_diff(self):
+        from rabbitvcs.ui.diff import SVNDiff
+        url1 = self.changes_table.get_row(self.selected_rows[0])[0]
+        url2 = url1
+        if url1 == ".":
+            url1 = ""
+            url2 = ""
+
+        url1 = rabbitvcs.lib.helper.url_join(self.first_urls.get_active_text(), url1)
+        url2 = rabbitvcs.lib.helper.url_join(self.second_urls.get_active_text(), url2)
+        rev1 = self.get_first_revision()
+        rev2 = self.get_second_revision()
+
+        self.action = VCSAction(
+            self.vcs,
+            notification=False
+        )
+        self.action.append(
+            SVNDiff,
+            url1, 
+            (rev1.value and rev1.value or "HEAD"), 
+            url2, 
+            (rev2.value and rev2.value or "HEAD")
+        )
+        self.action.start()
         
     #
     # Compare table context menu callbacks
@@ -416,30 +452,7 @@ class Compare(InterfaceView):
         self.open_item_from_revision(url, rev, dest)
 
     def on_context_view_diff(self, widget, data=None):
-        from rabbitvcs.ui.diff import SVNDiff
-        url1 = self.changes_table.get_row(self.selected_rows[0])[0]
-        url2 = url1
-        if url1 == ".":
-            url1 = ""
-            url2 = ""
-
-        url1 = rabbitvcs.lib.helper.url_join(self.first_urls.get_active_text(), url1)
-        url2 = rabbitvcs.lib.helper.url_join(self.second_urls.get_active_text(), url2)
-        rev1 = self.get_first_revision()
-        rev2 = self.get_second_revision()
-
-        self.action = VCSAction(
-            self.vcs,
-            notification=False
-        )
-        self.action.append(
-            SVNDiff,
-            url1, 
-            (rev1.value and rev1.value or "HEAD"), 
-            url2, 
-            (rev2.value and rev2.value or "HEAD")
-        )
-        self.action.start()
+        self.view_selected_diff()
 
     def on_context_show_changes(self, widget, data=None):
         url1 = self.changes_table.get_row(self.selected_rows[0])[0]
