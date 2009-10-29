@@ -794,6 +794,22 @@ class MainContextMenu:
                         ]
                     },
                     {
+                        "identifier": "RabbitVCS::Compare",
+                        "label": _("Compare to..."),
+                        "tooltip": _("Compare selected items"),
+                        "icon": "rabbitvcs-compare",
+                        "signals": {
+                            "activate": {
+                                "callback": self.callback_compare,
+                                "args": None
+                            }
+                        }, 
+                        "condition": self.condition_compare,
+                        "submenus": [
+                            
+                        ]
+                    },
+                    {
                         "identifier": "RabbitVCS::Show_Log",
                         "label": _("Show Log"),
                         "tooltip": _("Show a file's log information"),
@@ -1426,6 +1442,14 @@ class MainContextMenu:
                 self.path_dict["is_modified"]):
             return True        
         return False
+
+    def condition_compare(self):
+        if self.path_dict["length"] == 2:
+            return True
+        elif (self.path_dict["length"] == 1 and
+                self.path_dict["is_in_a_or_a_working_copy"]):
+            return True
+        return False
         
     def condition_show_log(self):
         return (self.path_dict["length"] == 1 and
@@ -1645,6 +1669,10 @@ class MainContextMenu:
 
     def callback_diff(self, menu_item, paths):
         launch_diff_tool(*paths)
+
+    def callback_compare(self, menu_item, paths):
+        proc = launch_ui_window("compare", paths)
+        self.rabbitvcs_extension.rescan_after_process_exit(proc, paths)
     
     def callback_show_log(self, menu_item, paths):
         proc = launch_ui_window("log", paths)
