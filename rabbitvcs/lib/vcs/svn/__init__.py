@@ -848,19 +848,12 @@ class SVN:
         @param  force: If True, the property will be forced
 
         """
-        try:
-            if rev is None:
-                rev = self.revision("head")
-                
-            self.client.revpropset(prop_name, prop_value, url, 
-                revision=rev.primitive())
-            return True
-        except pysvn.ClientError, e:
-            log.exception(e)
-            return e
-        except TypeError, e:
-            log.exception(e)
-            return e
+
+        if rev is None:
+            rev = self.revision("head")
+            
+        self.client.revpropset(prop_name, prop_value, url, 
+            revision=rev.primitive())
 
     def revproplist(self, url, rev=None):
         """
@@ -880,17 +873,7 @@ class SVN:
         if rev is None:
             rev = self.revision("head")
 
-        returner = None
-        try:
-
-            returner = self.client.revproplist(url, rev.primitive())
-            returner = returner[1]
-        except pysvn.ClientError, e:
-            log.exception(e)
-        except IndexError, e:
-            log.exception(e)
-            
-        return returner
+        return self.client.revproplist(url, rev.primitive())[1]
         
     def revpropget(self, url, prop_name, rev=None):
         """
@@ -913,17 +896,11 @@ class SVN:
         if rev is None:
             rev = self.revision("head")
         
-        returner = None
-        try:
-            returner = self.client.revpropget(
-                prop_name,
-                url,
-                revision=rev.primitive()
-            )
-        except pysvn.ClientError, e:
-            log.exception("pysvn.ClientError exception in svn.py revpropget() for %s" % url)
-        
-        return returner
+        return self.client.revpropget(
+            prop_name,
+            url,
+            revision=rev.primitive()
+        )
         
     def revpropdel(self, url, prop_name, rev=None, force=False):
         """
@@ -946,20 +923,12 @@ class SVN:
         if rev is None:
             rev = self.revision("head")
         
-        try:
-            self.client.revpropdel(
-                prop_name,
-                url,
-                revision=rev.primitive(),
-                force=force
-            )
-            return True
-        except pysvn.ClientError, e:
-            log.exception("pysvn.ClientError exception in svn.py revpropdel() for %s" % url)
-        except TypeError, e:
-            log.exception("TypeError exception in svn.py revpropdel() %s" % url)
-        
-        return False
+        return self.client.revpropdel(
+            prop_name,
+            url,
+            revision=rev.primitive(),
+            force=force
+        )
 
     #
     # callbacks

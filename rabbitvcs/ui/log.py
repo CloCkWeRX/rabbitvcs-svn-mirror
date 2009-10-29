@@ -676,7 +676,8 @@ class Log(InterfaceView):
         from rabbitvcs.ui.revprops import SVNRevisionProperties
         item = self.revision_items[self.selected_rows[0]]
         url = self.vcs.get_repo_url(self.path)
-        SVNRevisionProperties(url, item.revision)
+
+        SVNRevisionProperties(url, item.revision.number)
 
     def on_paths_context_show_changes_diff(self, widget, data=None):
         rev_item = self.revision_items[self.selected_rows[0]]
@@ -787,23 +788,28 @@ class Log(InterfaceView):
         self.action.start()
 
     def edit_revprop(self, prop_name, prop_value, callback=None):
+
         failure = False
         url = self.vcs.get_repo_url(self.path)
+
+        self.action = VCSAction(
+            self.vcs,
+            notification=False
+        )
+
         for row in self.selected_rows:
             item = self.revision_items[row]
-            if self.vcs.revpropset(
-                    prop_name,
-                    prop_value,
-                    url,
-                    item.revision):
-                
-                callback(row, prop_value)
-            else:
-                failure = True
-                break
-
-        if failure:
-            MessageBox(_("This repository has not been setup to allow revision property changes."))
+            self.action.append(
+                self.vcs.revpropset,
+                prop_name,
+                prop_value,
+                url,
+                self.vcs.revision("number", item.revision.number)
+            )
+            
+            callback(row, prop_value)
+        
+        self.action.start()
 
     def on_log_message_edited(self, index, val):
         self.revision_items[index].message = val

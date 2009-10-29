@@ -29,6 +29,7 @@ import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.lib.vcs
 from rabbitvcs.lib.log import Log
+from rabbitvcs.ui.action import VCSAction
 
 log = Log("rabbitvcs.ui.revprops")
 
@@ -41,7 +42,7 @@ class SVNRevisionProperties(PropertiesBase):
         
         self.revision = revision
         self.revision_obj = None
-        if self.revision_obj is not None:
+        if revision is not None:
             self.revision_obj = self.vcs.revision("number", revision)
 
         self.load()
@@ -65,21 +66,38 @@ class SVNRevisionProperties(PropertiesBase):
     def save(self):
         delete_recurse = self.get_widget("delete_recurse").get_active()
         
+        self.action = VCSAction(
+            self.vcs,
+            notification=False
+        )
+        
         for row in self.delete_stack:
-            self.vcs.revpropdel(self.path, row[1], self.revision_obj, force=True)
+            self.action.append(
+                self.vcs.revpropdel,
+                self.path, 
+                row[1], 
+                self.revision_obj, 
+                force=True
+            )
 
         for row in self.table.get_items():
-            result = self.vcs.revpropset(row[1], row[2], self.path,
-                             self.revision_obj, force=True)
-            
-            if result != True:
-                msg = _("Error setting property: ") + row[1] + "\n\n" + str(result)
-                rabbitvcs.ui.dialog.MessageBox(msg)
+            self.action.append(
+                self.vcs.revpropset,
+                row[1], 
+                row[2], 
+                self.path,
+                self.revision_obj, 
+                force=True
+            )
+        
+        self.action.append(self.close)
+        self.action.start()
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, paths) = main()
+    (options, args) = main()
     
-    window = SVNRevisionProperties(paths[0])
+    pathrev = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
+    window = SVNRevisionProperties(pathrev[0], pathrev[1])
     window.register_gtk_quit()
     gtk.main()

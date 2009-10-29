@@ -78,7 +78,6 @@ class PropertiesBase(InterfaceView):
 
     def on_ok_clicked(self, widget):
         self.save()
-        self.close()
         
     def on_new_clicked(self, widget):
         dialog = rabbitvcs.ui.dialog.Property()
@@ -177,6 +176,8 @@ class SVNProperties(PropertiesBase):
         
         if failure:
             rabbitvcs.ui.dialog.MessageBox(_("There was a problem saving your properties."))
+
+        self.close()
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
