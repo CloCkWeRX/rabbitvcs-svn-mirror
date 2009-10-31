@@ -251,6 +251,9 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         # log.debug("US Thread: %s" % threading.currentThread())
         invalidate_now = self.always_invalidate and not triggered_by_callback
         statuses = self.status_checker.check_status(path, recurse=True, invalidate=invalidate_now)
+        
+        from pprint import pformat
+        # log.debug("\n\tExtension: asked for path [%s]\n\tGot paths:\n%s" % (path, pformat(statuses.keys())))
 
         # TODO: using pysvn directly because I don't like the current
         # SVN class.
