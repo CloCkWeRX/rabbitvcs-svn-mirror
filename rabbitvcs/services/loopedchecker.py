@@ -65,7 +65,8 @@ def Main():
         try:
             status_list = vcs_client.status(path, recurse=recurse)
             statuses = [(status.path, str(status.text_status), str(status.prop_status))
-                        for status in status_list]
+                       for status in status_list]
+            # statuses = [(path, "conflicted", "normal")]
         except Exception, e:
             statuses = [status_error(path)]
                                 
