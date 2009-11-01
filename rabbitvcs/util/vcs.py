@@ -13,6 +13,81 @@ MODIFIED_STATUSES = [
     "missing"
 ]
 
+def condense_statuses(path, statuses):
+    
+    status = "unknown"
+    
+    status_set = set([statuses[other_path] for other_path in statuses.keys()])
+    
+    if not status_set:
+        # This indicates a serious deviation from our expected API
+        status = "error"
+    
+    elif "client_error" in status_set:
+        status = "error"
+
+    # We need to take special care of directories
+    elif isdir(path):
+        # These statuses take precedence.
+        if "conflicted" in status_set:
+            status = "conflicted"
+        elif "obstructed" in status_set:
+            status = "obstructed"
+        
+        # The following statuses take precedence over the status
+        # of children.
+        elif (statuses.has_key(path) and 
+                statuses[path] in ["added", "modified", "deleted"]):
+            status = statuses[path]
+        
+        # A directory should have a modified status when any of its children
+        # have a certain status (see modified_statuses above). Jason thought up 
+        # of a nifty way to do this by using sets and the bitwise AND operator (&).
+        elif len(set(MODIFIED_STATUSES) & status_set):
+            status = "modified"
+            
+        elif statuses.has_key(path):
+            status = statuses[path]
+    
+    # If we're not a directory we end up here.
+    elif statuses.has_key(path):
+        status = statuses[path]
+    
+    else:
+        status = "normal"
+        
+    return status
+
+def get_summarized_status_both(path, statuses):
+    
+    text_status = "unknown"
+    prop_status = "unknown"
+    
+    text_statuses = {}
+    prop_statuses = {}
+    
+    for other_path in statuses.keys():
+        text_statuses[other_path] = statuses[other_path]["text_status"]
+        prop_statuses[other_path] = statuses[other_path]["prop_status"]
+    
+    # If no statuses are returned but we do have a workdir_manager
+    # it means that an error occured, most likely a working copy
+    # administration area (.svn directory) went missing but it could
+    # be pretty much anything.
+    if not statuses: 
+        # FIXME: figure out a way to make only the directory that
+        # is missing display conflicted and the rest unknown.
+        text_status = "error"
+        prop_status = "error"
+    
+    else:
+        text_status = condense_statuses(path, text_statuses)
+        prop_status = condense_statuses(path, prop_statuses)
+    
+    return {path:
+            {"text_status": text_status,
+             "prop_status": prop_status}}
+
 def get_summarized_status(path, statuses):
     """
     This is a helper function to figure out the textual representation 
@@ -27,45 +102,17 @@ def get_summarized_status(path, statuses):
     @param  path:   A dict of {path : {"text_status" : [...],
                                        "prop_status" : [...]} entries
     """
+    summarised = get_summarized_status_both(path, statuses)
+    summary = "unknown"
     
-    text_statuses = set([statuses[key]["text_status"] for key in statuses.keys()])
-    prop_statuses = set([statuses[key]["prop_status"] for key in statuses.keys()])
+    # Text statuses take priority
+    summary = summarised[path]["text_status"]
+    if summarised[path]["text_status"] == "normal":
+        summary = summarised[path]["prop_status"]
+        if summary == "none":
+            summary = "normal"
     
-    all_statuses = text_statuses | prop_statuses
-    
-    # If no statuses are returned but we do have a workdir_manager
-    # it means that an error occured, most likely a working copy
-    # administration area (.svn directory) went missing but it could
-    # be pretty much anything.
-    if not statuses: 
-        # FIXME: figure out a way to make only the directory that
-        # is missing display conflicted and the rest unknown.
-        return "error"
-
-    if "client_error" in all_statuses:
-        return "error"
-
-    # We need to take special care of directories
-    if isdir(path):
-        # These statuses take precedence.
-        if "conflicted" in text_statuses: return "conflicted"
-        if "obstructed" in text_statuses: return "obstructed"
-        
-        # The following statuses take precedence over the status
-        # of children.
-        if (statuses.has_key(path) and 
-                statuses[path]["text_status"] in ["added", "modified", "deleted"]):
-            return statuses[path]["text_status"]
-        
-        # A directory should have a modified status when any of its children
-        # have a certain status (see modified_statuses above). Jason thought up 
-        # of a nifty way to do this by using sets and the bitwise AND operator (&).
-        if len(set(MODIFIED_STATUSES) & all_statuses):
-            return "modified"
-    
-    # If we're not a directory we end up here.
-    if statuses.has_key(path): return statuses[path]["text_status"]
-    return "normal"
+    return summary
 
 def is_working_copy(path):
     vcs_client = pysvn.Client()
