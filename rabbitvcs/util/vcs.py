@@ -88,6 +88,20 @@ def get_summarized_status_both(path, statuses):
             {"text_status": text_status,
              "prop_status": prop_status}}
 
+def get_single_status(statuses):
+    """
+    Given a text_status and a prop_status, simplify to a single status.
+    """
+        
+    # Text statuses take priority
+    single = statuses["text_status"]
+    if single == "normal":
+        single = statuses["prop_status"]
+        if single == "none":
+            single = "normal"
+            
+    return single
+
 def get_summarized_status(path, statuses):
     """
     This is a helper function to figure out the textual representation 
@@ -105,12 +119,7 @@ def get_summarized_status(path, statuses):
     summarised = get_summarized_status_both(path, statuses)
     summary = "unknown"
     
-    # Text statuses take priority
-    summary = summarised[path]["text_status"]
-    if summarised[path]["text_status"] == "normal":
-        summary = summarised[path]["prop_status"]
-        if summary == "none":
-            summary = "normal"
+    summary = get_single_status(summarised[path])
     
     return summary
 
