@@ -40,8 +40,10 @@ except ImportError:
 
 import rabbitvcs.lib.helper
 
-from rabbitvcs.lib.log import Log
+from rabbitvcs import gettext
+_ = gettext.gettext
 
+from rabbitvcs.lib.log import Log
 log = Log("rabbitvcs.ui.widget")
 
 TOGGLE_BUTTON = 'TOGGLE_BUTTON'
@@ -362,3 +364,125 @@ class ProgressBar:
 
     def set_text(self, text):
         self.view.set_text(text)
+
+class RevisionSelector:
+    """
+    Provides a standard way to generate a revision object from the UI.
+    
+    """
+    OPTIONS = [
+        _("HEAD"),
+        _("Number"),
+        _("Working Copy")
+    ]
+
+    def __init__(self, container, client, revision=None, 
+            url_combobox=None, url_entry=None):
+        """
+        @type   container: A gtk container object (i.e. HBox, VBox, Box)
+        @param  container: The container that to add this widget
+        
+        @type   client: VCS client object
+        @param  client: A vcs client instance (i.e. rabbitvcs.lib.vcs.create_vcs_instance())
+        
+        @type   revision: int
+        @param  revision: A revision number to start with
+        
+        @type   url_combobox: rabbitvcs.ui.widget.ComboBox
+        @param  url_combobox: A repository url combobox
+
+        @type   url_entry: gtk.Entry
+        @param  url_entry: A repository url entry
+        
+        Note: The url fields are required for use with the log browser.  It can
+                be excluded.
+
+        """
+        self.client = client
+        self.revision = revision
+        self.url_combobox = url_combobox
+        self.url_entry = url_entry
+    
+        hbox = gtk.HBox(0, 4)
+        
+        self.revision_kind_opt = ComboBox(gtk.ComboBox(), self.OPTIONS)
+        self.revision_kind_opt.set_active(0)
+        self.revision_kind_opt.cb.connect("changed", self.__revision_kind_changed)
+        hbox.pack_start(self.revision_kind_opt.cb, False, False, 0)
+        
+        self.revision_entry = gtk.Entry()
+        hbox.pack_start(self.revision_entry, False, False, 0)
+        
+        self.revision_browse = gtk.Button()
+        revision_browse_image = gtk.Image()
+        revision_browse_image.set_from_stock(gtk.STOCK_FIND, 1)
+        revision_browse_image.show()
+        self.revision_browse.add(revision_browse_image)
+        self.revision_browse.connect("clicked", self.__revision_browse_clicked)
+        hbox.pack_start(self.revision_browse, False, False, 0)
+
+        if self.revision is not None:
+            self.revision_kind_opt.set_active(1)
+            self.revision_entry.set_text(str(self.revision))
+        
+        self.revision_kind_opt.cb.show()
+        self.revision_entry.show()
+        self.revision_browse.show()
+        hbox.show()
+        
+        self.determine_widget_sensitivity()
+        container.add(hbox)
+    
+    def __revision_browse_clicked(self, widget):
+        from rabbitvcs.ui.log import LogDialog
+        LogDialog(
+            self.get_url(), 
+            ok_callback=self.__log_closed
+        )
+    
+    def __log_closed(self, data):
+        if data is not None:
+            self.revision_kind_opt.set_active(1)
+            self.revision_entry.set_text(data)
+
+    def __revision_kind_changed(self, widget):
+        self.determine_widget_sensitivity()            
+    
+    def determine_widget_sensitivity(self):
+        index = self.revision_kind_opt.get_active()
+
+        # Only allow number entry if "Number" is selected
+        if index == 1:
+            self.revision_entry.set_sensitive(True)
+        else:
+            self.revision_entry.set_text("")
+            self.revision_entry.set_sensitive(False)
+
+        # Only allow browsing if a URL is provided
+        if self.get_url() == "":
+            self.revision_browse.set_sensitive(False)
+        else:
+            self.revision_browse.set_sensitive(True)
+    
+    def get_url(self):
+        if self.url_combobox:
+            return self.url_combobox.get_active_text()
+        elif self.url_entry:
+            return self.url_entry.get_text()
+        else:
+            return ""
+
+    def get_revision_object(self):
+        """
+        @rtype  rabbitvcs.lib.vcs.###.Revision
+        @return A rabbitvcs revision object
+        
+        """
+        index = self.revision_kind_opt.get_active()
+        
+        if index == 0:
+            return self.client.revision("head")
+        elif index == 1:
+            return self.client.revision("number", self.revision_entry.get_text())
+        elif index == 2:
+            return self.client.revision("working")
