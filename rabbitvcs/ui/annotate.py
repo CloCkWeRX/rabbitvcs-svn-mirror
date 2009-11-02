@@ -36,6 +36,7 @@ import rabbitvcs.ui.widget
 from rabbitvcs.ui.dialog import MessageBox
 import rabbitvcs.lib.helper
 import rabbitvcs.lib.vcs
+from rabbitvcs.lib.decorators import gtk_unsafe
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -141,6 +142,7 @@ class Annotate(InterfaceView):
         self.action.append(self.enable_saveas)
         self.action.start()
 
+    @gtk_unsafe
     def populate_table(self):
         blamedict = self.action.get_result(0)
 
@@ -182,7 +184,8 @@ class Annotate(InterfaceView):
             )
         
         return text
-            
+    
+    @gtk_unsafe
     def enable_saveas(self):
         self.get_widget("save").set_sensitive(True)
 
