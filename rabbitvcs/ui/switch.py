@@ -35,22 +35,32 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Switch(InterfaceView):
-    def __init__(self, path):
+    def __init__(self, path, revision=None):
         InterfaceView.__init__(self, "switch", "Switch")
-
 
         self.path = path
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         
         self.get_widget("path").set_text(self.path)
-        self.get_widget("repository").set_text(
-            self.vcs.get_repo_url(self.path)
-        )
-        
         self.repositories = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("repositories"), 
             rabbitvcs.lib.helper.get_repository_paths()
         )
+
+        self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("revision_container"),
+            self.vcs,
+            revision=revision,
+            url_combobox=self.repositories,
+            expand=True
+        )
+        
+        self.repositories.set_child_text(self.vcs.get_repo_url(self.path))
+        
+        if revision:
+            self.revision_selector.set_kind_number(revision)
+        else:
+            self.revision_selector.set_kind_head()
 
     def on_destroy(self, widget):
         self.close()
@@ -59,19 +69,13 @@ class Switch(InterfaceView):
         self.close()
 
     def on_ok_clicked(self, widget):
-        url = self.get_widget("repository").get_text()
+        url = self.repositories.get_active_text()
         
         if not url or not self.path:
             rabbitvcs.ui.dialog.MessageBox(_("The repository location is a required field."))
             return
 
-        revision = self.vcs.revision("head")
-        if self.get_widget("revision_number_opt").get_active():
-            revision = self.vcs.revision(
-                "number",
-                number=int(self.get_widget("revision_number").get_text())
-            )
-    
+        revision = self.revision_selector.get_revision_object()
         self.hide()
         self.action = rabbitvcs.ui.action.VCSAction(
             self.vcs,
@@ -91,22 +95,11 @@ class Switch(InterfaceView):
         self.action.append(self.action.finish)
         self.action.start()
 
-    def on_revision_number_focused(self, widget, data=None):
-        self.get_widget("revision_number_opt").set_active(True)
-
-    def on_show_log_clicked(self, widget, data=None):
-        LogDialog(self.path, ok_callback=self.on_log_closed)
-    
-    def on_log_closed(self, data):
-        if data is not None:
-            self.get_widget("revision_number_opt").set_active(True)
-            self.get_widget("revision_number").set_text(data)
-
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, paths) = main()
+    (options, args) = main()
             
-    window = Switch(paths[0])
+    window = Switch(args[0], revision=options.revision)
     window.register_gtk_quit()
     gtk.main()
