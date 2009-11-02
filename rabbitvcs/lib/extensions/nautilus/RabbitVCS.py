@@ -1555,8 +1555,7 @@ class MainContextMenu:
                 not self.path_dict["is_in_a_or_a_working_copy"])
 
     def condition_export(self):
-        return (self.path_dict["length"] == 1 and
-                not self.path_dict["is_in_a_or_a_working_copy"])
+        return (self.path_dict["length"] == 1)
    
     def condition_update_to(self):
         return (self.path_dict["length"] == 1 and
