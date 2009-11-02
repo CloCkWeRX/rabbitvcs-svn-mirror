@@ -82,8 +82,6 @@ class Branch(InterfaceView):
         if (self.vcs.has_modified(path) 
                 or self.vcs.is_modified(path)):
             self.revision_selector.set_kind_working()
-        elif revision:
-            self.revision_selector.set_kind_number(revision)
 
     def on_destroy(self, widget):
         self.close()

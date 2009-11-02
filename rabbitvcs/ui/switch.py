@@ -56,11 +56,6 @@ class Switch(InterfaceView):
         )
         
         self.repositories.set_child_text(self.vcs.get_repo_url(self.path))
-        
-        if revision:
-            self.revision_selector.set_kind_number(revision)
-        else:
-            self.revision_selector.set_kind_head()
 
     def on_destroy(self, widget):
         self.close()

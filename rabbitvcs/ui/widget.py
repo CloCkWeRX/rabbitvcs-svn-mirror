@@ -377,7 +377,7 @@ class RevisionSelector:
     ]
 
     def __init__(self, container, client, revision=None, 
-            url_combobox=None, url_entry=None, expand=False):
+            url_combobox=None, url_entry=None, url=None, expand=False):
         """
         @type   container: A gtk container object (i.e. HBox, VBox, Box)
         @param  container: The container that to add this widget
@@ -394,6 +394,9 @@ class RevisionSelector:
         @type   url_entry: gtk.Entry
         @param  url_entry: A repository url entry
         
+        @type   url: str
+        @param  url: A repository url string
+        
         Note: The url fields are required for use with the log browser.  It can
                 be excluded.
 
@@ -402,6 +405,7 @@ class RevisionSelector:
         self.revision = revision
         self.url_combobox = url_combobox
         self.url_entry = url_entry
+        self.url = url
     
         hbox = gtk.HBox(0, 4)
         
@@ -469,8 +473,13 @@ class RevisionSelector:
             return self.url_combobox.get_active_text()
         elif self.url_entry:
             return self.url_entry.get_text()
+        elif self.url:
+            return self.url
         else:
             return ""
+
+    def set_url(self, url):
+        self.url = url
 
     def get_revision_object(self):
         """

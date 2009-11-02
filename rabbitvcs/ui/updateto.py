@@ -46,9 +46,13 @@ class UpdateToRevision(InterfaceView):
         self.revision = revision
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
 
-        if self.revision is not None:
-            self.get_widget("revision_number_opt").set_active(True)
-            self.get_widget("revision_number").set_text(str(self.revision))
+        self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("revision_container"),
+            self.vcs,
+            revision=revision,
+            url=self.path,
+            expand=True
+        )
 
     def on_destroy(self, widget):
         self.close()
@@ -58,12 +62,7 @@ class UpdateToRevision(InterfaceView):
 
     def on_ok_clicked(self, widget):
 
-        revision = self.vcs.revision("head")
-        if self.get_widget("revision_number_opt").get_active():
-            revision = self.vcs.revision(
-                "number",
-                number=int(self.get_widget("revision_number").get_text())
-            )
+        revision = self.revision_selector.get_revision_object()
         recursive = self.get_widget("recursive").get_active()
         omit_externals = self.get_widget("omit_externals").get_active()
 
@@ -84,17 +83,6 @@ class UpdateToRevision(InterfaceView):
         self.action.append(self.action.set_status, _("Completed Update"))
         self.action.append(self.action.finish)
         self.action.start()
-
-    def on_revision_number_focused(self, widget, data=None):
-        self.get_widget("revision_number_opt").set_active(True)
-
-    def on_show_log_clicked(self, widget, data=None):
-        LogDialog(self.path, ok_callback=self.on_log_closed)
-    
-    def on_log_closed(self, data):
-        if data is not None:
-            self.get_widget("revision_number_opt").set_active(True)
-            self.get_widget("revision_number").set_text(data)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
