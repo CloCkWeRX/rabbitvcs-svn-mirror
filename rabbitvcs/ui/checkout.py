@@ -58,6 +58,14 @@ class Checkout(InterfaceView):
             self.get_widget("repositories"), 
             rabbitvcs.lib.helper.get_repository_paths()
         )
+
+        self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("revision_container"),
+            self.vcs,
+            revision=revision,
+            url_combobox=self.repositories,
+            expand=True
+        )
         
         self.destination = rabbitvcs.lib.helper.get_user_path()
         if path is not None:
@@ -66,10 +74,6 @@ class Checkout(InterfaceView):
         
         if url is not None:
             self.repositories.set_child_text(url)
-        
-        if revision is not None:
-            self.get_widget("revision_number_opt").set_active(True)
-            self.get_widget("revision_number").set_text(str(revision))
         
         self.complete = False
         self.check_form()
@@ -98,13 +102,7 @@ class Checkout(InterfaceView):
             path = path[7:]
         
         path = os.path.normpath(path)
-        
-        revision = self.vcs.revision("head")
-        if self.get_widget("revision_number_opt").get_active():
-            revision = self.vcs.revision(
-                "number",
-                number=int(self.get_widget("revision_number").get_text())
-            )
+        revision = self.revision_selector.get_revision_object()
     
         self.hide()
         self.action = rabbitvcs.ui.action.VCSAction(
@@ -126,27 +124,12 @@ class Checkout(InterfaceView):
         self.action.append(self.action.finish)
         self.action.start()
 
-    def on_revision_number_focused(self, widget, data=None):
-        if self.complete:
-            self.get_widget("revision_number_opt").set_active(True)
-
     def on_file_chooser_clicked(self, widget, data=None):
         chooser = rabbitvcs.ui.dialog.FolderChooser()
         path = chooser.run()
         if path is not None:
             self.get_widget("destination").set_text(path)
 
-    def on_show_log_clicked(self, widget, data=None):
-        LogDialog(
-            self.repositories.get_active_text(), 
-            ok_callback=self.on_log_closed
-        )
-    
-    def on_log_closed(self, data):
-        if data is not None:
-            self.get_widget("revision_number_opt").set_active(True)
-            self.get_widget("revision_number").set_text(data)
-    
     def on_repositories_changed(self, widget, data=None):
         url = self.repositories.get_active_text()
         tmp = url.replace("//", "/").split("/")[1:]
@@ -181,8 +164,8 @@ class Checkout(InterfaceView):
         if self.get_widget("destination").get_text() == "":
             self.complete = False
         
-        self.get_widget("show_log").set_sensitive(self.complete)
         self.get_widget("ok").set_sensitive(self.complete)
+        self.revision_selector.determine_widget_sensitivity()
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main

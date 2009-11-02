@@ -377,7 +377,7 @@ class RevisionSelector:
     ]
 
     def __init__(self, container, client, revision=None, 
-            url_combobox=None, url_entry=None):
+            url_combobox=None, url_entry=None, expand=False):
         """
         @type   container: A gtk container object (i.e. HBox, VBox, Box)
         @param  container: The container that to add this widget
@@ -411,7 +411,7 @@ class RevisionSelector:
         hbox.pack_start(self.revision_kind_opt.cb, False, False, 0)
         
         self.revision_entry = gtk.Entry()
-        hbox.pack_start(self.revision_entry, False, False, 0)
+        hbox.pack_start(self.revision_entry, expand, expand, 0)
         
         self.revision_browse = gtk.Button()
         revision_browse_image = gtk.Image()
@@ -422,15 +422,15 @@ class RevisionSelector:
         hbox.pack_start(self.revision_browse, False, False, 0)
 
         if self.revision is not None:
-            self.revision_kind_opt.set_active(1)
-            self.revision_entry.set_text(str(self.revision))
+            self.set_kind_number(revision)
+        else:
+            self.set_kind_head()
         
         self.revision_kind_opt.cb.show()
         self.revision_entry.show()
         self.revision_browse.show()
         hbox.show()
         
-        self.determine_widget_sensitivity()
         container.add(hbox)
     
     def __revision_browse_clicked(self, widget):
@@ -486,3 +486,17 @@ class RevisionSelector:
             return self.client.revision("number", self.revision_entry.get_text())
         elif index == 2:
             return self.client.revision("working")
+
+    def set_kind_head(self):
+        self.revision_kind_opt.set_active(0)
+        self.determine_widget_sensitivity()
+
+    def set_kind_number(self, number=None):
+        self.revision_kind_opt.set_active(1)
+        if number is not None:
+            self.revision_entry.set_text(str(number))
+        self.determine_widget_sensitivity()
+
+    def set_kind_working(self):
+        self.revision_kind_opt.set_active(2)
+        self.determine_widget_sensitivity()

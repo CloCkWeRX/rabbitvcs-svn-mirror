@@ -46,6 +46,7 @@ class Export(Checkout):
         if self.vcs.is_in_a_or_a_working_copy(path):
             self.repositories.set_child_text(path)
             self.get_widget("destination").set_text("")
+            self.revision_selector.set_kind_working()
         else:
             self.repositories.set_child_text("")
             self.get_widget("destination").set_text(path)
@@ -71,15 +72,9 @@ class Export(Checkout):
         if path.startswith("file://"):
             path = path[7:]
         
-        path = os.path.normpath(path)
-        
-        revision = self.vcs.revision("head")
-        if self.get_widget("revision_number_opt").get_active():
-            revision = self.vcs.revision(
-                "number",
-                number=int(self.get_widget("revision_number").get_text())
-            )
-    
+        path = os.path.normpath(path)        
+        revision = self.revision_selector.get_revision_object()
+
         self.hide()
         self.action = VCSAction(
             self.vcs,
