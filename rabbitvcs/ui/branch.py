@@ -51,35 +51,39 @@ class Branch(InterfaceView):
         
         self.path = path
         self.revision = revision
-        url = self.vcs.get_repo_url(path)
-        
-        self.get_widget("from_url").set_text(url)
-        self.get_widget("to_url").set_text(url)
-        
-        self.message = rabbitvcs.ui.widget.TextView(
-            self.get_widget("message")
+
+        repo_paths = rabbitvcs.lib.helper.get_repository_paths()
+        self.from_urls = rabbitvcs.ui.widget.ComboBox(
+            self.get_widget("from_urls"), 
+            repo_paths
         )
-        self.urls = rabbitvcs.ui.widget.ComboBox(
+        self.to_urls = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("to_urls"), 
             rabbitvcs.lib.helper.get_repository_paths()
         )
         
+        if self.vcs.is_path_repository_url(path):
+            self.from_urls.set_child_text(path)
+        else:
+            self.to_urls.set_child_text(path)
+                
+        self.message = rabbitvcs.ui.widget.TextView(
+            self.get_widget("message")
+        )
+
+        self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("revision_container"),
+            self.vcs,
+            revision=revision,
+            url_combobox=self.from_urls,
+            expand=True
+        )
+        
         if (self.vcs.has_modified(path) 
-                or self.vcs.is_modified(path)
-                or revision is not None):
-            self.tooltips = gtk.Tooltips()
-            self.tooltips.set_tip(
-                self.get_widget("from_revision_number_opt"),
-                _("There have been modifications to your working copy.  If you copy from the HEAD revision you will lose your changes.")
-            )
-            self.set_revision_number_opt_active()
-            
-            if revision is None:
-                self.get_widget("from_revision_number").set_text(
-                    str(self.vcs.get_revision(path))
-                )
-            else:
-                self.get_widget("from_revision_number").set_text(str(revision))
+                or self.vcs.is_modified(path)):
+            self.revision_selector.set_kind_working()
+        elif revision:
+            self.revision_selector.set_kind_number(revision)
 
     def on_destroy(self, widget):
         self.close()
@@ -88,32 +92,14 @@ class Branch(InterfaceView):
         self.close()
 
     def on_ok_clicked(self, widget):
-        src = self.get_widget("from_url").get_text()
-        dest = self.get_widget("to_url").get_text()
+        src = self.get_widget("from_urls").get_active_text()
+        dest = self.get_widget("to_urls").get_active_text()
         
         if dest == "":
             rabbitvcs.ui.dialog.MessageBox(_("You must supply a destination path."))
             return
         
-        revision = None
-        if self.get_widget("from_head_opt").get_active():
-            revision = self.vcs.revision("head")
-        elif self.get_widget("from_revision_number_opt").get_active():
-            rev_num = self.get_widget("from_revision_number").get_text()
-            
-            if rev_num == "":
-                rabbitvcs.ui.dialog.MessageBox(_("The from revision field is required."))
-                return
-            
-            revision = self.vcs.revision("number", number=rev_num)
-        elif self.get_widget("from_working_copy_opt").get_active():
-            src = self.path
-            revision = self.vcs.revision("working")
-
-        if revision is None:
-            rabbitvcs.ui.dialog.MessageBox(_("Invalid revision information"))
-            return
-
+        revision = self.revision_selector.get_revision_object()
         self.hide()
         self.action = rabbitvcs.ui.action.VCSAction(
             self.vcs,
@@ -132,26 +118,12 @@ class Branch(InterfaceView):
         self.action.append(self.action.set_status, _("Completed Branch/tag"))
         self.action.append(self.action.finish)
         self.action.start()
-                
-    def on_from_revision_number_focused(self, widget, data=None):
-        self.set_revision_number_opt_active()
-        
-    def set_revision_number_opt_active(self):
-        self.get_widget("from_revision_number_opt").set_active(True)
 
     def on_previous_messages_clicked(self, widget, data=None):
         dialog = rabbitvcs.ui.dialog.PreviousMessages()
         message = dialog.run()
         if message is not None:
             self.message.set_text(message)
-            
-    def on_show_log_clicked(self, widget, data=None):
-        LogDialog(self.path, ok_callback=self.on_log_closed)
-    
-    def on_log_closed(self, data):
-        if data is not None:
-            self.get_widget("from_revision_number_opt").set_active(True)
-            self.get_widget("from_revision_number").set_text(data)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
