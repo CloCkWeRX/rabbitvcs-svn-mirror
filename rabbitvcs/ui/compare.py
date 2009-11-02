@@ -81,12 +81,14 @@ class Compare(InterfaceView):
         self.first_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("first_revision_container"),
             self.vcs,
+            revision=revision1,
             url_combobox=self.first_urls
         )
 
         self.second_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("second_revision_container"),
             self.vcs,
+            revision=revision2,
             url_combobox=self.second_urls
         )
 
