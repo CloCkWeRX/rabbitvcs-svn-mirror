@@ -187,7 +187,9 @@ class Lock(InterfaceView):
                                 "args": fileinfo
                             }
                         },
-                        "condition": self.condition_remove_lock
+                        "condition": {
+                            "callback": self.condition_remove_lock
+                        }
                     },
                     {
                         "label": _("View Diff"),
@@ -197,7 +199,9 @@ class Lock(InterfaceView):
                                 "args": fileinfo
                             }
                         },
-                        "condition": self.condition_diff
+                        "condition": {
+                            "callback": self.condition_diff
+                        }
                     },
                     {
                         "label": _("Show log"),
@@ -207,7 +211,9 @@ class Lock(InterfaceView):
                                 "args": fileinfo
                             }
                         },
-                        "condition": (lambda: True)
+                        "condition": {
+                            "callback": (lambda: True)
+                        }
                     },
                     {
                         "label": _("Open"),
@@ -217,7 +223,9 @@ class Lock(InterfaceView):
                                 "args": fileinfo
                             }
                         },
-                        "condition": self.condition_open
+                        "condition": {
+                            "callback": self.condition_open
+                        }
                     },
                     {
                         "label": _("Browse to"),
@@ -227,7 +235,9 @@ class Lock(InterfaceView):
                                 "args": fileinfo
                             }
                         },
-                        "condition": (lambda: True)
+                        "condition": {
+                            "callback": (lambda: True)
+                        }
                     }
                 ])
                 context_menu.show(event)

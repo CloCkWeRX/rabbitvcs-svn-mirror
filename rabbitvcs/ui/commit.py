@@ -26,6 +26,7 @@ import thread
 import pygtk
 import gobject
 import gtk
+from time import sleep
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import VCSAction
@@ -52,6 +53,9 @@ class Commit(InterfaceView):
 
     TOGGLE_ALL = False
     SHOW_UNVERSIONED = True
+    
+    selected_rows = []
+    selected_paths = []
 
     def __init__(self, paths, base_dir=None):
         """
@@ -81,7 +85,7 @@ class Commit(InterfaceView):
             base_dir=base_dir,
             path_entries=[1]
         )
-        self.last_row_clicked = None
+        self.files_table.allow_multiple()
         
         self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message")
@@ -114,9 +118,6 @@ class Commit(InterfaceView):
 
         self.populate_files_table()
         self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
-    
-    def get_last_path(self):
-        return self.files_table.get_row(self.last_row_clicked)[1]
 
     def should_item_be_activated(self, item):
         """
@@ -179,6 +180,157 @@ class Commit(InterfaceView):
         except Exception, e:
             log.exception(e)
 
+    def show_files_table_popup_menu(self, treeview, data):
+
+        # Build up a list of items to ignore based on the selected rows
+        ignore_items = []
+        added_ignore_labels = []
+        
+        # These are ignore-by-filename items
+        for index in self.selected_rows:
+            item = self.files_table.get_row(index)
+
+            basename = os.path.basename(item[1])
+            if basename not in added_ignore_labels:
+                ignore_items.append({
+                    "label": basename,
+                    "signals": {
+                        "button-press-event": {
+                            "callback": self.on_subcontext_ignore_by_filename_activated, 
+                            "args": item[1]
+                         }
+                     },
+                    "condition": {
+                        "callback": self.condition_ignore,
+                        "args": item[1]
+                    }
+                })
+                added_ignore_labels.append(basename)
+
+        # These are ignore-by-extension items
+        for index in self.selected_rows:
+            item = self.files_table.get_row(index)
+            
+            ext_str = "*%s"%item[2]
+            if ext_str not in added_ignore_labels:
+                ignore_items.append({
+                    "label": ext_str,
+                    "signals": {
+                        "button-press-event": {
+                            "callback": self.on_subcontext_ignore_by_fileext_activated, 
+                            "args": item[1]
+                        }
+                    },
+                    "condition": {
+                        "callback": self.condition_ignore_by_fileext,
+                        "args": item
+                    }
+                })
+                added_ignore_labels.append(ext_str)
+
+        # Generate the full context menu
+        context_menu = rabbitvcs.ui.widget.ContextMenu([
+            {
+                "label": _("View Diff"),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_diff_activated, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.condition_view_diff,
+                    "args": None
+                }
+            },
+            {
+                "label": _("Open"),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_open_activated, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.condition_open,
+                    "args": None
+                }
+            },
+            {
+                "label": _("Browse to"),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_browse_activated, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": (lambda: True)
+                }
+            },
+            {
+                "label": _("Delete"),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_delete_activated, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.condition_delete,
+                    "args": None
+                }
+            },
+            {
+                "label": _("Add"),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_add_activated, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.condition_add,
+                    "args": None
+                }
+            },
+            {
+                "label": _("Revert"),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_revert_activated, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.condition_revert,
+                    "args": None
+                }
+            },
+            {
+                "label": _("Restore"),
+                "signals": {
+                    "activate": {
+                        "callback": self.on_context_restore_activated, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.condition_restore,
+                    "args": None
+                }
+            },
+            {
+                "label": _("Add to ignore list"),
+                'submenu': ignore_items,
+                "condition": {
+                    "callback": self.condition_ignore,
+                    "args": None
+                }
+            }
+        ])
+        context_menu.show(data)
+        
     #
     # Event handlers
     #
@@ -242,117 +394,19 @@ class Commit(InterfaceView):
                     self.files_table.remove(index)
                     index -= 1
                 index += 1
+                
+    def on_files_table_cursor_changed(self, treeview, data=None):
+        self.__files_table_event(treeview, data)
+
+    def on_files_table_button_released(self, treeview, data=None):
+        self.__files_table_event(treeview, data)
         
-    def on_files_table_button_pressed(self, treeview, event):
-        pathinfo = treeview.get_path_at_pos(int(event.x), int(event.y))
-        if pathinfo is not None:
-            path, col, cellx, celly = pathinfo
-            treeview.grab_focus()
-            treeview.set_cursor(path, col, 0)
-            treeview_model = treeview.get_model().get_model()
-            fileinfo = treeview_model[path]
-            
-            if event.button == 3:
-                self.last_row_clicked = path
-                context_menu = rabbitvcs.ui.widget.ContextMenu([
-                    {
-                        "label": _("View Diff"),
-                        "signals": {
-                            "activate": {
-                                "callback": self.on_context_diff_activated, 
-                                "args": fileinfo
-                            }
-                        },
-                        "condition": self.condition_view_diff
-                    },
-                    {
-                        "label": _("Open"),
-                        "signals": {
-                            "activate": {
-                                "callback": self.on_context_open_activated, 
-                                "args": fileinfo
-                            }
-                        },
-                        "condition": self.condition_open
-                    },
-                    {
-                        "label": _("Browse to"),
-                        "signals": {
-                            "activate": {
-                                "callback": self.on_context_browse_activated, 
-                                "args": fileinfo
-                            }
-                        },
-                        "condition": (lambda: True)
-                    },
-                    {
-                        "label": _("Delete"),
-                        "signals": {
-                            "activate": {
-                                "callback": self.on_context_delete_activated, 
-                                "args": fileinfo
-                            }
-                        },
-                        "condition": self.condition_delete
-                    },
-                    {
-                        "label": _("Add"),
-                        "signals": {
-                            "activate": {
-                                "callback": self.on_context_add_activated, 
-                                "args": fileinfo
-                            }
-                        },
-                        "condition": self.condition_add
-                    },
-                    {
-                        "label": _("Revert"),
-                        "signals": {
-                            "activate": {
-                                "callback": self.on_context_revert_activated, 
-                                "args": fileinfo
-                            }
-                        },
-                        "condition": self.condition_revert
-                    },
-                    {
-                        "label": _("Restore"),
-                        "signals": {
-                            "activate": {
-                                "callback": self.on_context_restore_activated, 
-                                "args": fileinfo
-                            }
-                        },
-                        "condition": self.condition_restore
-                    },
-                    {
-                        "label": _("Add to ignore list"),
-                        'submenu': [
-                            {
-                                "label": os.path.basename(fileinfo[1]),
-                                "signals": {
-                                    "activate": {
-                                        "callback": self.on_subcontext_ignore_by_filename_activated, 
-                                        "args": fileinfo
-                                     }
-                                 },
-                                "condition": self.condition_ignore
-                            },
-                            {
-                                "label": "*%s"%fileinfo[2],
-                                "signals": {
-                                    "activate": {
-                                        "callback": self.on_subcontext_ignore_by_fileext_activated, 
-                                        "args": fileinfo
-                                    }
-                                },
-                                "condition": self.condition_ignore_by_fileext
-                            }
-                        ],
-                        "condition": self.condition_ignore
-                    }
-                ])
-                context_menu.show(event)
+    def on_files_table_button_pressed(self, treeview, data=None):
+        # this allows us to retain multiple selections with a right-click
+        if data.button == 3:
+            selection = treeview.get_selection()
+            (liststore, indexes) = selection.get_selected_rows()
+            return (len(indexes) > 0)
 
     def on_files_table_row_doubleclicked(self, treeview, event, col):
         treeview.grab_focus()
@@ -362,53 +416,105 @@ class Commit(InterfaceView):
 
         rabbitvcs.lib.helper.launch_diff_tool(fileinfo[1])
 
+    def __files_table_event(self, treeview, data=None):
+        selection = treeview.get_selection()
+        (liststore, indexes) = selection.get_selected_rows()
+
+        self.selected_rows = []
+        self.selected_paths = []
+        for tup in indexes:
+            self.selected_rows.append(tup[0])
+            self.selected_paths.append(self.files_table.get_row(tup[0])[1])
+            
+        if data is not None and data.button == 3:
+            self.show_files_table_popup_menu(treeview, data)
+
     def on_context_add_activated(self, widget, data=None):
-        self.vcs.add(data[1])
-        self.files_table.get_row(self.last_row_clicked)[0] = True
-        self.initialize_items()
+        self.action = rabbitvcs.ui.action.VCSAction(
+            self.vcs,
+            notification=False
+        )
+
+        for index in self.selected_rows:
+            item = self.files_table.get_row(index)
+            path = item[1]
+            
+            self.action.append(self.vcs.add, path)
+            self.action.append(self.files_table.set_row_item, index, 0, True)
+        
+        self.action.append(self.initialize_activated_cache)
+        self.action.append(self.load)
+        self.action.start()
 
     def on_context_revert_activated(self, widget, data=None):
-        self.vcs.revert(data[1])
-        self.initialize_items()
+        self.action = rabbitvcs.ui.action.VCSAction(
+            self.vcs,
+            notification=False
+        )
+
+        for index in self.selected_rows:
+            item = self.files_table.get_row(index)
+            path = item[1]
+            
+            self.action.append(self.vcs.revert, path)
+            self.action.append(self.files_table.set_row_item, index, 0, False)
+        
+        self.action.append(self.initialize_activated_cache)
+        self.action.append(self.load)
+        self.action.start()
 
     def on_context_diff_activated(self, widget, data=None):
-        rabbitvcs.lib.helper.launch_diff_tool(data[1])
+        for path in self.selected_paths:
+            rabbitvcs.lib.helper.launch_diff_tool(path)
 
     def on_context_open_activated(self, widget, data=None):
-        rabbitvcs.lib.helper.open_item(data[1])
+        for path in self.selected_paths:
+            rabbitvcs.lib.helper.open_item(path)
         
     def on_context_browse_activated(self, widget, data=None):
-        rabbitvcs.lib.helper.browse_to_item(data[1])
+        rabbitvcs.lib.helper.browse_to_item(
+            self.files_table.get_row(self.selected_rows[0])[1]
+        )
 
     def on_context_delete_activated(self, widget, data=None):
-        if self.vcs.is_versioned(data[1]):
-            self.vcs.remove(data[1], force=True)
+        if len(self.selected_paths) > 0:
+            from rabbitvcs.ui.delete import Delete
+            Delete(self.selected_paths).start()
+            sleep(1) # sleep so the items can be fully deleted before init
             self.initialize_items()
-        else:
-            confirm = rabbitvcs.ui.dialog.DeleteConfirmation(data[1])
             
-            if confirm.run():
-                rabbitvcs.lib.helper.delete_item(data[1])
-                self.files_table.remove(self.last_row_clicked)
-            
-    def on_subcontext_ignore_by_filename_activated(self, widget, data=None):
-        prop_name = self.vcs.PROPERTIES["ignore"]
-        prop_value = os.path.basename(data[1])
+    def on_subcontext_ignore_by_filename_activated(self, widget, data=None, userdata=None):
 
-        if self.vcs.propset(self.base_dir, prop_name, prop_value):
-            self.initialize_items()
+        for index in self.selected_rows:
+            item = self.files_table.get_row(index)
+            prop_name = self.vcs.PROPERTIES["ignore"]
+            prop_value = os.path.basename(item[1])
+            self.vcs.propset(
+                self.base_dir,
+                prop_name,
+                prop_value
+            )
         
-    def on_subcontext_ignore_by_fileext_activated(self, widget, data=None):
-        prop_name = self.vcs.PROPERTIES["ignore"]
-        prop_value = "*%s" % data[2]
+        self.initialize_items()
         
-        if self.vcs.propset(self.base_dir, prop_name, prop_value, recurse=True):
-            self.initialize_items()
+    def on_subcontext_ignore_by_fileext_activated(self, widget, data=None, userdata=None):
+        for index in self.selected_rows:
+            item = self.files_table.get_row(index)
+            prop_name = self.vcs.PROPERTIES["ignore"]
+            prop_value = "*%s" % item[2]            
+            self.vcs.propset(
+                self.base_dir,
+                prop_name,
+                prop_value,
+                recurse=True
+            )
+
+        self.initialize_items()
 
     def on_context_restore_activated(self, widget, data=None):
         rabbitvcs.lib.helper.launch_ui_window(
             "update", 
-            [data[1]],
+            self.selected_paths,
             return_immmediately=False
         )
         self.initialize_items()
@@ -421,51 +527,59 @@ class Commit(InterfaceView):
     
     # Conditions
     
-    def condition_add(self):
-        path = self.get_last_path()
-        return (
-            not self.vcs.is_versioned(path)
-        )
-    
-    def condition_revert(self):
-        path = self.get_last_path()
-        return (
-            self.vcs.is_added(path) or
-            self.vcs.is_deleted(path) or
-            self.vcs.is_modified(path)
-        )
-
-    def condition_view_diff(self):
-        path = self.get_last_path()
-        return (
-            self.vcs.is_modified(path)
-        )
-
-    def condition_restore(self):
-        path = self.get_last_path()
-        return (
-            self.vcs.is_missing(path)
-        )
-
-    def condition_delete(self):
-        path = self.get_last_path()
-        return (
-            not self.vcs.is_deleted(path)
-        )
-
-    def condition_ignore(self):
-        path = self.get_last_path()
-        if path == self.base_dir:
-            return False
+    def condition_add(self, data=None):
+        for path in self.selected_paths:
+            if self.vcs.is_versioned(path):
+                return False
         
         return True
     
-    def condition_ignore_by_fileext(self):
-        return os.path.isfile(self.get_last_path())
+    def condition_revert(self, data=None):
+        for path in self.selected_paths:
+            if not (self.vcs.is_added(path) or
+                    self.vcs.is_deleted(path) or
+                    self.vcs.is_modified(path)):
+                return False
+        
+        return True
 
-    def condition_open(self):
-        path = self.files_table.get_row(self.last_row_clicked)[1]
-        return os.path.isfile(path)
+    def condition_view_diff(self, data=None):
+        for path in self.selected_paths:
+            if self.vcs.is_modified(path):
+                return True
+        
+        return False
+
+    def condition_restore(self, data=None):
+        for path in self.selected_paths:
+            if self.vcs.is_missing(path):
+                return True
+        
+        return False
+
+    def condition_delete(self, data=None):
+        for path in self.selected_paths:
+            if self.vcs.is_deleted:
+                return True
+
+        return False
+
+    def condition_ignore(self, data=None):
+        for path in self.selected_paths:
+            if path == self.base_dir:
+                return False
+        
+        return True
+    
+    def condition_ignore_by_fileext(self, data):
+        return os.path.isfile(data[1])
+
+    def condition_open(self, data=None):
+        for path in self.selected_paths:
+            if not os.path.isfile(path):
+                return False
+        
+        return True
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main

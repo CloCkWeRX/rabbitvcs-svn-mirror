@@ -1,4 +1,4 @@
-#
+#a
 # This is an extension to the Nautilus file manager to allow better 
 # integration with the Subversion source control system.
 # 
@@ -207,7 +207,9 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_diff_working_copy
+                "condition": {
+                    "callback": self.condition_diff_working_copy
+                }
             },
             {
                 "label": _("View diff against previous revision"),
@@ -217,7 +219,9 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_diff_previous_revision
+                "condition": {
+                    "callback": self.condition_diff_previous_revision
+                }
             },
             {
                 "label": _("View diff between revisions"),
@@ -227,7 +231,9 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_diff_revisions
+                "condition": {
+                    "callback": self.condition_diff_revisions
+                }
             },
             {
                 "label": _("Compare revisions"),
@@ -237,12 +243,16 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_compare_revisions
+                "condition": {
+                    "callback": self.condition_compare_revisions
+                }
             },
             {
                 "label": rabbitvcs.ui.widget.SEPARATOR,
                 "signals": None,
-                "condition": (lambda: True)
+                "condition": {
+                    "callback": (lambda: True)
+                }
             },
             {
                 "label": _("Update to revision..."),
@@ -252,12 +262,16 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_update_to
+                "condition": {
+                    "callback": self.condition_update_to
+                }
             },
             {
                 "label": _("Rollback to revision..."),
                 "signals": None,
-                "condition": (lambda: False)
+                "condition": {
+                    "callback": (lambda: False)
+                }
             },
             {
                 "label": _("Checkout..."),
@@ -267,7 +281,9 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_checkout
+                "condition": {
+                    "callback": self.condition_checkout
+                }
             },
             {
                 "label": _("Branch/tag..."),
@@ -277,7 +293,9 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_branch
+                "condition": {
+                    "callback": self.condition_branch
+                }
             },
             {
                 "label": _("Export..."),
@@ -287,12 +305,16 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_export
+                "condition": {
+                    "callback": self.condition_export
+                }
             },
             {
                 "label": rabbitvcs.ui.widget.SEPARATOR,
                 "signals": None,
-                "condition": (lambda: True)
+                "condition": {
+                    "callback": (lambda: True)
+                }
             },
             {
                 "label": _("Edit author..."),
@@ -302,7 +324,9 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": (lambda: True)
+                "condition": {
+                    "callback": (lambda: True)
+                }
             },
             {
                 "label": _("Edit log message..."),
@@ -312,7 +336,9 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": (lambda: True)
+                "condition": {
+                    "callback": (lambda: True)
+                }
             },
             {
                 "label": _("Edit revision properties.."),
@@ -322,7 +348,9 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_edit_revprops
+                "condition": {
+                    "callback": self.condition_edit_revprops
+                }
             }
         ])
         context_menu.show(data)
@@ -380,7 +408,9 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_diff_previous_revision
+                "condition": {
+                    "callback": self.condition_diff_previous_revision
+                }
             },
             {
                 "label": _("Compare with previous revision"),
@@ -390,12 +420,16 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_diff_previous_revision
+                "condition": {
+                    "callback": self.condition_diff_previous_revision
+                }
             },
             {
                 "label": rabbitvcs.ui.widget.SEPARATOR,
                 "signals": None,
-                "condition": (lambda: True)
+                "condition": {
+                    "callback": (lambda: True)
+                }
             },
             {
                 "label": _("Open"),
@@ -405,7 +439,9 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": (lambda: True)
+                "condition": {
+                    "callback": (lambda: True)
+                }
             },
             {
                 "label": _("Annotate"),
@@ -415,7 +451,9 @@ class Log(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_paths_annotate
+                "condition": {
+                    "callback": self.condition_paths_annotate
+                }
             }
         ])
         context_menu.show(data)

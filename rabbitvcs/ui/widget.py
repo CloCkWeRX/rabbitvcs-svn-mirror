@@ -290,8 +290,13 @@ class ContextMenu:
                 index += 1
                 continue
         
-            if item["condition"]() is False:
-                continue
+            condition = item["condition"]
+            if "args" in condition:
+                if condition["callback"](condition["args"]) is False:
+                    continue
+            else:
+                if condition["callback"]() is False:
+                    continue
                 
             menuitem = gtk.MenuItem(item["label"])
             if "signals" in item and item["signals"] is not None:

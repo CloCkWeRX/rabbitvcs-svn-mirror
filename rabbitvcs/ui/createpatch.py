@@ -290,7 +290,9 @@ class CreatePatch(InterfaceView):
                                 "args": fileinfo
                             }
                         },
-                        "condition": self.condition_view_diff
+                        "condition": {
+                            "callback": self.condition_view_diff
+                        }
                     },
                     {
                         "label": _("Open"),
@@ -300,7 +302,9 @@ class CreatePatch(InterfaceView):
                                 "args": fileinfo
                             }
                         },
-                        "condition": self.condition_open
+                        "condition": {
+                            "callback": self.condition_open
+                        }
                     },
                     {
                         "label": _("Browse to"),
@@ -310,7 +314,9 @@ class CreatePatch(InterfaceView):
                                 "args": fileinfo
                             }
                         },
-                        "condition": (lambda: True)
+                        "condition": {
+                            "callback": (lambda: True)
+                        }
                     },
                     {
                         "label": _("Delete"),
@@ -320,7 +326,9 @@ class CreatePatch(InterfaceView):
                                 "args": fileinfo
                             }
                         },
-                        "condition": self.condition_delete
+                        "condition": {
+                            "callback": self.condition_delete
+                        }
                     },
                     {
                         "label": _("Add"),
@@ -330,7 +338,9 @@ class CreatePatch(InterfaceView):
                                 "args": fileinfo
                             }
                         },
-                        "condition": self.condition_add
+                        "condition": {
+                            "callback": self.condition_add
+                        }
                     },
                     {
                         "label": _("Revert"),
@@ -340,7 +350,9 @@ class CreatePatch(InterfaceView):
                                 "args": fileinfo
                             }
                         },
-                        "condition": self.condition_revert
+                        "condition": {
+                            "callback": self.condition_revert
+                        }
                     },
                     {
                         "label": _("Restore"),
@@ -350,7 +362,9 @@ class CreatePatch(InterfaceView):
                                 "args": fileinfo
                             }
                         },
-                        "condition": self.condition_restore
+                        "condition": {
+                            "callback": self.condition_restore
+                        }
                     },
                     {
                         "label": _("Add to ignore list"),
@@ -363,7 +377,9 @@ class CreatePatch(InterfaceView):
                                         "args": fileinfo
                                      }
                                  },
-                                "condition": self.condition_ignore
+                                "condition": {
+                                    "callback": self.condition_ignore
+                                }
                             },
                             {
                                 "label": "*%s"%fileinfo[2],
@@ -373,10 +389,14 @@ class CreatePatch(InterfaceView):
                                         "args": fileinfo
                                     }
                                 },
-                                "condition": self.condition_ignore_by_fileext
+                                "condition": {
+                                    "callback": self.condition_ignore_by_fileext
+                                }
                             }
                         ],
-                        "condition": self.condition_ignore
+                        "condition": {
+                            "callback": self.condition_ignore
+                        }
                     }
                 ])
                 context_menu.show(event)

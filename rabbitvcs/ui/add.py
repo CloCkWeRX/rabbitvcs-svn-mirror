@@ -151,7 +151,9 @@ class Add(InterfaceView):
                                 "args": fileinfo
                             }
                         },
-                        "condition": self.condition_open
+                        "condition": {
+                            "callback": self.condition_open
+                        }
                     },{
                         "label": _("Browse to"),
                         "signals": {
@@ -160,7 +162,9 @@ class Add(InterfaceView):
                                 "args": fileinfo
                             }
                         },
-                        "condition": (lambda: True)
+                        "condition": {
+                            "callback": (lambda: True)
+                        }
                     },{
                         "label": _("Delete"),
                         "signals": {
@@ -169,31 +173,39 @@ class Add(InterfaceView):
                                 "args": fileinfo
                             }
                         },
-                        "condition": self.condition_delete
+                        "condition": {
+                            "callback": self.condition_delete
+                        }
                     },{
                         "label": _("Add to ignore list"),
                         'submenu': [{
                                 "label": os.path.basename(fileinfo[1]),
                                 "signals": {
-                                    "activate": {
+                                    "button-press-event": {
                                         "callback": self.on_subcontext_ignore_by_filename_activated, 
                                         "args": fileinfo
                                      }
                                  },
-                                "condition": (lambda: True)
+                                "condition": {
+                                    "callback": (lambda: True)
+                                }
                             },
                             {
                                 "label": "*%s"%fileinfo[2],
                                 "signals": {
-                                    "activate": {
+                                    "button-press-event": {
                                         "callback": self.on_subcontext_ignore_by_fileext_activated, 
                                         "args": fileinfo
                                     }
                                 },
-                                "condition": (lambda: True)
+                                "condition": {
+                                    "callback": (lambda: True)
+                                }
                             }
                         ],
-                        "condition": self.condition_ignore_submenu
+                        "condition": {
+                            "callback": self.condition_ignore_submenu
+                        }
                     }
                 ])
                 context_menu.show(event)
@@ -211,18 +223,18 @@ class Add(InterfaceView):
             rabbitvcs.lib.helper.delete_item(data[1])
             self.files_table.remove(self.last_row_clicked)
 
-    def on_subcontext_ignore_by_filename_activated(self, widget, data=None):
+    def on_subcontext_ignore_by_filename_activated(self, widget, data=None, userdata=None):
         prop_name = self.vcs.PROPERTIES["ignore"]
-        prop_value = os.path.basename(data[1])
+        prop_value = os.path.basename(userdata[1])
         
         if self.vcs.propset(self.base_dir, prop_name, prop_value):
             self.files_table.remove(self.last_row_clicked)
         
     def on_subcontext_ignore_by_fileext_activated(self, widget, data=None):
         prop_name = self.vcs.PROPERTIES["ignore"]
-        prop_value = "*%s" % data[2]
+        prop_value = "*%s" % userdata[2]
         
-        if self.vcs.propset(self.base_dir, prop_name, prop_value, recurse=True):
+        if self.vcs.propset(self.base_dir, prop_name, prop_value, recurse=True, userdata=None):
             # Ignored/Normal files should not be shown
             index = 0
             for item in self.files_table.get_items():
@@ -237,13 +249,13 @@ class Add(InterfaceView):
     # Context Menu Conditions
     #
     
-    def condition_delete(self):
+    def condition_delete(self, data=None):
         return True
     
-    def condition_ignore_submenu(self):
+    def condition_ignore_submenu(self, data=None):
         return True
 
-    def condition_open(self):
+    def condition_open(self, data=None):
         path = self.files_table.get_row(self.last_row_clicked)[1]
         return os.path.isfile(path)
         

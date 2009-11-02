@@ -242,7 +242,9 @@ class Compare(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_show_open_first_revision
+                "condition": {
+                    "callback": self.condition_show_open_first_revision
+                }
             },
             {
                 "label": _("Open from second revision"),
@@ -252,7 +254,9 @@ class Compare(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_show_open_second_revision
+                "condition": {
+                    "callback": self.condition_show_open_second_revision
+                }
             },
             {
                 "label": _("View unified diff"),
@@ -262,7 +266,9 @@ class Compare(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_view_diff
+                "condition": {
+                    "callback": self.condition_view_diff
+                }
             },
             {
                 "label": _("Show changes"),
@@ -272,7 +278,9 @@ class Compare(InterfaceView):
                         "args": None
                     }
                 },
-                "condition": self.condition_show_changes
+                "condition": {
+                    "callback": self.condition_show_changes
+                }
             }
         ])
         if context_menu.get_num_items() > 0:
