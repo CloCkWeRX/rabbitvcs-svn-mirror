@@ -482,7 +482,7 @@ class SVN:
     
     def has_status(self, path, status_kind):
         try:
-            statuses = self.status_with_cache(path, recurse=True)[:-1]
+            statuses = self.status(path, recurse=True)[:-1]
         except Exception, e:
             log.exception("has_status exception for %s" % path)
             return False
