@@ -296,7 +296,7 @@ class VCSAction(threading.Thread):
             ])
             
             #FIXME: this is crap
-            if rabbitvcs.lib.helper.in_rich_compare(
+            if data["revision"].number != -1 and rabbitvcs.lib.helper.in_rich_compare(
                     data["action"],
                     self.client.NOTIFY_ACTIONS_COMPLETE):
                 self.notification.append(
