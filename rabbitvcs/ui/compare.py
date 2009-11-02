@@ -77,31 +77,13 @@ class Compare(InterfaceView):
             repo_paths
         )
         self.second_urls_browse = self.get_widget("second_urls_browse")
-        
-        self.first_revision_opt = self.get_widget("first_revision_opt")
-        self.first_revision_number = self.get_widget("first_revision_number")
-        self.first_revision_browse = self.get_widget("first_revision_browse")
-        self.first_revision_opt.set_active(0)
-        
-        self.second_revision_opt = self.get_widget("second_revision_opt")
-        self.second_revision_number = self.get_widget("second_revision_number")
-        self.second_revision_browse = self.get_widget("second_revision_browse")
-        self.second_revision_opt.set_active(0)
 
         if path1 is not None:
             self.first_urls.set_child_text(self.vcs.get_repo_url(path1))
-        if revision1 is not None:
-            self.first_revision_opt.set_active(1)
-            self.first_revision_number.set_text(str(revision1))
-
         if path2 is not None:
             self.second_urls.set_child_text(self.vcs.get_repo_url(path1))
         elif path1 is not None:
             self.second_urls.set_child_text(self.vcs.get_repo_url(path1))
-            
-        if revision2 is not None:
-            self.second_revision_opt.set_active(1)
-            self.second_revision_number.set_text(str(revision2))
 
         self.changes_table = rabbitvcs.ui.widget.Table(
             self.get_widget("changes_table"),
@@ -109,6 +91,18 @@ class Compare(InterfaceView):
             [_("Path"), _("Change"), _("Property Change")]
         )
 
+        self.first_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("first_revision_container"),
+            self.vcs,
+            url_combobox=self.first_urls
+        )
+        
+        self.second_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("second_revision_container"),
+            self.vcs,
+            url_combobox=self.second_urls
+        )
+        
         self.check_ui()
         
         if path1 and revision1 and path2 and revision2:
@@ -150,28 +144,6 @@ class Compare(InterfaceView):
         rabbitvcs.lib.helper.launch_repo_browser(
             self.second_urls.get_active_text()
         )
-
-    def on_first_revision_browse_clicked(self, widget, data=None):
-        LogDialog(
-            self.first_urls.get_active_text(), 
-            ok_callback=self.on_first_log_closed
-        )
-
-    def on_first_log_closed(self, data):
-        if data is not None:
-            self.first_revision_opt.set_active(1)
-            self.first_revision_number.set_text(data)
-
-    def on_second_revision_browse_clicked(self, widget, data=None):
-        LogDialog(
-            self.second_urls.get_active_text(), 
-            ok_callback=self.on_second_log_closed
-        )
-
-    def on_second_log_closed(self, data):
-        if data is not None:
-            self.second_revision_opt.set_active(1)
-            self.second_revision_number.set_text(data)
 
     def on_changes_table_cursor_changed(self, treeview, data=None):
         self.on_changes_table_event(treeview, data)
@@ -215,22 +187,10 @@ class Compare(InterfaceView):
     #
     
     def get_first_revision(self):
-        rev = self.vcs.revision("head")
-        if self.first_revision_opt.get_active() == 1:
-            rev = self.vcs.revision(
-                "number", 
-                number=int(self.first_revision_number.get_text())
-            )
-        return rev
+        return self.first_revision_selector.get_revision_object()
     
     def get_second_revision(self):
-        rev = self.vcs.revision("head")
-        if self.second_revision_opt.get_active() == 1:
-            rev = self.vcs.revision(
-                "number", 
-                number=int(self.second_revision_number.get_text())
-            )
-        return rev
+        return self.second_revision_selector.get_revision_object()
 
     def show_changes_table_popup_menu(self, treeview, data):
         context_menu = rabbitvcs.ui.widget.ContextMenu([
@@ -289,27 +249,15 @@ class Compare(InterfaceView):
     def check_ui(self):
         self.check_first_urls()
         self.check_second_urls()
-        self.check_first_revision()
-        self.check_second_revision()
+        self.first_revision_selector.determine_widget_sensitivity()
+        self.second_revision_selector.determine_widget_sensitivity()
         self.check_refresh_button()
     
     def can_first_browse_urls(self):
         return (self.first_urls.get_active_text() != "")
     
-    def can_first_browse_revisions(self):
-        return (
-            self.can_first_browse_urls()
-            and (self.first_urls.get_active_text() != "")
-        )
-    
     def can_second_browse_urls(self):
         return (self.second_urls.get_active_text() != "")
-    
-    def can_second_browse_revisions(self):
-        return (
-            self.can_second_browse_urls()
-            and (self.second_urls.get_active_text() != "")
-        )
     
     def check_refresh_button(self):
         can_click_refresh = (
@@ -321,31 +269,11 @@ class Compare(InterfaceView):
     
     def check_first_urls(self):
         can_browse_urls = self.can_first_browse_urls()
-        can_browse_revisions = self.can_first_browse_revisions()
-        
-        self.first_revision_browse.set_sensitive(can_browse_urls)
-        self.first_urls_browse.set_sensitive(can_browse_revisions)
+        self.first_urls_browse.set_sensitive(can_browse_urls)
         
     def check_second_urls(self):
         can_browse_urls = self.can_second_browse_urls()
-        can_browse_revisions = self.can_second_browse_revisions()
-        
-        self.second_revision_browse.set_sensitive(can_browse_urls)
-        self.second_urls_browse.set_sensitive(can_browse_revisions)
-        
-    def check_first_revision(self):
-        can_type_number = (self.first_revision_opt.get_active() == 1)
-        can_browse_revisions = self.can_first_browse_revisions()
-        
-        self.first_revision_number.set_sensitive(can_type_number)
-        self.first_revision_browse.set_sensitive(can_browse_revisions)
-
-    def check_second_revision(self):
-        can_type_number = (self.second_revision_opt.get_active() == 1)
-        can_browse_revisions = self.can_second_browse_revisions()
-        
-        self.second_revision_number.set_sensitive(can_type_number)
-        self.second_revision_browse.set_sensitive(can_browse_revisions)
+        self.second_urls_browse.set_sensitive(can_browse_urls)
 
     def load(self):
         first_url = self.first_urls.get_active_text()
