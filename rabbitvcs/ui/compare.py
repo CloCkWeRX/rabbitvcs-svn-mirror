@@ -78,6 +78,18 @@ class Compare(InterfaceView):
         )
         self.second_urls_browse = self.get_widget("second_urls_browse")
 
+        self.first_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("first_revision_container"),
+            self.vcs,
+            url_combobox=self.first_urls
+        )
+
+        self.second_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("second_revision_container"),
+            self.vcs,
+            url_combobox=self.second_urls
+        )
+
         if path1 is not None:
             self.first_urls.set_child_text(self.vcs.get_repo_url(path1))
         if path2 is not None:
@@ -89,18 +101,6 @@ class Compare(InterfaceView):
             self.get_widget("changes_table"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [_("Path"), _("Change"), _("Property Change")]
-        )
-
-        self.first_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
-            self.get_widget("first_revision_container"),
-            self.vcs,
-            url_combobox=self.first_urls
-        )
-        
-        self.second_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
-            self.get_widget("second_revision_container"),
-            self.vcs,
-            url_combobox=self.second_urls
         )
         
         self.check_ui()
@@ -123,17 +123,13 @@ class Compare(InterfaceView):
     
     def on_first_urls_changed(self, widget, data=None):
         self.check_first_urls()
+        self.first_revision_selector.determine_widget_sensitivity()
         self.check_refresh_button()
 
     def on_second_urls_changed(self, widget, data=None):
         self.check_second_urls()
+        self.second_revision_selector.determine_widget_sensitivity()
         self.check_refresh_button()
-   
-    def on_first_revision_opt_changed(self, widget, data=None):
-        self.check_first_revision()
-
-    def on_second_revision_opt_changed(self, widget, data=None):
-        self.check_second_revision()
 
     def on_first_urls_browse_clicked(self, widget, data=None):
         rabbitvcs.lib.helper.launch_repo_browser(
