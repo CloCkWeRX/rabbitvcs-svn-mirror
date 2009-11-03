@@ -330,7 +330,14 @@ class Commit(InterfaceView):
             }
         ])
         context_menu.show(data)
-        
+
+    def delete_items(self, widget, data=None):
+        if len(self.selected_paths) > 0:
+            from rabbitvcs.ui.delete import Delete
+            Delete(self.selected_paths).start()
+            sleep(1) # sleep so the items can be fully deleted before init
+            self.initialize_items()
+            
     #
     # Event handlers
     #
@@ -400,7 +407,20 @@ class Commit(InterfaceView):
 
     def on_files_table_button_released(self, treeview, data=None):
         self.__files_table_event(treeview, data)
-        
+
+    def on_files_table_key_pressed(self, treeview, data=None):
+        selection = treeview.get_selection()
+        (liststore, indexes) = selection.get_selected_rows()
+
+        self.selected_rows = []
+        self.selected_paths = []
+        for tup in indexes:
+            self.selected_rows.append(tup[0])
+            self.selected_paths.append(self.files_table.get_row(tup[0])[1])
+
+        if gtk.gdk.keyval_name(data.keyval) == "Delete":
+            self.delete_items(treeview, data)
+
     def on_files_table_button_pressed(self, treeview, data=None):
         # this allows us to retain multiple selections with a right-click
         if data.button == 3:
@@ -477,11 +497,7 @@ class Commit(InterfaceView):
         )
 
     def on_context_delete_activated(self, widget, data=None):
-        if len(self.selected_paths) > 0:
-            from rabbitvcs.ui.delete import Delete
-            Delete(self.selected_paths).start()
-            sleep(1) # sleep so the items can be fully deleted before init
-            self.initialize_items()
+        self.delete_items(widget, data)
             
     def on_subcontext_ignore_by_filename_activated(self, widget, data=None, userdata=None):
 
