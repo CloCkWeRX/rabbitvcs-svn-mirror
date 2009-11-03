@@ -23,8 +23,9 @@ TIMEOUT = 60*15*100 # seconds
 
 class StatusCacheService(dbus.service.Object):
     
-    def __init__(self, connection):
+    def __init__(self, connection, mainloop):
         dbus.service.Object.__init__(self, connection, OBJECT_PATH)
+        self.mainloop = mainloop
         
         # Start the status checking daemon so we can do requests in the background
         self.status_cache = StatusCache()
@@ -34,9 +35,14 @@ class StatusCacheService(dbus.service.Object):
         pass
         
     @dbus.service.method(INTERFACE)
-    def CheckStatus(self, path, recurse=False, invalidate=False, callback=False):
+    def CheckStatus(self, path, recurse=False, invalidate=False, summary=False, callback=False):
         callback = self.CheckFinished if callback else None
-        return self.status_cache.check_status(u"" + path, recurse=recurse, invalidate=invalidate, callback=callback)
+        return self.status_cache.check_status(u"" + path, recurse=recurse, invalidate=invalidate, summary=summary, callback=callback)
+    
+    @dbus.service.method(INTERFACE)
+    def Quit(self):
+        log.debug("Quitting main loop...")
+        self.mainloop.quit()
         
 class StatusCacheStub:
     def __init__(self, status_callback=None):
@@ -58,10 +64,10 @@ class StatusCacheStub:
         # Switch to this method to just call it straight from here:
         # self.status_callback(*args, **kwargs)
     
-    def check_status(self, path, recurse=False, invalidate=False, callback=True):
+    def check_status(self, path, recurse=False, invalidate=False, summary=False, callback=True):
         status = None
         try:
-            status = self.status_cache.CheckStatus(path, recurse, invalidate, callback, dbus_interface=INTERFACE, timeout=TIMEOUT)
+            status = self.status_cache.CheckStatus(path, recurse, invalidate, summary, callback, dbus_interface=INTERFACE, timeout=TIMEOUT)
             # Test client error problems :)
             # raise dbus.DBusException("Test")
         except dbus.DBusException, ex:
@@ -90,10 +96,14 @@ if __name__ == "__main__":
     
     # This registers our service name with the bus
     session_bus = dbus.SessionBus()
-    name = dbus.service.BusName(SERVICE, session_bus) 
-    service = StatusCacheService(session_bus)
+    name = dbus.service.BusName(SERVICE, session_bus)
     
     mainloop = gobject.MainLoop()
-    mainloop.run()
+     
+    service = StatusCacheService(session_bus, mainloop)
     
-    log.debug("End of main method!")
+    import cProfile
+    cProfile.run("mainloop.run()", "/home/jason/Software/rvcs.stats")
+    # mainloop.run()   
+    
+    log.debug("Cache: ended service: %s (%s)" % (OBJECT_PATH, os.getpid()))

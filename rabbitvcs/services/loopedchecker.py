@@ -25,6 +25,7 @@ At present the byte stream result of a pickle IS, in fact, ASCII data.
 
 import cPickle
 import sys
+import os, os.path
 import subprocess
 import time
 
@@ -48,26 +49,58 @@ def Main():
     """
     # NOTE: we cannot pickle status_list directly. It needs to be processed
     # here.
+
+    log = Log("rabbitvcs.statuschecker:PROCESS")
     
     vcs_client = pysvn.Client()
     pickler = cPickle.Pickler(sys.stdout)
     unpickler = cPickle.Unpickler(sys.stdin)
     
+    # FIXME: debug
+    import time
+    import math
     
     while True:
         try:
             (path, recurse) = unpickler.load()
+            log.debug("Requested: %s" % path)
         except EOFError:
             # This probably means our parent service has been killed
             log.debug("Checker sub-process exiting")
             sys.exit(0)
         
         try:
-            status_list = vcs_client.status(path, recurse=recurse)
-            statuses = [(status.path, str(status.text_status), str(status.prop_status))
-                       for status in status_list]
-            # statuses = [(path, "conflicted", "normal")]
+            # log.debug("Checking: %s" % path)
+#            status_list = vcs_client.status(path, recurse=recurse)
+#            statuses = [(status.path, str(status.text_status), str(status.prop_status))
+#                       for status in status_list]
+            
+            statuses = []
+            
+            if os.path.isdir(path):
+                for root, dirnames, fnames in os.walk(path):
+                    names = ["."]
+                    names.extend(dirnames)
+                    names.extend(fnames)
+                    for name in names:
+                        thing = os.path.abspath(os.path.join(root, name))
+                        if "/.svn" not in thing:
+                            num = 0
+                            while num < 10:
+                                math.sin(num)
+                                num+=1
+                            statuses.append( (thing, "added", "normal") )
+            else:
+                num = 0
+                while num < 10:
+                    math.sin(num)
+                    num+=1
+                statuses.append( (path, "added", "none") )
+            
+            log.debug("Done: %s" % path)
+            
         except Exception, e:
+            log.exception(e)
             statuses = [status_error(path)]
                                 
         pickler.dump(statuses)

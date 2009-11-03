@@ -22,7 +22,7 @@ class SummarizeTest(unittest.TestCase):
 
     # FIXME: replace this with a suitable test repo. I recommend a local one,
     # since it will be checked out and deleted for EVERY SINGLE TEST.
-    SVN_TEST_REPO = ""     
+    SVN_TEST_REPO = "svn+ssh://localhost/home/jason/Software/svn/svntest"     
     SVN_WC_NAME = "test_checkout"
     TIMEOUT = 0.2
     

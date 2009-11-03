@@ -130,7 +130,15 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
     #: we don't enter an endless loop when updating the status.
     #: The callback should acquire this lock when pushing the path to this.
     always_invalidate = True
+    
+    #: When we get the statuses from the callback, but them here for further
+    #: use. There is a possible memory problem here if we put a lot of data in
+    #: this - even when it's removed, Python may not release the memory. I do
+    #: not know this for sure.
+    #: This is of the form: [("path/to", {...status dict...}), ...]
     paths_from_callback = []
+    
+    
     #: It appears that the "update_file_info" call that is triggered by the
     #: "invalidate_extension_info" in the callback function happens
     #: synchronously (ie. in the same thread). However, given the nature of the
@@ -243,31 +251,43 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         
         # Useful for figuring out order of calls. See "cb_status".
         # log.debug("%s: In update_status" % threading.currentThread())
+        
+        found = False
+        
         with self.callback_paths_lock:
-            triggered_by_callback = path in self.paths_from_callback
-            if triggered_by_callback:
-                self.paths_from_callback.remove(path)
+            
+            for idx in xrange(len(self.paths_from_callback)):
+                found = (str(self.paths_from_callback[idx][0]) == str(path))
+                if found: break
+            
+            if found: # We're here because we were triggered by a callback
+                (cb_path, statuses) = self.paths_from_callback[idx]
+                del self.paths_from_callback[idx]
+        
+        # Don't bother the cache if we already have the info
+        
+        if not found:
+            statuses = self.status_checker.check_status(path, recurse=True, invalidate=self.always_invalidate)
 
         # log.debug("US Thread: %s" % threading.currentThread())
-        invalidate_now = self.always_invalidate and not triggered_by_callback
-        statuses = self.status_checker.check_status(path, recurse=True, invalidate=invalidate_now)
+                
+        summary = get_summarized_status_both(path, statuses)
+        single_status = {path: statuses[path]}
         
-        from pprint import pformat
-        # log.debug("\n\tExtension: asked for path [%s]\n\tGot paths:\n%s" % (path, pformat(statuses.keys())))
+#        from pprint import pformat
+#        log.debug("\n\tExtension: asked for summary [%s]\n\tGot paths:\n%s" % (path, pformat(summary.keys())))
+#        log.debug("\n\tExtension: asked for single [%s]\n\tGot paths:\n%s" % (path, pformat(single_status.keys())))
 
         # TODO: using pysvn directly because I don't like the current
         # SVN class.
         client = pysvn.Client()
         client_info = client.info(path)
 
-        assert statuses.has_key(path), "Path not in status list!"
+        assert summary.has_key(path), "Path [%s] not in status summary!" % path
+        assert single_status.has_key(path), "Path [%s] not in single status!" % path
 
-        if bool(int(settings.get("general", "enable_attributes"))): self.update_columns(item, path, statuses, client_info)
-        if bool(int(settings.get("general", "enable_emblems"))): self.update_status(item, path, statuses, client_info)
-
-        # Useful for figuring out order of calls. See "cb_status".
-        # log.debug("%s: Leaving update_status" % threading.currentThread())
-        
+        # if bool(int(settings.get("general", "enable_attributes"))): self.update_columns(item, path, single_status, client_info)
+        if bool(int(settings.get("general", "enable_emblems"))): self.update_status(item, path, summary, client_info)
         
     def update_columns(self, item, path, statuses, client_info):
         """
@@ -322,7 +342,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
             item.add_string_attribute(key, value)
 
     
-    def update_status(self, item, path, statuses, client_info):
+    def update_status(self, item, path, summary, client_info):
         # If we are able to set an emblem that means we have a local status
         # available. The StatusMonitor will keep us up-to-date through the 
         # C{cb_status} callback.
@@ -334,12 +354,12 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         # 4. Callback triggers update
                 
         # Path == first index or last for old system?
-        if statuses[path]["text_status"] == "calculating":
+        if summary[path]["text_status"] == "calculating":
             item.add_emblem(self.EMBLEMS["calculating"])
         else:
-            summarized_status = get_summarized_status(path, statuses)
-            if summarized_status in self.EMBLEMS:
-                item.add_emblem(self.EMBLEMS[summarized_status])
+            single_status = get_single_status(summary[path])
+            if single_status in self.EMBLEMS:
+                item.add_emblem(self.EMBLEMS[single_status])
         
     #~ @disable
     # @timeit
@@ -518,12 +538,14 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
             # Since invalidation triggers an "update_file_info" call, we can
             # tell it NOT to invalidate the status checker path.
             with self.callback_paths_lock:
-                self.paths_from_callback.append(path)
+                self.paths_from_callback.append((path, statuses))
                 # These are useful to establish whether the "update_status" call
                 # happens INSIDE this next call, or later, or in another thread. 
                 # log.debug("%s: Invalidating..." % threading.currentThread())
                 item.invalidate_extension_info()
                 # log.debug("%s: Done invalidate call." % threading.currentThread())
+        else:
+            log.debug("Path [%s] not found in file table")
         
 class MainContextMenu:
     """

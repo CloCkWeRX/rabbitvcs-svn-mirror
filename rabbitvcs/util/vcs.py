@@ -117,7 +117,6 @@ def get_summarized_status(path, statuses):
                                        "prop_status" : [...]} entries
     """
     summarised = get_summarized_status_both(path, statuses)
-    summary = "unknown"
     
     summary = get_single_status(summarised[path])
     

@@ -114,7 +114,11 @@ class StatusCache():
             pass
             # Need to clarify the logic for this. Stub for now.
     
-    def check_status(self, path, recurse=False, invalidate=False, callback=None):
+    
+    
+    def check_status(self, path, 
+                     recurse=False, invalidate=False,
+                     summary=False, callback=None):
         """
         Checks the status of the given path. The callback must be thread safe.
         
@@ -141,18 +145,24 @@ class StatusCache():
                     if path in self.__status_tree:
                         # We're good, so return the status
                         found_in_cache = True
-                        statuses = self.__get_path_statuses(path)
+                        statuses = self.__get_path_statuses(path, recurse)
+                        
+                if found_in_cache and summary:
+                    statuses = rabbitvcs.util.vcs.get_summarized_status_both(path, statuses)
+                        
                 
             if invalidate or not found_in_cache:
                 # We need to calculate the status
                 statuses[path] = {"text_status": "calculating",
                                   "prop_status": "calculating"}
-                self.__paths_to_check.put((path, recurse, invalidate, callback))
+                self.__paths_to_check.put((path, recurse, invalidate, summary, callback))
 
         else:
             statuses[path] = {"text_status": "unknown",
                               "prop_status": "unknown"}
-         
+        
+        # log.debug("%s: found in cache (%s)" % (path, found_in_cache))
+        
         return statuses
         
     def status_update_loop(self):
@@ -162,15 +172,18 @@ class StatusCache():
             # This call will block if the Queue is empty, until something is
             # added to it. There is a better way to do this if we need to add
             # other flags to this.
-            (path, recurse, invalidate, callback) = self.__paths_to_check.get()
-            self.__update_path_status(path, recurse, invalidate, callback)
+            (path, recurse, invalidate, summary, callback) = self.__paths_to_check.get()
+            self.__update_path_status(path, recurse, invalidate, summary, callback)
     
-    def __get_path_statuses(self, path):
+    def __get_path_statuses(self, path, recurse):
         statuses = {}
         with self.__status_tree_lock:
-            for another_path in self.__status_tree.keys():
-                if is_under_dir(path, another_path):
-                    statuses[another_path] = self.__status_tree[another_path]["status"]
+            if recurse:
+                for another_path in self.__status_tree.keys():
+                    if is_under_dir(path, another_path):
+                        statuses[another_path] = self.__status_tree[another_path]["status"]
+            else:
+                statuses[path] = self.__status_tree[path]["status"]
         
         return statuses
     
@@ -180,7 +193,7 @@ class StatusCache():
                 if is_under_dir(path, another_path):
                     del self.__status_tree[another_path]
     
-    def __update_path_status(self, path, recurse=False, invalidate=False, callback=None):
+    def __update_path_status(self, path, recurse=False, invalidate=False, summary=False, callback=None):
         statuses = {}
 
         # We can't trust the cache when we invalidate, because some items may
@@ -198,9 +211,10 @@ class StatusCache():
             with self.__status_tree_lock:
                 if path in self.__status_tree:
                     # log.debug("Sanity check proves useful! [%s]" % path)
-                    statuses = self.__get_path_statuses(path)
+                    # statuses = self.__get_path_statuses(path, recurse)
+                    statuses = self.__get_path_statuses(path, recurse)
                     found_in_cache = True
-
+                    
         if not found_in_cache:
             # Uncomment this for useful simulation of a looooong status check :) 
             # log.debug("Sleeping for 10s...")
@@ -208,23 +222,32 @@ class StatusCache():
             # log.debug("Done.")
             
             # Otherwise actually do a status check
-            statuses = self.checker.check_status(path, recurse)
+            check_results = self.checker.check_status(path, recurse)
             
             with self.__status_tree_lock:
-                age = self.__get_max_age() + 1
-            
-                for path, text_status, prop_status in statuses:
-                    self.__status_tree[path] = {"age":  age,
-                                                "status":
-                                                    {"text_status" : text_status,
-                                                     "prop_status" : prop_status}}
-                    
-                self.__clean_status_cache()
+                self.__add_path_statuses(check_results)
+                statuses = self.__get_path_statuses(path, recurse)
             
         # Remember: these callbacks will block THIS thread from calculating the
         # next path on the "to do" list.
-        if callback: callback(path, self.__get_path_statuses(path))
-    
+        
+        if summary:
+            statuses = rabbitvcs.util.vcs.get_summarized_status_both(path, statuses)
+        
+        if callback: callback(path, statuses)
+
+    def __add_path_statuses(self, statuses):
+        with self.__status_tree_lock:
+            age = self.__get_max_age() + 1
+        
+            for path, text_status, prop_status in statuses:
+                self.__status_tree[path] = {"age":  age,
+                                            "status":
+                                                {"text_status" : text_status,
+                                                 "prop_status" : prop_status}}
+                
+            self.__clean_status_cache()
+
     def __get_max_age(self):
         with self.__status_tree_lock:
             ages = [data["age"] for (path, data) in self.__status_tree.items()]
