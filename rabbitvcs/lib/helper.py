@@ -332,8 +332,7 @@ def launch_diff_tool(path1, path2=None):
     
 def get_file_extension(path):
     """
-    Wrapper that retrieves a file path's extension.  If the given path is not
-    a file, don't try to find an extension, because it would be invalid.
+    Wrapper that retrieves a file path's extension.
     
     @type   path:   string
     @param  path:   A filename or path.
