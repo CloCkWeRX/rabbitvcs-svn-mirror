@@ -76,6 +76,7 @@ class Table:
         
     
         self.treeview = treeview
+        self.selected_rows = []
 
         i = 0       
         for name in colnames:
@@ -186,6 +187,24 @@ class Table:
             col.set_fixed_width(width)
         else:
             col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+
+    def update_selection(self):
+        selection = self.treeview.get_selection()
+        (liststore, indexes) = selection.get_selected_rows()
+
+        self.selected_rows = []
+        for tup in indexes:
+            self.selected_rows.append(tup[0])
+
+    def get_selected_row_items(self, col):
+        items = []
+        for row in self.selected_rows:
+            items.append(self.data[row][col])
+        
+        return items
+
+    def get_selected_rows(self):
+        return self.selected_rows
 
 class ComboBox:
     def __init__(self, cb, items=None):
