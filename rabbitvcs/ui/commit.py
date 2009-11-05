@@ -53,9 +53,6 @@ class Commit(InterfaceView):
 
     TOGGLE_ALL = False
     SHOW_UNVERSIONED = True
-    
-    selected_rows = []
-    selected_paths = []
 
     def __init__(self, paths, base_dir=None):
         """
@@ -109,15 +106,19 @@ class Commit(InterfaceView):
           - Updates the status area        
         """
 
+        gtk.gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
+        gtk.gdk.threads_leave()
         self.items = self.vcs.get_items(self.paths, self.vcs.STATUSES_FOR_COMMIT)
 
         if len(self.activated_cache) == 0:
             for item in self.items:
                 self.activated_cache[item.path] = self.should_item_be_activated(item)
 
+        gtk.gdk.threads_enter()
         self.populate_files_table()
         self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
+        gtk.gdk.threads_leave()
 
     def should_item_be_activated(self, item):
         """
@@ -144,7 +145,6 @@ class Commit(InterfaceView):
         for row in self.files_table.get_items():
             self.activated_cache[row[1]] = row[0]
 
-    @gtk_unsafe
     def populate_files_table(self):
         """
         First clears and then populates the files table based on the items
@@ -187,7 +187,7 @@ class Commit(InterfaceView):
         added_ignore_labels = []
         
         # These are ignore-by-filename items
-        for index in self.selected_rows:
+        for index in self.files_table.get_selected_rows():
             item = self.files_table.get_row(index)
 
             basename = os.path.basename(item[1])
@@ -208,7 +208,7 @@ class Commit(InterfaceView):
                 added_ignore_labels.append(basename)
 
         # These are ignore-by-extension items
-        for index in self.selected_rows:
+        for index in self.files_table.get_selected_rows():
             item = self.files_table.get_row(index)
             
             ext_str = "*%s"%item[2]
@@ -332,9 +332,10 @@ class Commit(InterfaceView):
         context_menu.show(data)
 
     def delete_items(self, widget, data=None):
-        if len(self.selected_paths) > 0:
+        paths = self.files_table.get_selected_row_items(1)
+        if len(paths) > 0:
             from rabbitvcs.ui.delete import Delete
-            Delete(self.selected_paths).start()
+            Delete(paths).start()
             sleep(1) # sleep so the items can be fully deleted before init
             self.initialize_items()
             
@@ -409,14 +410,7 @@ class Commit(InterfaceView):
         self.__files_table_event(treeview, data)
 
     def on_files_table_key_pressed(self, treeview, data=None):
-        selection = treeview.get_selection()
-        (liststore, indexes) = selection.get_selected_rows()
-
-        self.selected_rows = []
-        self.selected_paths = []
-        for tup in indexes:
-            self.selected_rows.append(tup[0])
-            self.selected_paths.append(self.files_table.get_row(tup[0])[1])
+        self.files_table.update_selection()
 
         if gtk.gdk.keyval_name(data.keyval) == "Delete":
             self.delete_items(treeview, data)
@@ -430,21 +424,13 @@ class Commit(InterfaceView):
 
     def on_files_table_row_doubleclicked(self, treeview, event, col):
         treeview.grab_focus()
-        treeview.set_cursor(event[0], col, 0)
-        treeview_model = treeview.get_model().get_model()
-        fileinfo = treeview_model[event[0]]
+        self.files_table.update_selection()
+        paths = self.files_table.get_selected_row_items(1)
 
-        rabbitvcs.lib.helper.launch_diff_tool(fileinfo[1])
+        rabbitvcs.lib.helper.launch_diff_tool(paths[0])
 
     def __files_table_event(self, treeview, data=None):
-        selection = treeview.get_selection()
-        (liststore, indexes) = selection.get_selected_rows()
-
-        self.selected_rows = []
-        self.selected_paths = []
-        for tup in indexes:
-            self.selected_rows.append(tup[0])
-            self.selected_paths.append(self.files_table.get_row(tup[0])[1])
+        self.files_table.update_selection()
             
         if data is not None and data.button == 3:
             self.show_files_table_popup_menu(treeview, data)
@@ -455,7 +441,7 @@ class Commit(InterfaceView):
             notification=False
         )
 
-        for index in self.selected_rows:
+        for index in self.files_table.get_selected_rows():
             item = self.files_table.get_row(index)
             path = item[1]
             
@@ -472,7 +458,7 @@ class Commit(InterfaceView):
             notification=False
         )
 
-        for index in self.selected_rows:
+        for index in self.files_table.get_selected_rows():
             item = self.files_table.get_row(index)
             path = item[1]
             
@@ -484,16 +470,16 @@ class Commit(InterfaceView):
         self.action.start()
 
     def on_context_diff_activated(self, widget, data=None):
-        for path in self.selected_paths:
+        for path in self.files_table.get_selected_row_items(1):
             rabbitvcs.lib.helper.launch_diff_tool(path)
 
     def on_context_open_activated(self, widget, data=None):
-        for path in self.selected_paths:
+        for path in self.files_table.get_selected_row_items(1):
             rabbitvcs.lib.helper.open_item(path)
         
     def on_context_browse_activated(self, widget, data=None):
         rabbitvcs.lib.helper.browse_to_item(
-            self.files_table.get_row(self.selected_rows[0])[1]
+            self.files_table.get_selected_row_items(1)[0]
         )
 
     def on_context_delete_activated(self, widget, data=None):
@@ -501,7 +487,7 @@ class Commit(InterfaceView):
             
     def on_subcontext_ignore_by_filename_activated(self, widget, data=None, userdata=None):
 
-        for index in self.selected_rows:
+        for index in self.files_table.get_selected_rows():
             item = self.files_table.get_row(index)
             prop_name = self.vcs.PROPERTIES["ignore"]
             prop_value = os.path.basename(item[1])
@@ -514,7 +500,7 @@ class Commit(InterfaceView):
         self.initialize_items()
         
     def on_subcontext_ignore_by_fileext_activated(self, widget, data=None, userdata=None):
-        for index in self.selected_rows:
+        for index in self.files_table.get_selected_rows():
             item = self.files_table.get_row(index)
             prop_name = self.vcs.PROPERTIES["ignore"]
             prop_value = "*%s" % item[2]            
@@ -530,7 +516,7 @@ class Commit(InterfaceView):
     def on_context_restore_activated(self, widget, data=None):
         rabbitvcs.lib.helper.launch_ui_window(
             "update", 
-            self.selected_paths,
+            self.files_table.get_selected_row_items(1),
             return_immmediately=False
         )
         self.initialize_items()
@@ -544,14 +530,14 @@ class Commit(InterfaceView):
     # Conditions
     
     def condition_add(self, data=None):
-        for path in self.selected_paths:
+        for path in self.files_table.get_selected_row_items(1):
             if self.vcs.is_versioned(path):
                 return False
         
         return True
     
     def condition_revert(self, data=None):
-        for path in self.selected_paths:
+        for path in self.files_table.get_selected_row_items(1):
             if not (self.vcs.is_added(path) or
                     self.vcs.is_deleted(path) or
                     self.vcs.is_modified(path)):
@@ -560,28 +546,28 @@ class Commit(InterfaceView):
         return True
 
     def condition_view_diff(self, data=None):
-        for path in self.selected_paths:
+        for path in self.files_table.get_selected_row_items(1):
             if self.vcs.is_modified(path):
                 return True
         
         return False
 
     def condition_restore(self, data=None):
-        for path in self.selected_paths:
+        for path in self.files_table.get_selected_row_items(1):
             if self.vcs.is_missing(path):
                 return True
         
         return False
 
     def condition_delete(self, data=None):
-        for path in self.selected_paths:
+        for path in self.files_table.get_selected_row_items(1):
             if self.vcs.is_deleted:
                 return True
 
         return False
 
     def condition_ignore(self, data=None):
-        for path in self.selected_paths:
+        for path in self.files_table.get_selected_row_items(1):
             if path == self.base_dir:
                 return False
         
@@ -591,7 +577,7 @@ class Commit(InterfaceView):
         return os.path.isfile(data[1])
 
     def condition_open(self, data=None):
-        for path in self.selected_paths:
+        for path in self.files_table.get_selected_row_items(1):
             if not os.path.isfile(path):
                 return False
         
