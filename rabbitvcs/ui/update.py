@@ -52,8 +52,7 @@ class Update(InterfaceNonView):
         )
         self.action.append(self.action.set_header, _("Update"))
         self.action.append(self.action.set_status, _("Updating..."))
-        for item in self.paths:
-            self.action.append(self.vcs.update, item)
+        self.action.append(self.vcs.update, self.paths)
         self.action.append(self.action.set_status, _("Completed Update"))
         self.action.append(self.action.finish)
         self.action.start()
