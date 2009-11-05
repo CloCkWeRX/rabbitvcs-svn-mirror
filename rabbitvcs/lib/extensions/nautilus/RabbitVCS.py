@@ -778,6 +778,22 @@ class MainContextMenu:
                 "condition": (lambda: True),
                 "submenus": [
                     {
+                        "identifier": "RabbitVCS::CheckForModifications",
+                        "label": _("Check for Modifications..."),
+                        "tooltip": _("Check for modifications made to the repository"),
+                        "icon": "rabbitvcs-checkmods",
+                        "signals": {
+                            "activate": {
+                                "callback": self.callback_checkmods,
+                                "args": None
+                            }
+                        }, 
+                        "condition": self.condition_checkmods,
+                        "submenus": [
+                            
+                        ]
+                    },
+                    {
                         "identifier": "RabbitVCS::Diff",
                         "label": _("View Diff"),
                         "tooltip": _("View the modifications made to a file"),
@@ -1466,7 +1482,11 @@ class MainContextMenu:
                 not self.path_dict["is_versioned"]):
             return True
         return False
-        
+
+    def condition_checkmods(self):
+        return (self.path_dict["is_working_copy"] or
+            self.path_dict["is_versioned"])
+
     def condition_add_to_ignore_list(self):
         return self.path_dict["is_versioned"]
         
@@ -1657,6 +1677,10 @@ class MainContextMenu:
         proc = launch_ui_window("add", paths)
         # self.rabbitvcs_extension.rescan_after_process_exit(proc, paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
+
+    def callback_checkmods(self, menu_item, paths):
+        proc = launch_ui_window("checkmods", paths)
+        self.rabbitvcs_extension.rescan_after_process_exit(proc, paths)
 
     def callback_delete(self, menu_item, paths):
         proc = launch_ui_window("delete", paths)

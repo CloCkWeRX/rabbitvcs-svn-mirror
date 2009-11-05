@@ -317,7 +317,7 @@ class SVN:
         self.client = pysvn.Client()
         self.interface = "pysvn"
     
-    def status(self, path, recurse=True):
+    def status(self, path, recurse=True, update=False):
         """
         
         Look up the status for path.
@@ -325,7 +325,7 @@ class SVN:
         """
         
         try:
-            return self.client.status(path, recurse=recurse)
+            return self.client.status(path, recurse=recurse, update=update)
         except pysvn.ClientError:
             # TODO: uncommenting these might not be a good idea
             #~ traceback.print_exc()
@@ -566,12 +566,33 @@ class SVN:
             try:
                 st = self.status(path)
             except Exception, e:
-                log.exception("get_items exception")
+                log.exception(e)
                 continue
 
             for st_item in st:
                 if statuses and st_item.text_status not in statuses \
                   and st_item.prop_status not in statuses:
+                    continue
+
+                items.append(st_item)
+
+        return items
+
+    def get_remote_updates(self, paths):
+        if paths is None:
+            return []
+        
+        items = []
+        for path in abspaths(paths):
+            try:
+                st = self.client.status(path, update=True)
+            except Exception, e:
+                log.exception(e)
+                continue
+
+            for st_item in st:
+                if st_item.repos_text_status == pysvn.wc_status_kind.none and \
+                        st_item.repos_prop_status == pysvn.wc_status_kind.none:
                     continue
 
                 items.append(st_item)
