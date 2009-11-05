@@ -34,31 +34,34 @@ import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
 import rabbitvcs.lib.helper
 from rabbitvcs.lib.log import Log
+from rabbitvcs.lib.decorators import gtk_unsafe
 
-log = Log("rabbitvcs.ui.revert")
+log = Log("rabbitvcs.ui.checkmods")
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
 class CheckForModifications(InterfaceView):
-
-    selected_rows = []
-    selected_paths = []
-
+    """
+    Provides a way for the user to see what files have been changed on the 
+    repository.
+    
+    """
+    
     def __init__(self, paths, base_dir=None):
         InterfaceView.__init__(self, "checkmods", "CheckMods")
 
         self.paths = paths
-        self.last_row_clicked = None
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         self.items = None
-        self.statuses = self.vcs.STATUSES_FOR_COMMIT
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"), 
             [gobject.TYPE_STRING, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
+                gobject.TYPE_STRING, gobject.TYPE_STRING, 
+                gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [_("Path"), _("Extension"), 
-                _("Text Status"), _("Property Status"), _("Revision"), _("Author")],
+                _("Text Status"), _("Property Status"), 
+                _("Revision"), _("Author")],
             base_dir=base_dir,
             path_entries=[0]
         )
@@ -88,7 +91,7 @@ class CheckForModifications(InterfaceView):
             return (len(indexes) > 0)
 
     def __files_table_event(self, treeview, data=None):
-        self.update_treeview_selection(treeview)
+        self.files_table.update_selection()
             
         if data is not None and data.button == 3:
             self.show_files_table_popup_menu(treeview, data)
@@ -108,13 +111,12 @@ class CheckForModifications(InterfaceView):
             log.exception(e)
 
     def load(self):
-        gtk.gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
         self.items = self.vcs.get_remote_updates(self.paths)
         self.populate_files_table()
         self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
-        gtk.gdk.threads_leave()
 
+    @gtk_unsafe
     def populate_files_table(self):
         self.files_table.clear()
         for item in self.items:
@@ -126,16 +128,6 @@ class CheckForModifications(InterfaceView):
                 str(item.entry.revision.number),
                 item.entry.commit_author
             ])
-
-    def update_treeview_selection(self, treeview):
-        selection = treeview.get_selection()
-        (liststore, indexes) = selection.get_selected_rows()
-
-        self.selected_rows = []
-        self.selected_paths = []
-        for tup in indexes:
-            self.selected_rows.append(tup[0])
-            self.selected_paths.append(self.files_table.get_row(tup[0])[0])
 
     def show_files_table_popup_menu(self, treeview, data):
         # Generate the full context menu
@@ -156,7 +148,10 @@ class CheckForModifications(InterfaceView):
         context_menu.show(data)
 
     def update_selected_paths(self):
-        rabbitvcs.lib.helper.launch_ui_window("update", self.selected_paths)
+        rabbitvcs.lib.helper.launch_ui_window(
+            "update", 
+            self.files_table.get_selected_row_items(0)
+        )
         
     #
     # Context menu callbacks
