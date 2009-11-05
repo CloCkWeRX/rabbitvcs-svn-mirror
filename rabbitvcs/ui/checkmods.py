@@ -42,7 +42,6 @@ _ = gettext.gettext
 
 class CheckForModifications(InterfaceView):
 
-    TOGGLE_ALL = True
     selected_rows = []
     selected_paths = []
 
@@ -75,22 +74,11 @@ class CheckForModifications(InterfaceView):
     def on_refresh_clicked(self, widget):
         self.initialize_items()
 
-    def on_select_all_toggled(self, widget):
-        self.TOGGLE_ALL = not self.TOGGLE_ALL
-        for row in self.files_table.get_items():
-            row[0] = self.TOGGLE_ALL
-
     def on_files_table_cursor_changed(self, treeview, data=None):
         self.__files_table_event(treeview, data)
 
     def on_files_table_button_released(self, treeview, data=None):
         self.__files_table_event(treeview, data)
-
-    def on_files_table_key_pressed(self, treeview, data=None):
-        self.update_selection(treeview)
-
-        if gtk.gdk.keyval_name(data.keyval) == "Delete":
-            self.delete_items(treeview, data)
 
     def on_files_table_button_pressed(self, treeview, data=None):
         # this allows us to retain multiple selections with a right-click
@@ -99,16 +87,8 @@ class CheckForModifications(InterfaceView):
             (liststore, indexes) = selection.get_selected_rows()
             return (len(indexes) > 0)
 
-    def on_files_table_row_doubleclicked(self, treeview, event, col):
-        treeview.grab_focus()
-        treeview.set_cursor(event[0], col, 0)
-        treeview_model = treeview.get_model().get_model()
-        fileinfo = treeview_model[event[0]]
-
-        return
-
     def __files_table_event(self, treeview, data=None):
-        self.update_selection(treeview)
+        self.update_treeview_selection(treeview)
             
         if data is not None and data.button == 3:
             self.show_files_table_popup_menu(treeview, data)
@@ -147,7 +127,7 @@ class CheckForModifications(InterfaceView):
                 item.entry.commit_author
             ])
 
-    def update_selection(self, treeview):
+    def update_treeview_selection(self, treeview):
         selection = treeview.get_selection()
         (liststore, indexes) = selection.get_selected_rows()
 
@@ -175,12 +155,15 @@ class CheckForModifications(InterfaceView):
         ])
         context_menu.show(data)
 
+    def update_selected_paths(self):
+        rabbitvcs.lib.helper.launch_ui_window("update", self.selected_paths)
+        
     #
     # Context menu callbacks
     #
     
     def on_context_update_activated(self, widget, data=None):
-        rabbitvcs.lib.helper.launch_ui_window("update", self.selected_paths)
+        self.update_selected_paths()
     
     #
     # Context menu conditions
