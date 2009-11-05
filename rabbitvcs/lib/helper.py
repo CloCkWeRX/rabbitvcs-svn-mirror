@@ -342,8 +342,7 @@ def get_file_extension(path):
     @return:        A file extension.
     
     """
-    ext = os.path.splitext(path)[1]
-    return (ext != "" and ext or "")
+    return os.path.splitext(path)[1]
     
 def open_item(path):
     """
