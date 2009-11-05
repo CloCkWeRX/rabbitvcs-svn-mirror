@@ -73,7 +73,7 @@ class Add(InterfaceView):
         try:
             thread.start_new_thread(self.load, ())
         except Exception, e:
-            print str(e)
+            log.exception(e)
 
     #
     # Helpers
@@ -163,7 +163,7 @@ class Add(InterfaceView):
                             }
                         },
                         "condition": {
-                            "callback": (lambda: True)
+                            "callback": self.condition_browseto
                         }
                     },{
                         "label": _("Delete"),
@@ -258,7 +258,11 @@ class Add(InterfaceView):
     def condition_open(self, data=None):
         path = self.files_table.get_row(self.last_row_clicked)[1]
         return os.path.isfile(path)
-        
+
+    def condition_browseto(self, data=None):
+        path = self.files_table.get_row(self.last_row_clicked)[1]
+        return os.path.exists(path)
+
 if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main()

@@ -63,7 +63,7 @@ class Revert(Add):
         try:
             thread.start_new_thread(self.load, ())
         except Exception, e:
-            log.exception()
+            log.exception(e)
                     
     def on_ok_clicked(self, widget):
         items = self.files_table.get_activated_rows(1)
