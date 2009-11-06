@@ -127,6 +127,10 @@ class ContextMenuConditions:
     """
     Provides a standard interface to checking conditions for menu items.
     
+    This class should never be instantied directly, rather the narrowly defined
+    FileManagerContextMenuConditions and GtkFilesContextMenuConditions classes
+    should be called.
+    
     """    
     def __init__(self):
         pass
