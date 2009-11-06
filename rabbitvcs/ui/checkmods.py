@@ -27,7 +27,8 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.ui.add import Add
+from rabbitvcs.lib.contextmenu import GtkFilesContextMenu, \
+    GtkContextMenuCaller, GtkFilesContextMenuConditions
 from rabbitvcs.ui.action import VCSAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
@@ -41,7 +42,7 @@ log = Log("rabbitvcs.ui.checkmods")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class CheckForModifications(InterfaceView):
+class CheckForModifications(InterfaceView, GtkContextMenuCaller):
     """
     Provides a way for the user to see what files have been changed on the 
     repository.
@@ -52,9 +53,10 @@ class CheckForModifications(InterfaceView):
         InterfaceView.__init__(self, "checkmods", "CheckMods")
 
         self.paths = paths
+        self.base_dir = base_dir
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         self.items = None
-        self.files_table = rabbitvcs.ui.widget.Table(
+        self.files_table = rabbitvcs.ui.widget.FilesTable(
             self.get_widget("files_table"), 
             [gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING, gobject.TYPE_STRING, 
@@ -63,7 +65,11 @@ class CheckForModifications(InterfaceView):
                 _("Text Status"), _("Property Status"), 
                 _("Revision"), _("Author")],
             base_dir=base_dir,
-            path_entries=[0]
+            path_entries=[0],
+            callbacks={
+                "row-activated":  self.on_files_table_row_activated,
+                "mouse-event":   self.on_files_table_mouse_event
+            }
         )
 
         self.initialize_items()
@@ -77,20 +83,13 @@ class CheckForModifications(InterfaceView):
     def on_refresh_clicked(self, widget):
         self.initialize_items()
 
-    def on_files_table_cursor_changed(self, treeview, data=None):
-        self.__files_table_event(treeview, data)
+    def on_files_table_row_activated(self, treeview, event, col):
+        treeview.grab_focus()
+        self.files_table.update_selection()
+        paths = self.files_table.get_selected_row_items(1)
+        rabbitvcs.lib.helper.launch_diff_tool(*paths)
 
-    def on_files_table_button_released(self, treeview, data=None):
-        self.__files_table_event(treeview, data)
-
-    def on_files_table_button_pressed(self, treeview, data=None):
-        # this allows us to retain multiple selections with a right-click
-        if data.button == 3:
-            selection = treeview.get_selection()
-            (liststore, indexes) = selection.get_selected_rows()
-            return (len(indexes) > 0)
-
-    def __files_table_event(self, treeview, data=None):
+    def on_files_table_mouse_event(self, treeview, data=None):
         self.files_table.update_selection()
             
         if data is not None and data.button == 3:
@@ -130,41 +129,22 @@ class CheckForModifications(InterfaceView):
             ])
 
     def show_files_table_popup_menu(self, treeview, data):
-        # Generate the full context menu
-        context_menu = rabbitvcs.ui.widget.ContextMenu([
-            {
-                "label": _("Update"),
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_update_activated, 
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_update
-                }
-            }
-        ])
-        context_menu.show(data)
+        paths = self.files_table.get_selected_row_items(0)
+        conditions = CheckModsContextMenuConditions(self.vcs, paths)
+        GtkFilesContextMenu(self, data, self.base_dir, paths, 
+            conditions=conditions)
 
-    def update_selected_paths(self):
-        rabbitvcs.lib.helper.launch_ui_window(
-            "update", 
-            self.files_table.get_selected_row_items(0)
-        )
-        
-    #
-    # Context menu callbacks
-    #
+class CheckModsContextMenuConditions(GtkFilesContextMenuConditions):
+    def __init__(self, vcs_client, paths=[]):
+        GtkFilesContextMenuConditions.__init__(self, vcs_client, paths)
     
-    def on_context_update_activated(self, widget, data=None):
-        self.update_selected_paths()
-    
-    #
-    # Context menu conditions
-    #
+    def _open(self, data=None):
+        return False
 
-    def condition_update(self, data=None):
+    def browse_to(self, data=None):
+        return False
+    
+    def update(self, data=None):
         return True
 
 if __name__ == "__main__":

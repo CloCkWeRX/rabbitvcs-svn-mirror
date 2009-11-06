@@ -28,6 +28,7 @@ import gtk
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
 import rabbitvcs.lib.helper
+from rabbitvcs.lib.contextmenu import GtkContextMenu
 from rabbitvcs.ui.log import LogDialog
 from rabbitvcs.ui.action import VCSAction
 from rabbitvcs.ui.dialog import MessageBox
@@ -191,7 +192,7 @@ class Compare(InterfaceView):
         return self.second_revision_selector.get_revision_object()
 
     def show_changes_table_popup_menu(self, treeview, data):
-        context_menu = rabbitvcs.ui.widget.ContextMenu([
+        context_menu = GtkContextMenu([
             {
                 "label": _("Open from first revision"),
                 "signals": {

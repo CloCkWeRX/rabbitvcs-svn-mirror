@@ -24,7 +24,7 @@ import pygtk
 import gobject
 import gtk
 
-from os.path import basename
+import os.path
 
 try:
     import gtkspell
@@ -63,7 +63,7 @@ def path_filter(model, iter, column, user_data):
     if column in path_entries:
         relpath = rabbitvcs.lib.helper.get_relative_path(base_dir, data)
         if relpath == "":
-            relpath = basename(data)
+            relpath = os.path.basename(data)
         return relpath
     else:
         return data 
@@ -289,65 +289,6 @@ class SourceView(TextView):
             self.view.show()
         else:
             TextView.__init__(self, widget, value)
-            
-class ContextMenu:
-    def __init__(self, menu):
-        if menu is None:
-            return
-        
-        self.view = gtk.Menu()
-        self.num_items = 0
-        is_last = False
-        is_first = True
-        index = 0
-        length = len(menu)
-        for item in menu:
-            is_last = (index + 1 == length)
-
-            # If the item is a separator, don't show it if this is the first
-            # or last item, or if the previous item was a separator.
-            if (item["label"] == SEPARATOR and
-                    (is_first or is_last or previous_label == SEPARATOR)):
-                index += 1
-                continue
-        
-            condition = item["condition"]
-            if "args" in condition:
-                if condition["callback"](condition["args"]) is False:
-                    continue
-            else:
-                if condition["callback"]() is False:
-                    continue
-                
-            menuitem = gtk.MenuItem(item["label"])
-            if "signals" in item and item["signals"] is not None:
-                for signal, info in item["signals"].items():
-                    menuitem.connect(signal, info["callback"], info["args"])
-            
-            if "submenu" in item:
-                submenu = ContextMenu(item["submenu"])
-                menuitem.set_submenu(submenu.get_widget())
-            
-            self.num_items += 1
-            self.view.add(menuitem)
-
-            # The menu item above has just been added, so we can note that
-            # we're no longer on the first menu item.  And we'll keep
-            # track of this item so the next iteration can test if it should
-            # show a separator or not
-            is_first = False
-            previous_label = item["label"]
-            index += 1
-        
-    def show(self, event):        
-        self.view.show_all()
-        self.view.popup(None, None, None, event.button, event.time)
-
-    def get_num_items(self):
-        return self.num_items
-        
-    def get_widget(self):
-        return self.view
 
 class ProgressBar:
     def __init__(self, pbar):
@@ -528,3 +469,42 @@ class RevisionSelector:
     def set_kind_working(self):
         self.revision_kind_opt.set_active(2)
         self.determine_widget_sensitivity()
+
+class FilesTable(Table):
+    def __init__(self, treeview, coltypes, colnames, values=[], 
+            base_dir=None, path_entries=[], callbacks={}):
+
+        Table.__init__(self, treeview, coltypes, colnames, values, 
+            base_dir, path_entries)
+            
+        self.callbacks = callbacks
+        
+        treeview.connect("cursor-changed", self.__cursor_changed_event)
+        treeview.connect("row-activated", self.__row_activated_event)
+        treeview.connect("button-press-event", self.__button_press_event)
+        treeview.connect("button-release-event", self.__button_release_event)
+        treeview.connect("key-press-event", self.__key_press_event)
+        self.allow_multiple()
+    
+    def __button_press_event(self, treeview, data):
+        # this allows us to retain multiple selections with a right-click
+        if data.button == 3:
+            selection = treeview.get_selection()
+            (liststore, indexes) = selection.get_selected_rows()
+            return (len(indexes) > 0)
+
+    def __row_activated_event(self, treeview, data, col):
+        if "row-activated" in self.callbacks:
+            self.callbacks["row-activated"](treeview, data, col)
+        
+    def __key_press_event(self, treeview, data):
+        if "key-event" in self.callbacks:
+            self.callbacks["key-event"](treeview, data)
+
+    def __cursor_changed_event(self, treeview):
+        if "mouse-event" in self.callbacks:
+            self.callbacks["mouse-event"](treeview)
+
+    def __button_release_event(self, treeview, data):
+        if "mouse-event" in self.callbacks:
+            self.callbacks["mouse-event"](treeview, data)

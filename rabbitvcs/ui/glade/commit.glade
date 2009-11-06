@@ -181,11 +181,6 @@
                           <widget class="GtkTreeView" id="files_table">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <signal name="button_press_event" handler="on_files_table_button_pressed"/>
-                            <signal name="key_press_event" handler="on_files_table_key_pressed"/>
-                            <signal name="cursor_changed" handler="on_files_table_cursor_changed"/>
-                            <signal name="row_activated" handler="on_files_table_row_doubleclicked"/>
-                            <signal name="button_release_event" handler="on_files_table_button_released"/>
                           </widget>
                         </child>
                       </widget>

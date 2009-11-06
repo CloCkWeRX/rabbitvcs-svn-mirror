@@ -32,6 +32,7 @@ import gtk
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import VCSAction
 from rabbitvcs.ui.dialog import MessageBox
+from rabbitvcs.lib.contextmenu import GtkContextMenu
 import rabbitvcs.ui.widget
 import rabbitvcs.lib.helper
 import rabbitvcs.lib.vcs
@@ -76,23 +77,27 @@ class Log(InterfaceView):
         
         self.get_widget("limit").set_text(str(self.limit))
         
-        self.revisions_table = rabbitvcs.ui.widget.Table(
+        self.revisions_table = rabbitvcs.ui.widget.FilesTable(
             self.get_widget("revisions_table"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [_("Revision"), _("Author"), 
-                _("Date"), _("Message")]
+                _("Date"), _("Message")],
+            callbacks={
+                "mouse-event":   self.on_revisions_table_mouse_event
+            }
         )
-        self.revisions_table.allow_multiple()
 
-        self.paths_table = rabbitvcs.ui.widget.Table(
+        self.paths_table = rabbitvcs.ui.widget.FilesTable(
             self.get_widget("paths_table"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [_("Action"), _("Path"), 
-                _("Copy From Path"), _("Copy From Revision")]
+                _("Copy From Path"), _("Copy From Revision")],
+            callbacks={
+                "mouse-event":   self.on_paths_table_mouse_event
+            }
         )
-        self.paths_table.allow_multiple()
 
         self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message")
@@ -144,40 +149,28 @@ class Log(InterfaceView):
     #
     # Revisions table callbacks
     #
-    
-    def on_revisions_table_cursor_changed(self, treeview, data=None):
-        self.on_revisions_table_event(treeview, data)
 
-    def on_revisions_table_button_released(self, treeview, data=None):
-        self.on_revisions_table_event(treeview, data)
+    def on_revisions_table_row_activated(self, treeview, event, col):
+        treeview.grab_focus()
+        self.revisions_table.update_selection()
+        paths = self.revisions_table.get_selected_row_items(1)
+        rabbitvcs.lib.helper.launch_diff_tool(*paths)
 
-    def on_revisions_table_button_pressed(self, treeview, data=None):
-        # this allows us to retain multiple selections with a right-click
-        if data.button == 3:
-            selection = treeview.get_selection()
-            (liststore, indexes) = selection.get_selected_rows()
-            return (len(indexes) > 0)
-
-    def on_revisions_table_event(self, treeview, data=None):
-        selection = treeview.get_selection()
-        (liststore, indexes) = selection.get_selected_rows()
-
-        self.selected_rows = []
-        for tup in indexes:
-            self.selected_rows.append(tup[0])
+    def on_revisions_table_mouse_event(self, treeview, data=None):
+        self.revisions_table.update_selection()
         
-        if len(self.selected_rows) == 0:
+        if len(self.revisions_table.get_selected_rows()) == 0:
             self.message.set_text("")
             self.paths_table.clear()
             return
 
-        item = self.revision_items[self.selected_rows[0]]
-
         if data is not None and data.button == 3:
             self.show_revisions_table_popup_menu(treeview, data)
 
+        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
+
         self.paths_table.clear()
-        if len(self.selected_rows) == 1:
+        if len(self.revisions_table.get_selected_rows()) == 1:
             self.message.set_text(item.message)
             
             if item.changed_paths is not None:
@@ -198,7 +191,7 @@ class Log(InterfaceView):
             self.message.set_text("")
 
     def show_revisions_table_popup_menu(self, treeview, data):
-        context_menu = rabbitvcs.ui.widget.ContextMenu([
+        context_menu = GtkContextMenu([
             {
                 "label": _("View diff against working copy"),
                 "signals": {
@@ -359,47 +352,22 @@ class Log(InterfaceView):
     # Paths table callbacks
     #
 
-    def on_paths_table_cursor_changed(self, treeview, data=None):
-        self.on_paths_table_event(treeview, data)
+    def on_paths_table_row_activated(self, treeview, data=None, col=None):
+        self.paths_table.update_selection()
 
-    def on_paths_table_button_released(self, treeview, data=None):
-        self.on_paths_table_event(treeview, data)
-
-    def on_paths_table_button_pressed(self, treeview, data=None):
-        # this allows us to retain multiple selections with a right-click
-        if data.button == 3:
-            selection = treeview.get_selection()
-            (liststore, indexes) = selection.get_selected_rows()
-            return (len(indexes) > 0)
-
-    def on_paths_table_row_doubleclicked(self, treeview, data=None, col=None):
-        selection = treeview.get_selection()
-        (liststore, indexes) = selection.get_selected_rows()
-
-        self.paths_selected_rows = []
-        for tup in indexes:
-            self.paths_selected_rows.append(tup[0])
-
-        rev_item = self.revision_items[self.selected_rows[0]]
-        path_item = self.paths_table.get_row(self.paths_selected_rows[0])[1]
+        rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
+        path_item = self.paths_table.get_row(self.paths_table.get_selected_rows()[0])[1]
         url = self.root_url + path_item
         self.view_diff_for_path(url, rev_item.revision.number)
 
-    def on_paths_table_event(self, treeview, data=None):
-        selection = treeview.get_selection()
-        (liststore, indexes) = selection.get_selected_rows()
-
-        self.paths_selected_rows = []
-        for tup in indexes:
-            self.paths_selected_rows.append(tup[0])
-
-        item = self.paths_table.get_row(self.paths_selected_rows[0])
+    def on_paths_table_mouse_event(self, treeview, data=None):
+        self.paths_table.update_selection()
 
         if data is not None and data.button == 3:
             self.show_paths_table_popup_menu(treeview, data)
 
     def show_paths_table_popup_menu(self, treeview, data):
-        context_menu = rabbitvcs.ui.widget.ContextMenu([
+        context_menu = GtkContextMenu([
             {
                 "label": _("View diff against previous revision"),
                 "signals": {
@@ -469,19 +437,19 @@ class Log(InterfaceView):
             self.load()
           
     def get_selected_revision_numbers(self):
-        if len(self.selected_rows) == 0:
+        if len(self.revisions_table.get_selected_rows()) == 0:
             return ""
 
         revisions = []
-        for row in self.selected_rows:
+        for row in self.revisions_table.get_selected_rows():
             revisions.append(int(self.revisions_table.get_row(row)[0]))
 
         revisions.sort()
         return rabbitvcs.lib.helper.encode_revisions(revisions)
 
     def get_selected_revision_number(self):
-        if len(self.selected_rows):
-            return self.revisions_table.get_row(self.selected_rows[0])[0]
+        if len(self.revisions_table.get_selected_rows()):
+            return self.revisions_table.get_row(self.revisions_table.get_selected_rows()[0])[0]
         else:
             return ""
 
@@ -601,14 +569,14 @@ class Log(InterfaceView):
 
     def on_context_checkout_activated(self, widget, data=None):
         from rabbitvcs.ui.checkout import Checkout
-        item = self.revision_items[self.selected_rows[0]]
+        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
         revision = item.revision.number
         url = self.vcs.get_repo_url(self.path)
         Checkout(url=url, revision=revision).show()
 
     def on_context_diff_wc(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
-        item = self.revision_items[self.selected_rows[0]]
+        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
         self.action = VCSAction(
             self.vcs,
             notification=False
@@ -623,8 +591,8 @@ class Log(InterfaceView):
     def on_context_diff_revisions(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
         
-        item1 = self.revision_items[self.selected_rows[0]]
-        item2 = self.revision_items[self.selected_rows[1]]
+        item1 = self.revision_items[self.revisions_table.get_selected_rows()[0]]
+        item2 = self.revision_items[self.revisions_table.get_selected_rows()[1]]
         
         self.action = VCSAction(
             self.vcs,
@@ -642,7 +610,7 @@ class Log(InterfaceView):
     def on_context_diff_previous_revision(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
 
-        item = self.revision_items[self.selected_rows[0]]
+        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
         self.action = VCSAction(
             self.vcs,
             notification=False
@@ -658,8 +626,8 @@ class Log(InterfaceView):
 
     def on_context_compare_revisions(self, widget, data=None):
         from rabbitvcs.ui.compare import Compare
-        item1 = self.revision_items[self.selected_rows[0]]
-        item2 = self.revision_items[self.selected_rows[1]]
+        item1 = self.revision_items[self.revisions_table.get_selected_rows()[0]]
+        item2 = self.revision_items[self.revisions_table.get_selected_rows()[1]]
         path = self.vcs.get_repo_url(self.path)
 
         Compare(
@@ -671,23 +639,23 @@ class Log(InterfaceView):
 
     def on_context_update_to(self, widget, data=None):
         from rabbitvcs.ui.updateto import UpdateToRevision
-        item = self.revision_items[self.selected_rows[0]]
+        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
         UpdateToRevision(self.path, item.revision.number)
 
     def on_context_branch_activated(self, widget, data=None):
         from rabbitvcs.ui.branch import Branch
-        item = self.revision_items[self.selected_rows[0]]
+        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
         Branch(self.path, revision=item.revision.number).show()
 
     def on_context_export_activated(self, widget, data=None):
         from rabbitvcs.ui.export import Export
-        item = self.revision_items[self.selected_rows[0]]
+        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
         Export(self.path, revision=item.revision.number).show()
 
     def on_context_edit_log_message(self, widget, data=None):
         message = ""
-        if len(self.selected_rows) == 1:
-            item = self.revision_items[self.selected_rows[0]]
+        if len(self.revisions_table.get_selected_rows()) == 1:
+            item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
             message = item.message
 
         from rabbitvcs.ui.dialog import TextChange
@@ -699,8 +667,8 @@ class Log(InterfaceView):
 
     def on_context_edit_author(self, widget, data=None):
         message = ""
-        if len(self.selected_rows) == 1:
-            item = self.revision_items[self.selected_rows[0]]
+        if len(self.revisions_table.get_selected_rows()) == 1:
+            item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
             author = item.author
 
         from rabbitvcs.ui.dialog import TextChange
@@ -712,20 +680,20 @@ class Log(InterfaceView):
 
     def on_context_edit_revprops(self, widget, data=None):
         from rabbitvcs.ui.revprops import SVNRevisionProperties
-        item = self.revision_items[self.selected_rows[0]]
+        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
         url = self.vcs.get_repo_url(self.path)
 
         SVNRevisionProperties(url, item.revision.number)
 
     def on_paths_context_show_changes_diff(self, widget, data=None):
-        rev_item = self.revision_items[self.selected_rows[0]]
-        path_item = self.paths_table.get_row(self.paths_selected_rows[0])[1]
+        rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
+        path_item = self.paths_table.get_row(self.paths_table.get_selected_rows()[0])[1]
         url = self.root_url + path_item
         self.view_diff_for_path(url, rev_item.revision.number)
     
     def on_paths_context_compare(self, widget, data=None):
-        rev_item = self.revision_items[self.selected_rows[0]]
-        path_item = self.paths_table.get_row(self.paths_selected_rows[0])[1]
+        rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
+        path_item = self.paths_table.get_row(self.paths_table.get_selected_rows()[0])[1]
         url = self.root_url + path_item
 
         from rabbitvcs.ui.compare import Compare
@@ -737,7 +705,7 @@ class Log(InterfaceView):
         )
 
     def on_paths_context_open(self, widget, data=None):
-        rev_item = self.revision_items[self.selected_rows[0]]
+        rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
         revision = self.vcs.revision("number", number=rev_item.revision.number)
         self.action = VCSAction(
             self.vcs,
@@ -746,7 +714,7 @@ class Log(InterfaceView):
 
         # This allows us to open multiple files at once
         dests = []
-        for row in self.paths_selected_rows:
+        for row in self.paths_table.get_selected_rows():
             path = self.root_url + self.paths_table.get_row(row)[1]
             dest = "/tmp/rabbitvcs-" + str(rev_item.revision.number) + "-" + os.path.basename(path)
             self.action.append(
@@ -763,8 +731,8 @@ class Log(InterfaceView):
         self.action.start()
 
     def on_paths_context_annotate(self, widget, data=None):
-        rev_item = self.revision_items[self.selected_rows[0]]
-        path_item = self.paths_table.get_row(self.paths_selected_rows[0])[1]
+        rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
+        path_item = self.paths_table.get_row(self.paths_table.get_selected_rows()[0])[1]
         url = self.root_url + path_item
 
         from rabbitvcs.ui.annotate import Annotate
@@ -775,7 +743,7 @@ class Log(InterfaceView):
     #
     
     def condition_checkout(self):
-        return (len(self.selected_rows) == 1)
+        return (len(self.revisions_table.get_selected_rows()) == 1)
     
     def condition_export(self):
         return self.condition_checkout()
@@ -787,23 +755,23 @@ class Log(InterfaceView):
         return self.condition_checkout()
 
     def condition_diff_working_copy(self):
-        return (len(self.selected_rows) == 1)
+        return (len(self.revisions_table.get_selected_rows()) == 1)
 
     def condition_diff_previous_revision(self):
-        item = self.revision_items[self.selected_rows[0]]
-        return (item.revision.number > 1 and len(self.selected_rows) == 1)
+        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
+        return (item.revision.number > 1 and len(self.revisions_table.get_selected_rows()) == 1)
 
     def condition_diff_revisions(self):
-        return (len(self.selected_rows) == 2)
+        return (len(self.revisions_table.get_selected_rows()) == 2)
 
     def condition_edit_revprops(self):
-        return (len(self.selected_rows) == 1)
+        return (len(self.revisions_table.get_selected_rows()) == 1)
     
     def condition_compare_revisions(self):
-        return (len(self.selected_rows) == 2)
+        return (len(self.revisions_table.get_selected_rows()) == 2)
 
     def condition_paths_annotate(self):
-        return (len(self.selected_rows) == 1)
+        return (len(self.revisions_table.get_selected_rows()) == 1)
 
     #
     # Other helper methods
@@ -835,7 +803,7 @@ class Log(InterfaceView):
             notification=False
         )
 
-        for row in self.selected_rows:
+        for row in self.revisions_table.get_selected_rows():
             item = self.revision_items[row]
             self.action.append(
                 self.vcs.revpropset,

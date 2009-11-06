@@ -22,12 +22,14 @@
 
 import os
 import thread
+from time import sleep
 
 import pygtk
 import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceView
+from rabbitvcs.lib.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
@@ -42,7 +44,7 @@ _ = gettext.gettext
 
 gtk.gdk.threads_init()
 
-class Add(InterfaceView):
+class Add(InterfaceView, GtkContextMenuCaller):
     """
     Provides an interface for the user to add unversioned files to a
     repository.  Also, provides a context menu with some extra functionality.
@@ -62,18 +64,20 @@ class Add(InterfaceView):
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         self.items = []
         self.statuses = [self.vcs.STATUS["unversioned"], self.vcs.STATUS["obstructed"]]
-        self.files_table = rabbitvcs.ui.widget.Table(
+        self.files_table = rabbitvcs.ui.widget.FilesTable(
             self.get_widget("files_table"), 
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
             base_dir=base_dir,
-            path_entries=[1]
+            path_entries=[1],
+            callbacks={
+                "row-activated":  self.on_files_table_row_activated,
+                "mouse-event":   self.on_files_table_mouse_event,
+                "key-event":     self.on_files_table_key_event
+            }
         )
 
-        try:
-            thread.start_new_thread(self.load, ())
-        except Exception, e:
-            log.exception(e)
+        self.initialize_items()
 
     #
     # Helpers
@@ -95,6 +99,30 @@ class Add(InterfaceView):
                 item.path, 
                 rabbitvcs.lib.helper.get_file_extension(item.path)
             ])
+
+    def reload_treeview(self):
+        self.initialize_items()
+
+    def reload_treeview_threaded(self):
+        self.load()
+
+    def initialize_items(self):
+        """
+        Initializes the activated cache and loads the file items in a new thread
+        """
+        
+        try:
+            thread.start_new_thread(self.load, ())
+        except Exception, e:
+            log.exception(e)
+
+    def delete_items(self, widget, data=None):
+        paths = self.files_table.get_selected_row_items(1)
+        if len(paths) > 0:
+            from rabbitvcs.ui.delete import Delete
+            Delete(paths).start()
+            sleep(1) # sleep so the items can be fully deleted before init
+            self.initialize_items()
     
     #
     # UI Signal Callbacks
@@ -130,138 +158,27 @@ class Add(InterfaceView):
         for row in self.files_table.get_items():
             row[0] = self.TOGGLE_ALL
 
-    def on_files_table_button_pressed(self, treeview, event=None, user_data=None):
-        if event.button == 3:
-            pathinfo = treeview.get_path_at_pos(int(event.x), int(event.y))
-            if pathinfo is not None:
-                path, col, cellx, celly = pathinfo
-                treeview.grab_focus()
-                treeview.set_cursor(path, col, 0)
-                
-                treeview_model = treeview.get_model().get_model()
-                fileinfo = treeview_model[path]
+    def on_files_table_row_activated(self, treeview, event, col):
+        treeview.grab_focus()
+        self.files_table.update_selection()
+        paths = self.files_table.get_selected_row_items(1)
+        rabbitvcs.lib.helper.launch_diff_tool(*paths)
 
-                self.last_row_clicked = path[0]
-                
-                context_menu = rabbitvcs.ui.widget.ContextMenu([{
-                        "label": _("Open"),
-                        "signals": {
-                            "activate": {
-                                "callback": self.on_context_open_activated, 
-                                "args": fileinfo
-                            }
-                        },
-                        "condition": {
-                            "callback": self.condition_open
-                        }
-                    },{
-                        "label": _("Browse to"),
-                        "signals": {
-                            "activate": {
-                                "callback": self.on_context_browse_activated, 
-                                "args": fileinfo
-                            }
-                        },
-                        "condition": {
-                            "callback": self.condition_browseto
-                        }
-                    },{
-                        "label": _("Delete"),
-                        "signals": {
-                            "activate": {
-                                "callback": self.on_context_delete_activated, 
-                                "args": fileinfo
-                            }
-                        },
-                        "condition": {
-                            "callback": self.condition_delete
-                        }
-                    },{
-                        "label": _("Add to ignore list"),
-                        'submenu': [{
-                                "label": os.path.basename(fileinfo[1]),
-                                "signals": {
-                                    "button-press-event": {
-                                        "callback": self.on_subcontext_ignore_by_filename_activated, 
-                                        "args": fileinfo
-                                     }
-                                 },
-                                "condition": {
-                                    "callback": (lambda: True)
-                                }
-                            },
-                            {
-                                "label": "*%s"%fileinfo[2],
-                                "signals": {
-                                    "button-press-event": {
-                                        "callback": self.on_subcontext_ignore_by_fileext_activated, 
-                                        "args": fileinfo
-                                    }
-                                },
-                                "condition": {
-                                    "callback": (lambda: True)
-                                }
-                            }
-                        ],
-                        "condition": {
-                            "callback": self.condition_ignore_submenu
-                        }
-                    }
-                ])
-                context_menu.show(event)
-                
-    def on_context_open_activated(self, widget, data=None):
-        rabbitvcs.lib.helper.open_item(data[1])
-        
-    def on_context_browse_activated(self, widget, data=None):
-        rabbitvcs.lib.helper.browse_to_item(data[1])
+    def on_files_table_key_event(self, treeview, data=None):
+        self.files_table.update_selection()
 
-    def on_context_delete_activated(self, widget, data=None):
-        confirm = rabbitvcs.ui.dialog.DeleteConfirmation(data[1])
-        
-        if confirm.run():
-            rabbitvcs.lib.helper.delete_item(data[1])
-            self.files_table.remove(self.last_row_clicked)
+        if gtk.gdk.keyval_name(data.keyval) == "Delete":
+            self.delete_items(treeview, data)
 
-    def on_subcontext_ignore_by_filename_activated(self, widget, data=None, userdata=None):
-        prop_name = self.vcs.PROPERTIES["ignore"]
-        prop_value = os.path.basename(userdata[1])
-        
-        if self.vcs.propset(self.base_dir, prop_name, prop_value):
-            self.files_table.remove(self.last_row_clicked)
-        
-    def on_subcontext_ignore_by_fileext_activated(self, widget, data=None):
-        prop_name = self.vcs.PROPERTIES["ignore"]
-        prop_value = "*%s" % userdata[2]
-        
-        if self.vcs.propset(self.base_dir, prop_name, prop_value, recurse=True, userdata=None):
-            # Ignored/Normal files should not be shown
-            index = 0
-            for item in self.files_table.get_items():
-                if (self.vcs.is_normal(item[1]) or
-                        self.vcs.is_ignored(item[1])):
-                    self.files_table.remove(index)
-                    del self.items[index]
-                    index -= 1
-                index += 1
+    def on_files_table_mouse_event(self, treeview, data=None):
+        self.files_table.update_selection()
             
-    #
-    # Context Menu Conditions
-    #
-    
-    def condition_delete(self, data=None):
-        return True
-    
-    def condition_ignore_submenu(self, data=None):
-        return True
+        if data is not None and data.button == 3:
+            self.show_files_table_popup_menu(treeview, data)
 
-    def condition_open(self, data=None):
-        path = self.files_table.get_row(self.last_row_clicked)[1]
-        return os.path.isfile(path)
-
-    def condition_browseto(self, data=None):
-        path = self.files_table.get_row(self.last_row_clicked)[1]
-        return os.path.exists(path)
+    def show_files_table_popup_menu(self, treeview, data):
+        paths = self.files_table.get_selected_row_items(1)
+        GtkFilesContextMenu(self, data, self.base_dir, paths)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main

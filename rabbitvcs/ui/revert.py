@@ -48,22 +48,38 @@ class Revert(Add):
         self.window.set_title(_("Revert"))
 
         self.paths = paths
+        self.base_dir = base_dir
         self.last_row_clicked = None
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         self.items = None
         self.statuses = self.vcs.STATUSES_FOR_REVERT
-        self.files_table = rabbitvcs.ui.widget.Table(
+        self.files_table = rabbitvcs.ui.widget.FilesTable(
             self.get_widget("files_table"), 
-            [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
+            [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING
+                ,gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
+                _("Text Status"), _("Property Status")],
             base_dir=base_dir,
-            path_entries=[1]
+            path_entries=[1],
+            callbacks={
+                "row-activated":  self.on_files_table_row_activated,
+                "mouse-event":   self.on_files_table_mouse_event,
+                "key-event":     self.on_files_table_key_event
+            }
         )
 
-        try:
-            thread.start_new_thread(self.load, ())
-        except Exception, e:
-            log.exception(e)
+        self.initialize_items()
+
+    def populate_files_table(self):
+        self.files_table.clear()
+        for item in self.items:
+            self.files_table.append([
+                True, 
+                item.path, 
+                rabbitvcs.lib.helper.get_file_extension(item.path),
+                item.text_status,
+                item.prop_status
+            ])
                     
     def on_ok_clicked(self, widget):
         items = self.files_table.get_activated_rows(1)
@@ -84,15 +100,6 @@ class Revert(Add):
         self.action.append(self.action.finish)
         self.action.start()
 
-    #
-    # Context Menu Conditions
-    #
-    
-    def condition_delete(self):
-        return False
-
-    def condition_ignore_submenu(self):
-        return False
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main

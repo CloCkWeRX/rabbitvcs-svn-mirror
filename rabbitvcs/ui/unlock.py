@@ -53,18 +53,20 @@ class Unlock(Add):
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         self.items = None
         self.statuses = None
-        self.files_table = rabbitvcs.ui.widget.Table(
+        self.files_table = rabbitvcs.ui.widget.FilesTable(
             self.get_widget("files_table"), 
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
             base_dir=base_dir,
-            path_entries=[1]
+            path_entries=[1],
+            callbacks={
+                "row-activated":  self.on_files_table_row_activated,
+                "mouse-event":   self.on_files_table_mouse_event,
+                "key-event":     self.on_files_table_key_event
+            }
         )
 
-        try:
-            thread.start_new_thread(self.load, ())
-        except Exception, e:
-            log.exception()
+        self.initialize_items()
         
         
     #
@@ -120,29 +122,20 @@ class Unlock(Add):
         self.action.append(self.action.finish)
         self.action.start()
 
-    #
-    # Context Menu Conditions
-    #
-    
-    def condition_delete(self):
-        return False
-
-    def condition_ignore_submenu(self):
-        return False
-
 class UnlockQuick(InterfaceNonView):
     """
     This class provides a handler to unlock functionality.
     
     """
 
-    def __init__(self, path):
+    def __init__(self, paths):
         InterfaceNonView.__init__(self)
-        self.path = path
+        self.path = paths
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
 
     def start(self):
-        self.vcs.unlock(self.path, force=True)
+        for path in self.paths:
+            self.vcs.unlock(self.paths, force=True)
         
 if __name__ == "__main__":
     from rabbitvcs.ui import main

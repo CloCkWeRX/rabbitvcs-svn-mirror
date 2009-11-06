@@ -29,6 +29,7 @@ import gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.lib.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
 from rabbitvcs.ui.log import LogDialog
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
@@ -43,7 +44,7 @@ _ = gettext.gettext
 
 gtk.gdk.threads_init()
 
-class Lock(InterfaceView):
+class Lock(InterfaceView, GtkContextMenuCaller):
     """
     Provides an interface to lock any number of files in a working copy.
     
@@ -64,39 +65,45 @@ class Lock(InterfaceView):
         self.base_dir = base_dir
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
 
-        self.files_table = rabbitvcs.ui.widget.Table(
+        self.files_table = rabbitvcs.ui.widget.FilesTable(
             self.get_widget("files_table"),
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
                 _("Locked")],
             base_dir=base_dir,
-            path_entries=[1]
+            path_entries=[1],
+            callbacks={
+                "mouse-event":   self.on_files_table_mouse_event
+            }
         )
-        self.last_row_clicked = None
 
         self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message")
         )
 
         self.items = None
-        try:
-            thread.start_new_thread(self.load, ())
-        except Exception, e:
-            log.exception()
+        self.initialize_items()
 
     #
     # Helper functions
     # 
     
-    def refresh_row_status(self):
-        row = self.files_table.get_row(self.last_row_clicked)
-        
-        locked = ""
-        if self.vcs.is_locked(row[1]):
-            locked = _("Yes")
+    def reload_treeview(self):
+        self.initialize_items()
 
-        row[3] = locked
+    def reload_treeview_threaded(self):
+        self.load()
+
+    def initialize_items(self):
+        """
+        Initializes the activated cache and loads the file items in a new thread
+        """
+        
+        try:
+            thread.start_new_thread(self.load, ())
+        except Exception, e:
+            log.exception(e)
 
     def load(self):
         gtk.gdk.threads_enter()
@@ -121,6 +128,10 @@ class Lock(InterfaceView):
                 rabbitvcs.lib.helper.get_file_extension(item.path),
                 locked
             ])
+
+    def show_files_table_popup_menu(self, treeview, data):
+        paths = self.files_table.get_selected_row_items(1)
+        GtkFilesContextMenu(self, data, self.base_dir, paths)
             
     #
     # UI Signal Callbacks
@@ -161,133 +172,23 @@ class Lock(InterfaceView):
         self.action.append(self.action.set_status, _("Completed Lock"))
         self.action.append(self.action.finish)
         self.action.start()
+
+    def on_files_table_mouse_event(self, treeview, data=None):
+        self.files_table.update_selection()
+            
+        if data is not None and data.button == 3:
+            self.show_files_table_popup_menu(treeview, data)
     
     def on_select_all_toggled(self, widget, data=None):
         self.TOGGLE_ALL = not self.TOGGLE_ALL
         for row in self.files_table.get_items():
             row[0] = self.TOGGLE_ALL
 
-    def on_files_table_button_pressed(self, treeview, event):
-        pathinfo = treeview.get_path_at_pos(int(event.x), int(event.y))
-        if pathinfo is not None:
-            path, col, cellx, celly = pathinfo
-            treeview.grab_focus()
-            treeview.set_cursor(path, col, 0)
-            treeview_model = treeview.get_model().get_model()
-            fileinfo = treeview_model[path]
-            
-            if event.button == 3:
-                self.last_row_clicked = path
-                context_menu = rabbitvcs.ui.widget.ContextMenu([
-                    {
-                        "label": _("Remove Lock"),
-                        "signals": {
-                            "activate": {
-                                "callback": self.on_context_remove_lock_activated, 
-                                "args": fileinfo
-                            }
-                        },
-                        "condition": {
-                            "callback": self.condition_remove_lock
-                        }
-                    },
-                    {
-                        "label": _("View Diff"),
-                        "signals": {
-                            "activate": {
-                                "callback": self.on_context_diff_activated, 
-                                "args": fileinfo
-                            }
-                        },
-                        "condition": {
-                            "callback": self.condition_diff
-                        }
-                    },
-                    {
-                        "label": _("Show log"),
-                        "signals": {
-                            "activate": {
-                                "callback": self.on_context_log_activated, 
-                                "args": fileinfo
-                            }
-                        },
-                        "condition": {
-                            "callback": (lambda: True)
-                        }
-                    },
-                    {
-                        "label": _("Open"),
-                        "signals": {
-                            "activate": {
-                                "callback": self.on_context_open_activated, 
-                                "args": fileinfo
-                            }
-                        },
-                        "condition": {
-                            "callback": self.condition_open
-                        }
-                    },
-                    {
-                        "label": _("Browse to"),
-                        "signals": {
-                            "activate": {
-                                "callback": self.on_context_browse_activated, 
-                                "args": fileinfo
-                            }
-                        },
-                        "condition": {
-                            "callback": (lambda: True)
-                        }
-                    }
-                ])
-                context_menu.show(event)
-
-    def on_files_table_row_doubleclicked(self, treeview, event, col):
-        pass
-
     def on_previous_messages_clicked(self, widget, data=None):
         dialog = rabbitvcs.ui.dialog.PreviousMessages()
         message = dialog.run()
         if message is not None:
             self.message.set_text(message)
-
-    #
-    # Context menu signal callbacks
-    #
-
-    def on_context_log_activated(self, widget, data=None):
-        LogDialog(data[1])
-
-    def on_context_diff_activated(self, widget, data=None):
-        rabbitvcs.lib.helper.launch_diff_tool(data[1])
-
-    def on_context_open_activated(self, widget, data=None):
-        rabbitvcs.lib.helper.open_item(data[1])
-        
-    def on_context_browse_activated(self, widget, data=None):
-        rabbitvcs.lib.helper.browse_to_item(data[1])
-
-    def on_context_remove_lock_activated(self, widget, data=None):
-        from rabbitvcs.ui.unlock import UnlockQuick
-        unlock = UnlockQuick(data[1])
-        unlock.start()
-        self.refresh_row_status()
-
-    #
-    # Context menu conditions
-    #
-
-    def condition_diff(self):
-        path = self.files_table.get_row(self.last_row_clicked)[1]
-        return self.vcs.is_modified(path)
-    
-    def condition_remove_lock(self):
-        path = self.files_table.get_row(self.last_row_clicked)[1]
-        return self.vcs.is_locked(path)
-    
-    def condition_open(self):
-        path = self.files_table.get_row(self.last_row_clicked)[1]
-        return os.path.isfile(path)
     
 if __name__ == "__main__":
     from rabbitvcs.ui import main
