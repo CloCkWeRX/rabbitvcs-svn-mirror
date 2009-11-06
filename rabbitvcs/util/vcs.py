@@ -3,6 +3,10 @@ from os.path import isdir, isfile, realpath, basename
 
 import pysvn
 
+from rabbitvcs.lib.log import Log
+log = Log("rabbitvcs.util.vcs")
+
+
 #: A list of statuses which count as modified (for a directory) in 
 #: TortoiseSVN emblem speak.
 MODIFIED_STATUSES = [
@@ -101,6 +105,16 @@ def get_single_status(statuses):
             single = "normal"
             
     return single
+
+def get_summarized_status_both_from_list(path, statuses):
+    
+    status_dict = {}
+    
+    for other_path, text_status, prop_status in statuses:
+        status_dict[other_path] = {"text_status" : text_status,
+                                   "prop_status" : prop_status}
+        
+    return get_summarized_status_both(path, status_dict)
 
 def get_summarized_status(path, statuses):
     """

@@ -103,7 +103,11 @@ if __name__ == "__main__":
     service = StatusCacheService(session_bus, mainloop)
     
     import cProfile
-    cProfile.run("mainloop.run()", "/home/jason/Software/rvcs.stats")
+    import rabbitvcs.lib.helper
+    profile_data_file = os.path.join(
+                            rabbitvcs.lib.helper.get_home_folder(),
+                            "rvcs_cache.stats")
+    cProfile.run("mainloop.run()", profile_data_file)
     # mainloop.run()   
     
     log.debug("Cache: ended service: %s (%s)" % (OBJECT_PATH, os.getpid()))

@@ -50,6 +50,11 @@ def is_under_dir(base_path, other_path):
     # are just too slow for proper use here.
     return (base_path == other_path or other_path.startswith(base_path + "/"))
 
+def make_summary(path, statuses):
+    return ({path: statuses[path]},
+            rabbitvcs.util.vcs.get_summarized_status_both(path, statuses))
+
+
 class StatusCache():
     #: The queue will be populated with 4-ples of
     #: (path, recurse, invalidate, callback).
@@ -146,10 +151,6 @@ class StatusCache():
                         # We're good, so return the status
                         found_in_cache = True
                         statuses = self.__get_path_statuses(path, recurse)
-                        
-                if found_in_cache and summary:
-                    statuses = rabbitvcs.util.vcs.get_summarized_status_both(path, statuses)
-                        
                 
             if invalidate or not found_in_cache:
                 # We need to calculate the status
@@ -162,6 +163,9 @@ class StatusCache():
                               "prop_status": "unknown"}
         
         # log.debug("%s: found in cache (%s)" % (path, found_in_cache))
+        
+        if summary:
+            statuses = make_summary(path, statuses)
         
         return statuses
         
@@ -184,7 +188,7 @@ class StatusCache():
                         statuses[another_path] = self.__status_tree[another_path]["status"]
             else:
                 statuses[path] = self.__status_tree[path]["status"]
-        
+
         return statuses
     
     def __invalidate_path(self, path):
@@ -222,7 +226,15 @@ class StatusCache():
             # log.debug("Done.")
             
             # Otherwise actually do a status check
-            check_results = self.checker.check_status(path, recurse)
+            
+            check_results = None
+            check_summary = None
+            
+            if summary:
+                (check_results, check_summary) = self.checker.check_status(path, recurse, summary)
+            else:
+                check_results = self.checker.check_status(path, recurse, summary)
+                
             
             with self.__status_tree_lock:
                 self.__add_path_statuses(check_results)
@@ -232,7 +244,7 @@ class StatusCache():
         # next path on the "to do" list.
         
         if summary:
-            statuses = rabbitvcs.util.vcs.get_summarized_status_both(path, statuses)
+            statuses = ({path: statuses[path]}, check_summary)
         
         if callback: callback(path, statuses)
 

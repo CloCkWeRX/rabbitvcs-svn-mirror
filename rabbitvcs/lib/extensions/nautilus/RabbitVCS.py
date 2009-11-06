@@ -261,18 +261,18 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                 if found: break
             
             if found: # We're here because we were triggered by a callback
-                (cb_path, statuses) = self.paths_from_callback[idx]
+                (cb_path, single_status, summary) = self.paths_from_callback[idx]
                 del self.paths_from_callback[idx]
         
         # Don't bother the cache if we already have the info
         
         if not found:
-            statuses = self.status_checker.check_status(path, recurse=True, invalidate=self.always_invalidate)
+            (single_status, summary) = self.status_checker.check_status(path, recurse=True, summary=True, invalidate=self.always_invalidate)
 
         # log.debug("US Thread: %s" % threading.currentThread())
                 
-        summary = get_summarized_status_both(path, statuses)
-        single_status = {path: statuses[path]}
+        # summary = get_summarized_status_both(path, statuses)
+        # single_status = {path: statuses[path]}
         
 #        from pprint import pformat
 #        log.debug("\n\tExtension: asked for summary [%s]\n\tGot paths:\n%s" % (path, pformat(summary.keys())))
@@ -283,7 +283,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         client = pysvn.Client()
         client_info = client.info(path)
 
-        assert summary.has_key(path), "Path [%s] not in status summary!" % path
+        assert summary.has_key(path), "Path [%s] not in status summary!" % summary
         assert single_status.has_key(path), "Path [%s] not in single status!" % path
 
         # if bool(int(settings.get("general", "enable_attributes"))): self.update_columns(item, path, single_status, client_info)
@@ -538,7 +538,9 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
             # Since invalidation triggers an "update_file_info" call, we can
             # tell it NOT to invalidate the status checker path.
             with self.callback_paths_lock:
-                self.paths_from_callback.append((path, statuses))
+                from pprint import pformat
+                (single, summary) = statuses
+                self.paths_from_callback.append((path, single, summary))
                 # These are useful to establish whether the "update_status" call
                 # happens INSIDE this next call, or later, or in another thread. 
                 # log.debug("%s: Invalidating..." % threading.currentThread())
