@@ -11,7 +11,7 @@ import dbus.service
 
 
 import rabbitvcs.services.service
-from rabbitvcs.services.statuscache import StatusCache
+from rabbitvcs.services.statuscachedb import StatusCache
 
 from rabbitvcs.lib.log import Log
 log = Log("rabbitvcs.services.cacheservice")

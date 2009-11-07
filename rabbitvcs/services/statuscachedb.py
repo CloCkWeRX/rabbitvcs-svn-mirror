@@ -35,6 +35,8 @@ from rabbitvcs.services.loopedchecker import StatusChecker
 
 import rabbitvcs.util.vcs
 
+from rabbitvcs.services.statuscache import make_summary
+
 # FIXME: debug
 from rabbitvcs.lib.log import Log
 log = Log("rabbitvcs.services.statuscache")
@@ -127,7 +129,9 @@ class StatusCache():
             pass
             # Need to clarify the logic for this. Stub for now.
     
-    def check_status(self, path, recurse=False, invalidate=False, callback=None):
+    def check_status(self, path, 
+                     recurse=False, invalidate=False,
+                     summary=False, callback=None):
         """
         Checks the status of the given path. The callback must be thread safe.
         
@@ -155,12 +159,15 @@ class StatusCache():
                 statuses = {}
                 statuses[path] = {"text_status": "calculating",
                                   "prop_status": "calculating"}
-                self.__paths_to_check.put((path, recurse, invalidate, callback))
+                self.__paths_to_check.put((path, recurse, invalidate, summary, callback))
 
         else:
             statuses = {}
             statuses[path] = {"text_status": "unknown",
                               "prop_status": "unknown"}
+         
+        if summary:
+            statuses = make_summary(path, statuses)
          
         return statuses
         
@@ -171,10 +178,10 @@ class StatusCache():
             # This call will block if the Queue is empty, until something is
             # added to it. There is a better way to do this if we need to add
             # other flags to this.
-            (path, recurse, invalidate, callback) = self.__paths_to_check.get()
-            self.__update_path_status(path, recurse, invalidate, callback)
+            (path, recurse, invalidate, summary, callback) = self.__paths_to_check.get()
+            self.__update_path_status(path, recurse, invalidate, summary, callback)
        
-    def __update_path_status(self, path, recurse=False, invalidate=False, callback=None):
+    def __update_path_status(self, path, recurse=False, invalidate=False, summary=False, callback=None):
         statuses = None
 
         # We can't trust the cache when we invalidate, because some items may
@@ -196,15 +203,25 @@ class StatusCache():
             # log.debug("Done.")
             
             # Otherwise actually do a status check
-            statuses = self.checker.check_status(path, recurse)
             
-            self.cache.add_statuses(statuses)
-                   
+            check_results = None
+            check_summary = None
+            
+            if summary:
+                (check_results, check_summary) = self.checker.check_status(path, recurse, summary)
+            else:
+                check_results = self.checker.check_status(path, recurse, summary)
+
+            statuses = self.cache.add_statuses(check_results, get=True, recursive_get=recurse)
+            
             self.cache.clean()
             
         # Remember: these callbacks will block THIS thread from calculating the
         # next path on the "to do" list.
-        if callback: callback(path, self.cache.get_path_statuses(path))
+        if summary:
+            statuses = ({path: statuses[path]}, check_summary)
+        
+        if callback: callback(path, statuses)
 
 class CacheManager():
 
@@ -234,16 +251,20 @@ class CacheManager():
         self.__request_queue.put((func, args, kwargs))
         return self.__result_queue.get()
     
-    def get_path_statuses(self, path):
-        return self.__sync_call(self.__get_path_statuses, path)
+    def get_path_statuses(self, path, recurse = True):
+        return self.__sync_call(self.__get_path_statuses, path, recurse)
     
-    def __get_path_statuses(self, path):
+    def __get_path_statuses(self, path, recurse):
         if StatusData.select(StatusData.q.path==path).count():
         
             statuses = {}
-    
-            children = self.__get_path_children(path)
-            for entry in children:
+
+            if recurse:    
+                children = self.__get_path_children(path)
+                for entry in children:
+                    statuses[entry.path] = entry.status_dict()
+            else:
+                entry = StatusData.getOne(StatusData.q.path==path)
                 statuses[entry.path] = entry.status_dict()
         
         else:
@@ -258,10 +279,10 @@ class CacheManager():
         children = self.__get_path_children(path)
         [entry.destroySelf() for entry in children]
     
-    def add_statuses(self, statuses):
-        self.__sync_call(self.__add_statuses, statuses)
+    def add_statuses(self, statuses, get=False, recursive_get=True):
+        return self.__sync_call(self.__add_statuses, statuses, get, recursive_get)
     
-    def __add_statuses(self, statuses):
+    def __add_statuses(self, statuses, get, recursive_get):
         age = self.__get_max_age() + 1
     
         for path, text_status, prop_status in statuses:
@@ -269,6 +290,9 @@ class CacheManager():
             StatusData(path=path, age=age,
                         text_status=text_status,
                         prop_status=prop_status)
+            
+        if get:
+            return self.__get_path_statuses(path, recursive_get)
     
     def clean(self):
         return self.__sync_call(self.__clean)
@@ -283,7 +307,7 @@ class CacheManager():
         # want to delete the entire cache every time.
         # log.debug("Status cache size: %i" % len(self.__status_tree))
         
-        log.debug("Requested clean")
+        # log.debug("Requested clean")
         
         max_age = self.__get_max_age()
         min_age = self.__get_min_age()
@@ -296,7 +320,7 @@ class CacheManager():
                 
             min_age = self.__get_min_age()
             
-            log.debug("Removed %i paths from status cache" % num_oldpaths)
+            # log.debug("Removed %i paths from status cache" % num_oldpaths)
     
     def __get_path_children(self, path):
         children = StatusData.select(
@@ -306,7 +330,7 @@ class CacheManager():
     
     def __get_size(self):
         count = StatusData.select().count()
-        log.debug("Cache size is: %i" % count)
+        # log.debug("Cache size is: %i" % count)
         return count
     
     def __get_max_age(self):
@@ -327,7 +351,7 @@ class CacheManager():
 
 class StatusData(sqlobject.SQLObject):
     
-    path = sqlobject.UnicodeCol(dbEncoding="UTF-8")
+    path = sqlobject.UnicodeCol(dbEncoding="UTF-8", unique=True, notNone=True)
     age = sqlobject.IntCol()
     text_status = sqlobject.UnicodeCol(dbEncoding="UTF-8")
     prop_status = sqlobject.UnicodeCol(dbEncoding="UTF-8")
