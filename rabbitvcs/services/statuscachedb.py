@@ -65,7 +65,7 @@ def status_unknown(path):
 class StatusCache():
     #: The queue will be populated with 4-ples of
     #: (path, recurse, invalidate, callback).
-    __paths_to_check = Queue()
+    _paths_to_check = Queue()
     
     #: This tree stores the status of the items. We monitor working copy
     #: for changes and modify this tree in-place accordingly. This way
@@ -74,7 +74,7 @@ class StatusCache():
     #:
     #: This isn't a tree (yet) and looks like:::
     #:
-    #:     __status_tree = {
+    #:     _status_tree = {
     #:         "/foo": {"age": 1,
     #:                  "status": {"text_status": "normal", "prop_status": "normal"}},
     #:         "/foo/bar": {"age": 2,
@@ -97,10 +97,10 @@ class StatusCache():
     #: 
     #: I was worried that, being a number, this could overflow. But the Python
     #: library reference states that: "long integers have unlimited precision."
-    # __status_tree = dict()
+    # _status_tree = dict()
         
     #: Need a re-entrant lock here, look at check_status/add_path_to_check
-    __status_tree_lock = threading.RLock()
+    _status_tree_lock = threading.RLock()
     
     # In here to avoid circular imports
     # from rabbitvcs.lib.extensions.nautilus.RabbitVCS import log
@@ -128,7 +128,7 @@ class StatusCache():
         removed from the list (but not from pending actions, since they will be
         re-checked anyway).
         """
-        with self.__status_tree_lock:
+        with self._status_tree_lock:
             pass
             # Need to clarify the logic for this. Stub for now.
     
@@ -162,7 +162,7 @@ class StatusCache():
                 statuses = {}
                 statuses[path] = {"text_status": "calculating",
                                   "prop_status": "calculating"}
-                self.__paths_to_check.put((path, recurse, invalidate, summary, callback))
+                self._paths_to_check.put((path, recurse, invalidate, summary, callback))
 
         else:
             statuses = {}
@@ -181,14 +181,14 @@ class StatusCache():
             # This call will block if the Queue is empty, until something is
             # added to it. There is a better way to do this if we need to add
             # other flags to this.
-            (path, recurse, invalidate, summary, callback) = self.__paths_to_check.get()
-            self.__update_path_status(path, recurse, invalidate, summary, callback)
+            (path, recurse, invalidate, summary, callback) = self._paths_to_check.get()
+            self._update_path_status(path, recurse, invalidate, summary, callback)
     
     def kill(self):
         self.cache.kill()
         self._alive.clear()
     
-    def __update_path_status(self, path, recurse=False, invalidate=False, summary=False, callback=None):
+    def _update_path_status(self, path, recurse=False, invalidate=False, summary=False, callback=None):
         statuses = None
 
         # We can't trust the cache when we invalidate, because some items may
@@ -234,14 +234,13 @@ class CacheManager():
 
     def __init__(self):
         
-        self.__request_queue = Queue(1)
-        self.__result_queue = Queue(1)
-        # self.__lock = threading.Lock()
+        self._request_queue = Queue(1)
+        self._result_queue = Queue(1)
         
-        self.__worker = threading.Thread(target = self.dispatcher,
+        self._worker = threading.Thread(target = self.dispatcher,
                                          name = "Cache manager thread")
-        self.__worker.setDaemon(True)
-        self.__worker.start()
+        # self._worker.setDaemon(True)
+        self._worker.start()
     
     def dispatcher(self):
         import cProfile
@@ -261,29 +260,29 @@ class CacheManager():
         self._alive = True
         
         while self._alive:
-            (func, args, kwargs) = self.__request_queue.get()
-            self.__result_queue.put(func(*args, **kwargs))
+            (func, args, kwargs) = self._request_queue.get()
+            self._result_queue.put(func(*args, **kwargs))
 
     def kill(self):
-        self.__sync_call(self.__kill)
+        self._sync_call(self._kill)
 
-    def __kill(self):
+    def _kill(self):
         self._alive = False
     
-    def __sync_call(self, func, *args, **kwargs):
-        self.__request_queue.put((func, args, kwargs))
-        return self.__result_queue.get()
+    def _sync_call(self, func, *args, **kwargs):
+        self._request_queue.put((func, args, kwargs))
+        return self._result_queue.get()
     
     def get_path_statuses(self, path, recurse = True):
-        return self.__sync_call(self.__get_path_statuses, path, recurse)
+        return self._sync_call(self._get_path_statuses, path, recurse)
     
-    def __get_path_statuses(self, path, recurse):
+    def _get_path_statuses(self, path, recurse):
         if StatusData.select(StatusData.q.path==path).count():
         
             statuses = {}
 
             if recurse:    
-                children = self.__get_path_children(path)
+                children = self._get_path_children(path)
                 for entry in children:
                     statuses[entry.path] = entry.status_dict()
             else:
@@ -296,17 +295,17 @@ class CacheManager():
         return statuses
 
     def invalidate_path(self, path):
-        return self.__sync_call(self.__invalidate_path, path)
+        return self._sync_call(self._invalidate_path, path)
 
-    def __invalidate_path(self, path):
-        children = self.__get_path_children(path)
+    def _invalidate_path(self, path):
+        children = self._get_path_children(path)
         [entry.destroySelf() for entry in children]
     
     def add_statuses(self, statuses, get=False, recursive_get=True):
-        return self.__sync_call(self.__add_statuses, statuses, get, recursive_get)
+        return self._sync_call(self._add_statuses, statuses, get, recursive_get)
     
-    def __add_statuses(self, statuses, get, recursive_get):
-        age = self.__get_max_age() + 1
+    def _add_statuses(self, statuses, get, recursive_get):
+        age = self._get_max_age() + 1
     
         for path, text_status, prop_status in statuses:
             
@@ -315,12 +314,12 @@ class CacheManager():
                         prop_status=prop_status)
             
         if get:
-            return self.__get_path_statuses(path, recursive_get)
+            return self._get_path_statuses(path, recursive_get)
     
     def clean(self):
-        return self.__sync_call(self.__clean)
+        return self._sync_call(self._clean)
 
-    def __clean(self):
+    def _clean(self):
         """
         Tries to ensure the status cache remains under a certain size. This will
         not enforce a strict limit. The actual limit of the cache is:
@@ -328,35 +327,35 @@ class CacheManager():
         """
         # We only care if the cache is bigger than the max size BUT we don't
         # want to delete the entire cache every time.
-        # log.debug("Status cache size: %i" % len(self.__status_tree))
+        # log.debug("Status cache size: %i" % len(self._status_tree))
         
         # log.debug("Requested clean")
         
-        max_age = self.__get_max_age()
-        min_age = self.__get_min_age()
+        max_age = self._get_max_age()
+        min_age = self._get_min_age()
             
-        while self.__get_size() > MAX_CACHE_SIZE and min_age != max_age:
+        while self._get_size() > MAX_CACHE_SIZE and min_age != max_age:
             oldpaths = StatusData.selectBy(age=min_age)
             num_oldpaths = oldpaths.count()
             for path in oldpaths:
                 path.destroySelf()
                 
-            min_age = self.__get_min_age()
+            min_age = self._get_min_age()
             
             # log.debug("Removed %i paths from status cache" % num_oldpaths)
     
-    def __get_path_children(self, path):
+    def _get_path_children(self, path):
         children = StatusData.select(
                             (StatusData.q.path==path)
                             | (StatusData.q.path.startswith(path + "/")))
         return children
     
-    def __get_size(self):
+    def _get_size(self):
         count = StatusData.select().count()
         # log.debug("Cache size is: %i" % count)
         return count
     
-    def __get_max_age(self):
+    def _get_max_age(self):
         age = StatusData.select().max("age")
         
         if age is None:
@@ -364,7 +363,7 @@ class CacheManager():
                 
         return age
 
-    def __get_min_age(self):
+    def _get_min_age(self):
         age = StatusData.select().min("age")
         
         if age is None:

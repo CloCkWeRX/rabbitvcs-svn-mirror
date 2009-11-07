@@ -65,7 +65,7 @@ def status_unknown(path):
 class StatusCache():
     #: The queue will be populated with 4-ples of
     #: (path, recurse, invalidate, callback).
-    __paths_to_check = Queue()
+    _paths_to_check = Queue()
     
     #: This tree stores the status of the items. We monitor working copy
     #: for changes and modify this tree in-place accordingly. This way
@@ -74,7 +74,7 @@ class StatusCache():
     #:
     #: This isn't a tree (yet) and looks like:::
     #:
-    #:     __status_tree = {
+    #:     _status_tree = {
     #:         "/foo": {"age": 1,
     #:                  "status": {"text_status": "normal", "prop_status": "normal"}},
     #:         "/foo/bar": {"age": 2,
@@ -97,10 +97,10 @@ class StatusCache():
     #: 
     #: I was worried that, being a number, this could overflow. But the Python
     #: library reference states that: "long integers have unlimited precision."
-    __status_tree = dict()
+    _status_tree = dict()
         
     #: Need a re-entrant lock here, look at check_status/add_path_to_check
-    __status_tree_lock = threading.RLock()
+    _status_tree_lock = threading.RLock()
     
     # In here to avoid circular imports
     # from rabbitvcs.lib.extensions.nautilus.RabbitVCS import log
@@ -122,7 +122,7 @@ class StatusCache():
         removed from the list (but not from pending actions, since they will be
         re-checked anyway).
         """
-        with self.__status_tree_lock:
+        with self._status_tree_lock:
             pass
             # Need to clarify the logic for this. Stub for now.
     
@@ -149,7 +149,7 @@ class StatusCache():
         
         if rabbitvcs.util.vcs.is_in_a_or_a_working_copy(path):
             
-            statuses = self.__get_path_statuses(path)
+            statuses = self._get_path_statuses(path)
                         
             # Only invalidate if we're not already calculating...
             calculate = (statuses is None
@@ -161,10 +161,10 @@ class StatusCache():
                 statuses = status_calculating(path)
                 
                 if statuses:
-                    self.__invalidate_path(path)
+                    self._invalidate_path(path)
                     
-                self.__add_path_statuses([(path, STATUS_CALCULATING["text_status"], STATUS_CALCULATING["prop_status"])])
-                self.__paths_to_check.put((path, recurse, callback))
+                self._add_path_statuses([(path, STATUS_CALCULATING["text_status"], STATUS_CALCULATING["prop_status"])])
+                self._paths_to_check.put((path, recurse, callback))
 
             
 
@@ -182,29 +182,29 @@ class StatusCache():
             # This call will block if the Queue is empty, until something is
             # added to it. There is a better way to do this if we need to add
             # other flags to this.
-            (path, recurse, callback) = self.__paths_to_check.get()
-            self.__update_path_status(path, recurse, callback)
+            (path, recurse, callback) = self._paths_to_check.get()
+            self._update_path_status(path, recurse, callback)
     
-    def __get_path_statuses(self, path):
+    def _get_path_statuses(self, path):
         statuses = None
-        with self.__status_tree_lock:
-            if path in self.__status_tree.keys():
+        with self._status_tree_lock:
+            if path in self._status_tree.keys():
                 statuses = {}
-                for another_path in self.__status_tree.keys():
+                for another_path in self._status_tree.keys():
                     if is_under_dir(path, another_path):
-                        statuses[another_path] = self.__status_tree[another_path]["status"]
+                        statuses[another_path] = self._status_tree[another_path]["status"]
         
         return statuses
     
-    def __invalidate_path(self, path):
-        with self.__status_tree_lock:
+    def _invalidate_path(self, path):
+        with self._status_tree_lock:
             # DO NOT need to check if the path is in our cache... we will still
             # invalidate.
-            for another_path in self.__status_tree.keys():
+            for another_path in self._status_tree.keys():
                 if is_under_dir(path, another_path):
-                    del self.__status_tree[another_path]
+                    del self._status_tree[another_path]
     
-    def __update_path_status(self, path, recurse=False, callback=None):
+    def _update_path_status(self, path, recurse=False, callback=None):
 
         # Uncomment this for useful simulation of a looooong status check :) 
         # log.debug("Sleeping for 10s...")
@@ -214,66 +214,66 @@ class StatusCache():
         # Actually do a status check
         statuses = self.checker.check_status(path, recurse)
         
-        with self.__status_tree_lock:
-            self.__add_path_statuses(statuses)
-            tree_statuses = self.__get_path_statuses(path)
+        with self._status_tree_lock:
+            self._add_path_statuses(statuses)
+            tree_statuses = self._get_path_statuses(path)
                         
         # Remember: these callbacks will block THIS thread from calculating the
         # next path on the "to do" list.
         if callback: callback(path, tree_statuses)
     
-        self.__clean_status_cache()
+        self._clean_status_cache()
     
-    def __add_path_statuses(self, statuses):
-        with self.__status_tree_lock:
-            age = self.__get_max_age() + 1
+    def _add_path_statuses(self, statuses):
+        with self._status_tree_lock:
+            age = self._get_max_age() + 1
         
             for path, text_status, prop_status in statuses:
-                self.__status_tree[path] = {"age":  age,
+                self._status_tree[path] = {"age":  age,
                                             "status":
                                                 {"text_status" : text_status,
                                                  "prop_status" : prop_status}}
                 
-            self.__clean_status_cache()
+            self._clean_status_cache()
     
-    def __get_max_age(self):
-        with self.__status_tree_lock:
-            ages = [data["age"] for (path, data) in self.__status_tree.items()]
+    def _get_max_age(self):
+        with self._status_tree_lock:
+            ages = [data["age"] for (path, data) in self._status_tree.items()]
             if ages:
-                age = max(data["age"] for (path, data) in self.__status_tree.items())
+                age = max(data["age"] for (path, data) in self._status_tree.items())
             else:
                 age = 0
                 
             return age
 
-    def __get_min_age(self):
-        with self.__status_tree_lock:
-            ages = [data["age"] for (path, data) in self.__status_tree.items()]
+    def _get_min_age(self):
+        with self._status_tree_lock:
+            ages = [data["age"] for (path, data) in self._status_tree.items()]
             if ages:
-                age = min(data["age"] for (path, data) in self.__status_tree.items())
+                age = min(data["age"] for (path, data) in self._status_tree.items())
             else:
                 age = 0
                 
             return age
 
     
-    def __clean_status_cache(self):
+    def _clean_status_cache(self):
         """
         Tries to ensure the status cache remains under a certain size. This will
         not enforce a strict limit. The actual limit of the cache is:
             max( largest WC status tree checked in one go , MAX_CACHE_SIZE )
         """
-        with self.__status_tree_lock:
+        with self._status_tree_lock:
             # We only care if the cache is bigger than the max size BUT we don't
             # want to delete the entire cache every time.
-            # log.debug("Status cache size: %i" % len(self.__status_tree))
+            # log.debug("Status cache size: %i" % len(self._status_tree))
             
-            max_age = self.__get_max_age()
-            min_age = min([data["age"] for (path, data) in self.__status_tree.items()])
+            max_age = self._get_max_age()
+            min_age = min([data["age"] for (path, data) in self._status_tree.items()])
             
-            while len(self.__status_tree) > MAX_CACHE_SIZE and min_age != max_age:
-                paths = [path for path in self.__status_tree.keys() if self.__status_tree[path]["age"] == min_age]
+            while len(self._status_tree) > MAX_CACHE_SIZE and min_age != max_age:
+                paths = [path for path in self._status_tree.keys() if self._status_tree[path]["age"] == min_age]
                 for path in paths:
-                    del self.__status_tree[path]
-                min_age = min([data["age"] for (path, data) in self.__status_tree.items()])
+                    del self._status_tree[path]
+                min_age = min([data["age"] for (path, data) in self._status_tree.items()])
                 log.debug("Removed %i paths from status cache" % len(paths))
