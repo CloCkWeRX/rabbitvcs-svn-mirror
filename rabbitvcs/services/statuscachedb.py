@@ -113,10 +113,13 @@ class StatusCache():
         # there are problems, we will need to add a flag to manually kill it.
         # self.checker = StatusCheckerStub()
         
+        self._alive = threading.Event()
+        self._alive.set()
+        
         self.checker = StatusChecker()
         self.cache = CacheManager()
         
-        self.worker.setDaemon(True)
+        # self.worker.setDaemon(True)
         self.worker.start()
                 
     def path_modified(self, path):
@@ -174,13 +177,17 @@ class StatusCache():
     def status_update_loop(self):
         # This loop will stop when the thread is killed, which it will 
         # because it is daemonic.
-        while True:
+        while self._alive.isSet():
             # This call will block if the Queue is empty, until something is
             # added to it. There is a better way to do this if we need to add
             # other flags to this.
             (path, recurse, invalidate, summary, callback) = self.__paths_to_check.get()
             self.__update_path_status(path, recurse, invalidate, summary, callback)
-       
+    
+    def kill(self):
+        self.cache.kill()
+        self._alive.clear()
+    
     def __update_path_status(self, path, recurse=False, invalidate=False, summary=False, callback=None):
         statuses = None
 
@@ -237,15 +244,31 @@ class CacheManager():
         self.__worker.start()
     
     def dispatcher(self):
+        import cProfile
+        import rabbitvcs.lib.helper
+        import os.path
+        profile_data_file = os.path.join(
+                                rabbitvcs.lib.helper.get_home_folder(),
+                                "rvcs_db.stats")
+        cProfile.runctx("self._real_dispatcher()", globals(), locals(), profile_data_file)
+    
+    def _real_dispatcher(self):
         sqlobject.sqlhub.processConnection = \
             sqlobject.connectionForURI('sqlite:/:memory:')
 
         StatusData.createTable()
         
-        while True:
+        self._alive = True
+        
+        while self._alive:
             (func, args, kwargs) = self.__request_queue.get()
-            self.__result_queue.put(func(*args, **kwargs))    
+            self.__result_queue.put(func(*args, **kwargs))
 
+    def kill(self):
+        self.__sync_call(self.__kill)
+
+    def __kill(self):
+        self._alive = False
     
     def __sync_call(self, func, *args, **kwargs):
         self.__request_queue.put((func, args, kwargs))

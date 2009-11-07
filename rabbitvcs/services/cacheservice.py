@@ -42,6 +42,7 @@ class StatusCacheService(dbus.service.Object):
     @dbus.service.method(INTERFACE)
     def Quit(self):
         log.debug("Quitting main loop...")
+        self.status_cache.kill()
         self.mainloop.quit()
         
 class StatusCacheStub:
