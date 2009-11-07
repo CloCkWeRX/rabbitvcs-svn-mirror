@@ -34,6 +34,7 @@ import sqlobject
 from rabbitvcs.services.loopedchecker import StatusChecker
 
 import rabbitvcs.util.vcs
+import rabbitvcs.lib.vcs.svn
 
 from rabbitvcs.services.statuscache import make_summary
 
@@ -109,6 +110,8 @@ class StatusCache():
         self.worker = threading.Thread(target = self.status_update_loop,
                                        name = "Status cache thread")
 
+        self.client = rabbitvcs.lib.vcs.svn.SVN()
+
         # This means that the thread will die when everything else does. If
         # there are problems, we will need to add a flag to manually kill it.
         # self.checker = StatusCheckerStub()
@@ -153,21 +156,18 @@ class StatusCache():
         
         statuses = None
         
-        if rabbitvcs.util.vcs.is_in_a_or_a_working_copy(path):
+        if self.client.is_in_a_or_a_working_copy(path):
             if not invalidate:
                 statuses = self.cache.get_path_statuses(path)
                 
             if invalidate or (statuses is None):
                 # We need to calculate the status
                 statuses = {}
-                statuses[path] = {"text_status": "calculating",
-                                  "prop_status": "calculating"}
+                statuses = status_calculating(path)
                 self._paths_to_check.put((path, recurse, invalidate, summary, callback))
 
         else:
-            statuses = {}
-            statuses[path] = {"text_status": "unknown",
-                              "prop_status": "unknown"}
+            statuses = status_unknown(path)
          
         if summary:
             statuses = make_summary(path, statuses)

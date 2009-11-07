@@ -32,6 +32,7 @@ from Queue import Queue
 from rabbitvcs.services.loopedchecker import StatusChecker
 
 import rabbitvcs.util.vcs
+import rabbitvcs.lib.vcs.svn
 
 # FIXME: debug
 from rabbitvcs.lib.log import Log
@@ -101,6 +102,8 @@ class StatusCache():
     def __init__(self):
         self.worker = threading.Thread(target = self.status_update_loop,
                                        name = "Status cache thread")
+
+        self.client = rabbitvcs.lib.vcs.svn.SVN()
 
         # This means that the thread will die when everything else does. If
         # there are problems, we will need to add a flag to manually kill it.
