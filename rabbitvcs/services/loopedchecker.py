@@ -21,10 +21,8 @@ script is NOT meant to be run from the command line - the results are sent over
 stdout as a byte stream (ie. the pickled results of the status check).
 """
 
-import cProfile
 import cPickle
 import sys
-import os, os.path
 import subprocess
 
 import rabbitvcs.lib.vcs
@@ -43,12 +41,15 @@ PICKLE_PROTOCOL = cPickle.HIGHEST_PROTOCOL
 
 def Main():
     """
-    Perform a VCS status check on the given path (recursive as indicated). The
-    results will be pickled and sent as a byte stream over stdout.
+    Loop indefinitely, performing VCS status checks on paths (and arguments)
+    sent as pickled data over stdin. The results will be pickled and sent as a
+    byte stream over stdout.
+    
+    The loop will temrinate if there is an I/O error.
     """
     # NOTE: we cannot pickle status_list directly. It needs to be processed
     # here.
-
+    global log
     log = Log("rabbitvcs.statuschecker:PROCESS")
     
     vcs_client = rabbitvcs.lib.vcs.create_vcs_instance()
@@ -95,8 +96,8 @@ def Main():
 #                    num+=1
 #                statuses.append( (path, "added", "none") )
             
-        except Exception, e:
-            log.exception(e)
+        except Exception, ex:
+            log.exception(ex)
             statuses = [status_error(path)]
 
         if summary:
@@ -111,8 +112,17 @@ def Main():
         
 
 class StatusChecker():
+    """ A class for performing status checks in a separate process.
+    
+    Since C extensions may lock the GIL, preventing multithreading and making
+    our cache service block, we can do the hard parts in another process. Since
+    we're transferring a LOT of data, we pickle it.
+    """
 
     def __init__(self):
+        """ Creates a new StatusChecker. This should do ALL the subprocess
+        management necessary.
+        """
         self.sc_proc = subprocess.Popen([sys.executable, __file__],
                                         stdin = subprocess.PIPE,
                                         stdout = subprocess.PIPE)
@@ -120,6 +130,26 @@ class StatusChecker():
         self.unpickler = cPickle.Unpickler(self.sc_proc.stdout)
    
     def check_status(self, path, recurse, summary):
+        """ Performs a status check in a subprocess, blocking until the check is
+        done. Even though we block here, this means that other threads can
+        continue to run.
+        
+        The returned status data can have two forms. If a summary is requested,
+        it is:
+        
+            (status list, summarised dict)
+            
+        ...where the list is of the form
+        
+            [(path1, text_status1, prop_status1), (path2, ...), ...]
+            
+        ...and the dict is:
+        
+            {path: {"text_status": text_status,
+                    "prop_status": prop_status}}
+        
+        If no summary is requested, the return value is just the status list.
+        """
         self.pickler.dump((path, bool(recurse), bool(summary)))
         self.sc_proc.stdin.flush()
         statuses = self.unpickler.load()
@@ -133,6 +163,8 @@ if __name__ == '__main__':
     
     # Uncomment for profiling
 #    import rabbitvcs.lib.helper
+#    import cProfile
+#    import os, os.path
 #    profile_data_file = os.path.join(
 #                            rabbitvcs.lib.helper.get_home_folder(),
 #                            "rvcs_checker.stats")
