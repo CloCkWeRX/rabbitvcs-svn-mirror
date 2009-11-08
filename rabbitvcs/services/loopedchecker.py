@@ -19,8 +19,6 @@
 Convenience script for performing status checks in a separate process. This
 script is NOT meant to be run from the command line - the results are sent over
 stdout as a byte stream (ie. the pickled results of the status check).
-
-At present the byte stream result of a pickle IS, in fact, ASCII data.
 """
 
 import cProfile
@@ -28,14 +26,13 @@ import cPickle
 import sys
 import os, os.path
 import subprocess
-import time
 
-from UserDict import UserDict
-
-import pysvn
+import rabbitvcs.lib.vcs
 
 import rabbitvcs.util.locale
 import rabbitvcs.util.vcs
+
+
 
 from rabbitvcs.services.statuschecker import status_error
 
@@ -54,13 +51,9 @@ def Main():
 
     log = Log("rabbitvcs.statuschecker:PROCESS")
     
-    vcs_client = pysvn.Client()
+    vcs_client = rabbitvcs.lib.vcs.create_vcs_instance()
     pickler = cPickle.Pickler(sys.stdout, PICKLE_PROTOCOL)
     unpickler = cPickle.Unpickler(sys.stdin)
-    
-    # FIXME: debug
-    import time
-    import math
     
     while True:
         try:
@@ -79,6 +72,7 @@ def Main():
             
             # NOTE: this is useful for debugging. You can tweak MAGIC_NUMBER to
             # make status checks appear to take longer or shorter.
+#            import time, math
 #            statuses = []            
 #            MAGIC_NUMBER = 10
 #            if os.path.isdir(path):
@@ -107,7 +101,8 @@ def Main():
 
         if summary:
             statuses = (statuses,
-                        rabbitvcs.util.vcs.get_summarized_status_both_from_list(path, statuses))
+                        rabbitvcs.util.vcs.summarize_status_pair_list(path,
+                                                                      statuses))
 
         pickler.dump(statuses)
         sys.stdout.flush()
@@ -125,7 +120,6 @@ class StatusChecker():
         self.unpickler = cPickle.Unpickler(self.sc_proc.stdout)
    
     def check_status(self, path, recurse, summary):
-        # cPickle.dump((path, bool(recurse)), sc_process.stdin, protocol=PICKLE_PROTOCOL)
         self.pickler.dump((path, bool(recurse), bool(summary)))
         self.sc_proc.stdin.flush()
         statuses = self.unpickler.load()
@@ -136,12 +130,11 @@ if __name__ == '__main__':
     # only designed to be called from our extension code.
    
     rabbitvcs.util.locale.initialize_locale()
-
-    # (path, recurse) = cPickle.load(sys.stdin)
-       
-    # Main()
-    import rabbitvcs.lib.helper
-    profile_data_file = os.path.join(
-                            rabbitvcs.lib.helper.get_home_folder(),
-                            "rvcs_checker.stats")
-    cProfile.run("Main()", profile_data_file)
+    
+    # Uncomment for profiling
+#    import rabbitvcs.lib.helper
+#    profile_data_file = os.path.join(
+#                            rabbitvcs.lib.helper.get_home_folder(),
+#                            "rvcs_checker.stats")
+#    cProfile.run("Main()", profile_data_file)
+    Main()

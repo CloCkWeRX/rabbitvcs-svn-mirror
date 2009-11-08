@@ -63,19 +63,19 @@ class SummarizeTest(unittest.TestCase):
     def status_summary_change_test(self, status_type, value, result):
         orig_st = self.get_actual_status()
         statuses = self.change_status(orig_st, status_type, value)
-        summary = rabbitvcs.util.vcs.get_summarized_status(self.wc, statuses)
+        summary = rabbitvcs.util.vcs.summarize_status(self.wc, statuses)
         self.failUnless(summary == result)
 
     def status_summary_change_test_both(self, text_status, prop_status, result):
         orig_st = self.get_actual_status()
         statuses = self.change_status(orig_st, "text_status", text_status)
         statuses = self.change_status(orig_st, "prop_status", prop_status, idx=1)
-        summary = rabbitvcs.util.vcs.get_summarized_status(self.wc, statuses)
+        summary = rabbitvcs.util.vcs.summarize_status(self.wc, statuses)
         self.failUnless(summary == result)
 
     def testSummaryClean(self):
         statuses = self.get_actual_status()
-        summary = rabbitvcs.util.vcs.get_summarized_status(self.wc, statuses)
+        summary = rabbitvcs.util.vcs.summarize_status(self.wc, statuses)
         self.failUnless(summary == "normal")
 
     def testSummaryTextChangeAdded(self):

@@ -115,7 +115,7 @@ def make_summary(path, statuses):
     @rtype: see StatusCache documentation
     """
     return ({path: statuses[path]},
-            rabbitvcs.util.vcs.get_summarized_status_both(path, statuses))
+            rabbitvcs.util.vcs.summarize_status_pair(path, statuses))
 
 
 class StatusCache():

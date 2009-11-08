@@ -62,7 +62,7 @@ def condense_statuses(path, statuses):
         
     return status
 
-def get_summarized_status_both(path, statuses):
+def summarize_status_pair(path, statuses):
     
     text_status = "unknown"
     prop_status = "unknown"
@@ -92,7 +92,7 @@ def get_summarized_status_both(path, statuses):
             {"text_status": text_status,
              "prop_status": prop_status}}
 
-def get_single_status(statuses):
+def make_single_status(statuses):
     """
     Given a text_status and a prop_status, simplify to a single status.
     """
@@ -106,7 +106,7 @@ def get_single_status(statuses):
             
     return single
 
-def get_summarized_status_both_from_list(path, statuses):
+def summarize_status_pair_list(path, statuses):
     
     status_dict = {}
     
@@ -114,9 +114,9 @@ def get_summarized_status_both_from_list(path, statuses):
         status_dict[other_path] = {"text_status" : text_status,
                                    "prop_status" : prop_status}
         
-    return get_summarized_status_both(path, status_dict)
+    return summarize_status_pair(path, status_dict)
 
-def get_summarized_status(path, statuses):
+def summarize_status(path, statuses):
     """
     This is a helper function to figure out the textual representation 
     for a set of statuses. In TortoiseSVN speak a directory is
@@ -130,9 +130,9 @@ def get_summarized_status(path, statuses):
     @param  path:   A dict of {path : {"text_status" : [...],
                                        "prop_status" : [...]} entries
     """
-    summarised = get_summarized_status_both(path, statuses)
+    summarised = summarize_status_pair(path, statuses)
     
-    summary = get_single_status(summarised[path])
+    summary = make_single_status(summarised[path])
     
     return summary
 

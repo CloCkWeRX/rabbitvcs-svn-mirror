@@ -357,7 +357,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         if summary[path]["text_status"] == "calculating":
             item.add_emblem(self.EMBLEMS["calculating"])
         else:
-            single_status = get_single_status(summary[path])
+            single_status = make_single_status(summary[path])
             if single_status in self.EMBLEMS:
                 item.add_emblem(self.EMBLEMS[single_status])
         
