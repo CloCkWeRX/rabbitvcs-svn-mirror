@@ -166,7 +166,7 @@ class StatusCacheStub:
         try:
             self.status_cache = self.session_bus.get_object(SERVICE,
                                                             OBJECT_PATH)
-            if self.status_callback:
+            if self.callback:
                 self.status_cache.connect_to_signal("CheckFinished",
                                                     self.status_callback,
                                                     dbus_interface=INTERFACE)
@@ -218,7 +218,7 @@ def Main():
     This will set up the DBUS and glib extensions, the gobject/glib main loop,
     and start the service.
     """
-
+    global log
     log = Log("rabbitvcs.services.cacheservice:main")
     log.debug("Cache: starting service: %s (%s)" % (OBJECT_PATH, os.getpid()))
         
@@ -232,7 +232,7 @@ def Main():
     
     # This registers our service name with the bus
     session_bus = dbus.SessionBus()
-    dbus.service.BusName(SERVICE, session_bus)
+    service_name = dbus.service.BusName(SERVICE, session_bus)
     
     mainloop = gobject.MainLoop()
      
