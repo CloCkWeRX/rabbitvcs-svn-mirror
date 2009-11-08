@@ -16,16 +16,11 @@
 #
 
 """
-Convenience script for performing status checks in a separate process. This
-script is NOT meant to be run from the command line - the results are sent over
-stdout as a byte stream (ie. the pickled results of the status check).
-
-At present the byte stream result of a pickle IS, in fact, ASCII data.
+Very simple status checking class. Useful when you can't get any of the others
+to work, or you need to prototype things. 
 """
 
-from UserDict import UserDict
-
-import pysvn
+import rabbitvcs.lib.vcs
 
 from rabbitvcs.lib.log import Log
 log = Log("rabbitvcs.services.statuschecker")
@@ -38,18 +33,45 @@ def status_error(path):
     return status
 
 class StatusChecker():
+    """ A class for performing status checks. """
     
     def __init__(self):
-        self.vcs_client = pysvn.Client()
+        """ Initialises status checker. Obviously. """
+        self.vcs_client = rabbitvcs.lib.vcs.create_vcs_instance()
 
-    def check_status(self, path, recurse):
-
+    def check_status(self, path, recurse, summary):
+        """ Performs a status check, blocking until the check is done.
+        
+        The returned status data can have two forms. If a summary is requested,
+        it is:
+        
+            (status list, summarised dict)
+            
+        ...where the list is of the form
+        
+            [(path1, text_status1, prop_status1), (path2, ...), ...]
+            
+        ...and the dict is:
+        
+            {path: {"text_status": text_status,
+                    "prop_status": prop_status}}
+        
+        If no summary is requested, the return value is just the status list.
+        """
+        
         try:
             status_list = self.vcs_client.status(path, recurse=recurse)
-            statuses = [(status.path, str(status.text_status), str(status.prop_status)) 
+            statuses = [(status.path,
+                         str(status.text_status),
+                         str(status.prop_status)) 
                         for status in status_list]
-        except Exception, e:
+        except Exception:
             statuses = [status_error(path)]
         
+        if summary:
+            statuses = (statuses,
+                        rabbitvcs.util.vcs.summarize_status_pair_list(path,
+                                                                      statuses))
+
         return statuses
     
