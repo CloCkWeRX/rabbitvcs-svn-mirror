@@ -187,17 +187,23 @@ class StatusCache():
         return statuses
         
     def status_update_loop(self):
-        # This loop will stop when the thread is killed, which it will 
-        # because it is daemonic.
-        while self._alive:
+        # This loop will stop when the thread is killed via the kill() method
+        while self._alive.isSet():
             # This call will block if the Queue is empty, until something is
             # added to it. There is a better way to do this if we need to add
             # other flags to this.
-            (path, recurse, invalidate, summary, callback) = self._paths_to_check.get()
+            next = self._paths_to_check.get()
+            if next:
+                (path, recurse, invalidate, summary, callback) = next
+            else:
+                continue
             self._update_path_status(path, recurse, invalidate, summary, callback)
+        
+        log.debug("Exiting cache")
     
     def kill(self):
         self._alive.clear()
+        self._paths_to_check.put(None)
     
     def _get_path_statuses(self, path, recurse):
         statuses = {}
