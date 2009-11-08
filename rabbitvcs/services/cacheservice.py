@@ -53,7 +53,7 @@ import dbus.glib # FIXME: this might actually already set the default loop
 import dbus.mainloop.glib
 import dbus.service
 
-
+import rabbitvcs.util.locale
 import rabbitvcs.services.service
 from rabbitvcs.services.statuscache import StatusCache
 
