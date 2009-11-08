@@ -110,7 +110,7 @@ class StatusCache():
         self.worker = threading.Thread(target = self.status_update_loop,
                                        name = "Status cache thread")
 
-        self.client = rabbitvcs.lib.vcs.svn.SVN()
+        self.client = rabbitvcs.lib.vcs.create_vcs_instance()
 
         # This means that the thread will die when everything else does. If
         # there are problems, we will need to add a flag to manually kill it.
@@ -375,8 +375,8 @@ class StatusData(sqlobject.SQLObject):
     
     path = sqlobject.UnicodeCol(dbEncoding="UTF-8", unique=True, notNone=True)
     age = sqlobject.IntCol()
-    text_status = sqlobject.UnicodeCol(dbEncoding="UTF-8")
-    prop_status = sqlobject.UnicodeCol(dbEncoding="UTF-8")
+    text_status = sqlobject.UnicodeCol(dbEncoding="UTF-8", notNone=True)
+    prop_status = sqlobject.UnicodeCol(dbEncoding="UTF-8", notNone=True)
     
     def status_dict(self):
         return {"text_status" : self.text_status,

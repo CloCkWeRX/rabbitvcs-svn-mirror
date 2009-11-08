@@ -103,7 +103,7 @@ class StatusCache():
         self.worker = threading.Thread(target = self.status_update_loop,
                                        name = "Status cache thread")
 
-        self.client = rabbitvcs.lib.vcs.svn.SVN()
+        self.client = rabbitvcs.lib.vcs.create_vcs_instance()
 
         # This means that the thread will die when everything else does. If
         # there are problems, we will need to add a flag to manually kill it.
