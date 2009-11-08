@@ -33,35 +33,21 @@ import sqlobject
 # from rabbitvcs.services.simplechecker import StatusChecker
 from rabbitvcs.services.loopedchecker import StatusChecker
 
+from rabbitvcs.lib.decorators import timeit
+
 import rabbitvcs.util.vcs
 import rabbitvcs.lib.vcs.svn
 
-from rabbitvcs.services.statuscache import make_summary
+from rabbitvcs.services.statuscache import make_summary, is_under_dir, \
+                                            is_directly_under_dir, \
+                                            status_calculating, \
+                                            status_unknown, MAX_CACHE_SIZE \
 
 # FIXME: debug
 from rabbitvcs.lib.log import Log
 log = Log("rabbitvcs.services.statuscache")
 
 import time
-
-# FIXME: hard coded
-# NOTE: try changing this to a few hundred, or a few thousand to check operation
-# The debugging statements below will tell you how many items are being cached
-MAX_CACHE_SIZE = 98000 # Items
-
-def is_under_dir(base_path, other_path):
-    # Warning: this function is greatly simplified compared to something more
-    # rigorous. This is because the Python stdlib path manipulation functions
-    # are just too slow for proper use here.
-    return (base_path == other_path or other_path.startswith(base_path + "/"))
-
-def status_calculating(path):
-    return {path: {"text_status": "calculating",
-                   "prop_status": "calculating"}}
-
-def status_unknown(path):
-    return {path: {"text_status": "unknown",
-                   "prop_status": "unknown"}}
 
 class StatusCache():
     #: The queue will be populated with 4-ples of
@@ -250,12 +236,14 @@ class CacheManager():
                                 rabbitvcs.lib.helper.get_home_folder(),
                                 "rvcs_db.stats")
         cProfile.runctx("self._real_dispatcher()", globals(), locals(), profile_data_file)
+        # self._real_dispatcher()
     
     def _real_dispatcher(self):
         sqlobject.sqlhub.processConnection = \
             sqlobject.connectionForURI('sqlite:/:memory:')
 
         StatusData.createTable()
+        PathChildren.createTable()
         
         self._alive = True
         
@@ -277,20 +265,24 @@ class CacheManager():
         return self._sync_call(self._get_path_statuses, path, recurse)
     
     def _get_path_statuses(self, path, recurse):
-        if StatusData.select(StatusData.q.path==path).count():
+        
+        statuses = None
+        entry = StatusData.selectBy(path=path).getOne(None)
+        
+        if entry:
         
             statuses = {}
 
             if recurse:    
-                children = self._get_path_children(path)
-                for entry in children:
-                    statuses[entry.path] = entry.status_dict()
+                children = entry.get_children()
+                # children_new = entry.get_children()
+                
+                # assert set(children) == set(children_new)
+                
+                for child_entry in children:
+                    statuses[child_entry.path] = child_entry.status_dict()
             else:
-                entry = StatusData.getOne(StatusData.q.path==path)
                 statuses[entry.path] = entry.status_dict()
-        
-        else:
-            statuses = None
         
         return statuses
 
@@ -298,23 +290,59 @@ class CacheManager():
         return self._sync_call(self._invalidate_path, path)
 
     def _invalidate_path(self, path):
-        children = self._get_path_children(path)
-        [entry.destroySelf() for entry in children]
+        entry = StatusData.selectBy(path=path).getOne(None)
+        
+        if entry:
+            [child.destroySelf() for child in entry.get_children()]
     
     def add_statuses(self, statuses, get=False, recursive_get=True):
         return self._sync_call(self._add_statuses, statuses, get, recursive_get)
-    
+
     def _add_statuses(self, statuses, get, recursive_get):
         age = self._get_max_age() + 1
-    
+   
         for path, text_status, prop_status in statuses:
             
-            StatusData(path=path, age=age,
-                        text_status=text_status,
-                        prop_status=prop_status)
-            
+            entry = StatusData.selectBy(path=path).getOne(None)
+                        
+            if entry:
+                entry.set(age=age,
+                          text_status=text_status,
+                          prop_status=prop_status)
+            else:
+                StatusData(path=path, age=age,
+                           text_status=text_status,
+                           prop_status=prop_status)
+
+        self._update_children(map(lambda x: x[0], statuses))
+
         if get:
             return self._get_path_statuses(path, recursive_get)
+    
+    def _update_children(self, paths):
+        for path in paths:            
+            
+            entry = StatusData.selectBy(path=path).getOne()
+            
+            for other_path in paths:
+                
+                if is_directly_under_dir(path, other_path):
+                    child_entry = StatusData.selectBy(path=other_path).getOne()
+                    
+                    item = PathChildren.selectBy(parent=entry, child=child_entry).getOne(None)
+                    
+                    if not item:                
+                        PathChildren(parent=entry, child=child_entry)
+                    
+                elif is_directly_under_dir(other_path, path):
+                    parent_entry = StatusData.selectBy(path=other_path).getOne()
+
+                    item = PathChildren.selectBy(parent=parent_entry, child=entry).getOne(None)
+                    
+                    if not item:                
+                        PathChildren(parent=parent_entry, child=entry)
+
+            paths.remove(path)
     
     def clean(self):
         return self._sync_call(self._clean)
@@ -335,20 +363,14 @@ class CacheManager():
         min_age = self._get_min_age()
             
         while self._get_size() > MAX_CACHE_SIZE and min_age != max_age:
-            oldpaths = StatusData.selectBy(age=min_age)
-            num_oldpaths = oldpaths.count()
-            for path in oldpaths:
-                path.destroySelf()
+            old_entries = StatusData.selectBy(age=min_age)
+            num_oldpaths = old_entries.count()
+            for entry in old_entries:
+                entry.destroySelf()
                 
             min_age = self._get_min_age()
             
             # log.debug("Removed %i paths from status cache" % num_oldpaths)
-    
-    def _get_path_children(self, path):
-        children = StatusData.select(
-                            (StatusData.q.path==path)
-                            | (StatusData.q.path.startswith(path + "/")))
-        return children
     
     def _get_size(self):
         count = StatusData.select().count()
@@ -378,6 +400,123 @@ class StatusData(sqlobject.SQLObject):
     text_status = sqlobject.UnicodeCol(dbEncoding="UTF-8", notNone=True)
     prop_status = sqlobject.UnicodeCol(dbEncoding="UTF-8", notNone=True)
     
+    children = sqlobject.MultipleJoin('PathChildren', joinColumn="parent_id")
+    
     def status_dict(self):
         return {"text_status" : self.text_status,
                 "prop_status" : self.prop_status}
+    
+    def get_children_old(self):
+        child_entries = StatusData.select(
+                            (StatusData.q.path==self.path)
+                            | (StatusData.q.path.startswith(self.path + "/")))
+        return child_entries
+
+    
+    def get_children(self):
+        child_list = [self]
+                
+        for entry in self.children:
+            child_list.extend(entry.child.get_children())
+        
+        return child_list
+        
+class PathChildren(sqlobject.SQLObject):
+    
+    parent = sqlobject.ForeignKey('StatusData', cascade=True)
+    child = sqlobject.ForeignKey('StatusData', cascade=True)
+    
+#    Person.sqlmeta.addJoin(MultipleJoin('PathChildren',
+#                        joinMethodName='children'))
+
+    
+if __name__ == "__main__":
+    
+    from pprint import pformat
+    
+    paths = [
+        "/foo",
+        "/foo/bar",
+        "/foo/bar/one.txt",
+        "/foo/bar/two.txt",
+        "/foo/bar/baz",
+        "/foo/bar/baz/one.txt",
+        "/foo/bam.txt",
+        "/foo/baz",
+        "/foo/baz/blah",
+        "/foo/baz/blarg"]
+
+    paths_later = [
+        "/foo",
+        "/foo/bar",
+        "/foo/bar/one.txt",
+        "/foo/bar/two.txt",
+        "/foo/bar/three.txt",
+        "/foo/bar/baz",
+        "/foo/bar/baz/four.txt"]
+    
+    sqlobject.sqlhub.processConnection = \
+    sqlobject.connectionForURI('sqlite:/:memory:')
+
+    StatusData.createTable()
+    PathChildren.createTable()
+    
+    for path in paths:
+        parent = StatusData(path=path, age=1, text_status="testing", prop_status="testing")
+
+    for path in paths:
+        entry = StatusData.selectBy(path=path).getOne()
+        for other_path in paths:
+            if is_directly_under_dir(path, other_path):
+                child_entry = StatusData.selectBy(path=other_path).getOne()
+                PathChildren(parent=entry, child=child_entry)
+        
+    for path in paths_later:
+        parent = StatusData.selectBy(path=path).getOne(None)
+        if parent:
+            parent.set(age=2, text_status="updated", prop_status="updated")
+        else:
+            parent = StatusData(path=path, age=2, text_status="testing_2", prop_status="testing_2")
+
+    for path in paths_later:
+        entry = StatusData.selectBy(path=path).getOne()
+        for other_path in paths_later:
+            if is_directly_under_dir(path, other_path):
+                child_entry = StatusData.selectBy(path=other_path).getOne()
+                
+                item = PathChildren.selectBy(parent=entry, child=child_entry).getOne(None)
+                
+                if not item:                
+                    PathChildren(parent=entry, child=child_entry)
+    
+    print "All:"
+    print pformat(list(StatusData.select()))
+    print "----\n"
+    
+    print "Parent:"
+    parent = StatusData.selectBy(path = "/foo/bar").getOne()
+    print parent
+    print "----\n"
+    
+    print "Children (old):"
+    children_old = parent.get_children_old()
+    print pformat(list(children_old))
+    print "----\n"
+    
+    print "Children (new):"
+    children_new = parent.get_children()
+    print pformat(list(children_new))
+
+    assert set(children_old) == set(children_new)
+    
+    print "Child entries 1:"
+    child_entries = PathChildren.select()
+    print pformat(list(child_entries))
+    print "----\n"
+    
+    StatusData.selectBy(path="/foo/bar").getOne().destroySelf()
+    
+    print "Child entries 2:"
+    child_entries = PathChildren.select()
+    print pformat(list(child_entries))
+    print "----\n"

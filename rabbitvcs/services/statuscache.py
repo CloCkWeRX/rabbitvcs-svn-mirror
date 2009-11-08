@@ -45,11 +45,24 @@ import time
 # The debugging statements below will tell you how many items are being cached
 MAX_CACHE_SIZE = 1000000 # Items
 
+def status_calculating(path):
+    return {path: {"text_status": "calculating",
+                   "prop_status": "calculating"}}
+
+def status_unknown(path):
+    return {path: {"text_status": "unknown",
+                   "prop_status": "unknown"}}
+
 def is_under_dir(base_path, other_path):
     # Warning: this function is greatly simplified compared to something more
     # rigorous. This is because the Python stdlib path manipulation functions
     # are just too slow for proper use here.
     return (base_path == other_path or other_path.startswith(base_path + "/"))
+
+def is_directly_under_dir(base_path, other_path):
+    check_path = base_path + "/"
+    return (other_path.startswith(check_path)
+            and "/" not in other_path.replace(check_path, "", 1).rstrip("/"))
 
 def make_summary(path, statuses):
     return ({path: statuses[path]},
@@ -105,11 +118,14 @@ class StatusCache():
 
         self.client = rabbitvcs.lib.vcs.create_vcs_instance()
 
+        self._alive = threading.Event()
+        self._alive.set()
+
         # This means that the thread will die when everything else does. If
         # there are problems, we will need to add a flag to manually kill it.
         # self.checker = StatusCheckerStub()
         self.checker = StatusChecker()
-        self.worker.setDaemon(True)
+        # self.worker.setDaemon(True)
         self.worker.start()
                 
     def path_modified(self, path):
@@ -147,7 +163,7 @@ class StatusCache():
        
         found_in_cache = False
         
-        if rabbitvcs.util.vcs.is_in_a_or_a_working_copy(path):
+        if self.client.is_in_a_or_a_working_copy(path):
             if not invalidate:
                 with self._status_tree_lock:
                     if path in self._status_tree:
@@ -157,13 +173,11 @@ class StatusCache():
                 
             if invalidate or not found_in_cache:
                 # We need to calculate the status
-                statuses[path] = {"text_status": "calculating",
-                                  "prop_status": "calculating"}
+                statuses = status_calculating(path)
                 self._paths_to_check.put((path, recurse, invalidate, summary, callback))
 
         else:
-            statuses[path] = {"text_status": "unknown",
-                              "prop_status": "unknown"}
+            statuses = status_unknown(path)
         
         # log.debug("%s: found in cache (%s)" % (path, found_in_cache))
         
@@ -175,20 +189,25 @@ class StatusCache():
     def status_update_loop(self):
         # This loop will stop when the thread is killed, which it will 
         # because it is daemonic.
-        while True:
+        while self._alive:
             # This call will block if the Queue is empty, until something is
             # added to it. There is a better way to do this if we need to add
             # other flags to this.
             (path, recurse, invalidate, summary, callback) = self._paths_to_check.get()
             self._update_path_status(path, recurse, invalidate, summary, callback)
     
+    def kill(self):
+        self._alive.clear()
+    
     def _get_path_statuses(self, path, recurse):
         statuses = {}
         with self._status_tree_lock:
             if recurse:
-                for another_path in self._status_tree.keys():
-                    if is_under_dir(path, another_path):
-                        statuses[another_path] = self._status_tree[another_path]["status"]
+                child_keys = [another_path for another_path
+                                in self._status_tree.keys()
+                                if is_under_dir(path, another_path)]
+                for another_path in child_keys:
+                    statuses[another_path] = self._status_tree[another_path]["status"]
             else:
                 statuses[path] = self._status_tree[path]["status"]
 
@@ -196,9 +215,11 @@ class StatusCache():
     
     def _invalidate_path(self, path):
         with self._status_tree_lock:
-            for another_path in self._status_tree.keys():
-                if is_under_dir(path, another_path):
-                    del self._status_tree[another_path]
+            child_keys = [another_path for another_path
+                                in self._status_tree.keys()
+                                if is_under_dir(path, another_path)]
+            for another_path in child_keys:
+                del self._status_tree[another_path]
     
     def _update_path_status(self, path, recurse=False, invalidate=False, summary=False, callback=None):
         statuses = {}
