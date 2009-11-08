@@ -44,6 +44,7 @@ code).
 """
 
 import os, os.path
+import sys
 
 import gobject, glib
 
@@ -244,6 +245,9 @@ def Main():
     #                        rabbitvcs.lib.helper.get_home_folder(),
     #                        "rvcs_cache.stats")
     # cProfile.run("mainloop.run()", profile_data_file)
+    
+    glib.idle_add(sys.stdout.write, "Started cache service\n")
+    glib.idle_add(sys.stdout.flush)
     mainloop.run()
     
     log.debug("Cache: ended service: %s (%s)" % (OBJECT_PATH, os.getpid()))
