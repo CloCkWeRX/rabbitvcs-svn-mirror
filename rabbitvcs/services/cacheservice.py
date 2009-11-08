@@ -222,7 +222,7 @@ def Main():
     global log
     log = Log("rabbitvcs.services.cacheservice:main")
     log.debug("Cache: starting service: %s (%s)" % (OBJECT_PATH, os.getpid()))
-        
+    
     # We need this to for the client to be able to do asynchronous calls
     dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
     
@@ -253,5 +253,5 @@ def Main():
     log.debug("Cache: ended service: %s (%s)" % (OBJECT_PATH, os.getpid()))
 
 if __name__ == "__main__":
-    
+    rabbitvcs.util.locale.initialize_locale()
     Main()
