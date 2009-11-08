@@ -54,44 +54,6 @@ class StatusCache():
     #: (path, recurse, invalidate, callback).
     _paths_to_check = Queue()
     
-    #: This tree stores the status of the items. We monitor working copy
-    #: for changes and modify this tree in-place accordingly. This way
-    #: apart from an intial recursive check we don't have to do any
-    #: and the speed is increased because the tree is in memory.
-    #:
-    #: This isn't a tree (yet) and looks like:::
-    #:
-    #:     _status_tree = {
-    #:         "/foo": {"age": 1,
-    #:                  "status": {"text_status": "normal", "prop_status": "normal"}},
-    #:         "/foo/bar": {"age": 2,
-    #:                      "status": {"text_status": "normal", "prop_status": "normal"}},
-    #:         "/foo/bar/baz": {"age": 2,
-    #:                          "status": {"text_status": "added", "prop_status": "normal"}}
-    #:     }
-    #:
-    #: As you can see it's not a tree (yet) and the way statuses are 
-    #: collected as by iterating through the dictionary.
-    #:
-    #: The age parameter is used for limiting the size of the cache. Yes, it is
-    #: meant to be repeated. Yes, it is actually the opposite of age, in that
-    #: higher = newer. But of course, you read this comment before you tried to
-    #: do anything with it, didn't you. DIDN'T YOU?
-    #:
-    #: The "age" parameter should be based on when the path was requested, so
-    #: even if this triggers many recursive additions to the cache, all ages for
-    #: those paths should be the same.
-    #: 
-    #: I was worried that, being a number, this could overflow. But the Python
-    #: library reference states that: "long integers have unlimited precision."
-    # _status_tree = dict()
-        
-    #: Need a re-entrant lock here, look at check_status/add_path_to_check
-    _status_tree_lock = threading.RLock()
-    
-    # In here to avoid circular imports
-    # from rabbitvcs.lib.extensions.nautilus.RabbitVCS import log
-
     def __init__(self):
         self.worker = threading.Thread(target = self.status_update_loop,
                                        name = "Status cache thread")
@@ -117,9 +79,7 @@ class StatusCache():
         removed from the list (but not from pending actions, since they will be
         re-checked anyway).
         """
-        with self._status_tree_lock:
-            pass
-            # Need to clarify the logic for this. Stub for now.
+        pass
     
     def check_status(self, path, 
                      recurse=False, invalidate=False,
