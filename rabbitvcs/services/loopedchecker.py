@@ -30,8 +30,6 @@ import rabbitvcs.lib.vcs
 import rabbitvcs.util.locale
 import rabbitvcs.util.vcs
 
-
-
 from rabbitvcs.services.statuschecker import status_error
 
 from rabbitvcs.lib.log import Log
@@ -69,7 +67,6 @@ def Main():
             status_list = vcs_client.status(path, recurse=recurse)
             statuses = [(status.path, str(status.text_status), str(status.prop_status))
                        for status in status_list]
-            
             
             # NOTE: this is useful for debugging. You can tweak MAGIC_NUMBER to
             # make status checks appear to take longer or shorter.
