@@ -72,8 +72,13 @@ class GtkContextMenu:
             else:
                 if condition["callback"]() is False:
                     continue
-                
-            menuitem = gtk.MenuItem(item["label"])
+            
+            action = gtk.Action(item["label"], item["label"], None, None)
+            
+            if "icon" in item and item["icon"] is not None:
+                action.set_icon_name(item["icon"])
+    
+            menuitem = action.create_menu_item()
             if "signals" in item and item["signals"] is not None:
                 for signal, info in item["signals"].items():
                     menuitem.connect(signal, info["callback"], info["args"])
@@ -550,6 +555,7 @@ class GtkFilesContextMenu:
             if basename not in added_ignore_labels:
                 ignore_items.append({
                     "label": basename,
+                    "icon": None,
                     "signals": {
                         "button-press-event": {
                             "callback": self.callbacks.ignore_by_filename, 
@@ -571,6 +577,7 @@ class GtkFilesContextMenu:
             if ext_str not in added_ignore_labels:
                 ignore_items.append({
                     "label": ext_str,
+                    "icon": None,
                     "signals": {
                         "button-press-event": {
                             "callback": self.callbacks.ignore_by_file_extension, 
@@ -588,6 +595,7 @@ class GtkFilesContextMenu:
         context_menu = GtkContextMenu([
             {
                 "label": _("View Diff"),
+                "icon": "rabbitvcs-diff",
                 "signals": {
                     "activate": {
                         "callback": self.callbacks.view_diff, 
@@ -601,6 +609,7 @@ class GtkFilesContextMenu:
             },
             {
                 "label": _("Remove Lock"),
+                "icon": "rabbitvcs-unlock",
                 "signals": {
                     "activate": {
                         "callback": self.callbacks.unlock, 
@@ -613,6 +622,7 @@ class GtkFilesContextMenu:
             },
             {
                 "label": _("Show log"),
+                "icon": "rabbitvcs-show_log",
                 "signals": {
                     "activate": {
                         "callback": self.callbacks.show_log, 
@@ -625,6 +635,7 @@ class GtkFilesContextMenu:
             },
             {
                 "label": _("Open"),
+                "icon": gtk.STOCK_OPEN,
                 "signals": {
                     "activate": {
                         "callback": self.callbacks._open, 
@@ -638,6 +649,7 @@ class GtkFilesContextMenu:
             },
             {
                 "label": _("Browse to"),
+                "icon": gtk.STOCK_HARDDISK,
                 "signals": {
                     "activate": {
                         "callback": self.callbacks.browse_to, 
@@ -650,6 +662,7 @@ class GtkFilesContextMenu:
             },
             {
                 "label": _("Delete"),
+                "icon": "rabbitvcs-delete",
                 "signals": {
                     "activate": {
                         "callback": self.callbacks.delete, 
@@ -663,6 +676,7 @@ class GtkFilesContextMenu:
             },
             {
                 "label": _("Add"),
+                "icon": "rabbitvcs-add",
                 "signals": {
                     "activate": {
                         "callback": self.callbacks.add, 
@@ -676,6 +690,7 @@ class GtkFilesContextMenu:
             },
             {
                 "label": _("Revert"),
+                "icon": "rabbitvcs-revert",
                 "signals": {
                     "activate": {
                         "callback": self.callbacks.revert, 
@@ -702,6 +717,7 @@ class GtkFilesContextMenu:
             },
             {
                 "label": _("Update"),
+                "icon": "rabbitvcs-update",
                 "signals": {
                     "activate": {
                         "callback": self.callbacks.update, 

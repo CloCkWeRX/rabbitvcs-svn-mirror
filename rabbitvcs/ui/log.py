@@ -249,6 +249,7 @@ class Log(InterfaceView):
             },
             {
                 "label": _("Update to revision..."),
+                "icon": "rabbitvcs-update",
                 "signals": {
                     "activate": {
                         "callback": self.on_context_update_to,
@@ -260,14 +261,8 @@ class Log(InterfaceView):
                 }
             },
             {
-                "label": _("Rollback to revision..."),
-                "signals": None,
-                "condition": {
-                    "callback": (lambda: False)
-                }
-            },
-            {
                 "label": _("Checkout..."),
+                "icon": "rabbitvcs-checkout",
                 "signals": {
                     "activate": {
                         "callback": self.on_context_checkout_activated,
@@ -280,6 +275,7 @@ class Log(InterfaceView):
             },
             {
                 "label": _("Branch/tag..."),
+                "icon": "rabbitvcs-branch",
                 "signals": {
                     "activate": {
                         "callback": self.on_context_branch_activated,
@@ -292,6 +288,7 @@ class Log(InterfaceView):
             },
             {
                 "label": _("Export..."),
+                "icon": "rabbitvcs-export",
                 "signals": {
                     "activate": {
                         "callback": self.on_context_export_activated,
@@ -335,6 +332,7 @@ class Log(InterfaceView):
             },
             {
                 "label": _("Edit revision properties.."),
+                "icon": gtk.STOCK_EDIT,
                 "signals": {
                     "activate": {
                         "callback": self.on_context_edit_revprops,
@@ -401,6 +399,7 @@ class Log(InterfaceView):
             },
             {
                 "label": _("Open"),
+                "icon": gtk.STOCK_OPEN,
                 "signals": {
                     "activate": {
                         "callback": self.on_paths_context_open,
@@ -413,6 +412,7 @@ class Log(InterfaceView):
             },
             {
                 "label": _("Annotate"),
+                "icon": "rabbitvcs-annotate",
                 "signals": {
                     "activate": {
                         "callback": self.on_paths_context_annotate,
