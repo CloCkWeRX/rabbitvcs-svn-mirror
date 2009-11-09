@@ -147,6 +147,11 @@ class StatusCacheStub:
     These objects should be created by the GUI as needed (eg. the nautilus
     extension code).
     
+    Note that even though the status cache itself takes a callback for each call
+    to "check_status", this stub requires it to be provided at initialisation.
+    The callback can be triggered (or not) using the boolean callback parameter
+    of the "check_status" method.
+    
     The inter-process communication is via DBUS.
     """
     
