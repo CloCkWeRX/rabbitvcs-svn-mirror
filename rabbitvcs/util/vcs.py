@@ -3,6 +3,10 @@ from os.path import isdir, isfile, realpath, basename
 
 import pysvn
 
+from rabbitvcs.lib.log import Log
+log = Log("rabbitvcs.util.vcs")
+
+
 #: A list of statuses which count as modified (for a directory) in 
 #: TortoiseSVN emblem speak.
 MODIFIED_STATUSES = [
@@ -13,7 +17,106 @@ MODIFIED_STATUSES = [
     "missing"
 ]
 
-def get_summarized_status(path, statuses):
+def condense_statuses(path, statuses):
+    
+    status = "unknown"
+    
+    status_set = set([statuses[other_path] for other_path in statuses.keys()])
+    
+    if not status_set:
+        # This indicates a serious deviation from our expected API
+        status = "error"
+    
+    elif "client_error" in status_set:
+        status = "error"
+
+    # We need to take special care of directories
+    elif isdir(path):
+        # These statuses take precedence.
+        if "conflicted" in status_set:
+            status = "conflicted"
+        elif "obstructed" in status_set:
+            status = "obstructed"
+        
+        # The following statuses take precedence over the status
+        # of children.
+        elif (statuses.has_key(path) and 
+                statuses[path] in ["added", "modified", "deleted"]):
+            status = statuses[path]
+        
+        # A directory should have a modified status when any of its children
+        # have a certain status (see modified_statuses above). Jason thought up 
+        # of a nifty way to do this by using sets and the bitwise AND operator (&).
+        elif len(set(MODIFIED_STATUSES) & status_set):
+            status = "modified"
+            
+        elif statuses.has_key(path):
+            status = statuses[path]
+    
+    # If we're not a directory we end up here.
+    elif statuses.has_key(path):
+        status = statuses[path]
+    
+    else:
+        status = "normal"
+        
+    return status
+
+def summarize_status_pair(path, statuses):
+    
+    text_status = "unknown"
+    prop_status = "unknown"
+    
+    text_statuses = {}
+    prop_statuses = {}
+    
+    for other_path in statuses.keys():
+        text_statuses[other_path] = statuses[other_path]["text_status"]
+        prop_statuses[other_path] = statuses[other_path]["prop_status"]
+    
+    # If no statuses are returned but we do have a workdir_manager
+    # it means that an error occured, most likely a working copy
+    # administration area (.svn directory) went missing but it could
+    # be pretty much anything.
+    if not statuses: 
+        # FIXME: figure out a way to make only the directory that
+        # is missing display conflicted and the rest unknown.
+        text_status = "error"
+        prop_status = "error"
+    
+    else:
+        text_status = condense_statuses(path, text_statuses)
+        prop_status = condense_statuses(path, prop_statuses)
+    
+    return {path:
+            {"text_status": text_status,
+             "prop_status": prop_status}}
+
+def make_single_status(statuses):
+    """
+    Given a text_status and a prop_status, simplify to a single status.
+    """
+        
+    # Text statuses take priority
+    single = statuses["text_status"]
+    if single == "normal":
+        single = statuses["prop_status"]
+        if single == "none":
+            single = "normal"
+            
+    return single
+
+def summarize_status_pair_list(path, statuses):
+    
+    status_dict = {}
+    
+    for other_path, text_status, prop_status in statuses:
+        status_dict[other_path] = {"text_status" : text_status,
+                                   "prop_status" : prop_status}
+        
+    return summarize_status_pair(path, status_dict)
+
+def summarize_status(path, statuses):
     """
     This is a helper function to figure out the textual representation 
     for a set of statuses. In TortoiseSVN speak a directory is
@@ -27,45 +130,11 @@ def get_summarized_status(path, statuses):
     @param  path:   A dict of {path : {"text_status" : [...],
                                        "prop_status" : [...]} entries
     """
+    summarised = summarize_status_pair(path, statuses)
     
-    text_statuses = set([statuses[key]["text_status"] for key in statuses.keys()])
-    prop_statuses = set([statuses[key]["prop_status"] for key in statuses.keys()])
+    summary = make_single_status(summarised[path])
     
-    all_statuses = text_statuses | prop_statuses
-    
-    # If no statuses are returned but we do have a workdir_manager
-    # it means that an error occured, most likely a working copy
-    # administration area (.svn directory) went missing but it could
-    # be pretty much anything.
-    if not statuses: 
-        # FIXME: figure out a way to make only the directory that
-        # is missing display conflicted and the rest unknown.
-        return "error"
-
-    if "client_error" in all_statuses:
-        return "error"
-
-    # We need to take special care of directories
-    if isdir(path):
-        # These statuses take precedence.
-        if "conflicted" in text_statuses: return "conflicted"
-        if "obstructed" in text_statuses: return "obstructed"
-        
-        # The following statuses take precedence over the status
-        # of children.
-        if (statuses.has_key(path) and 
-                statuses[path]["text_status"] in ["added", "modified", "deleted"]):
-            return statuses[path]["text_status"]
-        
-        # A directory should have a modified status when any of its children
-        # have a certain status (see modified_statuses above). Jason thought up 
-        # of a nifty way to do this by using sets and the bitwise AND operator (&).
-        if len(set(MODIFIED_STATUSES) & all_statuses):
-            return "modified"
-    
-    # If we're not a directory we end up here.
-    if statuses.has_key(path): return statuses[path]["text_status"]
-    return "normal"
+    return summary
 
 def is_working_copy(path):
     vcs_client = pysvn.Client()

@@ -34,12 +34,8 @@ import rabbitvcs.lib.helper
 log = Log("rabbitvcs.ui.commit")
 _ = gettext.gettext
 
-import rabbitvcs.dbus.service
-from rabbitvcs.dbus.statuschecker import StatusCheckerStub as StatusChecker
-
-# Start up our DBus service if it's not already started, if this fails
-# we can't really do anything.
-rabbitvcs.dbus.service.start()
+import rabbitvcs.services
+from rabbitvcs.services.cacheservice import StatusCacheStub as StatusCache
 
 SEPARATOR = u'\u2015' * 10
 
@@ -369,11 +365,13 @@ class FileManagerContextMenuConditions(ContextMenuConditions):
     """
     def __init__(self, vcs_client, paths=[]):
         self.vcs_client = vcs_client
-        self.status_checker = StatusChecker()
+        self.status_cache = StatusCache()
         
         self.statuses = {}
         for path in paths:
-            self.statuses.update(self.status_checker.check_status(path, recurse=True, callback=False))
+            # FIXME: possibly this should be a checker, not a cache?
+            self.statuses.update(self.status_cache.check_status(path,
+                                                                recurse=True))
 
         self.text_statuses = [self.statuses[key]["text_status"] for key in self.statuses.keys()]
         self.prop_statuses = [self.statuses[key]["prop_status"] for key in self.statuses.keys()]

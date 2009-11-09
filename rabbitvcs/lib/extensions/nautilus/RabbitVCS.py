@@ -48,7 +48,7 @@ from rabbitvcs.lib.helper import pretty_timedelta
 from rabbitvcs.lib.decorators import timeit, disable
 
 from rabbitvcs.lib.log import Log, reload_log_settings
-log = Log("rabbitvcs.lib.extensions.nautilus")
+log = Log("rabbitvcs.lib.extensions.nautilus.RabbitVCS")
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -56,12 +56,8 @@ _ = gettext.gettext
 from rabbitvcs.lib.settings import SettingsManager
 settings = SettingsManager()
 
-import rabbitvcs.dbus.service
-from rabbitvcs.dbus.statuschecker import StatusCheckerStub as StatusChecker
-
-# Start up our DBus service if it's not already started, if this fails
-# we can't really do anything.
-rabbitvcs.dbus.service.start()
+import rabbitvcs.services.service
+from rabbitvcs.services.cacheservice import StatusCacheStub as StatusCache
 
 class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnProvider):
     """ 
@@ -134,7 +130,15 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
     #: we don't enter an endless loop when updating the status.
     #: The callback should acquire this lock when pushing the path to this.
     always_invalidate = True
+    
+    #: When we get the statuses from the callback, but them here for further
+    #: use. There is a possible memory problem here if we put a lot of data in
+    #: this - even when it's removed, Python may not release the memory. I do
+    #: not know this for sure.
+    #: This is of the form: [("path/to", {...status dict...}), ...]
     paths_from_callback = []
+    
+    
     #: It appears that the "update_file_info" call that is triggered by the
     #: "invalidate_extension_info" in the callback function happens
     #: synchronously (ie. in the same thread). However, given the nature of the
@@ -161,8 +165,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = SVN()
         
-        self.status_checker = StatusChecker(self.cb_status)
-        
+        self.status_checker = StatusCache(self.cb_status)
         
     def get_columns(self):
         """
@@ -223,7 +226,6 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         @param  item: 
         
         """
-        
         if not self.valid_uri(item.get_uri()): return
         path = realpath(unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8"))
         
@@ -249,28 +251,48 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         
         # Useful for figuring out order of calls. See "cb_status".
         # log.debug("%s: In update_status" % threading.currentThread())
+        
+        found = False
+        
         with self.callback_paths_lock:
-            triggered_by_callback = path in self.paths_from_callback
-            if triggered_by_callback:
-                self.paths_from_callback.remove(path)
+            
+            for idx in xrange(len(self.paths_from_callback)):
+                found = (str(self.paths_from_callback[idx][0]) == str(path))
+                if found: break
+            
+            if found: # We're here because we were triggered by a callback
+                (cb_path, single_status, summary) = self.paths_from_callback[idx]
+                del self.paths_from_callback[idx]
+        
+        # Don't bother the cache if we already have the info
+        
+        if not found:
+            (single_status, summary) = \
+                self.status_checker.check_status(path,
+                                                 recurse=True,
+                                                 summary=True,
+                                                 callback=True,
+                                                 invalidate=self.always_invalidate)
 
         # log.debug("US Thread: %s" % threading.currentThread())
-        invalidate_now = self.always_invalidate and not triggered_by_callback
-        statuses = self.status_checker.check_status(path, recurse=True, invalidate=invalidate_now)
+                
+        # summary = get_summarized_status_both(path, statuses)
+        # single_status = {path: statuses[path]}
+        
+#        from pprint import pformat
+#        log.debug("\n\tExtension: asked for summary [%s]\n\tGot paths:\n%s" % (path, pformat(summary.keys())))
+#        log.debug("\n\tExtension: asked for single [%s]\n\tGot paths:\n%s" % (path, pformat(single_status.keys())))
 
         # TODO: using pysvn directly because I don't like the current
         # SVN class.
         client = pysvn.Client()
         client_info = client.info(path)
 
-        assert statuses.has_key(path), "Path not in status list!"
+        assert summary.has_key(path), "Path [%s] not in status summary!" % summary
+        assert single_status.has_key(path), "Path [%s] not in single status!" % path
 
-        if bool(int(settings.get("general", "enable_attributes"))): self.update_columns(item, path, statuses, client_info)
-        if bool(int(settings.get("general", "enable_emblems"))): self.update_status(item, path, statuses, client_info)
-
-        # Useful for figuring out order of calls. See "cb_status".
-        # log.debug("%s: Leaving update_status" % threading.currentThread())
-        
+        # if bool(int(settings.get("general", "enable_attributes"))): self.update_columns(item, path, single_status, client_info)
+        if bool(int(settings.get("general", "enable_emblems"))): self.update_status(item, path, summary, client_info)
         
     def update_columns(self, item, path, statuses, client_info):
         """
@@ -279,7 +301,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         server.
 
         """
-        log.debug("update_colums called for %s" % path)
+        # log.debug("update_colums called for %s" % path)
 
         values = {
             "status": "",
@@ -325,7 +347,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
             item.add_string_attribute(key, value)
 
     
-    def update_status(self, item, path, statuses, client_info):
+    def update_status(self, item, path, summary, client_info):
         # If we are able to set an emblem that means we have a local status
         # available. The StatusMonitor will keep us up-to-date through the 
         # C{cb_status} callback.
@@ -337,15 +359,15 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         # 4. Callback triggers update
                 
         # Path == first index or last for old system?
-        if statuses[path]["text_status"] == "calculating":
+        if summary[path]["text_status"] == "calculating":
             item.add_emblem(self.EMBLEMS["calculating"])
         else:
-            summarized_status = get_summarized_status(path, statuses)
-            if summarized_status in self.EMBLEMS:
-                item.add_emblem(self.EMBLEMS[summarized_status])
+            single_status = make_single_status(summary[path])
+            if single_status in self.EMBLEMS:
+                item.add_emblem(self.EMBLEMS[single_status])
         
     #~ @disable
-    @timeit
+    # @timeit
     def get_file_items(self, window, items):
         """
         Menu activated with items selected. Nautilus also calls this function
@@ -448,7 +470,12 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
             #   - When a directory is normal and you add files inside it
             #
             for path in paths:
-                statuses = self.status_checker.check_status(path, recurse=True, invalidate=True)
+                # We're not interested in the result now, just the callback
+                self.status_checker.check_status(path,
+                                                 recurse=True,
+                                                 invalidate=True,
+                                                 callback=True,
+                                                 summary=True)
             
         self.execute_after_process_exit(proc, do_check)
         
@@ -521,12 +548,16 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
             # Since invalidation triggers an "update_file_info" call, we can
             # tell it NOT to invalidate the status checker path.
             with self.callback_paths_lock:
-                self.paths_from_callback.append(path)
+                from pprint import pformat
+                (single, summary) = statuses
+                self.paths_from_callback.append((path, single, summary))
                 # These are useful to establish whether the "update_status" call
                 # happens INSIDE this next call, or later, or in another thread. 
                 # log.debug("%s: Invalidating..." % threading.currentThread())
                 item.invalidate_extension_info()
                 # log.debug("%s: Done invalidate call." % threading.currentThread())
+        else:
+            log.debug("Path [%s] not found in file table")
         
 class MainContextMenu:
     """
@@ -549,11 +580,14 @@ class MainContextMenu:
         self.rabbitvcs_extension = rabbitvcs_extension
         self.vcs_client = SVN()
         
-        self.status_checker = StatusChecker()
+        self.status_checker = StatusCache()
         
         self.statuses = {}
         for path in self.paths:
-            self.statuses.update(self.status_checker.check_status(path, recurse=True, callback=False))
+            # FIXME: what happens if the cache is still calculating?
+            self.statuses.update(self.status_checker.check_status(path,
+                                                                  recurse=True,
+                                                                  callback=False))
         self.text_statuses = [self.statuses[key]["text_status"] for key in self.statuses.keys()]
         self.prop_statuses = [self.statuses[key]["prop_status"] for key in self.statuses.keys()]
         
