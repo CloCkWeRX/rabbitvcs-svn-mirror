@@ -42,6 +42,8 @@ log = Log("rabbitvcs.ui.checkmods")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
+gtk.gdk.threads_init()
+
 class CheckForModifications(InterfaceView, GtkContextMenuCaller):
     """
     Provides a way for the user to see what files have been changed on the 
@@ -108,24 +110,38 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
             thread.start_new_thread(self.load, ())
         except Exception, e:
             log.exception(e)
-
+    
     def load(self):
+        gtk.gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
+        gtk.gdk.threads_leave()
+
         self.items = self.vcs.get_remote_updates(self.paths)
         self.populate_files_table()
-        self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
 
-    @gtk_unsafe
+        gtk.gdk.threads_enter()
+        self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
+        gtk.gdk.threads_leave()
+
     def populate_files_table(self):
+        gtk.gdk.threads_enter()
         self.files_table.clear()
+        gtk.gdk.threads_leave()
+        
         for item in self.items:
+            revision_number = -1
+            author = ""
+            if item.entry is not None:
+                revision_number = item.entry.revision.number
+                author = item.entry.commit_author
+
             self.files_table.append([
                 item.path, 
                 rabbitvcs.lib.helper.get_file_extension(item.path),
                 item.repos_text_status,
                 item.repos_prop_status,
-                str(item.entry.revision.number),
-                item.entry.commit_author
+                str(revision_number),
+                author
             ])
 
     def show_files_table_popup_menu(self, treeview, data):
