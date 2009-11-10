@@ -27,7 +27,7 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.lib.contextmenu import GtkFilesContextMenu, \
+from rabbitvcs.lib.contextmenu import GtkContextMenu, \
     GtkContextMenuCaller, GtkFilesContextMenuConditions
 from rabbitvcs.ui.action import VCSAction
 import rabbitvcs.ui.widget
@@ -88,8 +88,8 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
     def on_files_table_row_activated(self, treeview, event, col):
         treeview.grab_focus()
         self.files_table.update_selection()
-        paths = self.files_table.get_selected_row_items(1)
-        rabbitvcs.lib.helper.launch_diff_tool(*paths)
+        paths = self.files_table.get_selected_row_items(0)
+        self.diff_remote(paths[0])
 
     def on_files_table_mouse_event(self, treeview, data=None):
         self.files_table.update_selection()
@@ -147,21 +147,106 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
     def show_files_table_popup_menu(self, treeview, data):
         paths = self.files_table.get_selected_row_items(0)
         conditions = CheckModsContextMenuConditions(self.vcs, paths)
-        GtkFilesContextMenu(self, data, self.base_dir, paths, 
-            conditions=conditions).show()
-
+        CheckModsContextMenu(self, data, self.base_dir, self.vcs, paths).show()
+     
+    def diff_remote(self, path):
+        from rabbitvcs.ui.diff import SVNDiff
+        
+        path_local = path
+        path_remote = self.vcs.get_repo_url(path_local)
+        
+        self.action = VCSAction(
+            self.vcs,
+            notification=False
+        )
+        self.action.append(
+            SVNDiff,
+            path_local, 
+            None, 
+            path_remote,
+            "HEAD"
+        )
+        self.action.start()
+            
 class CheckModsContextMenuConditions(GtkFilesContextMenuConditions):
     def __init__(self, vcs_client, paths=[]):
         GtkFilesContextMenuConditions.__init__(self, vcs_client, paths)
-    
-    def _open(self, data=None):
-        return False
 
-    def browse_to(self, data=None):
-        return False
-    
     def update(self, data=None):
         return True
+
+    def diff_remote(self, data=None):
+        return (self.path_dict["exists"]
+            and self.path_dict["length"] == 1)
+
+class CheckModsContextMenuCallbacks:
+    def __init__(self, caller, base_dir, vcs_client, paths=[]):
+        self.caller = caller
+        self.base_dir = base_dir
+        self.vcs_client = vcs_client
+        self.paths = paths
+
+    def update(self, data1=None, data2=None):
+        rabbitvcs.lib.helper.launch_ui_window(
+            "update", 
+            self.paths
+        )
+
+    def diff_remote(self, data1=None, data2=None):
+        self.caller.diff_remote(self.paths[0])
+
+class CheckModsContextMenu:
+    def __init__(self, caller, event, base_dir, vcs_client, paths=[]):
+        
+        self.caller = caller
+        self.event = event
+        self.paths = paths
+        self.base_dir = base_dir
+        self.vcs_client = vcs_client
+        
+        self.conditions = CheckModsContextMenuConditions(self.vcs_client, paths)
+        self.callbacks = CheckModsContextMenuCallbacks(
+            self.caller, 
+            self.base_dir,
+            self.vcs_client, 
+            paths
+        )
+
+        self.items = [
+            {
+                "label": _("View diff against remote file"),
+                "icon": "rabbitvcs-diff",
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.diff_remote, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.conditions.diff_remote
+                }
+            },
+            {
+                "label": _("Update"),
+                "icon": "rabbitvcs-update",
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.update, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.conditions.update
+                }
+            }
+        ]
+
+    def show(self):
+        if len(self.paths) == 0:
+            return
+
+        context_menu = GtkContextMenu(self.items)
+        context_menu.show(self.event)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
