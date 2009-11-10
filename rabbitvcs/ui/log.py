@@ -31,7 +31,7 @@ import gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import VCSAction
-from rabbitvcs.ui.dialog import MessageBox
+from rabbitvcs.ui.dialog import MessageBox, LINE_BREAK_CHAR
 from rabbitvcs.lib.contextmenu import GtkContextMenu
 import rabbitvcs.ui.widget
 import rabbitvcs.lib.helper
@@ -512,7 +512,7 @@ class Log(InterfaceView):
         self.set_end_revision(self.rev_end)
 
         for item in self.revision_items:
-            msg = item.message.replace("\n", " ")
+            msg = item.message.strip().replace("\n", LINE_BREAK_CHAR)
             if len(msg) > 80:
                 msg = "%s..." % msg[0:80]
         
