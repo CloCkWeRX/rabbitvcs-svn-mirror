@@ -230,15 +230,15 @@ class Compare(InterfaceView):
                 }
             },
             {
-                "label": _("Show changes"),
+                "label": _("View side-by-side diff"),
                 "signals": {
                     "activate": {
-                        "callback": self.on_context_show_changes,
+                        "callback": self.on_context_view_diff_sidebyside,
                         "args": None
                     }
                 },
                 "condition": {
-                    "callback": self.condition_show_changes
+                    "callback": self.condition_view_diff_sidebyside
                 }
             }
         ])
@@ -389,7 +389,7 @@ class Compare(InterfaceView):
     def on_context_view_diff(self, widget, data=None):
         self.view_selected_diff()
 
-    def on_context_show_changes(self, widget, data=None):
+    def on_context_view_diff_sidebyside(self, widget, data=None):
         url1 = self.changes_table.get_row(self.selected_rows[0])[0]
         url2 = url1
         if url1 == ".":
@@ -399,29 +399,20 @@ class Compare(InterfaceView):
         url1 = rabbitvcs.lib.helper.url_join(self.first_urls.get_active_text(), url1)
         url2 = rabbitvcs.lib.helper.url_join(self.second_urls.get_active_text(), url2)
         rev1 = self.get_first_revision()
-        dest1 = "/tmp/rabbitvcs-1-" + str(rev1) + "-" + os.path.basename(url1)
         rev2 = self.get_second_revision()
-        dest2 = "/tmp/rabbitvcs-2-" + str(rev2) + "-" + os.path.basename(url2)
+        
+        from rabbitvcs.ui.diff import SVNDiff
         self.action = VCSAction(
             self.vcs,
             notification=False
         )
         self.action.append(
-            self.vcs.export,
+            SVNDiff,
             url1,
-            dest1,
-            revision=rev1
-        )
-        self.action.append(
-            self.vcs.export,
+            rev1,
             url2,
-            dest2,
-            revision=rev2
-        )
-        self.action.append(
-            rabbitvcs.lib.helper.launch_diff_tool, 
-            dest1,
-            dest2
+            rev2,
+            side_by_side=True
         )
         self.action.start()
 
@@ -448,7 +439,7 @@ class Compare(InterfaceView):
             len(self.selected_rows) == 1
         )
 
-    def condition_show_changes(self):
+    def condition_view_diff_sidebyside(self):
         return (
             len(self.selected_rows) == 1
         )

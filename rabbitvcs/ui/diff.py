@@ -35,50 +35,90 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Diff(InterfaceNonView):
-    def __init__(self, path1, revision1=None, path2=None, revision2=None):
+    def __init__(self, path1, revision1=None, path2=None, revision2=None, 
+            side_by_side=False):
         InterfaceNonView.__init__(self)
 
-        self.path1 = path1
-        self.revision1 = revision1
-        self.path2 = path2
-        self.revision2 = revision2
+        self.vcs = create_vcs_instance()
 
+        self.path1 = path1
+        self.path2 = path2
+        self.side_by_side = side_by_side
+        self.revision1 = self.get_revision_object(revision1, "base")
+        self.revision2 = self.get_revision_object(revision2, "head")
+        
         self.temp_dir = tempfile.mkdtemp(prefix=TEMP_DIR_PREFIX)
 
         if path2 is None:
             self.path2 = path1
 
-class SVNDiff(Diff):
-    def __init__(self, path1, revision1=None, path2=None, revision2=None):
-        Diff.__init__(self, path1, revision1, path2, revision2)
-        vcs = create_vcs_instance()
+    def get_revision_object(self, value, default):
+        # If value is a rabbitvcs Revision object, return it
+        if hasattr(value, "is_revision_object"):
+            return value
         
-        if self.revision1 is None:
-            r1 = vcs.revision("base")
-        elif self.revision1 == "HEAD":
-            r1 = vcs.revision("head")
-        else:
-            r1 = vcs.revision("number", number=self.revision1)
+        # If value is None, use the default
+        if value is None:
+            return self.vcs.revision(default)          
 
-        if self.revision2 is None:
-            r2 = vcs.revision("working")
-        elif self.revision2 == "HEAD":
-            r2 = vcs.revision("head")
+        # If the value is an integer number, return a numerical revision object
+        # otherwise, a string revision value has been passed, use that as "kind"
+        try:
+            value = int(value)
+            return self.vcs.revision("number", value)
+        except ValueError:
+            # triggered when passed a string
+            return self.vcs.revision(value)
+                
+    def launch(self):
+        if self.side_by_side:
+            self.launch_side_by_side_diff()
         else:
-            r2 = vcs.revision("number", number=self.revision2)
-
-        diff_text = vcs.diff(
+            self.launch_unified_diff()
+    
+    def launch_unified_diff(self):
+        """
+        Launch diff as a unified diff in a text editor or .diff viewer
+        
+        """
+        diff_text = self.vcs.diff(
             self.temp_dir,
             self.path1,
-            r1,
+            self.revision1,
             self.path2,
-            r2
+            self.revision2
         )
         
-        fh = tempfile.mkstemp("-rabbitvcs-" + str(r1) + "-" + str(r2) + ".diff")
+        fh = tempfile.mkstemp("-rabbitvcs-" + str(self.revision1) + "-" + str(self.revision2) + ".diff")
         os.write(fh[0], diff_text)
         os.close(fh[0])
         rabbitvcs.lib.helper.open_item(fh[1])
+        
+    def launch_side_by_side_diff(self):
+        """
+        Launch diff as a side-by-side comparison using our comparison tool
+        
+        """        
+        if os.path.exists(self.path1):
+            dest1 = self.path1
+        else:
+            dest1 = "/tmp/rabbitvcs-1-" + str(self.revision1) + "-" + os.path.basename(self.path1)          
+            self.vcs.export(self.path1, dest1, self.revision1)
+    
+        if os.path.exists(self.path2):
+            dest2 = self.path2
+        else:
+            dest2 = "/tmp/rabbitvcs-2-" + str(self.revision2) + "-" + os.path.basename(self.path2)
+            self.vcs.export(self.path2, dest2, self.revision2)
+    
+        rabbitvcs.lib.helper.launch_diff_tool(dest1, dest2)
+
+class SVNDiff(Diff):
+    def __init__(self, path1, revision1=None, path2=None, revision2=None,
+            side_by_side=False):
+        Diff.__init__(self, path1, revision1, path2, revision2, side_by_side)
+
+        self.launch()
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main

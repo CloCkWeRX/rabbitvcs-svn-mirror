@@ -175,7 +175,11 @@ class CheckModsContextMenuConditions(GtkFilesContextMenuConditions):
     def update(self, data=None):
         return True
 
-    def diff_remote(self, data=None):
+    def unified_diff(self, data=None):
+        return (self.path_dict["exists"]
+            and self.path_dict["length"] == 1)
+
+    def sidebyside_diff(self, data=None):
         return (self.path_dict["exists"]
             and self.path_dict["length"] == 1)
 
@@ -192,8 +196,28 @@ class CheckModsContextMenuCallbacks:
             self.paths
         )
 
-    def diff_remote(self, data1=None, data2=None):
+    def unified_diff(self, data1=None, data2=None):
         self.caller.diff_remote(self.paths[0])
+
+    def sidebyside_diff(self, data1=None, data2=None):
+        from rabbitvcs.ui.diff import SVNDiff
+        
+        path_local = self.paths[0]
+        path_remote = self.vcs_client.get_repo_url(path_local)
+        
+        self.action = VCSAction(
+            self.vcs_client,
+            notification=False
+        )
+        self.action.append(
+            SVNDiff,
+            path_local, 
+            None, 
+            path_remote,
+            "HEAD",
+            side_by_side=True
+        )
+        self.action.start()
 
 class CheckModsContextMenu:
     def __init__(self, caller, event, base_dir, vcs_client, paths=[]):
@@ -214,16 +238,36 @@ class CheckModsContextMenu:
 
         self.items = [
             {
-                "label": _("View diff against remote file"),
+                "label": _("View unified diff"),
                 "icon": "rabbitvcs-diff",
                 "signals": {
                     "activate": {
-                        "callback": self.callbacks.diff_remote, 
+                        "callback": self.callbacks.unified_diff, 
                         "args": None
                     }
                 },
                 "condition": {
-                    "callback": self.conditions.diff_remote
+                    "callback": self.conditions.unified_diff
+                }
+            },
+            {
+                "label": _("View side-by-side diff"),
+                "icon": None,
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.sidebyside_diff, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.conditions.sidebyside_diff
+                }
+            },
+            {
+                "label": rabbitvcs.ui.widget.SEPARATOR,
+                "signals": None,
+                "condition": {
+                    "callback": (lambda: True)
                 }
             },
             {
