@@ -54,7 +54,6 @@ class SVNDiff(Diff):
         vcs = create_vcs_instance()
         
         if self.revision1 is None:
-        
             r1 = vcs.revision("base")
         elif self.revision1 == "HEAD":
             r1 = vcs.revision("head")
