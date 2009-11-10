@@ -171,12 +171,10 @@ class ContextMenuConditions:
         # If a check has returned True for any path, skip it for remaining paths
         for path in paths:
             for key, func in checks.items():
-                try:
-                    if key not in self.path_dict or self.path_dict[key] is not True:
-                        self.path_dict[key] = func(path)
-                except KeyError, e:
-                    # KeyError will be generated for files that don't exist
+                if not self.statuses.has_key(path):
                     self.path_dict[key] = False
+                elif key not in self.path_dict or self.path_dict[key] is not True:
+                    self.path_dict[key] = func(path)
 
     def checkout(self, data=None):
         return (self.path_dict["length"] == 1 and
