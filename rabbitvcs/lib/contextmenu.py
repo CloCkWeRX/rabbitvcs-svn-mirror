@@ -521,9 +521,6 @@ class GtkFilesContextMenu:
     def __init__(self, caller, event, base_dir, paths=[], 
             conditions=None, callbacks=None):
         
-        if len(paths) == 0:
-            return
-        
         self.caller = caller
         self.event = event
         self.paths = paths
@@ -737,5 +734,8 @@ class GtkFilesContextMenu:
         ]
     
     def show(self):
+        if len(self.paths) == 0:
+            return
+
         context_menu = GtkContextMenu(self.items)
         context_menu.show(self.event)
