@@ -178,7 +178,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
 
     def show_files_table_popup_menu(self, treeview, data):
         paths = self.files_table.get_selected_row_items(1)
-        GtkFilesContextMenu(self, data, self.base_dir, paths)
+        GtkFilesContextMenu(self, data, self.base_dir, paths).show()
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main

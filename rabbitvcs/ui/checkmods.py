@@ -148,7 +148,7 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
         paths = self.files_table.get_selected_row_items(0)
         conditions = CheckModsContextMenuConditions(self.vcs, paths)
         GtkFilesContextMenu(self, data, self.base_dir, paths, 
-            conditions=conditions)
+            conditions=conditions).show()
 
 class CheckModsContextMenuConditions(GtkFilesContextMenuConditions):
     def __init__(self, vcs_client, paths=[]):

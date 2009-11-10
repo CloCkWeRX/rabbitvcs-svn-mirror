@@ -590,7 +590,7 @@ class GtkFilesContextMenu:
                 added_ignore_labels.append(ext_str)
 
         # Generate the full context menu
-        context_menu = GtkContextMenu([
+        self.items = [
             {
                 "label": _("View Diff"),
                 "icon": "rabbitvcs-diff",
@@ -734,5 +734,8 @@ class GtkFilesContextMenu:
                     "args": None
                 }
             }
-        ])
+        ]
+    
+    def show(self):
+        context_menu = GtkContextMenu(self.items)
         context_menu.show(self.event)
