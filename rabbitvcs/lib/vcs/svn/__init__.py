@@ -153,10 +153,11 @@ class Revision:
     }
 
     def __init__(self, kind, value=None):
-        self.kind = kind
+        self.kind = kind.lower()
         self.value = value
+        self.is_revision_object = True
         
-        self.__revision_kind = self.KINDS[kind]
+        self.__revision_kind = self.KINDS[self.kind]
         self.__revision = None
         try:
             if value is not None:
