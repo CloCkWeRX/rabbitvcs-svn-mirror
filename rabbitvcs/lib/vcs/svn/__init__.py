@@ -683,7 +683,7 @@ class SVN:
         
         returner = None
         try:
-            returner = info["revision"].number
+            returner = info["commit_revision"].number
         except KeyError, e:
             log.exception("KeyError exception in svn.py get_revision() for %s" % path)
         except AttributeError, e:
