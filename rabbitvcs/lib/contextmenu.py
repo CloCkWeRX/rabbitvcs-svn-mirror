@@ -296,10 +296,49 @@ class ContextMenuCallbacks:
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def diff(self, widget, data1=None, data2=None):
-        rabbitvcs.lib.helper.launch_diff_tool(*self.paths)
+        proc = rabbitvcs.lib.helper.launch_ui_window("diff", self.paths)
+        self.caller.rescan_after_process_exit(proc, self.paths)
+
+    def diff_multiple(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.lib.helper.launch_ui_window("diff", self.paths)
+        self.caller.rescan_after_process_exit(proc, self.paths)
+
+    def diff_previous_revision(self, widget, data1=None, data2=None):
+        previous_revision_number = self.vcs_client.get_revision(self.paths[0]) - 1
+    
+        pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "working")
+        pathrev2 = rabbitvcs.lib.helper.create_path_revision_string(self.vcs_client.get_repo_url(self.paths[0]), previous_revision_number)
+
+        proc = rabbitvcs.lib.helper.launch_ui_window("diff", [pathrev1, pathrev2])
+        self.caller.rescan_after_process_exit(proc, self.paths)
+
+    def compare(self, widget, data1=None, data2=None):
+        pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "working")
+        pathrev2 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "base")
+
+        proc = rabbitvcs.lib.helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
+        self.caller.rescan_after_process_exit(proc, self.paths)
+
+    def compare_multiple(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.lib.helper.launch_ui_window("diff", ["-s"] + self.paths)
+        self.caller.rescan_after_process_exit(proc, self.paths)
+
+    def compare_previous_revision(self, widget, data1=None, data2=None):
+        previous_revision_number = self.vcs_client.get_revision(self.paths[0]) - 1
+
+        pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "working")
+        pathrev2 = rabbitvcs.lib.helper.create_path_revision_string(self.vcs_client.get_repo_url(self.paths[0]), previous_revision_number)
+
+        proc = rabbitvcs.lib.helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def changes(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("changes", self.paths)
+        pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0])
+        pathrev2 = pathrev1
+        if len(self.paths) == 2:
+            pathrev2 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[1])
+        
+        proc = rabbitvcs.lib.helper.launch_ui_window("changes", [pathrev1, pathrev2])
         self.caller.rescan_after_process_exit(proc, self.paths)
     
     def show_log(self, widget, data1=None, data2=None):
@@ -483,13 +522,51 @@ class ContextMenuConditions:
             elif (self.path_dict["is_dir"]):
                 return True
         return False
+
+    def diff_menu(self, data=None):
+        return self.path_dict["is_in_a_or_a_working_copy"]
+    
+    def diff_multiple(self, data=None):
+        if (self.path_dict["length"] == 2 and 
+                self.path_dict["is_versioned"] and
+                self.path_dict["is_in_a_or_a_working_copy"]):
+            return True
+        return False
+
+    def compare_multiple(self, data=None):
+        if (self.path_dict["length"] == 2 and 
+                self.path_dict["is_versioned"] and
+                self.path_dict["is_in_a_or_a_working_copy"]):
+            return True
+        return False
         
     def diff(self, data=None):
         if self.path_dict["length"] == 2:
             return True
         elif (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
-                self.path_dict["is_modified"]):
+                (self.path_dict["is_modified"] or self.path_dict["has_modified"])):
+            return True        
+        return False
+
+    def diff_previous_revision(self, data=None):
+        if (self.path_dict["length"] == 1 and
+                self.path_dict["is_in_a_or_a_working_copy"]):
+            return True        
+        return False
+
+    def compare(self, data=None):
+        if self.path_dict["length"] == 2:
+            return True
+        elif (self.path_dict["length"] == 1 and
+                self.path_dict["is_in_a_or_a_working_copy"] and
+                (self.path_dict["is_modified"] or self.path_dict["has_modified"])):
+            return True        
+        return False
+
+    def compare_previous_revision(self, data=None):
+        if (self.path_dict["length"] == 1 and
+                self.path_dict["is_in_a_or_a_working_copy"]):
             return True        
         return False
 
@@ -982,8 +1059,15 @@ class MainContextMenu:
             ("Commit", None),
             ("RabbitVCS", [
                 ("CheckForModifications", None),
-                ("Diff", None),
-                ("ShowChanges", None),
+                ("DiffMenu", [
+                    ("Diff", None),
+                    ("DiffPrevRev", None),
+                    ("DiffMultiple", None),
+                    ("CompareTool", None),
+                    ("CompareToolPrevRev", None),
+                    ("CompareToolMultiple", None),
+                    ("ShowChanges", None),
+                ]),
                 ("Show_Log", None),
                 ("Separator0", None),
                 ("Add", None),
@@ -1229,9 +1313,19 @@ class ContextMenuItems:
                     "callback": self.conditions.checkmods
                 }
             },
+            "DiffMenu": {
+                "identifier": "RabbitVCS::DiffMenu",
+                "label": _("Compare..."),
+                "tooltip": _("List of comparison options"),
+                "icon": None,
+                "signals": {}, 
+                "condition": {
+                    "callback": self.conditions.diff_menu
+                }
+            },
             "Diff": {
                 "identifier": "RabbitVCS::Diff",
-                "label": _("View Diff"),
+                "label": _("View diff against base"),
                 "tooltip": _("View the modifications made to a file"),
                 "icon": "rabbitvcs-diff",
                 "signals": {
@@ -1242,6 +1336,81 @@ class ContextMenuItems:
                 }, 
                 "condition": {
                     "callback": self.conditions.diff
+                }
+            },
+            "DiffMultiple": {
+                "identifier": "RabbitVCS::DiffMultiple",
+                "label": _("View diff between files"),
+                "tooltip": _("View the differences between two files"),
+                "icon": "rabbitvcs-diff",
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.diff_multiple,
+                        "args": None
+                    }
+                }, 
+                "condition": {
+                    "callback": self.conditions.diff_multiple
+                }
+            },
+            "DiffPrevRev": {
+                "identifier": "RabbitVCS::UnifiedDiffPrevRev",
+                "label": _("View diff against previous revision"),
+                "tooltip": _("View the modifications made to a file since its last change"),
+                "icon": "rabbitvcs-diff",
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.diff_previous_revision,
+                        "args": None
+                    }
+                }, 
+                "condition": {
+                    "callback": self.conditions.diff_previous_revision
+                }
+            },
+            "CompareTool": {
+                "identifier": "RabbitVCS::CompareTool",
+                "label": _("Compare with base"),
+                "tooltip": _("Compare with base using side-by-side comparison tool"),
+                "icon": "rabbitvcs-diff",
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.compare,
+                        "args": None
+                    }
+                }, 
+                "condition": {
+                    "callback": self.conditions.compare
+                }
+            },
+            "CompareMultiple": {
+                "identifier": "RabbitVCS::CompareMultiple",
+                "label": _("Compare files"),
+                "tooltip": _("Compare the differences between two files"),
+                "icon": "rabbitvcs-diff",
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.compare_multiple,
+                        "args": None
+                    }
+                }, 
+                "condition": {
+                    "callback": self.conditions.compare_multiple
+                }
+            },
+            "CompareToolPrevRev": {
+                "identifier": "RabbitVCS::CompareToolPrevRev",
+                "label": _("Compare with previous revision"),
+                "tooltip": _("Compare with previous revision using side-by-side comparison tool"),
+                "icon": "rabbitvcs-diff",
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.compare_previous_revision,
+                        "args": None
+                    }
+                }, 
+                "condition": {
+                    "callback": self.conditions.compare_previous_revision
                 }
             },
             "ShowChanges": {
@@ -1277,7 +1446,7 @@ class ContextMenuItems:
             "Add": {
                 "identifier": "RabbitVCS::Add",
                 "label": _("Add"),
-                "tooltip": _("Schedule an item to be added to the repository"),
+                "tooltip": _("Schedule items to be added to the repository"),
                 "icon": "rabbitvcs-add",
                 "signals": {
                     "activate": {
