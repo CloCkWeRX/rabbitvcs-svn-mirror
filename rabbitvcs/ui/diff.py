@@ -36,17 +36,17 @@ _ = gettext.gettext
 
 class Diff(InterfaceNonView):
     def __init__(self, path1, revision1=None, path2=None, revision2=None, 
-            side_by_side=False):
+            sidebyside=False):
         InterfaceNonView.__init__(self)
 
         self.vcs = create_vcs_instance()
 
         self.path1 = path1
         self.path2 = path2
-        self.side_by_side = side_by_side
+        self.sidebyside = sidebyside
         self.revision1 = self.get_revision_object(revision1, "base")
-        self.revision2 = self.get_revision_object(revision2, "head")
-        
+        self.revision2 = self.get_revision_object(revision2, "working")
+
         self.temp_dir = tempfile.mkdtemp(prefix=TEMP_DIR_PREFIX)
 
         if path2 is None:
@@ -71,8 +71,8 @@ class Diff(InterfaceNonView):
             return self.vcs.revision(value)
                 
     def launch(self):
-        if self.side_by_side:
-            self.launch_side_by_side_diff()
+        if self.sidebyside:
+            self.launch_sidebyside_diff()
         else:
             self.launch_unified_diff()
     
@@ -94,18 +94,18 @@ class Diff(InterfaceNonView):
         os.close(fh[0])
         rabbitvcs.lib.helper.open_item(fh[1])
         
-    def launch_side_by_side_diff(self):
+    def launch_sidebyside_diff(self):
         """
         Launch diff as a side-by-side comparison using our comparison tool
         
         """        
-        if os.path.exists(self.path1):
+        if os.path.exists(self.path1) and self.revision1.kind != "base":
             dest1 = self.path1
         else:
             dest1 = "/tmp/rabbitvcs-1-" + str(self.revision1) + "-" + os.path.basename(self.path1)          
             self.vcs.export(self.path1, dest1, self.revision1)
     
-        if os.path.exists(self.path2):
+        if os.path.exists(self.path2) and self.revision2.kind != "base":
             dest2 = self.path2
         else:
             dest2 = "/tmp/rabbitvcs-2-" + str(self.revision2) + "-" + os.path.basename(self.path2)
@@ -115,8 +115,8 @@ class Diff(InterfaceNonView):
 
 class SVNDiff(Diff):
     def __init__(self, path1, revision1=None, path2=None, revision2=None,
-            side_by_side=False):
-        Diff.__init__(self, path1, revision1, path2, revision2, side_by_side)
+            sidebyside=False):
+        Diff.__init__(self, path1, revision1, path2, revision2, sidebyside)
 
         self.launch()
 
@@ -136,4 +136,4 @@ if __name__ == "__main__":
     if len(args) > 0:
         pathrev2 = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
 
-    SVNDiff(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1], sidebyside=sidebyside)
+    SVNDiff(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1], sidebyside=options.sidebyside)
