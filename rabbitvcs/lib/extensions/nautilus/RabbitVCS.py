@@ -568,7 +568,7 @@ class NautilusContextMenu:
 
     def construct_menu(self):
         menu = MainContextMenu(self.caller, self.base_dir, self.paths)
-        return self.construct_menu_from_definition(menu.definition, menu.items)    
+        return self.construct_menu_from_definition(menu.structure, menu.items)
 
     def construct_menu_from_definition(self, definition, items):
         """
