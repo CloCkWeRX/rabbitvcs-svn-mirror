@@ -235,9 +235,16 @@ class CheckModsContextMenu:
             self.vcs_client, 
             paths
         )
+        
+        self.structure = [
+            ("ViewDiff", None),
+            ("ViewSideBySideDiff", None),
+            ("Separator0", None),
+            ("Update", None)
+        ]
 
-        self.items = [
-            {
+        self.items = {
+            "ViewDiff": {
                 "label": _("View unified diff"),
                 "icon": "rabbitvcs-diff",
                 "signals": {
@@ -250,7 +257,7 @@ class CheckModsContextMenu:
                     "callback": self.conditions.unified_diff
                 }
             },
-            {
+            "ViewSideBySideDiff": {
                 "label": _("View side-by-side diff"),
                 "icon": None,
                 "signals": {
@@ -263,14 +270,14 @@ class CheckModsContextMenu:
                     "callback": self.conditions.sidebyside_diff
                 }
             },
-            {
+            "Separator0": {
                 "label": rabbitvcs.ui.widget.SEPARATOR,
                 "signals": None,
                 "condition": {
                     "callback": (lambda: True)
                 }
             },
-            {
+            "Update": {
                 "label": _("Update"),
                 "icon": "rabbitvcs-update",
                 "signals": {
@@ -283,13 +290,13 @@ class CheckModsContextMenu:
                     "callback": self.conditions.update
                 }
             }
-        ]
+        }
 
     def show(self):
         if len(self.paths) == 0:
             return
 
-        context_menu = GtkContextMenu(self.items)
+        context_menu = GtkContextMenu(self.structure, self.items)
         context_menu.show(self.event)
 
 if __name__ == "__main__":

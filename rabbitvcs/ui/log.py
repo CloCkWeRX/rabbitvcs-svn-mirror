@@ -191,8 +191,24 @@ class Log(InterfaceView):
             self.message.set_text("")
 
     def show_revisions_table_popup_menu(self, treeview, data):
-        context_menu = GtkContextMenu([
-            {
+        structure = [
+            ("ViewDiffWC", None),
+            ("ViewDiffPrevRev", None),
+            ("ViewDiffRevs", None),
+            ("ShowChangesRevs", None),
+            ("Separator0", None),
+            ("UpdateTo", None),
+            ("Checkout", None),
+            ("BranchTag", None),
+            ("Export", None),
+            ("Separator1", None),
+            ("EditAuthor", None),
+            ("EditLogMessage", None),
+            ("EditRevProps", None)
+        ]
+    
+        items = {
+            "ViewDiffWC": {
                 "label": _("View diff against working copy"),
                 "signals": {
                     "activate": {
@@ -204,7 +220,7 @@ class Log(InterfaceView):
                     "callback": self.condition_diff_working_copy
                 }
             },
-            {
+            "ViewDiffPrevRev": {
                 "label": _("View diff against previous revision"),
                 "signals": {
                     "activate": {
@@ -216,7 +232,7 @@ class Log(InterfaceView):
                     "callback": self.condition_diff_previous_revision
                 }
             },
-            {
+            "ViewDiffRevs": {
                 "label": _("View diff between revisions"),
                 "signals": {
                     "activate": {
@@ -228,26 +244,26 @@ class Log(InterfaceView):
                     "callback": self.condition_diff_revisions
                 }
             },
-            {
-                "label": _("Compare revisions"),
+            "ShowChangesRevs": {
+                "label": _("Show changes between revisions"),
                 "signals": {
                     "activate": {
-                        "callback": self.on_context_compare_revisions,
+                        "callback": self.on_context_show_changes_revisions,
                         "args": None
                     }
                 },
                 "condition": {
-                    "callback": self.condition_compare_revisions
+                    "callback": self.condition_show_changes_revisions
                 }
             },
-            {
+            "Separator0": {
                 "label": rabbitvcs.ui.widget.SEPARATOR,
                 "signals": None,
                 "condition": {
                     "callback": (lambda: True)
                 }
             },
-            {
+            "UpdateTo": {
                 "label": _("Update to revision..."),
                 "icon": "rabbitvcs-update",
                 "signals": {
@@ -260,7 +276,7 @@ class Log(InterfaceView):
                     "callback": self.condition_update_to
                 }
             },
-            {
+            "Checkout": {
                 "label": _("Checkout..."),
                 "icon": "rabbitvcs-checkout",
                 "signals": {
@@ -273,7 +289,7 @@ class Log(InterfaceView):
                     "callback": self.condition_checkout
                 }
             },
-            {
+            "BranchTag": {
                 "label": _("Branch/tag..."),
                 "icon": "rabbitvcs-branch",
                 "signals": {
@@ -286,7 +302,7 @@ class Log(InterfaceView):
                     "callback": self.condition_branch
                 }
             },
-            {
+            "Export": {
                 "label": _("Export..."),
                 "icon": "rabbitvcs-export",
                 "signals": {
@@ -299,14 +315,14 @@ class Log(InterfaceView):
                     "callback": self.condition_export
                 }
             },
-            {
+            "Separator1": {
                 "label": rabbitvcs.ui.widget.SEPARATOR,
                 "signals": None,
                 "condition": {
                     "callback": (lambda: True)
                 }
             },
-            {
+            "EditAuthor": {
                 "label": _("Edit author..."),
                 "signals": {
                     "activate": {
@@ -318,7 +334,7 @@ class Log(InterfaceView):
                     "callback": (lambda: True)
                 }
             },
-            {
+            "EditLogMessage": {
                 "label": _("Edit log message..."),
                 "signals": {
                     "activate": {
@@ -330,7 +346,7 @@ class Log(InterfaceView):
                     "callback": (lambda: True)
                 }
             },
-            {
+            "EditRevProps": {
                 "label": _("Edit revision properties.."),
                 "icon": gtk.STOCK_EDIT,
                 "signals": {
@@ -343,8 +359,10 @@ class Log(InterfaceView):
                     "callback": self.condition_edit_revprops
                 }
             }
-        ])
-        context_menu.show(data)
+        }
+        
+        menu = GtkContextMenu(structure, items)
+        menu.show(data)
 
     #
     # Paths table callbacks
@@ -365,39 +383,47 @@ class Log(InterfaceView):
             self.show_paths_table_popup_menu(treeview, data)
 
     def show_paths_table_popup_menu(self, treeview, data):
-        context_menu = GtkContextMenu([
-            {
+        structure = [
+            ("ViewDiffPrevRev", None),
+            ("ShowChangesPrevRev", None),
+            ("Separator0", None),
+            ("Open", None),
+            ("Annotate", None)
+        ]
+    
+        items = {
+            "ViewDiffPrevRev": {
                 "label": _("View diff against previous revision"),
                 "signals": {
                     "activate": {
-                        "callback": self.on_paths_context_show_changes_diff,
+                        "callback": self.on_paths_context_diff_previous,
                         "args": None
                     }
                 },
                 "condition": {
-                    "callback": self.condition_diff_previous_revision
+                    "callback": self.condition_diff_previous
                 }
             },
-            {
-                "label": _("Compare with previous revision"),
+            "ShowChangesPrevRev": {
+                "label": _("Show changes from previous revision"),
                 "signals": {
                     "activate": {
-                        "callback": self.on_paths_context_compare,
+                        "callback": self.on_paths_context_show_changes,
                         "args": None
                     }
                 },
                 "condition": {
-                    "callback": self.condition_diff_previous_revision
+                    "callback": self.condition_diff_previous
                 }
             },
-            {
+            "Separator0": {
                 "label": rabbitvcs.ui.widget.SEPARATOR,
                 "signals": None,
                 "condition": {
                     "callback": (lambda: True)
                 }
             },
-            {
+            "Open": {
                 "label": _("Open"),
                 "icon": gtk.STOCK_OPEN,
                 "signals": {
@@ -410,7 +436,7 @@ class Log(InterfaceView):
                     "callback": (lambda: True)
                 }
             },
-            {
+            "Annotate": {
                 "label": _("Annotate"),
                 "icon": "rabbitvcs-annotate",
                 "signals": {
@@ -423,8 +449,9 @@ class Log(InterfaceView):
                     "callback": self.condition_paths_annotate
                 }
             }
-        ])
-        context_menu.show(data)
+        }
+        menu = GtkContextMenu(structure, items)
+        menu.show(data)
     
     #
     # Helper methods
@@ -624,13 +651,13 @@ class Log(InterfaceView):
         )
         self.action.start()
 
-    def on_context_compare_revisions(self, widget, data=None):
-        from rabbitvcs.ui.compare import Compare
+    def on_context_show_changes_revisions(self, widget, data=None):
+        from rabbitvcs.ui.changes import Changes
         item1 = self.revision_items[self.revisions_table.get_selected_rows()[0]]
         item2 = self.revision_items[self.revisions_table.get_selected_rows()[1]]
         path = self.vcs.get_repo_url(self.path)
 
-        Compare(
+        Changes(
             path, 
             item2.revision.number, 
             path, 
@@ -685,19 +712,19 @@ class Log(InterfaceView):
 
         SVNRevisionProperties(url, item.revision.number)
 
-    def on_paths_context_show_changes_diff(self, widget, data=None):
+    def on_paths_context_diff_previous(self, widget, data=None):
         rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
         path_item = self.paths_table.get_row(self.paths_table.get_selected_rows()[0])[1]
         url = self.root_url + path_item
         self.view_diff_for_path(url, rev_item.revision.number)
     
-    def on_paths_context_compare(self, widget, data=None):
+    def on_paths_context_show_changes(self, widget, data=None):
         rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
         path_item = self.paths_table.get_row(self.paths_table.get_selected_rows()[0])[1]
         url = self.root_url + path_item
 
-        from rabbitvcs.ui.compare import Compare
-        Compare(
+        from rabbitvcs.ui.changes import Changes
+        Changes(
             url, 
             rev_item.revision.number-1, 
             url, 
@@ -757,7 +784,7 @@ class Log(InterfaceView):
     def condition_diff_working_copy(self):
         return (len(self.revisions_table.get_selected_rows()) == 1)
 
-    def condition_diff_previous_revision(self):
+    def condition_diff_previous(self):
         item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
         return (item.revision.number > 1 and len(self.revisions_table.get_selected_rows()) == 1)
 
@@ -767,7 +794,7 @@ class Log(InterfaceView):
     def condition_edit_revprops(self):
         return (len(self.revisions_table.get_selected_rows()) == 1)
     
-    def condition_compare_revisions(self):
+    def condition_show_changes_revisions(self):
         return (len(self.revisions_table.get_selected_rows()) == 2)
 
     def condition_paths_annotate(self):

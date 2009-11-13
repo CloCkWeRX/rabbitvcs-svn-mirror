@@ -48,15 +48,15 @@ class GtkContextMenu:
     in gtk dialogs/windows.
     
     """
-    def __init__(self, definition, items):
+    def __init__(self, structure, items):
         """
-        @param  definition: Menu structure
-        @type   definition: list
+        @param  structure: Menu structure
+        @type   structure: list
         
         @param  items: Menu items
         @type   items: dict
         
-        Note on "definition". The menu structure is defined in a list of tuples 
+        Note on "structure". The menu structure is defined in a list of tuples 
         of two elements each.  The first element is a key that matches a key in 
         "items".  The second element is either None (if there is no submenu) or 
         a list of tuples if there is a submenu.  The submenus are generated 
@@ -98,8 +98,8 @@ class GtkContextMenu:
         is_last = False
         is_first = True
         index = 0
-        length = len(definition)
-        for key,submenu_keys in definition:
+        length = len(structure)
+        for key,submenu_keys in structure:
             is_last = (index + 1 == length)
             
             if key not in items:
@@ -115,7 +115,7 @@ class GtkContextMenu:
                 continue
         
             condition = item["condition"]
-            if "args" in condition:
+            if condition.has_key("args"):
                 if condition["callback"](condition["args"]) is False:
                     continue
             else:
@@ -124,18 +124,18 @@ class GtkContextMenu:
             
             action = gtk.Action(item["label"], item["label"], None, None)
             
-            if "icon" in item and item["icon"] is not None:
+            if item.has_key("icon") and item["icon"] is not None:
                 action.set_icon_name(item["icon"])
     
             menuitem = action.create_menu_item()
-            if "signals" in item and item["signals"] is not None:
+            if item.has_key("signals") and item["signals"] is not None:
                 for signal, info in item["signals"].items():
                     menuitem.connect(signal, info["callback"], info["args"])
 
             # Making the seperator insensitive makes sure nobody
             # will click it accidently.
             if (item["label"] == rabbitvcs.lib.contextmenu.SEPARATOR): 
-                menu_item.set_property("sensitive", False)
+                menuitem.set_property("sensitive", False)
             
             if submenu_keys is not None:
                 submenu = GtkContextMenu(submenu_keys, items)
@@ -298,8 +298,8 @@ class ContextMenuCallbacks:
     def diff(self, widget, data1=None, data2=None):
         rabbitvcs.lib.helper.launch_diff_tool(*self.paths)
 
-    def compare(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("compare", self.paths)
+    def changes(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.lib.helper.launch_ui_window("changes", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
     
     def show_log(self, widget, data1=None, data2=None):
@@ -493,7 +493,7 @@ class ContextMenuConditions:
             return True        
         return False
 
-    def compare(self, data=None):
+    def changes(self, data=None):
         return (self.path_dict["is_in_a_or_a_working_copy"] and
             self.path_dict["is_versioned"] and 
             self.path_dict["length"] in (1,2))
@@ -845,7 +845,7 @@ class GtkFilesContextMenu:
         # The first element of each tuple is a key that matches a
         # ContextMenuItems item.  The second element is either None when there
         # is no submenu, or a recursive list of tuples for desired submenus.
-        self.definition = [
+        self.structure = [
             ("Diff", None),
             ("Unlock", None),
             ("Show_Log", None),
@@ -864,7 +864,7 @@ class GtkFilesContextMenu:
         if len(self.paths) == 0:
             return
 
-        context_menu = GtkContextMenu(self.definition, self.items)
+        context_menu = GtkContextMenu(self.structure, self.items)
         context_menu.show(self.event)
 
 class MainContextMenuCallbacks(ContextMenuCallbacks):
@@ -968,7 +968,7 @@ class MainContextMenu:
         # The first element of each tuple is a key that matches a
         # ContextMenuItems item.  The second element is either None when there
         # is no submenu, or a recursive list of tuples for desired submenus.        
-        self.definition = [
+        self.structure = [
             ("Debug", [
                 ("Bugs", None),
                 ("Debug_Shell", None),
@@ -983,7 +983,7 @@ class MainContextMenu:
             ("RabbitVCS", [
                 ("CheckForModifications", None),
                 ("Diff", None),
-                ("Compare", None),
+                ("ShowChanges", None),
                 ("Show_Log", None),
                 ("Separator0", None),
                 ("Add", None),
@@ -1022,7 +1022,7 @@ class MainContextMenu:
         self.items = ContextMenuItems(self.conditions, self.callbacks, ignore_list).get_items()
 
     def get_menu(self):
-        return (self.definition, self.items)
+        return (self.structure, self.items)
 
 class ContextMenuItems:
     """
@@ -1244,19 +1244,19 @@ class ContextMenuItems:
                     "callback": self.conditions.diff
                 }
             },
-            "Compare": {
-                "identifier": "RabbitVCS::Compare",
-                "label": _("Compare to..."),
-                "tooltip": _("Compare selected items"),
-                "icon": "rabbitvcs-compare",
+            "ShowChanges": {
+                "identifier": "RabbitVCS::ShowChanges",
+                "label": _("Show Changes..."),
+                "tooltip": _("Show changes between paths and revisions"),
+                "icon": "rabbitvcs-changes",
                 "signals": {
                     "activate": {
-                        "callback": self.callbacks.compare,
+                        "callback": self.callbacks.changes,
                         "args": None
                     }
                 }, 
                 "condition": {
-                    "callback": self.conditions.compare
+                    "callback": self.conditions.changes
                 }
             },
             "Show_Log": {

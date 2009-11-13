@@ -35,7 +35,7 @@ from rabbitvcs.ui.dialog import MessageBox
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Compare(InterfaceView):
+class Changes(InterfaceView):
     """
     Show how files and folders are different between revisions.
     
@@ -51,7 +51,7 @@ class Compare(InterfaceView):
     ]
 
     def __init__(self, path1=None, revision1=None, path2=None, revision2=None):
-        InterfaceView.__init__(self, "compare", "Compare")
+        InterfaceView.__init__(self, "changes", "Changes")
         
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
 
@@ -192,8 +192,15 @@ class Compare(InterfaceView):
         return self.second_revision_selector.get_revision_object()
 
     def show_changes_table_popup_menu(self, treeview, data):
-        context_menu = GtkContextMenu([
-            {
+        structure = [
+            ("OpenFirst", None),
+            ("OpenSecond", None),
+            ("ViewDiff", None),
+            ("ViewSideBySideDiff", None)
+        ]
+    
+        items = {
+            "OpenFirst": {
                 "label": _("Open from first revision"),
                 "signals": {
                     "activate": {
@@ -205,7 +212,7 @@ class Compare(InterfaceView):
                     "callback": self.condition_show_open_first_revision
                 }
             },
-            {
+            "OpenSecond": {
                 "label": _("Open from second revision"),
                 "signals": {
                     "activate": {
@@ -217,7 +224,7 @@ class Compare(InterfaceView):
                     "callback": self.condition_show_open_second_revision
                 }
             },
-            {
+            "ViewDiff": {
                 "label": _("View unified diff"),
                 "signals": {
                     "activate": {
@@ -229,7 +236,7 @@ class Compare(InterfaceView):
                     "callback": self.condition_view_diff
                 }
             },
-            {
+            "ViewSideBySideDiff": {
                 "label": _("View side-by-side diff"),
                 "signals": {
                     "activate": {
@@ -241,9 +248,10 @@ class Compare(InterfaceView):
                     "callback": self.condition_view_diff_sidebyside
                 }
             }
-        ])
-        if context_menu.get_num_items() > 0:
-            context_menu.show(data)
+        }
+        
+        menu = GtkContextMenu(structure, items)
+        menu.show(data)
     
     def check_ui(self):
         self.check_first_urls()
@@ -478,6 +486,6 @@ if __name__ == "__main__":
     if len(args) > 0:
         pathrev2 = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
 
-    window = Compare(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])
+    window = Changes(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])
     window.register_gtk_quit()
     gtk.main()
