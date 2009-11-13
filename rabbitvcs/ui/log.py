@@ -229,7 +229,7 @@ class Log(InterfaceView):
                     }
                 },
                 "condition": {
-                    "callback": self.condition_diff_previous_revision
+                    "callback": self.condition_diff_previous
                 }
             },
             "ViewDiffRevs": {
