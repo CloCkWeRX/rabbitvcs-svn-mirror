@@ -541,9 +541,7 @@ class ContextMenuConditions:
         return False
         
     def diff(self, data=None):
-        if self.path_dict["length"] == 2:
-            return True
-        elif (self.path_dict["length"] == 1 and
+        if (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
                 (self.path_dict["is_modified"] or self.path_dict["has_modified"])):
             return True        
@@ -556,9 +554,7 @@ class ContextMenuConditions:
         return False
 
     def compare(self, data=None):
-        if self.path_dict["length"] == 2:
-            return True
-        elif (self.path_dict["length"] == 1 and
+        if (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
                 (self.path_dict["is_modified"] or self.path_dict["has_modified"])):
             return True        
@@ -1340,7 +1336,7 @@ class ContextMenuItems:
             },
             "DiffMultiple": {
                 "identifier": "RabbitVCS::DiffMultiple",
-                "label": _("View diff between files"),
+                "label": _("View diff between files/folders"),
                 "tooltip": _("View the differences between two files"),
                 "icon": "rabbitvcs-diff",
                 "signals": {
@@ -1383,10 +1379,10 @@ class ContextMenuItems:
                     "callback": self.conditions.compare
                 }
             },
-            "CompareMultiple": {
-                "identifier": "RabbitVCS::CompareMultiple",
-                "label": _("Compare files"),
-                "tooltip": _("Compare the differences between two files"),
+            "CompareToolMultiple": {
+                "identifier": "RabbitVCS::CompareToolMultiple",
+                "label": _("Compare files/folders"),
+                "tooltip": _("Compare the differences between two items"),
                 "icon": "rabbitvcs-diff",
                 "signals": {
                     "activate": {
