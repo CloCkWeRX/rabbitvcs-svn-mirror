@@ -97,7 +97,7 @@ class Relocate(InterfaceView):
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, paths) = main()
+    (options, paths) = main(usage="Usage: rabbitvcs relocate [path]")
             
     window = Relocate(paths[0])
     window.register_gtk_quit()

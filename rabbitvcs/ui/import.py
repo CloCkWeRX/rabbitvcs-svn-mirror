@@ -98,7 +98,7 @@ class Import(InterfaceView):
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, paths) = main()
+    (options, paths) = main(usage="Usage: rabbitvcs import [path]")
             
     window = Import(paths[0])
     window.register_gtk_quit()

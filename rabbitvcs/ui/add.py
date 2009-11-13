@@ -181,8 +181,11 @@ class Add(InterfaceView, GtkContextMenuCaller):
         GtkFilesContextMenu(self, data, self.base_dir, paths).show()
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
-    (options, paths) = main()
+    from rabbitvcs.ui import main, BASEDIR_OPT
+    (options, paths) = main(
+        [BASEDIR_OPT],
+        usage="Usage: rabbitvcs add [path1] [path2] ..."
+    )
 
     window = Add(paths, options.base_dir)
     window.register_gtk_quit()

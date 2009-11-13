@@ -79,8 +79,8 @@ class Branch(InterfaceView):
             expand=True
         )
         
-        if (self.vcs.has_modified(path) 
-                or self.vcs.is_modified(path)):
+        if (self.revision is None and (self.vcs.has_modified(path) 
+                or self.vcs.is_modified(path))):
             self.revision_selector.set_kind_working()
 
     def on_destroy(self, widget):
@@ -124,8 +124,11 @@ class Branch(InterfaceView):
             self.message.set_text(message)
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
-    (options, args) = main()
+    from rabbitvcs.ui import main, REVISION_OPT
+    (options, args) = main(
+        [REVISION_OPT],
+        usage="Usage: rabbitvcs branch [url_or_path]"
+    )
 
     window = Branch(args[0], options.revision)
     window.register_gtk_quit()

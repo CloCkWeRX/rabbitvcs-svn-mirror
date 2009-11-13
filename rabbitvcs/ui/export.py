@@ -98,8 +98,11 @@ class Export(Checkout):
         self.action.start()
         
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
-    (options, paths) = main()
+    from rabbitvcs.ui import main, REVISION_OPT
+    (options, paths) = main(
+        [REVISION_OPT],
+        usage="Usage: rabbitvcs export [url_or_path]"
+    )
             
     window = Export(paths[0], revision=options.revision)
     window.register_gtk_quit()

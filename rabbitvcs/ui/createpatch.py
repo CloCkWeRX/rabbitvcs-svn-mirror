@@ -176,8 +176,11 @@ class CreatePatch(Commit):
         # rabbitvcs.lib.helper.launch_diff_tool(path)
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
-    (options, paths) = main()
+    from rabbitvcs.ui import main, BASEDIR_OPT
+    (options, paths) = main(
+        [BASEDIR_OPT],
+        usage="Usage: rabbitvcs createpatch [path1] [path2] ..."
+    )
         
     window = CreatePatch(paths, options.base_dir)
     window.register_gtk_quit()

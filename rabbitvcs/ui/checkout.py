@@ -168,8 +168,11 @@ class Checkout(InterfaceView):
         self.revision_selector.determine_widget_sensitivity()
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
-    (options, args) = main()
+    from rabbitvcs.ui import main, REVISION_OPT
+    (options, args) = main(
+        [REVISION_OPT],
+        usage="Usage: rabbitvcs checkout [url]"
+    )
     
     window = Checkout(args[0], revision=options.revision)
     window.register_gtk_quit()

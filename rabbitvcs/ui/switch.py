@@ -92,8 +92,11 @@ class Switch(InterfaceView):
 
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
-    (options, args) = main()
+    from rabbitvcs.ui import main, REVISION_OPT
+    (options, args) = main(
+        [REVISION_OPT],
+        usage="Usage: rabbitvcs switch [url]"
+    )
             
     window = Switch(args[0], revision=options.revision)
     window.register_gtk_quit()

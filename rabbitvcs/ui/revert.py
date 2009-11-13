@@ -103,7 +103,10 @@ class Revert(Add):
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, paths) = main()
+    (options, paths) = main(
+        [BASEDIR_OPT],
+        usage="Usage: rabbitvcs revert [path1] [path2] ..."
+    )
 
     window = Revert(paths, options.base_dir)
     window.register_gtk_quit()

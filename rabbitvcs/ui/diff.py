@@ -122,11 +122,18 @@ class SVNDiff(Diff):
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, args) = main()
+    (options, args) = main([
+        (["-s", "--sidebyside"], {
+            "help":     _("View diff as side-by-side comparison"), 
+            "action":   "store_true", 
+            "default":  False
+        })],
+        usage="Usage: rabbitvcs diff [url1@rev1] [url2@rev2]"
+    )
     
     pathrev1 = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
     pathrev2 = (None, None)
     if len(args) > 0:
         pathrev2 = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
 
-    SVNDiff(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])
+    SVNDiff(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1], sidebyside=sidebyside)

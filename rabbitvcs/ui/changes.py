@@ -479,7 +479,9 @@ class Changes(InterfaceView):
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, args) = main()
+    (options, args) = main(
+        usage="Usage: rabbitvcs changes [url1@rev1] [url2@rev2]"
+    )
     
     pathrev1 = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
     pathrev2 = (None, None)

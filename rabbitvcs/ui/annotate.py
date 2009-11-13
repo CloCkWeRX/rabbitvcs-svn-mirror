@@ -205,7 +205,7 @@ class Annotate(InterfaceView):
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, args) = main()
+    (options, args) = main(usage="Usage: rabbitvcs annotate [url@rev]")
     
     pathrev = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
 

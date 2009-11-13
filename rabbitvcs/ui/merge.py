@@ -354,7 +354,7 @@ class Merge(InterfaceView):
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, paths) = main()
+    (options, paths) = main(usage="Usage: rabbitvcs merge [path]")
             
     window = Merge(paths[0])
     window.register_gtk_quit()

@@ -85,13 +85,12 @@ class UpdateToRevision(InterfaceView):
         self.action.start()
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
-    (options, args) = main()
+    from rabbitvcs.ui import main, REVISION_OPT
+    (options, args) = main(
+        [REVISION_OPT],
+        usage="Usage: rabbitvcs updateto [path]"
+    )
  
-    revision = None
-    if options.revision is not None:
-        revision = options.revision
-
-    window = UpdateToRevision(args[0], revision=revision)
+    window = UpdateToRevision(args[0], revision=options.revision)
     window.register_gtk_quit()
     gtk.main()

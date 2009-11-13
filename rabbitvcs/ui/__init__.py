@@ -35,6 +35,9 @@ import gtk.glade
 
 from rabbitvcs import APP_NAME, LOCALE_DIR
 
+REVISION_OPT = (["-r", "--revision"], {"help":"specify the revision number"})
+BASEDIR_OPT = (["-d", "--base-dir"], {})
+
 class InterfaceView:
     """
     Every ui window should inherit this class and send it the "self"
@@ -101,15 +104,18 @@ class InterfaceNonView:
     def gtk_quit_is_set(self):
         return self.do_gtk_quit
 
-def main():
+def main(allowed_options=None, description=None, usage=None):
     from os import getcwd
     from sys import argv
     from optparse import OptionParser
     from rabbitvcs.lib.helper import get_common_directory
     
-    parser = OptionParser()
-    parser.add_option("--base-dir")
-    parser.add_option("-r", "--revision", help="specify the revision number")
+    parser = OptionParser(usage=usage, description=description)
+    
+    if allowed_options:
+        for (option_args, option_kwargs) in allowed_options:
+            parser.add_option(*option_args, **option_kwargs)
+        
     (options, args) = parser.parse_args(argv)
     
     # Convert "." to current working directory
@@ -121,8 +127,7 @@ def main():
     if not paths:
         paths = [getcwd()]
         
-    if not options.base_dir: 
+    if parser.has_option("--base-dir") and not options.base_dir: 
         options.base_dir = get_common_directory(paths)
         
     return (options, paths)
-    

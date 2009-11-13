@@ -181,7 +181,7 @@ class SVNProperties(PropertiesBase):
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, paths) = main()
+    (options, paths) = main(usage="Usage: rabbitvcs properties [url_or_path]")
     
     window = SVNProperties(paths[0])
     window.register_gtk_quit()

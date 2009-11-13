@@ -138,8 +138,11 @@ class UnlockQuick(InterfaceNonView):
             self.vcs.unlock(self.paths, force=True)
         
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
-    (options, paths) = main()
+    from rabbitvcs.ui import main, BASEDIR_OPT
+    (options, paths) = main(
+        [BASEDIR_OPT],
+        usage="Usage: rabbitvcs unlock [path1] [path2] ..."
+    )
         
     window = Unlock(paths, options.base_dir)
     window.register_gtk_quit()

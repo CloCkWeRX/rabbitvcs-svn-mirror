@@ -300,8 +300,11 @@ class CheckModsContextMenu:
         context_menu.show(self.event)
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
-    (options, paths) = main()
+    from rabbitvcs.ui import main, BASEDIR_OPT
+    (options, paths) = main(
+        [BASEDIR_OPT],
+        usage="Usage: rabbitvcs checkmods [url_or_path]"
+    )
 
     window = CheckForModifications(paths, options.base_dir)
     window.register_gtk_quit()
