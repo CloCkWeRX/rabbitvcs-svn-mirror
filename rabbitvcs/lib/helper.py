@@ -602,5 +602,11 @@ def parse_path_revision_string(pathrev):
     else:
         return (pathrev[0:index], pathrev[index+1:])
 
+def create_path_revision_string(path, revision=None):
+    if revision:
+        return path + "@" + str(revision)
+    else:
+        return path
+        
 def url_join(path, *args):
     return "/".join([path.rstrip("/")] + list(args))
