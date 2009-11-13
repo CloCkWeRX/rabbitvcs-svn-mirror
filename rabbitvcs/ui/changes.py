@@ -95,8 +95,9 @@ class Changes(InterfaceView):
 
         if path1 is not None:
             self.first_urls.set_child_text(self.vcs.get_repo_url(path1))
+            
         if path2 is not None:
-            self.second_urls.set_child_text(self.vcs.get_repo_url(path1))
+            self.second_urls.set_child_text(self.vcs.get_repo_url(path2))
         elif path1 is not None:
             self.second_urls.set_child_text(self.vcs.get_repo_url(path1))
 
