@@ -1313,7 +1313,7 @@ class ContextMenuItems:
                 "identifier": "RabbitVCS::DiffMenu",
                 "label": _("Diff Menu..."),
                 "tooltip": _("List of comparison options"),
-                "icon": None,
+                "icon": "rabbitvcs-diff",
                 "signals": {}, 
                 "condition": {
                     "callback": self.conditions.diff_menu
@@ -1368,7 +1368,7 @@ class ContextMenuItems:
                 "identifier": "RabbitVCS::CompareTool",
                 "label": _("Compare with base"),
                 "tooltip": _("Compare with base using side-by-side comparison tool"),
-                "icon": "rabbitvcs-diff",
+                "icon": "rabbitvcs-compare",
                 "signals": {
                     "activate": {
                         "callback": self.callbacks.compare,
@@ -1383,7 +1383,7 @@ class ContextMenuItems:
                 "identifier": "RabbitVCS::CompareToolMultiple",
                 "label": _("Compare files/folders"),
                 "tooltip": _("Compare the differences between two items"),
-                "icon": "rabbitvcs-diff",
+                "icon": "rabbitvcs-compare",
                 "signals": {
                     "activate": {
                         "callback": self.callbacks.compare_multiple,
@@ -1398,7 +1398,7 @@ class ContextMenuItems:
                 "identifier": "RabbitVCS::CompareToolPrevRev",
                 "label": _("Compare with previous revision"),
                 "tooltip": _("Compare with previous revision using side-by-side comparison tool"),
-                "icon": "rabbitvcs-diff",
+                "icon": "rabbitvcs-compare",
                 "signals": {
                     "activate": {
                         "callback": self.callbacks.compare_previous_revision,
