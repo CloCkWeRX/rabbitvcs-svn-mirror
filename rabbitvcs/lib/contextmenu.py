@@ -1311,7 +1311,7 @@ class ContextMenuItems:
             },
             "DiffMenu": {
                 "identifier": "RabbitVCS::DiffMenu",
-                "label": _("Compare..."),
+                "label": _("Diff Menu..."),
                 "tooltip": _("List of comparison options"),
                 "icon": None,
                 "signals": {}, 
