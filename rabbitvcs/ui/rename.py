@@ -72,8 +72,7 @@ class Rename(InterfaceView):
         self.action.append(
             self.vcs.move, 
             self.path,
-            new_path,
-            force=True
+            new_path
         )
         self.action.append(self.action.set_status, _("Completed Rename"))
         self.action.append(self.action.finish)

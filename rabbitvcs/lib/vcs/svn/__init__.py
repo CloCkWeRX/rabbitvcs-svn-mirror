@@ -1146,7 +1146,7 @@ class SVN:
     
     def log(self, url_or_path, revision_start=Revision("head"), 
             revision_end=Revision("number", 0), limit=0, 
-            discover_changed_paths=True, strict_node_history=True):
+            discover_changed_paths=True, strict_node_history=False):
         """
         Retrieve log items for a given path in the repository
         
@@ -1252,7 +1252,7 @@ class SVN:
         
         return self.client.relocate(from_url, to_url, path, recurse)
         
-    def move(self, src_url_or_path, dest_url_or_path, force=False):
+    def move(self, src_url_or_path, dest_url_or_path):
         
         """
         Schedule a file to be moved around the repository
@@ -1262,13 +1262,14 @@ class SVN:
         
         @type   dest_url_or_path: string
         @param  dest_url_or_path: A url/path to move to
-
-        @type   force: boolean
-        @param  force: Force renaming, despite conflicts. Defaults to false.
         
         """
         
-        return self.client.move(src_url_or_path, dest_url_or_path, force)
+        if hasattr(self.client, "move2"):
+            return self.client.move2([src_url_or_path], dest_url_or_path)
+        else:
+            return self.client.move(src_url_or_path, dest_url_or_path, 
+                force=True)
 
     def remove(self, url_or_path, force=False, keep_local=False):
         
