@@ -238,7 +238,7 @@ class Changes(InterfaceView):
                 }
             },
             "ViewSideBySideDiff": {
-                "label": _("View side-by-side diff"),
+                "label": _("Compare side by side"),
                 "signals": {
                     "activate": {
                         "callback": self.on_context_view_diff_sidebyside,
