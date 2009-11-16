@@ -58,6 +58,13 @@ class Checkout(InterfaceView):
             self.get_widget("repositories"), 
             rabbitvcs.lib.helper.get_repository_paths()
         )
+        
+        # We must set a signal handler for the gtk.Entry inside the combobox
+        # Because glade will not retain that information
+        self.repositories.set_child_signal(
+            "key-release-event", 
+            self.on_repositories_key_released
+        )
 
         self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("revision_container"),
@@ -151,8 +158,18 @@ class Checkout(InterfaceView):
         
         self.check_form()
 
+    def on_repositories_key_released(self, widget, data, userdata=None):
+        if gtk.gdk.keyval_name(data.keyval) == "Return":
+            if self.complete:
+                self.on_ok_clicked(widget)
+
     def on_destination_changed(self, widget, data=None):
         self.check_form()
+
+    def on_destination_key_released(self, widget, data):
+        if gtk.gdk.keyval_name(data.keyval) == "Return":
+            if self.complete:
+                self.on_ok_clicked(widget)
 
     def on_repo_chooser_clicked(self, widget, data=None):
         rabbitvcs.lib.helper.launch_repo_browser(self.repositories.get_active_text())
