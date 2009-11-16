@@ -404,9 +404,7 @@ class VCSAction(threading.Thread):
         @return:        (True=Accept/False=Deny, number of accepted failures, remember)
         
         """
-    
-        ACCEPTED_FAILURES = 3
-    
+
         gtk.gdk.threads_enter()
 
         if not data:
@@ -428,10 +426,10 @@ class VCSAction(threading.Thread):
             return (False, 0, False)
         elif result == 1:
             #Accept Once
-            return (True, 0x8, False)
+            return (True, data["failures"], False)
         elif result == 2:
             #Accept Forever
-            return (True, 0x8, True)
+            return (True, data["failures"], True)
 
     def get_ssl_password(self, realm, may_save):
         """
