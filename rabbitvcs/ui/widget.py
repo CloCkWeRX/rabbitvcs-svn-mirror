@@ -250,6 +250,9 @@ class ComboBox:
     
     def set_sensitive(self, val):
         self.cb.set_sensitive(val)
+
+    def set_child_signal(self, signal, callback, userdata=None):
+        self.cb.child.connect(signal, callback, userdata)
         
 class TextView:
     def __init__(self, widget=None, value=""):
