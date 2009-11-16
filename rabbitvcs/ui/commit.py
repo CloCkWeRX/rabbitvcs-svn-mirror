@@ -225,6 +225,11 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         self.action.append(self.action.finish)
         self.action.start()
         
+    def on_key_pressed(self, widget, data):
+        if data.state & (gtk.gdk.SHIFT_MASK | gtk.gdk.CONTROL_MASK) and gtk.gdk.keyval_name(data.keyval) == "Return":
+            self.on_ok_clicked(widget)
+            return True
+            
     def on_toggle_show_all_toggled(self, widget, data=None):
         self.TOGGLE_ALL = not self.TOGGLE_ALL
         for row in self.files_table.get_items():

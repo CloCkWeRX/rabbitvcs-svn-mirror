@@ -10,6 +10,7 @@
     <property name="default_height">640</property>
     <property name="icon_name">rabbitvcs-small</property>
     <signal name="destroy" handler="on_destroy"/>
+    <signal name="key_press_event" handler="on_key_pressed"/>
     <child>
       <widget class="GtkVBox" id="vbox4">
         <property name="visible">True</property>
