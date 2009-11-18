@@ -35,6 +35,7 @@ See:
 
 import time
 import warnings
+import threading
 
 from rabbitvcs.lib.log import Log
 log = Log("rabbitvcs.lib.decorators")
@@ -122,8 +123,39 @@ def gtk_unsafe(func):
     
     def newfunc(*args, **kwargs):
         gtk.gdk.threads_enter()
-        result = func(*args, **kwargs)
+        result = debug_calls(log)(func(*args, **kwargs))
         gtk.gdk.threads_leave()
         return result
         
     return update_func_meta(newfunc, func)
+
+def debug_calls(caller_log, show_caller=False):
+    """
+    Given a log to write messages to, wrap a function and log its invocation
+    and return. Use like:
+    
+    @debug_calls(my_modules_log)
+    def actual_function(...):
+        ...
+    
+    Warning: do not use with DBUS decorated methods, as this will play havoc
+    with introspection.
+    """
+    
+    # We need a function within a function to be able to use the log argument.
+    def real_debug(func):
+        
+        def newfunc(*args, **kwargs):
+            caller_log.debug("Calling: %s (%s)" %
+                                (func.__name__,
+                                 threading.currentThread().getName()))
+            
+            result = func(*args, **kwargs)
+            caller_log.debug("Returned: %s (%s)" %
+                                (func.__name__,
+                                 threading.currentThread().getName()))
+            return result
+        
+        return update_func_meta(newfunc, func)
+    
+    return real_debug
