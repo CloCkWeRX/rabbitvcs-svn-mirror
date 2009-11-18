@@ -70,9 +70,9 @@ def Main():
             
             # NOTE: this is useful for debugging. You can tweak MAGIC_NUMBER to
             # make status checks appear to take longer or shorter.
-#            import time, math
+#            import time, math, os.path
 #            statuses = []            
-#            MAGIC_NUMBER = 10
+#            MAGIC_NUMBER = 1
 #            if os.path.isdir(path):
 #                for root, dirnames, fnames in os.walk(path):
 #                    names = ["."]
