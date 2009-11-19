@@ -197,7 +197,7 @@ class GtkContextMenuCaller:
 
             if not still_going and callable(callback):
                 callback()
-            
+
             return still_going
 
         # Add our callback function on a 1 second timeout
@@ -305,7 +305,6 @@ class ContextMenuCallbacks:
 
     def add(self, widget, data1=None, data2=None):
         proc = rabbitvcs.lib.helper.launch_ui_window("add", self.paths)
-        # self.caller.rescan_after_process_exit(proc, self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def checkmods(self, widget, data1=None, data2=None):
@@ -771,6 +770,14 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
     def _open(self, widget, data1=None, data2=None):
         for path in self.paths:
             rabbitvcs.lib.helper.open_item(path)
+
+    def add(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.lib.helper.launch_ui_window("add", ["-q"] + self.paths)
+        self.caller.execute_after_process_exit(proc)
+
+    def revert(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.lib.helper.launch_ui_window("revert", ["-q"] + self.paths)
+        self.caller.execute_after_process_exit(proc)
     
     def browse_to(self, widget, data1=None, data2=None):
         rabbitvcs.lib.helper.browse_to_item(self.paths[0])
@@ -808,10 +815,8 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
         self.caller.reload_treeview()
    
     def update(self, data1=None, data2=None):
-        rabbitvcs.lib.helper.launch_ui_window(
-            "update", 
-            self.paths
-        )
+        proc = rabbitvcs.lib.helper.launch_ui_window("update", self.paths)
+        self.caller.execute_after_process_exit(proc)
     
     def unlock(self, data1=None, data2=None):
         from rabbitvcs.ui.unlock import UnlockQuick
@@ -1534,12 +1539,12 @@ class ContextMenuItems:
                 "tooltip": _("Restore a missing item"),
                 "signals": {
                     "activate": {
-                        "callback": self.callbacks.update, 
+                        "callback": self.callbacks.restore, 
                         "args": None
                     }
                 },
                 "condition": {
-                    "callback": self.conditions.update
+                    "callback": self.conditions.restore
                 }
             },
             "Relocate": {

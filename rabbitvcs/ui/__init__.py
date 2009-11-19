@@ -37,6 +37,11 @@ from rabbitvcs import APP_NAME, LOCALE_DIR
 
 REVISION_OPT = (["-r", "--revision"], {"help":"specify the revision number"})
 BASEDIR_OPT = (["-b", "--base-dir"], {})
+QUIET_OPT = (["-q", "--quiet"], {
+    "help":     "Run the add command quietly, with no UI.", 
+    "action":   "store_true", 
+    "default":  False
+})
 
 class InterfaceView:
     """

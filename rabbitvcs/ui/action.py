@@ -186,8 +186,11 @@ class VCSAction(threading.Thread):
     
     """
     
-    def __init__(self, client, register_gtk_quit=False, notification=True):
-        threading.Thread.__init__(self)
+    def __init__(self, client, register_gtk_quit=False, notification=True,
+            run_in_thread=True):
+        
+        if run_in_thread is True:
+            threading.Thread.__init__(self)
         
         self.message = ""
         

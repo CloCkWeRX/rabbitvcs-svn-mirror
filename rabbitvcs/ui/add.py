@@ -180,13 +180,27 @@ class Add(InterfaceView, GtkContextMenuCaller):
         paths = self.files_table.get_selected_row_items(1)
         GtkFilesContextMenu(self, data, self.base_dir, paths).show()
 
+class AddQuiet:
+    def __init__(self, paths):
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.action = rabbitvcs.ui.action.VCSAction(
+            self.vcs,
+            run_in_thread=False
+        )
+        
+        self.action.append(self.vcs.add, paths)
+        self.action.run()
+
 if __name__ == "__main__":
-    from rabbitvcs.ui import main, BASEDIR_OPT
+    from rabbitvcs.ui import main, BASEDIR_OPT, QUIET_OPT
     (options, paths) = main(
-        [BASEDIR_OPT],
+        [BASEDIR_OPT, QUIET_OPT],
         usage="Usage: rabbitvcs add [path1] [path2] ..."
     )
 
-    window = Add(paths, options.base_dir)
-    window.register_gtk_quit()
-    gtk.main()
+    if options.quiet:
+        AddQuiet(paths)
+    else:
+        window = Add(paths, options.base_dir)
+        window.register_gtk_quit()
+        gtk.main()

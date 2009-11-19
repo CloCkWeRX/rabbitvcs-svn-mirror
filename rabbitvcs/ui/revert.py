@@ -100,14 +100,27 @@ class Revert(Add):
         self.action.append(self.action.finish)
         self.action.start()
 
+class RevertQuiet:
+    def __init__(self, paths):
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.action = rabbitvcs.ui.action.VCSAction(
+            self.vcs,
+            run_in_thread=False
+        )
+        
+        self.action.append(self.vcs.revert, paths)
+        self.action.run()
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main, BASEDIR_OPT
+    from rabbitvcs.ui import main, BASEDIR_OPT, QUIET_OPT
     (options, paths) = main(
-        [BASEDIR_OPT],
+        [BASEDIR_OPT, QUIET_OPT],
         usage="Usage: rabbitvcs revert [path1] [path2] ..."
     )
 
-    window = Revert(paths, options.base_dir)
-    window.register_gtk_quit()
-    gtk.main()
+    if options.quiet:
+        RevertQuiet(paths)
+    else:
+        window = Revert(paths, options.base_dir)
+        window.register_gtk_quit()
+        gtk.main()
