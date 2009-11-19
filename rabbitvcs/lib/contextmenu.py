@@ -24,8 +24,8 @@ import os.path
 from time import sleep
 
 import gtk
+import gobject
 
-from rabbitvcs.ui.action import VCSAction
 from rabbitvcs.lib.vcs import create_vcs_instance
 from rabbitvcs.lib.log import Log
 from rabbitvcs import gettext
@@ -178,6 +178,31 @@ class GtkContextMenuCaller:
     def reload_treeview_threaded(self): 
         pass
 
+    def rescan_after_process_exit(self, proc, paths=None):
+        self.execute_after_process_exit(proc, self.reload_treeview)
+        
+    def execute_after_process_exit(self, proc, callback=None):
+        if callback is None:
+            callback = self.reload_treeview
+
+        def is_process_still_alive():
+            log.debug("is_process_still_alive() for pid: %i" % proc.pid)
+            # First we need to see if the process is still running
+
+            retval = proc.poll()
+            
+            log.debug("%s" % retval)
+            
+            still_going = (retval is None)
+
+            if not still_going and callable(callback):
+                callback()
+            
+            return still_going
+
+        # Add our callback function on a 1 second timeout
+        gobject.timeout_add_seconds(1, is_process_still_alive)
+        
 class ContextMenuCallbacks:
     """
     The base class for context menu callbacks.  This is inheritied by
@@ -750,18 +775,6 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
     def browse_to(self, widget, data1=None, data2=None):
         rabbitvcs.lib.helper.browse_to_item(self.paths[0])
 
-    def add(self, widget, data1=None, data2=None):
-        self.action = VCSAction(
-            self.vcs_client,
-            notification=False
-        )
-        
-        for path in self.paths:
-            self.action.append(self.vcs_client.add, path)
-        
-        self.action.append(self.caller.reload_treeview_threaded)
-        self.action.start()
-
     def delete(self, widget, data1=None, data2=None):
         if len(self.paths) > 0:
             from rabbitvcs.ui.delete import Delete
@@ -793,31 +806,7 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
             )
 
         self.caller.reload_treeview()
-
-    def revert(self, widget, data1=None, data2=None):
-        self.action = VCSAction(
-            self.vcs_client,
-            notification=False
-        )
-
-        for path in self.paths:
-            self.action.append(self.vcs_client.revert, path, recurse=False)
-        
-        self.action.append(self.caller.reload_treeview_threaded)
-        self.action.start()
-
-    def restore(self, widget, data1=None, data2=None):
-        self.action = VCSAction(
-            self.vcs_client,
-            notification=False
-        )
-
-        for path in self.paths:
-            self.action.append(self.vcs_client.update, path, recurse=True)
-        
-        self.action.append(self.caller.reload_treeview_threaded)
-        self.action.start()
-    
+   
     def update(self, data1=None, data2=None):
         rabbitvcs.lib.helper.launch_ui_window(
             "update", 
