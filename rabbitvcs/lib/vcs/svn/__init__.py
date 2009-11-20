@@ -1541,6 +1541,10 @@ class SVN:
         return self.client.diff_summarize(url_or_path1, revision1.primitive(), 
             url_or_path2, revision2.primitive(), recurse, ignore_ancestry)    
     
+    def list(self, url_or_path, revision=Revision("HEAD"), recurse=True):
+        return self.client.list(url_or_path, revision=revision.primitive(), 
+            recurse=recurse)
+    
     def apply_patch(self, patch_file, base_dir):
         """
         Applies a patch created for this WC.
