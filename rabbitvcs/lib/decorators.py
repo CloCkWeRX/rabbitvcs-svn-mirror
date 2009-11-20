@@ -123,7 +123,7 @@ def gtk_unsafe(func):
     
     def newfunc(*args, **kwargs):
         gtk.gdk.threads_enter()
-        result = debug_calls(log)(func(*args, **kwargs))
+        result = func(*args, **kwargs)
         gtk.gdk.threads_leave()
         return result
         
