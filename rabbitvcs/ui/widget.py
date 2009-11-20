@@ -68,12 +68,28 @@ def path_filter(model, iter, column, user_data):
     else:
         return data 
 
-class Table:
+class TableBase:
     def __init__(self, treeview, coltypes, colnames, values=[], base_dir=None, path_entries=[]):
-        # The list given as "path_entries" should contain the 0-indexed
-        # positions of the path columns, so that the can be expressed relative
-        # to "base_dir".
+        """
+        @type   treeview: gtk.Treeview
+        @param  treeview: The treeview widget to use
         
+        @type   coltypes: list
+        @param  coltypes: Contains the "type" of each column (i.e. str or int)
+        
+        @type   colnames: list
+        @param  colnames: Contains the name string for each column
+        
+        @type   values: list
+        @param  values: Contains the data to be inserted into the table
+        
+        @type   base_dir: str
+        @param  base_dir: The current working directory.  Used for filtering the displayed data
+        
+        @type   path_entries: list
+        @param  path_entries: A 0-indexed list of path columns that will be expressed relative to "base_dir"
+        
+        """
     
         self.treeview = treeview
         self.selected_rows = []
@@ -95,7 +111,7 @@ class Table:
             self.treeview.append_column(col)
             i += 1
         
-        self.data = gtk.ListStore(*coltypes)
+        self.data = self.get_store(coltypes)
         
         # self.filter == filtered data (abs paths -> rel paths)
         # self.data == actual data
@@ -112,11 +128,17 @@ class Table:
                         user_data)
         
         self.treeview.set_model(self.filter)
-                        
-        for row in values:
-            self.data.append(row)
         
+        if len(values) > 0:
+            self.populate(values)
+    
         self.set_resizable()
+
+    def get_store(self, coltypes):
+        return None
+    
+    def populate(self, values):
+        pass
 
     def toggled_cb(self, cell, path, column):
         model = self.data
@@ -206,6 +228,49 @@ class Table:
     def get_selected_rows(self):
         return self.selected_rows
 
+class Table(TableBase):
+    def __init__(self, treeview, coltypes, colnames, values=[], base_dir=None, path_entries=[]):
+        TableBase.__init__(self, treeview, coltypes, colnames, values, base_dir, path_entries)
+    
+    def get_store(self, coltypes):
+        return gtk.ListStore(*coltypes)
+
+    def populate(self, values):
+        for row in values:
+            self.data.append(row)
+
+class Tree(TableBase):
+    """
+    Generate a hierarchal tree view.  The structure of "values" should be like:
+
+        values = [
+            (["A"], [
+                (["C"], None)
+            ]),
+            (["B"], [
+                (["D"], [
+                    (["E"], None)
+                ])
+            ])
+        ]
+        
+        Note that with multiple columns, you add to the list in the first element
+        of each tuple.  (i.e. ["A"] becomes ["A", "Z", ... ]
+
+    """
+    def __init__(self, treeview, coltypes, colnames, values=[], base_dir=None, path_entries=[]):
+        TableBase.__init__(self, treeview, coltypes, colnames, values, base_dir, path_entries)
+    
+    def get_store(self, coltypes):
+        return gtk.TreeStore(*coltypes)
+
+    def populate(self, values, parent=None):
+        for node in values:
+            root = node[0]
+            new_root = self.data.append(parent, root)
+            if len(node) > 1 and node[1] is not None:
+                self.populate(node[1], new_root)
+        
 class ComboBox:
     def __init__(self, cb, items=None):
     
@@ -473,12 +538,9 @@ class RevisionSelector:
         self.revision_kind_opt.set_active(2)
         self.determine_widget_sensitivity()
 
-class FilesTable(Table):
+class FilesTableBase(TableBase):
     def __init__(self, treeview, coltypes, colnames, values=[], 
             base_dir=None, path_entries=[], callbacks={}):
-
-        Table.__init__(self, treeview, coltypes, colnames, values, 
-            base_dir, path_entries)
             
         self.callbacks = callbacks
         
@@ -511,3 +573,21 @@ class FilesTable(Table):
     def __button_release_event(self, treeview, data):
         if "mouse-event" in self.callbacks:
             self.callbacks["mouse-event"](treeview, data)
+
+class FilesTable(Table, FilesTableBase):
+    def __init__(self, treeview, coltypes, colnames, values=[], 
+            base_dir=None, path_entries=[], callbacks={}):
+
+        Table.__init__(self, treeview, coltypes, colnames, values, 
+            base_dir, path_entries)
+        FilesTableBase.__init__(self, treeview, coltypes, colnames, values, 
+            base_dir, path_entries)
+
+class FilesTree(Table, FilesTableBase):
+    def __init__(self, treeview, coltypes, colnames, values=[], 
+            base_dir=None, path_entries=[], callbacks={}):
+
+        Tree.__init__(self, treeview, coltypes, colnames, values, 
+            base_dir, path_entries)
+        FilesTableBase.__init__(self, treeview, coltypes, colnames, values, 
+            base_dir, path_entries)
