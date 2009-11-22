@@ -3,11 +3,14 @@
 from optparse import OptionParser
 import os, os.path, sys, shutil, re
 import tempfile, subprocess
+import imp
 
 from debian import Debian
 from generic import Generic
 
 import pysvn
+
+MODULE_NAME = "rabbitvcs"
 
 CHANGELOG_ENTRY = "Local build via packaging script."
 
@@ -24,11 +27,14 @@ COMMANDS = {
 #         "method" : "build_official_package"}
     }
 
-def package_id():
-    import rabbitvcs
+    # modify sys.path, do import
+   
+def package_id(root_dir):
+    (module_file, module_path, desc) = imp.find_module(MODULE_NAME, [root_dir])
+    rabbitvcs = imp.load_module(MODULE_NAME, module_file, module_path, desc)    
     package_name = rabbitvcs.package_name()
     package_version = rabbitvcs.package_version()
-    return (package_name, package_version)
+    return (package_name, package_version, module_path)
 
 
 def get_distros(basepath = None):
@@ -125,7 +131,16 @@ if __name__ == "__main__":
         
         print "Original working dir: %s" % root_dir
       
-        package_name, package_ver = package_id()
+        package_name = None
+        package_ver = None
+      
+        try:
+            package_name, package_ver, package_path = package_id(root_dir)            
+        except ImportError:
+            print "Could not detect local RabbitVCS module!"
+            sys.exit(2)
+        
+        print "Detected RabbitVCS v%s in %s" % (package_ver, package_path)
 
         temp_dir = tempfile.mkdtemp(prefix=(package_name+"-"))
         
