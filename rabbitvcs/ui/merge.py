@@ -123,14 +123,14 @@ class Merge(InterfaceView):
                 # Fixed in Pysvn Revision 1114
                 if (self.vcs.interface == "pysvn" and self.vcs.is_version_less_than((1,6,3,0))):
                     ranges.append((
-                        self.vcs.revision("number", number=int(low)),
-                        self.vcs.revision("number", number=int(high)),
+                        self.vcs.revision("number", number=int(low)).primitive(),
+                        self.vcs.revision("number", number=int(high)).primitive(),
                         None
                     ))
                 else:
                     ranges.append((
-                        self.vcs.revision("number", number=int(low)),
-                        self.vcs.revision("number", number=int(high)),
+                        self.vcs.revision("number", number=int(low)).primitive(),
+                        self.vcs.revision("number", number=int(high)).primitive(),
                     ))
             
             # Build up args and kwargs because some args are not supported
