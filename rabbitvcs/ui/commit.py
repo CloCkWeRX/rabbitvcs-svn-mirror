@@ -205,7 +205,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
                     self.vcs.add(item)
                     added += 1
             except Exception, e:
-                print str(e)
+                log.exception(e)
 
         ticks = added + len(items)*2
 
