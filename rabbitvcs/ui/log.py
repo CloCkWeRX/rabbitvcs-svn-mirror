@@ -77,7 +77,7 @@ class Log(InterfaceView):
         
         self.get_widget("limit").set_text(str(self.limit))
         
-        self.revisions_table = rabbitvcs.ui.widget.FilesTable(
+        self.revisions_table = rabbitvcs.ui.widget.Table(
             self.get_widget("revisions_table"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING, gobject.TYPE_STRING], 
@@ -88,7 +88,7 @@ class Log(InterfaceView):
             }
         )
 
-        self.paths_table = rabbitvcs.ui.widget.FilesTable(
+        self.paths_table = rabbitvcs.ui.widget.Table(
             self.get_widget("paths_table"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING, gobject.TYPE_STRING], 

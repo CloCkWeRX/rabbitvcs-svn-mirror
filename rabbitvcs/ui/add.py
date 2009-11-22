@@ -64,7 +64,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         self.items = []
         self.statuses = [self.vcs.STATUS["unversioned"], self.vcs.STATUS["obstructed"]]
-        self.files_table = rabbitvcs.ui.widget.FilesTable(
+        self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"), 
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],

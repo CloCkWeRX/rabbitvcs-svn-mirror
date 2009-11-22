@@ -53,7 +53,7 @@ class Unlock(Add):
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         self.items = None
         self.statuses = None
-        self.files_table = rabbitvcs.ui.widget.FilesTable(
+        self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"), 
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],

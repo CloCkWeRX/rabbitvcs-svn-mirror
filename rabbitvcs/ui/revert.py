@@ -53,7 +53,7 @@ class Revert(Add):
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         self.items = None
         self.statuses = self.vcs.STATUSES_FOR_REVERT
-        self.files_table = rabbitvcs.ui.widget.FilesTable(
+        self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"), 
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING
                 ,gobject.TYPE_STRING, gobject.TYPE_STRING], 

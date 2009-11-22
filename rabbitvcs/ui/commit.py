@@ -73,7 +73,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             rabbitvcs.ui.dialog.MessageBox(_("The given path is not a working copy"))
             raise SystemExit()
 
-        self.files_table = rabbitvcs.ui.widget.FilesTable(
+        self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
             [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING, gobject.TYPE_STRING], 
@@ -258,13 +258,13 @@ class Commit(InterfaceView, GtkContextMenuCaller):
 
     def on_files_table_key_event(self, treeview, data=None):
         self.files_table.update_selection()
-
+        
         if gtk.gdk.keyval_name(data.keyval) == "Delete":
             self.delete_items(treeview, data)
 
     def on_files_table_mouse_event(self, treeview, data=None):
         self.files_table.update_selection()
-            
+
         if data is not None and data.button == 3:
             self.show_files_table_popup_menu(treeview, data)
 

@@ -69,7 +69,8 @@ def path_filter(model, iter, column, user_data):
         return data 
 
 class TableBase:
-    def __init__(self, treeview, coltypes, colnames, values=[], base_dir=None, path_entries=[]):
+    def __init__(self, treeview, coltypes, colnames, values=[], base_dir=None, 
+            path_entries=[], callbacks={}):
         """
         @type   treeview: gtk.Treeview
         @param  treeview: The treeview widget to use
@@ -133,6 +134,15 @@ class TableBase:
             self.populate(values)
     
         self.set_resizable()
+
+        self.callbacks = callbacks
+        if self.callbacks:
+            self.treeview.connect("cursor-changed", self.__cursor_changed_event)
+            self.treeview.connect("row-activated", self.__row_activated_event)
+            self.treeview.connect("button-press-event", self.__button_press_event)
+            self.treeview.connect("button-release-event", self.__button_release_event)
+            self.treeview.connect("key-press-event", self.__key_press_event)
+            self.allow_multiple()
 
     def get_store(self, coltypes):
         return None
@@ -228,9 +238,34 @@ class TableBase:
     def get_selected_rows(self):
         return self.selected_rows
 
+    def __button_press_event(self, treeview, data):
+        # this allows us to retain multiple selections with a right-click
+        if data.button == 3:
+            selection = treeview.get_selection()
+            (liststore, indexes) = selection.get_selected_rows()
+            return (len(indexes) > 0)
+
+    def __row_activated_event(self, treeview, data, col):
+        if "row-activated" in self.callbacks:
+            self.callbacks["row-activated"](treeview, data, col)
+        
+    def __key_press_event(self, treeview, data):
+        if "key-event" in self.callbacks:
+            self.callbacks["key-event"](treeview, data)
+
+    def __cursor_changed_event(self, treeview):
+        if "mouse-event" in self.callbacks:
+            self.callbacks["mouse-event"](treeview)
+
+    def __button_release_event(self, treeview, data):
+        if "mouse-event" in self.callbacks:
+            self.callbacks["mouse-event"](treeview, data)
+
 class Table(TableBase):
-    def __init__(self, treeview, coltypes, colnames, values=[], base_dir=None, path_entries=[]):
-        TableBase.__init__(self, treeview, coltypes, colnames, values, base_dir, path_entries)
+    def __init__(self, treeview, coltypes, colnames, values=[], base_dir=None, 
+            path_entries=[], callbacks={}):
+        TableBase.__init__(self, treeview, coltypes, colnames, values, base_dir, 
+            path_entries, callbacks)
     
     def get_store(self, coltypes):
         return gtk.ListStore(*coltypes)
@@ -537,57 +572,3 @@ class RevisionSelector:
     def set_kind_working(self):
         self.revision_kind_opt.set_active(2)
         self.determine_widget_sensitivity()
-
-class FilesTableBase(TableBase):
-    def __init__(self, treeview, coltypes, colnames, values=[], 
-            base_dir=None, path_entries=[], callbacks={}):
-            
-        self.callbacks = callbacks
-        
-        treeview.connect("cursor-changed", self.__cursor_changed_event)
-        treeview.connect("row-activated", self.__row_activated_event)
-        treeview.connect("button-press-event", self.__button_press_event)
-        treeview.connect("button-release-event", self.__button_release_event)
-        treeview.connect("key-press-event", self.__key_press_event)
-        self.allow_multiple()
-    
-    def __button_press_event(self, treeview, data):
-        # this allows us to retain multiple selections with a right-click
-        if data.button == 3:
-            selection = treeview.get_selection()
-            (liststore, indexes) = selection.get_selected_rows()
-            return (len(indexes) > 0)
-
-    def __row_activated_event(self, treeview, data, col):
-        if "row-activated" in self.callbacks:
-            self.callbacks["row-activated"](treeview, data, col)
-        
-    def __key_press_event(self, treeview, data):
-        if "key-event" in self.callbacks:
-            self.callbacks["key-event"](treeview, data)
-
-    def __cursor_changed_event(self, treeview):
-        if "mouse-event" in self.callbacks:
-            self.callbacks["mouse-event"](treeview)
-
-    def __button_release_event(self, treeview, data):
-        if "mouse-event" in self.callbacks:
-            self.callbacks["mouse-event"](treeview, data)
-
-class FilesTable(Table, FilesTableBase):
-    def __init__(self, treeview, coltypes, colnames, values=[], 
-            base_dir=None, path_entries=[], callbacks={}):
-
-        Table.__init__(self, treeview, coltypes, colnames, values, 
-            base_dir, path_entries)
-        FilesTableBase.__init__(self, treeview, coltypes, colnames, values, 
-            base_dir, path_entries)
-
-class FilesTree(Table, FilesTableBase):
-    def __init__(self, treeview, coltypes, colnames, values=[], 
-            base_dir=None, path_entries=[], callbacks={}):
-
-        Tree.__init__(self, treeview, coltypes, colnames, values, 
-            base_dir, path_entries)
-        FilesTableBase.__init__(self, treeview, coltypes, colnames, values, 
-            base_dir, path_entries)
