@@ -34,9 +34,9 @@ class Generic(object):
 
         print "Creating orig archive... ",
 
-        retval = subprocess.Popen(
+        retval = subprocess.call(
                     ["tar", "-czf", ark_path, self.package_dir_rel],
-                    cwd = self.build_area).wait()
+                    cwd = self.build_area)
 
         # This doesn't work: uses absolute paths unless we chdir
         # ark = tarfile.open(

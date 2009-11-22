@@ -22,9 +22,9 @@ COMMANDS = {
         {"desc" : "Build a source package from the current state of the source tree.",
          "method" : "build_current_source"},
     
-#    "official" :
-#        {"desc" : "Build an official source and binary from a tarball and current packaging.",
-#         "method" : "build_official_package"}
+    "official" :
+        {"desc" : "Build an official source and binary from a tarball and current packaging.",
+         "method" : "build_official_package"}
     }
 
     # modify sys.path, do import
