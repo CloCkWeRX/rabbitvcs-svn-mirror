@@ -1422,7 +1422,7 @@ class SVN:
         TODO: Will firm up the parameter documentation later
         
         """
-        log.debug("Sources: %s" % sources)
+
         return self.client.merge_peg2(sources,
                                       ranges_to_merge, 
                                       peg_revision.primitive(),
