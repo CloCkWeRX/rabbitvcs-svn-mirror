@@ -1,3 +1,7 @@
+rabbitvcs (0.13~pre-1~hardy) unstable; urgency=low
+
+  * This is a placeholder. Please replace the version number above.
+
 rabbitvcs (0.12-2~hardy) hardy; urgency=low
 
   * Added required po-debconf stuff.
