@@ -1422,10 +1422,15 @@ class SVN:
         TODO: Will firm up the parameter documentation later
         
         """
-
-        return self.client.merge_peg2(sources, ranges_to_merge, 
-            peg_revision.primitive(), target_wcpath, notice_ancestry, force,
-            dry_run, record_only)
+        log.debug("Sources: %s" % sources)
+        return self.client.merge_peg2(sources,
+                                      ranges_to_merge, 
+                                      peg_revision.primitive(),
+                                      target_wcpath,
+                                      notice_ancestry=notice_ancestry,
+                                      force=force,
+                                      dry_run=dry_run,
+                                      record_only=record_only)
     
     def has_merge2(self):
         """
