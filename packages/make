@@ -1,5 +1,37 @@
 #!/usr/bin/python
 
+# This is an extension to the Nautilus file manager to allow better 
+# integration with the Subversion source control system.
+# 
+# Copyright (C) 2009 by Jason Heeris <jason.heeris@gmail.com>
+# 
+# RabbitVCS is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# RabbitVCS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
+
+"""
+This is a script to build RabbitVCS packages for various distros. It is very
+shell-scripty, but it does the job.
+
+It is meant to be used from either the RabbitVCS source root or packages dir
+(although it does a decent job of finding out where those places are anyway). It
+should be invoked like:
+
+make [options] <distro> <command>
+
+You can use "make --help" to show a usage message which lists the available
+commands.
+"""
+
 from optparse import OptionParser
 import os, os.path, sys, shutil, re
 import tempfile, subprocess
@@ -30,6 +62,17 @@ COMMANDS = {
     # modify sys.path, do import
    
 def package_id(root_dir):
+    """
+    Uses the python stdlib "imp" library to find and load the local rabbitvcs
+    module. We need to do it this way because (a) the version we are packaging
+    may be different from the version we are running and (b) there may not
+    actually be a version available to import.
+    
+    @param root_dir: the root directory of the local copy of RabbitVCS
+    @type root_dir: string
+    
+    @return: the tuple (package_name, package_version, module_path)
+    """
     (module_file, module_path, desc) = imp.find_module(MODULE_NAME, [root_dir])
     rabbitvcs = imp.load_module(MODULE_NAME, module_file, module_path, desc)    
     package_name = rabbitvcs.package_name()
@@ -38,6 +81,18 @@ def package_id(root_dir):
 
 
 def get_distros(basepath = None):
+    """
+    List the directories we can see from here. These directories represent the
+    different distros we can build packages for. They will then be used to look
+    up the classes that can build the packages.
+    
+    @param basepath: the directory in which to look for the packaging dirs - if
+                     nothing is given, look in the directory of this script (not
+                     the current dir)
+    @type basepath: string
+    
+    @return: a list of non-hidden directories
+    """
     if not basepath:
         basepath = os.path.dirname(__file__)
     
@@ -49,6 +104,9 @@ def get_distros(basepath = None):
     return dirs
 
 def usage():
+    """
+    Convenience method to return a formatted program usage string.
+    """
     ustr = "usage: %prog distro command [options]\n\n"
     
     ustr += "Detected distros are: " + ", ".join(get_distros())
@@ -62,10 +120,13 @@ def usage():
     
     return ustr
 
+# These are the classes that build the distro-specific packages. See their
+# documentation for more details.
 CLASSES = [Debian, Generic]
 
+
 if __name__ == "__main__":
-    
+        
     parser = OptionParser(usage = usage())
     
     parser.add_option("-o", "--output-dir", dest="output_dir",
