@@ -363,19 +363,22 @@ class StatusCache():
         @return: a status dict for the given path
         @rtype: see class documentation
         """
-        statuses = {}
+        statuses = None
         
         with self._status_tree_lock:
-            if recurse:
-                child_keys = [another_path for another_path
-                                in self._status_tree.keys()
-                                if is_under_dir(path, another_path)]
-                
-                for another_path in child_keys:
-                    statuses[another_path] = \
-                        self._status_tree[another_path]["status"]
-            else:
-                statuses[path] = self._status_tree[path]["status"]
+            if self._status_tree.has_key(path):
+                statuses = {}
+
+                if recurse:
+                    child_keys = [another_path for another_path
+                                    in self._status_tree.keys()
+                                    if is_under_dir(path, another_path)]
+                    
+                    for another_path in child_keys:
+                        statuses[another_path] = \
+                            self._status_tree[another_path]["status"]
+                else:
+                    statuses[path] = self._status_tree[path]["status"]
 
         return statuses
     
@@ -401,7 +404,7 @@ class StatusCache():
         The parameters are as per check_status, but instead of a return type
         there is the callback.
         """ 
-        statuses = {}
+        statuses = None
 
         # We can't trust the cache when we invalidate, because some items may
         # have been renamed/deleted, and so we will end up with orphaned items
@@ -447,12 +450,19 @@ class StatusCache():
             
         # Remember: these callbacks will block THIS thread from calculating the
         # next path on the "to do" list.
-        
-        if summary:
-            statuses = ({path: statuses[path]}, check_summary)
-        
-        if callback:
-            callback(path, statuses)
+
+        # It is possible that:
+        #   1. Nautilus notices an item and requests a check for it
+        #   2. The item is deleted
+        #   3. The status check is done
+        #   4. We get back here
+        # In this situation, _get_path_statuses() will return None.
+        if statuses:
+            if summary:
+                statuses = ({path: statuses[path]}, check_summary)
+            
+            if callback:
+                callback(path, statuses)
 
     def _add_path_statuses(self, statuses):
         """ Adds a list of VCS statuses to our cache.
