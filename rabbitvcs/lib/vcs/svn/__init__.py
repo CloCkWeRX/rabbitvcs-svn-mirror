@@ -296,6 +296,20 @@ class SVN:
         "Recursive": True, 
         "Not Recursive": False 
     }
+    
+    NODE_KINDS = {
+        "none":         pysvn.node_kind.none,
+        "file":         pysvn.node_kind.file,
+        "dir":          pysvn.node_kind.dir,
+        "unknown":      pysvn.node_kind.unknown
+    }
+    
+    NODE_KINDS_REVERSE = {
+        pysvn.node_kind.none: "none",
+        pysvn.node_kind.file: "file",
+        pysvn.node_kind.dir:  "dir",
+        pysvn.node_kind.unknown: "unknown"
+    }
         
     #: This variable is used to maintain a status cache. Paths function as keys
     #: and every item in the cache has all the statuses for all the items below
