@@ -137,14 +137,26 @@ class Changes(InterfaceView):
         self.check_refresh_button()
 
     def on_first_urls_browse_clicked(self, widget, data=None):
-        rabbitvcs.lib.helper.launch_repo_browser(
-            self.first_urls.get_active_text()
-        )
+        from rabbitvcs.ui.browser import BrowserDialog
+        BrowserDialog(self.first_urls.get_active_text(), 
+            callback=self.on_first_repo_chooser_closed)
+
+    def on_first_repo_chooser_closed(self, new_url):
+        self.first_urls.set_child_text(new_url)
+        self.check_first_urls()
+        self.first_revision_selector.determine_widget_sensitivity()
+        self.check_refresh_button()
 
     def on_second_urls_browse_clicked(self, widget, data=None):
-        rabbitvcs.lib.helper.launch_repo_browser(
-            self.second_urls.get_active_text()
-        )
+        from rabbitvcs.ui.browser import BrowserDialog
+        BrowserDialog(self.second_urls.get_active_text(), 
+            callback=self.on_second_repo_chooser_closed)
+
+    def on_second_repo_chooser_closed(self, new_url):
+        self.second_urls.set_child_text(new_url)
+        self.check_second_urls()
+        self.second_revision_selector.determine_widget_sensitivity()
+        self.check_refresh_button()
 
     def on_changes_table_cursor_changed(self, treeview, data=None):
         self.on_changes_table_event(treeview, data)

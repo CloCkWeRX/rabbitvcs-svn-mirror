@@ -172,7 +172,13 @@ class Checkout(InterfaceView):
                 self.on_ok_clicked(widget)
 
     def on_repo_chooser_clicked(self, widget, data=None):
-        rabbitvcs.lib.helper.launch_repo_browser(self.repositories.get_active_text())
+        from rabbitvcs.ui.browser import BrowserDialog
+        BrowserDialog(self.repositories.get_active_text(), 
+            callback=self.on_repo_chooser_closed)
+
+    def on_repo_chooser_closed(self, new_url):
+        self.repositories.set_child_text(new_url)
+        self.check_form()
 
     def check_form(self):
         self.complete = True
