@@ -610,3 +610,22 @@ def create_path_revision_string(path, revision=None):
         
 def url_join(path, *args):
     return "/".join([path.rstrip("/")] + list(args))
+
+def pretty_filesize(bytes):
+    if bytes >= 1073741824:
+        return str(bytes / 1073741824) + ' GB'
+    elif bytes >= 1048576:
+        return str(bytes / 1048576) + ' MB'
+    elif bytes >= 1024:
+        return str(bytes / 1024) + ' KB'
+    elif bytes < 1024:
+        return str(bytes) + ' bytes'
+
+def get_node_kind(path):
+    if os.path.exists(path):
+        if os.path.isfile(path):
+            return "file"
+        else:
+            return "dir"
+
+    return "none"
