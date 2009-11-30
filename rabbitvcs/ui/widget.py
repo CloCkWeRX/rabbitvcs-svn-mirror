@@ -277,6 +277,7 @@ class TableBase:
 
     def clear(self):
         self.data.clear()
+        self.reset_selection()
         
     def get_row(self, index):
         model = self.data
@@ -325,9 +326,12 @@ class TableBase:
         selection = self.treeview.get_selection()
         (liststore, indexes) = selection.get_selected_rows()
 
-        self.selected_rows = []
+        self.reset_selection()
         for tup in indexes:
             self.selected_rows.append(tup[0])
+
+    def reset_selection(self):
+        self.selected_rows = []
 
     def get_selected_row_items(self, col):
         items = []
