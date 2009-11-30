@@ -91,14 +91,10 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
         self.initialize_items()
 
     def on_files_table_row_activated(self, treeview, event, col):
-        treeview.grab_focus()
-        self.files_table.update_selection()
         paths = self.files_table.get_selected_row_items(0)
         self.diff_remote(paths[0])
 
     def on_files_table_mouse_event(self, treeview, data=None):
-        self.files_table.update_selection()
-            
         if data is not None and data.button == 3:
             self.show_files_table_popup_menu(treeview, data)
 

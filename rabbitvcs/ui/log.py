@@ -151,14 +151,10 @@ class Log(InterfaceView):
     #
 
     def on_revisions_table_row_activated(self, treeview, event, col):
-        treeview.grab_focus()
-        self.revisions_table.update_selection()
         paths = self.revisions_table.get_selected_row_items(1)
         rabbitvcs.lib.helper.launch_diff_tool(*paths)
 
     def on_revisions_table_mouse_event(self, treeview, data=None):
-        self.revisions_table.update_selection()
-        
         if len(self.revisions_table.get_selected_rows()) == 0:
             self.message.set_text("")
             self.paths_table.clear()
@@ -369,16 +365,12 @@ class Log(InterfaceView):
     #
 
     def on_paths_table_row_activated(self, treeview, data=None, col=None):
-        self.paths_table.update_selection()
-
         rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
         path_item = self.paths_table.get_row(self.paths_table.get_selected_rows()[0])[1]
         url = self.root_url + path_item
         self.view_diff_for_path(url, rev_item.revision.number)
 
     def on_paths_table_mouse_event(self, treeview, data=None):
-        self.paths_table.update_selection()
-
         if data is not None and data.button == 3:
             self.show_paths_table_popup_menu(treeview, data)
 

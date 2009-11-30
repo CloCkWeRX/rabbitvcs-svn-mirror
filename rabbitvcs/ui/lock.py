@@ -179,8 +179,6 @@ class Lock(InterfaceView, GtkContextMenuCaller):
         self.action.start()
 
     def on_files_table_mouse_event(self, treeview, data=None):
-        self.files_table.update_selection()
-            
         if data is not None and data.button == 3:
             self.show_files_table_popup_menu(treeview, data)
     

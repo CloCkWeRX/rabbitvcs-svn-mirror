@@ -242,13 +242,13 @@ class TableBase:
 
         # Set up some callbacks for all tables to deal with row clicking and
         # selctions
+        self.treeview.connect("cursor-changed", self.__cursor_changed_event)
+        self.treeview.connect("row-activated", self.__row_activated_event)
+        self.treeview.connect("button-press-event", self.__button_press_event)
+        self.treeview.connect("button-release-event", self.__button_release_event)
+        self.treeview.connect("key-press-event", self.__key_press_event)
         self.callbacks = callbacks
         if self.callbacks:
-            self.treeview.connect("cursor-changed", self.__cursor_changed_event)
-            self.treeview.connect("row-activated", self.__row_activated_event)
-            self.treeview.connect("button-press-event", self.__button_press_event)
-            self.treeview.connect("button-release-event", self.__button_release_event)
-            self.treeview.connect("key-press-event", self.__key_press_event)
             self.allow_multiple()
 
     def toggled_cb(self, cell, path, column):
@@ -341,24 +341,30 @@ class TableBase:
 
     def __button_press_event(self, treeview, data):
         # this allows us to retain multiple selections with a right-click
+        self.update_selection()
         if data.button == 3:
             selection = treeview.get_selection()
             (liststore, indexes) = selection.get_selected_rows()
             return (len(indexes) > 0)
 
     def __row_activated_event(self, treeview, data, col):
+        treeview.grab_focus()
+        self.update_selection()
         if "row-activated" in self.callbacks:
             self.callbacks["row-activated"](treeview, data, col)
         
     def __key_press_event(self, treeview, data):
+        self.update_selection()
         if "key-event" in self.callbacks:
             self.callbacks["key-event"](treeview, data)
 
     def __cursor_changed_event(self, treeview):
+        self.update_selection()
         if "mouse-event" in self.callbacks:
             self.callbacks["mouse-event"](treeview)
 
     def __button_release_event(self, treeview, data):
+        self.update_selection()
         if "mouse-event" in self.callbacks:
             self.callbacks["mouse-event"](treeview, data)
 

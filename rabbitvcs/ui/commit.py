@@ -256,20 +256,14 @@ class Commit(InterfaceView, GtkContextMenuCaller):
                 index += 1
 
     def on_files_table_row_activated(self, treeview, event, col):
-        treeview.grab_focus()
-        self.files_table.update_selection()
         paths = self.files_table.get_selected_row_items(1)
         rabbitvcs.lib.helper.launch_diff_tool(*paths)
 
     def on_files_table_key_event(self, treeview, data=None):
-        self.files_table.update_selection()
-        
         if gtk.gdk.keyval_name(data.keyval) == "Delete":
             self.delete_items(treeview, data)
 
     def on_files_table_mouse_event(self, treeview, data=None):
-        self.files_table.update_selection()
-
         if data is not None and data.button == 3:
             self.show_files_table_popup_menu(treeview, data)
 
