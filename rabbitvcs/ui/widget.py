@@ -47,30 +47,88 @@ from rabbitvcs.lib.log import Log
 log = Log("rabbitvcs.ui.widget")
 
 TOGGLE_BUTTON = 'TOGGLE_BUTTON'
+TYPE_PATH = 'TYPE_PATH'
 PATH_ENTRY = 'PATH_ENTRY'
 SEPARATOR = u'\u2015' * 10
 
 from pprint import pformat
 
-def path_filter(model, iter, column, user_data):
-    base_dir = user_data["base_dir"]
-    path_entries = user_data["path_entries"]
+def filter_router(model, iter, column, filters):
+    """
+    Route filter requests for a table's columns.  This function is called for
+    each cell of the table that gets displayed.
     
-    data = model.get_model().get_value(
-                model.convert_iter_to_child_iter(iter),
-                column)
+    @type   model: gtk.TreeModelFilter
+    @param  model: The TreeModelFilter instance for our table
+    
+    @type   iter: gtk.TreeIter
+    @param  iter: The TreeIter instance for the table row being filtered
+    
+    @type   column: int
+    @param  column: The column index of the current item being filtered
+    
+    @type   filters: list
+    @param  filters: A list of dicts used to define how a column should be
+        filtered
+        
+        Note for filters:  Each dict consists of a callback function and user
+        data like so:
+        
+            {
+                "callback": self.file_filter,
+                "user_data": {
+                    "column": 0, //tells the callback what column to filter
+                    "base_dir": "/home/workingcopy"
+                }
+            }
+    
+    @return    The filtered output defined for the given column
+    
+    """
+    
+    row = model.get_model()[model.get_path(iter)[0]]
 
-    if column in path_entries:
-        relpath = rabbitvcs.lib.helper.get_relative_path(base_dir, data)
+    if not filters:
+        return row[column]
+
+    for filter in filters:
+        filter_column = filter["user_data"]["column"]
+        if column == filter_column:
+            return filter["callback"](row, column, filter["user_data"])
+
+    return row[column]
+
+def path_filter(row, column, user_data=None):
+    """
+    A common filter function that is used in many tables.  Changes the displayed
+    path to a path relative to the given base_dir (current working directory)
+    
+    @type   row: gtk.TreeModelRow
+    @param  row: The row that is being filtered
+    
+    @type   column: int
+    @param  column: The column that is being filtered
+    
+    @type   user_data: dict
+    @param  user_data: A dictionary of user_data useful to this function
+    
+    @rtype  str
+    @return A relative path
+    
+    """
+    base_dir = user_data["base_dir"]
+
+    if row[column]:
+        relpath = rabbitvcs.lib.helper.get_relative_path(base_dir, row[column])
         if relpath == "":
-            relpath = os.path.basename(data)
+            relpath = os.path.basename(row[column])
         return relpath
     else:
-        return data 
+        return row[column] 
 
 class TableBase:
-    def __init__(self, treeview, coltypes, colnames, values=[], base_dir=None, 
-            path_entries=[], callbacks={}):
+    def __init__(self, treeview, coltypes, colnames, values=[], filters=None, 
+            filter_types=None, callbacks={}):
         """
         @type   treeview: gtk.Treeview
         @param  treeview: The treeview widget to use
@@ -84,12 +142,28 @@ class TableBase:
         @type   values: list
         @param  values: Contains the data to be inserted into the table
         
-        @type   base_dir: str
-        @param  base_dir: The current working directory.  Used for filtering the displayed data
+        @type   filters: list
+        @param  filters: A list of dicts used to define how a column should be
+            filtered
+            
+            Note for filters:  Each dict consists of a callback function and user
+            data like so:
+            
+                {
+                    "callback": self.file_filter,
+                    "user_data": {
+                        "column": 0, //tells the callback what column to filter
+                        "base_dir": "/home/workingcopy"
+                    }
+                }
         
-        @type   path_entries: list
-        @param  path_entries: A 0-indexed list of path columns that will be expressed relative to "base_dir"
+        @type   filter_types: list
+        @param  filter_types: Contains the filtered "type" of each column.
         
+        @type   callbacks: dict
+        @param  callbacks: A dict of callbacks to be used.  Some are for signal
+            handling while others are useful for other things.
+            
         """
     
         self.treeview = treeview
@@ -97,44 +171,77 @@ class TableBase:
 
         i = 0       
         for name in colnames:
-            if name == TOGGLE_BUTTON:
+            if coltypes[i] == gobject.TYPE_BOOLEAN:
                 cell = gtk.CellRendererToggle()
                 cell.set_property('activatable', True)
                 cell.connect("toggled", self.toggled_cb, i)
                 col = gtk.TreeViewColumn("", cell)
-                col.set_attributes(cell, active=i)  
+                col.set_attributes(cell, active=i)
+            elif coltypes[i] == TYPE_PATH:
+                # The type should be str but we have to use TYPE_PATH to
+                # distinguish from a regular str column
+                coltypes[i] = str
+                
+                # First we create the column, then we create a CellRenderer 
+                # instance for the path icon and a CellRenderer instance for
+                # the path.  Each is packed into the treeview column
+                col = gtk.TreeViewColumn(name)
+
+                cellpb = gtk.CellRendererPixbuf()
+                cellpb.set_property('xalign', 0)
+                cellpb.set_property('yalign', 0)
+                col.pack_start(cellpb, False)
+                data = None
+                if callbacks.has_key("file-column-callback"):
+                    data = {
+                        "callback": callbacks["file-column-callback"],
+                        "column": i
+                    }
+                else:
+                    data = {
+                        "callback": rabbitvcs.lib.helper.get_node_kind,
+                        "column": i
+                    }
+                col.set_cell_data_func(cellpb, self.file_pixbuf, data)
+                
+                cell = gtk.CellRendererText()
+                cell.set_property('xalign', 0)
+                cell.set_property('yalign', 0)
+                col.pack_start(cell, False)
+                col.set_attributes(cell, text=i)
             else:
                 cell = gtk.CellRendererText()
                 cell.set_property('yalign', 0)
+                cell.set_property('xalign', 0)
                 col = gtk.TreeViewColumn(name, cell)
                 col.set_attributes(cell, text=i)
 
             self.treeview.append_column(col)
             i += 1
-        
+
         self.data = self.get_store(coltypes)
         
         # self.filter == filtered data (abs paths -> rel paths)
         # self.data == actual data
-        
+
         # The filter is there to change the way data is displayed. The data
         # should always be accessed via self.data, NOT self.filter.
         self.filter = self.data.filter_new()
-        
-        user_data = {"base_dir" : base_dir,
-                     "path_entries" : path_entries}
+        types = (filter_types and filter_types or coltypes)
         self.filter.set_modify_func(
-                        coltypes,
-                        path_filter,
-                        user_data)
+                        types,
+                        filter_router,
+                        filters)
         
         self.treeview.set_model(self.filter)
-        
+
         if len(values) > 0:
             self.populate(values)
     
         self.set_resizable()
 
+        # Set up some callbacks for all tables to deal with row clicking and
+        # selctions
         self.callbacks = callbacks
         if self.callbacks:
             self.treeview.connect("cursor-changed", self.__cursor_changed_event)
@@ -143,12 +250,6 @@ class TableBase:
             self.treeview.connect("button-release-event", self.__button_release_event)
             self.treeview.connect("key-press-event", self.__key_press_event)
             self.allow_multiple()
-
-    def get_store(self, coltypes):
-        return None
-    
-    def populate(self, values):
-        pass
 
     def toggled_cb(self, cell, path, column):
         model = self.data
@@ -261,11 +362,32 @@ class TableBase:
         if "mouse-event" in self.callbacks:
             self.callbacks["mouse-event"](treeview, data)
 
+    def file_pixbuf(self, column, cell, model, iter, data=None):
+        stock_id = None
+        if data is not None:
+            real_item = self.data[model.get_path(iter)[0]][data["column"]]
+            kind = data["callback"](real_item)
+            stock_id = gtk.STOCK_FILE
+            if kind == "dir":
+                stock_id = gtk.STOCK_DIRECTORY
+
+        if stock_id is not None:
+            cell.set_property("stock_id", stock_id)
+            
+        return
+
 class Table(TableBase):
-    def __init__(self, treeview, coltypes, colnames, values=[], base_dir=None, 
-            path_entries=[], callbacks={}):
-        TableBase.__init__(self, treeview, coltypes, colnames, values, base_dir, 
-            path_entries, callbacks)
+    """
+    Generate a flat tree view.
+        
+    See the TableBase documentation for parameter information
+
+    """
+    
+    def __init__(self, treeview, coltypes, colnames, values=[], filters=None, 
+            filter_types=None, callbacks={}):
+        TableBase.__init__(self, treeview, coltypes, colnames, values, filters, 
+            filter_types, callbacks)
     
     def get_store(self, coltypes):
         return gtk.ListStore(*coltypes)
@@ -291,10 +413,14 @@ class Tree(TableBase):
         
         Note that with multiple columns, you add to the list in the first element
         of each tuple.  (i.e. ["A"] becomes ["A", "Z", ... ]
+        
+    See the TableBase documentation for parameter information
 
     """
-    def __init__(self, treeview, coltypes, colnames, values=[], base_dir=None, path_entries=[]):
-        TableBase.__init__(self, treeview, coltypes, colnames, values, base_dir, path_entries)
+    def __init__(self, treeview, coltypes, colnames, values=[], filters=None, 
+            filter_types=None, callbacks={}):
+        TableBase.__init__(self, treeview, coltypes, colnames, values, filters, 
+            filter_types, callbacks)
     
     def get_store(self, coltypes):
         return gtk.TreeStore(*coltypes)

@@ -66,8 +66,13 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
             [_("Path"), _("Extension"), 
                 _("Text Status"), _("Property Status"), 
                 _("Revision"), _("Author")],
-            base_dir=base_dir,
-            path_entries=[0],
+            filters=[{
+                "callback": rabbitvcs.ui.widget.path_filter,
+                "user_data": {
+                    "base_dir": base_dir,
+                    "column": 0
+                }
+            }],
             callbacks={
                 "row-activated":  self.on_files_table_row_activated,
                 "mouse-event":   self.on_files_table_mouse_event

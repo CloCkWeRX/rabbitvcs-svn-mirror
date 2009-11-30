@@ -103,7 +103,8 @@ class Changes(InterfaceView):
 
         self.changes_table = rabbitvcs.ui.widget.Table(
             self.get_widget("changes_table"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [rabbitvcs.ui.widget.TYPE_PATH, gobject.TYPE_STRING, 
+                gobject.TYPE_STRING], 
             [_("Path"), _("Change"), _("Property Change")]
         )
         

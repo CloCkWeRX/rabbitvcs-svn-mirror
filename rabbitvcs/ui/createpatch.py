@@ -82,12 +82,17 @@ class CreatePatch(Commit):
 
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
-            [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
+                gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
                 _("Text Status"), _("Property Status")],
-            base_dir=base_dir,
-            path_entries=[1]
+            filters=[{
+                "callback": rabbitvcs.ui.widget.path_filter,
+                "user_data": {
+                    "base_dir": base_dir,
+                    "column": 1
+                }
+            }],
         )
         self.files_table.allow_multiple()
         
