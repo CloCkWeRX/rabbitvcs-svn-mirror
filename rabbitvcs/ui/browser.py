@@ -177,6 +177,8 @@ class Browser(InterfaceView):
         
         if row[column]:
             return os.path.basename(row[column])
+            
+        return row[column]
 
     def size_filter(self, row, column, user_data=None):
         """
@@ -185,8 +187,8 @@ class Browser(InterfaceView):
         
         if self.file_column_callback(row[0]) == "file":
             return rabbitvcs.lib.helper.pretty_filesize(row[column])
-        else:
-            return ""
+
+        return ""
 
     def date_filter(self, row, column, user_data=None):
         """
