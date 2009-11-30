@@ -79,7 +79,7 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
             }
         )
 
-        self.initialize_items()
+        self.load()
 
     def on_destroy(self, widget):
         self.close()
@@ -88,7 +88,7 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
         self.close()
 
     def on_refresh_clicked(self, widget):
-        self.initialize_items()
+        self.load()
 
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(0)
@@ -101,34 +101,20 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
     #
     # Helper methods
     #
-
-    def initialize_items(self):
-        """
-        Initializes the file items in a new thread
-        """
-        
-        try:
-            thread.start_new_thread(self.load, ())
-        except Exception, e:
-            log.exception(e)
     
     def load(self):
-        gtk.gdk.threads_enter()
-        self.get_widget("status").set_text(_("Loading..."))
-        gtk.gdk.threads_leave()
+        self.action = VCSAction(
+            self.vcs,
+            notification=False
+        )
+        self.action.append(self.vcs.get_remote_updates, self.paths)
+        self.action.append(self.populate_files_table)
+        self.action.start()
 
-        self.items = self.vcs.get_remote_updates(self.paths)
-        self.populate_files_table()
-
-        gtk.gdk.threads_enter()
-        self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
-        gtk.gdk.threads_leave()
-
+    @gtk_unsafe
     def populate_files_table(self):
-        gtk.gdk.threads_enter()
         self.files_table.clear()
-        gtk.gdk.threads_leave()
-        
+        self.items = self.action.get_result(0)
         for item in self.items:
             revision_number = -1
             author = ""
