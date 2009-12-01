@@ -474,6 +474,14 @@ class ContextMenuCallbacks:
     def browse_to(self, widget, data1=None, data2=None):
         pass
 
+    def repobrowser(self, widget, data1=None, data2=None):
+        path = self.paths[0]
+        url = ""
+        if self.vcs_client.is_versioned(path):
+            url = self.vcs_client.get_repo_url(path)        
+    
+        proc = rabbitvcs.lib.helper.launch_ui_window("browser", [url])
+
 class ContextMenuConditions:
     """
     Provides a standard interface to checking conditions for menu items.
@@ -744,6 +752,9 @@ class ContextMenuConditions:
         return (self.path_dict["is_in_a_or_a_working_copy"] and
                 self.path_dict["is_versioned"] and
                 not self.path_dict["is_added"])
+
+    def repobrowser(self, data=None):
+        return True
 
 class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
     """
@@ -1048,6 +1059,7 @@ class MainContextMenu:
             ("Update", None),
             ("Commit", None),
             ("RabbitVCS", [
+                ("RepoBrowser", None),
                 ("CheckForModifications", None),
                 ("DiffMenu", [
                     ("Diff", None),
@@ -1286,6 +1298,21 @@ class ContextMenuItems:
                 }, 
                 "condition": {
                     "callback": (lambda: True)
+                }
+            },
+            "RepoBrowser": {
+                "identifier": "RabbitVCS::RepoBrowser",
+                "label": _("Repository Browser"),
+                "tooltip": _("Browse a repository tree"),
+                "icon": gtk.STOCK_FIND,
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.repobrowser,
+                        "args": None
+                    }
+                }, 
+                "condition": {
+                    "callback": self.conditions.repobrowser
                 }
             },
             "CheckForModifications": {
