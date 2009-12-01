@@ -90,8 +90,8 @@ class Branch(InterfaceView):
         self.close()
 
     def on_ok_clicked(self, widget):
-        src = self.get_widget("from_urls").get_active_text()
-        dest = self.get_widget("to_urls").get_active_text()
+        src = self.from_urls.get_active_text()
+        dest = self.to_urls.get_active_text()
         
         if dest == "":
             rabbitvcs.ui.dialog.MessageBox(_("You must supply a destination path."))
@@ -122,6 +122,14 @@ class Branch(InterfaceView):
         message = dialog.run()
         if message is not None:
             self.message.set_text(message)
+
+    def on_repo_browser_clicked(self, widget, data=None):
+        from rabbitvcs.ui.browser import BrowserDialog
+        BrowserDialog(self.from_urls.get_active_text(), 
+            callback=self.on_repo_browser_closed)
+
+    def on_repo_browser_closed(self, new_url):
+        self.from_urls.set_child_text(new_url)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main, REVISION_OPT
