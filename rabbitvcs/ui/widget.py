@@ -375,7 +375,7 @@ class TableBase:
     def file_pixbuf(self, column, cell, model, iter, data=None):
         stock_id = None
         if data is not None:
-            real_item = self.data[model.get_path(iter)[0]][data["column"]]
+            real_item = self.data[model.get_path(iter)][data["column"]]
             kind = data["callback"](real_item)
             stock_id = gtk.STOCK_FILE
             if kind == "dir":
