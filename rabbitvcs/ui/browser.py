@@ -65,8 +65,8 @@ class Browser(InterfaceView):
         )
 
         self.items = []
-        self.table = rabbitvcs.ui.widget.Table(
-            self.get_widget("items"), 
+        self.list_table = rabbitvcs.ui.widget.Table(
+            self.get_widget("list"), 
             [rabbitvcs.ui.widget.TYPE_PATH, gobject.TYPE_INT, 
                 gobject.TYPE_INT, gobject.TYPE_STRING, gobject.TYPE_FLOAT], 
             [_("Path"), _("Revision"), _("Size"), _("Author"), _("Date")],
@@ -109,12 +109,12 @@ class Browser(InterfaceView):
 
     @gtk_unsafe
     def populate_files_table(self):
-        self.table.clear()
+        self.list_table.clear()
         self.items = self.action.get_result(0)
         self.items[0][0].repos_path = ".."
         self.items.sort(self.sort_files)
         for item,locked in self.items:
-            self.table.append([
+            self.list_table.append([
                 item.repos_path,
                 item.created_rev.number,
                 item.size,
@@ -132,7 +132,7 @@ class Browser(InterfaceView):
         self.load()
 
     def on_row_activated(self, treeview, data, col):
-        path = self.table.get_selected_row_items(0)[0]
+        path = self.list_table.get_selected_row_items(0)[0]
         if path == "..":
             path = self.url.split("/")[0:-1]
             self.url = "/".join(path)
@@ -218,7 +218,7 @@ class BrowserDialog(Browser):
         self.hide()
         if self.callback is not None:
             path = self.urls.get_active_text()
-            selected = self.table.get_selected_row_items(0)
+            selected = self.list_table.get_selected_row_items(0)
             if len(selected) > 0:
                 path = rabbitvcs.lib.helper.url_join(
                     path,
