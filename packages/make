@@ -56,9 +56,12 @@ COMMANDS = {
     
     "official" :
         {"desc" : "Build an official source and binary from a tarball and current packaging.",
-         "method" : "build_official_package"}
+         "method" : "build_official_package"},
+    
+    "ppa" :
+        {"desc" : "Build a source package for uploading to the PPA.",
+         "method": "build_ppa_source"}
     }
-
     # modify sys.path, do import
    
 def package_id(root_dir):
@@ -135,6 +138,10 @@ if __name__ == "__main__":
     parser.add_option("-p", "--pbuilder", dest="pbuilder", action="store_true",
                       default = False,
                       help = "use pbuilder for Debian/Ubuntu packages")
+    
+    parser.add_option("-a", "--ppa", dest="ppa", action="store_true",
+                      default = False,
+                      help = "prepare packages for PPA")
     
     (options, args) = parser.parse_args()
 
@@ -217,7 +224,8 @@ if __name__ == "__main__":
                             distro,
                             package_name,
                             package_ver,
-                            use_pbuilder = options.pbuilder)
+                            use_pbuilder = options.pbuilder,
+                            ppa = options.ppa)
         
         try:
             getattr(builder, COMMANDS[command]["method"])()

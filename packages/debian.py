@@ -17,6 +17,9 @@ class Debian(Generic):
         self.pbuilder = (kwargs.has_key('use_pbuilder') and
                          kwargs['use_pbuilder'])
         
+        self.ppa = (kwargs.has_key('ppa') and
+                    kwargs['ppa'])
+        
         self.orig_ark = None
         self.orig_ark_name = self.name + "_" + self.version + ".orig.tar.gz"
        
@@ -80,6 +83,13 @@ class Debian(Generic):
             ["debuild", "-us", "-uc", "-b"],
             cwd = self.package_dir)
     
+    def _build_ppa_source(self):
+        print "Running debuild to create a signed Debian source package..."
+        
+        retval = subprocess.call(
+            ["debuild", "-S"],
+            cwd = self.package_dir)
+    
     def _build_binary(self, sign = False):
         if self.pbuilder:
             self._build_binary_pdebuild(sign)
@@ -107,3 +117,10 @@ class Debian(Generic):
         self._common_prebuild()
         self._build_binary()
         self._copy_results("*.deb")
+
+    def build_ppa_source(self):
+        """ Builds a source package for the PPA.
+        """
+        self._common_prebuild(get_archive=True)
+        self._build_ppa_source()
+        self._copy_results()
