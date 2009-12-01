@@ -86,7 +86,7 @@ def filter_router(model, iter, column, filters):
     
     """
     
-    row = model.get_model()[model.get_path(iter)[0]]
+    row = model.get_model()[model.get_path(iter)]
 
     if not filters:
         return row[column]
