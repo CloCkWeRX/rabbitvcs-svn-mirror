@@ -96,6 +96,8 @@ class Browser(InterfaceView):
                 "mouse-event":   self.on_list_table_mouse_event
             }
         )
+        
+        self.clipboard = None
 
         if url:
             self.load()
@@ -214,6 +216,28 @@ class Browser(InterfaceView):
         paths = self.list_table.get_selected_row_items(0)
         BrowserContextMenu(self, data, None, self.vcs, paths).show()
 
+    def update_clipboard(self, action, paths):
+        urls = []
+        for path in paths:
+            urls.append(rabbitvcs.lib.helper.url_join(
+                self.urls.get_active_text(), 
+                os.path.basename(path)
+            ))
+    
+        self.clipboard = {
+            "action": action,
+            "urls": urls
+        }
+
+    def clipboard_has_cut(self):
+        return (self.clipboard is not None and self.clipboard["action"] == "cut")
+
+    def clipboard_has_copy(self):
+        return (self.clipboard is not None and self.clipboard["action"] == "cut")
+
+    def empty_clipboard(self):
+        self.clipboard = None
+
 class BrowserDialog(Browser):
     def __init__(self, path, callback=None):
         """
@@ -273,8 +297,8 @@ class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
     def copy_to_clipboard(self, data1=None, data2=None):
         return True
 
-    def paste_from_clipboard(self, data1=None, data2=None):
-        return True
+    def paste_from_clipboard(self, caller=None):
+        return (caller.clipboard_has_cut() or caller.clipboard_has_copy())
 
     def copy_to(self, data1=None, data2=None):
         return True
@@ -316,14 +340,14 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
     def create_folder(self, data=None):
         pass
 
-    def cut_to_clipboard(self, data=None):
-        pass
+    def cut_to_clipboard(self, data=None, user_data=None):
+        self.caller.update_clipboard("cut", self.paths)
 
-    def copy_to_clipboard(self, data=None):
-        pass
+    def copy_to_clipboard(self, data=None, user_data=None):
+        self.caller.update_clipboard("copy", self.paths)
 
-    def paste_from_clipboard(self, data=None):
-        pass
+    def paste_from_clipboard(self, data=None, user_data=None):
+        self.caller.empty_clipboard()
 
     def copy_to(self, data=None):
         pass
@@ -422,7 +446,8 @@ class BrowserContextMenu:
                     }
                 },
                 "condition": {
-                    "callback": self.conditions.paste_from_clipboard
+                    "callback": self.conditions.paste_from_clipboard,
+                    "args": self.caller
                 }
             },
             "CopyTo": {
