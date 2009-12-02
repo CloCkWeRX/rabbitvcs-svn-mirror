@@ -133,7 +133,6 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
 
     def show_files_table_popup_menu(self, treeview, data):
         paths = self.files_table.get_selected_row_items(0)
-        conditions = CheckModsContextMenuConditions(self.vcs, paths)
         CheckModsContextMenu(self, data, self.base_dir, self.vcs, paths).show()
      
     def diff_remote(self, path):
