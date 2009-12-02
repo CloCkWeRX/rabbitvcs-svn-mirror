@@ -98,6 +98,7 @@ class Browser(InterfaceView):
         )
         
         self.clipboard = None
+        self.url_clipboard = gtk.Clipboard()
 
         if url:
             self.load()
@@ -213,17 +214,17 @@ class Browser(InterfaceView):
             self.show_list_table_popup_menu(treeview, data)
 
     def show_list_table_popup_menu(self, treeview, data):
-        paths = self.list_table.get_selected_row_items(0)
-        BrowserContextMenu(self, data, None, self.vcs, paths).show()
-
-    def update_clipboard(self, action, paths):
-        urls = []
-        for path in paths:
-            urls.append(rabbitvcs.lib.helper.url_join(
+        tmp_paths = self.list_table.get_selected_row_items(0)
+        paths = []
+        for path in tmp_paths:
+            paths.append(rabbitvcs.lib.helper.url_join(
                 self.urls.get_active_text(), 
                 os.path.basename(path)
             ))
-    
+            
+        BrowserContextMenu(self, data, None, self.vcs, paths).show()
+
+    def update_clipboard(self, action, urls):
         self.clipboard = {
             "action": action,
             "urls": urls
@@ -237,6 +238,9 @@ class Browser(InterfaceView):
 
     def empty_clipboard(self):
         self.clipboard = None
+    
+    def set_url_clipboard(self, url):
+        self.url_clipboard.set_text(url)
 
 class BrowserDialog(Browser):
     def __init__(self, path, callback=None):
@@ -304,7 +308,7 @@ class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
         return True
 
     def copy_url_to_clipboard(self, data1=None, data2=None):
-        return True
+        return (self.path_dict["length"] == 1)
 
     def move_to(self, data1=None, data2=None):
         return True
@@ -352,8 +356,8 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
     def copy_to(self, data=None):
         pass
 
-    def copy_url_to_clipboard(self, data=None):
-        pass
+    def copy_url_to_clipboard(self, data=None, user_data=None):
+        self.caller.set_url_clipboard(self.paths[0])
 
     def move_to(self, data=None):
         pass
