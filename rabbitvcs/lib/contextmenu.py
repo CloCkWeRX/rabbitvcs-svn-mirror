@@ -1242,7 +1242,7 @@ class ContextMenuItems:
             },
             "Checkout": {
                 "identifier": "RabbitVCS::Checkout",
-                "label": _("Checkout"),
+                "label": _("Checkout..."),
                 "tooltip": _("Check out a working copy"),
                 "icon": "rabbitvcs-checkout",
                 "signals": {
@@ -1636,7 +1636,7 @@ class ContextMenuItems:
             },
             "Export": {
                 "identifier": "RabbitVCS::Export",
-                "label": _("Export"),
+                "label": _("Export..."),
                 "tooltip": _("Export a working copy or repository with no versioning information"),
                 "icon": "rabbitvcs-export",
                 "signals": {
