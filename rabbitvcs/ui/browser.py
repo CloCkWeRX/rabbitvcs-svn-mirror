@@ -65,7 +65,6 @@ class Browser(InterfaceView):
         )
 
         self.items = []
-        self.tree_items = {}
         self.list_table = rabbitvcs.ui.widget.Table(
             self.get_widget("list"), 
             [rabbitvcs.ui.widget.TYPE_PATH, gobject.TYPE_INT, 
@@ -94,22 +93,6 @@ class Browser(InterfaceView):
                 "row-activated": self.on_row_activated
             }
         )
-        
-        self.tree_table = rabbitvcs.ui.widget.Tree(
-            self.get_widget("tree"),
-            [rabbitvcs.ui.widget.TYPE_PATH],
-            [_("Tree")],
-            filters=[{
-                "callback": self.file_filter,
-                "user_data": {
-                    "column": 0
-                }
-            }],
-            filter_types=[gobject.TYPE_STRING],
-            callbacks={
-                "file-column-callback": self.file_column_callback
-            }
-        )
 
         if url:
             self.load()
@@ -121,19 +104,17 @@ class Browser(InterfaceView):
         )
         
         self.action.append(self.vcs.list, self.urls.get_active_text(), recurse=False)
-        self.action.append(self.populate_files_table)
+        self.action.append(self.populate_table)
         self.action.start()
 
     @gtk_unsafe
-    def populate_files_table(self):
+    def populate_table(self):
         self.list_table.clear()
         self.items = self.action.get_result(0)
         self.items[0][0].repos_path = ".."
         self.items.sort(self.sort_files)
         
-        self.tree_items[self.url] = []
         for item,locked in self.items:
-            
             self.list_table.append([
                 item.repos_path,
                 item.created_rev.number,
@@ -142,13 +123,6 @@ class Browser(InterfaceView):
                 item.time
             ])
             
-            if (self.vcs.NODE_KINDS_REVERSE[item.kind] == "dir" 
-                    and item.repos_path != ".."):
-                self.tree_items[self.url].append(([item.repos_path], None))
-        
-        self.tree_table.clear()
-        self.tree_table.populate([([self.url], self.tree_items[self.url])])
-        
     def on_destroy(self, widget):
         self.close()
     
