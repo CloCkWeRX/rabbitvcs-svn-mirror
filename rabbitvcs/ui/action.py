@@ -148,9 +148,9 @@ class MessageCallbackNotifier(VCSNotifier):
         self.append(["", str(e), ""])
 
 class LoadingNotifier(VCSNotifier):
-    def __init__(self, callback_cancel=None):
+    def __init__(self, callback_cancel=None, visible=True):
     
-        VCSNotifier.__init__(self, "dialogs", "Loading", callback_cancel, True)
+        VCSNotifier.__init__(self, "dialogs", "Loading", callback_cancel, visible)
         
         self.pbar = rabbitvcs.ui.widget.ProgressBar(
             self.get_widget("pbar")
@@ -218,7 +218,8 @@ class VCSAction(threading.Thread):
             )
             self.has_notifier = True
         else:
-            self.notification = LoadingNotifier(self.set_cancel)
+            visible = run_in_thread
+            self.notification = LoadingNotifier(self.set_cancel, visible=visible)
             self.has_loader = True
             
         self.pbar_ticks = None
