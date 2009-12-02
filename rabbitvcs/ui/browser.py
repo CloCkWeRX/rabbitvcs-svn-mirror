@@ -29,6 +29,8 @@ import gtk
 from datetime import datetime
 
 from rabbitvcs.ui import InterfaceView
+from rabbitvcs.lib.contextmenu import GtkContextMenu, GtkFilesContextMenuConditions, \
+    GtkFilesContextMenuCallbacks, ContextMenuItems
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
@@ -90,7 +92,8 @@ class Browser(InterfaceView):
                 gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
             callbacks={
                 "file-column-callback": self.file_column_callback,
-                "row-activated": self.on_row_activated
+                "row-activated": self.on_row_activated,
+                "mouse-event":   self.on_list_table_mouse_event
             }
         )
 
@@ -203,6 +206,14 @@ class Browser(InterfaceView):
         
         return str(row[column])
 
+    def on_list_table_mouse_event(self, treeview, data=None):
+        if data is not None and data.button == 3:
+            self.show_list_table_popup_menu(treeview, data)
+
+    def show_list_table_popup_menu(self, treeview, data):
+        paths = self.list_table.get_selected_row_items(0)
+        BrowserContextMenu(self, data, None, self.vcs, paths).show()
+
 class BrowserDialog(Browser):
     def __init__(self, path, callback=None):
         """
@@ -227,6 +238,242 @@ class BrowserDialog(Browser):
                     os.path.basename(selected[0])
                 )
             self.callback(path)
+
+class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
+    def __init__(self, vcs_client, paths=[]):
+        GtkFilesContextMenuConditions.__init__(self, vcs_client, paths)
+
+    def _open(self, data1=None, data2=None):
+        return True
+    
+    def show_log(self, data1=None, data2=None):
+        return True
+    
+    def annotate(self, data1=None, data2=None):
+        return True
+    
+    def checkout(self, data1=None, data2=None):
+        return True
+    
+    def export(self, data1=None, data2=None):
+        return True
+        
+    def rename(self, data1=None, data2=None):
+        return True
+    
+    def delete(self, data1=None, data2=None):
+        return True
+
+    def create_folder(self, data1=None, data2=None):
+        return True
+
+    def cut_to_clipboard(self, data1=None, data2=None):
+        return True
+
+    def copy_to_clipboard(self, data1=None, data2=None):
+        return True
+
+    def paste_from_clipboard(self, data1=None, data2=None):
+        return True
+
+    def copy_to(self, data1=None, data2=None):
+        return True
+
+    def copy_url_to_clipboard(self, data1=None, data2=None):
+        return True
+
+    def move_to(self, data1=None, data2=None):
+        return True
+
+class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
+    def __init__(self, caller, base_dir, vcs_client, paths=[]):
+        self.caller = caller
+        self.base_dir = base_dir
+        self.vcs_client = vcs_client
+        self.paths = paths
+
+    def _open(self, data=None):
+        return True
+    
+    def show_log(self, data=None):
+        return True
+    
+    def annotate(self, data=None):
+        return True
+    
+    def checkout(self, data=None):
+        return True
+    
+    def export(self, data=None):
+        return True
+        
+    def rename(self, data=None):
+        return True
+    
+    def delete(self, data=None):
+        return True
+
+    def create_folder(self, data=None):
+        pass
+
+    def cut_to_clipboard(self, data=None):
+        pass
+
+    def copy_to_clipboard(self, data=None):
+        pass
+
+    def paste_from_clipboard(self, data=None):
+        pass
+
+    def copy_to(self, data=None):
+        pass
+
+    def copy_url_to_clipboard(self, data=None):
+        pass
+
+    def move_to(self, data=None):
+        pass
+
+class BrowserContextMenu:
+    def __init__(self, caller, event, base_dir, vcs_client, paths=[]):
+        
+        self.caller = caller
+        self.event = event
+        self.paths = paths
+        self.base_dir = base_dir
+        self.vcs_client = vcs_client
+        
+        self.conditions = BrowserContextMenuConditions(self.vcs_client, paths)
+        self.callbacks = BrowserContextMenuCallbacks(
+            self.caller, 
+            self.base_dir,
+            self.vcs_client, 
+            paths
+        )
+        
+        self.structure = [
+            ("Open", None),
+            ("Separator0", None),
+            ("Show_Log", None),
+            ("Annotate", None),
+            ("Export", None),
+            ("Checkout", None),
+            ("Separator1", None),
+            ("CreateRepoFolder", None),
+            ("Separator2", None),
+            ("CutToClipboard", None),
+            ("CopyToClipboard", None),
+            ("PasteFromClipboard", None),
+            ("Separator3", None),
+            ("Rename", None),
+            ("Delete", None),
+            ("CopyTo", None),
+            ("CopyUrlToClipboard", None),
+            ("MoveTo", None)
+        ]
+
+        items_to_append = {
+            "CreateRepoFolder": {
+                "label": _("Create folder..."),
+                "icon": gtk.STOCK_NEW,
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.create_folder, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.conditions.create_folder
+                }
+            },
+            "CutToClipboard": {
+                "label": _("Cut"),
+                "icon": gtk.STOCK_CUT,
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.cut_to_clipboard, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.conditions.cut_to_clipboard
+                }
+            },
+            "CopyToClipboard": {
+                "label": _("Copy"),
+                "icon": gtk.STOCK_COPY,
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.copy_to_clipboard, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.conditions.copy_to_clipboard
+                }
+            },
+            "PasteFromClipboard": {
+                "label": _("Paste"),
+                "icon": gtk.STOCK_PASTE,
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.paste_from_clipboard, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.conditions.paste_from_clipboard
+                }
+            },
+            "CopyTo": {
+                "label": _("Copy To..."),
+                "icon": gtk.STOCK_COPY,
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.copy_to, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.conditions.copy_to
+                }
+            },
+            "CopyUrlToClipboard": {
+                "label": _("Copy URL to clipboard"),
+                "icon": "rabbitvcs-diff",
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.copy_url_to_clipboard, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.conditions.copy_url_to_clipboard
+                }
+            },
+            "MoveTo": {
+                "label": _("Move to..."),
+                "icon": gtk.STOCK_SAVE_AS,
+                "signals": {
+                    "activate": {
+                        "callback": self.callbacks.move_to, 
+                        "args": None
+                    }
+                },
+                "condition": {
+                    "callback": self.conditions.move_to
+                }
+            }
+        }
+        
+        self.items = ContextMenuItems(self.conditions, self.callbacks, items_to_append).get_items()
+
+    def show(self):
+        if len(self.paths) == 0:
+            return
+
+        context_menu = GtkContextMenu(self.structure, self.items)
+        context_menu.show(self.event)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
