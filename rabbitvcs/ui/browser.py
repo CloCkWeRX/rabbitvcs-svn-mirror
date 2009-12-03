@@ -78,6 +78,11 @@ class Browser(InterfaceView):
                     "column": 0
                 }
             },{
+                "callback": self.revision_filter,
+                "user_data": {
+                    "column": 1
+                }
+            },{
                 "callback": self.size_filter,
                 "user_data": {
                     "column": 2
@@ -88,7 +93,7 @@ class Browser(InterfaceView):
                     "column": 4
                 }
             }],
-            filter_types=[gobject.TYPE_STRING, gobject.TYPE_INT, 
+            filter_types=[gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
             callbacks={
                 "file-column-callback": self.file_column_callback,
@@ -99,6 +104,7 @@ class Browser(InterfaceView):
         
         self.clipboard = None
         self.url_clipboard = gtk.Clipboard()
+        self.repo_root_url = None
 
         if url:
             self.load()
@@ -110,6 +116,7 @@ class Browser(InterfaceView):
         )
         
         self.action.append(self.vcs.list, self.urls.get_active_text(), recurse=False)
+        self.action.append(self.init_repo_root_url)
         self.action.append(self.populate_table)
         self.action.start()
 
@@ -117,10 +124,10 @@ class Browser(InterfaceView):
     def populate_table(self):
         self.list_table.clear()
         self.items = self.action.get_result(0)
-        self.items[0][0].repos_path = ".."
         self.items.sort(self.sort_files)
         
-        for item,locked in self.items:
+        self.list_table.append(["..", 0, 0, "", 0])
+        for item,locked in self.items[1:]:
             self.list_table.append([
                 item.repos_path,
                 item.created_rev.number,
@@ -128,7 +135,11 @@ class Browser(InterfaceView):
                 item.last_author,
                 item.time
             ])
-            
+    
+    def init_repo_root_url(self):
+        if self.repo_root_url is None:
+            self.repo_root_url = self.vcs.get_repo_root_url(self.url)
+    
     def on_destroy(self, widget):
         self.close()
     
@@ -156,10 +167,12 @@ class Browser(InterfaceView):
         """
         Determine the node kind (dir or file) from our retrieved items list
         """
-        
+
+        if filename == "..":
+            return "dir"
+
         for item,locked in self.items:
-            if (item.repos_path == filename
-                    or (item.repos_path == ".." and filename == self.url)):
+            if item.repos_path == filename:
                 return self.vcs.NODE_KINDS_REVERSE[item.kind]
         return None
 
@@ -192,16 +205,29 @@ class Browser(InterfaceView):
         """
         Table filter to convert the item size to a "pretty" filesize
         """
-        
+
         if self.file_column_callback(row[0]) == "file":
             return rabbitvcs.lib.helper.pretty_filesize(row[column])
 
         return ""
 
+    def revision_filter(self, row, column, user_data=None):
+        """
+        Table filter to convert revision to a desired format
+        """
+        
+        if row[0] == "..":
+            return ""
+        
+        return row[column]
+
     def date_filter(self, row, column, user_data=None):
         """
         Table filter to convert the item date to something readable
         """
+        
+        if row[0] == "..":
+            return ""
         
         if row[column]:
             change_time = datetime.fromtimestamp(row[column])
@@ -221,6 +247,9 @@ class Browser(InterfaceView):
                 self.urls.get_active_text(), 
                 os.path.basename(path)
             ))
+
+        if len(paths) == 0:
+            paths.append(self.url)
             
         BrowserContextMenu(self, data, None, self.vcs, paths).show()
 
@@ -241,6 +270,9 @@ class Browser(InterfaceView):
     
     def set_url_clipboard(self, url):
         self.url_clipboard.set_text(url)
+    
+    def get_repo_root_url(self):
+        return self.repo_root_url
 
 class BrowserDialog(Browser):
     def __init__(self, path, callback=None):
@@ -292,8 +324,13 @@ class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
     def delete(self, data1=None, data2=None):
         return True
 
-    def create_folder(self, data1=None, data2=None):
-        return True
+    def create_folder(self, caller):
+        root_url = caller.get_repo_root_url()
+        if self.path_dict["length"] == 1:
+            path = self.paths[0][len(root_url):]
+            return (caller.file_column_callback(path) == "dir")
+
+        return (self.path_dict["length"] == 0)
 
     def cut_to_clipboard(self, data1=None, data2=None):
         return True
@@ -411,7 +448,8 @@ class BrowserContextMenu:
                     }
                 },
                 "condition": {
-                    "callback": self.conditions.create_folder
+                    "callback": self.conditions.create_folder,
+                    "args": self.caller
                 }
             },
             "CutToClipboard": {
@@ -498,9 +536,6 @@ class BrowserContextMenu:
         self.items = ContextMenuItems(self.conditions, self.callbacks, items_to_append).get_items()
 
     def show(self):
-        if len(self.paths) == 0:
-            return
-
         context_menu = GtkContextMenu(self.structure, self.items)
         context_menu.show(self.event)
 
