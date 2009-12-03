@@ -858,6 +858,7 @@ class GtkFilesContextMenuConditions(ContextMenuConditions):
         
         """
         self.vcs_client = vcs_client
+        self.paths = paths
         self.statuses = {}
         for path in paths:
             statuses_tmp = self.vcs_client.status(path)
