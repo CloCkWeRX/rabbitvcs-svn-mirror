@@ -1558,6 +1558,20 @@ class SVN:
         return self.client.list(url_or_path, revision=revision.primitive(), 
             recurse=recurse)
     
+    def mkdir(self, url_or_path, log_message):
+        """
+        Make a new directory in the repository or working copy
+        
+        @type   url_or_path: string
+        @param  url_or_path: Url in the repository or path in working copy
+        
+        @type   log_message: string
+        @param  log_message: A log message to use in your commit
+        
+        """
+        
+        return self.client.mkdir(url_or_path, log_message)
+    
     def apply_patch(self, patch_file, base_dir):
         """
         Applies a patch created for this WC.

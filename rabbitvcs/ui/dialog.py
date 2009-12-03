@@ -338,3 +338,29 @@ class TextChange(InterfaceView):
         dialog.destroy()
         
         return (result, self.textview.get_text())
+
+class NewFolder(InterfaceView):
+    def __init__(self):
+        InterfaceView.__init__(self, GLADE, "CreateFolder")
+
+        self.folder_name = self.get_widget("folder_name")
+        self.textview = rabbitvcs.ui.widget.TextView(
+            self.get_widget("log_message"), 
+            _("Added a folder to the repository")
+        )
+
+    def on_folder_name_changed(self, widget):
+        complete = (self.folder_name.get_text() != "")
+        self.get_widget("ok").set_sensitive(complete)
+
+    def run(self):
+        dialog = self.get_widget("CreateFolder")
+        dialog.set_default_response(gtk.RESPONSE_OK)
+        result = dialog.run()
+        
+        dialog.destroy()
+        
+        if result == gtk.RESPONSE_OK:
+            return (self.folder_name.get_text(), self.textview.get_text())
+        else:
+            return None

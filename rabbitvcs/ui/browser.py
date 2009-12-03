@@ -117,19 +117,19 @@ class Browser(InterfaceView):
         
         self.action.append(self.vcs.list, self.urls.get_active_text(), recurse=False)
         self.action.append(self.init_repo_root_url)
-        self.action.append(self.populate_table)
+        self.action.append(self.populate_table, 0)
         self.action.start()
 
     @gtk_unsafe
-    def populate_table(self):
+    def populate_table(self, item_index=0):
         self.list_table.clear()
-        self.items = self.action.get_result(0)
+        self.items = self.action.get_result(item_index)
         self.items.sort(self.sort_files)
         
         self.list_table.append(["..", 0, 0, "", 0])
         for item,locked in self.items[1:]:
             self.list_table.append([
-                item.repos_path,
+                item.path,
                 item.created_rev.number,
                 item.size,
                 item.last_author,
@@ -155,10 +155,7 @@ class Browser(InterfaceView):
             path = self.url.split("/")[0:-1]
             self.url = "/".join(path)
         else:
-            self.url = rabbitvcs.lib.helper.url_join(
-                self.urls.get_active_text(), 
-                os.path.basename(path)
-            )
+            self.url = path
 
         self.urls.set_child_text(self.url)
         self.load()
@@ -172,7 +169,7 @@ class Browser(InterfaceView):
             return "dir"
 
         for item,locked in self.items:
-            if item.repos_path == filename:
+            if item.path == filename:
                 return self.vcs.NODE_KINDS_REVERSE[item.kind]
         return None
 
@@ -240,17 +237,10 @@ class Browser(InterfaceView):
             self.show_list_table_popup_menu(treeview, data)
 
     def show_list_table_popup_menu(self, treeview, data):
-        tmp_paths = self.list_table.get_selected_row_items(0)
-        paths = []
-        for path in tmp_paths:
-            paths.append(rabbitvcs.lib.helper.url_join(
-                self.urls.get_active_text(), 
-                os.path.basename(path)
-            ))
-
+        paths = self.list_table.get_selected_row_items(0)
         if len(paths) == 0:
             paths.append(self.url)
-            
+        
         BrowserContextMenu(self, data, None, self.vcs, paths).show()
 
     def update_clipboard(self, action, urls):
@@ -274,6 +264,9 @@ class Browser(InterfaceView):
     def get_repo_root_url(self):
         return self.repo_root_url
 
+    def get_url(self):
+        return self.urls.get_active_text()
+
 class BrowserDialog(Browser):
     def __init__(self, path, callback=None):
         """
@@ -293,10 +286,7 @@ class BrowserDialog(Browser):
             path = self.urls.get_active_text()
             selected = self.list_table.get_selected_row_items(0)
             if len(selected) > 0:
-                path = rabbitvcs.lib.helper.url_join(
-                    path,
-                    os.path.basename(selected[0])
-                )
+                path = selected
             self.callback(path)
 
 class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
@@ -325,10 +315,8 @@ class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
         return True
 
     def create_folder(self, caller):
-        root_url = caller.get_repo_root_url()
         if self.path_dict["length"] == 1:
-            path = self.paths[0][len(root_url):]
-            return (caller.file_column_callback(path) == "dir")
+            return (caller.file_column_callback(self.paths[0]) == "dir")
 
         return (self.path_dict["length"] == 0)
 
@@ -378,8 +366,24 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
     def delete(self, data=None):
         return True
 
-    def create_folder(self, data=None):
-        pass
+    def create_folder(self, data=None, user_data=None):
+        from rabbitvcs.ui.dialog import NewFolder
+        dialog = NewFolder()
+        result = dialog.run()
+        if result is None:
+            return
+            
+        (folder_name, log_message) = result
+        new_url = self.paths[0].rstrip("/") + "/" + folder_name
+
+        self.caller.action = rabbitvcs.ui.action.VCSAction(
+            self.vcs_client,
+            notification=False
+        )
+        self.caller.action.append(self.vcs_client.mkdir, new_url, log_message)
+        self.caller.action.append(self.vcs_client.list, self.paths[0], recurse=False)
+        self.caller.action.append(self.caller.populate_table, 1)
+        self.caller.action.start()        
 
     def cut_to_clipboard(self, data=None, user_data=None):
         self.caller.update_clipboard("cut", self.paths)
