@@ -344,12 +344,26 @@ class TableBase:
         return self.selected_rows
 
     def __button_press_event(self, treeview, data):
+        info = treeview.get_path_at_pos(int(data.x), int(data.y))
+        selection = treeview.get_selection()
+        
+        # If info is none, that means the user is clicking the empty space
+        # In that case, unselect everything and update the selected_rows
+        if info is None:
+            selection.unselect_all()
+            self.update_selection()
+            return
+            
         # this allows us to retain multiple selections with a right-click
-        self.update_selection()
         if data.button == 3:
-            selection = treeview.get_selection()
             (liststore, indexes) = selection.get_selected_rows()
-            return (len(indexes) > 0)
+            
+            # If the mouse click is one of the currently selected rows
+            # keep the selection, otherwise, use the new selection
+            for index in indexes:
+                if index[0] == info[0][0]:
+                    return True
+            return False
 
     def __row_activated_event(self, treeview, data, col):
         treeview.grab_focus()
