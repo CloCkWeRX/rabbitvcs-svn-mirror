@@ -363,8 +363,25 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
     def rename(self, data=None):
         return True
     
-    def delete(self, data=None):
-        return True
+    def delete(self, data=None, user_data=None):
+        path_to_refresh = self.caller.get_url() 
+        if self.paths[0] == path_to_refresh:            
+            # If the deleted path is the same as the current path, go to the parent
+            path_to_refresh = path_to_refresh.split("/")[0:-1]
+            path_to_refresh = "/".join(path_to_refresh)
+        
+            # Make sure the Browser variables are updated with the new path
+            self.caller.urls.set_child_text(path_to_refresh)
+            self.caller.url = path_to_refresh
+        
+        self.caller.action = rabbitvcs.ui.action.VCSAction(
+            self.vcs_client,
+            notification=False
+        )
+        self.caller.action.append(self.vcs_client.remove, self.paths[0])
+        self.caller.action.append(self.vcs_client.list, path_to_refresh, recurse=False)
+        self.caller.action.append(self.caller.populate_table, 1)
+        self.caller.action.start()  
 
     def create_folder(self, data=None, user_data=None):
         from rabbitvcs.ui.dialog import NewFolder
