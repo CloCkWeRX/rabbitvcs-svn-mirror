@@ -192,7 +192,7 @@ class VCSAction(threading.Thread):
         if run_in_thread is True:
             threading.Thread.__init__(self)
         
-        self.message = ""
+        self.message = None
         
         self.client = client
         self.client.set_callback_cancel(self.cancel)
@@ -346,8 +346,17 @@ class VCSAction(threading.Thread):
         @return: (True=continue/False=cancel, log message)
         
         """
-        
-        return True, self.message.encode("utf-8")
+
+        if self.message is None:
+            gtk.gdk.threads_enter()
+            dialog = rabbitvcs.ui.dialog.TextChange(_("Log Message"))
+            result = dialog.run()
+            gtk.gdk.threads_leave()
+            
+            should_continue = (result[0] == 1)
+            return should_continue, result[1].encode("utf-8")
+        else:
+            return True, self.message.encode("utf-8")
     
     def get_login(self, realm, username, may_save):
         """
