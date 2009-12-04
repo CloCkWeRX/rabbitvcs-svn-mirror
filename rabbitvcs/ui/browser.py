@@ -114,8 +114,9 @@ class Browser(InterfaceView, GtkContextMenuCaller):
             self.vcs,
             notification=False
         )
-        
-        self.action.append(self.vcs.list, self.urls.get_active_text(), recurse=False)
+        revision = self.revision_selector.get_revision_object()
+        self.action.append(self.vcs.list, self.urls.get_active_text(), 
+            revision=revision, recurse=False)
         self.action.append(self.init_repo_root_url)
         self.action.append(self.populate_table, 0)
         self.action.start()
@@ -290,8 +291,9 @@ class BrowserDialog(Browser):
             self.callback(path)
 
 class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
-    def __init__(self, vcs_client, paths=[]):
+    def __init__(self, vcs_client, paths, caller):
         GtkFilesContextMenuConditions.__init__(self, vcs_client, paths)
+        self.caller = caller
 
     def _open(self, data1=None, data2=None):
         return True
@@ -308,15 +310,17 @@ class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
     def export(self, data1=None, data2=None):
         return True
         
-    def rename(self, data1=None, data2=None):
-        return True
+    def rename(self, data1=None):
+        revision = self.caller.revision_selector.get_revision_object()
+        return (revision.kind == "head")
     
     def delete(self, data1=None, data2=None):
-        return True
+        revision = self.caller.revision_selector.get_revision_object()
+        return (revision.kind == "head")
 
-    def create_folder(self, caller):
+    def create_folder(self, data1=None):
         if self.path_dict["length"] == 1:
-            return (caller.file_column_callback(self.paths[0]) == "dir")
+            return (self.caller.file_column_callback(self.paths[0]) == "dir")
 
         return (self.path_dict["length"] == 0)
 
@@ -326,8 +330,8 @@ class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
     def copy_to_clipboard(self, data1=None, data2=None):
         return True
 
-    def paste_from_clipboard(self, caller=None):
-        return (caller.clipboard_has_cut() or caller.clipboard_has_copy())
+    def paste_from_clipboard(self, data1=None):
+        return (self.caller.clipboard_has_cut() or self.caller.clipboard_has_copy())
 
     def copy_to(self, data1=None, data2=None):
         return True
@@ -350,8 +354,26 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
         self.caller.urls.set_child_text(url)
         self.caller.url = url
 
-    def _open(self, data=None):
-        return True
+    def __get_browser_revision(self):
+        return self.caller.revision_selector.get_revision_object()
+
+    def _open(self, data=None, user_data=None):
+        self.caller.action = rabbitvcs.ui.action.VCSAction(
+            self.vcs_client,
+            notification=False
+        )
+        
+        exported_paths = []
+        for path in self.paths:
+            export_path = "/tmp/" + os.path.basename(self.paths[0])
+            exported_paths.append(export_path)
+            self.caller.action.append(self.vcs_client.export, self.paths[0], 
+                export_path, revision=self.__get_browser_revision())
+
+        for path in exported_paths:
+            self.caller.action.append(rabbitvcs.lib.helper.open_item, path)
+
+        self.caller.action.start()
     
     def show_log(self, data=None, user_data=None):
         rabbitvcs.lib.helper.launch_ui_window("log", [self.paths[0]])
@@ -454,7 +476,11 @@ class BrowserContextMenu:
         self.base_dir = base_dir
         self.vcs_client = vcs_client
         
-        self.conditions = BrowserContextMenuConditions(self.vcs_client, paths)
+        self.conditions = BrowserContextMenuConditions(
+            self.vcs_client, 
+            paths,
+            self.caller
+        )
         self.callbacks = BrowserContextMenuCallbacks(
             self.caller, 
             self.base_dir,
@@ -494,8 +520,7 @@ class BrowserContextMenu:
                     }
                 },
                 "condition": {
-                    "callback": self.conditions.create_folder,
-                    "args": self.caller
+                    "callback": self.conditions.create_folder
                 }
             },
             "CutToClipboard": {
@@ -534,8 +559,7 @@ class BrowserContextMenu:
                     }
                 },
                 "condition": {
-                    "callback": self.conditions.paste_from_clipboard,
-                    "args": self.caller
+                    "callback": self.conditions.paste_from_clipboard
                 }
             },
             "CopyTo": {
