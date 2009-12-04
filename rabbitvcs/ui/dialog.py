@@ -339,6 +339,29 @@ class TextChange(InterfaceView):
         
         return (result, self.textview.get_text())
 
+class OneLineTextChange(InterfaceView):
+    def __init__(self, title=None, label=None, current_text=None):
+        InterfaceView.__init__(self, GLADE, "OneLineTextChange")
+        if title:
+            self.get_widget("OneLineTextChange").set_title(title)
+        
+        self.new_text = self.get_widget("new_text")
+        self.label = self.get_widget("label")
+        
+        if label:
+            self.label.set_text(label)
+        
+        if current_text:
+            self.new_text.set_text(current_text)
+        
+    def run(self):
+        dialog = self.get_widget("OneLineTextChange")
+        result = dialog.run()
+        
+        dialog.destroy()
+        
+        return (result, self.new_text.get_text())
+
 class NewFolder(InterfaceView):
     def __init__(self):
         InterfaceView.__init__(self, GLADE, "CreateFolder")

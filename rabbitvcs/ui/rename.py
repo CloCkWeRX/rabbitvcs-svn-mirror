@@ -26,42 +26,36 @@ import pygtk
 import gobject
 import gtk
 
-from rabbitvcs.ui import InterfaceView
+from rabbitvcs.ui import InterfaceNonView
 from rabbitvcs.ui.action import VCSAction
-from rabbitvcs.ui.dialog import MessageBox
+from rabbitvcs.ui.dialog import MessageBox, OneLineTextChange
 import rabbitvcs.lib.vcs
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Rename(InterfaceView):
+class Rename(InterfaceNonView):
     def __init__(self, path):
-        InterfaceView.__init__(self, "rename", "Rename")
-        
-        
+        InterfaceNonView.__init__(self)
+
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         
         self.path = path
         (self.dir, self.filename) = os.path.split(self.path)
         
-        self.get_widget("new_name").set_text(self.filename)
-        
-    def on_destroy(self, widget):
-        self.close()
+        dialog = OneLineTextChange(_("Rename"), _("New Name:"), self.filename)
+        (result, new_filename) = dialog.run()
 
-    def on_cancel_clicked(self, widget):
-        self.close()
-
-    def on_ok_clicked(self, widget):
-        
-        new_name = self.get_widget("new_name").get_text()
-        if not new_name:
+        if result == gtk.RESPONSE_CANCEL:
+            self.close()
+            return
+       
+        if not new_filename:
             MessageBox(_("The new name field is required"))
             return
         
-        new_path = os.path.join(self.dir, new_name)
+        new_path = os.path.join(self.dir, new_filename)
         
-        self.hide()
         self.action = rabbitvcs.ui.action.VCSAction(
             self.vcs,
             register_gtk_quit=self.gtk_quit_is_set()
