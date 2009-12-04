@@ -353,8 +353,8 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
     def _open(self, data=None):
         return True
     
-    def show_log(self, data=None):
-        return True
+    def show_log(self, data=None, user_data=None):
+        rabbitvcs.lib.helper.launch_ui_window("log", [self.paths[0]])
     
     def annotate(self, data=None):
         return True
