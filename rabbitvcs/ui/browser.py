@@ -30,7 +30,7 @@ from datetime import datetime
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.lib.contextmenu import GtkContextMenu, GtkFilesContextMenuConditions, \
-    GtkFilesContextMenuCallbacks, ContextMenuItems
+    GtkFilesContextMenuCallbacks, ContextMenuItems, GtkContextMenuCaller
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
@@ -46,7 +46,7 @@ _ = gettext.gettext
 
 gtk.gdk.threads_init()
 
-class Browser(InterfaceView):
+class Browser(InterfaceView, GtkContextMenuCaller):
     def __init__(self, url):
         InterfaceView.__init__(self, "browser", "Browser")
 
@@ -345,6 +345,11 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
         self.vcs_client = vcs_client
         self.paths = paths
 
+    def __update_browser_url(self, url):
+        # Make sure the Browser variables are updated with the new path
+        self.caller.urls.set_child_text(url)
+        self.caller.url = url
+
     def _open(self, data=None):
         return True
     
@@ -360,8 +365,30 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
     def export(self, data=None):
         return True
         
-    def rename(self, data=None):
-        return True
+    def rename(self, data=None, user_data=None):
+        (base, filename) = os.path.split(self.paths[0])
+    
+        from rabbitvcs.ui.dialog import OneLineTextChange
+        dialog = OneLineTextChange(_("Rename"), _("New Name:"), filename)
+        (result, new_name) = dialog.run()
+        
+        if result == gtk.RESPONSE_CANCEL:
+            return
+        
+        new_url = base.rstrip("/") + "/" + new_name
+        path_to_refresh = self.caller.get_url()
+        if self.paths[0] == path_to_refresh:
+            path_to_refresh = new_url
+            self.__update_browser_url(path_to_refresh)
+
+        self.caller.action = rabbitvcs.ui.action.VCSAction(
+            self.vcs_client,
+            notification=False
+        )
+        self.caller.action.append(self.vcs_client.move, self.paths[0], new_url)
+        self.caller.action.append(self.vcs_client.list, path_to_refresh, recurse=False)
+        self.caller.action.append(self.caller.populate_table, 1)
+        self.caller.action.start()
     
     def delete(self, data=None, user_data=None):
         path_to_refresh = self.caller.get_url() 
@@ -370,9 +397,7 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
             path_to_refresh = path_to_refresh.split("/")[0:-1]
             path_to_refresh = "/".join(path_to_refresh)
         
-            # Make sure the Browser variables are updated with the new path
-            self.caller.urls.set_child_text(path_to_refresh)
-            self.caller.url = path_to_refresh
+            self.__update_browser_url(path_to_refresh)
         
         self.caller.action = rabbitvcs.ui.action.VCSAction(
             self.vcs_client,
