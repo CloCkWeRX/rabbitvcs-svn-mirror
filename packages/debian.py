@@ -2,6 +2,16 @@ from generic import Generic
 
 import shutil, subprocess, os.path, sys
 
+ERROR_USCAN = """\
+Error: uscan failed to download the upstream archive.
+
+This will cause major problems if you try to upload anything to (eg.) a PPA or
+the Debian archives, since the MD5 hash will not match. Therefore, it is a fatal
+error.
+
+If you have not yet uploaded an official tarball, just do it and don't complain.
+"""
+
 class Debian(Generic):
     """ A builder for all Debian-like distributions.
     """   
@@ -54,7 +64,7 @@ class Debian(Generic):
                                              self.orig_ark_name)
                 assert os.path.exists(self.orig_ark)
             else:
-                print "Warning: uscan failed to download the upstream archive."
+                sys.exit(ERROR_USCAN)
             
         if not (self.orig_ark and os.path.exists(self.orig_ark)):
             self.orig_ark = self._compress(self.orig_ark_name)
