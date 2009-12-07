@@ -2,7 +2,10 @@ from generic import Generic
 
 import shutil, subprocess, os.path, sys
 
-ERROR_USCAN = """\
+ERROR_USCAN = """
+
+    == Packaging script error! ==
+
 Error: uscan failed to download the upstream archive.
 
 This will cause major problems if you try to upload anything to (eg.) a PPA or
