@@ -1,12 +1,13 @@
 Format-Specification: http://svn.debian.org/wsvn/dep/web/deps/dep5.mdwn?op=file&rev=48
 Name: rabbitvcs
-Maintainer: Jason Heeris <jason.heeris@gmail.com>
+Contact: RabbitVCS Team <rabbitvcs@googlegroups.com>
 Source: http://code.google.com/p/rabbitvcs/
 
 Files: *
 Copyright: 2006-2008, Jason Field <jason@jasonfield.com>
            2007-2008, Bruce van der Kooij <brucevdkooij@gmail.com>
            2008-2008, Adam Plumb <adamplumb@gmail.com>
+           2009, Jason Heeris <jason.heeris@gmail.com>	
 License: GPL-2+
     On Debian systems the full text of the GNU General Public
     License can be found in the `/usr/share/common-licenses/GPL-2'
@@ -34,6 +35,7 @@ Copyright: 2006-2008, Jason Field <jason@jasonfield.com>
            2007-2008, Bruce van der Kooij <brucevdkooij@gmail.com>
            2008-2008, Adam Plumb <adamplumb@gmail.com>
            2005-2009, Bastian Kleineidam
+           2009, Jason Heeris <jason.heeris@gmail.com>
 License: GPL-2+
     On Debian systems the full text of the GNU General Public
     License can be found in the `/usr/share/common-licenses/GPL-2'

@@ -1,12 +1,15 @@
 rabbitvcs (0.13~pre-1~hardy) unstable; urgency=low
 
   * This is a placeholder. Please replace the version number above.
+  * Updated copyright information.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Mon, 07 Dec 2009 21:50:00 +0800
 
 rabbitvcs (0.12-2~hardy) hardy; urgency=low
 
   * Added required po-debconf stuff.
 
- -- Jason Heeris <jason_h@localhost>  Wed, 07 Oct 2009 09:19:30 +0800
+ -- Jason Heeris <jason.heeris@gmail.com>  Wed, 07 Oct 2009 09:19:30 +0800
 
 rabbitvcs (0.12-1~hardy) hardy; urgency=low
 
