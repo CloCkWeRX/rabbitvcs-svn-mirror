@@ -72,9 +72,16 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         InterfaceView.__init__(self, "propedit", "Properties")
         
         self.path = path
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
         
         self.get_widget("wc_text").set_text(gnomevfs.get_uri_from_local_path(os.path.realpath(path)))
+                
+        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+                
+        if not self.vcs.is_versioned(self.path):
+            rabbitvcs.ui.dialog.MessageBox(_("File is not under version control."))
+            self.close()
+            return
+        
         self.get_widget("remote_uri_text").set_text(self.vcs.get_repo_url(path))
         
         self.get_widget("apply_note").connect("size-allocate", wrapped_label_size_allocate_callback)
@@ -86,7 +93,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
             filters=[{
                 "callback": rabbitvcs.ui.widget.long_text_filter,
                 "user_data": {
-                    "cols": 20,
+                    "cols": 0,
                     "column": 1
                 }
             }],
