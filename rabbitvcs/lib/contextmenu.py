@@ -300,7 +300,7 @@ class ContextMenuCallbacks:
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def commit(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("commit", ["--base-dir=" + self.base_dir] + self.paths)
+        proc = rabbitvcs.lib.helper.launch_ui_window("commit", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def add(self, widget, data1=None, data2=None):
