@@ -51,7 +51,7 @@ LOCAL_DATETIME_FORMAT = locale.nl_langinfo(locale.D_T_FMT) # for UIs
 
 LINE_BREAK_CHAR = u'\u23CE'
 
-def format_text_with_linebreaks(text, cols=None):
+def format_long_text(text, cols=None):
     """ Nicely formats text containing linebreaks to display in a single line
     by replacing newlines with U+23CE. If the param "cols" is given, the text
     beyond cols is replaced by "...".

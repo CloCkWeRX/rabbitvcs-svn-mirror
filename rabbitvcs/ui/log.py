@@ -531,7 +531,7 @@ class Log(InterfaceView):
         self.set_end_revision(self.rev_end)
 
         for item in self.revision_items:
-            msg = rabbitvcs.lib.helper.format_text_with_linebreaks(item.message, 80)
+            msg = rabbitvcs.lib.helper.format_long_text(item.message, 80)
             
             author = _("(no author)")
             if hasattr(item, "author"):

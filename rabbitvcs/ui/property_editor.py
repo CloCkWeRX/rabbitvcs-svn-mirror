@@ -41,7 +41,7 @@ from rabbitvcs.lib.contextmenu import GtkContextMenuCaller
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.lib.vcs
-from rabbitvcs.lib.helper import format_text_with_linebreaks
+from rabbitvcs.lib.helper import format_long_text
 from rabbitvcs.lib.vcs.svn import Revision
 from rabbitvcs.lib.log import Log
 
@@ -82,15 +82,27 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [_("Name"), _("Value"), _("Reserved"), _("Status")]
+            [_("Name"), _("Value"), _("Reserved"), _("Status")],
+            filters=[{
+                "callback": rabbitvcs.ui.widget.long_text_filter,
+                "user_data": {
+                    "cols": 20,
+                    "column": 1
+                }
+            }],
+            callbacks={
+                "row-activated":  self.on_files_table_row_activated,
+                "mouse-event":   self.on_files_table_mouse_event,
+                "key-event":     self.on_files_table_key_event
+            }
         )
         self.table.allow_multiple()
         
-        self.load_properties()
+        self.refresh()
         
         print "Property editor for %s" % path
     
-    def load_properties(self):
+    def refresh(self):
         self.table.clear()
         
         try:
@@ -112,25 +124,25 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
                 
                 if local_props[propname] == base_props[propname]:
                     self.table.append([propname,
-                                       format_text_with_linebreaks(local_props[propname]),
+                                       local_props[propname],
                                        "N/A",
                                        "unchanged"])
                 
                 else:
                     self.table.append([propname,
-                                       format_text_with_linebreaks(local_props[propname]),
+                                       local_props[propname],
                                        "N/A",
                                        "value changed"])
             
             elif propname in local_propnames:
                 self.table.append([propname,
-                                   format_text_with_linebreaks(local_props[propname]),
+                                   local_props[propname],
                                    "N/A",
                                    "property added"])
             
             elif propname in base_propnames:
                 self.table.append([propname,
-                                   format_text_with_linebreaks(base_props[propname]),
+                                   base_props[propname],
                                    "N/A",
                                    "property deleted"])
 
@@ -145,22 +157,37 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         self.close()
 
     def on_refresh_clicked(self, widget):
-        self.load_properties()
+        self.refresh()
 
     def on_new_clicked(self, widget):
-        dialog = rabbitvcs.ui.dialog.Property()
-        name,value,recurse = dialog.run()
+        self.edit_property()
+
+    def edit_property(self, name=""):
         
-        if name:
-            print "Added %s: %s (%s)" % (name, value, recurse)
-
-    def on_edit_clicked(self, widget):
-        (recurse,name,value) = self.get_selected_name_value()
+        value = self.vcs.propget(self.path, name)
+        
         dialog = rabbitvcs.ui.dialog.Property(name, value)
+        
         name,value,recurse = dialog.run()
         if name:
-            print "Edited %s: %s (%s)" % (name, value, recurse)
+            success = self.vcs.propset(self.path, name, value, overwrite=True, recurse=False)
+            if not success:
+                rabbitvcs.ui.dialog.MessageBox(_("Unable to set new value for property."))
+            
+        self.refresh()
 
+    def on_files_table_row_activated(self, treeview, event, col):
+        for name in self.table.get_selected_row_items(0):
+            self.edit_property(name)
+
+    def on_files_table_key_event(self, treeview, data=None):
+        if gtk.gdk.keyval_name(data.keyval) == "Delete":
+            print "Delete!"
+
+    def on_files_table_mouse_event(self, treeview, data=None):
+        if data is not None and data.button == 3:
+            # self.show_files_table_popup_menu(treeview, data)
+            print "Left click!"
 
 if __name__ == "__main__":
     # These are some dumb tests before I add any functionality.

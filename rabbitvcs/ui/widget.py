@@ -126,6 +126,19 @@ def path_filter(row, column, user_data=None):
     else:
         return row[column] 
 
+def long_text_filter(row, column, user_data=None):
+    """
+    Uses the format_long_text helper function to trim and prettify some text.
+    """
+    text = row[column]
+    
+    cols = user_data["cols"]
+    
+    if text:
+        text = rabbitvcs.lib.helper.format_long_text(text, cols)
+        
+    return text
+
 class TableBase:
     def __init__(self, treeview, coltypes, colnames, values=[], filters=None, 
             filter_types=None, callbacks={}):

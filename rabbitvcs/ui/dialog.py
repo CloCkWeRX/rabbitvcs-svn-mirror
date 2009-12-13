@@ -53,7 +53,7 @@ class PreviousMessages(InterfaceView):
         for entry in self.entries:
             tmp = entry[1]
             
-            tmp = rabbitvcs.lib.helper.format_text_with_linebreaks(tmp, 80)
+            tmp = rabbitvcs.lib.helper.format_long_text(tmp, 80)
         
             self.message_table.append([entry[0],tmp])
         
