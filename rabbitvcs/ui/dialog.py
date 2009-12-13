@@ -33,8 +33,6 @@ import rabbitvcs.lib.helper
 
 GLADE = 'dialogs'
 
-LINE_BREAK_CHAR = u'\u23CE'
-
 class PreviousMessages(InterfaceView):
     def __init__(self):
         InterfaceView.__init__(self, GLADE, "PreviousMessages")
@@ -54,10 +52,8 @@ class PreviousMessages(InterfaceView):
         
         for entry in self.entries:
             tmp = entry[1]
-            if len(tmp) > 80:
-                tmp = "%s..." % tmp[0:80]
-        
-            tmp = tmp.strip().replace("\n", LINE_BREAK_CHAR)
+            
+            tmp = rabbitvcs.lib.helper.format_text_with_linebreaks(tmp, 80)
         
             self.message_table.append([entry[0],tmp])
         

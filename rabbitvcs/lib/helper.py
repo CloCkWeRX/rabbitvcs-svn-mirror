@@ -49,6 +49,20 @@ ngettext = gettext.ngettext
 DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S" # for log files
 LOCAL_DATETIME_FORMAT = locale.nl_langinfo(locale.D_T_FMT) # for UIs
 
+LINE_BREAK_CHAR = u'\u23CE'
+
+def format_text_with_linebreaks(text, cols=None):
+    """ Nicely formats text containing linebreaks to display in a single line
+    by replacing newlines with U+23CE. If the param "cols" is given, the text
+    beyond cols is replaced by "...".
+    """    
+    if cols and len(text) > cols:
+        text = "%s..." % text[0:cols]
+
+    text = text.strip().replace("\n", LINE_BREAK_CHAR)
+    
+    return text
+
 def in_rich_compare(item, list):
     """ Tests whether the item is in the given list. This is mainly to work
     around the rich-compare bug in pysvn. This is not identical to the "in"
@@ -71,7 +85,7 @@ def get_home_folder():
     """ 
     Returns the location of the hidden folder we use in the home dir.
     This is used for storing things like previous commit messages and
-    previously used repositories.
+    peviously used repositories.
     
     @rtype:     string
     @return:    The location of our main user storage folder.
