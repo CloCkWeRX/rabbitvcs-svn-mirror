@@ -84,7 +84,12 @@ class InterfaceView:
             gtk.main_quit()
             
     def register_gtk_quit(self):
+        window = self.get_widget(self.id)
         self.do_gtk_quit = True
+        
+        # This means we've already been closed
+        if window is None:
+            gtk.main_quit()
     
     def gtk_quit_is_set(self):
         return self.do_gtk_quit
