@@ -21,9 +21,7 @@
 #
 
 """
-
 Concrete VCS implementation for Subversion functionality.
-
 """
 
 import traceback
@@ -769,7 +767,7 @@ class SVN:
             
         return False
         
-    def proplist(self, path):
+    def proplist(self, path, rev=None):
         """
         Retrieves a dictionary of properties for a path.
         
@@ -780,8 +778,10 @@ class SVN:
         @return:        A dictionary of properties.
         
         """
-        
-        returner = self.client.proplist(path)
+        if rev:
+            returner = self.client.proplist(path, revision=rev)
+        else:
+            returner = self.client.proplist(path)
         if returner:
             returner = returner[0][1]
         else:
@@ -789,7 +789,7 @@ class SVN:
             
         return returner
         
-    def propget(self, path, prop_name):
+    def propget(self, path, prop_name, rev=None):
         """
         Retrieves a dictionary of the prop_value of the given
         path and prop_name
@@ -808,11 +808,19 @@ class SVN:
 
         path = self.get_versioned_path(path)
         try:
-            returner = self.client.propget(
-                prop_name,
-                path,
-                recurse=True
-            )
+            if rev:
+                returner = self.client.propget(
+                    prop_name,
+                    path,
+                    recurse=True,
+                    revision=rev
+                )
+            else:
+                returner = self.client.propget(
+                    prop_name,
+                    path,
+                    recurse=True
+                )
         except pysvn.ClientError, e:
             log.exception("pysvn.ClientError exception in svn.py propget() for %s" % path)
             return ""
