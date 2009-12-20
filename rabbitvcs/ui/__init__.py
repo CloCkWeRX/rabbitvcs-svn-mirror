@@ -89,7 +89,7 @@ class InterfaceView:
         
         # This means we've already been closed
         if window is None:
-            gtk.main_quit()
+            gobject.idle_add(gtk.main_quit)
     
     def gtk_quit_is_set(self):
         return self.do_gtk_quit
