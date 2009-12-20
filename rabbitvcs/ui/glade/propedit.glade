@@ -175,16 +175,14 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkLabel" id="apply_note">
+          <widget class="GtkHBox" id="note_box">
             <property name="visible">True</property>
-            <property name="xalign">0</property>
-            <property name="label" translatable="yes">&lt;b&gt;Note:&lt;/b&gt; changes to properties are applied instantly. You may review and undo changes using the context menu for each item.</property>
-            <property name="use_markup">True</property>
-            <property name="justify">fill</property>
-            <property name="wrap">True</property>
+            <property name="homogeneous">True</property>
+            <child>
+              <placeholder/>
+            </child>
           </widget>
           <packing>
-            <property name="expand">False</property>
             <property name="position">3</property>
           </packing>
         </child>

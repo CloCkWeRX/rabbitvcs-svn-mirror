@@ -36,6 +36,7 @@ import gobject
 import gtk
 import gnomevfs
 
+from wraplabel import WrapLabel
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.lib.contextmenu import GtkContextMenuCaller
 import rabbitvcs.ui.widget
@@ -51,10 +52,15 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 
-def wrapped_label_size_allocate_callback(gtklabel, allocation):
-    # gtklabel.set_size_request(allocation.width, -1)
-    pass
-    
+PROP_EDITOR_NOTE = _("""\
+<b>Note:</b> changes to properties are applied instantly. You may review and \
+undo changes using the context menu for each item.
+""")
+
+RECURSIVE_DELETE_MSG = _("""\
+Do you want to delete the selected properties from all files and subdirectories
+beneath this directory?""") 
+
 class PropEditor(InterfaceView, GtkContextMenuCaller):
     '''
     User interface for the property editor.
@@ -71,6 +77,12 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         '''
         InterfaceView.__init__(self, "propedit", "Properties")
         
+        note = WrapLabel(PROP_EDITOR_NOTE)
+        note.set_use_markup(True)
+        
+        self.get_widget("note_box").pack_start(note)        
+        self.get_widget("note_box").show_all()
+                
         self.path = path
         
         self.get_widget("wc_text").set_text(gnomevfs.get_uri_from_local_path(os.path.realpath(path)))
@@ -84,7 +96,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         
         self.get_widget("remote_uri_text").set_text(self.vcs.get_repo_url(path))
         
-        self.get_widget("apply_note").connect("size-allocate", wrapped_label_size_allocate_callback)
+        # self.get_widget("apply_note").connect("size-allocate", wrapped_label_size_allocate_callback)
         
         self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
@@ -108,6 +120,9 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         self.refresh()
         
         print "Property editor for %s" % path
+    
+    def on_note_box_add(self, *args, **kwargs):
+        print "Added!"
     
     def refresh(self):
         self.table.clear()
@@ -183,13 +198,27 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
             
         self.refresh()
 
+    def delete_properties(self, names):
+        
+        recursive = False
+
+        if(os.path.isdir(self.path)):
+            dialog = rabbitvcs.ui.dialog.Confirmation(RECURSIVE_DELETE_MSG)
+            recursive = dialog.run()
+        
+        for name in names:
+            self.vcs.propdel(self.path, name, recurse=recursive)
+
+        self.refresh()
+
     def on_files_table_row_activated(self, treeview, event, col):
         for name in self.table.get_selected_row_items(0):
             self.edit_property(name)
 
     def on_files_table_key_event(self, treeview, data=None):
         if gtk.gdk.keyval_name(data.keyval) == "Delete":
-            print "Delete!"
+            names = self.table.get_selected_row_items(0)
+            self.delete_properties(names)
 
     def on_files_table_mouse_event(self, treeview, data=None):
         if data is not None and data.button == 3:
@@ -200,8 +229,6 @@ if __name__ == "__main__":
     # These are some dumb tests before I add any functionality.
     from rabbitvcs.ui import main
     (options, paths) = main(usage="Usage: rabbitvcs propedit [url_or_path]")
-    
-    paths = ["/home/jason/Software/svntest/svntest/one.txt"]
     
     window = PropEditor(paths[0])
     window.register_gtk_quit()
