@@ -82,12 +82,16 @@ class Debian(Generic):
             cwd = self.build_area)
     
     def _build_binary_pdebuild(self, sign = False):
-        print "Running pdebuild to create an unsigned Debian binary package..."
+        print "Running pdebuild to create a Debian binary package..."
+        
+        args = ["pdebuild", "--buildresult", self.build_area]
+        
+        if sign:
+	        args.append("--auto-debsign")
         
         retval = subprocess.call(
-            ["pdebuild", "--buildresult", self.build_area],
-            cwd = self.package_dir)
-        
+            args,
+            cwd = self.package_dir)        
     
     def _build_binary_debuild(self, sign = False):
         print "Running debuild to create an unsigned Debian binary package..."
