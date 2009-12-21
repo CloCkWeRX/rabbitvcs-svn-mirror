@@ -122,12 +122,21 @@ class GtkContextMenu:
                 if condition["callback"]() is False:
                     continue
             
-            action = gtk.Action(item["label"], item["label"], None, None)
+            identifier = item["label"]
+            if item.has_key("identifier"):
+                identifier = item["identifier"]
+            
+            action = gtk.Action(identifier, item["label"], None, None)
             
             if item.has_key("icon") and item["icon"] is not None:
-                action.set_icon_name(item["icon"])
-    
-            menuitem = action.create_menu_item()
+                # We use this instead of gtk.Action.set_icon_name because
+                # that method is not available until pygtk 2.16
+                action.set_menu_item_type(gtk.ImageMenuItem)
+                menuitem = action.create_menu_item()
+                menuitem.set_image(gtk.image_new_from_icon_name(item["icon"], gtk.ICON_SIZE_MENU))
+            else:
+                menuitem = action.create_menu_item()
+
             if item.has_key("signals") and item["signals"] is not None:
                 for signal, info in item["signals"].items():
                     menuitem.connect(signal, info["callback"], info["args"])
