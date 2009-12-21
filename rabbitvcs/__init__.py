@@ -31,6 +31,8 @@ LOCALE_DIR = "%s/locale" % os.path.dirname(os.path.abspath(__file__))
 if not os.path.exists(LOCALE_DIR):
     LOCALE_DIR = "/usr/share/locale"
 
+WEBSITE = "http://www.rabbitvcs.org/"
+
 langs = []
 language = os.environ.get('LANGUAGE', None)
 if language:

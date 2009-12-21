@@ -171,6 +171,16 @@ class BaseLog:
         
         self.logger.exception(msg)
     
+    def exception_info(self, msg, exc_info):
+        """
+        Pass an exception info tuple (as per sys.exc_info() format, (type,
+        value, traceback).
+        
+        @type exc_info: (type, value, traceback)
+        @param exc_info: exception info
+        """
+        self.logger.debug(msg, exc_info=exc_info)
+    
     def set_handler(self, handler, format=DEFAULT_FORMAT):
         """
         Set how the logging module should handle log messages.

@@ -518,7 +518,7 @@ class ComboBox:
         self.cb.child.connect(signal, callback, userdata)
         
 class TextView:
-    def __init__(self, widget=None, value=""):
+    def __init__(self, widget=None, value="", spellcheck=True):
         if widget is None:
             self.view = gtk.TextView()
         else:
@@ -527,7 +527,7 @@ class TextView:
         self.view.set_buffer(self.buffer)
         self.buffer.set_text(value)
         
-        if HAS_GTKSPELL:
+        if HAS_GTKSPELL and spellcheck:
             gtkspell.Spell(self.view)
         
     def get_text(self):

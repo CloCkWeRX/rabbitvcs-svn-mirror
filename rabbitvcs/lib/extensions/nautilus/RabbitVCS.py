@@ -25,8 +25,32 @@
 Our module for everything related to the Nautilus extension.
   
 """
-
 from __future__ import with_statement
+
+def log_all_exceptions(type, value, tb):
+    import sys, traceback
+    from rabbitvcs.lib.log import Log
+    log = Log("rabbitvcs.lib.extensions.nautilus.RabbitVCS")
+    log.exception_info("Error caught by master exception hook!",
+                       (type, value, tb))
+    
+    text = ''.join(traceback.format_exception(type, value,
+                                              tb, limit=None))
+    
+    try:
+        import rabbitvcs.ui.dialog
+        rabbitvcs.ui.dialog.ErrorNotification(text)
+    except Exception, ex:
+        log.exception("Additional exception when attempting"
+                      " to display error dialog.")
+        log.exception(ex)
+        raise
+    
+    sys.__excepthook__(type, value, tb)
+
+import sys
+sys.excepthook = log_all_exceptions
+
 import copy
 import os.path
 from os.path import isdir, isfile, realpath, basename

@@ -26,12 +26,19 @@ import os.path
 import pygtk
 import gobject
 import gtk
+import pango
 
+from wraplabel import WrapLabel
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
 import rabbitvcs.lib.helper
 
 GLADE = 'dialogs'
+
+ERROR_NOTICE = _("""\
+An error has occurred in the RabbitVCS Nautilus extension. Please contact the \
+<a href="%s">RabbitVCS team</a> with the error details listed below:"""
+    % (rabbitvcs.WEBSITE))
 
 class PreviousMessages(InterfaceView):
     def __init__(self):
@@ -383,3 +390,26 @@ class NewFolder(InterfaceView):
             return (self.folder_name.get_text(), self.textview.get_text())
         else:
             return None
+        
+class ErrorNotification(InterfaceView):
+    
+    def __init__(self, text):
+        InterfaceView.__init__(self, GLADE, "ErrorNotification")
+        
+        notice = WrapLabel(ERROR_NOTICE)
+        notice.set_use_markup(True)
+        
+        self.get_widget("notice_box").pack_start(notice)        
+        self.get_widget("notice_box").show_all()
+
+        self.textview = rabbitvcs.ui.widget.TextView(
+            self.get_widget("error_text"), 
+            text,
+            spellcheck=False
+        )
+        
+        self.textview.view.modify_font(pango.FontDescription("monospace"))
+        
+        dialog = self.get_widget("ErrorNotification")
+        dialog.run()
+        dialog.destroy()
