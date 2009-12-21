@@ -116,7 +116,7 @@ class GtkContextMenu:
         
             condition = item["condition"]
             if condition.has_key("args"):
-                if condition["callback"](condition["args"]) is False:
+                if condition["callback"](*condition["args"]) is False:
                     continue
             else:
                 if condition["callback"]() is False:
@@ -482,6 +482,17 @@ class ContextMenuCallbacks:
     
         proc = rabbitvcs.lib.helper.launch_ui_window("browser", [url])
 
+class ContextMenuPropConditions:
+    """
+    Provides a standard interface to checking conditions for properties on a
+    single path.
+    """
+    def __init__(self, path):
+        self.path = path
+        self.vcs = create_vcs_instance()
+            
+
+
 class ContextMenuConditions:
     """
     Provides a standard interface to checking conditions for menu items.
@@ -687,11 +698,11 @@ class ContextMenuConditions:
         return (self.path_dict["is_in_a_or_a_working_copy"] and
                 not self.path_dict["is_versioned"])
 
-    def ignore_by_filename(self, data=None):
+    def ignore_by_filename(self, *args):
         return (self.path_dict["is_in_a_or_a_working_copy"] and
                 not self.path_dict["is_versioned"])
     
-    def ignore_by_file_extension(self, data=None):
+    def ignore_by_file_extension(self, *args):
         return (self.path_dict["is_in_a_or_a_working_copy"] and
                 not self.path_dict["is_versioned"])
 
@@ -945,6 +956,9 @@ class GtkFilesContextMenu:
 
         context_menu = GtkContextMenu(self.structure, self.items)
         context_menu.show(self.event)
+
+class GtkPropertiesContextMenuConditions:
+    pass
 
 class MainContextMenuCallbacks(ContextMenuCallbacks):
     """
@@ -1859,7 +1873,73 @@ class ContextMenuItems:
                 "condition": {
                     "callback": self.conditions.browse_to
                 }
-            }
+            },
+            
+            # Property conditions:
+#            "DeleteProperty": {
+#                "identifier": "RabbitVCS::DeleteProperty",
+#                "label": _("Delete property"),
+#                "tooltip": _("Delete the property from this path"),
+#                "icon": "rabbitvcs-delete",
+#                "signals": {
+#                    "activate": {
+#                        "callback": self.callbacks.prop_del,
+#                        "args": None
+#                    }
+#                },
+#                "condition": {
+#                    "callback": self.conditions.prop_del
+#                }
+#            },
+#            
+#            "DeletePropertyRecursive": {
+#                "identifier": "RabbitVCS::DeletePropertyRecursive",
+#                "label": _("Delete property recursively"),
+#                "tooltip": _("Delete the property from this path and all descendants"),
+#                "icon": "rabbitvcs-delete",
+#                "signals": {
+#                    "activate": {
+#                        "callback": self.callbacks.prop_del,
+#                        "args": [True]
+#                    }
+#                },
+#                "condition": {
+#                    "callback": self.conditions.prop_del
+#                }
+#            },
+#            
+#                        # Property conditions:
+#            "RevertProperty": {
+#                "identifier": "RabbitVCS::RevertProperty",
+#                "label": _("Revert property"),
+#                "tooltip": _("Restore the property to its original state for this path"),
+#                "icon": "rabbitvcs-revert",
+#                "signals": {
+#                    "activate": {
+#                        "callback": self.callbacks.prop_revert,
+#                        "args": None
+#                    }
+#                },
+#                "condition": {
+#                    "callback": self.conditions.prop_revert
+#                }
+#            },
+#            
+#            "RevertPropertyRecursive": {
+#                "identifier": "RabbitVCS::RevertPropertyRecursive",
+#                "label": _("Revert property recursively"),
+#                "tooltip": _("Restore the property to its original state for this path and all descendants"),
+#                "icon": "rabbitvcs-revert",
+#                "signals": {
+#                    "activate": {
+#                        "callback": self.callbacks.prop_revert,
+#                        "args": [True]
+#                    }
+#                },
+#                "condition": {
+#                    "callback": self.conditions.prop_revert
+#                }
+#            }           
         }
         
         for i in (0,1,2,3,4,5,6,7,8,9):
@@ -1916,12 +1996,12 @@ def get_ignore_list_items(paths, conditions, callbacks):
                 "signals": {
                     "button-press-event": {
                         "callback": callbacks.ignore_by_filename, 
-                        "args": path
+                        "args": [path]
                      }
                  },
                 "condition": {
                     "callback": conditions.ignore_by_filename,
-                    "args": path
+                    "args": [path]
                 }
             }
             added_ignore_labels.append(basename)
@@ -1944,12 +2024,12 @@ def get_ignore_list_items(paths, conditions, callbacks):
                 "signals": {
                     "button-press-event": {
                         "callback": callbacks.ignore_by_file_extension, 
-                        "args": path
+                        "args": [path]
                     }
                 },
                 "condition": {
                     "callback": conditions.ignore_by_file_extension,
-                    "args": (path, extension)
+                    "args": [path, extension]
                 }
             }
             added_ignore_labels.append(ext_str)
