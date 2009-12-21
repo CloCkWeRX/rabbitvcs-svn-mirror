@@ -1083,8 +1083,6 @@ class MainContextMenu:
             ("Update", None),
             ("Commit", None),
             ("RabbitVCS", [
-                ("RepoBrowser", None),
-                ("CheckForModifications", None),
                 ("DiffMenu", [
                     ("Diff", None),
                     ("DiffPrevRev", None),
@@ -1095,6 +1093,8 @@ class MainContextMenu:
                     ("ShowChanges", None),
                 ]),
                 ("Show_Log", None),
+                ("RepoBrowser", None),
+                ("CheckForModifications", None),
                 ("Separator0", None),
                 ("Add", None),
                 ("AddToIgnoreList", ignore_list_keys),
