@@ -48,8 +48,8 @@ def log_all_exceptions(type, value, tb):
     
     sys.__excepthook__(type, value, tb)
 
-import sys
-sys.excepthook = log_all_exceptions
+# import sys
+# sys.excepthook = log_all_exceptions
 
 import copy
 import os.path
