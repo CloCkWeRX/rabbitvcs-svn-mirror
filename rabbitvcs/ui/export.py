@@ -41,14 +41,20 @@ class Export(Checkout):
         
         self.get_widget("Checkout").set_title(_("Export - %s") % path)
         
-        # If the given path is a working copy OR a repository URL, then export 
-        # FROM the path, otherwise export TO the path
-        if (self.vcs.is_in_a_or_a_working_copy(path)
-                or self.vcs.is_path_repository_url(path)):
+        # Determine behavior based on the given path
+        if self.vcs.is_in_a_or_a_working_copy(path):
+            # If path is from a working copy, export FROM path and set revision
+            # to working copy
             self.repositories.set_child_text(path)
             self.get_widget("destination").set_text("")
             self.revision_selector.set_kind_working()
+        elif self.vcs.is_path_repository_url(path):
+            # If path is a repository, export FROM path
+            self.repositories.set_child_text(path)
+            self.get_widget("destination").set_text("")
         else:
+            # Path is not a working copy so the user probably wants to export
+            # TO this path
             self.repositories.set_child_text("")
             self.get_widget("destination").set_text(path)
 
