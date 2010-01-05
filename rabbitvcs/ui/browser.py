@@ -39,7 +39,7 @@ import rabbitvcs.lib.vcs
 from rabbitvcs.lib.log import Log
 from rabbitvcs.lib.decorators import gtk_unsafe
 
-log = Log("rabbitvcs.ui.add")
+log = Log("rabbitvcs.ui.browser")
 
 from rabbitvcs import gettext
 _ = gettext.gettext
