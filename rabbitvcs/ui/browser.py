@@ -395,8 +395,12 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
             args = ["-r", revision.value] + args
         rabbitvcs.lib.helper.launch_ui_window("checkout", args)
     
-    def export(self, data=None):
-        return True
+    def export(self, data=None, user_data=None):
+        args = [self.paths[0]]
+        revision = self.__get_browser_revision()
+        if revision.kind == "number":
+            args = ["-r", revision.value] + args
+        rabbitvcs.lib.helper.launch_ui_window("export", args)
         
     def rename(self, data=None, user_data=None):
         (base, filename) = os.path.split(self.paths[0])
