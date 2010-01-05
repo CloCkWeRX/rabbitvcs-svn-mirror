@@ -302,7 +302,10 @@ class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
         return True
     
     def annotate(self, data1=None, data2=None):
-        return True
+        if self.path_dict["length"] == 1:
+            return (self.caller.file_column_callback(self.paths[0]) == "file")
+
+        return False
     
     def checkout(self, data1=None, data2=None):
         return True
@@ -378,11 +381,19 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
     def show_log(self, data=None, user_data=None):
         rabbitvcs.lib.helper.launch_ui_window("log", [self.paths[0]])
     
-    def annotate(self, data=None):
-        return True
+    def annotate(self, data=None, user_data=None):
+        urlrev = self.paths[0]
+        revision = self.__get_browser_revision()
+        if revision.kind == "number":
+            urlrev += "@" + revision.value
+        rabbitvcs.lib.helper.launch_ui_window("annotate", [urlrev])
     
-    def checkout(self, data=None):
-        return True
+    def checkout(self, data=None, user_data=None):
+        args = [self.paths[0]]
+        revision = self.__get_browser_revision()
+        if revision.kind == "number":
+            args = ["-r", revision.value] + args
+        rabbitvcs.lib.helper.launch_ui_window("checkout", args)
     
     def export(self, data=None):
         return True
