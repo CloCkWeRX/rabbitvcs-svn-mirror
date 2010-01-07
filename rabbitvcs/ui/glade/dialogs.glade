@@ -194,6 +194,7 @@
             <child>
               <widget class="GtkButton" id="auth_cancel">
                 <property name="label">gtk-cancel</property>
+                <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -208,7 +209,7 @@
             <child>
               <widget class="GtkButton" id="auth_ok">
                 <property name="label">gtk-ok</property>
-                <property name="response_id">1</property>
+                <property name="response_id">-5</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
@@ -1617,6 +1618,7 @@
             <child>
               <widget class="GtkButton" id="textchange_cancel">
                 <property name="label">gtk-cancel</property>
+                <property name="response_id">-6</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1632,7 +1634,7 @@
             <child>
               <widget class="GtkButton" id="textchange_ok">
                 <property name="label">gtk-ok</property>
-                <property name="response_id">1</property>
+                <property name="response_id">-5</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="has_focus">True</property>
