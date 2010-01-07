@@ -55,7 +55,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
     TOGGLE_ALL = False
     SHOW_UNVERSIONED = True
 
-    def __init__(self, paths, base_dir=None):
+    def __init__(self, paths, base_dir=None, message=None):
         """
         
         @type  paths:   list of strings
@@ -95,7 +95,8 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         self.files_table.allow_multiple()
         
         self.message = rabbitvcs.ui.widget.TextView(
-            self.get_widget("message")
+            self.get_widget("message"),
+            (message and message or "")
         )
         self.get_widget("to").set_text(
             self.vcs.get_repo_url(self.common)
@@ -276,10 +277,10 @@ class Commit(InterfaceView, GtkContextMenuCaller):
 if __name__ == "__main__":
     from rabbitvcs.ui import main, BASEDIR_OPT
     (options, paths) = main(
-        [BASEDIR_OPT],
+        [BASEDIR_OPT, (["-m", "--message"], {"help":"add a commit log message"})],
         usage="Usage: rabbitvcs commit [path1] [path2] ..."
     )
 
-    window = Commit(paths, options.base_dir)
+    window = Commit(paths, options.base_dir, message=options.message)
     window.register_gtk_quit()
     gtk.main()
