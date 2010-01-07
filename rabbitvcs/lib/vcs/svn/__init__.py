@@ -1091,6 +1091,32 @@ class SVN:
         """
 
         return self.client.copy(src, dest, revision.primitive())
+
+    def copy_all(self, sources, dest_url_or_path, copy_as_child=False, 
+            make_parents=False, ignore_externals=False):
+        """
+        Copy sources to the dest_url_or_path.
+        
+        @type   sources: list of tuples
+        @param  sources: A list of tuples (url_or_path,revision)
+        
+        @type   dest_url_or_path: string
+        @param  dest_url_or_path: Destination URL or path.
+        
+        @type   copy_as_child: boolean
+        @param  copy_as_child: If there are multiple sources, copy as child 
+                    to dest_url_or_path (assumed to be a folder)
+
+        @type   make_parents: boolean
+        @param  make_parents: TBD
+
+        @type   ignore_externals: boolean
+        @param  ignore_externals: Omit externals
+        
+        """
+        
+        return self.client.copy2(sources, dest_url_or_path, copy_as_child,
+            make_parents, None, ignore_externals)
     
     def checkout(self, url, path, recurse=True, revision=Revision("head"), 
             ignore_externals=False):
@@ -1286,6 +1312,29 @@ class SVN:
         else:
             return self.client.move(src_url_or_path, dest_url_or_path, 
                 force=True)
+
+    def move_all(self, sources, dest_url_or_path, move_as_child=False, 
+            make_parents=False):
+        """
+        Move sources to the dest_url_or_path.
+        
+        @type   sources: list of tuples
+        @param  sources: A list of tuples (url_or_path,revision)
+        
+        @type   dest_url_or_path: string
+        @param  dest_url_or_path: Destination URL or path.
+        
+        @type   move_as_child: boolean
+        @param  move_as_child: If there are multiple sources, move as child 
+                    to dest_url_or_path (assumed to be a folder)
+
+        @type   make_parents: boolean
+        @param  make_parents: TBD
+        
+        """
+        
+        return self.client.move2(sources, dest_url_or_path, 
+            move_as_child=move_as_child, make_parents=make_parents)
 
     def remove(self, url_or_path, force=False, keep_local=False):
         
