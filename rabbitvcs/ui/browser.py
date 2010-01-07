@@ -328,10 +328,10 @@ class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
         return (self.path_dict["length"] == 0)
 
     def cut_to_clipboard(self, data1=None, data2=None):
-        return True
+        return False
 
     def copy_to_clipboard(self, data1=None, data2=None):
-        return True
+        return False
 
     def paste_from_clipboard(self, data1=None):
         return (self.caller.clipboard_has_cut() or self.caller.clipboard_has_copy())
@@ -343,7 +343,8 @@ class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
         return (self.path_dict["length"] == 1)
 
     def move_to(self, data1=None, data2=None):
-        return True
+        revision = self.caller.revision_selector.get_revision_object()
+        return (revision.kind == "head")
 
 class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
     def __init__(self, caller, base_dir, vcs_client, paths=[]):
@@ -359,6 +360,13 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
 
     def __get_browser_revision(self):
         return self.caller.revision_selector.get_revision_object()
+
+    def __generate_sources_list(self):
+        sources = []
+        for path in self.paths:
+            sources.append((path,self.__get_browser_revision().primitive()))
+
+        return sources
 
     def _open(self, data=None, user_data=None):
         self.caller.action = rabbitvcs.ui.action.VCSAction(
@@ -440,7 +448,7 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
             self.vcs_client,
             notification=False
         )
-        self.caller.action.append(self.vcs_client.remove, self.paths[0])
+        self.caller.action.append(self.vcs_client.remove, self.paths)
         self.caller.action.append(self.vcs_client.list, path_to_refresh, recurse=False)
         self.caller.action.append(self.caller.populate_table, 1)
         self.caller.action.start()  
@@ -473,14 +481,58 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
     def paste_from_clipboard(self, data=None, user_data=None):
         self.caller.empty_clipboard()
 
-    def copy_to(self, data=None):
-        pass
+    def copy_to(self, data=None, user_data=None):
+        from rabbitvcs.ui.dialog import OneLineTextChange
+        dialog = OneLineTextChange(
+            _("Where do you want to copy the selection?"), 
+            _("New Location:"),
+            self.caller.get_url()
+        )
+        result = dialog.run()
+        if result is None:
+            return
+
+        (response, new_url) = result
+        if response == gtk.RESPONSE_CANCEL:
+            return
+
+        sources = self.__generate_sources_list()
+
+        self.caller.action = rabbitvcs.ui.action.VCSAction(
+            self.vcs_client,
+            notification=False
+        )
+        self.caller.action.append(self.vcs_client.copy_all, sources, new_url, copy_as_child=True)
+        self.caller.action.append(self.vcs_client.list, self.caller.get_url(), recurse=False)
+        self.caller.action.append(self.caller.populate_table, 1)
+        self.caller.action.start()
 
     def copy_url_to_clipboard(self, data=None, user_data=None):
         self.caller.set_url_clipboard(self.paths[0])
 
-    def move_to(self, data=None):
-        pass
+    def move_to(self, data=None, user_data=None):
+        from rabbitvcs.ui.dialog import OneLineTextChange
+        dialog = OneLineTextChange(
+            _("Where do you want to move the selection?"), 
+            _("New Location:"),
+            self.caller.get_url()
+        )
+        result = dialog.run()
+        if result is None:
+            return
+
+        (response, new_url) = result
+        if response == gtk.RESPONSE_CANCEL:
+            return
+
+        self.caller.action = rabbitvcs.ui.action.VCSAction(
+            self.vcs_client,
+            notification=False
+        )
+        self.caller.action.append(self.vcs_client.move_all, self.paths, new_url, move_as_child=True)
+        self.caller.action.append(self.vcs_client.list, self.caller.get_url(), recurse=False)
+        self.caller.action.append(self.caller.populate_table, 1)
+        self.caller.action.start()
 
 class BrowserContextMenu:
     def __init__(self, caller, event, base_dir, vcs_client, paths=[]):
@@ -578,7 +630,7 @@ class BrowserContextMenu:
                 }
             },
             "CopyTo": {
-                "label": _("Copy To..."),
+                "label": _("Copy to..."),
                 "icon": gtk.STOCK_COPY,
                 "signals": {
                     "activate": {
