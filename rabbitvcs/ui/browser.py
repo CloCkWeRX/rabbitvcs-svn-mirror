@@ -107,6 +107,7 @@ class Browser(InterfaceView, GtkContextMenuCaller):
         self.repo_root_url = None
 
         if url:
+            rabbitvcs.lib.helper.save_repository_path(url)
             self.load()
 
     def load(self):
