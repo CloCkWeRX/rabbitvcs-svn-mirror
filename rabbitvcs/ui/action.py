@@ -353,7 +353,7 @@ class VCSAction(threading.Thread):
             result = dialog.run()
             gtk.gdk.threads_leave()
             
-            should_continue = (result[0] == 1)
+            should_continue = (result[0] == gtk.RESPONSE_OK)
             return should_continue, result[1].encode("utf-8")
         else:
             return True, self.message.encode("utf-8")
