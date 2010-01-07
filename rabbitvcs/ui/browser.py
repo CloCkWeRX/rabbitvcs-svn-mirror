@@ -362,6 +362,9 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
         return self.caller.revision_selector.get_revision_object()
 
     def __generate_sources_list(self):
+        # Generates a list of tuples where the first element is a path and the
+        # second element is a primitive revision object
+        # Used for the copy_to menu item
         sources = []
         for path in self.paths:
             sources.append((path,self.__get_browser_revision().primitive()))
