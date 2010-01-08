@@ -649,8 +649,7 @@ class ContextMenuConditions:
     def rename(self, data=None):
         return (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
-                self.path_dict["is_versioned"] and
-                not self.path_dict["is_added"])
+                self.path_dict["is_versioned"])
         
     def delete(self, data=None):
         # FIXME: This should be False for the top-level WC folder
