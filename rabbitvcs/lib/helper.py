@@ -669,8 +669,9 @@ def walk_tree_depth_first(tree, show_levels=False,
     If a callable "preprocess" is supplied, it is applied BEFORE the filter,
     as each element is encountered.
     
-    If a callable "filter" is supplied, it is applied and if it returns false
-    for an item, the item and its children will be skipped.
+    If a callable "filter" is supplied, it is applied to whatever "preprocess"
+    returned, and if it returns False for an item, the item and its children
+    will be skipped.
     
     If "start" is given, the walk will be applied only to that node and its
     children. No preprocessing or filtering will be applied to other elements.    
@@ -681,8 +682,6 @@ def walk_tree_depth_first(tree, show_levels=False,
     
     # If we're not given a starting point, the top is the start
     found_starting_point = not start
-    
-    # If no starting point is given, we're already at the start (ie. the top)
     
     while to_process:
         (level, (node, children)) = to_process.popleft()
