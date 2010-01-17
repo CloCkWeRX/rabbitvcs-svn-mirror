@@ -2,9 +2,9 @@
 # This is an extension to the Nautilus file manager to allow better 
 # integration with the Subversion source control system.
 # 
-# Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
+# Copyright (C) 2010 by Jason Heeris <jason.heeris@gmail.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
-# Copyright (C) 2008-2008 by Adam Plumb <adamplumb@gmail.com>
+# Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
 # 
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 
 import os.path
 from time import sleep
+from collections import deque
 
 import gtk
 import gobject
@@ -32,7 +33,10 @@ from rabbitvcs import gettext
 from rabbitvcs.lib.settings import SettingsManager
 import rabbitvcs.lib.helper
 
-log = Log("rabbitvcs.ui.commit")
+# Yes, * imports are bad. You write it out then.
+from contextmenuitems import *
+
+log = Log("rabbitvcs.ui.contextmenu")
 _ = gettext.gettext
 
 settings = SettingsManager()
@@ -40,136 +44,154 @@ settings = SettingsManager()
 import rabbitvcs.services
 from rabbitvcs.services.cacheservice import StatusCacheStub as StatusCache
 
-SEPARATOR = u'\u2015' * 10
+class MenuBuilder(object):
+    """
+    Generalised menu builder class. Subclasses must provide:
+    
+    make_menu_item(self, item, id_magic) - create the menu item for whatever
+    toolkit (usually this should be just call a  convenience method on the
+    MenuItem instance).
+    
+    attach_submenu(self, menu_node, submenu_list) - given a list of whatever
+    make_menu_item(...) returns, create a submenu and attach it to the given
+    node.
+    
+    top_level_menu(self, items) - in some circumstances we need to treat the top
+    level menu differently (eg. Nautilus, because Xenu said so). This processes
+    a list of menu items returned by make_menu_item(...) to create the overall
+    menu.  
+    """
+    
+    def __init__(self, structure, conditions, callbacks):
+        """
+        @param  structure: Menu structure
+        @type   structure: list
+                
+        Note on "structure". The menu structure is defined in a list of tuples 
+        of two elements each.  The first element is a class - the MenuItem
+        subclass that defines the menu interface (see below).
+        
+        The second element is either None (if there is no submenu) or a list of
+        tuples if there is a submenu.  The submenus are generated recursively. 
+        FYI, this is a list of tuples so that we retain the desired menu item
+        order (dicts do not retain order)
+        
+            Example:
+            [
+                (MenuClassOne, [
+                    (MenuClassOneSubA, None),
+                    (MenuClassOneSubB, None)
+                ]),
+                (MenuClassTwo, None),
+                (MenuClassThree, None)
+            ]
+            
+        """
+    def __init__(self, structure, conditions, callbacks):
+        # The index is mostly for identifier magic 
+        index = 0
+        last_level = -1
+        last_item = last_menuitem = None        
 
-class GtkContextMenu:
+        stack = [] # ([items], last_item, last_menuitem)
+
+        flat_structure = rabbitvcs.lib.helper.walk_tree_depth_first(
+                                structure,
+                                show_levels=True,
+                                preprocess=lambda x: x(conditions, callbacks),
+                                filter=lambda x: x.show())
+        
+        # Here's how this works: we walk the tree, which is a series of (level,
+        # MenuItem instance) tuples. We accumulate items in the list in
+        # stack[level][0], and when we go back up a level we put them in a
+        # submenu (as defined by the subclasses). We need to keep track of the
+        # last item on each level, in case they are separators, so that's on the
+        # stack too.       
+        for (level, item) in flat_structure:
+        
+            index += 1
+
+            # Have we dropped back a level? Restore previous context
+            if level < last_level:
+                # We may have ended up descending several levels (it works, but
+                # please no-one write triply nested menus, it's just dumb).
+                for num in range(last_level - level):
+                    # Remove separators at the end of menus
+                    if type(last_item) == MenuSeparator:
+                        stack[-1][0].remove(last_menuitem)
+                                    
+                    (items, last_item, last_menuitem) = stack.pop()
+                    
+                    # Every time we back out of a level, we attach the list of
+                    # items as a submenu, however the subclass wants to do it.                    
+                    self.attach_submenu(last_menuitem, items)                                
+
+            # Have we gone up a level? Save the context and create a submenu
+            if level > last_level:
+                # Skip separators at the start of a menu
+                if type(item) == MenuSeparator: continue
+                                
+                stack.append(([], last_item, last_menuitem))
+                
+                last_item = last_menuitem = None
+        
+            # Skip duplicate separators
+            if (type(last_item) == type(item) == MenuSeparator and
+                level == last_level):
+                continue
+            
+            menuitem = self.make_menu_item(item, index)
+
+            if item.signals:
+                for signal, info in item.signals.items():
+                    menuitem.connect(signal, info["callback"], info["args"])
+        
+            stack[-1][0].append(menuitem)
+
+            last_item = item
+            last_menuitem = menuitem
+            last_level = level
+
+        # Hey, we're out of the loop. Go back up any remaining levels (in case
+        # there were submenus at the end) and finish the job.
+        for (items, last_item2, last_menuitem2) in stack[:0:-1]:
+            
+            if type(last_item) == MenuSeparator:
+                stack[-1][0].remove(last_menuitem)
+            
+            self.attach_submenu(last_menuitem2, items)
+            
+            last_item = last_item2
+            last_menuitem = last_menuitem2
+
+        self.menu = self.top_level_menu(stack[0][0])
+        
+
+class GtkContextMenu(MenuBuilder):
     """
     Provides a standard Gtk Context Menu class used for all context menus
     in gtk dialogs/windows.
     
-    """
-    def __init__(self, structure, items):
-        """
-        @param  structure: Menu structure
-        @type   structure: list
-        
-        @param  items: Menu items
-        @type   items: dict
-        
-        Note on "structure". The menu structure is defined in a list of tuples 
-        of two elements each.  The first element is a key that matches a key in 
-        "items".  The second element is either None (if there is no submenu) or 
-        a list of tuples if there is a submenu.  The submenus are generated 
-        recursively.  FYI, this is a list of tuples so that we retain the 
-        desired menu item order (dicts do not retain order)
-        
-            Example:
-            [
-                (key, [
-                    (submenu_key, None),
-                    (submenu_key, None)
-                ]),
-                (key, None),
-                (key, None)
-            ]
-
-        Note on "items".  This is a dict that looks like the following.
-        
-            {
-                "identifier": "RabbitVCS::Identifier",
-                "label": "",
-                "tooltip": "",
-                "icon": "",
-                "signals": {
-                    "activate": {
-                        "callback": None,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": (lambda: True),
-                    "args": None
-                }
-            }
-            
-        """
-        self.view = gtk.Menu()
-        self.num_items = 0
-        is_last = False
-        is_first = True
-        index = 0
-        length = len(structure)
-        for key,submenu_keys in structure:
-            is_last = (index + 1 == length)
-            
-            if key not in items:
-                continue
-            
-            item = items[key]
-
-            # If the item is a separator, don't show it if this is the first
-            # or last item, or if the previous item was a separator.
-            if (item["label"] == SEPARATOR and
-                    (is_first or is_last or previous_label == SEPARATOR)):
-                index += 1
-                continue
-        
-            condition = item["condition"]
-            if condition.has_key("args"):
-                if condition["callback"](*condition["args"]) is False:
-                    continue
-            else:
-                if condition["callback"]() is False:
-                    continue
-            
-            identifier = item["label"]
-            if item.has_key("identifier"):
-                identifier = item["identifier"]
-            
-            action = gtk.Action(identifier, item["label"], None, None)
-            
-            if item.has_key("icon") and item["icon"] is not None:
-                # We use this instead of gtk.Action.set_icon_name because
-                # that method is not available until pygtk 2.16
-                action.set_menu_item_type(gtk.ImageMenuItem)
-                menuitem = action.create_menu_item()
-                menuitem.set_image(gtk.image_new_from_icon_name(item["icon"], gtk.ICON_SIZE_MENU))
-            else:
-                menuitem = action.create_menu_item()
-
-            if item.has_key("signals") and item["signals"] is not None:
-                for signal, info in item["signals"].items():
-                    menuitem.connect(signal, info["callback"], info["args"])
-
-            # Making the seperator insensitive makes sure nobody
-            # will click it accidently.
-            if (item["label"] == rabbitvcs.lib.contextmenu.SEPARATOR): 
-                menuitem.set_property("sensitive", False)
-            
-            if submenu_keys is not None:
-                submenu = GtkContextMenu(submenu_keys, items)
-                menuitem.set_submenu(submenu.get_widget())
-            
-            self.num_items += 1
-            self.view.add(menuitem)
-
-            # The menu item above has just been added, so we can note that
-            # we're no longer on the first menu item.  And we'll keep
-            # track of this item so the next iteration can test if it should
-            # show a separator or not
-            is_first = False
-            previous_label = item["label"]
-            index += 1
+    """    
+    def make_menu_item(self, item, id_magic):
+        return item.make_gtk_menu_item(id_magic)
+    
+    def attach_submenu(self, menu_node, submenu_list):
+        submenu = gtk.Menu()
+        menu_node.set_submenu(submenu)
+        [submenu.add(item) for item in submenu_list]
+    
+    def top_level_menu(self, items):
+        menu = gtk.Menu()
+        [menu.add(item) for item in items]
+        return menu
         
     def show(self, event):        
-        self.view.show_all()
-        self.view.popup(None, None, None, event.button, event.time)
+        self.menu.show_all()
+        self.menu.popup(None, None, None, event.button, event.time)
 
-    def get_num_items(self):
-        return self.num_items
-        
     def get_widget(self):
-        return self.view
+        return self.menu
 
 class GtkContextMenuCaller:
     """
@@ -316,7 +338,7 @@ class ContextMenuCallbacks:
         proc = rabbitvcs.lib.helper.launch_ui_window("add", self.paths)
         self.caller.execute_after_process_exit(proc)
 
-    def checkmods(self, widget, data1=None, data2=None):
+    def check_for_modifications(self, widget, data1=None, data2=None):
         proc = rabbitvcs.lib.helper.launch_ui_window("checkmods", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
 
@@ -345,18 +367,18 @@ class ContextMenuCallbacks:
         proc = rabbitvcs.lib.helper.launch_ui_window("diff", [pathrev1, pathrev2])
         self.caller.rescan_after_process_exit(proc, self.paths)
 
-    def compare(self, widget, data1=None, data2=None):
+    def compare_tool(self, widget, data1=None, data2=None):
         pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "working")
         pathrev2 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "base")
 
         proc = rabbitvcs.lib.helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
         self.caller.rescan_after_process_exit(proc, self.paths)
 
-    def compare_multiple(self, widget, data1=None, data2=None):
+    def compare_tool_multiple(self, widget, data1=None, data2=None):
         proc = rabbitvcs.lib.helper.launch_ui_window("diff", ["-s"] + self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
 
-    def compare_previous_revision(self, widget, data1=None, data2=None):
+    def compare_tool_previous_revision(self, widget, data1=None, data2=None):
         previous_revision_number = self.vcs_client.get_revision(self.paths[0]) - 1
 
         pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "working")
@@ -365,7 +387,7 @@ class ContextMenuCallbacks:
         proc = rabbitvcs.lib.helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
         self.caller.rescan_after_process_exit(proc, self.paths)
 
-    def changes(self, widget, data1=None, data2=None):
+    def show_changes(self, widget, data1=None, data2=None):
         pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0])
         pathrev2 = pathrev1
         if len(self.paths) == 2:
@@ -382,11 +404,11 @@ class ContextMenuCallbacks:
         proc = rabbitvcs.lib.helper.launch_ui_window("rename", self.paths)
         self.caller.execute_after_process_exit(proc)
 
-    def createpatch(self, widget, data1=None, data2=None):
+    def create_patch(self, widget, data1=None, data2=None):
         proc = rabbitvcs.lib.helper.launch_ui_window("createpatch", self.paths)
         self.caller.execute_after_process_exit(proc)
     
-    def applypatch(self, widget, data1=None, data2=None):
+    def apply_patch(self, widget, data1=None, data2=None):
         proc = rabbitvcs.lib.helper.launch_ui_window("applypatch", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
     
@@ -421,11 +443,11 @@ class ContextMenuCallbacks:
             recurse=True
         )
 
-    def lock(self, widget, data1=None, data2=None):
+    def get_lock(self, widget, data1=None, data2=None):
         proc = rabbitvcs.lib.helper.launch_ui_window("lock", self.paths)
         self.caller.execute_after_process_exit(proc)
 
-    def branch(self, widget, data1=None, data2=None):
+    def branch_tag(self, widget, data1=None, data2=None):
         proc = rabbitvcs.lib.helper.launch_ui_window("branch", self.paths)
         self.caller.execute_after_process_exit(proc)
 
@@ -445,7 +467,7 @@ class ContextMenuCallbacks:
         proc = rabbitvcs.lib.helper.launch_ui_window("export", self.paths)
         self.caller.execute_after_process_exit(proc)
 
-    def updateto(self, widget, data1=None, data2=None):
+    def update_to_revision(self, widget, data1=None, data2=None):
         proc = rabbitvcs.lib.helper.launch_ui_window("updateto", self.paths)
         self.caller.execute_after_process_exit(proc)
     
@@ -483,23 +505,13 @@ class ContextMenuCallbacks:
     def browse_to(self, widget, data1=None, data2=None):
         pass
 
-    def repobrowser(self, widget, data1=None, data2=None):
+    def repo_browser(self, widget, data1=None, data2=None):
         path = self.paths[0]
         url = ""
         if self.vcs_client.is_versioned(path):
             url = self.vcs_client.get_repo_url(path)        
     
         proc = rabbitvcs.lib.helper.launch_ui_window("browser", [url])
-
-class ContextMenuPropConditions:
-    """
-    Provides a standard interface to checking conditions for properties on a
-    single path.
-    """
-    def __init__(self, path):
-        self.path = path
-        self.vcs = create_vcs_instance()
-            
 
 
 class ContextMenuConditions:
@@ -585,7 +597,7 @@ class ContextMenuConditions:
             return True
         return False
 
-    def compare_multiple(self, data=None):
+    def compare_tool_multiple(self, data=None):
         if (self.path_dict["length"] == 2 and 
                 self.path_dict["is_versioned"] and
                 self.path_dict["is_in_a_or_a_working_copy"]):
@@ -593,6 +605,7 @@ class ContextMenuConditions:
         return False
         
     def diff(self, data=None):
+        print "Called diff!"
         if (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
                 (self.path_dict["is_modified"] or self.path_dict["has_modified"])):
@@ -605,20 +618,20 @@ class ContextMenuConditions:
             return True        
         return False
 
-    def compare(self, data=None):
+    def compare_tool(self, data=None):
         if (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
                 (self.path_dict["is_modified"] or self.path_dict["has_modified"])):
             return True        
         return False
 
-    def compare_previous_revision(self, data=None):
+    def compare_tool_previous_revision(self, data=None):
         if (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"]):
             return True        
         return False
 
-    def changes(self, data=None):
+    def show_changes(self, data=None):
         return (self.path_dict["is_in_a_or_a_working_copy"] and
             self.path_dict["is_versioned"] and 
             self.path_dict["length"] in (1,2))
@@ -639,12 +652,12 @@ class ContextMenuConditions:
             return True
         return False
 
-    def checkmods(self, data=None):
+    def check_for_modifications(self, data=None):
         return (self.path_dict["is_working_copy"] or
             self.path_dict["is_versioned"])
 
-    def add_to_ignore_list(self, data=None):
-        return self.path_dict["is_versioned"]
+#    def add_to_ignore_list(self, data=None):
+#        return self.path_dict["is_versioned"]
         
     def rename(self, data=None):
         return (self.path_dict["length"] == 1 and
@@ -681,7 +694,7 @@ class ContextMenuConditions:
         return (self.path_dict["is_in_a_or_a_working_copy"] and
                 self.path_dict["is_versioned"])
 
-    def createpatch(self, data=None):
+    def create_patch(self, data=None):
         if self.path_dict["is_in_a_or_a_working_copy"]:
             if (self.path_dict["is_added"] or
                     self.path_dict["is_modified"] or
@@ -697,7 +710,7 @@ class ContextMenuConditions:
                 return True
         return False
     
-    def applypatch(self, data=None):
+    def apply_patch(self, data=None):
         if self.path_dict["is_in_a_or_a_working_copy"]:
             return True
         return False
@@ -714,10 +727,13 @@ class ContextMenuConditions:
         return (self.path_dict["is_in_a_or_a_working_copy"] and
                 not self.path_dict["is_versioned"])
 
-    def lock(self, data=None):
+    def refresh_status(self, data=None):
+        return True
+
+    def get_lock(self, data=None):
         return self.path_dict["is_versioned"]
 
-    def branch(self, data=None):
+    def branch_tag(self, data=None):
         return self.path_dict["is_versioned"]
 
     def relocate(self, data=None):
@@ -736,7 +752,7 @@ class ContextMenuConditions:
     def export(self, data=None):
         return (self.path_dict["length"] == 1)
    
-    def update_to(self, data=None):
+    def update_to_revision(self, data=None):
         return (self.path_dict["length"] == 1 and
                 self.path_dict["is_versioned"] and 
                 self.path_dict["is_in_a_or_a_working_copy"])
@@ -746,7 +762,7 @@ class ContextMenuConditions:
                 self.path_dict["is_versioned"] and
                 self.path_dict["is_conflicted"])
             
-    def create(self, data=None):
+    def create_repository(self, data=None):
         return (self.path_dict["length"] == 1 and
                 not self.path_dict["is_in_a_or_a_working_copy"])
 
@@ -772,7 +788,28 @@ class ContextMenuConditions:
                 self.path_dict["is_versioned"] and
                 not self.path_dict["is_added"])
 
-    def repobrowser(self, data=None):
+    def repo_browser(self, data=None):
+        return True
+
+    def rabbitvcs(self, data=None):
+        return True
+    
+    def debug(self, data=None):
+        return settings.get("general", "show_debug")
+    
+    def separator(self, data=None):
+        return True
+    
+    def help(self, data=None):
+        return True
+    
+    def settings(self, data=None):
+        return True
+    
+    def about(self, data=None):
+        return True
+    
+    def bugs(self, data=None):
         return True
 
 class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
@@ -938,35 +975,30 @@ class GtkFilesContextMenu:
                 paths
             )
             
-        (ignore_items, ignore_list_keys) = get_ignore_list_items(paths, self.conditions, self.callbacks)
+        ignore_items = get_ignore_list_items(paths)
 
         # The first element of each tuple is a key that matches a
         # ContextMenuItems item.  The second element is either None when there
         # is no submenu, or a recursive list of tuples for desired submenus.
         self.structure = [
-            ("Diff", None),
-            ("Unlock", None),
-            ("Show_Log", None),
-            ("Open", None),
-            ("BrowseTo", None),
-            ("Delete", None),
-            ("Revert", None),
-            ("Restore", None),
-            ("Add", None),
-            ("AddToIgnoreList", ignore_list_keys)
+            (MenuDiff, None),
+            (MenuUnlock, None),
+            (MenuShowLog, None),
+            (MenuOpen, None),
+            (MenuBrowseTo, None),
+            (MenuDelete, None),
+            (MenuRevert, None),
+            (MenuRestore, None),
+            (MenuAdd, None),
+            (MenuAddToIgnoreList, ignore_items)
         ]
-    
-        self.items = ContextMenuItems(self.conditions, self.callbacks, ignore_items).get_items()
-    
+        
     def show(self):
         if len(self.paths) == 0:
             return
 
-        context_menu = GtkContextMenu(self.structure, self.items)
+        context_menu = GtkContextMenu(self.structure, self.conditions, self.callbacks)
         context_menu.show(self.event)
-
-class GtkPropertiesContextMenuConditions:
-    pass
 
 class MainContextMenuCallbacks(ContextMenuCallbacks):
     """
@@ -1064,984 +1096,127 @@ class MainContextMenu:
                 paths
             )
             
-        (ignore_list, ignore_list_keys) = get_ignore_list_items(paths, self.conditions, self.callbacks)
+        ignore_items = get_ignore_list_items(paths)
 
         # The first element of each tuple is a key that matches a
         # ContextMenuItems item.  The second element is either None when there
         # is no submenu, or a recursive list of tuples for desired submenus.        
         self.structure = [
-            ("Debug", [
-                ("Bugs", None),
-                ("Debug_Shell", None),
-                ("Refresh_Status", None),
-                ("Debug_Revert", None),
-                ("Debug_Invalidate", None),
-                ("Debug_Add_Emblem", None)
+            (MenuDebug, [
+                (MenuBugs, None),
+                (MenuDebugShell, None),
+                (MenuRefreshStatus, None),
+                (MenuDebugRevert, None),
+                (MenuDebugInvalidate, None),
+                (MenuDebugAddEmblem, None)
             ]),
-            ("Checkout", None),
-            ("Update", None),
-            ("Commit", None),
-            ("RabbitVCS", [
-                ("DiffMenu", [
-                    ("Diff", None),
-                    ("DiffPrevRev", None),
-                    ("DiffMultiple", None),
-                    ("CompareTool", None),
-                    ("CompareToolPrevRev", None),
-                    ("CompareToolMultiple", None),
-                    ("ShowChanges", None),
+            (MenuCheckout, None),
+            (MenuUpdate, None),
+            (MenuCommit, None),
+            (MenuRabbitVCS, [
+                (MenuDiffMenu, [
+                    (MenuDiff, None),
+                    (MenuDiffPrevRev, None),
+                    (MenuDiffMultiple, None),
+                    (MenuCompareTool, None),
+                    (MenuCompareToolPrevRev, None),
+                    (MenuCompareToolMultiple, None),
+                    (MenuShowChanges, None),
                 ]),
-                ("Show_Log", None),
-                ("RepoBrowser", None),
-                ("CheckForModifications", None),
-                ("Separator0", None),
-                ("Add", None),
-                ("AddToIgnoreList", ignore_list_keys),
-                ("Separator1", None),
-                ("UpdateToRevision", None),
-                ("Rename", None),
-                ("Delete", None),
-                ("Revert", None),
-                ("Resolve", None),
-                ("Relocate", None),
-                ("GetLock", None),
-                ("Unlock", None),
-                ("Cleanup", None),
-                ("Separator2", None),
-                ("Export", None),
-                ("Create_Repository", None),
-                ("Import", None),
-                ("Separator3", None),
-                ("BranchTag", None),
-                ("Switch", None),
-                ("Merge", None),
-                ("Separator4", None),
-                ("Annotate", None),
-                ("Separator5", None),
-                ("CreatePatch", None),
-                ("ApplyPatch", None),
-                ("Properties", None),
-                ("Separator6", None),
-                ("Help", None),
-                ("Settings", None),
-                ("About", None)
+                (MenuShowLog, None),
+                (MenuRepoBrowser, None),
+                (MenuCheckForModifications, None),
+                (MenuSeparator, None),
+                (MenuAdd, None),
+                (MenuAddToIgnoreList, ignore_items),
+                (MenuSeparator, None),
+                (MenuUpdateToRevision, None),
+                (MenuRename, None),
+                (MenuDelete, None),
+                (MenuRevert, None),
+                (MenuResolve, None),
+                (MenuRelocate, None),
+                (MenuGetLock, None),
+                (MenuUnlock, None),
+                (MenuCleanup, None),
+                (MenuSeparator, None),
+                (MenuExport, None),
+                (MenuCreateRepository, None),
+                (MenuImport, None),
+                (MenuSeparator, None),
+                (MenuBranchTag, None),
+                (MenuSwitch, None),
+                (MenuMerge, None),
+                (MenuSeparator, None),
+                (MenuAnnotate, None),
+                (MenuSeparator, None),
+                (MenuCreatePatch, None),
+                (MenuApplyPatch, None),
+                (MenuProperties, None),
+                (MenuSeparator, None),
+                (MenuHelp, None),
+                (MenuSettings, None),
+                (MenuAbout, None)
             ])
         ]
-
-        self.items = ContextMenuItems(self.conditions, self.callbacks, ignore_list).get_items()
-
+        
     def get_menu(self):
-        return (self.structure, self.items)
+        pass
 
-class ContextMenuItems:
+def TestMenuItemFunctions():
     """
-    Defines all context menu items in one large dict.  There is only level of
-    menu items defined because the structure and composition of the actual menu
-    is created separately.
+    This is a test for developers to ensure that they've written all the
+    necessary conditions and callbacks (and haven't made any typos).
     
+    What it does:
+      - build a list of all the subclasses of MenuItem
+      - build lists of the methods in ContextMenuConditions/ContextMenuCallbacks
+      - checks to see whether all the MenuItems conditions and callbacks have
+        been assigned - if not, a message is printed 
     """
-    def __init__(self, conditions, callbacks, items_to_append=None):
-        """    
-        @param  conditions: The conditions class that determines menu item visibility
-        @kind   conditions: ContextMenuConditions
-        
-        @param  callbacks: The callbacks class that determines what actions are taken
-        @kind   callbacks: ContextMenuCallbacks
-        
-        @param  items_to_append: Further menu items to add
-        @kind   items_to_append: dict
-        
-        """   
-        self.conditions = conditions
-        self.callbacks = callbacks
-        self.items_to_append = items_to_append
-        
-        # The following dictionary defines the complete contextmenu
-        self.items = {
-            "Debug": {
-                "identifier": "RabbitVCS::Debug",
-                "label": _("Debug"),
-                "tooltip": "",
-                "icon": "rabbitvcs-monkey",
-                "signals": {
-                    "activate": {
-                        "callback": None,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": (lambda: settings.get("general", "show_debug"))
-                }
-            },
-            "Bugs": {
-                "identifier": "RabbitVCS::Bugs",
-                "label": _("Bugs"),
-                "tooltip": "",
-                "icon": "rabbitvcs-bug",
-                "signals": {
-                    "activate": {
-                        "callback": None,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "Debug_Shell": {
-                "identifier": "RabbitVCS::Debug_Shell",
-                "label": _("Open Shell"),
-                "tooltip": "",
-                "icon": "gnome-terminal",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.debug_shell,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "Refresh_Status": {
-                "identifier": "RabbitVCS::Refresh_Status",
-                "label": _("Refresh Status"),
-                "tooltip": "",
-                "icon": "rabbitvcs-refresh",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.refresh_status,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "Debug_Revert": {
-                "identifier": "RabbitVCS::Debug_Revert",
-                "label": _("Debug Revert"),
-                "tooltip": _("Reverts everything it sees"),
-                "icon": "rabbitvcs-revert",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.debug_revert,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "Debug_Invalidate": {
-                "identifier": "RabbitVCS::Debug_Invalidate",
-                "label": _("Invalidate"),
-                "tooltip": _("Force an invalidate_extension_info() call"),
-                "icon": "rabbitvcs-clear",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.debug_invalidate,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "Debug_Add_Emblem": {
-                "identifier": "RabbitVCS::Debug_Add_Emblem",
-                "label": _("Add Emblem"),
-                "tooltip": _("Add an emblem"),
-                "icon": "rabbitvcs-emblems",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.debug_add_emblem,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "Checkout": {
-                "identifier": "RabbitVCS::Checkout",
-                "label": _("Checkout..."),
-                "tooltip": _("Check out a working copy"),
-                "icon": "rabbitvcs-checkout",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.checkout,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.checkout
-                }
-            },
-            "Update": {
-                "identifier": "RabbitVCS::Update",
-                "label": _("Update"),
-                "tooltip": _("Update a working copy"),
-                "icon": "rabbitvcs-update",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.update,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.update
-                }
-            },
-            "Commit": {
-                "identifier": "RabbitVCS::Commit",
-                "label": _("Commit"),
-                "tooltip": _("Commit modifications to the repository"),
-                "icon": "rabbitvcs-commit",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.commit,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.commit
-                }
-            },
-            "RabbitVCS": {
-                "identifier": "RabbitVCS::RabbitVCS",
-                "label": _("RabbitVCS"),
-                "tooltip": "",
-                "icon": "rabbitvcs",
-                "signals": {
-                    "activate": {
-                        "callback": None,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "RepoBrowser": {
-                "identifier": "RabbitVCS::RepoBrowser",
-                "label": _("Repository Browser"),
-                "tooltip": _("Browse a repository tree"),
-                "icon": gtk.STOCK_FIND,
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.repobrowser,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.repobrowser
-                }
-            },
-            "CheckForModifications": {
-                "identifier": "RabbitVCS::CheckForModifications",
-                "label": _("Check for Modifications..."),
-                "tooltip": _("Check for modifications made to the repository"),
-                "icon": "rabbitvcs-checkmods",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.checkmods,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.checkmods
-                }
-            },
-            "DiffMenu": {
-                "identifier": "RabbitVCS::DiffMenu",
-                "label": _("Diff Menu..."),
-                "tooltip": _("List of comparison options"),
-                "icon": "rabbitvcs-diff",
-                "signals": {}, 
-                "condition": {
-                    "callback": self.conditions.diff_menu
-                }
-            },
-            "Diff": {
-                "identifier": "RabbitVCS::Diff",
-                "label": _("View diff against base"),
-                "tooltip": _("View the modifications made to a file"),
-                "icon": "rabbitvcs-diff",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.diff,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.diff
-                }
-            },
-            "DiffMultiple": {
-                "identifier": "RabbitVCS::DiffMultiple",
-                "label": _("View diff between files/folders"),
-                "tooltip": _("View the differences between two files"),
-                "icon": "rabbitvcs-diff",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.diff_multiple,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.diff_multiple
-                }
-            },
-            "DiffPrevRev": {
-                "identifier": "RabbitVCS::UnifiedDiffPrevRev",
-                "label": _("View diff against previous revision"),
-                "tooltip": _("View the modifications made to a file since its last change"),
-                "icon": "rabbitvcs-diff",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.diff_previous_revision,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.diff_previous_revision
-                }
-            },
-            "CompareTool": {
-                "identifier": "RabbitVCS::CompareTool",
-                "label": _("Compare with base"),
-                "tooltip": _("Compare with base using side-by-side comparison tool"),
-                "icon": "rabbitvcs-compare",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.compare,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.compare
-                }
-            },
-            "CompareToolMultiple": {
-                "identifier": "RabbitVCS::CompareToolMultiple",
-                "label": _("Compare files/folders"),
-                "tooltip": _("Compare the differences between two items"),
-                "icon": "rabbitvcs-compare",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.compare_multiple,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.compare_multiple
-                }
-            },
-            "CompareToolPrevRev": {
-                "identifier": "RabbitVCS::CompareToolPrevRev",
-                "label": _("Compare with previous revision"),
-                "tooltip": _("Compare with previous revision using side-by-side comparison tool"),
-                "icon": "rabbitvcs-compare",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.compare_previous_revision,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.compare_previous_revision
-                }
-            },
-            "ShowChanges": {
-                "identifier": "RabbitVCS::ShowChanges",
-                "label": _("Show Changes..."),
-                "tooltip": _("Show changes between paths and revisions"),
-                "icon": "rabbitvcs-changes",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.changes,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.changes
-                }
-            },
-            "Show_Log": {
-                "identifier": "RabbitVCS::Show_Log",
-                "label": _("Show Log"),
-                "tooltip": _("Show a file's log information"),
-                "icon": "rabbitvcs-show_log",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.show_log,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.show_log
-                }
-            },
-            "Add": {
-                "identifier": "RabbitVCS::Add",
-                "label": _("Add"),
-                "tooltip": _("Schedule items to be added to the repository"),
-                "icon": "rabbitvcs-add",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.add,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.add
-                }
-            },
-            "AddToIgnoreList": {
-                "identifier": "RabbitVCS::AddToIgnoreList",
-                "label": _("Add to ignore list"),
-                "tooltip": "",
-                "icon": None,
-                "signals": {}, 
-                "condition": {
-                    "callback": self.conditions.add_to_ignore_list
-                }
-            },
-            "UpdateToRevision": {
-                "identifier": "RabbitVCS::UpdateToRevision",
-                "label": _("Update to revision..."),
-                "tooltip": _("Update a file to a specific revision"),
-                "icon": "rabbitvcs-update",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.updateto,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.update_to
-                }
-            },
-            "Rename": {
-                "identifier": "RabbitVCS::Rename",
-                "label": _("Rename..."),
-                "tooltip": _("Schedule an item to be renamed on the repository"),
-                "icon": "rabbitvcs-rename",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.rename,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.rename
-                }
-            },
-            "Delete": {
-                "identifier": "RabbitVCS::Delete",
-                "label": _("Delete"),
-                "tooltip": _("Schedule an item to be deleted from the repository"),
-                "icon": "rabbitvcs-delete",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.delete,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.delete
-                }
-            },
-            "Revert": {
-                "identifier": "RabbitVCS::Revert",
-                "label": _("Revert"),
-                "tooltip": _("Revert an item to its unmodified state"),
-                "icon": "rabbitvcs-revert",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.revert,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.revert
-                }
-            },
-            "Resolve": {
-                "identifier": "RabbitVCS::Resolve",
-                "label": _("Resolve"),
-                "tooltip": _("Mark a conflicted item as resolved"),
-                "icon": "rabbitvcs-resolve",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.resolve,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.resolve
-                }
-            },
-            "Restore": {
-                "identifier": "RabbitVCS::Restore",
-                "label": _("Restore"),
-                "tooltip": _("Restore a missing item"),
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.restore, 
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.conditions.restore
-                }
-            },
-            "Relocate": {
-                "identifier": "RabbitVCS::Relocate",
-                "label": _("Relocate..."),
-                "tooltip": _("Relocate your working copy"),
-                "icon": "rabbitvcs-relocate",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.relocate,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.relocate
-                }
-            },
-            "GetLock": {
-                "identifier": "RabbitVCS::GetLock",
-                "label": _("Get Lock..."),
-                "tooltip": _("Locally lock items"),
-                "icon": "rabbitvcs-lock",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.lock,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.lock
-                }
-            },
-            "Unlock": {
-                "identifier": "RabbitVCS::Unlock",
-                "label": _("Release Lock..."),
-                "tooltip": _("Release lock on an item"),
-                "icon": "rabbitvcs-unlock",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.unlock,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.unlock
-                }
-            },
-            "Cleanup": {
-                "identifier": "RabbitVCS::Cleanup",
-                "label": _("Cleanup"),
-                "tooltip": _("Clean up working copy"),
-                "icon": "rabbitvcs-cleanup",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.cleanup,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.cleanup
-                }
-            },
-            "Export": {
-                "identifier": "RabbitVCS::Export",
-                "label": _("Export..."),
-                "tooltip": _("Export a working copy or repository with no versioning information"),
-                "icon": "rabbitvcs-export",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.export,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.export
-                }
-            },
-            "Create_Repository": {
-                "identifier": "RabbitVCS::Create_Repository",
-                "label": _("Create Repository here"),
-                "tooltip": _("Create a repository in a folder"),
-                "icon": "rabbitvcs-run",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.create_repository,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.create
-                }
-            },
-            "Import": {
-                "identifier": "RabbitVCS::Import",
-                "label": _("Import"),
-                "tooltip": _("Import an item into a repository"),
-                "icon": "rabbitvcs-import",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks._import,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions._import
-                }
-            },
-            "BranchTag": {
-                "identifier": "RabbitVCS::BranchTag",
-                "label": _("Branch/tag..."),
-                "tooltip": _("Copy an item to another location in the repository"),
-                "icon": "rabbitvcs-branch",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.branch,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.branch
-                }
-            },
-            "Switch": {
-                "identifier": "RabbitVCS::Switch",
-                "label": _("Switch..."),
-                "tooltip": _("Change the repository location of a working copy"),
-                "icon": "rabbitvcs-switch",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.switch,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.switch
-                }
-            },
-            "Merge": {
-                "identifier": "RabbitVCS::Merge",
-                "label": _("Merge..."),
-                "tooltip": _("A wizard with steps for merging"),
-                "icon": "rabbitvcs-merge",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.merge,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.merge
-                }
-            },
-            "Annotate": {
-                "identifier": "RabbitVCS::Annotate",
-                "label": _("Annotate..."),
-                "tooltip": _("Annotate a file"),
-                "icon": "rabbitvcs-annotate",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.annotate,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.annotate
-                }
-            },
-            "CreatePatch": {
-                "identifier": "RabbitVCS::CreatePatch",
-                "label": _("Create Patch..."),
-                "tooltip": _("Creates a unified diff file with all changes you made"),
-                "icon": "rabbitvcs-createpatch",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.createpatch,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.createpatch
-                }
-            },
-            "ApplyPatch": {
-                "identifier": "RabbitVCS::ApplyPatch",
-                "label": _("Apply Patch..."),
-                "tooltip": _("Applies a unified diff file to the working copy"),
-                "icon": "rabbitvcs-applypatch",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.applypatch,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.applypatch
-                }
-            },
-            "Properties": {
-                "identifier": "RabbitVCS::Properties",
-                "label": _("Properties"),
-                "tooltip": _("View the properties of an item"),
-                "icon": "rabbitvcs-properties",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.properties,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": self.conditions.properties
-                }
-            },
-            "Help": {
-                "identifier": "RabbitVCS::Help",
-                "label": _("Help"),
-                "tooltip": _("View help"),
-                "icon": "rabbitvcs-help",
-                "signals": {
-                    "activate": {
-                        "callback": None,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": (lambda: False)
-                }
-            },
-            "Settings": {
-                "identifier": "RabbitVCS::Settings",
-                "label": _("Settings"),
-                "tooltip": _("View or change RabbitVCS settings"),
-                "icon": "rabbitvcs-settings",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.settings,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "About": {
-                "identifier": "RabbitVCS::About",
-                "label": _("About"),
-                "tooltip": _("About RabbitVCS"),
-                "icon": "rabbitvcs-about",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.about,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "Open": {
-                "identifier": "RabbitVCS::Open",
-                "label": _("Open"),
-                "tooltip": _("Open a file"),
-                "icon": gtk.STOCK_OPEN,
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks._open, 
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.conditions._open
-                }
-            },
-            "BrowseTo": {
-                "identifier": "RabbitVCS::BrowseTo",
-                "label": _("Browse to"),
-                "tooltip": _("Browse to a file or folder"),
-                "icon": gtk.STOCK_HARDDISK,
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.browse_to, 
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.conditions.browse_to
-                }
-            },
+    
+    # These are some simple tests:
+    import inspect
+    import types
+    
+    import contextmenuitems
+    
+    menu_item_subclasses = []
+    
+    # Let's create a list of all MenuItem subclasses
+    for name in dir(contextmenuitems):
+        entity = getattr(contextmenuitems, name)
+        if type(entity) == types.ClassType:
+            mro = inspect.getmro(entity)
+            if (entity is not contextmenuitems.MenuItem and
+                contextmenuitems.MenuItem in mro):
+                menu_item_subclasses.append(entity)
+    
+    condition_functions = []
+    
+    # Now let's create a list of all of the functions in our conditions class
+    for name in dir(ContextMenuConditions):
+        entity = getattr(ContextMenuConditions, name)
+        if type(entity) == types.UnboundMethodType and not name.startswith("__"):
+            condition_functions.append(entity)
+    
+    callback_functions = []
+    
+    # ...and in our callbacks class
+    for name in dir(ContextMenuCallbacks):
+        entity = getattr(ContextMenuCallbacks, name)
+        if type(entity) == types.UnboundMethodType and not name.startswith("__"):
+            condition_functions.append(entity)
+    
+    for cls in menu_item_subclasses:
+        item = cls(ContextMenuConditions(), ContextMenuCallbacks(None, None, None, None))
+        if not item.found_condition:
+            print "Did not find condition function in ContextMenuConditions " \
+                  "for %s (type: %s)" % (item.identifier, cls)
+        if not item.found_callback:
+            print "Did not find callback function in ContextMenuCallbacks " \
+                  "for %s (type: %s)" % (item.identifier, cls)
             
-            # Property conditions:
-#            "DeleteProperty": {
-#                "identifier": "RabbitVCS::DeleteProperty",
-#                "label": _("Delete property"),
-#                "tooltip": _("Delete the property from this path"),
-#                "icon": "rabbitvcs-delete",
-#                "signals": {
-#                    "activate": {
-#                        "callback": self.callbacks.prop_del,
-#                        "args": None
-#                    }
-#                },
-#                "condition": {
-#                    "callback": self.conditions.prop_del
-#                }
-#            },
-#            
-#            "DeletePropertyRecursive": {
-#                "identifier": "RabbitVCS::DeletePropertyRecursive",
-#                "label": _("Delete property recursively"),
-#                "tooltip": _("Delete the property from this path and all descendants"),
-#                "icon": "rabbitvcs-delete",
-#                "signals": {
-#                    "activate": {
-#                        "callback": self.callbacks.prop_del,
-#                        "args": [True]
-#                    }
-#                },
-#                "condition": {
-#                    "callback": self.conditions.prop_del
-#                }
-#            },
-#            
-#                        # Property conditions:
-#            "RevertProperty": {
-#                "identifier": "RabbitVCS::RevertProperty",
-#                "label": _("Revert property"),
-#                "tooltip": _("Restore the property to its original state for this path"),
-#                "icon": "rabbitvcs-revert",
-#                "signals": {
-#                    "activate": {
-#                        "callback": self.callbacks.prop_revert,
-#                        "args": None
-#                    }
-#                },
-#                "condition": {
-#                    "callback": self.conditions.prop_revert
-#                }
-#            },
-#            
-#            "RevertPropertyRecursive": {
-#                "identifier": "RabbitVCS::RevertPropertyRecursive",
-#                "label": _("Revert property recursively"),
-#                "tooltip": _("Restore the property to its original state for this path and all descendants"),
-#                "icon": "rabbitvcs-revert",
-#                "signals": {
-#                    "activate": {
-#                        "callback": self.callbacks.prop_revert,
-#                        "args": [True]
-#                    }
-#                },
-#                "condition": {
-#                    "callback": self.conditions.prop_revert
-#                }
-#            }           
-        }
-        
-        for i in (0,1,2,3,4,5,6,7,8,9):
-            key = "Separator" + str(i)
-            self.items[key] = {
-                "identifier": "RabbitVCS::" + key,
-                "label": SEPARATOR,
-                "tooltip": "",
-                "icon": None,
-                "signals": {}, 
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            }
-        
-        if self.items_to_append is not None:
-            for key,val in self.items_to_append.items():
-                self.items[key] = val
 
-    def get_items(self):
-        return self.items
-
-def get_ignore_list_items(paths, conditions, callbacks):
-    """
-    Build up a list of items to ignore based on the selected paths
-
-    @param  paths: The selected paths
-    @type   paths: list
-    
-    @param  conditions: The conditions class that determines menu item visibility
-    @kind   conditions: ContextMenuConditions
-    
-    @param  callbacks: The callbacks class that determines what actions are taken
-    @kind   callbacks: ContextMenuCallbacks
-
-    """
-    ignore_items = {}
-    ignore_list_keys = []
-    
-    # Used to weed out duplicate menu items
-    added_ignore_labels = []
-    
-    # These are ignore-by-filename items
-    ignorebyfilename_index = 0
-    for path in paths:
-        basename = os.path.basename(path)
-        if basename not in added_ignore_labels:
-            key = "IgnoreByFileName%s" % str(ignorebyfilename_index)
-            ignore_items[key] = {
-                "identifier": "RabbitVCS::%s" % key,
-                "label": basename,
-                "tooltip": _("Ignore item by filename"),
-                "icon": None,
-                "signals": {
-                    "button-press-event": {
-                        "callback": callbacks.ignore_by_filename, 
-                        "args": [path]
-                     }
-                 },
-                "condition": {
-                    "callback": conditions.ignore_by_filename,
-                    "args": [path]
-                }
-            }
-            added_ignore_labels.append(basename)
-            ignorebyfilename_index += 1
-            ignore_list_keys.append((key, None))
-
-    # These are ignore-by-extension items
-    ignorebyfileext_index = 0
-    for path in paths:
-        extension = rabbitvcs.lib.helper.get_file_extension(path)
-        
-        ext_str = "*%s"%extension
-        if ext_str not in added_ignore_labels:
-            key = "IgnoreByFileExt%s" % str(ignorebyfileext_index)
-            ignore_items[key] = {
-                "identifier": "RabbitVCS::%s" % key,
-                "label": ext_str,
-                "tooltip": _("Ignore item by file extension"),
-                "icon": None,
-                "signals": {
-                    "button-press-event": {
-                        "callback": callbacks.ignore_by_file_extension, 
-                        "args": [path]
-                    }
-                },
-                "condition": {
-                    "callback": conditions.ignore_by_file_extension,
-                    "args": [path, extension]
-                }
-            }
-            added_ignore_labels.append(ext_str)
-            ignorebyfileext_index += 1
-            ignore_list_keys.append((key, None))
-
-    return (ignore_items, ignore_list_keys)
+if __name__ == "__main__":
+    TestMenuItemFunctions()

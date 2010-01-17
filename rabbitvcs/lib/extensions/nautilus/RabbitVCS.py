@@ -48,8 +48,8 @@ def log_all_exceptions(type, value, tb):
     
     sys.__excepthook__(type, value, tb)
 
-# import sys
-# sys.excepthook = log_all_exceptions
+#import sys
+#sys.excepthook = log_all_exceptions
 
 import copy
 import os.path
@@ -70,7 +70,7 @@ from rabbitvcs.lib.helper import launch_ui_window, launch_diff_tool
 from rabbitvcs.lib.helper import get_file_extension, get_common_directory
 from rabbitvcs.lib.helper import pretty_timedelta
 from rabbitvcs.lib.decorators import timeit, disable
-from rabbitvcs.lib.contextmenu import MainContextMenu, SEPARATOR
+from rabbitvcs.lib.contextmenu import MenuBuilder, MainContextMenu, SEPARATOR
 
 from rabbitvcs.lib.log import Log, reload_log_settings
 log = Log("rabbitvcs.lib.extensions.nautilus.RabbitVCS")
@@ -422,7 +422,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
 
         if len(paths) == 0: return []
         
-        return NautilusContextMenu(self, window.get_data("base_dir"), paths).construct_menu()
+        return NautilusMainContextMenu(self, window.get_data("base_dir"), paths).get_menu()
     
     #~ @disable
     @timeit
@@ -450,7 +450,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         
         window.set_data("base_dir", path)
         
-        return NautilusContextMenu(self, path, [path]).construct_menu()
+        return NautilusMainContextMenu(self, path, [path]).get_menu()
     
     #
     # Helper functions
@@ -583,149 +583,25 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         else:
             log.debug("Path [%s] not found in file table")
 
+from rabbitvcs.lib.contextmenuitems import *
 
-class NautilusContextMenu:
-    def __init__(self, caller, base_dir, paths=[]):
-        self.caller = caller
-        self.base_dir = base_dir
-        self.paths = paths
+class NautilusContextMenu(MenuBuilder):
+    """
+    Provides a standard Nautilus context menu (ie. a list of
+    "nautilus.MenuItem"s).
+    """
+        
+    def make_menu_item(self, item, id_magic):
+        return item.make_nautilus_menu_item(id_magic)
+    
+    def attach_submenu(self, menu_node, submenu_list):
+        submenu = nautilus.Menu()
+        menu_node.set_submenu(submenu)
+        [submenu.append_item(item) for item in submenu_list]
+    
+    def top_level_menu(self, items):
+        return items
 
-    def construct_menu(self):
-        menu = MainContextMenu(self.caller, self.base_dir, self.paths)
-        return self.construct_menu_from_definition(menu.structure, menu.items)
-
-    def construct_menu_from_definition(self, definition, items):
-        """
-        
-        Create the actual menu from a menu definiton.
-        
-        @param  definition: Menu structure
-        @type   definition: list
-        
-        @param  items: Menu items
-        @type   items: dict
-        
-        Note on "definition". The menu structure is defined in a list of tuples 
-        of two elements each.  The first element is a key that matches a key in 
-        "items".  The second element is either None (if there is no submenu) or 
-        a list of tuples if there is a submenu.  The submenus are generated 
-        recursively.  FYI, this is a list of tuples so that we retain the 
-        desired menu item order (dicts do not retain order)
-        
-            Example:
-            [
-                (key, [
-                    (submenu_key, None),
-                    (submenu_key, None)
-                ]),
-                (key, None),
-                (key, None)
-            ]
-
-        Note on "items".  This is a dict that looks like the following.
-        
-            {
-                "identifier": "RabbitVCS::Identifier",
-                "label": "",
-                "tooltip": "",
-                "icon": "",
-                "signals": {
-                    "activate": {
-                        "callback": None,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": (lambda: True),
-                    "args": None
-                }
-            }
-        
-        @rtype:     list of MenuItems
-        @return:    A list of MenuItems representing the context menu.
-        
-        """
-        
-        menu = []
-        previous_label = None
-        is_first = True
-        index = 0
-        length = len(definition)
-        separator_index = 0
-        for key,submenu_keys in definition:
-            is_last = (index + 1 == length)
-
-            if key not in items:
-                continue
-            
-            item = items[key]
-            
-            # Execute the condition associated with the definition_item
-            # which will figure out whether or not to display this item.
-            condition = item["condition"]
-            if condition.has_key("args"):
-                if condition["callback"](condition["args"]) is False:
-                    continue
-            else:
-                if condition["callback"]() is False:
-                    continue
-
-            # If the item is a separator, don't show it if this is the first
-            # or last item, or if the previous item was a separator.
-            if (item["label"] == SEPARATOR and
-                    (is_first or is_last or previous_label == SEPARATOR)):
-                index += 1
-                continue
-        
-            menu_item = nautilus.MenuItem(
-                item["identifier"],
-                item["label"],
-                item["tooltip"],
-                item["icon"]
-            )
-            
-            # Making the seperator insensitive makes sure nobody
-            # will click it accidently.
-            if (item["label"] == SEPARATOR): 
-                menu_item.set_property("sensitive", False)
-            
-            # Make sure all the signals are connected.
-            for signal, value in item["signals"].items():
-                if signal == "button-press-event":
-                    signal = "activate"
-                    
-                if value["callback"] != None:
-                    # FIXME: the adding of arguments need to be done properly
-                    if "kwargs" in value:
-                        menu_item.connect(signal, value["callback"], value["kwargs"])    
-                    else:
-                        menu_item.connect(signal, value["callback"])
-            
-            menu.append(menu_item)
-            
-            # The menu item above has just been added, so we can note that
-            # we're no longer on the first menu item.  And we'll keep
-            # track of this item so the next iteration can test if it should
-            # show a separator or not
-            is_first = False
-            previous_label = item["label"]
-            
-            # Since we can't just call set_submenu and run the risk of not
-            # having any submenu items later (which would result in the 
-            # menu item not being displayed) we have to check first.
-            if submenu_keys is not None:
-                submenu = self.construct_menu_from_definition(
-                    submenu_keys,
-                    items
-                )
-                
-                if len(submenu) > 0:
-                    nautilus_submenu = nautilus.Menu()
-                    menu_item.set_submenu(nautilus_submenu)
-                    
-                    for submenu_item in submenu:
-                        nautilus_submenu.append_item(submenu_item)
-
-            index += 1
-            
-        return menu
+class NautilusMainContextMenu(MainContextMenu):
+    def get_menu(self):
+        return NautilusContextMenu(self.structure, self.conditions, self.callbacks).menu

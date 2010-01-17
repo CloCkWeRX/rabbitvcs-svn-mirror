@@ -26,6 +26,7 @@ All sorts of helper functions.
 
 """
 
+from collections import deque
 import locale
 import os
 import os.path
@@ -643,3 +644,57 @@ def get_node_kind(path):
             return "dir"
 
     return "none"
+
+def walk_tree_depth_first(tree, show_levels=False,
+                          preprocess=None, filter=None):
+    """
+    A non-recursive generator function that walks through a tree (and all
+    children) yielding results.
+    
+    The tree should be of the form:
+      [(NodeOne, None),
+       (NodeTwo,
+         [(Node2A, None),
+          (Node2B, None),
+          (Node2C,
+            [(Node2C1, None), etc]
+         ]
+       (NodeThree, None),
+        etc...]
+    
+    If show_levels is True, the values returned are (level, value) where level
+    is zero for the top level items in the tree. Otherwise, just "value" is
+    returned.
+    
+    If a callable "preprocess" is supplied, it is applied BEFORE the filter,
+    as each element is encountered.
+    
+    If a callable "filter" is supplied, it is applied and if it returns false
+    for an item, the item and its children will be skipped.
+    """
+    annotated_tree = [(0, element) for element in tree]
+    
+    to_process = deque(annotated_tree)
+    
+    while to_process:
+        
+        (level, (node, children)) = to_process.popleft()
+        
+        if preprocess:
+            value = preprocess(node)
+        else:
+            value = node
+        
+        if filter and not filter(value):
+            continue
+        
+        if show_levels:
+            yield (level, value)
+        else:
+            yield value
+            
+        if children:
+            annotated_children = [(level+1, child) for child in children]
+            annotated_children.reverse()
+            to_process.extendleft(annotated_children)
+        
