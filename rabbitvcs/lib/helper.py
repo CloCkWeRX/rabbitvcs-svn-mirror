@@ -646,7 +646,7 @@ def get_node_kind(path):
     return "none"
 
 def walk_tree_depth_first(tree, show_levels=False,
-                          preprocess=None, filter=None):
+                          preprocess=None, filter=None, start=None):
     """
     A non-recursive generator function that walks through a tree (and all
     children) yielding results.
@@ -671,30 +671,46 @@ def walk_tree_depth_first(tree, show_levels=False,
     
     If a callable "filter" is supplied, it is applied and if it returns false
     for an item, the item and its children will be skipped.
+    
+    If "start" is given, the walk will be applied only to that node and its
+    children. No preprocessing or filtering will be applied to other elements.    
     """
     annotated_tree = [(0, element) for element in tree]
     
     to_process = deque(annotated_tree)
     
+    # If we're not given a starting point, the top is the start
+    found_starting_point = not start
+    
+    # If no starting point is given, we're already at the start (ie. the top)
+    
     while to_process:
-        
         (level, (node, children)) = to_process.popleft()
         
-        if preprocess:
-            value = preprocess(node)
-        else:
-            value = node
-        
-        if filter and not filter(value):
-            continue
-        
-        if show_levels:
-            yield (level, value)
-        else:
-            yield value
+        if not found_starting_point and (node == start):
+            # If we're given a starting point and we've found it, clear the list
+            # and start from here
+            found_starting_point = True
+            level = 0
+            to_process.clear()
+
+        # This should NOT be an else case, since we may have just set this flag
+        # to "True" above.
+        if found_starting_point:
+            if preprocess:
+                value = preprocess(node)
+            else:
+                value = node
             
+            if filter and not filter(value):
+                continue
+            
+            if show_levels:
+                yield (level, value)
+            else:
+                yield value
+
         if children:
             annotated_children = [(level+1, child) for child in children]
             annotated_children.reverse()
-            to_process.extendleft(annotated_children)
-        
+            to_process.extendleft(annotated_children)        
