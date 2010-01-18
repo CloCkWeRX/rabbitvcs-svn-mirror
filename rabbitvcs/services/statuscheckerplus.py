@@ -26,6 +26,16 @@ will be notified when a proper status check is done.
 
 from __future__ import with_statement
 
+def log_exceptions(extype, value, tb):
+    from rabbitvcs.lib.log import Log
+    log = Log("rabbitvcs.lib.extensions.statuscheckerplus")
+    log.exception_info("Error caught by status checker exception hook!",
+                       (extype, value, tb))
+    sys.__excepthook__(extype, value, tb)
+
+import sys
+sys.excepthook = log_exceptions
+
 import threading
 from Queue import Queue
 
@@ -107,20 +117,14 @@ class StatusCheckerPlus():
                 
         if callback:
             statuses = \
-            self._check_status_with_callback(path, recurse, invalidate, summary,
-                                             callback)
+            self._check_status_with_callback(path, recurse, summary, callback)
         else:
             statuses = \
-            self._check_status_without_callback(path, recurse, invalidate,
-                                                summary, callback)
-    
-        if summary:
-            statuses = make_summary(path, statuses)
+            self._check_status_without_callback(path, recurse, summary)
             
         return statuses
     
-    def _check_status_with_callback(self, path, 
-                                         recurse=False, invalidate=False,
+    def _check_status_with_callback(self, path, recurse=False,
                                          summary=False, callback=None):
         
         if self.client.is_in_a_or_a_working_copy(path):
@@ -128,14 +132,39 @@ class StatusCheckerPlus():
             self._paths_to_check.put((path, recurse, summary, callback))
         else:
             statuses = status_unknown(path)
-        
+
+        if summary:
+            statuses = make_summary(path, statuses)
+            
         return statuses
         
-    def _check_status_without_callback(self, path, 
-                                            recurse=False, invalidate=False,
-                                            summary=False, callback=None):
-        # FIXME: actually implement something...
-        return status_unknown(path)
+    def _check_status_without_callback(self, path, recurse=False,
+                                            summary=False):
+        
+        statuses = {}
+                    
+        # Uncomment this for useful simulation of a looooong status check :)
+        # log.debug("Sleeping for 10s...")
+        # time.sleep(5)
+        # log.debug("Done.")
+        
+        check_results = None
+        check_summary = None
+        
+        if summary:
+            (check_results, check_summary) = \
+                self.checker.check_status(path, recurse, summary)
+        else:
+            check_results = self.checker.check_status(path, recurse, summary)
+        
+        for result_path, text_status, prop_status in check_results:
+            statuses[result_path] = {"text_status" : text_status,
+                                     "prop_status" : prop_status}
+
+        if summary:
+            statuses = ({path: statuses[path]}, check_summary)            
+        
+        return statuses
         
     def kill(self):
         """ Stops operation of the cache. Future calls to check_status will just
@@ -170,36 +199,8 @@ class StatusCheckerPlus():
         
     def _update_path_status(self, path, recurse=False,
                                summary=False, callback=None):
-        
-        statuses = {}
-                    
-        # Uncomment this for useful simulation of a looooong status check :)
-        # log.debug("Sleeping for 10s...")
-        # time.sleep(5)
-        # log.debug("Done.")
-        
-        # Otherwise actually do a status check
-        
-        check_results = None
-        check_summary = None
-        
-        if summary:
-            (check_results, check_summary) = \
-                self.checker.check_status(path, recurse, summary)
-        else:
-            check_results = self.checker.check_status(path, recurse,
-                                                      summary)
-        
-        # Remember: these callbacks will block THIS thread from calculating the
-        # next path on the "to do" list.
+                
+        statuses = self._check_status_without_callback(path, recurse, summary)
 
-        for result_path, text_status, prop_status in check_results:
-            statuses[result_path] = {"text_status" : text_status,
-                                     "prop_status" : prop_status}
-
-        if statuses:
-            if summary:
-                statuses = ({path: statuses[path]}, check_summary)
-            
-            if callback:
-                callback(path, statuses)
+        if statuses and callback:
+            callback(path, statuses)
