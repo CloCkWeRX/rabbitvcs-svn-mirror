@@ -541,6 +541,34 @@ class MenuSeparator(MenuItem):
         self.make_insensitive(menuitem)
         return menuitem
 
+class PropMenuRevert(MenuItem):
+    identifier = "RabbitVCS::Property_Revert"
+    label = _("Revert property")
+    icon =  "rabbitvcs-revert"
+    tooltop = _("Revert this property to its original state")
+    
+class PropMenuRevertRecursive(MenuItem):
+    identifier = "RabbitVCS::Property_Revert_Recursive"
+    label = _("Revert property (recursive)")
+    icon =  "rabbitvcs-revert"
+    tooltop = _("Revert this property to its original state (recursive)")
+    condition_name = "property_revert"
+    callback_name = "property_revert"
+    
+class PropMenuDelete(MenuItem):
+    identifier = "RabbitVCS::Property_Delete"
+    label = _("Delete property")
+    icon =  "rabbitvcs-delete"
+    tooltop = _("Delete this property")
+    
+class PropMenuDeleteRecursive(MenuItem):
+    identifier = "RabbitVCS::Property_Delete_Recursive"
+    label = _("Delete property")
+    icon =  "rabbitvcs-revert"
+    tooltop = _("Delete this property (recursive)")
+    condition_name = "property_delete"
+    callback_name = "property_delete"
+
 def get_ignore_list_items(paths):
     """
     Build up a list of items to ignore based on the selected paths
