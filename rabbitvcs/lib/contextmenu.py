@@ -42,7 +42,7 @@ _ = gettext.gettext
 settings = SettingsManager()
 
 import rabbitvcs.services
-from rabbitvcs.services.cacheservice import StatusCacheStub as StatusCache
+from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 
 class MenuBuilder(object):
     """
@@ -1041,12 +1041,12 @@ class MainContextMenuConditions(ContextMenuConditions):
         """   
 
         self.vcs_client = vcs_client
-        self.status_cache = StatusCache()
+        self.status_checker = StatusChecker()
         
         self.statuses = {}
         for path in paths:
             # FIXME: possibly this should be a checker, not a cache?
-            self.statuses.update(self.status_cache.check_status(path,
+            self.statuses.update(self.status_checker.check_status(path,
                                                                 recurse=True))
 
         self.text_statuses = [self.statuses[key]["text_status"] for key in self.statuses.keys()]

@@ -67,7 +67,7 @@ def make_summary(path, statuses):
                                    "prop_status": "whatever"}, path2: ...}
                                    
     @return: (single status, summarised status)
-    @rtype: see StatusCache documentation
+    @rtype: see StatusChecker documentation
     """
     return ({path: statuses[path]},
             rabbitvcs.util.vcs.summarize_status_pair(path, statuses))
@@ -100,12 +100,28 @@ class StatusCheckerPlus():
         self.worker.start()
      
     def check_status(self, path, 
-                     recurse=False, invalidate=False,
-                     summary=False, callback=None):
+                       recurse=False, invalidate=False,
+                       summary=False, callback=None):
         # The invalidate parameter is not used.
-        # log.debug("Status request for: %s" % path)
-        
-        statuses = {}
+        statuses = None
+                
+        if callback:
+            statuses = \
+            self._check_status_with_callback(path, recurse, invalidate, summary,
+                                             callback)
+        else:
+            statuses = \
+            self._check_status_without_callback(path, recurse, invalidate,
+                                                summary, callback)
+    
+        if summary:
+            statuses = make_summary(path, statuses)
+            
+        return statuses
+    
+    def _check_status_with_callback(self, path, 
+                                         recurse=False, invalidate=False,
+                                         summary=False, callback=None):
         
         if self.client.is_in_a_or_a_working_copy(path):
             statuses = status_calculating(path)
@@ -114,6 +130,12 @@ class StatusCheckerPlus():
             statuses = status_unknown(path)
         
         return statuses
+        
+    def _check_status_without_callback(self, path, 
+                                            recurse=False, invalidate=False,
+                                            summary=False, callback=None):
+        # FIXME: actually implement something...
+        return status_unknown(path)
         
     def kill(self):
         """ Stops operation of the cache. Future calls to check_status will just
@@ -148,7 +170,8 @@ class StatusCheckerPlus():
         
     def _update_path_status(self, path, recurse=False,
                                summary=False, callback=None):
-        statuses = None
+        
+        statuses = {}
                     
         # Uncomment this for useful simulation of a looooong status check :)
         # log.debug("Sleeping for 10s...")
@@ -173,10 +196,6 @@ class StatusCheckerPlus():
         for result_path, text_status, prop_status in check_results:
             statuses[result_path] = {"text_status" : text_status,
                                      "prop_status" : prop_status}
-
-        # In theory, it would be absurd for the status check to come back
-        # WITHOUT the requested path. Let's be paranoid though.
-        if not statuses.get(path, False): statuses = None 
 
         if statuses:
             if summary:
