@@ -102,10 +102,10 @@ class StatusCheckerPlus():
         self._alive = threading.Event()
         self._alive.set()
 
-        # This means that the thread will die when everything else does. If
-        # there are problems, we will need to add a flag to manually kill it.
-        # self.checker = StatusCheckerStub()
+        # We need a checker for each thread (if we use locks, we're right back
+        # where we started from).
         self.checker = StatusChecker()
+        self.other_checker = StatusChecker()
         # self.worker.setDaemon(True)
         self.worker.start()
      
@@ -120,7 +120,8 @@ class StatusCheckerPlus():
             self._check_status_with_callback(path, recurse, summary, callback)
         else:
             statuses = \
-            self._check_status_without_callback(path, recurse, summary)
+            self._check_status_without_callback(path, self.checker, recurse,
+                                                summary)
             
         return statuses
     
@@ -138,9 +139,11 @@ class StatusCheckerPlus():
             
         return statuses
         
-    def _check_status_without_callback(self, path, recurse=False,
+    def _check_status_without_callback(self, path, checker, recurse=False,
                                             summary=False):
         
+        # This might be considered a little hacky, but we need to use a
+        # different checker for each thread.        
         statuses = {}
                     
         # Uncomment this for useful simulation of a looooong status check :)
@@ -153,9 +156,9 @@ class StatusCheckerPlus():
         
         if summary:
             (check_results, check_summary) = \
-                self.checker.check_status(path, recurse, summary)
+                checker.check_status(path, recurse, summary)
         else:
-            check_results = self.checker.check_status(path, recurse, summary)
+            check_results = checker.check_status(path, recurse, summary)
         
         for result_path, text_status, prop_status in check_results:
             statuses[result_path] = {"text_status" : text_status,
@@ -200,7 +203,8 @@ class StatusCheckerPlus():
     def _update_path_status(self, path, recurse=False,
                                summary=False, callback=None):
                 
-        statuses = self._check_status_without_callback(path, recurse, summary)
+        statuses = self._check_status_without_callback(path, self.other_checker,
+                                                       recurse, summary)
 
         if statuses and callback:
             callback(path, statuses)
