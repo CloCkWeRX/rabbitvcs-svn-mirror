@@ -99,8 +99,10 @@ class StatusCheckerPlus():
         # self.worker.setDaemon(True)
         self.worker.start()
      
-    def check_status(self, path, recurse=False, summary=False, callback=None):
-
+    def check_status(self, path, 
+                     recurse=False, invalidate=False,
+                     summary=False, callback=None):
+        # The invalidate parameter is not used.
         # log.debug("Status request for: %s" % path)
         
         statuses = {}
