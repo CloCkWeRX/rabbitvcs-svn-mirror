@@ -24,6 +24,7 @@ import pygtk
 import gobject
 import gtk
 import os
+from shutil import rmtree
 import tempfile
 
 from rabbitvcs import TEMP_DIR_PREFIX
@@ -102,16 +103,26 @@ class Diff(InterfaceNonView):
         if os.path.exists(self.path1) and self.revision1.kind != "base":
             dest1 = self.path1
         else:
-            dest1 = "/tmp/rabbitvcs-1-" + str(self.revision1) + "-" + os.path.basename(self.path1)          
+            dest1 = self._build_export_path(1, self.revision1, self.path1)
             self.vcs.export(self.path1, dest1, self.revision1)
     
         if os.path.exists(self.path2) and self.revision2.kind != "base":
             dest2 = self.path2
         else:
-            dest2 = "/tmp/rabbitvcs-2-" + str(self.revision2) + "-" + os.path.basename(self.path2)
+            dest2 = self._build_export_path(2, self.revision2, self.path2)
             self.vcs.export(self.path2, dest2, self.revision2)
     
         rabbitvcs.lib.helper.launch_diff_tool(dest1, dest2)
+
+    def _build_export_path(self, index, revision, path):
+        dest = "/tmp/rabbitvcs-%s-%s-%s" % (str(index), str(revision), os.path.basename(path))
+        if os.path.exists(dest):
+            if os.path.isdir(dest):
+                rmtree(dest, ignore_errors=True)
+            else:
+                os.delete(dest)
+
+        return dest
 
 class SVNDiff(Diff):
     def __init__(self, path1, revision1=None, path2=None, revision2=None,
