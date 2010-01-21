@@ -33,6 +33,7 @@ from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import VCSAction
 from rabbitvcs.ui.dialog import MessageBox
 from rabbitvcs.lib.contextmenu import GtkContextMenu
+from rabbitvcs.lib.contextmenuitems import MenuItem, MenuSeparator
 import rabbitvcs.ui.widget
 import rabbitvcs.lib.helper
 import rabbitvcs.lib.vcs
@@ -187,178 +188,15 @@ class Log(InterfaceView):
             self.message.set_text("")
 
     def show_revisions_table_popup_menu(self, treeview, data):
-        structure = [
-            ("ViewDiffWC", None),
-            ("ViewDiffPrevRev", None),
-            ("ViewDiffRevs", None),
-            ("ShowChangesRevs", None),
-            ("Separator0", None),
-            ("UpdateTo", None),
-            ("Checkout", None),
-            ("BranchTag", None),
-            ("Export", None),
-            ("Separator1", None),
-            ("EditAuthor", None),
-            ("EditLogMessage", None),
-            ("EditRevProps", None)
-        ]
-    
-        items = {
-            "ViewDiffWC": {
-                "label": _("View diff against working copy"),
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_diff_wc,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_diff_working_copy
-                }
-            },
-            "ViewDiffPrevRev": {
-                "label": _("View diff against previous revision"),
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_diff_previous_revision,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_diff_previous
-                }
-            },
-            "ViewDiffRevs": {
-                "label": _("View diff between revisions"),
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_diff_revisions,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_diff_revisions
-                }
-            },
-            "ShowChangesRevs": {
-                "label": _("Show changes between revisions"),
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_show_changes_revisions,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_show_changes_revisions
-                }
-            },
-            "Separator0": {
-                "label": rabbitvcs.ui.widget.SEPARATOR,
-                "signals": None,
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "UpdateTo": {
-                "label": _("Update to revision..."),
-                "icon": "rabbitvcs-update",
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_update_to,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_update_to
-                }
-            },
-            "Checkout": {
-                "label": _("Checkout..."),
-                "icon": "rabbitvcs-checkout",
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_checkout_activated,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_checkout
-                }
-            },
-            "BranchTag": {
-                "label": _("Branch/tag..."),
-                "icon": "rabbitvcs-branch",
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_branch_activated,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_branch
-                }
-            },
-            "Export": {
-                "label": _("Export..."),
-                "icon": "rabbitvcs-export",
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_export_activated,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_export
-                }
-            },
-            "Separator1": {
-                "label": rabbitvcs.ui.widget.SEPARATOR,
-                "signals": None,
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "EditAuthor": {
-                "label": _("Edit author..."),
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_edit_author,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "EditLogMessage": {
-                "label": _("Edit log message..."),
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_edit_log_message,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "EditRevProps": {
-                "label": _("Edit revision properties.."),
-                "icon": gtk.STOCK_EDIT,
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_edit_revprops,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_edit_revprops
-                }
-            }
-        }
-        
-        menu = GtkContextMenu(structure, items)
-        menu.show(data)
+        revisions = []
+        for row in self.revisions_table.get_selected_rows():
+            revisions.append({
+                "revision": self.vcs.revision("number", number=self.revision_items[row].revision.number),
+                "author": self.revision_items[row].author,
+                "message": self.revision_items[row].message
+            })
+            
+        LogTopContextMenu(self, data, self.path, revisions).show()
 
     #
     # Paths table callbacks
@@ -584,123 +422,7 @@ class Log(InterfaceView):
     # Context menu item callbacks
     #
 
-    def on_context_checkout_activated(self, widget, data=None):
-        from rabbitvcs.ui.checkout import Checkout
-        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-        revision = item.revision.number
-        url = self.vcs.get_repo_url(self.path)
-        Checkout(url=url, revision=revision).show()
 
-    def on_context_diff_wc(self, widget, data=None):
-        from rabbitvcs.ui.diff import SVNDiff
-        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-        self.action = VCSAction(
-            self.vcs,
-            notification=False
-        )
-        self.action.append(
-            SVNDiff,
-            self.path, 
-            item.revision.number
-        )
-        self.action.start()
-
-    def on_context_diff_revisions(self, widget, data=None):
-        from rabbitvcs.ui.diff import SVNDiff
-        
-        item1 = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-        item2 = self.revision_items[self.revisions_table.get_selected_rows()[1]]
-        
-        self.action = VCSAction(
-            self.vcs,
-            notification=False
-        )
-        self.action.append(
-            SVNDiff,
-            self.vcs.get_repo_url(self.path), 
-            item2.revision.number, 
-            self.path, 
-            item1.revision.number
-        )
-        self.action.start()
-
-    def on_context_diff_previous_revision(self, widget, data=None):
-        from rabbitvcs.ui.diff import SVNDiff
-
-        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-        self.action = VCSAction(
-            self.vcs,
-            notification=False
-        )
-        self.action.append(
-            SVNDiff,
-            self.path, 
-            item.revision.number-1, 
-            self.path, 
-            item.revision.number
-        )
-        self.action.start()
-
-    def on_context_show_changes_revisions(self, widget, data=None):
-        from rabbitvcs.ui.changes import Changes
-        item1 = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-        item2 = self.revision_items[self.revisions_table.get_selected_rows()[1]]
-        path = self.vcs.get_repo_url(self.path)
-
-        Changes(
-            path, 
-            item2.revision.number, 
-            path, 
-            item1.revision.number
-        )
-
-    def on_context_update_to(self, widget, data=None):
-        from rabbitvcs.ui.updateto import UpdateToRevision
-        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-        UpdateToRevision(self.path, item.revision.number)
-
-    def on_context_branch_activated(self, widget, data=None):
-        from rabbitvcs.ui.branch import Branch
-        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-        Branch(self.path, revision=item.revision.number).show()
-
-    def on_context_export_activated(self, widget, data=None):
-        from rabbitvcs.ui.export import Export
-        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-        Export(self.path, revision=item.revision.number).show()
-
-    def on_context_edit_log_message(self, widget, data=None):
-        message = ""
-        if len(self.revisions_table.get_selected_rows()) == 1:
-            item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-            message = item.message
-
-        from rabbitvcs.ui.dialog import TextChange
-        dialog = TextChange(_("Edit log message"), message)
-        (result, new_message) = dialog.run()
-
-        if result == 1:
-            self.edit_revprop("svn:log", new_message, self.on_log_message_edited)
-
-    def on_context_edit_author(self, widget, data=None):
-        message = ""
-        if len(self.revisions_table.get_selected_rows()) == 1:
-            item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-            author = item.author
-
-        from rabbitvcs.ui.dialog import TextChange
-        dialog = TextChange(_("Edit author"), author)
-        (result, new_author) = dialog.run()
-
-        if result == 1:
-            self.edit_revprop("svn:author", new_author, self.on_author_edited)
-
-    def on_context_edit_revprops(self, widget, data=None):
-        from rabbitvcs.ui.revprops import SVNRevisionProperties
-        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-        url = self.vcs.get_repo_url(self.path)
-
-        SVNRevisionProperties(url, item.revision.number)
 
     def on_paths_context_diff_previous(self, widget, data=None):
         rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
@@ -759,33 +481,6 @@ class Log(InterfaceView):
     # Context menu item conditions for being visible
     #
     
-    def condition_checkout(self):
-        return (len(self.revisions_table.get_selected_rows()) == 1)
-    
-    def condition_export(self):
-        return self.condition_checkout()
-
-    def condition_branch(self):
-        return self.condition_checkout()
-
-    def condition_update_to(self):
-        return self.condition_checkout()
-
-    def condition_diff_working_copy(self):
-        return (len(self.revisions_table.get_selected_rows()) == 1)
-
-    def condition_diff_previous(self):
-        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-        return (item.revision.number > 1 and len(self.revisions_table.get_selected_rows()) == 1)
-
-    def condition_diff_revisions(self):
-        return (len(self.revisions_table.get_selected_rows()) == 2)
-
-    def condition_edit_revprops(self):
-        return (len(self.revisions_table.get_selected_rows()) == 1)
-    
-    def condition_show_changes_revisions(self):
-        return (len(self.revisions_table.get_selected_rows()) == 2)
 
     def condition_paths_annotate(self):
         return (len(self.revisions_table.get_selected_rows()) == 1)
@@ -880,6 +575,280 @@ class LogCache:
     
     def empty(self):
         self.cache = {}
+
+class MenuViewDiffWC(MenuItem):
+    identifier = "RabbitVCS::View_Diff_WC"
+    label = _("View diff against working copy")
+
+class MenuViewDiffPrevRev(MenuItem):
+    identifier = "RabbitVCS::View_Diff_Prev_Rev"
+    label = _("View diff against previous revision")
+
+class MenuViewDiffRevs(MenuItem):
+    identifier = "RabbitVCS::View_Diff_Revs"
+    label = _("View diff between revisions")
+
+class MenuShowChangesRevs(MenuItem):
+    identifier = "RabbitVCS::Show_Changes_Revs"
+    label = _("Show changes between revisions")
+
+class MenuUpdateTo(MenuItem):
+    identifier = "RabbitVCS::Update_To"
+    label = _("Update to revision...")
+    icon = "rabbitvcs-update_to"
+
+class MenuCheckout(MenuItem):
+    identifier = "RabbitVCS::Checkout"
+    label = _("Checkout")
+    icon = "rabbitvcs-checkout"
+
+class MenuBranchTag(MenuItem):
+    identifier = "RabbitVCS::Branch_Tag"
+    label = _("Branch/tag...")    
+    icon = "rabbitvcs-branch"
+
+class MenuExport(MenuItem):
+    identifier = "RabbitVCS::Export"
+    label = _("Export...")
+    icon = "rabbitvcs-export"
+    
+class MenuEditAuthor(MenuItem):
+    identifier = "RabbitVCS::Edit_Author"
+    label = _("Edit author...")
+
+class MenuEditAuthor(MenuItem):
+    identifier = "RabbitVCS::Edit_Author"
+    label = _("Edit author...")
+
+class MenuEditLogMessage(MenuItem):
+    identifier = "RabbitVCS::Edit_Log_Message"
+    label = _("Edit log message...")
+
+class MenuEditRevProps(MenuItem):
+    identifier = "RabbitVCS::Edit_Rev_Props"
+    label = _("Edit revision properties...")
+    icon = gtk.STOCK_EDIT
+
+class LogTopContextMenuConditions:
+    def __init__(self, vcs_client, path, revisions):
+        self.vcs_client = vcs_client
+        self.path = path
+        self.revisions = revisions
+        
+    def view_diff_wc(self, data=None):
+        return (len(self.revisions) == 1)
+
+    def view_diff_prev_rev(self, data=None):
+        item = self.revisions[0]["revision"]
+        return (item.value > 1 and len(self.revisions) == 1)
+
+    def view_diff_revs(self, data=None):
+        return (len(self.revisions) == 2)
+
+    def show_changes_revs(self, data=None):
+        return (len(self.revisions) == 2)
+
+    def update_to(self, data=None):
+        return (len(self.revisions) == 1)
+
+    def checkout(self, data=None):
+        return (len(self.revisions) == 1)
+
+    def branch_tag(self, data=None):
+        return (len(self.revisions) == 1)
+
+    def export(self, data=None):
+        return (len(self.revisions) == 1)
+
+    def edit_author(self, data=None):
+        return True
+
+    def edit_log_message(self, data=None):
+        return True
+
+    def edit_rev_props(self, data=None):
+        return (len(self.revisions) == 1)
+
+    def separator(self, data=None):
+        return True
+
+class LogTopContextMenuCallbacks:
+    def __init__(self, caller, vcs_client, path, revisions):
+        self.caller = caller
+        self.vcs_client = vcs_client
+        self.path = path
+        self.revisions = revisions
+        
+    def view_diff_wc(self, widget, data=None):
+        from rabbitvcs.ui.diff import SVNDiff
+        self.action = VCSAction(
+            self.vcs_client,
+            notification=False
+        )
+        self.action.append(
+            SVNDiff,
+            self.path, 
+            self.revisions[0]["revision"]
+        )
+        self.action.start()
+
+    def view_diff_prev_rev(self, widget, data=None):
+        from rabbitvcs.ui.diff import SVNDiff
+
+        item = self.revisions[0]["revision"]
+        self.action = VCSAction(
+            self.vcs_client,
+            notification=False
+        )
+        self.action.append(
+            SVNDiff,
+            self.path, 
+            item.value-1, 
+            self.path, 
+            item.value
+        )
+        self.action.start()
+        
+    def view_diff_revs(self, widget, data=None):
+        from rabbitvcs.ui.diff import SVNDiff
+        
+        item1 = self.revisions[0]["revision"]
+        item2 = self.revisions[1]["revision"]
+        
+        self.action = VCSAction(
+            self.vcs_client,
+            notification=False
+        )
+        self.action.append(
+            SVNDiff,
+            self.vcs_client.get_repo_url(self.path), 
+            item2, 
+            self.path, 
+            item1
+        )
+        self.action.start()
+
+    def show_changes_revs(self, widget, data=None):
+        from rabbitvcs.ui.changes import Changes
+        item1 = self.revisions[0]["revision"]
+        item2 = self.revisions[1]["revision"]
+        path = self.vcs_client.get_repo_url(self.path)
+
+        Changes(
+            path, 
+            item2, 
+            path, 
+            item1
+        )
+
+    def update_to(self, widget, data=None):
+        from rabbitvcs.ui.updateto import UpdateToRevision
+        UpdateToRevision(self.path, self.revisions[0]["revision"].value)
+        
+    def checkout(self, widget, data=None):
+        from rabbitvcs.ui.checkout import Checkout
+        url = self.vcs_client.get_repo_url(self.path)
+        Checkout(url=url, revision=self.revisions[0]["revision"].value).show()
+
+    def branch_tag(self, widget, data=None):
+        from rabbitvcs.ui.branch import Branch
+        Branch(self.path, revision=self.revisions[0]["revision"].value).show()
+
+    def export(self, widget, data=None):
+        from rabbitvcs.ui.export import Export
+        Export(self.path, revision=self.revisions[0]["revision"].value).show()
+
+    def edit_author(self, widget, data=None):
+        message = ""
+        if len(self.revisions) == 1:
+            author = self.revisions[0]["author"]
+
+        from rabbitvcs.ui.dialog import TextChange
+        dialog = TextChange(_("Edit author"), author)
+        (result, new_author) = dialog.run()
+
+        if result == gtk.RESPONSE_OK:
+            self.caller.edit_revprop("svn:author", new_author, self.caller.on_author_edited)
+
+    def edit_log_message(self, widget, data=None):
+        message = ""
+        if len(self.revisions) == 1:
+            message = self.revisions[0]["message"]
+
+        from rabbitvcs.ui.dialog import TextChange
+        dialog = TextChange(_("Edit log message"), message)
+        (result, new_message) = dialog.run()
+
+        if result == gtk.RESPONSE_OK:
+            self.caller.edit_revprop("svn:log", new_message, self.caller.on_log_message_edited)
+
+    def edit_rev_props(self, widget, data=None):
+        from rabbitvcs.ui.revprops import SVNRevisionProperties
+        url = self.vcs_client.get_repo_url(self.path)
+        SVNRevisionProperties(url, self.revisions[0]["revision"].value)
+
+class LogTopContextMenu:
+    """
+    Defines context menu items for a table with files
+    
+    """
+    def __init__(self, caller, event, path, revisions=[]):
+        """    
+        @param  caller: The calling object
+        @type   caller: object
+        
+        @param  base_dir: The curent working directory
+        @type   base_dir: string
+        
+        @param  paths: The selected paths
+        @type   paths: list
+        
+        """        
+        self.caller = caller
+        self.event = event
+        self.path = path
+        self.revisions = revisions
+        self.vcs_client = rabbitvcs.lib.vcs.create_vcs_instance()
+
+        self.conditions = LogTopContextMenuConditions(
+            self.vcs_client, 
+            self.path, 
+            self.revisions
+        )
+        
+        self.callbacks = LogTopContextMenuCallbacks(
+            self.caller,
+            self.vcs_client, 
+            self.path,
+            self.revisions
+        )
+
+        # The first element of each tuple is a key that matches a
+        # ContextMenuItems item.  The second element is either None when there
+        # is no submenu, or a recursive list of tuples for desired submenus.
+        self.structure = [
+            (MenuViewDiffWC, None),
+            (MenuViewDiffPrevRev, None),
+            (MenuViewDiffRevs, None),
+            (MenuShowChangesRevs, None),
+            (MenuSeparator, None),
+            (MenuUpdateTo, None),
+            (MenuCheckout, None),
+            (MenuBranchTag, None),
+            (MenuExport, None),
+            (MenuSeparator, None),
+            (MenuEditAuthor, None),
+            (MenuEditLogMessage, None),
+            (MenuEditRevProps, None)
+        ]
+        
+    def show(self):
+        if len(self.revisions) == 0:
+            return
+
+        context_menu = GtkContextMenu(self.structure, self.conditions, self.callbacks)
+        context_menu.show(self.event)
+
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
