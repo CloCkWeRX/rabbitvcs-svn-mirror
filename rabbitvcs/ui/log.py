@@ -363,7 +363,7 @@ class Log(InterfaceView):
     # Other helper methods
     #
 
-    def view_diff_for_path(self, url, revision_number):
+    def view_diff_for_path(self, url, revision_number, sidebyside=False):
         from rabbitvcs.ui.diff import SVNDiff
 
         self.action = VCSAction(
@@ -375,7 +375,8 @@ class Log(InterfaceView):
             url, 
             revision_number-1, 
             url, 
-            revision_number
+            revision_number,
+            sidebyside=sidebyside
         )
         self.action.start()
 
@@ -811,6 +812,9 @@ class LogBottomContextMenuConditions:
     def show_changes_previous_revision(self, data=None):
         return (len(self.paths) == 1)
 
+    def compare_previous_revision(self, data=None):
+        return (len(self.paths) == 1)
+
     def _open(self, data=None):
         return True
 
@@ -845,6 +849,12 @@ class LogBottomContextMenuCallbacks:
             url, 
             rev_item.value
         )
+
+    def compare_previous_revision(self, widget, data=None):
+        rev_item = self.revision
+        path_item = self.paths[0]
+        url = self.caller.root_url + path_item
+        self.caller.view_diff_for_path(url, rev_item.value, sidebyside=True)
 
     def _open(self, widget, data=None):
         self.action = VCSAction(
@@ -921,6 +931,7 @@ class LogBottomContextMenu:
         self.structure = [
             (MenuViewDiffPreviousRevision, None),
             (MenuShowChangesPreviousRevision, None),
+            (MenuComparePreviousRevision, None),
             (MenuSeparator, None),
             (MenuOpen, None),
             (MenuAnnotate, None)
