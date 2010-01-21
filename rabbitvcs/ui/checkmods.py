@@ -29,6 +29,7 @@ import gtk
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.lib.contextmenu import GtkContextMenu, \
     GtkContextMenuCaller, GtkFilesContextMenuConditions
+from rabbitvcs.lib.contextmenuitems import MenuItem, MenuUpdate, MenuSeparator
 from rabbitvcs.ui.action import VCSAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
@@ -153,7 +154,17 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
             "HEAD"
         )
         self.action.start()
-            
+
+class MenuViewDiff(MenuItem):
+    identifier = "RabbitVCS::View_Diff"
+    label = _("View unified diff")
+    icon = "rabbitvcs-diff"
+
+class MenuCompare(MenuItem):
+    identifier = "RabbitVCS::Compare"
+    label = _("Compare side by side")
+    icon = "rabbitvcs-compare"
+
 class CheckModsContextMenuConditions(GtkFilesContextMenuConditions):
     def __init__(self, vcs_client, paths=[]):
         GtkFilesContextMenuConditions.__init__(self, vcs_client, paths)
@@ -161,11 +172,11 @@ class CheckModsContextMenuConditions(GtkFilesContextMenuConditions):
     def update(self, data=None):
         return True
 
-    def unified_diff(self, data=None):
+    def view_diff(self, data=None):
         return (self.path_dict["exists"]
             and self.path_dict["length"] == 1)
 
-    def sidebyside_diff(self, data=None):
+    def compare(self, data=None):
         return (self.path_dict["exists"]
             and self.path_dict["length"] == 1)
 
@@ -182,10 +193,10 @@ class CheckModsContextMenuCallbacks:
             self.paths
         )
 
-    def unified_diff(self, data1=None, data2=None):
+    def view_diff(self, data1=None, data2=None):
         self.caller.diff_remote(self.paths[0])
 
-    def sidebyside_diff(self, data1=None, data2=None):
+    def compare(self, data1=None, data2=None):
         from rabbitvcs.ui.diff import SVNDiff
         
         path_local = self.paths[0]
@@ -201,7 +212,7 @@ class CheckModsContextMenuCallbacks:
             None, 
             path_remote,
             "HEAD",
-            side_by_side=True
+            sidebyside=True
         )
         self.action.start()
 
@@ -223,66 +234,17 @@ class CheckModsContextMenu:
         )
         
         self.structure = [
-            ("ViewDiff", None),
-            ("ViewSideBySideDiff", None),
-            ("Separator0", None),
-            ("Update", None)
+            (MenuViewDiff, None),
+            (MenuCompare, None),
+            (MenuSeparator, None),
+            (MenuUpdate, None)
         ]
-
-        self.items = {
-            "ViewDiff": {
-                "label": _("View unified diff"),
-                "icon": "rabbitvcs-diff",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.unified_diff, 
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.conditions.unified_diff
-                }
-            },
-            "ViewSideBySideDiff": {
-                "label": _("View side-by-side diff"),
-                "icon": None,
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.sidebyside_diff, 
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.conditions.sidebyside_diff
-                }
-            },
-            "Separator0": {
-                "label": rabbitvcs.ui.widget.SEPARATOR,
-                "signals": None,
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "Update": {
-                "label": _("Update"),
-                "icon": "rabbitvcs-update",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.update, 
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.conditions.update
-                }
-            }
-        }
 
     def show(self):
         if len(self.paths) == 0:
             return
 
-        context_menu = GtkContextMenu(self.structure, self.items)
+        context_menu = GtkContextMenu(self.structure, self.conditions, self.callbacks)
         context_menu.show(self.event)
 
 if __name__ == "__main__":
