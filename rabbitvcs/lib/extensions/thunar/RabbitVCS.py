@@ -31,6 +31,7 @@ import copy
 import os.path
 from os.path import isdir, isfile, realpath, basename
 import datetime
+import time
 import threading
 
 import thunarx
@@ -138,6 +139,8 @@ class RabbitVCS(thunarx.MenuProvider):
     #: This is of the form: [("path/to", {...status dict...}), ...]
     paths_from_callback = []
     
+    paths_last_lookup = {}
+    paths_lookup_timeout = 30
     
     #: It appears that the "update_file_info" call that is triggered by the
     #: "invalidate_extension_info" in the callback function happens
@@ -165,12 +168,11 @@ class RabbitVCS(thunarx.MenuProvider):
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = SVN()
         
-        self.status_checker = StatusCache(self.cb_status)
+        self.status_checker = StatusCache(None)
     
     def get_local_path(self, item):
         return item.get_uri().replace("file://", "")
 
-       
     #~ @disable
     # @timeit
     def get_file_actions(self, window, items):
@@ -202,7 +204,7 @@ class RabbitVCS(thunarx.MenuProvider):
 
         if len(paths) == 0: return []
         
-        return ThunarContextMenu(self, window.get_data("base_dir"), paths).construct_menu()
+        return ThunarxMainContextMenu(self, window.get_data("base_dir"), paths).get_menu()
     
     #~ @disable
     @timeit
@@ -230,8 +232,8 @@ class RabbitVCS(thunarx.MenuProvider):
         
         window.set_data("base_dir", path)
         
-        return ThunarContextMenu(self, path, [path]).construct_menu()
-    
+        return ThunarxMainContextMenu(self, path, [path]).get_menu()
+            
     #
     # Helper functions
     #
@@ -322,144 +324,7 @@ class RabbitVCS(thunarx.MenuProvider):
             log.debug("Re-scanning settings")
             
         self.execute_after_process_exit(proc, do_reload_settings)
-        
-        
-    # 
-    # Callbacks
-    # 
-    
-    def cb_status(self, path, statuses):
-        """
-        This is the callback that C{StatusMonitor} calls. 
-        
-        @type   path:   string
-        @param  path:   The path of the item something interesting happened to.
-        
-        @type   statuses: list of tuples of (path, status)
-        @param  statuses: The statuses (we do nothing with this now)
-        """
-        # log.debug("CB Thread: %s" % threading.currentThread())
-        if path in self.nautilusVFSFile_table:
-            item = self.nautilusVFSFile_table[path]
-            # We need to invalidate the extension info for only one reason:
-            #
-            # - Invalidating the extension info will cause Nautilus to remove all
-            #   temporary emblems we applied so we don't have overlay problems
-            #   (with ourselves, we'd still have some with other extensions).
-            #
-            # After invalidating C{update_file_info} applies the correct emblem.
-            
-            # Since invalidation triggers an "update_file_info" call, we can
-            # tell it NOT to invalidate the status checker path.
-            with self.callback_paths_lock:
-                from pprint import pformat
-                (single, summary) = statuses
-                self.paths_from_callback.append((path, single, summary))
-                # These are useful to establish whether the "update_status" call
-                # happens INSIDE this next call, or later, or in another thread. 
-                # log.debug("%s: Invalidating..." % threading.currentThread())
-                #item.invalidate_extension_info()
-                # log.debug("%s: Done invalidate call." % threading.currentThread())
-        else:
-            log.debug("Path [%s] not found in file table")
 
-
-def construct_menu(menu_item, keys, items):
-    """
-    Constructs a menu of RabbitVCSActions.  If menu_item is not None, it will
-    add each new RabbitVCSAction as a submenu to menu_item.
-    
-    @type   menu_item: None or gtk.ImageMenuItem
-    @param  menu_item: The menu_item to attach this menu
-    
-    @type   keys: list
-    @param  keys: Menu structure
-    
-    @type   items: dict
-    @param  items: Menu items dictionary
-    """
-    
-    menu_list = []
-    if menu_item is not None:
-        menu = gtk.Menu()
-        menu_item.set_submenu(menu)
-    
-    previous_label = None
-    is_first = True
-    index = 0
-    length = len(keys)
-    separator_index = 0
-    for key,submenu_keys in keys:
-        is_last = (index + 1 == length)
-
-        if key not in items:
-            continue
-        
-        item = items[key]
-
-        # Execute the condition associated with the definition_item
-        # which will figure out whether or not to display this item.
-        condition = item["condition"]
-        if condition.has_key("args"):
-            if condition["callback"](condition["args"]) is False:
-                continue
-        else:
-            if condition["callback"]() is False:
-                continue
-
-        # If the item is a separator, don't show it if this is the first
-        # or last item, or if the previous item was a separator.
-        if (item["label"] == SEPARATOR and
-                (is_first or is_last or previous_label == SEPARATOR)):
-            index += 1
-            continue
-
-        action = RabbitVCSAction(
-            item["identifier"],
-            item["label"],
-            item["tooltip"],
-            None,
-            submenu_keys,
-            items
-        )
-
-        # Making the seperator insensitive makes sure nobody
-        # will click it accidently.
-        if (item["label"] == SEPARATOR): 
-            action.set_property("sensitive", False)
-
-        if item.has_key("icon") and item["icon"] is not None:
-            action.set_icon_name(item["icon"])
-    
-        # Make sure all the signals are connected.
-        for signal, value in item["signals"].items():
-            if signal == "button-press-event":
-                signal = "activate"
-                
-            if value["callback"] != None:
-                # FIXME: the adding of arguments need to be done properly
-                if "kwargs" in value:
-                    action.connect(signal, value["callback"], value["kwargs"])    
-                else:
-                    action.connect(signal, value["callback"])
-
-        if menu_item is not None:
-            subitem = action.create_menu_item()
-            menu.append(subitem)
-            subitem.show()
-
-        # The menu item above has just been added, so we can note that
-        # we're no longer on the first menu item.  And we'll keep
-        # track of this item so the next iteration can test if it should
-        # show a separator or not
-        is_first = False
-        previous_label = item["label"]
-
-        index += 1
-        
-        menu_list.append(action)
-    
-    return menu_list
 
 class RabbitVCSAction(gtk.Action):
     """
@@ -468,79 +333,157 @@ class RabbitVCSAction(gtk.Action):
 
     __gtype_name__ = "RabbitVCSAction"
 
-    def __init__(self, name, label, tooltip, stock_id, keys=None, items=None):
+    def __init__(self, name, label, tooltip, stock_id, sub_actions):
         gtk.Action.__init__(self, name, label, tooltip, stock_id)
-        self.keys = keys
-        self.items = items
+        self.sub_actions = sub_actions
+
+    def __repr__(self):
+        return self.get_name()
 
     def do_create_menu_item(self):
         menu_item = gtk.ImageMenuItem()
-
-        if self.keys is not None:
-            construct_menu(menu_item, self.keys, self.items)
+        
+        if self.sub_actions is not None:
+            menu = gtk.Menu()
+            menu_item.set_submenu(menu)
+            
+            for sub_action in self.sub_actions:
+                subitem = sub_action.create_menu_item()
+                menu.append(subitem)
+                subitem.show()
 
         return menu_item
 
-class ThunarContextMenu:
-    def __init__(self, caller, base_dir, paths=[]):
-        self.caller = caller
-        self.base_dir = base_dir
-        self.paths = paths
+from rabbitvcs.lib.contextmenuitems import *
+        
+class ActionBuilder(object):
 
-    def construct_menu(self):
-        """
-        
-        Instantiates MainContextMenu, which returns a tuple of the following
-        objects.
-        
-        @param  menu.structure: Menu structure
-        @type   menu.structure: list
-        
-        @param  menu.items: Menu items
-        @type   menu.items: dict
-        
-        With the structure and items, the global construct_menu
-        function is called, which returns a list of RabbitVCSActions.
-        
-        Note on "structure". The menu structure is defined in a list of tuples 
-        of two elements each.  The first element is a key that matches a key in 
-        "items".  The second element is either None (if there is no submenu) or 
-        a list of tuples if there is a submenu.  The submenus are generated 
-        recursively.  FYI, this is a list of tuples so that we retain the 
-        desired menu item order (dicts do not retain order)
-        
-            Example:
-            [
-                (key, [
-                    (submenu_key, None),
-                    (submenu_key, None)
-                ]),
-                (key, None),
-                (key, None)
-            ]
+    def __init__(self, structure, conditions, callbacks):
+        # The index is mostly for identifier magic 
+        index = 0
+        last_level = -1
+        last_item = None        
 
-        Note on "items".  This is a dict that looks like the following.
+        stack = [] # ([actions], last_item)
+
+        flat_structure = rabbitvcs.lib.helper.walk_tree_depth_first(
+                                structure,
+                                show_levels=True,
+                                preprocess=lambda x: x(conditions, callbacks),
+                                filter=lambda x: x.show())
+       
         
-            {
-                "identifier": "RabbitVCS::Identifier",
-                "label": "",
-                "tooltip": "",
-                "icon": "",
-                "signals": {
-                    "activate": {
-                        "callback": None,
-                        "args": None
-                    }
-                }, 
-                "condition": {
-                    "callback": (lambda: True),
-                    "args": None
-                }
-            }
+        # Here's how this works: we walk the tree, which is a series of (level,
+        # MenuItem instance) tuples. We accumulate actions in the list in
+        # stack[level][0], and when we go back up a level we put them in a
+        # submenu (as defined by the subclasses). We need to keep track of the
+        # last item on each level, in case they are separators, so that's on the
+        # stack too.       
+        for (level, item) in flat_structure:
+            index += 1
+
+            # Have we dropped back a level? Restore previous context
+            if level < last_level:
+                # We may have ended up descending several levels (it works, but
+                # please no-one write triply nested menus, it's just dumb).
+                for num in range(last_level - level):
+                    # Remove separators at the end of menus
+                    if type(last_item) == MenuSeparator:
+                        stack[-1][0].remove(last_item)
+                                    
+                    (actions, last_item) = stack.pop()
+                    
+                    # Every time we back out of a level, we attach the list of
+                    # actions as a submenu, however the subclass wants to do it.                    
+                    action = self.make_action(last_item, index, actions)
+                    if last_item.signals:
+                        for signal, info in last_item.signals.items():
+                            action.connect(signal, info["callback"], info["args"])
+                            
+                    stack[-1][0].append(action)
+
+            # Have we gone up a level? Save the context and create a submenu
+            if level > last_level:
+                # Skip separators at the start of a menu
+                if type(item) == MenuSeparator: continue
+                
+                stack.append(([], last_item))
+                
+                last_item = None
         
-        @rtype:     list of MenuItems
-        @return:    A list of MenuItems representing the context menu.
+            # Skip duplicate separators
+            if (type(last_item) == type(item) == MenuSeparator and
+                level == last_level):
+                continue
+
+            if level == last_level:
+                action = self.make_action(last_item, index, None)
+                if last_item.signals:
+                    for signal, info in last_item.signals.items():
+                        action.connect(signal, info["callback"], info["args"])
+                        
+                stack[-1][0].append(action)
+
+            last_item = item
+            last_level = level
+
+
+
+        # Hey, we're out of the loop. Go back up any remaining levels (in case
+        # there were submenus at the end) and finish the job.
+        for (actions, last_item2) in stack[:0:-1]:
+            if type(last_item) == MenuSeparator:
+                stack[-1][0].remove(last_item)
+            
+            action = self.make_action(last_item2, 1, actions)
+            if last_item2.signals:
+                for signal, info in last_item2.signals.items():
+                    action.connect(signal, info["callback"], info["args"])
+
+            stack[0][0].append(action)
+            
+            last_item = last_item2
+
+        self.menu = self.top_level_menu(stack[0][0])
+
+
+class ThunarxContextMenu(ActionBuilder):
+    """
+    Provides a standard Gtk Context Menu class used for all context menus
+    in gtk dialogs/windows.
+    
+    """    
+    def make_action(self, item, id_magic, sub_actions):
+        identifier = item.make_magic_id(id_magic)
+        action = RabbitVCSAction(
+            identifier,
+            item.label,
+            item.tooltip,
+            item.icon,
+            sub_actions
+        )
+
+        if item.icon:
+            action.set_icon_name(item.icon)
+
+        if type(item) == MenuSeparator:
+            action.set_property("sensitive", False)
+
+        return action
+    
+    def top_level_menu(self, actions):
+        return actions
         
-        """
-        menu = MainContextMenu(self.caller, self.base_dir, self.paths)
-        return construct_menu(None, menu.structure, menu.items)
+    def show(self, event):        
+        self.menu.show_all()
+        self.menu.popup(None, None, None, event.button, event.time)
+
+    def get_widget(self):
+        return self.menu
+
+    def get_actions(self):
+        return
+
+class ThunarxMainContextMenu(MainContextMenu):
+    def get_menu(self):
+        return ThunarxContextMenu(self.structure, self.conditions, self.callbacks).menu
