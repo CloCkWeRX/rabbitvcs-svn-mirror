@@ -29,6 +29,7 @@ from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
 import rabbitvcs.lib.helper
 from rabbitvcs.lib.contextmenu import GtkContextMenu
+from rabbitvcs.lib.contextmenuitems import *
 from rabbitvcs.ui.log import LogDialog
 from rabbitvcs.ui.action import VCSAction
 from rabbitvcs.ui.dialog import MessageBox
@@ -206,66 +207,7 @@ class Changes(InterfaceView):
         return self.second_revision_selector.get_revision_object()
 
     def show_changes_table_popup_menu(self, treeview, data):
-        structure = [
-            ("OpenFirst", None),
-            ("OpenSecond", None),
-            ("ViewDiff", None),
-            ("ViewSideBySideDiff", None)
-        ]
-    
-        items = {
-            "OpenFirst": {
-                "label": _("Open from first revision"),
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_open_first,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_show_open_first_revision
-                }
-            },
-            "OpenSecond": {
-                "label": _("Open from second revision"),
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_open_second,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_show_open_second_revision
-                }
-            },
-            "ViewDiff": {
-                "label": _("View unified diff"),
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_view_diff,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_view_diff
-                }
-            },
-            "ViewSideBySideDiff": {
-                "label": _("Compare side by side"),
-                "signals": {
-                    "activate": {
-                        "callback": self.on_context_view_diff_sidebyside,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_view_diff_sidebyside
-                }
-            }
-        }
-        
-        menu = GtkContextMenu(structure, items)
-        menu.show(data)
+        ChangesContextMenu(self, data).show()
     
     def check_ui(self):
         self.check_first_urls()
@@ -385,88 +327,6 @@ class Changes(InterfaceView):
         self.action.start()
         
     #
-    # Compare table context menu callbacks
-    #
-
-    def on_context_open_first(self, widget, data=None):
-        path = self.changes_table.get_row(self.selected_rows[0])[0]
-        if path == ".":
-            path = ""
-
-        url = rabbitvcs.lib.helper.url_join(self.first_urls.get_active_text(), path)
-        rev = self.get_first_revision()
-        dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(url)
-        self.open_item_from_revision(url, rev, dest)
-
-    def on_context_open_second(self, widget, data=None):
-        path = self.changes_table.get_row(self.selected_rows[0])[0]
-        if path == ".":
-            path = ""
-        
-        url = rabbitvcs.lib.helper.url_join(self.second_urls.get_active_text(), path)
-        rev = self.get_second_revision()
-        dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(url)
-        self.open_item_from_revision(url, rev, dest)
-
-    def on_context_view_diff(self, widget, data=None):
-        self.view_selected_diff()
-
-    def on_context_view_diff_sidebyside(self, widget, data=None):
-        url1 = self.changes_table.get_row(self.selected_rows[0])[0]
-        url2 = url1
-        if url1 == ".":
-            url1 = ""
-            url2 = ""
-
-        url1 = rabbitvcs.lib.helper.url_join(self.first_urls.get_active_text(), url1)
-        url2 = rabbitvcs.lib.helper.url_join(self.second_urls.get_active_text(), url2)
-        rev1 = self.get_first_revision()
-        rev2 = self.get_second_revision()
-        
-        from rabbitvcs.ui.diff import SVNDiff
-        self.action = VCSAction(
-            self.vcs,
-            notification=False
-        )
-        self.action.append(
-            SVNDiff,
-            url1,
-            rev1,
-            url2,
-            rev2,
-            side_by_side=True
-        )
-        self.action.start()
-
-    #
-    # Compare table condition callbacks
-    #
-
-    def condition_show_open_first_revision(self):
-        return (
-            len(self.selected_rows) == 1
-        )
-    
-    def condition_show_open_second_revision(self):
-        return (
-            len(self.selected_rows) == 1 
-            and (
-                str(self.get_first_revision()) != str(self.get_second_revision())
-                or self.first_urls.get_active_text() != self.second_urls.get_active_text()
-            )
-        )
-
-    def condition_view_diff(self):
-        return (
-            len(self.selected_rows) == 1
-        )
-
-    def condition_view_diff_sidebyside(self):
-        return (
-            len(self.selected_rows) == 1
-        )
-
-    #
     # More Actions callbacks
     #
 
@@ -490,6 +350,155 @@ class Changes(InterfaceView):
             (second_rev.value and second_rev.value or "HEAD")
         )
         self.action.start()
+
+
+
+class MenuOpenFirst(MenuItem):
+    identifier = "RabbitVCS::Open_First"
+    label = _("Open from first revision")
+    icon = gtk.STOCK_OPEN
+
+class MenuOpenSecond(MenuItem):
+    identifier = "RabbitVCS::Open_Second"
+    label = _("Open from second revision") 
+    icon = gtk.STOCK_OPEN
+    
+class MenuViewDiff(MenuItem):
+    identifier = "RabbitVCS::View_Diff"
+    label = _("View unified diff")   
+    icon = "rabbitvcs-diff"
+
+class MenuCompare(MenuItem):
+    identifier = "RabbitVCS::Compare"
+    label = _("Compare side by side")
+    icon = "rabbitvcs-compare"
+
+class ChangesContextMenuConditions:
+    def __init__(self, caller, vcs_client):
+        self.caller = caller
+        self.vcs_client = vcs_client
+
+    def open_first(self):
+        return (
+            len(self.caller.selected_rows) == 1
+        )
+    
+    def open_second(self):
+        return (
+            len(self.caller.selected_rows) == 1 
+            and (
+                str(self.caller.get_first_revision()) != str(self.caller.get_second_revision())
+                or self.caller.first_urls.get_active_text() != self.caller.second_urls.get_active_text()
+            )
+        )
+
+    def view_diff(self):
+        return (
+            len(self.caller.selected_rows) == 1
+        )
+
+    def compare(self):
+        return (
+            len(self.caller.selected_rows) == 1
+        )
+
+class ChangesContextMenuCallbacks:
+    def __init__(self, caller, vcs_client):
+        self.caller = caller
+        self.vcs_client = vcs_client
+
+    def open_first(self, widget, data=None):
+        path = self.caller.changes_table.get_row(self.caller.selected_rows[0])[0]
+        if path == ".":
+            path = ""
+
+        url = rabbitvcs.lib.helper.url_join(self.caller.first_urls.get_active_text(), path)
+        rev = self.caller.get_first_revision()
+        dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(url)
+        self.caller.open_item_from_revision(url, rev, dest)
+
+    def open_second(self, widget, data=None):
+        path = self.caller.changes_table.get_row(self.caller.selected_rows[0])[0]
+        if path == ".":
+            path = ""
+        
+        url = rabbitvcs.lib.helper.url_join(self.caller.second_urls.get_active_text(), path)
+        rev = self.caller.get_second_revision()
+        dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(url)
+        self.caller.open_item_from_revision(url, rev, dest)
+
+    def view_diff(self, widget, data=None):
+        self.caller.view_selected_diff()
+
+    def compare(self, widget, data=None):
+        url1 = self.caller.changes_table.get_row(self.caller.selected_rows[0])[0]
+        url2 = url1
+        if url1 == ".":
+            url1 = ""
+            url2 = ""
+
+        url1 = rabbitvcs.lib.helper.url_join(self.caller.first_urls.get_active_text(), url1)
+        url2 = rabbitvcs.lib.helper.url_join(self.caller.second_urls.get_active_text(), url2)
+        rev1 = self.caller.get_first_revision()
+        rev2 = self.caller.get_second_revision()
+        
+        from rabbitvcs.ui.diff import SVNDiff
+        self.action = VCSAction(
+            self.vcs_client,
+            notification=False
+        )
+        self.action.append(
+            SVNDiff,
+            url2,
+            rev2,
+            url1,
+            rev1,
+            sidebyside=True
+        )
+        self.action.start()
+
+class ChangesContextMenu:
+    """
+    Defines context menu items for a table with files
+    
+    """
+    def __init__(self, caller, event):
+        """    
+        @param  caller: The calling object
+        @type   caller: object
+        
+        """        
+        self.caller = caller
+        self.event = event
+        self.vcs_client = rabbitvcs.lib.vcs.create_vcs_instance()
+
+        self.conditions = ChangesContextMenuConditions(
+            self.caller,
+            self.vcs_client
+        )
+        
+        self.callbacks = ChangesContextMenuCallbacks(
+            self.caller,
+            self.vcs_client
+        )
+
+        # The first element of each tuple is a key that matches a
+        # ContextMenuItems item.  The second element is either None when there
+        # is no submenu, or a recursive list of tuples for desired submenus.
+        self.structure = [
+            (MenuOpenFirst, None),
+            (MenuOpenSecond, None),
+            (MenuViewDiff, None),
+            (MenuCompare, None)
+        ]
+        
+    def show(self):
+        if len(self.caller.selected_rows) == 0:
+            return
+            
+        context_menu = GtkContextMenu(self.structure, self.conditions, self.callbacks)
+        context_menu.show(self.event)
+
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
