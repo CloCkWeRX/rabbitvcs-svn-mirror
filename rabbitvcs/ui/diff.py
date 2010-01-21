@@ -120,7 +120,7 @@ class Diff(InterfaceNonView):
             if os.path.isdir(dest):
                 rmtree(dest, ignore_errors=True)
             else:
-                os.delete(dest)
+                os.remove(dest)
 
         return dest
 
