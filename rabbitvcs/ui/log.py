@@ -33,7 +33,7 @@ from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import VCSAction
 from rabbitvcs.ui.dialog import MessageBox
 from rabbitvcs.lib.contextmenu import GtkContextMenu
-from rabbitvcs.lib.contextmenuitems import MenuItem, MenuSeparator
+from rabbitvcs.lib.contextmenuitems import *
 import rabbitvcs.ui.widget
 import rabbitvcs.lib.helper
 import rabbitvcs.lib.vcs
@@ -96,7 +96,8 @@ class Log(InterfaceView):
             [_("Action"), _("Path"), 
                 _("Copy From Path"), _("Copy From Revision")],
             callbacks={
-                "mouse-event":   self.on_paths_table_mouse_event
+                "mouse-event":      self.on_paths_table_mouse_event,
+                "row-activated":    self.on_paths_table_row_activated
             }
         )
 
@@ -213,75 +214,14 @@ class Log(InterfaceView):
             self.show_paths_table_popup_menu(treeview, data)
 
     def show_paths_table_popup_menu(self, treeview, data):
-        structure = [
-            ("ViewDiffPrevRev", None),
-            ("ShowChangesPrevRev", None),
-            ("Separator0", None),
-            ("Open", None),
-            ("Annotate", None)
-        ]
-    
-        items = {
-            "ViewDiffPrevRev": {
-                "label": _("View diff against previous revision"),
-                "signals": {
-                    "activate": {
-                        "callback": self.on_paths_context_diff_previous,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_diff_previous
-                }
-            },
-            "ShowChangesPrevRev": {
-                "label": _("Show changes from previous revision"),
-                "signals": {
-                    "activate": {
-                        "callback": self.on_paths_context_show_changes,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_diff_previous
-                }
-            },
-            "Separator0": {
-                "label": rabbitvcs.ui.widget.SEPARATOR,
-                "signals": None,
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "Open": {
-                "label": _("Open"),
-                "icon": gtk.STOCK_OPEN,
-                "signals": {
-                    "activate": {
-                        "callback": self.on_paths_context_open,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": (lambda: True)
-                }
-            },
-            "Annotate": {
-                "label": _("Annotate"),
-                "icon": "rabbitvcs-annotate",
-                "signals": {
-                    "activate": {
-                        "callback": self.on_paths_context_annotate,
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.condition_paths_annotate
-                }
-            }
-        }
-        menu = GtkContextMenu(structure, items)
-        menu.show(data)
+        rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
+        revision_obj = self.vcs.revision("number", number=rev_item.revision.number)
+        
+        paths = []
+        for row in self.paths_table.get_selected_rows():
+            paths.append(self.paths_table.get_row(row)[1])
+
+        LogBottomContextMenu(self, data, paths, revision_obj).show()
     
     #
     # Helper methods
@@ -418,72 +358,6 @@ class Log(InterfaceView):
     def set_loading(self, loading):
         self.is_loading = loading
 
-    #
-    # Context menu item callbacks
-    #
-
-
-
-    def on_paths_context_diff_previous(self, widget, data=None):
-        rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-        path_item = self.paths_table.get_row(self.paths_table.get_selected_rows()[0])[1]
-        url = self.root_url + path_item
-        self.view_diff_for_path(url, rev_item.revision.number)
-    
-    def on_paths_context_show_changes(self, widget, data=None):
-        rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-        path_item = self.paths_table.get_row(self.paths_table.get_selected_rows()[0])[1]
-        url = self.root_url + path_item
-
-        from rabbitvcs.ui.changes import Changes
-        Changes(
-            url, 
-            rev_item.revision.number-1, 
-            url, 
-            rev_item.revision.number
-        )
-
-    def on_paths_context_open(self, widget, data=None):
-        rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-        revision = self.vcs.revision("number", number=rev_item.revision.number)
-        self.action = VCSAction(
-            self.vcs,
-            notification=False
-        )
-
-        # This allows us to open multiple files at once
-        dests = []
-        for row in self.paths_table.get_selected_rows():
-            path = self.root_url + self.paths_table.get_row(row)[1]
-            dest = "/tmp/rabbitvcs-" + str(rev_item.revision.number) + "-" + os.path.basename(path)
-            self.action.append(
-                self.vcs.export,
-                path,
-                dest,
-                revision=revision
-            )
-            dests.append(dest)
-        
-        for dest in dests:
-            self.action.append(rabbitvcs.lib.helper.open_item, dest)
-            
-        self.action.start()
-
-    def on_paths_context_annotate(self, widget, data=None):
-        rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-        path_item = self.paths_table.get_row(self.paths_table.get_selected_rows()[0])[1]
-        url = self.root_url + path_item
-
-        from rabbitvcs.ui.annotate import Annotate
-        Annotate(url, rev_item.revision.number)
-        
-    #
-    # Context menu item conditions for being visible
-    #
-    
-
-    def condition_paths_annotate(self):
-        return (len(self.revisions_table.get_selected_rows()) == 1)
 
     #
     # Other helper methods
@@ -576,42 +450,27 @@ class LogCache:
     def empty(self):
         self.cache = {}
 
-class MenuViewDiffWC(MenuItem):
-    identifier = "RabbitVCS::View_Diff_WC"
+
+class MenuViewDiffWorkingCopy(MenuItem):
+    identifier = "RabbitVCS::View_Diff_Working_Copy"
     label = _("View diff against working copy")
 
-class MenuViewDiffPrevRev(MenuItem):
-    identifier = "RabbitVCS::View_Diff_Prev_Rev"
+class MenuViewDiffPreviousRevision(MenuItem):
+    identifier = "RabbitVCS::View_Diff_Previous_Revision"
     label = _("View diff against previous revision")
 
-class MenuViewDiffRevs(MenuItem):
-    identifier = "RabbitVCS::View_Diff_Revs"
+class MenuViewDiffRevisions(MenuItem):
+    identifier = "RabbitVCS::View_Diff_Revisions"
     label = _("View diff between revisions")
 
-class MenuShowChangesRevs(MenuItem):
-    identifier = "RabbitVCS::Show_Changes_Revs"
+class MenuShowChangesPreviousRevision(MenuItem):
+    identifier = "RabbitVCS::Show_Changes_Previous_Revision"
+    label = _("Show changes from previous revision")
+
+class MenuShowChangesRevisions(MenuItem):
+    identifier = "RabbitVCS::Show_Changes_Revisions"
     label = _("Show changes between revisions")
 
-class MenuUpdateTo(MenuItem):
-    identifier = "RabbitVCS::Update_To"
-    label = _("Update to revision...")
-    icon = "rabbitvcs-update_to"
-
-class MenuCheckout(MenuItem):
-    identifier = "RabbitVCS::Checkout"
-    label = _("Checkout")
-    icon = "rabbitvcs-checkout"
-
-class MenuBranchTag(MenuItem):
-    identifier = "RabbitVCS::Branch_Tag"
-    label = _("Branch/tag...")    
-    icon = "rabbitvcs-branch"
-
-class MenuExport(MenuItem):
-    identifier = "RabbitVCS::Export"
-    label = _("Export...")
-    icon = "rabbitvcs-export"
-    
 class MenuEditAuthor(MenuItem):
     identifier = "RabbitVCS::Edit_Author"
     label = _("Edit author...")
@@ -624,8 +483,8 @@ class MenuEditLogMessage(MenuItem):
     identifier = "RabbitVCS::Edit_Log_Message"
     label = _("Edit log message...")
 
-class MenuEditRevProps(MenuItem):
-    identifier = "RabbitVCS::Edit_Rev_Props"
+class MenuEditRevisionProperties(MenuItem):
+    identifier = "RabbitVCS::Edit_Revision_Properties"
     label = _("Edit revision properties...")
     icon = gtk.STOCK_EDIT
 
@@ -635,17 +494,17 @@ class LogTopContextMenuConditions:
         self.path = path
         self.revisions = revisions
         
-    def view_diff_wc(self, data=None):
+    def view_diff_working_copy(self, data=None):
         return (len(self.revisions) == 1)
 
-    def view_diff_prev_rev(self, data=None):
+    def view_diff_previous_revision(self, data=None):
         item = self.revisions[0]["revision"]
         return (item.value > 1 and len(self.revisions) == 1)
 
-    def view_diff_revs(self, data=None):
+    def view_diff_revisions(self, data=None):
         return (len(self.revisions) == 2)
 
-    def show_changes_revs(self, data=None):
+    def show_changes_revisions(self, data=None):
         return (len(self.revisions) == 2)
 
     def update_to(self, data=None):
@@ -666,7 +525,7 @@ class LogTopContextMenuConditions:
     def edit_log_message(self, data=None):
         return True
 
-    def edit_rev_props(self, data=None):
+    def edit_revision_properties(self, data=None):
         return (len(self.revisions) == 1)
 
     def separator(self, data=None):
@@ -679,7 +538,7 @@ class LogTopContextMenuCallbacks:
         self.path = path
         self.revisions = revisions
         
-    def view_diff_wc(self, widget, data=None):
+    def view_diff_working_copy(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
         self.action = VCSAction(
             self.vcs_client,
@@ -692,7 +551,7 @@ class LogTopContextMenuCallbacks:
         )
         self.action.start()
 
-    def view_diff_prev_rev(self, widget, data=None):
+    def view_diff_previous_revision(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
 
         item = self.revisions[0]["revision"]
@@ -709,7 +568,7 @@ class LogTopContextMenuCallbacks:
         )
         self.action.start()
         
-    def view_diff_revs(self, widget, data=None):
+    def view_diff_revisions(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
         
         item1 = self.revisions[0]["revision"]
@@ -722,13 +581,13 @@ class LogTopContextMenuCallbacks:
         self.action.append(
             SVNDiff,
             self.vcs_client.get_repo_url(self.path), 
-            item2, 
+            item2.value, 
             self.path, 
-            item1
+            item1.value
         )
         self.action.start()
 
-    def show_changes_revs(self, widget, data=None):
+    def show_changes_revisions(self, widget, data=None):
         from rabbitvcs.ui.changes import Changes
         item1 = self.revisions[0]["revision"]
         item2 = self.revisions[1]["revision"]
@@ -736,9 +595,9 @@ class LogTopContextMenuCallbacks:
 
         Changes(
             path, 
-            item2, 
+            item2.value, 
             path, 
-            item1
+            item1.value
         )
 
     def update_to(self, widget, data=None):
@@ -800,8 +659,11 @@ class LogTopContextMenu:
         @param  base_dir: The curent working directory
         @type   base_dir: string
         
-        @param  paths: The selected paths
-        @type   paths: list
+        @param  paths: The loaded path
+        @type   paths: string
+        
+        @param  revisions: The selected revisions
+        @type   revisions: list of rabbitvcs.lib.vcs.Revision object
         
         """        
         self.caller = caller
@@ -827,23 +689,158 @@ class LogTopContextMenu:
         # ContextMenuItems item.  The second element is either None when there
         # is no submenu, or a recursive list of tuples for desired submenus.
         self.structure = [
-            (MenuViewDiffWC, None),
-            (MenuViewDiffPrevRev, None),
-            (MenuViewDiffRevs, None),
-            (MenuShowChangesRevs, None),
+            (MenuViewDiffWorkingCopy, None),
+            (MenuViewDiffPreviousRevision, None),
+            (MenuViewDiffRevisions, None),
+            (MenuShowChangesRevisions, None),
             (MenuSeparator, None),
-            (MenuUpdateTo, None),
+            (MenuUpdateToRevision, None),
             (MenuCheckout, None),
             (MenuBranchTag, None),
             (MenuExport, None),
             (MenuSeparator, None),
             (MenuEditAuthor, None),
             (MenuEditLogMessage, None),
-            (MenuEditRevProps, None)
+            (MenuEditRevisionProperties, None)
         ]
         
     def show(self):
         if len(self.revisions) == 0:
+            return
+
+        context_menu = GtkContextMenu(self.structure, self.conditions, self.callbacks)
+        context_menu.show(self.event)
+
+
+class LogBottomContextMenuConditions:
+    def __init__(self, vcs_client, paths, revision):
+        self.vcs_client = vcs_client
+        self.paths = paths
+        self.revision = revision
+
+    def view_diff_previous_revision(self, data=None):
+        return (len(self.paths) == 1)
+
+    def show_changes_previous_revision(self, data=None):
+        return (len(self.paths) == 1)
+
+    def _open(self, data=None):
+        return True
+
+    def annotate(self, data=None):
+        return (len(self.paths) == 1)
+
+    def separator(self, data=None):
+        return True
+
+class LogBottomContextMenuCallbacks:
+    def __init__(self, caller, vcs_client, paths, revision):
+        self.caller = caller
+        self.vcs_client = vcs_client
+        self.paths = paths
+        self.revision = revision
+
+    def view_diff_previous_revision(self, widget, data=None):
+        rev_item = self.revision
+        path_item = self.paths[0]
+        url = self.caller.root_url + path_item
+        self.caller.view_diff_for_path(url, rev_item.value)
+    
+    def show_changes_previous_revision(self, widget, data=None):
+        rev_item = self.revision
+        path_item = self.paths[0]
+        url = self.caller.root_url + path_item
+
+        from rabbitvcs.ui.changes import Changes
+        Changes(
+            url, 
+            rev_item.value-1, 
+            url, 
+            rev_item.value
+        )
+
+    def _open(self, widget, data=None):
+        self.action = VCSAction(
+            self.vcs_client,
+            notification=False
+        )
+
+        # This allows us to open multiple files at once
+        dests = []
+        for path in self.paths:
+            url = self.caller.root_url + path
+            dest = "/tmp/rabbitvcs-" + str(self.revision.value) + "-" + os.path.basename(path)
+            self.action.append(
+                self.vcs_client.export,
+                url,
+                dest,
+                revision=self.revision
+            )
+            dests.append(dest)
+        
+        for dest in dests:
+            self.action.append(rabbitvcs.lib.helper.open_item, dest)
+            
+        self.action.start()
+
+    def annotate(self, widget, data=None):
+        url = self.caller.root_url + self.paths[0]
+
+        from rabbitvcs.ui.annotate import Annotate
+        Annotate(url, self.revision.value)
+
+class LogBottomContextMenu:
+    """
+    Defines context menu items for a table with files
+    
+    """
+    def __init__(self, caller, event, paths, revision):
+        """    
+        @param  caller: The calling object
+        @type   caller: object
+        
+        @param  base_dir: The curent working directory
+        @type   base_dir: string
+        
+        @param  paths: The selected paths
+        @type   paths: list
+
+        @param  revision: The selected revision
+        @type   revision: rabbitvcs.lib.vcs.Revision object
+        
+        """        
+        self.caller = caller
+        self.event = event
+        self.paths = paths
+        self.revision = revision
+        self.vcs_client = rabbitvcs.lib.vcs.create_vcs_instance()
+
+        self.conditions = LogBottomContextMenuConditions(
+            self.vcs_client, 
+            self.paths, 
+            self.revision
+        )
+        
+        self.callbacks = LogBottomContextMenuCallbacks(
+            self.caller,
+            self.vcs_client, 
+            self.paths,
+            self.revision
+        )
+
+        # The first element of each tuple is a key that matches a
+        # ContextMenuItems item.  The second element is either None when there
+        # is no submenu, or a recursive list of tuples for desired submenus.
+        self.structure = [
+            (MenuViewDiffPreviousRevision, None),
+            (MenuShowChangesPreviousRevision, None),
+            (MenuSeparator, None),
+            (MenuOpen, None),
+            (MenuAnnotate, None)
+        ]
+        
+    def show(self):
+        if len(self.paths) == 0:
             return
 
         context_menu = GtkContextMenu(self.structure, self.conditions, self.callbacks)
