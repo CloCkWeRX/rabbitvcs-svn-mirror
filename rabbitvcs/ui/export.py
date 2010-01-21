@@ -47,7 +47,8 @@ class Export(Checkout):
             # to working copy
             self.repositories.set_child_text(path)
             self.get_widget("destination").set_text("")
-            self.revision_selector.set_kind_working()
+            if revision is None:
+                self.revision_selector.set_kind_working()
         elif self.vcs.is_path_repository_url(path):
             # If path is a repository, export FROM path
             self.repositories.set_child_text(path)
