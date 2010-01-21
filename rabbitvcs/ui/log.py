@@ -455,6 +455,10 @@ class MenuViewDiffWorkingCopy(MenuItem):
     identifier = "RabbitVCS::View_Diff_Working_Copy"
     label = _("View diff against working copy")
 
+class MenuCompareWorkingCopy(MenuItem):
+    identifier = "RabbitVCS::Compare_Working_Copy"
+    label = _("Compare with working copy")
+
 class MenuViewDiffPreviousRevision(MenuItem):
     identifier = "RabbitVCS::View_Diff_Previous_Revision"
     label = _("View diff against previous revision")
@@ -496,6 +500,9 @@ class LogTopContextMenuConditions:
         
     def view_diff_working_copy(self, data=None):
         return (len(self.revisions) == 1)
+        
+    def compare_working_copy(self, data=None):
+        return (len(self.revisions) == 1) 
 
     def view_diff_previous_revision(self, data=None):
         item = self.revisions[0]["revision"]
@@ -548,6 +555,21 @@ class LogTopContextMenuCallbacks:
             SVNDiff,
             self.path, 
             self.revisions[0]["revision"]
+        )
+        self.action.start()
+
+    def compare_working_copy(self, widget, data=None):
+        from rabbitvcs.ui.diff import SVNDiff
+        self.action = VCSAction(
+            self.vcs_client,
+            notification=False
+        )
+        self.action.append(
+            SVNDiff,
+            self.vcs_client.get_repo_url(self.path), 
+            self.revisions[0]["revision"],
+            self.path,
+            sidebyside=True
         )
         self.action.start()
 
@@ -690,6 +712,7 @@ class LogTopContextMenu:
         # is no submenu, or a recursive list of tuples for desired submenus.
         self.structure = [
             (MenuViewDiffWorkingCopy, None),
+            (MenuCompareWorkingCopy, None),
             (MenuViewDiffPreviousRevision, None),
             (MenuViewDiffRevisions, None),
             (MenuShowChangesRevisions, None),
