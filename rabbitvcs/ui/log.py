@@ -476,6 +476,11 @@ class MenuViewDiffRevisions(MenuItem):
     label = _("View diff between revisions")
     icon = "rabbitvcs-diff"
 
+class MenuCompareRevisions(MenuItem):
+    identifier = "RabbitVCS::Compare_Revisions"
+    label = _("Compare revisions")
+    icon = "rabbitvcs-compare"
+
 class MenuShowChangesPreviousRevision(MenuItem):
     identifier = "RabbitVCS::Show_Changes_Previous_Revision"
     label = _("Show changes from previous revision")
@@ -524,6 +529,9 @@ class LogTopContextMenuConditions:
         return (item.value > 1 and len(self.revisions) == 1)
 
     def view_diff_revisions(self, data=None):
+        return (len(self.revisions) == 2)
+
+    def compare_revisions(self, data=None):
         return (len(self.revisions) == 2)
 
     def show_changes_revisions(self, data=None):
@@ -643,6 +651,26 @@ class LogTopContextMenuCallbacks:
         )
         self.action.start()
 
+    def compare_revisions(self, widget, data=None):
+        from rabbitvcs.ui.diff import SVNDiff
+        
+        item1 = self.revisions[0]["revision"]
+        item2 = self.revisions[1]["revision"]
+        
+        self.action = VCSAction(
+            self.vcs_client,
+            notification=False
+        )
+        self.action.append(
+            SVNDiff,
+            self.vcs_client.get_repo_url(self.path), 
+            item2.value, 
+            self.vcs_client.get_repo_url(self.path), 
+            item1.value,
+            sidebyside=True
+        )
+        self.action.start()
+
     def show_changes_revisions(self, widget, data=None):
         from rabbitvcs.ui.changes import Changes
         item1 = self.revisions[0]["revision"]
@@ -750,6 +778,7 @@ class LogTopContextMenu:
             (MenuViewDiffPreviousRevision, None),
             (MenuComparePreviousRevision, None),
             (MenuViewDiffRevisions, None),
+            (MenuCompareRevisions, None),
             (MenuShowChangesRevisions, None),
             (MenuSeparator, None),
             (MenuUpdateToRevision, None),
