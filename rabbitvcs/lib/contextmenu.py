@@ -605,7 +605,6 @@ class ContextMenuConditions:
         return False
         
     def diff(self, data=None):
-        print "Called diff!"
         if (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
                 (self.path_dict["is_modified"] or self.path_dict["has_modified"])):
