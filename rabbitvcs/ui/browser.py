@@ -29,8 +29,9 @@ import gtk
 from datetime import datetime
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.lib.contextmenu import GtkContextMenu, GtkFilesContextMenuConditions, \
-    GtkFilesContextMenuCallbacks, ContextMenuItems, GtkContextMenuCaller
+from rabbitvcs.lib.contextmenu import GtkContextMenu, GtkContextMenuCaller, \
+    GtkFilesContextMenuConditions
+from rabbitvcs.lib.contextmenuitems import *
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
@@ -291,6 +292,30 @@ class BrowserDialog(Browser):
                 path = selected
             self.callback(path)
 
+
+
+
+class MenuCreateRepositoryFolder(MenuItem):
+    identifier = "RabbitVCS::Create_Repository_Folder"
+    label = _("Create folder...")
+    icon = gtk.STOCK_NEW
+
+class MenuBrowserCopyTo(MenuItem):
+    identifier = "RabbitVCS::Browser_Copy_To"
+    label = _("Copy to...")
+    icon = gtk.STOCK_COPY
+
+class MenuBrowserCopyUrlToClipboard(MenuItem):
+    identifier = "RabbitVCS::Browser_Copy_Url_To_Clipboard"
+    label = _("Copy URL to clipboard")
+    icon = "rabbitvcs-asynchronous"
+
+class MenuBrowserMoveTo(MenuItem):
+    identifier = "RabbitVCS::Browser_Move_To"
+    label = _("Move to...")
+    icon = gtk.STOCK_SAVE_AS
+
+
 class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
     def __init__(self, vcs_client, paths, caller):
         GtkFilesContextMenuConditions.__init__(self, vcs_client, paths)
@@ -322,32 +347,23 @@ class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
         revision = self.caller.revision_selector.get_revision_object()
         return (revision.kind == "head")
 
-    def create_folder(self, data1=None):
+    def create_repository_folder(self, data1=None):
         if self.path_dict["length"] == 1:
             return (self.caller.file_column_callback(self.paths[0]) == "dir")
 
         return (self.path_dict["length"] == 0)
 
-    def cut_to_clipboard(self, data1=None, data2=None):
-        return False
-
-    def copy_to_clipboard(self, data1=None, data2=None):
-        return False
-
-    def paste_from_clipboard(self, data1=None):
-        return (self.caller.clipboard_has_cut() or self.caller.clipboard_has_copy())
-
-    def copy_to(self, data1=None, data2=None):
+    def browser_copy_to(self, data1=None, data2=None):
         return True
 
-    def copy_url_to_clipboard(self, data1=None, data2=None):
+    def browser_copy_url_to_clipboard(self, data1=None, data2=None):
         return (self.path_dict["length"] == 1)
 
-    def move_to(self, data1=None, data2=None):
+    def browser_move_to(self, data1=None, data2=None):
         revision = self.caller.revision_selector.get_revision_object()
         return (revision.kind == "head")
 
-class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
+class BrowserContextMenuCallbacks:
     def __init__(self, caller, base_dir, vcs_client, paths=[]):
         self.caller = caller
         self.base_dir = base_dir
@@ -476,16 +492,7 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
         self.caller.action.append(self.caller.populate_table, 1)
         self.caller.action.start()        
 
-    def cut_to_clipboard(self, data=None, user_data=None):
-        self.caller.update_clipboard("cut", self.paths)
-
-    def copy_to_clipboard(self, data=None, user_data=None):
-        self.caller.update_clipboard("copy", self.paths)
-
-    def paste_from_clipboard(self, data=None, user_data=None):
-        self.caller.empty_clipboard()
-
-    def copy_to(self, data=None, user_data=None):
+    def browser_copy_to(self, data=None, user_data=None):
         from rabbitvcs.ui.dialog import OneLineTextChange
         dialog = OneLineTextChange(
             _("Where do you want to copy the selection?"), 
@@ -511,10 +518,10 @@ class BrowserContextMenuCallbacks(GtkFilesContextMenuCallbacks):
         self.caller.action.append(self.caller.populate_table, 1)
         self.caller.action.start()
 
-    def copy_url_to_clipboard(self, data=None, user_data=None):
+    def browser_copy_url_to_clipboard(self, data=None, user_data=None):
         self.caller.set_url_clipboard(self.paths[0])
 
-    def move_to(self, data=None, user_data=None):
+    def browser_move_to(self, data=None, user_data=None):
         from rabbitvcs.ui.dialog import OneLineTextChange
         dialog = OneLineTextChange(
             _("Where do you want to move the selection?"), 
@@ -558,126 +565,29 @@ class BrowserContextMenu:
             self.vcs_client, 
             paths
         )
-        
+
         self.structure = [
-            ("Open", None),
-            ("Separator0", None),
-            ("Show_Log", None),
-            ("Annotate", None),
-            ("Export", None),
-            ("Checkout", None),
-            ("Separator1", None),
-            ("CreateRepoFolder", None),
-            ("Separator2", None),
-            ("CutToClipboard", None),
-            ("CopyToClipboard", None),
-            ("PasteFromClipboard", None),
-            ("Separator3", None),
-            ("Rename", None),
-            ("Delete", None),
-            ("CopyTo", None),
-            ("CopyUrlToClipboard", None),
-            ("MoveTo", None)
+            (MenuOpen, None),
+            (MenuSeparator, None),
+            (MenuShowLog, None),
+            (MenuAnnotate, None),
+            (MenuExport, None),
+            (MenuCheckout, None),
+            (MenuSeparator, None),
+            (MenuCreateRepositoryFolder, None),
+            (MenuSeparator, None),
+            (MenuRename, None),
+            (MenuDelete, None),
+            (MenuBrowserCopyTo, None),
+            (MenuBrowserCopyUrlToClipboard, None),
+            (MenuBrowserMoveTo, None)
         ]
 
-        items_to_append = {
-            "CreateRepoFolder": {
-                "label": _("Create folder..."),
-                "icon": gtk.STOCK_NEW,
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.create_folder, 
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.conditions.create_folder
-                }
-            },
-            "CutToClipboard": {
-                "label": _("Cut"),
-                "icon": gtk.STOCK_CUT,
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.cut_to_clipboard, 
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.conditions.cut_to_clipboard
-                }
-            },
-            "CopyToClipboard": {
-                "label": _("Copy"),
-                "icon": gtk.STOCK_COPY,
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.copy_to_clipboard, 
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.conditions.copy_to_clipboard
-                }
-            },
-            "PasteFromClipboard": {
-                "label": _("Paste"),
-                "icon": gtk.STOCK_PASTE,
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.paste_from_clipboard, 
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.conditions.paste_from_clipboard
-                }
-            },
-            "CopyTo": {
-                "label": _("Copy to..."),
-                "icon": gtk.STOCK_COPY,
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.copy_to, 
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.conditions.copy_to
-                }
-            },
-            "CopyUrlToClipboard": {
-                "label": _("Copy URL to clipboard"),
-                "icon": "rabbitvcs-diff",
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.copy_url_to_clipboard, 
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.conditions.copy_url_to_clipboard
-                }
-            },
-            "MoveTo": {
-                "label": _("Move to..."),
-                "icon": gtk.STOCK_SAVE_AS,
-                "signals": {
-                    "activate": {
-                        "callback": self.callbacks.move_to, 
-                        "args": None
-                    }
-                },
-                "condition": {
-                    "callback": self.conditions.move_to
-                }
-            }
-        }
-        
-        self.items = ContextMenuItems(self.conditions, self.callbacks, items_to_append).get_items()
-
     def show(self):
-        context_menu = GtkContextMenu(self.structure, self.items)
+        if len(self.paths) == 0:
+            return
+
+        context_menu = GtkContextMenu(self.structure, self.conditions, self.callbacks)
         context_menu.show(self.event)
 
 if __name__ == "__main__":
