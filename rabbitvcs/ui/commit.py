@@ -64,14 +64,13 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         """
         InterfaceView.__init__(self, "commit", "Commit")
 
-        self.paths = paths
         self.base_dir = base_dir
         self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
-        self.common = rabbitvcs.lib.helper.get_common_directory(paths)
 
-        if not self.vcs.get_versioned_path(self.common):
-            rabbitvcs.ui.dialog.MessageBox(_("The given path is not a working copy"))
-            raise SystemExit()
+        self.paths = []
+        for path in paths:
+            if self.vcs.is_in_a_or_a_working_copy(path):
+                self.paths.append(path)
 
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
@@ -99,7 +98,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             (message and message or "")
         )
         self.get_widget("to").set_text(
-            self.vcs.get_repo_url(self.common)
+            self.vcs.get_repo_url(self.base_dir)
         )
 
         self.items = None
