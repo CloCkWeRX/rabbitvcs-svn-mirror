@@ -915,6 +915,12 @@ class GtkFilesContextMenuConditions(ContextMenuConditions):
         self.vcs_client = vcs_client
         self.paths = paths
         self.statuses = {}
+        
+        self.generate_statuses(self.paths)
+        self.generate_path_dict(self.paths)
+
+    def generate_statuses(self, paths):
+        self.statuses = {}
         for path in paths:
             statuses_tmp = self.vcs_client.status(path)
             for status in statuses_tmp:
@@ -925,8 +931,6 @@ class GtkFilesContextMenuConditions(ContextMenuConditions):
 
         self.text_statuses = [self.statuses[key]["text_status"] for key in self.statuses.keys()]
         self.prop_statuses = [self.statuses[key]["prop_status"] for key in self.statuses.keys()]
-
-        self.generate_path_dict(paths)
         
     def delete(self, data=None):
         return self.path_dict["exists"]
@@ -1040,8 +1044,14 @@ class MainContextMenuConditions(ContextMenuConditions):
         """   
 
         self.vcs_client = vcs_client
+        self.paths = paths
         self.status_cache = StatusCache()
+        self.statuses = {}
         
+        self.generate_path_dict(paths)
+        self.generate_statuses(paths)
+        
+    def generate_statuses(paths):
         self.statuses = {}
         for path in paths:
             # FIXME: possibly this should be a checker, not a cache?
@@ -1050,8 +1060,6 @@ class MainContextMenuConditions(ContextMenuConditions):
 
         self.text_statuses = [self.statuses[key]["text_status"] for key in self.statuses.keys()]
         self.prop_statuses = [self.statuses[key]["prop_status"] for key in self.statuses.keys()]
-        
-        self.generate_path_dict(paths)
 
 class MainContextMenu:
     """
