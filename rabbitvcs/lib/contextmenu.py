@@ -87,14 +87,12 @@ class MenuBuilder(object):
             ]
             
         """
-    def __init__(self, structure, conditions, callbacks):
         # The index is mostly for identifier magic 
         index = 0
         last_level = -1
         last_item = last_menuitem = None        
 
         stack = [] # ([items], last_item, last_menuitem)
-
         flat_structure = rabbitvcs.lib.helper.walk_tree_depth_first(
                                 structure,
                                 show_levels=True,
@@ -108,7 +106,6 @@ class MenuBuilder(object):
         # last item on each level, in case they are separators, so that's on the
         # stack too.       
         for (level, item) in flat_structure:
-        
             index += 1
 
             # Have we dropped back a level? Restore previous context
@@ -1011,6 +1008,10 @@ class GtkFilesContextMenu:
         context_menu = GtkContextMenu(self.structure, self.conditions, self.callbacks)
         context_menu.show(self.event)
 
+    def get_menu(self):
+        context_menu = GtkContextMenu(self.structure, self.conditions, self.callbacks)
+        return context_menu.menu
+
 class MainContextMenuCallbacks(ContextMenuCallbacks):
     """
     The callback class used for the main context menu.  This inherits from
@@ -1056,10 +1057,10 @@ class MainContextMenuConditions(ContextMenuConditions):
         self.status_cache = StatusCache()
         self.statuses = {}
         
-        self.generate_path_dict(paths)
         self.generate_statuses(paths)
+        self.generate_path_dict(paths)
         
-    def generate_statuses(paths):
+    def generate_statuses(self, paths):
         self.statuses = {}
         for path in paths:
             # FIXME: possibly this should be a checker, not a cache?
@@ -1097,7 +1098,7 @@ class MainContextMenu:
         self.paths = paths
         self.base_dir = base_dir
         self.vcs_client = create_vcs_instance()
-        
+
         self.conditions = conditions
         if self.conditions is None:
             self.conditions = MainContextMenuConditions(self.vcs_client, paths)
