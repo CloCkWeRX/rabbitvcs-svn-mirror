@@ -527,8 +527,9 @@ class ContextMenuConditions:
         pass
 
     def generate_path_dict(self, paths):
-        self.path_dict = {}
-        self.path_dict["length"] = len(paths)
+        self.path_dict = {
+            "length": len(paths)
+        }
 
         checks = {
             "is_dir"                        : os.path.isdir,
@@ -556,6 +557,9 @@ class ContextMenuConditions:
             "has_conflicted"                : lambda path: "conflicted" in self.text_statuses,
             "has_obstructed"                : lambda path: "obstructed" in self.text_statuses
         }
+        
+        for key,func in checks.items():
+            self.path_dict[key] = False
 
         # Each path gets tested for each check
         # If a check has returned True for any path, skip it for remaining paths
@@ -922,6 +926,9 @@ class GtkFilesContextMenuConditions(ContextMenuConditions):
     def generate_statuses(self, paths):
         self.statuses = {}
         for path in paths:
+            if not path:
+                continue
+                
             statuses_tmp = self.vcs_client.status(path)
             for status in statuses_tmp:
                 self.statuses[status.path] = {
