@@ -532,8 +532,8 @@ class MenuSeparator(MenuItem):
        
     # Make separators insensitive
     def make_gtk_menu_item(self, id_magic = None):
-        menuitem = super(MenuSeparator, self).make_gtk_menu_item(id_magic)
-        self.make_insensitive(menuitem)
+        menuitem = gtk.SeparatorMenuItem()
+        menuitem.show()
         return menuitem
     
     def make_nautilus_menu_item(self, id_magic = None):
