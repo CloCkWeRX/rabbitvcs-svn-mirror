@@ -473,7 +473,7 @@ class BrowserContextMenuCallbacks:
         self.caller.action.append(self.caller.populate_table, 1)
         self.caller.action.start()  
 
-    def create_folder(self, data=None, user_data=None):
+    def create_repository_folder(self, data=None, user_data=None):
         from rabbitvcs.ui.dialog import NewFolder
         dialog = NewFolder()
         result = dialog.run()
