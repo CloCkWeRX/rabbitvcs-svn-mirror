@@ -75,7 +75,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         '''
         Initialises the UI.
         '''
-        InterfaceView.__init__(self, "propedit", "Properties")
+        InterfaceView.__init__(self, "property_editor", "PropertyEditor")
         
         note = WrapLabel(PROP_EDITOR_NOTE)
         note.set_use_markup(True)

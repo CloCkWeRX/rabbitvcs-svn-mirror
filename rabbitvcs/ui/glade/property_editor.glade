@@ -2,8 +2,9 @@
 <glade-interface>
   <!-- interface-requires gtk+ 2.16 -->
   <!-- interface-naming-policy project-wide -->
-  <widget class="GtkWindow" id="Properties">
+  <widget class="GtkWindow" id="PropertyEditor">
     <property name="visible">True</property>
+    <property name="title" translatable="yes">Property Editor</property>
     <property name="icon_name">rabbitvcs-small</property>
     <signal name="destroy" handler="on_destroy"/>
     <child>
