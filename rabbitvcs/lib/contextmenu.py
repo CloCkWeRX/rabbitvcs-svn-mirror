@@ -985,6 +985,7 @@ class GtkFilesContextMenu:
         # is no submenu, or a recursive list of tuples for desired submenus.
         self.structure = [
             (MenuDiff, None),
+            (MenuCompareTool, None),
             (MenuUnlock, None),
             (MenuShowLog, None),
             (MenuOpen, None),
