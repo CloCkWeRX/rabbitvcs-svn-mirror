@@ -528,7 +528,10 @@ class TextView:
         self.buffer.set_text(value)
         
         if HAS_GTKSPELL and spellcheck:
-            gtkspell.Spell(self.view)
+            try:
+                gtkspell.Spell(self.view)
+            except Exception, e:
+                log.exception(e)
         
     def get_text(self):
         return self.buffer.get_text(
