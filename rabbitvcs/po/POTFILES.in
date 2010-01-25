@@ -59,8 +59,8 @@ ui/glade/relocate.glade.h
 ui/glade/settings.glade.h
 ui/glade/switch.glade.h
 ui/glade/update.glade.h
-lib/extensions/nautilus/RabbitVCS.py
-lib/extensions/thunar/RabbitVCS.py
+../clients/nautilus/RabbitVCS.py
+../clients/thunar/RabbitVCS.py
 lib/vcs/svn/__init__.py
 lib/helper.py
 lib/contextmenuitems.py

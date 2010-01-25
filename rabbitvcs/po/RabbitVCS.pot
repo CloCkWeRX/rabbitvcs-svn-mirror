@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-24 12:03-0500\n"
+"POT-Creation-Date: 2010-01-25 10:26-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,22 +18,22 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: ui/add.py:71 ui/action.py:97 ui/browser.py:75 ui/changes.py:109
-#: ui/checkmods.py:67 ui/commit.py:80 ui/createpatch.py:87 ui/lock.py:72
+#: ui/checkmods.py:67 ui/commit.py:79 ui/createpatch.py:87 ui/lock.py:72
 #: ui/log.py:96 ui/resolve.py:60 ui/revert.py:60 ui/unlock.py:60
 msgid "Path"
 msgstr ""
 
-#: ui/add.py:71 ui/checkmods.py:67 ui/commit.py:80 ui/createpatch.py:87
+#: ui/add.py:71 ui/checkmods.py:67 ui/commit.py:79 ui/createpatch.py:87
 #: ui/lock.py:72 ui/resolve.py:60 ui/revert.py:60 ui/unlock.py:60
 msgid "Extension"
 msgstr ""
 
-#: ui/add.py:94 ui/commit.py:121 ui/lock.py:115 ui/unlock.py:84
+#: ui/add.py:94 ui/commit.py:120 ui/lock.py:115 ui/unlock.py:84
 #: ui/glade/dialogs.glade.h:25
 msgid "Loading..."
 msgstr ""
 
-#: ui/add.py:97 ui/commit.py:128 ui/lock.py:118 ui/unlock.py:105
+#: ui/add.py:97 ui/commit.py:127 ui/lock.py:118 ui/unlock.py:105
 #, python-format
 msgid "Found %d item(s)"
 msgstr ""
@@ -86,12 +86,12 @@ msgstr ""
 
 #: ui/annotate.py:78 ui/browser.py:75 ui/checkmods.py:69 ui/log.py:85
 #: ui/glade/changes.glade.h:6 ui/glade/merge.glade.h:17
-#: lib/extensions/nautilus/RabbitVCS.py:211
+#: ../clients/nautilus/RabbitVCS.py:211
 msgid "Revision"
 msgstr ""
 
 #: ui/annotate.py:78 ui/browser.py:75 ui/checkmods.py:69 ui/log.py:85
-#: lib/extensions/nautilus/RabbitVCS.py:223
+#: ../clients/nautilus/RabbitVCS.py:223
 msgid "Author"
 msgstr ""
 
@@ -215,12 +215,12 @@ msgstr ""
 msgid "Compare side by side"
 msgstr ""
 
-#: ui/checkmods.py:68 ui/commit.py:81 ui/createpatch.py:88 ui/resolve.py:61
+#: ui/checkmods.py:68 ui/commit.py:80 ui/createpatch.py:88 ui/resolve.py:61
 #: ui/revert.py:61
 msgid "Text Status"
 msgstr ""
 
-#: ui/checkmods.py:68 ui/commit.py:81 ui/createpatch.py:88 ui/resolve.py:61
+#: ui/checkmods.py:68 ui/commit.py:80 ui/createpatch.py:88 ui/resolve.py:61
 #: ui/revert.py:61
 msgid "Property Status"
 msgstr ""
@@ -258,19 +258,15 @@ msgstr ""
 msgid "Completed Cleanup"
 msgstr ""
 
-#: ui/commit.py:73 ui/createpatch.py:80
-msgid "The given path is not a working copy"
-msgstr ""
-
-#: ui/commit.py:223 ui/glade/commit.glade.h:4 lib/contextmenuitems.py:284
+#: ui/commit.py:222 ui/glade/commit.glade.h:4 lib/contextmenuitems.py:284
 msgid "Commit"
 msgstr ""
 
-#: ui/commit.py:224
+#: ui/commit.py:223
 msgid "Running Commit Command..."
 msgstr ""
 
-#: ui/commit.py:230
+#: ui/commit.py:229
 msgid "Completed Commit"
 msgstr ""
 
@@ -287,6 +283,10 @@ msgstr ""
 #: ui/createpatch.py:68 ui/createpatch.py:110 ui/createpatch.py:151
 #: ui/glade/createpatch.glade.h:2
 msgid "Create Patch"
+msgstr ""
+
+#: ui/createpatch.py:80
+msgid "The given path is not a working copy"
 msgstr ""
 
 #: ui/createpatch.py:152
@@ -529,7 +529,7 @@ msgstr ""
 msgid "Reserved"
 msgstr ""
 
-#: ui/property_editor.py:104 lib/extensions/nautilus/RabbitVCS.py:205
+#: ui/property_editor.py:104 ../clients/nautilus/RabbitVCS.py:205
 msgid "Status"
 msgstr ""
 
@@ -665,15 +665,15 @@ msgstr ""
 msgid "Update To Revision"
 msgstr ""
 
-#: ui/widget.py:600 ui/glade/merge.glade.h:10
+#: ui/widget.py:603 ui/glade/merge.glade.h:10
 msgid "HEAD"
 msgstr ""
 
-#: ui/widget.py:601
+#: ui/widget.py:604
 msgid "Number"
 msgstr ""
 
-#: ui/widget.py:602
+#: ui/widget.py:605
 msgid "Working Copy"
 msgstr ""
 
@@ -780,7 +780,7 @@ msgstr ""
 msgid "Changes"
 msgstr ""
 
-#: ui/glade/changes.glade.h:7 lib/extensions/nautilus/RabbitVCS.py:217
+#: ui/glade/changes.glade.h:7 ../clients/nautilus/RabbitVCS.py:217
 msgid "URL"
 msgstr ""
 
@@ -1269,7 +1269,7 @@ msgstr ""
 msgid "<b>Update Depth</b>"
 msgstr ""
 
-#: lib/extensions/nautilus/RabbitVCS.py:229
+#: ../clients/nautilus/RabbitVCS.py:229
 msgid "Age"
 msgstr ""
 
