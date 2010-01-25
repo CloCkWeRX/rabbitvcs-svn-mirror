@@ -102,13 +102,13 @@ for root, dirs, files in os.walk("rabbitvcs"):
 # Nautilus extension
 nautilus_extension = [(
     python_nautilus_extensions_path, 
-    ["rabbitvcs/lib/extensions/nautilus/RabbitVCS.py"]
+    ["clients/nautilus/RabbitVCS.py"]
 )]
 
 # Command-line tool
 command_line_tool = [(
     "/usr/bin",
-    ["bin/rabbitvcs"]
+    ["clients/cli/rabbitvcs"]
 )]
 
 # Translation
