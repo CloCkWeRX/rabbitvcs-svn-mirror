@@ -61,6 +61,13 @@ class Browser(InterfaceView, GtkContextMenuCaller):
         if self.url:
             self.urls.set_child_text(self.url)
 
+        # We must set a signal handler for the gtk.Entry inside the combobox
+        # Because glade will not retain that information
+        self.urls.set_child_signal(
+            "key-release-event", 
+            self.on_urls_key_released
+        )
+
         self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("revision_container"),
             self.vcs,
@@ -162,6 +169,10 @@ class Browser(InterfaceView, GtkContextMenuCaller):
 
         self.urls.set_child_text(self.url)
         self.load()
+
+    def on_urls_key_released(self, widget, data, userdata):
+        if gtk.gdk.keyval_name(data.keyval) == "Return":
+            self.load()
 
     def file_column_callback(self, filename):
         """
