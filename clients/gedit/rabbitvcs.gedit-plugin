@@ -1,0 +1,10 @@
+[Gedit Plugin]
+Loader=python
+Module=rabbitvcs-plugin
+IAge=2
+Name=RabbitVCS
+Description=RabbitVCS plugin for Gedit
+Authors=Adam Plumb <adamplumb@gmail.com>
+Copyright=Copyright © 2009 Adam Plumb
+Website=http://www.rabbitvcs.org
+

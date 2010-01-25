@@ -1,0 +1,9 @@
+RabbitVCS Gedit Plugin
+----------------------
+
+The RabbitVCS Gedit plugin provides the familiar RabbitVCS Context menu in the 
+Tools menu as well as in various context menus.
+
+Install:
+    Copy rabbitvcs-plugin.py and rabbitvcs.gedit-plugin to 
+    ~/.gnome2/gedit/plugins
