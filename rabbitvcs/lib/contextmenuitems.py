@@ -103,6 +103,16 @@ class MenuItem(object):
     # then no callback will be assigned to the "activate" signal.
     callback_name = None
     callback_args = ()
+
+
+    # This is a string that holds the name of the function that is called to
+    # determine whether to show the item.
+    #
+    # The menu item will look for a callable attribute of this name in the
+    # callback object passed in to the constructor. If it is None, or False, or
+    # it cannot find anything, it will set up a function that returns False.
+    condition_name = None
+    condition_args = ()
     
     def __init__(self, conditions, callbacks):
         """
