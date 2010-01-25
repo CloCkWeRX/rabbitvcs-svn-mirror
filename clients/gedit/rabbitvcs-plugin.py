@@ -34,6 +34,10 @@ ui_str = """<ui>
             <menuitem name="RabbitVCS::Check_For_Modifications" action="RabbitVCS::Check_For_Modifications" />
             <separator />
             <menuitem name="RabbitVCS::Add" action="RabbitVCS::Add" />
+            <menu name="RabbitVCS::Add_To_Ignore_List" action="RabbitVCS::Add_To_Ignore_List">
+                <menuitem name="RabbitVCS::Ignore_By_Filename" action="RabbitVCS::Ignore_By_Filename" />
+                <menuitem name="RabbitVCS::Ignore_By_File_Extension" action="RabbitVCS::Ignore_By_File_Extension" />
+            </menu>
             <separator />
             <menuitem name="RabbitVCS::Update_To_Revision" action="RabbitVCS::Update_To_Revision" />
             <menuitem name="RabbitVCS::Rename" action="RabbitVCS::Rename" />
@@ -85,6 +89,9 @@ class RabbitVCSWindowHelper:
         "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Repo_Browser",
         "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Check_For_Modifications",
         "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Add",
+        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Add_To_Ignore_List",
+        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Add_To_Ignore_List/RabbitVCS::Ignore_By_Filename",
+        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Add_To_Ignore_List/RabbitVCS::Ignore_By_File_Extension",
         "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Update_To_Revision",
         "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Rename",
         "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Delete",
@@ -107,11 +114,12 @@ class RabbitVCSWindowHelper:
         "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::About"
     ]
 
+    _default_base_dir = os.path.expanduser("~")
+
     def __init__(self, plugin, window):
         self._window = window
         self._plugin = plugin
         self._menubar_menu = None
-        self._base_dir = os.path.expanduser("~")
 
         # Insert menu items
         self._insert_menu()
@@ -129,7 +137,7 @@ class RabbitVCSWindowHelper:
         # Get the GtkUIManager
         manager = self._window.get_ui_manager()
 
-        self._menubar_menu = GeditMenu(self, self._base_dir, [])
+        self._menubar_menu = GeditMenu(self, self._default_base_dir, [])
         
         self._action_group = gtk.ActionGroup("RabbitVCSActions")
         self._action_group = self._menubar_menu.get_action_group(self._action_group)
@@ -154,9 +162,10 @@ class RabbitVCSWindowHelper:
         manager.ensure_update()
 
     def update_ui(self):
+        self.update_base_dir()
+
         document = self._window.get_active_document()
         self._action_group.set_sensitive(document != None)
-        
         if document != None:
             manager = self._window.get_ui_manager()
             manager.get_widget("/MenuBar/ToolsMenu/RabbitVCSMenu").set_sensitive(True)
@@ -175,19 +184,23 @@ class RabbitVCSWindowHelper:
         menu.append(separator)
         separator.show()
         
-        context_menu = GeditMainContextMenu(self, self._base_dir, [path]).get_menu()
+        context_menu = GeditMainContextMenu(self, self.base_dir, [path]).get_menu()
         for context_menu_item in context_menu:
             menu.append(context_menu_item)
 
     def _get_document_paths(self):
-        #documents = self._window.get_documents()
-        #paths = []
-        #for document in documents:
-        #    path = document.get_uri_for_display()
-        #    if os.path.exists(path):
-        #        paths.append(path)
-
         return [self._window.get_active_document().get_uri_for_display()]
+
+    def update_base_dir(self):
+        document = self._window.get_active_document()
+        if document:
+            path = document.get_uri_for_display()
+            if os.path.exists(path):
+                self.base_dir = os.path.dirname(path)
+        else:
+            self.base_dir = self._default_base_dir
+
+        self._menubar_menu.set_base_dir(self.base_dir)
 
     def _determine_menu_sensitivity(self, paths):
         self._menubar_menu.update_conditions(paths)
@@ -205,6 +218,12 @@ class RabbitVCSWindowHelper:
         self.update_ui()
 
     def execute_after_process_exit(self, proc):
+        self.update_ui()
+
+    def reload_treeview(self):
+        self.update_ui()
+    
+    def reload_treeview_threaded(self):
         self.update_ui()
 
 class RabbitVCSPlugin(gedit.Plugin):
@@ -246,6 +265,16 @@ class RabbitVCSPlugin(gedit.Plugin):
     def on_window_tab_removed(self, window, tab):
         pass
 
+
+class MenuIgnoreByFilename(MenuItem):
+    identifier = "RabbitVCS::Ignore_By_Filename"
+    label = _("Ignore by File Name")
+    tooltip = _("Ignore item by filename")
+
+class MenuIgnoreByFileExtension(MenuItem):
+    identifier = "RabbitVCS::Ignore_By_File_Extension"
+    label = _("Ignore by File Extension")
+    tooltip = _("Ignore item by extension")
 
 class GeditMenuBuilder(object):
     """
@@ -348,7 +377,7 @@ class GeditMenu:
         self.paths = paths
         self.base_dir = base_dir
         self.vcs_client = create_vcs_instance()
-
+        
         self.conditions = GtkFilesContextMenuConditions(self.vcs_client, self.paths)
 
         self.callbacks = GtkFilesContextMenuCallbacks(
@@ -397,13 +426,20 @@ class GeditMenu:
             MenuProperties,
             MenuHelp,
             MenuSettings,
-            MenuAbout
+            MenuAbout,
+            MenuIgnoreByFilename,
+            MenuIgnoreByFileExtension
         ]
 
     def set_paths(self, paths):
         self.paths = paths
         self.conditions.paths = paths
         self.callbacks.paths = paths
+
+    def set_base_dir(self, base_dir):
+        self.base_dir = base_dir
+        self.callbacks.base_dir = base_dir
+        self.conditions.base_dir = base_dir
 
     def get_action_group(self, action_group):
         return GeditMenuBuilder(self.structure, self.conditions, self.callbacks, action_group).action_group
