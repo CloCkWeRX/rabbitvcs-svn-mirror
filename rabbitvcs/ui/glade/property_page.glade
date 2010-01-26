@@ -35,12 +35,14 @@
   <widget class="GtkExpander" id="file_info_expander">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
+    <signal name="activate" handler="on_activate"/>
     <child>
       <placeholder/>
     </child>
     <child>
       <widget class="GtkLabel" id="file_expander_path">
         <property name="visible">True</property>
+        <property name="xalign">0</property>
       </widget>
       <packing>
         <property name="type">label_item</property>

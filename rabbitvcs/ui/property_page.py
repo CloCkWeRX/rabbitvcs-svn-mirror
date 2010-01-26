@@ -46,8 +46,17 @@ class PropertyPage(rabbitvcs.ui.GladeWidgetWrapper):
         if len(paths) == 1:
             file_info = FileInfoPane(paths[0], self.vcs_client)
             self.info_pane.pack_start(file_info.get_widget(),
-                                      expand=False,
-                                      fill=True)
+                                      expand=False)
+        elif len(paths) > 1:
+            try:
+                for path in paths:
+                    expander = FileInfoExpander(path, vcs)
+                    self.info_pane.pack_start(expander.get_widget(),
+                                              expand=False)
+            except Exception, ex:
+                log.exception(ex)
+                raise
+                
         
     
 class FileInfoPane(rabbitvcs.ui.GladeWidgetWrapper):
@@ -97,6 +106,37 @@ class FileInfoPane(rabbitvcs.ui.GladeWidgetWrapper):
     def set_icon_from_status(self, icon, status, size=gtk.ICON_SIZE_BUTTON):
         if status in STATUS_EMBLEMS:
             icon.set_from_icon_name("emblem-" + STATUS_EMBLEMS[status], size)
+
+class FileInfoExpander(rabbitvcs.ui.GladeWidgetWrapper):
+
+    glade_filename = "property_page"
+    glade_id = "file_info_expander"
+
+    def __init__(self, path, vcs = None):
+        
+        # Might be None, but that's okay, only subclasses use it
+        self.vcs = vcs
+        
+        rabbitvcs.ui.GladeWidgetWrapper.__init__(self)
+        self.path = path
+        self.get_widget("file_expander_path").set_label(path)
+        
+        # Do a lazy evaluate for this
+        self.file_info = None
+        
+        self.expander = self.get_widget()
+        
+        # There seems to be no easy way to connect to this in glade
+        self.expander.connect("notify::expanded", self.on_expand)
+
+    def on_activate(self): 
+        log.debug("Activated!")
+
+    def on_expand(self):
+        log.debug("Expanded!") 
+        if self.expander.get_expanded() and not self.file_info:
+                self.file_info = FileInfoPane(self.path, self.vcs).get_widget()
+                self.expander.add(self.file_info)
 
 class PropertyPageLabel(rabbitvcs.ui.GladeWidgetWrapper):
     glade_filename = "property_page"
