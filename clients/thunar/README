@@ -1,0 +1,17 @@
+RabbitVCS Thunar Extension
+
+This extension is meant to be used with the Thunar File Manager,
+
+Requirements:
+    * thunar (>= v0.4.0)
+    * thunarx-python (>= v0.2.0)
+    * (all other RabbitVCS requirements)
+
+To install:
+    If you are running Thunar v1.1.0 or later, copy RabbitVCS.py to:
+        /usr/lib/thunarx-2/python.
+    
+    If you are running Thunar < v1.1.0, copy RabbitVCS.py to:
+        /usr/lib/thunarx-1/python.
+        
+    In both cases, you may need to create the python folder.
