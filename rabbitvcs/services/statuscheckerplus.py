@@ -16,25 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
-""" A VCS status cache which can be queried synchronously and asynchronously.
-
-The "check_status" method will return "as soon as possible", with either a 
-cached status or a "calculating" status. Callbacks can also be registered and
-will be notified when a proper status check is done.
-"""
 
 
 from __future__ import with_statement
-
-def log_exceptions(extype, value, tb):
-    from rabbitvcs.lib.log import Log
-    log = Log("rabbitvcs.lib.extensions.statuscheckerplus")
-    log.exception_info("Error caught by status checker exception hook!",
-                       (extype, value, tb))
-    sys.__excepthook__(extype, value, tb)
-
-import sys
-sys.excepthook = log_exceptions
 
 import threading
 from Queue import Queue
