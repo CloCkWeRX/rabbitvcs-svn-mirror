@@ -43,12 +43,12 @@ import distutils.sysconfig
 # This will eventually be passed to the setup function, but we already need them
 # for doing some other stuff so we have to declare them here.
 name                = "rabbitvcs"
-version             = "0.12"
-description         = "Integrated Subversion support for Nautilus"
-long_description    = """An extension to Nautilus to allow better integration with the Subversion source control system. Similar to the TortoiseSVN project on Windows."""
+version             = "0.13~dev"
+description         = "Easy version control"
+long_description    = """RabbitVCS is a set of graphical tools written to provide simple and straightforward access to the version control systems you use."""
 author              = "Bruce van der Kooij"
 author_email        = "brucevdkooij@gmail.com"
-url                 = "http://code.google.com/p/rabbitvcs"
+url                 = "http://www.rabbitvcs.org"
 license             = "GNU General Public License version 2 or later"
 
 #==============================================================================
