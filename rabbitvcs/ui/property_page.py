@@ -19,11 +19,20 @@
 #
 
 import rabbitvcs.ui
+import rabbitvcs.lib.vcs
 
 class PropertyPage(rabbitvcs.ui.GladeWidgetWrapper):
-    filename = "property_page"
-    id = "property_page"
+    
+    glade_filename = "property_page"
+    glade_id = "property_page"
+    
+    def __init__(self, paths):
+        rabbitvcs.ui.GladeWidgetWrapper.__init__(self)
+        self.paths = paths
+        self.vcs_client = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.get_widget("information").set_text("\n".join(paths))        
+    
 
 class PropertyPageLabel(rabbitvcs.ui.GladeWidgetWrapper):
-    filename = "property_page"
-    id = "property_page_label"    
+    glade_filename = "property_page"
+    glade_id = "property_page_label"    

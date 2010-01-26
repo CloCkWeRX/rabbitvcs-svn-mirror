@@ -24,8 +24,16 @@
       </packing>
     </child>
   </widget>
-  <widget class="GtkLabel" id="property_page">
+  <widget class="GtkVBox" id="property_page">
     <property name="visible">True</property>
-    <property name="label" translatable="yes">Stuff goes here.</property>
+    <property name="orientation">vertical</property>
+    <child>
+      <widget class="GtkLabel" id="information">
+        <property name="visible">True</property>
+      </widget>
+      <packing>
+        <property name="position">0</property>
+      </packing>
+    </child>
   </widget>
 </glade-interface>

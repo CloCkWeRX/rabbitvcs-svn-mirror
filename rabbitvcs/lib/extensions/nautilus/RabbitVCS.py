@@ -587,9 +587,18 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
             log.debug("Path [%s] not found in file table")
 
     def get_property_pages(self, items):
-        
+
+        paths = [realpath(
+                    unicode(
+                        gnomevfs.get_local_path_from_uri(
+                            item.get_uri()), "utf-8"))
+                    
+                    for item in items if self.valid_uri(item.get_uri())]
+
+        if len(paths) == 0: return []
+
         label = rabbitvcs.ui.property_page.PropertyPageLabel().get_widget()
-        page = rabbitvcs.ui.property_page.PropertyPage().get_widget()
+        page = rabbitvcs.ui.property_page.PropertyPage(paths).get_widget()
         
         ppage = nautilus.PropertyPage('RabbitVCS::PropertyPage',
             label,
