@@ -569,12 +569,13 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
 
     def get_property_pages(self, items):
 
-        paths = [realpath(
-                    unicode(
-                        gnomevfs.get_local_path_from_uri(
-                            item.get_uri()), "utf-8"))
-                    
-                    for item in items if self.valid_uri(item.get_uri())]
+        paths = []
+        
+        for item in items:
+            if self.valid_uri(item.get_uri()):
+                path = realpath(unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8"))
+                paths.append(path)
+                self.nautilusVFSFile_table[path] = item
 
         if len(paths) == 0: return []
 
