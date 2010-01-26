@@ -35,7 +35,6 @@
   <widget class="GtkExpander" id="file_info_expander">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
-    <signal name="activate" handler="on_activate"/>
     <child>
       <placeholder/>
     </child>
