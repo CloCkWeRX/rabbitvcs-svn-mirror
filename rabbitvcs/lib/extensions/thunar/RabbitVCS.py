@@ -67,25 +67,7 @@ class RabbitVCS(thunarx.MenuProvider):
     
     #: Maps statuses to emblems.
     #: TODO: should probably be possible to create this dynamically
-    EMBLEMS = {
-        "added" :       "rabbitvcs-added",
-        "deleted":      "rabbitvcs-deleted",
-        "removed":      "rabbitvcs-deleted",
-        "modified":     "rabbitvcs-modified",
-        "conflicted":   "rabbitvcs-conflicted",
-        "missing":      "rabbitvcs-conflicted",
-        "normal":       "rabbitvcs-normal",
-        "clean":        "rabbitvcs-normal",
-        "ignored":      "rabbitvcs-ignored",
-        "locked":       "rabbitvcs-locked",
-        "read_only":    "rabbitvcs-read_only",
-        "obstructed":   "rabbitvcs-obstructed",
-        "incomplete":   "rabbitvcs-incomplete",
-        "unversioned":  "rabbitvcs-unversioned",
-        "unknown":      "rabbitvcs-unknown",
-        "calculating":  "rabbitvcs-calculating",
-        "error":        "rabbitvcs-error"
-    }
+    EMBLEMS = rabbitvcs.ui.STATUS_EMBLEMS
     
     #: A list of statuses which count as modified (for a directory) in 
     #: TortoiseSVN emblem speak.

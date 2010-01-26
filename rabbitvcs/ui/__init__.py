@@ -43,6 +43,28 @@ QUIET_OPT = (["-q", "--quiet"], {
     "default":  False
 })
 
+#: Maps statuses to emblems.
+#: TODO: should probably be possible to create this dynamically
+STATUS_EMBLEMS = {
+    "added" :       "rabbitvcs-added",
+    "deleted":      "rabbitvcs-deleted",
+    "removed":      "rabbitvcs-deleted",
+    "modified":     "rabbitvcs-modified",
+    "conflicted":   "rabbitvcs-conflicted",
+    "missing":      "rabbitvcs-conflicted",
+    "normal":       "rabbitvcs-normal",
+    "clean":        "rabbitvcs-normal",
+    "ignored":      "rabbitvcs-ignored",
+    "locked":       "rabbitvcs-locked",
+    "read_only":    "rabbitvcs-read_only",
+    "obstructed":   "rabbitvcs-obstructed",
+    "incomplete":   "rabbitvcs-incomplete",
+    "unversioned":  "rabbitvcs-unversioned",
+    "unknown":      "rabbitvcs-unknown",
+    "calculating":  "rabbitvcs-calculating",
+    "error":        "rabbitvcs-error"
+}
+
 def get_glade_tree(filename, id):
         path = "%s/glade/%s.glade" % (
             os.path.dirname(os.path.realpath(__file__)), 
