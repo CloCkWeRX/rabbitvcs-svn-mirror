@@ -37,7 +37,7 @@ from Queue import Queue
 # from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 # from rabbitvcs.services.simplechecker import StatusChecker
 # from rabbitvcs.services.statuschecker import StatusChecker
-from rabbitvcs.services.loopedchecker import StatusChecker
+from rabbitvcs.services.checkers.loopedchecker import StatusChecker
 
 import rabbitvcs.util.vcs
 import rabbitvcs.lib.vcs.svn

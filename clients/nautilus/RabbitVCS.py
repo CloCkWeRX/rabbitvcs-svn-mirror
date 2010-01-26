@@ -48,8 +48,8 @@ def log_all_exceptions(type, value, tb):
     
     sys.__excepthook__(type, value, tb)
 
-#import sys
-#sys.excepthook = log_all_exceptions
+# import sys
+# sys.excepthook = log_all_exceptions
 
 import copy
 import os.path
@@ -82,7 +82,7 @@ from rabbitvcs.lib.settings import SettingsManager
 settings = SettingsManager()
 
 import rabbitvcs.services.service
-from rabbitvcs.services.cacheservice import StatusCacheStub as StatusCache
+from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 
 class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnProvider):
     """ 
@@ -190,7 +190,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = SVN()
         
-        self.status_checker = StatusCache(self.cb_status)
+        self.status_checker = StatusChecker(self.cb_status)
         
     def get_columns(self):
         """
@@ -289,7 +289,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                 (cb_path, single_status, summary) = self.paths_from_callback[idx]
                 del self.paths_from_callback[idx]
         
-        # Don't bother the cache if we already have the info
+        # Don't bother the checker if we already have the info from a callback
         
         if not found:
             (single_status, summary) = \

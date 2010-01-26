@@ -58,7 +58,7 @@ from rabbitvcs.lib.settings import SettingsManager
 settings = SettingsManager()
 
 import rabbitvcs.services.service
-from rabbitvcs.services.cacheservice import StatusCacheStub as StatusCache
+from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 
 class RabbitVCS(thunarx.MenuProvider):
     """ 
@@ -168,7 +168,7 @@ class RabbitVCS(thunarx.MenuProvider):
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = SVN()
         
-        self.status_checker = StatusCache(None)
+        self.status_checker = StatusChecker(None)
     
     def get_local_path(self, item):
         return item.get_uri().replace("file://", "")
