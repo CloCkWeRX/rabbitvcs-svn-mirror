@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<glade-interface>
+  <!-- interface-requires gtk+ 2.16 -->
+  <!-- interface-naming-policy project-wide -->
+  <widget class="GtkHBox" id="property_page_label">
+    <property name="visible">True</property>
+    <child>
+      <widget class="GtkImage" id="rabbitvcs-icon">
+        <property name="visible">True</property>
+        <property name="icon_name">rabbitvcs</property>
+      </widget>
+      <packing>
+        <property name="expand">False</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <widget class="GtkLabel" id="rabbitvcs-title">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">RabbitVCS</property>
+      </widget>
+      <packing>
+        <property name="position">1</property>
+      </packing>
+    </child>
+  </widget>
+  <widget class="GtkLabel" id="property_page">
+    <property name="visible">True</property>
+    <property name="label" translatable="yes">Stuff goes here.</property>
+  </widget>
+</glade-interface>
