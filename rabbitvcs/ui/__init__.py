@@ -111,20 +111,20 @@ class InterfaceView(GladeWidgetWrapper):
         
         
     def hide(self):
-        self.get_widget(self.id).set_property('visible', False)
+        self.get_widget(self.glade_id).set_property('visible', False)
         
     def show(self):
-        self.get_widget(self.id).set_property('visible', True)
+        self.get_widget(self.glade_id).set_property('visible', True)
     
     def close(self):
-        window = self.get_widget(self.id)
+        window = self.get_widget(self.glade_id)
         if window is not None:
             window.destroy()
         if self.do_gtk_quit:
             gtk.main_quit()
             
     def register_gtk_quit(self):
-        window = self.get_widget(self.id)
+        window = self.get_widget(self.glade_id)
         self.do_gtk_quit = True
         
         # This means we've already been closed
