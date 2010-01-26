@@ -42,6 +42,7 @@ import gtk
 from rabbitvcs.lib.vcs.svn import SVN
 
 from rabbitvcs.util.vcs import *
+from rabbitvcs.ui import STATUS_EMBLEMS
 from rabbitvcs.lib.helper import launch_ui_window, launch_diff_tool
 from rabbitvcs.lib.helper import get_file_extension, get_common_directory
 from rabbitvcs.lib.helper import pretty_timedelta
@@ -68,7 +69,7 @@ class RabbitVCS(thunarx.MenuProvider):
     
     #: Maps statuses to emblems.
     #: TODO: should probably be possible to create this dynamically
-    EMBLEMS = rabbitvcs.ui.STATUS_EMBLEMS
+    EMBLEMS = STATUS_EMBLEMS
     
     #: A list of statuses which count as modified (for a directory) in 
     #: TortoiseSVN emblem speak.
