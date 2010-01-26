@@ -72,6 +72,8 @@ from rabbitvcs.lib.helper import pretty_timedelta
 from rabbitvcs.lib.decorators import timeit, disable
 from rabbitvcs.lib.contextmenu import MenuBuilder, MainContextMenu, SEPARATOR
 
+import rabbitvcs.ui.property_page
+
 from rabbitvcs.lib.log import Log, reload_log_settings
 log = Log("rabbitvcs.lib.extensions.nautilus.RabbitVCS")
 
@@ -84,7 +86,8 @@ settings = SettingsManager()
 import rabbitvcs.services.service
 from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 
-class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnProvider):
+class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
+                 nautilus.ColumnProvider, nautilus.PropertyPageProvider):
     """ 
     This is the main class that implements all of our awesome features.
     
@@ -582,6 +585,18 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                 # log.debug("%s: Done invalidate call." % threading.currentThread())
         else:
             log.debug("Path [%s] not found in file table")
+
+    def get_property_pages(self, items):
+        
+        label = rabbitvcs.ui.property_page.PropertyPageLabel().get_widget()
+        page = rabbitvcs.ui.property_page.PropertyPage().get_widget()
+        
+        ppage = nautilus.PropertyPage('RabbitVCS::PropertyPage',
+            label,
+            page)        
+        
+        return [ppage]
+        
 
 from rabbitvcs.lib.contextmenuitems import *
 
