@@ -43,7 +43,35 @@ QUIET_OPT = (["-q", "--quiet"], {
     "default":  False
 })
 
-class InterfaceView:
+def get_glade_tree(filename, id):
+        path = "%s/glade/%s.glade" % (
+            os.path.dirname(os.path.realpath(__file__)), 
+            filename
+        )
+        gtk.glade.bindtextdomain(APP_NAME, LOCALE_DIR)
+        gtk.glade.textdomain(APP_NAME)
+        tree = gtk.glade.XML(path, id, APP_NAME)
+        return tree
+
+class GladeWidgetWrapper:
+    
+    def __init__(self, glade_filename = None, glade_id = None):
+        if glade_filename:
+            self.glade_filename = glade_filename
+        
+        if glade_id:
+            self.glade_id = glade_id
+            
+        self.tree = get_glade_tree(self.glade_filename, self.glade_id)
+        self.tree.signal_autoconnect(self)
+    
+    def get_widget(self, id = None):
+        if not id:
+            id = self.glade_id
+        
+        return self.tree.get_widget(id)
+
+class InterfaceView(GladeWidgetWrapper):
     """
     Every ui window should inherit this class and send it the "self"
     variable, the glade filename (without the extension), and the id of the
@@ -55,20 +83,10 @@ class InterfaceView:
     
     """
     
-    def __init__(self, filename, id):
-        path = "%s/glade/%s.glade" % (
-            os.path.dirname(os.path.realpath(__file__)), 
-            filename
-        )
-        gtk.glade.bindtextdomain(APP_NAME, LOCALE_DIR)
-        gtk.glade.textdomain(APP_NAME)
-        self.tree = gtk.glade.XML(path, id, APP_NAME)
-        self.tree.signal_autoconnect(self)
-        self.id = id
+    def __init__(self, *args, **kwargs):
+        GladeWidgetWrapper.__init__(self, *args, **kwargs)
         self.do_gtk_quit = False
         
-    def get_widget(self, id):
-        return self.tree.get_widget(id)
         
     def hide(self):
         self.get_widget(self.id).set_property('visible', False)
@@ -101,7 +119,7 @@ class InterfaceNonView:
     
     """
     
-    def __init__(self, ):
+    def __init__(self):
         self.do_gtk_quit = False
 
     def close(self):
