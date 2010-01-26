@@ -20,16 +20,6 @@
 
 from __future__ import with_statement
 
-def log_exceptions(extype, value, tb):
-    from rabbitvcs.lib.log import Log
-    log = Log("rabbitvcs.lib.extensions.statuscheckerplus")
-    log.exception_info("Error caught by status checker exception hook!",
-                       (extype, value, tb))
-    sys.__excepthook__(extype, value, tb)
-
-import sys
-sys.excepthook = log_exceptions
-
 import threading
 from Queue import Queue
 
