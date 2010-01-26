@@ -72,6 +72,9 @@ from rabbitvcs.lib.helper import pretty_timedelta
 from rabbitvcs.lib.decorators import timeit, disable
 from rabbitvcs.lib.contextmenu import MenuBuilder, MainContextMenu, SEPARATOR
 
+import rabbitvcs.ui
+import rabbitvcs.ui.property_page
+
 from rabbitvcs.lib.log import Log, reload_log_settings
 log = Log("rabbitvcs.lib.extensions.nautilus.RabbitVCS")
 
@@ -84,33 +87,14 @@ settings = SettingsManager()
 import rabbitvcs.services.service
 from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 
-class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnProvider):
+class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
+                 nautilus.ColumnProvider, nautilus.PropertyPageProvider):
     """ 
     This is the main class that implements all of our awesome features.
     
     """
     
-    #: Maps statuses to emblems.
-    #: TODO: should probably be possible to create this dynamically
-    EMBLEMS = {
-        "added" :       "rabbitvcs-added",
-        "deleted":      "rabbitvcs-deleted",
-        "removed":      "rabbitvcs-deleted",
-        "modified":     "rabbitvcs-modified",
-        "conflicted":   "rabbitvcs-conflicted",
-        "missing":      "rabbitvcs-conflicted",
-        "normal":       "rabbitvcs-normal",
-        "clean":        "rabbitvcs-normal",
-        "ignored":      "rabbitvcs-ignored",
-        "locked":       "rabbitvcs-locked",
-        "read_only":    "rabbitvcs-read_only",
-        "obstructed":   "rabbitvcs-obstructed",
-        "incomplete":   "rabbitvcs-incomplete",
-        "unversioned":  "rabbitvcs-unversioned",
-        "unknown":      "rabbitvcs-unknown",
-        "calculating":  "rabbitvcs-calculating",
-        "error":        "rabbitvcs-error"
-    }
+    EMBLEMS = rabbitvcs.ui.STATUS_EMBLEMS
     
     #: A list of statuses which count as modified (for a directory) in 
     #: TortoiseSVN emblem speak.
@@ -582,6 +566,27 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                 # log.debug("%s: Done invalidate call." % threading.currentThread())
         else:
             log.debug("Path [%s] not found in file table")
+
+    def get_property_pages(self, items):
+
+        paths = [realpath(
+                    unicode(
+                        gnomevfs.get_local_path_from_uri(
+                            item.get_uri()), "utf-8"))
+                    
+                    for item in items if self.valid_uri(item.get_uri())]
+
+        if len(paths) == 0: return []
+
+        label = rabbitvcs.ui.property_page.PropertyPageLabel().get_widget()
+        page = rabbitvcs.ui.property_page.PropertyPage(paths).get_widget()
+        
+        ppage = nautilus.PropertyPage('RabbitVCS::PropertyPage',
+            label,
+            page)        
+        
+        return [ppage]
+        
 
 from rabbitvcs.lib.contextmenuitems import *
 

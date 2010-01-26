@@ -47,13 +47,12 @@ class VCSNotifier(InterfaceView):
     
     """
     
-    def __init__(self, glade_file, glade_id, callback_cancel=None, visible=True):
-        InterfaceView.__init__(self, glade_file, glade_id)
+    def __init__(self, callback_cancel=None, visible=True):        
+        InterfaceView.__init__(self)
 
         if visible:
             self.show()
 
-        self.glade_id = glade_id
         self.callback_cancel = callback_cancel
         self.was_canceled_by_user = False
         self.canceled = False
@@ -79,6 +78,9 @@ class MessageCallbackNotifier(VCSNotifier):
     
     """
     
+    glade_filename = "notification"
+    glade_id = "Notification"
+    
     def __init__(self, callback_cancel=None, visible=True):
         """
         @type   callback_cancel: def
@@ -89,7 +91,7 @@ class MessageCallbackNotifier(VCSNotifier):
         
         """
         
-        VCSNotifier.__init__(self, "notification", "Notification", callback_cancel, visible)
+        VCSNotifier.__init__(self, callback_cancel, visible)
         
         self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
@@ -148,9 +150,13 @@ class MessageCallbackNotifier(VCSNotifier):
         self.append(["", str(e), ""])
 
 class LoadingNotifier(VCSNotifier):
+    
+    glade_filename = "dialogs"
+    glade_id = "Loading"
+    
     def __init__(self, callback_cancel=None, visible=True):
     
-        VCSNotifier.__init__(self, "dialogs", "Loading", callback_cancel, visible)
+        VCSNotifier.__init__(self, callback_cancel, visible)
         
         self.pbar = rabbitvcs.ui.widget.ProgressBar(
             self.get_widget("pbar")
