@@ -16,12 +16,6 @@
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
-""" A VCS status cache which can be queried synchronously and asynchronously.
-
-The "check_status" method will return "as soon as possible", with either a 
-cached status or a "calculating" status. Callbacks can also be registered and
-will be notified when a proper status check is done.
-"""
 
 
 from __future__ import with_statement
