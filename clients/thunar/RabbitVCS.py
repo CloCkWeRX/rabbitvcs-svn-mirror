@@ -323,7 +323,8 @@ class RabbitVCS(thunarx.MenuProvider, thunarx.PropertyPageProvider):
         label = rabbitvcs.ui.property_page.PropertyPageLabel().get_widget()
         page = rabbitvcs.ui.property_page.PropertyPage(paths).get_widget()
         
-        ppage = thunarx.PropertyPage(_("RabbitVCS"))
+        ppage = thunarx.PropertyPage("")
+        ppage.set_label_widget(label)
         ppage.add(page)        
         
         return [ppage]
