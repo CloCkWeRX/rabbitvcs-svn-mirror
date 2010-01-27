@@ -42,7 +42,8 @@ import gtk
 from rabbitvcs.lib.vcs.svn import SVN
 
 from rabbitvcs.util.vcs import *
-from rabbitvcs.ui import STATUS_EMBLEMS
+import rabbitvcs.ui
+import rabbitvcs.ui.property_page
 from rabbitvcs.lib.helper import launch_ui_window, launch_diff_tool
 from rabbitvcs.lib.helper import get_file_extension, get_common_directory
 from rabbitvcs.lib.helper import pretty_timedelta
@@ -61,7 +62,7 @@ settings = SettingsManager()
 import rabbitvcs.services.service
 from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 
-class RabbitVCS(thunarx.MenuProvider):
+class RabbitVCS(thunarx.MenuProvider, thunarx.PropertyPageProvider):
     """ 
     This is the main class that implements all of our awesome features.
     
@@ -69,7 +70,7 @@ class RabbitVCS(thunarx.MenuProvider):
     
     #: Maps statuses to emblems.
     #: TODO: should probably be possible to create this dynamically
-    EMBLEMS = STATUS_EMBLEMS
+    EMBLEMS = rabbitvcs.ui.STATUS_EMBLEMS
     
     #: A list of statuses which count as modified (for a directory) in 
     #: TortoiseSVN emblem speak.
@@ -308,6 +309,24 @@ class RabbitVCS(thunarx.MenuProvider):
             
         self.execute_after_process_exit(proc, do_reload_settings)
 
+    def get_property_pages(self, items):
+
+        paths = []
+        for item in items:
+            if self.valid_uri(item.get_uri()):
+                path = realpath(unicode(self.get_local_path(item), "utf-8"))
+                paths.append(path)
+                self.nautilusVFSFile_table[path] = item
+
+        if len(paths) == 0: return []
+
+        label = rabbitvcs.ui.property_page.PropertyPageLabel().get_widget()
+        page = rabbitvcs.ui.property_page.PropertyPage(paths).get_widget()
+        
+        ppage = thunarx.PropertyPage(_("RabbitVCS"))
+        ppage.add(page)        
+        
+        return [ppage]
 
 class RabbitVCSAction(gtk.Action):
     """
