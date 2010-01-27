@@ -97,7 +97,7 @@ class Merge(InterfaceView):
         if self.vcs.has_merge2():
             record_only = self.get_widget("mergeoptions_only_record").get_active()
 
-        action = VCSAction(self.vcs, register_gtk_quit=self.gtk_quit_is_set())
+        action = VCSAction(self.vcs, register_gtk_quit=(not test))
         action.append(action.set_header, _("Merge"))
         action.append(action.set_status, startcmd)
         
