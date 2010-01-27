@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-25 10:26-0500\n"
+"POT-Creation-Date: 2010-01-27 10:44-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ui/add.py:71 ui/action.py:97 ui/browser.py:75 ui/changes.py:109
+#: ui/add.py:71 ui/action.py:99 ui/browser.py:82 ui/changes.py:109
 #: ui/checkmods.py:67 ui/commit.py:79 ui/createpatch.py:87 ui/lock.py:72
 #: ui/log.py:96 ui/resolve.py:60 ui/revert.py:60 ui/unlock.py:60
 msgid "Path"
@@ -50,24 +50,24 @@ msgstr ""
 msgid "Completed Add"
 msgstr ""
 
-#: ui/action.py:97 ui/log.py:96
+#: ui/action.py:99 ui/log.py:96
 msgid "Action"
 msgstr ""
 
-#: ui/action.py:97
+#: ui/action.py:99
 msgid "Mime Type"
 msgstr ""
 
-#: ui/action.py:325
+#: ui/action.py:331
 msgid "Finished"
 msgstr ""
 
-#: ui/action.py:329
+#: ui/action.py:335
 #, python-format
 msgid "%s - Finished"
 msgstr ""
 
-#: ui/action.py:352
+#: ui/action.py:358
 msgid "Log Message"
 msgstr ""
 
@@ -84,18 +84,18 @@ msgstr ""
 msgid "Line"
 msgstr ""
 
-#: ui/annotate.py:78 ui/browser.py:75 ui/checkmods.py:69 ui/log.py:85
+#: ui/annotate.py:78 ui/browser.py:82 ui/checkmods.py:69 ui/log.py:85
 #: ui/glade/changes.glade.h:6 ui/glade/merge.glade.h:17
-#: ../clients/nautilus/RabbitVCS.py:211
+#: ../clients/nautilus/RabbitVCS.py:195
 msgid "Revision"
 msgstr ""
 
-#: ui/annotate.py:78 ui/browser.py:75 ui/checkmods.py:69 ui/log.py:85
-#: ../clients/nautilus/RabbitVCS.py:223
+#: ui/annotate.py:78 ui/browser.py:82 ui/checkmods.py:69 ui/log.py:85
+#: ../clients/nautilus/RabbitVCS.py:207
 msgid "Author"
 msgstr ""
 
-#: ui/annotate.py:79 ui/browser.py:75 ui/dialog.py:54 ui/log.py:86
+#: ui/annotate.py:79 ui/browser.py:82 ui/dialog.py:54 ui/log.py:86
 msgid "Date"
 msgstr ""
 
@@ -139,43 +139,43 @@ msgstr ""
 msgid "Completed Branch/tag"
 msgstr ""
 
-#: ui/browser.py:75
+#: ui/browser.py:82
 msgid "Size"
 msgstr ""
 
-#: ui/browser.py:300
+#: ui/browser.py:311
 msgid "Create folder..."
 msgstr ""
 
-#: ui/browser.py:305
+#: ui/browser.py:316
 msgid "Copy to..."
 msgstr ""
 
-#: ui/browser.py:310
+#: ui/browser.py:321
 msgid "Copy URL to clipboard"
 msgstr ""
 
-#: ui/browser.py:315
+#: ui/browser.py:326
 msgid "Move to..."
 msgstr ""
 
-#: ui/browser.py:437 ui/rename.py:46 ui/rename.py:64
+#: ui/browser.py:448 ui/rename.py:46 ui/rename.py:64
 msgid "Rename"
 msgstr ""
 
-#: ui/browser.py:437 ui/rename.py:46 ui/glade/dialogs.glade.h:28
+#: ui/browser.py:448 ui/rename.py:46 ui/glade/dialogs.glade.h:28
 msgid "New Name:"
 msgstr ""
 
-#: ui/browser.py:498
+#: ui/browser.py:509
 msgid "Where do you want to copy the selection?"
 msgstr ""
 
-#: ui/browser.py:499 ui/browser.py:528
+#: ui/browser.py:510 ui/browser.py:539
 msgid "New Location:"
 msgstr ""
 
-#: ui/browser.py:527
+#: ui/browser.py:538
 msgid "Where do you want to move the selection?"
 msgstr ""
 
@@ -529,7 +529,7 @@ msgstr ""
 msgid "Reserved"
 msgstr ""
 
-#: ui/property_editor.py:104 ../clients/nautilus/RabbitVCS.py:205
+#: ui/property_editor.py:104 ../clients/nautilus/RabbitVCS.py:189
 msgid "Status"
 msgstr ""
 
@@ -780,7 +780,7 @@ msgstr ""
 msgid "Changes"
 msgstr ""
 
-#: ui/glade/changes.glade.h:7 ../clients/nautilus/RabbitVCS.py:217
+#: ui/glade/changes.glade.h:7 ../clients/nautilus/RabbitVCS.py:201
 msgid "URL"
 msgstr ""
 
@@ -1269,7 +1269,7 @@ msgstr ""
 msgid "<b>Update Depth</b>"
 msgstr ""
 
-#: ../clients/nautilus/RabbitVCS.py:229
+#: ../clients/nautilus/RabbitVCS.py:213
 msgid "Age"
 msgstr ""
 
