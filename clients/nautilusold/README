@@ -16,3 +16,7 @@ To install:
         ~/.nautilus/python-extensions
     
     In both cases, you may need to create the python/python-extensions folder.
+    
+    Restart nautilus with the following commands:
+        $ nautilus -q
+        $ nohup nautilus > /dev/null &
