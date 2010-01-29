@@ -1,0 +1,33 @@
+RabbitVCS
+----------
+
+RabbitVCS is a set of graphical tools written to provide simple and 
+straightforward access to the version control systems you use.
+
+RabbitVCS is now distributed in two parts.  The first part is the python module
+that is not connected to any file manager or text editor.  This is what is now 
+known as "rabbitvcs".  The second part is the series of front-ends or clients
+that we distribute.  These consist of a Nautilus extension, a Thunar extension,
+a Gedit plugin, and a command line utility.  All of these clients use the same
+python module as a back-end.
+
+Requires:
+    pygtk >= 2.12
+    python-glade >= 2.12
+    python-gobject >= 2.14
+    python-svn >= 1.5.2
+    python-configobj >= 4.4.0
+    subversion >= 1.4.6
+
+Recommends:
+    meld (graphical diff tool)
+
+Install:
+    (as root or using sudo)
+    $ python setup.py install
+
+    Each clients' README file contains details on their dependencies and 
+    installation.
+
+Homepage:
+    http://www.rabbitvcs.org

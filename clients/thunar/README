@@ -5,6 +5,7 @@ This extension is meant to be used with the Thunar File Manager,
 Requirements:
     * thunar (>= v0.4.0)
     * thunarx-python (>= v0.2.0)
+    * dbus-python (>= 0.80)
     * (all other RabbitVCS requirements)
 
 To install:

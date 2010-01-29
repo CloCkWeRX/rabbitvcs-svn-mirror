@@ -5,7 +5,7 @@ File Manager.
 
 Requirements:
     * nautilus (<= v2.22.0)
-    * nautilus-python
+    * nautilus-python (>= 0.4.3)
     * (all other RabbitVCS requirements)
 
 To install:

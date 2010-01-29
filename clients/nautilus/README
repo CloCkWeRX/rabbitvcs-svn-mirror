@@ -4,7 +4,8 @@ This extension is meant to be used with the Nautilus File Manager,
 
 Requirements:
     * nautilus (>= v2.22.0)
-    * nautilus-python
+    * nautilus-python (>= 0.5.1)
+    * python-dbus (> 0.80)
     * (all other RabbitVCS requirements)
 
 To install:
