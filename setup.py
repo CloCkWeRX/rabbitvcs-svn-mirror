@@ -16,11 +16,9 @@
 
 # NOTES:
 # System-wide directories:
-# RabbitVCS goes in: /usr/lib/nautilus/extensions-<version>/python/
 # Scalable emblems go in: /usr/share/icons/hicolor/scalable/emblems
 #
 # User-specific directories:
-# RabbitVCS goes in: ~/.nautilus/python-extensions/
 # Scalable emblems go in: ~/.icons/hicolor/scalable
 #
 # Common directories
@@ -55,22 +53,6 @@ license             = "GNU General Public License version 2 or later"
 # Paths
 #==============================================================================
 
-# RabbitVCS goes in: /usr/lib/nautilus/extensions-<version>/python/
-# We'll use `pkg-config` to find out the extension directory instead of hard-coding it.
-# However, this won't guarantee RabbitVCS will actually work (e.g. in the case of 
-# API/ABI changes it might not). The variable is read by `pkg-config` from: 
-# - /usr/lib/pkgconfig/nautilus-python.pc
-python_nautilus_extensions_path = subprocess.Popen(
-    ["pkg-config", "--variable=pythondir","nautilus-python"],
-    stdout=subprocess.PIPE
-).stdout.read().strip()
-
-# Some distros don't actually return anything useful from the command
-# above (pkg-config), so let's make sure we have something.
-python_lib_path = os.path.normpath(distutils.sysconfig.get_python_lib(1) + "../../../nautilus")
-if python_nautilus_extensions_path == "":
-    python_nautilus_extensions_path = python_nautilus_extensions_path = python_lib_path + "/extensions-2.0/python"
-
 icon_theme_directory = "/usr/share/icons/hicolor" # TODO: does this really need to be hardcoded?
 locale_directory = "/usr/share/locale"
 
@@ -98,18 +80,6 @@ packages = []
 for root, dirs, files in os.walk("rabbitvcs"):
     if "__init__.py" in files:
         packages.append(root.replace(os.path.sep, "."))
-        
-# Nautilus extension
-nautilus_extension = [(
-    python_nautilus_extensions_path, 
-    ["clients/nautilus/RabbitVCS.py"]
-)]
-
-# Command-line tool
-command_line_tool = [(
-    "/usr/bin",
-    ["clients/cli/rabbitvcs"]
-)]
 
 # Translation
 translations = include_by_pattern("rabbitvcs/locale", locale_directory, ".mo")
@@ -123,12 +93,6 @@ config_spec = [(
     "/usr/share/rabbitvcs",
     ["rabbitvcs/lib/configspec/configspec.ini"]
 )]
-
-# Update notifier
-update_notifier = [("/usr/share/rabbitvcs", [
-    "packages/ubuntu/debian/rabbitvcs-restart-required.update-notifier",
-    "packages/ubuntu/debian/do-rabbitvcs-restart-nautilus"
-])]
 
 # Documentation
 documentation = [("/usr/share/doc/rabbitvcs", [
@@ -169,7 +133,7 @@ dist = setup(
             "ui/glade/*.glade"
         ]
     },
-    data_files=nautilus_extension + command_line_tool + translations + icons + documentation + update_notifier + config_spec
+    data_files=translations + icons + documentation + config_spec
 )
 
 #
