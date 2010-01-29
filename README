@@ -13,7 +13,6 @@ python module as a back-end.
 
 Requires:
     pygtk >= 2.12
-    python-glade >= 2.12
     python-gobject >= 2.14
     python-svn >= 1.5.2
     python-configobj >= 4.4.0
