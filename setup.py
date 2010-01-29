@@ -41,7 +41,7 @@ import distutils.sysconfig
 # This will eventually be passed to the setup function, but we already need them
 # for doing some other stuff so we have to declare them here.
 name                = "rabbitvcs"
-version             = "0.13~dev"
+version             = "0.13-beta"
 description         = "Easy version control"
 long_description    = """RabbitVCS is a set of graphical tools written to provide simple and straightforward access to the version control systems you use."""
 author              = "Bruce van der Kooij"
