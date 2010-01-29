@@ -23,12 +23,12 @@
 """
 TODO
     1. Integrate translations
-    2. Add more of the v0.12 menu items
+    2. Add more of the v0.13 menu items
     3.  or figure out a way to use the regular nautilus extension's menu items/logic
     4.  or clean up the current menuitem logic in some other way
 """
 
-__version__ = "0.12"
+__version__ = "0.13-beta"
 
 import copy
 import glob

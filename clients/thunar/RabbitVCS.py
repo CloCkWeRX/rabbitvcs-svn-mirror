@@ -1,9 +1,7 @@
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Thunar file manager to allow better 
 # integration with the Subversion source control system.
 # 
-# Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
-# Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2008 by Adam Plumb <adamplumb@gmail.com>
 # 
 # RabbitVCS is free software; you can redistribute it and/or modify
