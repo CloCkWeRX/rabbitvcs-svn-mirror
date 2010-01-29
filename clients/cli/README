@@ -10,3 +10,8 @@ Requirements:
 To install:
     To install, copy the rabbitvcs shell script to:
         /usr/bin
+
+Troubleshooting:
+
+    See the known-issues section of our website:
+        http://wiki.rabbitvcs.org/wiki/support/known-issues

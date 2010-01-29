@@ -20,3 +20,9 @@ To install:
         $ nautilus -q
         $ pgrep -f service.py | xargs kill
         $ nohup nautilus > /dev/null &
+
+Troubleshooting:
+
+    See the known-issues section of our website:
+        http://wiki.rabbitvcs.org/wiki/support/known-issues
+    

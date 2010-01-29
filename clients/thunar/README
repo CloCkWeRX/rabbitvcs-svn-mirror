@@ -15,3 +15,8 @@ To install:
         /usr/lib/thunarx-1/python.
         
     In both cases, you may need to create the python folder.
+
+Troubleshooting:
+
+    See the known-issues section of our website:
+        http://wiki.rabbitvcs.org/wiki/support/known-issues
