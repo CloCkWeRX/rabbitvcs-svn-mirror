@@ -28,7 +28,7 @@ TODO
     4.  or clean up the current menuitem logic in some other way
 """
 
-__version__ = "0.13-beta"
+__version__ = "0.13.beta1"
 
 import copy
 import glob
