@@ -194,9 +194,25 @@ if __name__ == "__main__":
     from rabbitvcs.ui import main, REVISION_OPT
     (options, args) = main(
         [REVISION_OPT],
-        usage="Usage: rabbitvcs checkout [url]"
+        usage="Usage: rabbitvcs checkout [url] [path]"
     )
     
-    window = Checkout(args[0], revision=options.revision)
+    # If two arguments are passed:
+    #   The first argument is expected to be a url
+    #   The second argument is expected to be a path
+    # If one argument is passed:
+    #   If the argument exists, it is a path
+    #   Otherwise, it is a url
+    path = url = None
+    if len(args) == 2:
+        path = args[0]
+        url = args[1]
+    elif len(args) == 1:
+        if os.path.exists(args[0]):
+            path = args[0]
+        else:
+            url = args[0]
+
+    window = Checkout(path=path, url=url, revision=options.revision)
     window.register_gtk_quit()
     gtk.main()
