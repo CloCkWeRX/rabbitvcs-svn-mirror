@@ -139,6 +139,7 @@ class RabbitVCSWindowHelper:
     def __init__(self, plugin, window):
         self._window = window
         self._plugin = plugin
+        self.base_dir = self._default_base_dir
         self._menubar_menu = None
 
         # Insert menu items
@@ -149,6 +150,7 @@ class RabbitVCSWindowHelper:
         self._remove_menu()
 
         self._window = None
+        self.base_dir = None
         self._plugin = None
         self._menubar_menu = None
         self._action_group = None
@@ -157,7 +159,7 @@ class RabbitVCSWindowHelper:
         # Get the GtkUIManager
         manager = self._window.get_ui_manager()
 
-        self._menubar_menu = GeditMenu(self, self._default_base_dir, [])
+        self._menubar_menu = GeditMenu(self, self.base_dir, [self._get_document_path()])
         
         self._action_group = gtk.ActionGroup("RabbitVCSActions")
         self._action_group = self._menubar_menu.get_action_group(self._action_group)
@@ -183,33 +185,39 @@ class RabbitVCSWindowHelper:
 
     def update_ui(self):
         self.update_base_dir()
-
+        
         document = self._window.get_active_document()
         self._action_group.set_sensitive(document != None)
         if document != None:
             manager = self._window.get_ui_manager()
             manager.get_widget("/MenuBar/ToolsMenu/RabbitVCSMenu").set_sensitive(True)
             
-            self._menubar_menu.set_paths(self._get_document_paths())
-            self._determine_menu_sensitivity(self._get_document_paths())
+            self._menubar_menu.set_paths([self._get_document_path()])
+            self._determine_menu_sensitivity([self._get_document_path()])
 
     def connect_view(self, view, id_name):
         handler_id = view.connect("populate-popup", self.on_view_populate_popup)
         view.set_data(id_name, [handler_id])
 
     def on_view_populate_popup(self, view, menu):
-        path = self._window.get_active_document().get_uri_for_display()
-        
         separator = gtk.SeparatorMenuItem()
         menu.append(separator)
         separator.show()
-        
-        context_menu = GeditMainContextMenu(self, self.base_dir, [path]).get_menu()
+
+        context_menu = GeditMainContextMenu(self, self.base_dir, [self._get_document_path()]).get_menu()
         for context_menu_item in context_menu:
             menu.append(context_menu_item)
 
-    def _get_document_paths(self):
-        return [self._window.get_active_document().get_uri_for_display()]
+    def _get_document_path(self):
+        document = self._window.get_active_document()
+        path = self.base_dir
+        
+        if document:
+            tmp_path = document.get_uri_for_display()
+            if os.path.exists(tmp_path):
+                path = tmp_path
+
+        return path
 
     def update_base_dir(self):
         document = self._window.get_active_document()
