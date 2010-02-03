@@ -75,7 +75,7 @@ class PreviousMessages(InterfaceView):
         returner = None
         self.dialog = self.get_widget("PreviousMessages")
         result = self.dialog.run()
-        if result == 1:
+        if result == gtk.RESPONSE_OK:
             returner = self.message.get_text()
         
         self.dialog.destroy()
@@ -159,7 +159,7 @@ class Authentication(InterfaceView):
         save = self.get_widget("auth_save").get_active()
         self.dialog.destroy()
         
-        if result == 1:
+        if result == gtk.RESPONSE_OK:
             return (True, login, password, save)
         else:
             return (False, "", "", False)
@@ -179,7 +179,7 @@ class CertAuthentication(InterfaceView):
         save = self.get_widget("certauth_save").get_active()
         self.dialog.destroy()
         
-        if result == 1:
+        if result == gtk.RESPONSE_OK:
             return (True, password, save)
         else:
             return (False, "", False)
@@ -205,7 +205,7 @@ class SSLClientCertPrompt(InterfaceView):
         save = self.get_widget("sslclientcert_save").get_active()
         self.dialog.destroy()
         
-        if result == 1:
+        if result == gtk.RESPONSE_OK:
             return (True, cert, save)
         else:
             return (False, "", False)
@@ -232,7 +232,7 @@ class Property(InterfaceView):
         self.dialog = self.get_widget("Property")
         result = self.dialog.run()
         
-        if result == 1:
+        if result == gtk.RESPONSE_OK:
             self.save()
         
         self.dialog.destroy()
