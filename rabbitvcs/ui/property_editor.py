@@ -217,10 +217,21 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
                 filtered_details[propname] = detail
         
         conditions = PropMenuConditions(self.path, filtered_details)
-        callbacks = {}
+        callbacks = PropMenuCallbacks(self, self.path, filtered_details)
         
         GtkContextMenu(PROP_MENU_STRUCTURE, conditions, callbacks).show(data)
 
+class PropMenuCallbacks:
+
+    def __init__(self, caller, path, propdetails):
+        self.path = path
+        self.caller = caller
+        self.propdetails = propdetails
+
+    def property_edit(self, widget):
+        propname  = self.propdetails.keys()[0]
+        self.caller.edit_property(propname)
+        
 class PropMenuConditions:
     
     def __init__(self, path, propdetails):
