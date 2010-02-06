@@ -38,7 +38,8 @@ import gnomevfs
 
 from wraplabel import WrapLabel
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.lib.contextmenu import GtkContextMenuCaller
+from rabbitvcs.lib.contextmenu import GtkContextMenu, GtkContextMenuCaller
+import rabbitvcs.lib.contextmenuitems
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.lib.vcs
@@ -60,6 +61,13 @@ undo changes using the context menu for each item.
 RECURSIVE_DELETE_MSG = _("""\
 Do you want to delete the selected properties from all files and subdirectories
 beneath this directory?""") 
+
+PROP_MENU_STRUCTURE = [
+    (rabbitvcs.lib.contextmenuitems.PropMenuRevert, None),
+    (rabbitvcs.lib.contextmenuitems.PropMenuRevertRecursive, None),
+    (rabbitvcs.lib.contextmenuitems.PropMenuDelete, None),
+    (rabbitvcs.lib.contextmenuitems.PropMenuDeleteRecursive, None),
+    (rabbitvcs.lib.contextmenuitems.PropMenuEdit, None)]
 
 class PropEditor(InterfaceView, GtkContextMenuCaller):
     '''
@@ -110,9 +118,9 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
                 }
             }],
             callbacks={
-                "row-activated":  self.on_files_table_row_activated,
-                "mouse-event":   self.on_files_table_mouse_event,
-                "key-event":     self.on_files_table_key_event
+                "row-activated":  self.on_table_row_activated,
+                "mouse-event":   self.on_table_mouse_event,
+                "key-event":     self.on_table_key_event
             }
         )
         self.table.allow_multiple()
@@ -127,46 +135,20 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
     def refresh(self):
         self.table.clear()
         
+        propdets = {}
+                
         try:
-            local_props = self.vcs.proplist(self.path)
-            base_props = self.vcs.proplist(self.path, rev=Revision("base").primitive())
-                        
+            propdets = self.vcs.propdetails(self.path)
+                       
         except Exception, e:
-            print e
             log.exception(e)
             rabbitvcs.ui.dialog.MessageBox(_("Unable to retrieve properties list"))
-            self.proplist = []
         
-        local_propnames = set(local_props.keys())
-        base_propnames = set(base_props.keys())
-                
-        for propname in (local_propnames | base_propnames):
+        for propname, details in propdets.items():
             
-            if propname in (local_propnames & base_propnames):
-                
-                if local_props[propname] == base_props[propname]:
-                    self.table.append([propname,
-                                       local_props[propname],
-                                       "N/A",
-                                       "unchanged"])
-                
-                else:
-                    self.table.append([propname,
-                                       local_props[propname],
-                                       "N/A",
-                                       "value changed"])
-            
-            elif propname in local_propnames:
-                self.table.append([propname,
-                                   local_props[propname],
-                                   "N/A",
-                                   "property added"])
-            
-            elif propname in base_propnames:
-                self.table.append([propname,
-                                   base_props[propname],
-                                   "N/A",
-                                   "property deleted"])
+            self.table.append(
+                [propname, details["value"], "N/A", details["status"]]
+                              )
 
     def on_destroy(self, widget):
         self.close()
@@ -211,19 +193,52 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
 
         self.refresh()
 
-    def on_files_table_row_activated(self, treeview, event, col):
+    def on_table_row_activated(self, treeview, event, col):
         for name in self.table.get_selected_row_items(0):
             self.edit_property(name)
 
-    def on_files_table_key_event(self, treeview, data=None):
+    def on_table_key_event(self, treeview, data=None):
         if gtk.gdk.keyval_name(data.keyval) == "Delete":
             names = self.table.get_selected_row_items(0)
             self.delete_properties(names)
 
-    def on_files_table_mouse_event(self, treeview, data=None):
-        if data is not None and data.button == 3:
-            # self.show_files_table_popup_menu(treeview, data)
-            print "Left click!"
+    def on_table_mouse_event(self, treeview, data=None):
+        if data and data.button == 3:
+            self.show_menu(data)
+    
+    def show_menu(self, data):
+        # self.show_files_table_popup_menu(treeview, data)
+        selected_propnames = self.table.get_selected_row_items(0)
+        propdetails = self.vcs.propdetails(self.path)
+        
+        filtered_details = {}
+        for propname, detail in propdetails.items():
+            if propname in selected_propnames:
+                filtered_details[propname] = detail
+        
+        conditions = PropMenuConditions(self.path, filtered_details)
+        callbacks = {}
+        
+        GtkContextMenu(PROP_MENU_STRUCTURE, conditions, callbacks).show(data)
+
+class PropMenuConditions:
+    
+    def __init__(self, path, propdetails):
+        self.path = path
+        self.propdetails = propdetails
+    
+    def all_modified(self):
+        return all([detail["status"] != "unchanged"
+                       for (propname, detail) in self.propdetails.items()])
+        
+    def property_revert(self):
+        return self.all_modified()
+    
+    def property_delete(self):
+        return self.all_modified()
+    
+    def property_edit(self):
+        return len(self.propdetails.keys()) == 1
 
 if __name__ == "__main__":
     # These are some dumb tests before I add any functionality.
