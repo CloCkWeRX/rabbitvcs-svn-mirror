@@ -28,7 +28,6 @@ import gobject
 import gtk
 import pango
 
-from wraplabel import WrapLabel
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
 import rabbitvcs.lib.helper
@@ -396,7 +395,7 @@ class ErrorNotification(InterfaceView):
     def __init__(self, text):
         InterfaceView.__init__(self, GLADE, "ErrorNotification")
         
-        notice = WrapLabel(ERROR_NOTICE)
+        notice = rabbitvcs.ui.wraplabel.WrapLabel(ERROR_NOTICE)
         notice.set_use_markup(True)
         
         self.get_widget("notice_box").pack_start(notice)        
