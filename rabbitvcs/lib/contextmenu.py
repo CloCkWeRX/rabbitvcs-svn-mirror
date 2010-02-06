@@ -141,7 +141,11 @@ class MenuBuilder(object):
 
             if item.signals:
                 for signal, info in item.signals.items():
-                    menuitem.connect(signal, info["callback"], info["args"])
+                    args = info["args"] or None
+                    if args:
+                        menuitem.connect(signal, info["callback"], args)
+                    else:
+                        menuitem.connect(signal, info["callback"])
         
             stack[-1][0].append(menuitem)
 
