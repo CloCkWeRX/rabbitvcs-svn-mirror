@@ -545,29 +545,33 @@ class PropMenuRevert(MenuItem):
     identifier = "RabbitVCS::Property_Revert"
     label = _("Revert property")
     icon =  "rabbitvcs-revert"
-    tooltop = _("Revert this property to its original state")
+    tooltip = _("Revert this property to its original state")
     
 class PropMenuRevertRecursive(MenuItem):
     identifier = "RabbitVCS::Property_Revert_Recursive"
     label = _("Revert property (recursive)")
     icon =  "rabbitvcs-revert"
-    tooltop = _("Revert this property to its original state (recursive)")
+    tooltip = _("Revert this property to its original state (recursive)")
     condition_name = "property_revert"
-    callback_name = "property_revert"
     
 class PropMenuDelete(MenuItem):
     identifier = "RabbitVCS::Property_Delete"
     label = _("Delete property")
     icon =  "rabbitvcs-delete"
-    tooltop = _("Delete this property")
+    tooltip = _("Delete this property")
     
 class PropMenuDeleteRecursive(MenuItem):
     identifier = "RabbitVCS::Property_Delete_Recursive"
-    label = _("Delete property")
-    icon =  "rabbitvcs-revert"
-    tooltop = _("Delete this property (recursive)")
+    label = _("Delete property (recursive)")
+    icon =  "rabbitvcs-delete"
+    tooltip = _("Delete this property (recursive)")
     condition_name = "property_delete"
-    callback_name = "property_delete"
+    
+class PropMenuEdit(MenuItem):
+    identifier = "RabbitVCS::Property_Edit"
+    label = _("Edit details")
+    icon = gtk.STOCK_EDIT
+    tooltip = _("Show and edit property details")
 
 def get_ignore_list_items(paths):
     """
