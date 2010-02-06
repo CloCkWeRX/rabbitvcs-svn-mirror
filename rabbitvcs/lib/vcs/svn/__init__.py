@@ -865,6 +865,54 @@ class SVN:
         
         return returner
 
+    def propdetails(self, path):
+        """
+        Each property on a path may be modified in the WC, deleted or added.
+        This method compares the properties on the local path to the base and
+        identifies which.
+        
+        @param path: the path (file or dir) in the WC to check 
+        @type path: a path for something in a WC
+        
+        @return a dict of the form:
+                {prop_name:
+                    {"value": value (WC value, unless deleted then base value),
+                     "status": status of property}
+                }
+        
+        """
+        local_props = self.proplist(path)
+        base_props = self.proplist(path,
+                                   rev=Revision("base").primitive())
+
+        prop_details = {}
+
+        local_propnames = set(local_props.keys())
+        base_propnames = set(base_props.keys())
+                
+        for propname in (local_propnames | base_propnames):
+            
+            if propname in (local_propnames & base_propnames):
+                # These are the property names that are common to the WC and
+                # base. If their values have changed, list them as changed
+                if local_props[propname] == base_props[propname]:
+                    prop_details[propname] = {"status": "unchanged",
+                                              "value": local_props[propname]} 
+                
+                else:
+                    prop_details[propname] = {"status": "changed",
+                                              "value": local_props[propname]}
+            
+            elif propname in local_propnames:
+                prop_details[propname] = {"status": "added",
+                                          "value": local_props[propname]}
+            
+            elif propname in base_propnames:
+                prop_details[propname] = {"status": "deleted",
+                                          "value": local_props[propname]}
+
+        return prop_details
+
     def revpropset(self, prop_name, prop_value, url, rev=None, force=False):
         """
         Adds an svn property to a path.  If the item is unversioned,
