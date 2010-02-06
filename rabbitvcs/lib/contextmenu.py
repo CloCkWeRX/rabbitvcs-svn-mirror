@@ -161,7 +161,11 @@ class MenuBuilder(object):
             last_item = last_item2
             last_menuitem = last_menuitem2
 
-        self.menu = self.top_level_menu(stack[0][0])
+        if stack:
+            self.menu = self.top_level_menu(stack[0][0])
+        else:
+            print "Empty top level menu!"
+            self.menu = self.top_level_menu([])
         
 
 class GtkContextMenu(MenuBuilder):
