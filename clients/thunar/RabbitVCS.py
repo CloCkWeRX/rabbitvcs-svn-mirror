@@ -368,7 +368,8 @@ class ActionBuilder(object):
                     
                     # Every time we back out of a level, we attach the list of
                     # actions as a submenu, however the subclass wants to do it.                    
-                    action = self.make_action(last_item, index, actions)
+                    action = self.make_action(last_item, index)
+                    self.attach_submenu(action, actions)
                     if last_item.signals:
                         for signal, info in last_item.signals.items():
                             action.connect(signal, info["callback"], info["args"])
@@ -390,7 +391,7 @@ class ActionBuilder(object):
                 continue
 
             if level == last_level:
-                action = self.make_action(last_item, index, None)
+                action = self.make_action(last_item, index)
                 if last_item.signals:
                     for signal, info in last_item.signals.items():
                         action.connect(signal, info["callback"], info["args"])
@@ -408,7 +409,8 @@ class ActionBuilder(object):
             if type(last_item) == MenuSeparator:
                 stack[-1][0].remove(last_item)
             
-            action = self.make_action(last_item2, 1, actions)
+            action = self.make_action(last_item2, 1)
+            self.attach_submenu(action, actions)
             if last_item2.signals:
                 for signal, info in last_item2.signals.items():
                     action.connect(signal, info["callback"], info["args"])
@@ -426,10 +428,12 @@ class ThunarxContextMenu(ActionBuilder):
     in gtk dialogs/windows.
     
     """    
-    def make_action(self, item, id_magic, sub_actions):
+    def make_action(self, item, id_magic):
         action = item.make_custom_action(id_magic)
-        action.set_sub_actions(sub_actions)
         return action
+    
+    def attach_submenu(self, menu_node, submenu_list):
+		menu_node.set_sub_actions(submenu_list)
     
     def top_level_menu(self, actions):
         return actions
