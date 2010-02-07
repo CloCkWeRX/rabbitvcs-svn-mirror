@@ -328,125 +328,22 @@ class RabbitVCS(thunarx.MenuProvider, thunarx.PropertyPageProvider):
         return [ppage]
 
 from rabbitvcs.lib.contextmenuitems import *
-        
-class ActionBuilder(object):
 
-    def __init__(self, structure, conditions, callbacks):
-        # The index is mostly for identifier magic 
-        index = 0
-        last_level = -1
-        last_item = None        
-
-        stack = [] # ([actions], last_item)
-
-        flat_structure = rabbitvcs.lib.helper.walk_tree_depth_first(
-                                structure,
-                                show_levels=True,
-                                preprocess=lambda x: x(conditions, callbacks),
-                                filter=lambda x: x.show())
-       
-        
-        # Here's how this works: we walk the tree, which is a series of (level,
-        # MenuItem instance) tuples. We accumulate actions in the list in
-        # stack[level][0], and when we go back up a level we put them in a
-        # submenu (as defined by the subclasses). We need to keep track of the
-        # last item on each level, in case they are separators, so that's on the
-        # stack too.       
-        for (level, item) in flat_structure:
-            index += 1
-
-            # Have we dropped back a level? Restore previous context
-            if level < last_level:
-                # We may have ended up descending several levels (it works, but
-                # please no-one write triply nested menus, it's just dumb).
-                for num in range(last_level - level):
-                    # Remove separators at the end of menus
-                    if type(last_item) == MenuSeparator:
-                        stack[-1][0].remove(last_item)
-                                    
-                    (actions, last_item) = stack.pop()
-                    
-                    # Every time we back out of a level, we attach the list of
-                    # actions as a submenu, however the subclass wants to do it.                    
-                    action = self.make_action(last_item, index)
-                    self.attach_submenu(action, actions)
-                    if last_item.signals:
-                        for signal, info in last_item.signals.items():
-                            action.connect(signal, info["callback"], info["args"])
-                            
-                    stack[-1][0].append(action)
-
-            # Have we gone up a level? Save the context and create a submenu
-            if level > last_level:
-                # Skip separators at the start of a menu
-                if type(item) == MenuSeparator: continue
-                
-                stack.append(([], last_item))
-                
-                last_item = None
-        
-            # Skip duplicate separators
-            if (type(last_item) == type(item) == MenuSeparator and
-                level == last_level):
-                continue
-
-            if level == last_level:
-                action = self.make_action(last_item, index)
-                if last_item.signals:
-                    for signal, info in last_item.signals.items():
-                        action.connect(signal, info["callback"], info["args"])
-                        
-                stack[-1][0].append(action)
-
-            last_item = item
-            last_level = level
-
-
-
-        # Hey, we're out of the loop. Go back up any remaining levels (in case
-        # there were submenus at the end) and finish the job.
-        for (actions, last_item2) in stack[:0:-1]:
-            if type(last_item) == MenuSeparator:
-                stack[-1][0].remove(last_item)
-            
-            action = self.make_action(last_item2, 1)
-            self.attach_submenu(action, actions)
-            if last_item2.signals:
-                for signal, info in last_item2.signals.items():
-                    action.connect(signal, info["callback"], info["args"])
-
-            stack[0][0].append(action)
-            
-            last_item = last_item2
-
-        self.menu = self.top_level_menu(stack[0][0])
-
-
-class ThunarxContextMenu(ActionBuilder):
+class ThunarxContextMenu(rabbitvcs.lib.contextmenu.MenuBuilder):
     """
     Provides a standard Gtk Context Menu class used for all context menus
     in gtk dialogs/windows.
     
     """    
-    def make_action(self, item, id_magic):
+    def make_menu_item(self, item, id_magic):
         action = item.make_custom_action(id_magic)
         return action
     
     def attach_submenu(self, menu_node, submenu_list):
 		menu_node.set_sub_actions(submenu_list)
     
-    def top_level_menu(self, actions):
-        return actions
-        
-    def show(self, event):        
-        self.menu.show_all()
-        self.menu.popup(None, None, None, event.button, event.time)
-
-    def get_widget(self):
-        return self.menu
-
-    def get_actions(self):
-        return
+    def top_level_menu(self, items):
+        return items
 
 class ThunarxMainContextMenu(MainContextMenu):
     def get_menu(self):
