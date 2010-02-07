@@ -336,7 +336,7 @@ class ThunarxContextMenu(rabbitvcs.lib.contextmenu.MenuBuilder):
     
     """    
     def make_menu_item(self, item, id_magic):
-        return item.make_custom_action(id_magic)
+        return item.make_thunar_action(id_magic)
     
     def attach_submenu(self, menu_node, submenu_list):
 		menu_node.set_sub_actions(submenu_list)

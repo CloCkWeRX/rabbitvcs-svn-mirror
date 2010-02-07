@@ -195,9 +195,9 @@ class MenuItem(object):
         identifier = self.make_magic_id(id_magic)
         return gtk.Action(identifier, self.label, None, None)
 
-    def make_custom_action(self, id_magic = None):
+    def make_thunar_action(self, id_magic = None):
         identifier = self.make_magic_id(id_magic)
-        action = RabbitVCSAction(
+        action = ThunarAction(
             identifier,
             self.label,
             self.tooltip,
@@ -239,6 +239,41 @@ class MenuItem(object):
         
         return menuitem
 
+class MenuSeparator(MenuItem):
+    identifier = "RabbitVCS::Separator"
+    label = SEPARATOR
+       
+    def make_insensitive(self, menuitem):
+        menuitem.set_property("sensitive", False)
+               
+    def make_thunar_action(self, id_magic = None):
+        menuitem = super(MenuSeparator, self).make_thunar_action(id_magic)
+        self.make_insensitive(menuitem)
+        return menuitem
+        # FIXME: I thought that this would work to create separators,
+        # but all I get are black "-"s...		
+        # I thought
+        #~ identifier = self.make_magic_id(id_magic)
+        #~ # This information is not actually used, but is necessary for
+        #~ # the required subclassing of GtkAction.
+        #~ action = ThunarSeparator(
+            #~ identifier,
+            #~ self.label,
+            #~ self.tooltip,
+            #~ self.icon,
+        #~ )
+        #~ return action
+               
+    # Make separators insensitive
+    def make_gtk_menu_item(self, id_magic = None):
+        menuitem = gtk.SeparatorMenuItem()
+        menuitem.show()
+        return menuitem
+    
+    def make_nautilus_menu_item(self, id_magic = None):
+        menuitem = super(MenuSeparator, self).make_nautilus_menu_item(id_magic)
+        self.make_insensitive(menuitem)
+        return menuitem
     
 class MenuDebug(MenuItem):
     identifier = "RabbitVCS::Debug"
@@ -537,29 +572,6 @@ class MenuBrowseTo(MenuItem):
     tooltip = _("Browse to a file or folder")
     icon = gtk.STOCK_HARDDISK
 
-class MenuSeparator(MenuItem):
-    identifier = "RabbitVCS::Separator"
-    label = SEPARATOR
-       
-    def make_insensitive(self, menuitem):
-        menuitem.set_property("sensitive", False)
-       
-    def make_custom_action(self, id_magic = None):
-        action = super(MenuSeparator, self).make_custom_action(id_magic)
-        self.make_insensitive(action)
-        return action
-       
-    # Make separators insensitive
-    def make_gtk_menu_item(self, id_magic = None):
-        menuitem = gtk.SeparatorMenuItem()
-        menuitem.show()
-        return menuitem
-    
-    def make_nautilus_menu_item(self, id_magic = None):
-        menuitem = super(MenuSeparator, self).make_nautilus_menu_item(id_magic)
-        self.make_insensitive(menuitem)
-        return menuitem
-
 class PropMenuRevert(MenuItem):
     identifier = "RabbitVCS::Property_Revert"
     label = _("Revert property")
@@ -644,12 +656,12 @@ def get_ignore_list_items(paths):
 
     return ignore_items
 
-class RabbitVCSAction(gtk.Action):
+class ThunarAction(gtk.Action):
     """
     Sub-classes gtk.Action so that we can have submenus
     """
 
-    __gtype_name__ = "RabbitVCSAction"
+    __gtype_name__ = "ThunarAction"
 
     def __init__(self, name, label, tooltip, stock_id):
         gtk.Action.__init__(self, name, label, tooltip, stock_id)
@@ -674,3 +686,10 @@ class RabbitVCSAction(gtk.Action):
                 subitem.show()
 
         return menu_item
+
+# FIXME: apparently it's possible to get real GtkSeparators in a Thunar
+# menu, but this doesn't seem to work.
+class ThunarSeparator(ThunarAction):
+		
+	def do_create_menu_item(self):
+		return gtk.SeparatorMenuItem()
