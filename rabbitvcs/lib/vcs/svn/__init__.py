@@ -909,7 +909,7 @@ class SVN:
             
             elif propname in base_propnames:
                 prop_details[propname] = {"status": "deleted",
-                                          "value": local_props[propname]}
+                                          "value": base_props[propname]}
 
         return prop_details
 

@@ -63,11 +63,11 @@ Do you want to delete the selected properties from all files and subdirectories
 beneath this directory?""") 
 
 PROP_MENU_STRUCTURE = [
+    (rabbitvcs.lib.contextmenuitems.PropMenuEdit, None),
     (rabbitvcs.lib.contextmenuitems.PropMenuRevert, None),
     (rabbitvcs.lib.contextmenuitems.PropMenuRevertRecursive, None),
     (rabbitvcs.lib.contextmenuitems.PropMenuDelete, None),
-    (rabbitvcs.lib.contextmenuitems.PropMenuDeleteRecursive, None),
-    (rabbitvcs.lib.contextmenuitems.PropMenuEdit, None)]
+    (rabbitvcs.lib.contextmenuitems.PropMenuDeleteRecursive, None)]
 
 class PropEditor(InterfaceView, GtkContextMenuCaller):
     '''
@@ -217,20 +217,40 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
                 filtered_details[propname] = detail
         
         conditions = PropMenuConditions(self.path, filtered_details)
-        callbacks = PropMenuCallbacks(self, self.path, filtered_details)
+        callbacks = PropMenuCallbacks(self, self.path, filtered_details,
+                                      self.vcs)
         
         GtkContextMenu(PROP_MENU_STRUCTURE, conditions, callbacks).show(data)
 
 class PropMenuCallbacks:
 
-    def __init__(self, caller, path, propdetails):
+    def __init__(self, caller, path, propdetails, vcs):
         self.path = path
         self.caller = caller
         self.propdetails = propdetails
+        self.vcs = vcs
 
     def property_edit(self, widget):
-        propname  = self.propdetails.keys()[0]
-        self.caller.edit_property(propname)
+        if self.propdetails.keys():
+            propname  = self.propdetails.keys()[0]
+            self.caller.edit_property(propname)
+            
+    def property_delete(self, widget):
+        for propname in self.propdetails.keys():
+            self.vcs.propdel(self.path, propname, recurse=False)
+        self.caller.refresh()
+    
+    def property_delete_recursive(self, widget):
+        for propname in self.propdetails.keys():
+            self.vcs.propdel(self.path, propname, recurse=True)
+        self.caller.refresh()
+    
+    def property_revert(self, widget):
+        pass
+
+    def property_revert_recursive(self, widget):
+        pass
+
         
 class PropMenuConditions:
     
@@ -241,12 +261,16 @@ class PropMenuConditions:
     def all_modified(self):
         return all([detail["status"] != "unchanged"
                        for (propname, detail) in self.propdetails.items()])
-        
+    
+    def all_not_deleted(self):
+        return all([detail["status"] != "deleted"
+                       for (propname, detail) in self.propdetails.items()])
+    
     def property_revert(self):
         return self.all_modified()
     
     def property_delete(self):
-        return self.all_modified()
+        return self.all_not_deleted()
     
     def property_edit(self):
         return len(self.propdetails.keys()) == 1
