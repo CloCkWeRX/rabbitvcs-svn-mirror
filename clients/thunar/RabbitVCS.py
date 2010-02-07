@@ -327,34 +327,6 @@ class RabbitVCS(thunarx.MenuProvider, thunarx.PropertyPageProvider):
         
         return [ppage]
 
-class RabbitVCSAction(gtk.Action):
-    """
-    Sub-classes gtk.Action so that we can have submenus
-    """
-
-    __gtype_name__ = "RabbitVCSAction"
-
-    def __init__(self, name, label, tooltip, stock_id, sub_actions):
-        gtk.Action.__init__(self, name, label, tooltip, stock_id)
-        self.sub_actions = sub_actions
-
-    def __repr__(self):
-        return self.get_name()
-
-    def do_create_menu_item(self):
-        menu_item = gtk.ImageMenuItem()
-        
-        if self.sub_actions is not None:
-            menu = gtk.Menu()
-            menu_item.set_submenu(menu)
-            
-            for sub_action in self.sub_actions:
-                subitem = sub_action.create_menu_item()
-                menu.append(subitem)
-                subitem.show()
-
-        return menu_item
-
 from rabbitvcs.lib.contextmenuitems import *
         
 class ActionBuilder(object):
@@ -455,21 +427,8 @@ class ThunarxContextMenu(ActionBuilder):
     
     """    
     def make_action(self, item, id_magic, sub_actions):
-        identifier = item.make_magic_id(id_magic)
-        action = RabbitVCSAction(
-            identifier,
-            item.label,
-            item.tooltip,
-            item.icon,
-            sub_actions
-        )
-
-        if item.icon:
-            action.set_icon_name(item.icon)
-
-        if type(item) == MenuSeparator:
-            action.set_property("sensitive", False)
-
+        action = item.make_custom_action(id_magic)
+        action.set_sub_actions(sub_actions)
         return action
     
     def top_level_menu(self, actions):

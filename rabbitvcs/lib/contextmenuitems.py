@@ -195,6 +195,20 @@ class MenuItem(object):
         identifier = self.make_magic_id(id_magic)
         return gtk.Action(identifier, self.label, None, None)
 
+    def make_custom_action(self, id_magic = None):
+        identifier = self.make_magic_id(id_magic)
+        action = RabbitVCSAction(
+            identifier,
+            self.label,
+            self.tooltip,
+            self.icon,
+        )
+        
+        if self.icon:
+            action.set_icon_name(self.icon)
+            
+        return action
+        
     def make_gtk_menu_item(self, id_magic = None):
         action = self.make_action(id_magic)
             
@@ -530,6 +544,11 @@ class MenuSeparator(MenuItem):
     def make_insensitive(self, menuitem):
         menuitem.set_property("sensitive", False)
        
+    def make_custom_action(self, id_magic = None):
+        action = super(MenuSeparator, self).make_custom_action(id_magic)
+        self.make_insensitive(action)
+        return action
+       
     # Make separators insensitive
     def make_gtk_menu_item(self, id_magic = None):
         menuitem = gtk.SeparatorMenuItem()
@@ -624,3 +643,34 @@ def get_ignore_list_items(paths):
             ignore_items.append((MenuIgnoreFileExtClass, None))
 
     return ignore_items
+
+class RabbitVCSAction(gtk.Action):
+    """
+    Sub-classes gtk.Action so that we can have submenus
+    """
+
+    __gtype_name__ = "RabbitVCSAction"
+
+    def __init__(self, name, label, tooltip, stock_id):
+        gtk.Action.__init__(self, name, label, tooltip, stock_id)
+        self.sub_actions = None
+
+    def __repr__(self):
+        return self.get_name()
+
+    def set_sub_actions(self, sub_actions):
+        self.sub_actions = sub_actions
+
+    def do_create_menu_item(self):
+        menu_item = gtk.ImageMenuItem()
+        
+        if self.sub_actions is not None:
+            menu = gtk.Menu()
+            menu_item.set_submenu(menu)
+            
+            for sub_action in self.sub_actions:
+                subitem = sub_action.create_menu_item()
+                menu.append(subitem)
+                subitem.show()
+
+        return menu_item
