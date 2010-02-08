@@ -24,7 +24,7 @@ import os
 import gettext as _gettext
 from locale import getdefaultlocale
 
-version = "0.13.beta1"
+version = "0.13"
 APP_NAME = "RabbitVCS"
 TEMP_DIR_PREFIX = "rabbitvcs-"
 LOCALE_DIR = "%s/locale" % os.path.dirname(os.path.abspath(__file__))
