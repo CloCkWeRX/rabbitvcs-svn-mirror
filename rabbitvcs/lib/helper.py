@@ -57,11 +57,10 @@ def format_long_text(text, cols=None):
     by replacing newlines with U+23CE. If the param "cols" is given, the text
     beyond cols is replaced by "...".
     """    
+    text = text.strip().replace(u"\n", LINE_BREAK_CHAR)
     if cols and len(text) > cols:
-        text = "%s..." % text[0:cols]
+        text = u"%s..." % text[0:cols]
 
-    text = text.strip().replace("\n", LINE_BREAK_CHAR)
-    
     return text
 
 def in_rich_compare(item, list):
