@@ -334,7 +334,10 @@ class ThunarxContextMenu(rabbitvcs.lib.contextmenu.MenuBuilder):
     Provides a standard Gtk Context Menu class used for all context menus
     in gtk dialogs/windows.
     
-    """    
+    """
+    
+    signal = "activate"
+        
     def make_menu_item(self, item, id_magic):
         return item.make_thunar_action(id_magic)
     

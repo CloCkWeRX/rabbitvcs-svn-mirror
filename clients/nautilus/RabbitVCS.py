@@ -596,6 +596,8 @@ class NautilusContextMenu(MenuBuilder):
     Provides a standard Nautilus context menu (ie. a list of
     "nautilus.MenuItem"s).
     """
+    
+    signal = "activate"
         
     def make_menu_item(self, item, id_magic):
         return item.make_nautilus_menu_item(id_magic)

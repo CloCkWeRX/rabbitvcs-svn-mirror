@@ -48,6 +48,14 @@ class MenuBuilder(object):
     """
     Generalised menu builder class. Subclasses must provide:
     
+    connect_to_signal(self, menuitem, callback, callback_args) - connect the
+    menu item to a signal (or do whatever needs to be done) so that the callback
+    is called upon activation.
+    
+    In actual fact, a standard GTK compatible method for this is provided by
+    this class. All a subclass has to do is define the class parameter "signal",
+    and it will be automatically done. 
+    
     make_menu_item(self, item, id_magic) - create the menu item for whatever
     toolkit (usually this should be just call a  convenience method on the
     MenuItem instance).
@@ -139,13 +147,7 @@ class MenuBuilder(object):
             
             menuitem = self.make_menu_item(item, index)
 
-            if item.signals:
-                for signal, info in item.signals.items():
-                    args = info["args"] or None
-                    if args:
-                        menuitem.connect(signal, info["callback"], args)
-                    else:
-                        menuitem.connect(signal, info["callback"])
+            self.connect_signal(menuitem, item.callback, item.callback_args)
         
             stack[-1][0].append(menuitem)
 
@@ -170,14 +172,23 @@ class MenuBuilder(object):
         else:
             print "Empty top level menu!"
             self.menu = self.top_level_menu([])
-        
+            
+    def connect_signal(self, menuitem, callback, callback_args):
+        if callback:
+            if callback_args:
+                menuitem.connect(self.signal, callback, callback_args)
+            else:
+                menuitem.connect(self.signal, callback)
 
 class GtkContextMenu(MenuBuilder):
     """
     Provides a standard Gtk Context Menu class used for all context menus
     in gtk dialogs/windows.
     
-    """    
+    """
+    
+    signal = "button-press-event"
+                            
     def make_menu_item(self, item, id_magic):
         return item.make_gtk_menu_item(id_magic)
     
@@ -1237,7 +1248,7 @@ def TestMenuItemFunctions():
         if not item.found_condition:
             print "Did not find condition function in ContextMenuConditions " \
                   "for %s (type: %s)" % (item.identifier, cls)
-        if not item.found_callback:
+        if not item.callback:
             print "Did not find callback function in ContextMenuCallbacks " \
                   "for %s (type: %s)" % (item.identifier, cls)
             

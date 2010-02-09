@@ -135,15 +135,8 @@ class MenuItem(object):
             self.callback_name = default_name
 
         # Try to get the callback function for this item
-        callback = self._get_function(callbacks, self.callback_name)
+        self.callback = self._get_function(callbacks, self.callback_name)
 
-
-        if callback:
-                self.signals["activate"] = {
-                    "callback": callback,
-                    "args": self.callback_args
-                    }
-                self.found_callback = True
 #        else:
 #            log.debug("Could not find callback for %s" % self.identifier)
 
