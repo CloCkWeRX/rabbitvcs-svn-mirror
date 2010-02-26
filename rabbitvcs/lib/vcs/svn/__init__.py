@@ -1559,10 +1559,6 @@ class SVN:
         TODO: Will firm up the parameter documentation later
         
         """
-        print sources
-        print ranges_to_merge
-        print peg_revision
-        print target_wcpath
         return self.client.merge_peg2(sources,
                                       ranges_to_merge, 
                                       peg_revision.primitive(),
