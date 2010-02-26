@@ -207,7 +207,7 @@ class Log(InterfaceView):
         rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
         path_item = self.paths_table.get_row(self.paths_table.get_selected_rows()[0])[1]
         url = self.root_url + path_item
-        self.view_diff_for_path(url, rev_item.revision.number)
+        self.view_diff_for_path(url, rev_item.revision.number, sidebyside=True)
 
     def on_paths_table_mouse_event(self, treeview, data=None):
         if data is not None and data.button == 3:

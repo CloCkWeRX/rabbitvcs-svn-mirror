@@ -194,7 +194,7 @@ class Changes(InterfaceView):
         for tup in indexes:
             self.selected_rows.append(tup[0])
 
-        self.view_selected_diff()
+        self.view_selected_diff(sidebyside=True)
 
     #
     # Helper methods
@@ -300,7 +300,7 @@ class Changes(InterfaceView):
         self.action.append(rabbitvcs.lib.helper.open_item, dest)
         self.action.start()
     
-    def view_selected_diff(self):
+    def view_selected_diff(self, sidebyside=False):
         from rabbitvcs.ui.diff import SVNDiff
         url1 = self.changes_table.get_row(self.selected_rows[0])[0]
         url2 = url1
@@ -322,7 +322,8 @@ class Changes(InterfaceView):
             url1, 
             (rev1.value and rev1.value or "HEAD"), 
             url2, 
-            (rev2.value and rev2.value or "HEAD")
+            (rev2.value and rev2.value or "HEAD"),
+            sidebyside=sidebyside
         )
         self.action.start()
         
