@@ -696,6 +696,30 @@ class SVN:
             log.exception("AttributeError exception in svn.py get_revision() for %s" % path)
         
         return returner
+
+    def get_head(self, path):
+        """
+        Retrieve the HEAD revision for a repository.
+
+        @type   path:   string
+        @param  path:   A working copy path.
+        
+        @rtype:         integer
+        @return:        A repository revision.
+        
+        """
+
+        info = self.client.info(path)
+        
+        returner = None
+        try:
+            returner = info["revision"].number
+        except KeyError, e:
+            log.exception("KeyError exception in svn.py get_head() for %s" % path)
+        except AttributeError, e:
+            log.exception("AttributeError exception in svn.py get_head() for %s" % path)
+        
+        return returner
     
     #
     # properties
@@ -1535,7 +1559,10 @@ class SVN:
         TODO: Will firm up the parameter documentation later
         
         """
-
+        print sources
+        print ranges_to_merge
+        print peg_revision
+        print target_wcpath
         return self.client.merge_peg2(sources,
                                       ranges_to_merge, 
                                       peg_revision.primitive(),

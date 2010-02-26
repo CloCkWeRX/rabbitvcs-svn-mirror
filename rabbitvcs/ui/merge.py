@@ -106,7 +106,7 @@ class Merge(InterfaceView):
         
         if self.type == "range":
             url = self.get_widget("mergerange_from_url").get_text()
-            head_revision = self.vcs.get_revision(self.path)
+            head_revision = self.vcs.get_head(self.path)
             revisions = self.get_widget("mergerange_revisions").get_text()
             revisions = revisions.lower().replace("head", str(head_revision))
 
