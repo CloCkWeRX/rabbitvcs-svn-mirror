@@ -377,15 +377,15 @@ class ContextMenuCallbacks:
     def diff_previous_revision(self, widget, data1=None, data2=None):
         previous_revision_number = self.vcs_client.get_revision(self.paths[0]) - 1
     
-        pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "working")
-        pathrev2 = rabbitvcs.lib.helper.create_path_revision_string(self.vcs_client.get_repo_url(self.paths[0]), previous_revision_number)
+        pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.vcs_client.get_repo_url(self.paths[0]), previous_revision_number)
+        pathrev2 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "working")
 
         proc = rabbitvcs.lib.helper.launch_ui_window("diff", [pathrev1, pathrev2])
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def compare_tool(self, widget, data1=None, data2=None):
-        pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "working")
-        pathrev2 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "base")
+        pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "base")
+        pathrev2 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "working")
 
         proc = rabbitvcs.lib.helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
         self.caller.rescan_after_process_exit(proc, self.paths)
@@ -397,8 +397,8 @@ class ContextMenuCallbacks:
     def compare_tool_previous_revision(self, widget, data1=None, data2=None):
         previous_revision_number = self.vcs_client.get_revision(self.paths[0]) - 1
 
-        pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "working")
-        pathrev2 = rabbitvcs.lib.helper.create_path_revision_string(self.vcs_client.get_repo_url(self.paths[0]), previous_revision_number)
+        pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.vcs_client.get_repo_url(self.paths[0]), previous_revision_number)
+        pathrev2 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "working")
 
         proc = rabbitvcs.lib.helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
         self.caller.rescan_after_process_exit(proc, self.paths)

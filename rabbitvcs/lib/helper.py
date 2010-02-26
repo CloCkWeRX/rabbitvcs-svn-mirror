@@ -331,7 +331,7 @@ def launch_diff_tool(path1, path2=None):
             "patch --reverse '%s' < /tmp/tmp.patch" % 
             tmp_path
         )
-        (lhs, rhs) = (path1, tmp_path)
+        (lhs, rhs) = (tmp_path, path1)
         
     if diff["swap"]:
         (lhs, rhs) = (rhs, lhs)
