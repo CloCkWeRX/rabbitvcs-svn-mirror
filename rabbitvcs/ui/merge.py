@@ -114,6 +114,8 @@ class Merge(InterfaceView):
             for r in revisions.split(","):
                 if r.find("-") != -1:
                     (low, high) = r.split("-")
+                elif r.find(":") != -1:
+                    (low, high) = r.split(":")
                 else:
                     low = r
                     high = r
