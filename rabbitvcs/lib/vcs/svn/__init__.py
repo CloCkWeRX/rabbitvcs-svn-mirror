@@ -1528,7 +1528,7 @@ class SVN:
 
     def merge_ranges(self, sources, ranges_to_merge, peg_revision,
             target_wcpath, notice_ancestry=False, force=False, dry_run=False,
-            record_only=True):
+            record_only=False):
         """
         Merge a range of revisions.
         
