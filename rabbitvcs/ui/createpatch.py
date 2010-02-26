@@ -167,7 +167,13 @@ class CreatePatch(Commit):
             # Add to the Patch file only the selected items
             for item in patch_items:
                 rel_path = rabbitvcs.lib.helper.get_relative_path(base_dir, item)
-                diff_text = self.vcs.diff(temp_dir, rel_path)
+                diff_text = self.vcs.diff(
+                    temp_dir, 
+                    rel_path, 
+                    self.vcs.revision("base"), 
+                    rel_path, 
+                    self.vcs.revision("working")
+                )
                 fileObj.write(diff_text)
     
             fileObj.close()            
