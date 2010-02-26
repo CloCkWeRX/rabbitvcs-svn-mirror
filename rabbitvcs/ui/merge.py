@@ -134,6 +134,8 @@ class Merge(InterfaceView):
                         self.vcs.revision("number", number=int(low)).primitive(),
                         self.vcs.revision("number", number=int(high)).primitive(),
                     ))
+
+            action.append(rabbitvcs.lib.helper.save_repository_path, url)
             
             # Build up args and kwargs because some args are not supported
             # with older versions of pysvn/svn
@@ -166,6 +168,9 @@ class Merge(InterfaceView):
                     "number",
                     number=int(self.get_widget("mergetree_to_revision_number").get_text())
                 )
+
+            action.append(rabbitvcs.lib.helper.save_repository_path, from_url)
+            action.append(rabbitvcs.lib.helper.save_repository_path, to_url)
 
             # Build up args and kwargs because some args are not supported
             # with older versions of pysvn/svn
