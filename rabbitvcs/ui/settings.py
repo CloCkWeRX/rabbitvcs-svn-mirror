@@ -70,9 +70,6 @@ class Settings(InterfaceView):
         self.get_widget("diff_tool_swap").set_active(
             int(self.settings.get("external", "diff_tool_swap"))
         )
-        self.get_widget("repo_browser").set_text(
-            str(self.settings.get("external", "repo_browser"))
-        )
         self.get_widget("cache_number_repositories").set_text(
             str(self.settings.get("cache", "number_repositories"))
         )
@@ -141,10 +138,6 @@ class Settings(InterfaceView):
             self.get_widget("diff_tool_swap").get_active()
         )
         self.settings.set(
-            "external", "repo_browser",
-            self.get_widget("repo_browser").get_text()
-        )
-        self.settings.set(
             "cache", "number_repositories",
             self.get_widget("cache_number_repositories").get_text()
         )
@@ -170,15 +163,6 @@ class Settings(InterfaceView):
         path = path.replace("file://", "")
         if path is not None:
             self.get_widget("diff_tool").set_text(path)
-
-    def on_external_repo_browser_browse_clicked(self, widget):
-        chooser = rabbitvcs.ui.dialog.FileChooser(
-            _("Select a program"), "/usr/bin"
-        )
-        path = chooser.run()
-        path = path.replace("file://", "")
-        if path is not None:
-            self.get_widget("repo_browser").set_text(path)
 
     def on_cache_clear_repositories_clicked(self, widget):
         confirmation = rabbitvcs.ui.dialog.Confirmation(
