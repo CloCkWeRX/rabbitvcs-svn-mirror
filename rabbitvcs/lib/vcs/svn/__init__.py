@@ -1526,7 +1526,7 @@ class SVN:
         return self.client.annotate(url_or_path, from_revision.primitive(),
             to_revision.primitive())
 
-    def merge_ranges(self, sources, ranges_to_merge, peg_revision,
+    def merge_ranges(self, source, ranges_to_merge, peg_revision,
             target_wcpath, notice_ancestry=False, force=False, dry_run=False,
             record_only=False):
         """
@@ -1559,7 +1559,7 @@ class SVN:
         TODO: Will firm up the parameter documentation later
         
         """
-        return self.client.merge_peg2(sources,
+        return self.client.merge_peg2(source,
                                       ranges_to_merge, 
                                       peg_revision.primitive(),
                                       target_wcpath,
