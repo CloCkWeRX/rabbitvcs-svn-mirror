@@ -103,20 +103,29 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
             return
         
         self.get_widget("remote_uri_text").set_text(self.vcs.get_repo_url(path))
-        
-        # self.get_widget("apply_note").connect("size-allocate", wrapped_label_size_allocate_callback)
-        
+               
         self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING,
+             rabbitvcs.ui.widget.TYPE_STATUS], 
             [_("Name"), _("Value"), _("Reserved"), _("Status")],
-            filters=[{
-                "callback": rabbitvcs.ui.widget.long_text_filter,
-                "user_data": {
-                    "cols": 0,
-                    "column": 1
-                }
-            }],
+            
+            filters=[
+                {
+                    "callback": rabbitvcs.ui.widget.long_text_filter,
+                    "user_data": {
+                        "cols": 0,
+                        "column": 1
+                    }
+                },
+                
+                {
+                    "callback": rabbitvcs.ui.widget.translate_filter,
+                    "user_data": {
+                        "column": 3
+                    }
+                }],
+                
             callbacks={
                 "row-activated":  self.on_table_row_activated,
                 "mouse-event":   self.on_table_mouse_event,
