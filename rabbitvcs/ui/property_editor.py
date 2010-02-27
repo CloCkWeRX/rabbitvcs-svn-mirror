@@ -106,8 +106,8 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
                
         self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING,
-             rabbitvcs.ui.widget.TYPE_STATUS], 
+            [gobject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_ELLIPSIZED,
+             gobject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_STATUS], 
             [_("Name"), _("Value"), _("Reserved"), _("Status")],
             
             filters=[
