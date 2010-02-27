@@ -46,8 +46,11 @@ _ = gettext.gettext
 from rabbitvcs.lib.log import Log
 log = Log("rabbitvcs.ui.widget")
 
+from rabbitvcs.ui import STATUS_EMBLEMS
+
 TOGGLE_BUTTON = 'TOGGLE_BUTTON'
 TYPE_PATH = 'TYPE_PATH'
+TYPE_STATUS = 'TYPE_STATUS'
 PATH_ENTRY = 'PATH_ENTRY'
 SEPARATOR = u'\u2015' * 10
 
@@ -139,6 +142,13 @@ def long_text_filter(row, column, user_data=None):
         
     return text
 
+def translate_filter(row, column, user_data=None):
+    """
+    Translates text as needed.
+    """
+    text = row[column]
+    if text: return _(text)
+    
 class TableBase:
     def __init__(self, treeview, coltypes, colnames, values=[], filters=None, 
             filter_types=None, callbacks={}):
@@ -216,6 +226,26 @@ class TableBase:
                         "column": i
                     }
                 col.set_cell_data_func(cellpb, self.file_pixbuf, data)
+                
+                cell = gtk.CellRendererText()
+                cell.set_property('xalign', 0)
+                cell.set_property('yalign', 0)
+                col.pack_start(cell, False)
+                col.set_attributes(cell, text=i)
+            elif coltypes[i] == TYPE_STATUS:
+                # Same as for TYPE_PATH
+                coltypes[i] = str                
+                col = gtk.TreeViewColumn(name)
+                
+                cellpb = gtk.CellRendererPixbuf()
+                cellpb.set_property('xalign', 0)
+                cellpb.set_property('yalign', 0)
+                
+                col.pack_start(cellpb, False)
+                
+                data = None
+                
+                col.set_cell_data_func(cellpb, self.status_pixbuf, i)
                 
                 cell = gtk.CellRendererText()
                 cell.set_property('xalign', 0)
@@ -399,9 +429,20 @@ class TableBase:
         if "mouse-event" in self.callbacks:
             self.callbacks["mouse-event"](treeview, data)
 
+    def status_pixbuf(self, column, cell, model, iter, colnum):
+        status = self.data[model.get_path(iter)][colnum]
+        
+        if status not in STATUS_EMBLEMS.keys():
+            status = "error"
+             
+        icon = "emblem-" + STATUS_EMBLEMS[status]
+        
+        cell.set_property("icon_name", icon)
+        
+
     def file_pixbuf(self, column, cell, model, iter, data=None):
         stock_id = None
-        if data is not None:
+        if data:
             real_item = self.data[model.get_path(iter)][data["column"]]
             kind = data["callback"](real_item)
             stock_id = gtk.STOCK_FILE
@@ -410,8 +451,6 @@ class TableBase:
 
         if stock_id is not None:
             cell.set_property("stock_id", stock_id)
-            
-        return
 
 class Table(TableBase):
     """
