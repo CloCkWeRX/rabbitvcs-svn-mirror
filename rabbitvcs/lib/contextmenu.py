@@ -429,7 +429,7 @@ class ContextMenuCallbacks:
         self.caller.rescan_after_process_exit(proc, self.paths)
     
     def properties(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("properties", self.paths)
+        proc = rabbitvcs.lib.helper.launch_ui_window("property_editor", self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def about(self, widget, data1=None, data2=None):

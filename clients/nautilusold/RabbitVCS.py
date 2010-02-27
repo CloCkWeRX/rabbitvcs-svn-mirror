@@ -483,7 +483,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """
         file = files[0]
         path = gnomevfs.get_local_path_from_uri(file.get_uri())
-        pid = rabbitvcs.lib.helper.launch_ui_window("properties", [path])
+        pid = rabbitvcs.lib.helper.launch_ui_window("property_editor", [path])
         self.RescanFilesAfterProcess(pid)
 
     #--------------------------------------------------------------------------
