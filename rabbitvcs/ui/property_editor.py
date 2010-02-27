@@ -230,25 +230,25 @@ class PropMenuCallbacks:
         self.propdetails = propdetails
         self.vcs = vcs
 
-    def property_edit(self, widget):
+    def property_edit(self, widget, *args):
         if self.propdetails.keys():
             propname  = self.propdetails.keys()[0]
             self.caller.edit_property(propname)
             
-    def property_delete(self, widget):
+    def property_delete(self, widget, *args):
         for propname in self.propdetails.keys():
             self.vcs.propdel(self.path, propname, recurse=False)
         self.caller.refresh()
     
-    def property_delete_recursive(self, widget):
+    def property_delete_recursive(self, widget, *args):
         for propname in self.propdetails.keys():
             self.vcs.propdel(self.path, propname, recurse=True)
         self.caller.refresh()
     
-    def property_revert(self, widget):
+    def property_revert(self, widget, *args):
         pass
 
-    def property_revert_recursive(self, widget):
+    def property_revert_recursive(self, widget, *args):
         pass
 
         
@@ -267,7 +267,8 @@ class PropMenuConditions:
                        for (propname, detail) in self.propdetails.items()])
     
     def property_revert(self):
-        return self.all_modified()
+        return False
+        # return self.all_modified()
     
     def property_delete(self):
         return self.all_not_deleted()
