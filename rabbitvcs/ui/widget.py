@@ -23,6 +23,7 @@
 import pygtk
 import gobject
 import gtk
+import pango
 
 import os.path
 
@@ -51,6 +52,10 @@ from rabbitvcs.ui import STATUS_EMBLEMS
 TOGGLE_BUTTON = 'TOGGLE_BUTTON'
 TYPE_PATH = 'TYPE_PATH'
 TYPE_STATUS = 'TYPE_STATUS'
+TYPE_ELLIPSIZED = 'TYPE_ELLIPSIZED'
+
+ELLIPSIZE_COLUMN_CHARS = 20
+
 PATH_ENTRY = 'PATH_ENTRY'
 SEPARATOR = u'\u2015' * 10
 
@@ -251,6 +256,15 @@ class TableBase:
                 cell.set_property('xalign', 0)
                 cell.set_property('yalign', 0)
                 col.pack_start(cell, False)
+                col.set_attributes(cell, text=i)
+            elif coltypes[i] == TYPE_ELLIPSIZED:
+                coltypes[i] = str
+                cell = gtk.CellRendererText()
+                cell.set_property('yalign', 0)
+                cell.set_property('xalign', 0)
+                cell.set_property('ellipsize', pango.ELLIPSIZE_END)
+                cell.set_property('width-chars', ELLIPSIZE_COLUMN_CHARS)
+                col = gtk.TreeViewColumn(name, cell)
                 col.set_attributes(cell, text=i)
             else:
                 cell = gtk.CellRendererText()
