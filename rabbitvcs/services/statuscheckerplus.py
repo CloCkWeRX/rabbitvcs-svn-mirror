@@ -36,6 +36,9 @@ from rabbitvcs.services.checkers.loopedchecker import StatusChecker
 import rabbitvcs.util.vcs
 import rabbitvcs.lib.vcs.svn
 
+from rabbitvcs import gettext
+_ = gettext.gettext
+
 from rabbitvcs.lib.log import Log
 log = Log("rabbitvcs.services.statuscheckerplus")
 
@@ -69,10 +72,12 @@ def make_summary(path, statuses):
 
 class StatusCheckerPlus():
 
+    CHECKER_NAME = _("Multi-process status checker")
+
     #: The queue will be populated with 4-ples of
     #: (path, recurse, invalidate, callback).
     _paths_to_check = Queue()
-        
+    
     def __init__(self):
         """ Creates a new status cache.
         

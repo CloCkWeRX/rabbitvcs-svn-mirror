@@ -22,6 +22,9 @@ to work, or you need to prototype things.
 
 import rabbitvcs.lib.vcs
 
+from rabbitvcs import gettext
+_ = gettext.gettext
+
 from rabbitvcs.lib.log import Log
 log = Log("rabbitvcs.services.statuschecker")
 
@@ -34,6 +37,10 @@ def status_error(path):
 
 class StatusChecker():
     """ A class for performing status checks. """
+    
+    # All subclasses should override this! This is to be displayed in the
+    # settings dialog
+    CHECKER_NAME = _("Simple status checker")
     
     def __init__(self):
         """ Initialises status checker. Obviously. """

@@ -32,6 +32,8 @@ import rabbitvcs.ui.dialog
 import rabbitvcs.lib.settings
 import rabbitvcs.lib.helper
 
+from rabbitvcs.services.checkerservice import StatusCheckerStub
+
 from rabbitvcs import gettext
 _ = gettext.gettext
 
@@ -94,6 +96,28 @@ class Settings(InterfaceView):
         if not val:
             val = "Debug"
         self.logging_level.set_active_from_value(val)
+
+        self.checker_stub = StatusCheckerStub(None)
+
+        self._populate_checker_tab()
+
+    def _populate_checker_tab(self):
+        # This is a limitation of GLADE, and can be removed when we migrate to
+        # GTK2 Builder
+
+        
+        self.get_widget("restart_checker").set_image(
+                                        gtk.image_new_from_stock(
+                                            gtk.STOCK_REFRESH,
+                                            gtk.ICON_SIZE_BUTTON))
+
+        self.get_widget("stop_checker").set_image(
+                                        gtk.image_new_from_stock(
+                                            gtk.STOCK_STOP,
+                                            gtk.ICON_SIZE_BUTTON))
+
+        self.get_widget("checker_type").set_text(self.checker_stub.checker_type())
+        
 
     def on_destroy(self, widget):
         gtk.main_quit()

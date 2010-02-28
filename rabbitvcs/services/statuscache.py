@@ -42,6 +42,9 @@ from rabbitvcs.services.checkers.loopedchecker import StatusChecker
 import rabbitvcs.util.vcs
 import rabbitvcs.lib.vcs.svn
 
+from rabbitvcs import gettext
+_ = gettext.gettext
+
 from rabbitvcs.lib.log import Log
 log = Log("rabbitvcs.services.statuscache")
 
@@ -164,6 +167,8 @@ class StatusCache():
     Therefore, GREAT CARE must be taken to avoid locking the cache for longer
     than necessary.
     """
+    
+    CHECKER_NAME = _("Cached multi-process status checker")
     
     # FIXME: note to developers... the major bottleneck in this class is the
     # fact that for each check of the cache, we loop over ALL of the keys to

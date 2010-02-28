@@ -93,7 +93,11 @@ class StatusCheckerService(dbus.service.Object):
         # Start the status checking daemon so we can do requests in the
         # background
         self.status_checker = StatusCheckerPlus()
-        
+    
+    @dbus.service.method(INTERFACE)
+    def CheckerType(self):
+        return self.status_checker.CHECKER_NAME
+    
     @dbus.service.signal(INTERFACE)
     def CheckFinished(self, path, statuses):
         """ Empty method for connection status check callbacks. This is a DBUS
@@ -181,6 +185,9 @@ class StatusCheckerStub:
             # There is not much we should do about this...
             log.exception(ex)
             raise
+    
+    def checker_type(self):
+        return self.status_checker.CheckerType()
     
     def status_callback(self, *args, **kwargs):
         """ Notifies the callback of a completed status check.
