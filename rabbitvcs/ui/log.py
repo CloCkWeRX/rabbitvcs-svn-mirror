@@ -399,7 +399,7 @@ class Log(InterfaceView):
         from rabbitvcs.ui.diff import SVNDiff
 
         if earliest_revision_number == None:
-            earliest_revision_number = latest_revision_number-1
+            earliest_revision_number = latest_revision_number
         
         self.action = VCSAction(
             self.vcs,
@@ -408,7 +408,7 @@ class Log(InterfaceView):
         self.action.append(
             SVNDiff,
             url, 
-            earliest_revision_number, 
+            earliest_revision_number - 1,
             url, 
             latest_revision_number,
             sidebyside=sidebyside
@@ -902,8 +902,8 @@ class LogBottomContextMenuCallbacks:
         self.caller.view_diff_for_path(url, rev, sidebyside=True)
     
     def compare_revisions(self, widget, data=None):
-        latest_rev = self.revisions[0]["revision"].value
-        earliest_rev = self.revisions[-1]["revision"].value
+        earliest_rev = self.revisions[0]["revision"].value
+        lastest_rev = self.revisions[-1]["revision"].value
         path_item = self.paths[0]
         url = self.caller.root_url + path_item
         self.caller.view_diff_for_path(url,
