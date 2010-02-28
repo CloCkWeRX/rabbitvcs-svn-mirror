@@ -22,7 +22,7 @@ stdout as a byte stream (ie. the pickled results of the status check).
 """
 
 import cPickle
-import sys
+import os, sys, signal
 import subprocess
 
 import rabbitvcs.lib.vcs
@@ -151,6 +151,10 @@ class StatusChecker():
         self.sc_proc.stdin.flush()
         statuses = self.unpickler.load()
         return statuses
+
+    def quit(self):
+        os.kill(self.sc_proc.pid, signal.SIGKILL)
+        sys.exit(0)
 
 if __name__ == '__main__':
     # I have deliberately avoided rigourous input checking since this script is

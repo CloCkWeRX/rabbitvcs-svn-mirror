@@ -168,6 +168,8 @@ class StatusCheckerPlus():
         """
         self._alive.clear()
         self._paths_to_check.put(None)
+        self.checker.quit()
+        self.other_checker.quit()
         
     def _status_update_loop(self):
         """ This loops until the status cache is "killed" (via the kill()

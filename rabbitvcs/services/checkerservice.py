@@ -93,6 +93,14 @@ class StatusCheckerService(dbus.service.Object):
         # Start the status checking daemon so we can do requests in the
         # background
         self.status_checker = StatusCheckerPlus()
+        
+    @dbus.service.method(INTERFACE)
+    def PID(self):
+        return os.getpid()
+    
+    @dbus.service.method(INTERFACE)
+    def MemoryUsage(self):
+        pass
     
     @dbus.service.method(INTERFACE)
     def CheckerType(self):
@@ -140,8 +148,8 @@ class StatusCheckerService(dbus.service.Object):
         /org/google/code/rabbitvcs/StatusChecker \
         org.google.code.rabbitvcs.StatusChecker.Quit
         """
-        log.debug("Quitting main loop...")
         self.status_checker.kill()
+        log.debug("Quitting main loop...")
         self.mainloop.quit()
         
 class StatusCheckerStub:

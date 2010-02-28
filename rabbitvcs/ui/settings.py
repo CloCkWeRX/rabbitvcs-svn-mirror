@@ -25,6 +25,7 @@ import os
 import pygtk
 import gobject
 import gtk
+import dbus
 
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
@@ -32,10 +33,15 @@ import rabbitvcs.ui.dialog
 import rabbitvcs.lib.settings
 import rabbitvcs.lib.helper
 
+import rabbitvcs.services.checkerservice
 from rabbitvcs.services.checkerservice import StatusCheckerStub
 
 from rabbitvcs import gettext
 _ = gettext.gettext
+
+CHECKER_UNKNOWN_INFO = _("Unknown")
+CHECKER_SERVICE_ERROR = _(
+"There was an error communicating with the status checker service.")
 
 class Settings(InterfaceView):
     def __init__(self):
@@ -97,16 +103,30 @@ class Settings(InterfaceView):
             val = "Debug"
         self.logging_level.set_active_from_value(val)
 
-        self.checker_stub = StatusCheckerStub(None)
-
         self._populate_checker_tab()
 
     def _populate_checker_tab(self):
         # This is a limitation of GLADE, and can be removed when we migrate to
         # GTK2 Builder
 
+        checker_service = None
+        try:
+            session_bus = dbus.SessionBus()
+            checker_service = session_bus.get_object(
+                                    rabbitvcs.services.checkerservice.SERVICE,
+                                    rabbitvcs.services.checkerservice.OBJECT_PATH)
+        except dbus.DBusException, ex:
+            rabbitvcs.ui.dialog.MessageBox(CHECKER_SERVICE_ERROR)
+
         
         self.get_widget("restart_checker").set_image(
+                                        gtk.image_new_from_stock(
+                                            gtk.STOCK_EXECUTE,
+                                            gtk.ICON_SIZE_BUTTON))
+
+        self.get_widget("restart_checker").set_sensitive(bool(checker_service))
+
+        self.get_widget("refresh_info").set_image(
                                         gtk.image_new_from_stock(
                                             gtk.STOCK_REFRESH,
                                             gtk.ICON_SIZE_BUTTON))
@@ -116,8 +136,22 @@ class Settings(InterfaceView):
                                             gtk.STOCK_STOP,
                                             gtk.ICON_SIZE_BUTTON))
 
-        self.get_widget("checker_type").set_text(self.checker_stub.checker_type())
+        self.get_widget("stop_checker").set_sensitive(bool(checker_service))
+
+        if(checker_service):
+            self.get_widget("checker_type").set_text(checker_service.CheckerType())
         
+            self.get_widget("pid").set_text(str(checker_service.PID()))
+        else:
+            self.get_widget("checker_type").set_text(CHECKER_UNKNOWN_INFO)
+            self.get_widget("pid").set_text(CHECKER_UNKNOWN_INFO)
+    
+    def on_refresh_info_clicked(self, widget):
+        self._populate_checker_tab()
+            
+    def on_stop_checker_clicked(self, widget):
+        if(self.checker_service):
+            self.checker_service.Quit()
 
     def on_destroy(self, widget):
         gtk.main_quit()
