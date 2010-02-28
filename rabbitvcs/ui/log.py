@@ -1,4 +1,4 @@
-#a
+#
 # This is an extension to the Nautilus file manager to allow better 
 # integration with the Subversion source control system.
 # 
@@ -43,6 +43,8 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 DATETIME_FORMAT = rabbitvcs.lib.helper.LOCAL_DATETIME_FORMAT
+
+REVISION_LABEL = _("Revision")
 
 class Log(InterfaceView):
     """
@@ -165,12 +167,23 @@ class Log(InterfaceView):
         if data is not None and data.button == 3:
             self.show_revisions_table_popup_menu(treeview, data)
 
-        item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-
         self.paths_table.clear()
-        if len(self.revisions_table.get_selected_rows()) == 1:
-            self.message.set_text(item.message)
+        self.message.set_text("")
+
+        combined_paths = []
+        subitems = []
+        
+        for selected_row in self.revisions_table.get_selected_rows():
+            item = self.revision_items[selected_row]
             
+            if len(self.revisions_table.get_selected_rows()) == 1:
+                self.message.set_text(item.message)
+            else:
+                indented_message = item.message.replace("\n","\n\t")
+                self.message.append_text(
+					"%s %s:\n\t%s\n" % (REVISION_LABEL,
+                                        str(item.revision.number),
+                                        indented_message))
             if item.changed_paths is not None:
                 for subitem in item.changed_paths:
                     
@@ -178,15 +191,24 @@ class Log(InterfaceView):
                     if hasattr(subitem.copyfrom_revision, "number"):
                         copyfrom_rev = subitem.copyfrom_revision.number
                     
-                    self.paths_table.append([
-                        subitem.action,
-                        subitem.path,
-                        subitem.copyfrom_path,
-                        copyfrom_rev
-                    ])    
-            
-        else:
-            self.message.set_text("")
+                    if subitem.path not in combined_paths:
+                        combined_paths.append(subitem.path)
+                        
+                        subitems.append([
+                            subitem.action,
+                            subitem.path,
+                            subitem.copyfrom_path,
+                            copyfrom_rev
+                        ])
+        
+        subitems.sort(lambda x, y: cmp(x[1],y[1]))
+        for subitem in subitems:
+            self.paths_table.append([
+                subitem[0],
+                subitem[1],
+                subitem[2],
+                subitem[3]
+            ])                
 
     def show_revisions_table_popup_menu(self, treeview, data):
         revisions = []
@@ -214,14 +236,24 @@ class Log(InterfaceView):
             self.show_paths_table_popup_menu(treeview, data)
 
     def show_paths_table_popup_menu(self, treeview, data):
-        rev_item = self.revision_items[self.revisions_table.get_selected_rows()[0]]
-        revision_obj = self.vcs.revision("number", number=rev_item.revision.number)
+        revisions = []
+        for row in self.revisions_table.get_selected_rows():
+            revisions.append({
+                "revision": self.vcs.revision("number", number=self.revision_items[row].revision.number),
+                "author": self.revision_items[row].author,
+                "message": self.revision_items[row].message
+            })
+        
+        # If we don't do this, we actually get the revisions in reverse order
+        # (usually, always?). Don't worry about non-numeric revisions (eg.
+        # HEAD), since we explicitly construct them above with a number
+        revisions.sort(key=lambda item: item["revision"].value)
         
         paths = []
         for row in self.paths_table.get_selected_rows():
             paths.append(self.paths_table.get_row(row)[1])
-
-        LogBottomContextMenu(self, data, paths, revision_obj).show()
+        
+        LogBottomContextMenu(self, data, paths, revisions).show()
     
     #
     # Helper methods
@@ -363,9 +395,12 @@ class Log(InterfaceView):
     # Other helper methods
     #
 
-    def view_diff_for_path(self, url, revision_number, sidebyside=False):
+    def view_diff_for_path(self, url, latest_revision_number, earliest_revision_number=None, sidebyside=False):
         from rabbitvcs.ui.diff import SVNDiff
 
+        if earliest_revision_number == None:
+            earliest_revision_number = latest_revision_number-1
+        
         self.action = VCSAction(
             self.vcs,
             notification=False
@@ -373,9 +408,9 @@ class Log(InterfaceView):
         self.action.append(
             SVNDiff,
             url, 
-            revision_number-1, 
+            earliest_revision_number, 
             url, 
-            revision_number,
+            latest_revision_number,
             sidebyside=sidebyside
         )
         self.action.start()
@@ -462,9 +497,9 @@ class MenuCompareWorkingCopy(MenuItem):
     label = _("Compare with working copy")
     icon = "rabbitvcs-compare"
 
-class MenuViewDiffPreviousRevision(MenuItem):
-    identifier = "RabbitVCS::View_Diff_Previous_Revision"
-    label = _("View diff against previous revision")
+class MenuViewDiffOverRevisions(MenuItem):
+    identifier = "RabbitVCS::View_Diff_Over_Revisions"
+    label = _("View diff over selected revisions")
     icon = "rabbitvcs-diff"
 
 class MenuComparePreviousRevision(MenuItem):
@@ -482,12 +517,14 @@ class MenuCompareRevisions(MenuItem):
     label = _("Compare revisions")
     icon = "rabbitvcs-compare"
 
-class MenuShowChangesPreviousRevision(MenuItem):
-    identifier = "RabbitVCS::Show_Changes_Previous_Revision"
-    label = _("Show changes from previous revision")
+class MenuShowChangesOverRevisions(MenuItem):
+    # This is for the paths list
+    identifier = "RabbitVCS::Show_Changes_Over_Revisions"
+    label = _("Show changes over selected revisions")
     icon = "rabbitvcs-changes"
 
 class MenuShowChangesRevisions(MenuItem):
+    # This is for the revs list
     identifier = "RabbitVCS::Show_Changes_Revisions"
     label = _("Show changes between revisions")
     icon = "rabbitvcs-changes"
@@ -530,13 +567,13 @@ class LogTopContextMenuConditions:
         return (item.value > 1 and len(self.revisions) == 1)
 
     def view_diff_revisions(self, data=None):
-        return (len(self.revisions) == 2)
+        return (len(self.revisions) > 1)
 
     def compare_revisions(self, data=None):
-        return (len(self.revisions) == 2)
+        return (len(self.revisions) > 1)
 
     def show_changes_revisions(self, data=None):
-        return (len(self.revisions) == 2)
+        return (len(self.revisions) > 1)
 
     def update_to(self, data=None):
         return (len(self.revisions) == 1)
@@ -636,8 +673,8 @@ class LogTopContextMenuCallbacks:
     def view_diff_revisions(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
         
-        item1 = self.revisions[0]["revision"]
-        item2 = self.revisions[1]["revision"]
+        rev_first = self.revisions[0]["revision"].value
+        rev_second = self.revisions[-1]["revision"].value
         
         self.action = VCSAction(
             self.vcs_client,
@@ -646,17 +683,17 @@ class LogTopContextMenuCallbacks:
         self.action.append(
             SVNDiff,
             self.vcs_client.get_repo_url(self.path), 
-            item2.value, 
+            rev_second, 
             self.path, 
-            item1.value
+            rev_first
         )
         self.action.start()
 
     def compare_revisions(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
         
-        item1 = self.revisions[0]["revision"]
-        item2 = self.revisions[1]["revision"]
+        rev_first = self.revisions[0]["revision"].value
+        rev_second = self.revisions[-1]["revision"].value
         
         self.action = VCSAction(
             self.vcs_client,
@@ -665,24 +702,26 @@ class LogTopContextMenuCallbacks:
         self.action.append(
             SVNDiff,
             self.vcs_client.get_repo_url(self.path), 
-            item2.value, 
+            rev_second, 
             self.vcs_client.get_repo_url(self.path), 
-            item1.value,
+            rev_first,
             sidebyside=True
         )
         self.action.start()
 
     def show_changes_revisions(self, widget, data=None):
         from rabbitvcs.ui.changes import Changes
-        item1 = self.revisions[0]["revision"]
-        item2 = self.revisions[1]["revision"]
+        rev_first = self.revisions[0]["revision"].value
+        rev_last = self.revisions[-1]["revision"].value
         path = self.vcs_client.get_repo_url(self.path)
 
+        # FIXME: why does this have the opposite sense to the callback from the
+        # paths list?
         Changes(
             path, 
-            item2.value, 
+            rev_last, 
             path, 
-            item1.value
+            rev_first
         )
 
     def update_to(self, widget, data=None):
@@ -776,7 +815,7 @@ class LogTopContextMenu:
         self.structure = [
             (MenuViewDiffWorkingCopy, None),
             (MenuCompareWorkingCopy, None),
-            (MenuViewDiffPreviousRevision, None),
+            (MenuViewDiffOverRevisions, None),
             (MenuComparePreviousRevision, None),
             (MenuViewDiffRevisions, None),
             (MenuCompareRevisions, None),
@@ -801,19 +840,22 @@ class LogTopContextMenu:
 
 
 class LogBottomContextMenuConditions:
-    def __init__(self, vcs_client, paths, revision):
+    def __init__(self, vcs_client, paths, revisions):
         self.vcs_client = vcs_client
         self.paths = paths
-        self.revision = revision
+        self.revisions = revisions
 
-    def view_diff_previous_revision(self, data=None):
-        return (len(self.paths) == 1)
+    def view_diff_over_revisions(self, data=None):
+        return True
 
-    def show_changes_previous_revision(self, data=None):
-        return (len(self.paths) == 1)
+    def show_changes_over_revisions(self, data=None):
+        return True
 
     def compare_previous_revision(self, data=None):
-        return (len(self.paths) == 1)
+        return (len(self.paths) == 1 and len(self.revisions) == 1)
+
+    def compare_revisions(self, data=None):
+        return (len(self.paths) == 1 and len(self.revisions) > 1)
 
     def _open(self, data=None):
         return True
@@ -825,36 +867,49 @@ class LogBottomContextMenuConditions:
         return True
 
 class LogBottomContextMenuCallbacks:
-    def __init__(self, caller, vcs_client, paths, revision):
+    def __init__(self, caller, vcs_client, paths, revisions):
         self.caller = caller
         self.vcs_client = vcs_client
         self.paths = paths
-        self.revision = revision
+        self.revisions = revisions
 
-    def view_diff_previous_revision(self, widget, data=None):
-        rev_item = self.revision
+    def view_diff_over_revisions(self, widget, data=None):
+        rev_first = self.revisions[0]["revision"].value - 1
+        rev_last = self.revisions[-1]["revision"].value
         path_item = self.paths[0]
         url = self.caller.root_url + path_item
-        self.caller.view_diff_for_path(url, rev_item.value)
+        self.caller.view_diff_for_path(url, latest_revision_number=rev_last,
+                                       earliest_revision_number=rev_first)
     
-    def show_changes_previous_revision(self, widget, data=None):
-        rev_item = self.revision
+    def show_changes_over_revisions(self, widget, data=None):
+        rev_first = self.revisions[0]["revision"].value - 1
+        rev_last = self.revisions[-1]["revision"].value
         path_item = self.paths[0]
         url = self.caller.root_url + path_item
 
         from rabbitvcs.ui.changes import Changes
         Changes(
             url, 
-            rev_item.value-1, 
+            rev_first, 
             url, 
-            rev_item.value
+            rev_last
         )
 
     def compare_previous_revision(self, widget, data=None):
-        rev_item = self.revision
+        rev = self.revisions[0]["revision"].value
         path_item = self.paths[0]
         url = self.caller.root_url + path_item
-        self.caller.view_diff_for_path(url, rev_item.value, sidebyside=True)
+        self.caller.view_diff_for_path(url, rev, sidebyside=True)
+    
+    def compare_revisions(self, widget, data=None):
+        latest_rev = self.revisions[0]["revision"].value
+        earliest_rev = self.revisions[-1]["revision"].value
+        path_item = self.paths[0]
+        url = self.caller.root_url + path_item
+        self.caller.view_diff_for_path(url,
+                                        latest_rev,
+                                        sidebyside=True,
+                                        earliest_revision_number=earliest_rev)
 
     def _open(self, widget, data=None):
         self.action = VCSAction(
@@ -866,12 +921,12 @@ class LogBottomContextMenuCallbacks:
         dests = []
         for path in self.paths:
             url = self.caller.root_url + path
-            dest = "/tmp/rabbitvcs-" + str(self.revision.value) + "-" + os.path.basename(path)
+            dest = "/tmp/rabbitvcs-" + str(self.revisions[0]["revision"].value) + "-" + os.path.basename(path)
             self.action.append(
                 self.vcs_client.export,
                 url,
                 dest,
-                revision=self.revision
+                revision=self.revisions[0]["revision"]
             )
             dests.append(dest)
         
@@ -884,14 +939,14 @@ class LogBottomContextMenuCallbacks:
         url = self.caller.root_url + self.paths[0]
 
         from rabbitvcs.ui.annotate import Annotate
-        Annotate(url, self.revision.value)
+        Annotate(url, self.revisions[0]["revision"].value)
 
 class LogBottomContextMenu:
     """
     Defines context menu items for a table with files
     
     """
-    def __init__(self, caller, event, paths, revision):
+    def __init__(self, caller, event, paths, revisions):
         """    
         @param  caller: The calling object
         @type   caller: object
@@ -909,29 +964,30 @@ class LogBottomContextMenu:
         self.caller = caller
         self.event = event
         self.paths = paths
-        self.revision = revision
+        self.revisions = revisions
         self.vcs_client = rabbitvcs.lib.vcs.create_vcs_instance()
 
         self.conditions = LogBottomContextMenuConditions(
             self.vcs_client, 
             self.paths, 
-            self.revision
+            self.revisions
         )
         
         self.callbacks = LogBottomContextMenuCallbacks(
             self.caller,
             self.vcs_client, 
             self.paths,
-            self.revision
+            self.revisions
         )
 
         # The first element of each tuple is a key that matches a
         # ContextMenuItems item.  The second element is either None when there
         # is no submenu, or a recursive list of tuples for desired submenus.
         self.structure = [
-            (MenuViewDiffPreviousRevision, None),
-            (MenuShowChangesPreviousRevision, None),
+            (MenuViewDiffOverRevisions, None),
+            (MenuShowChangesOverRevisions, None),
             (MenuComparePreviousRevision, None),
+            (MenuCompareRevisions, None),
             (MenuSeparator, None),
             (MenuOpen, None),
             (MenuAnnotate, None)
