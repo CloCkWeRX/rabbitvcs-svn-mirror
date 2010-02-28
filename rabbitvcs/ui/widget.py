@@ -595,6 +595,9 @@ class TextView:
     def set_text(self, text):
         self.buffer.set_text(text)
 
+    def append_text(self, text):
+        self.buffer.set_text(self.get_text() + text)
+
 class SourceView(TextView):
     def __init__(self, widget=None, value=""):
         if HAS_GTKSOURCEVIEW:
