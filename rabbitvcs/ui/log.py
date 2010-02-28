@@ -903,7 +903,7 @@ class LogBottomContextMenuCallbacks:
     
     def compare_revisions(self, widget, data=None):
         earliest_rev = self.revisions[0]["revision"].value
-        lastest_rev = self.revisions[-1]["revision"].value
+        latest_rev = self.revisions[-1]["revision"].value
         path_item = self.paths[0]
         url = self.caller.root_url + path_item
         self.caller.view_diff_for_path(url,
