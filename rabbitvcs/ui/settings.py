@@ -105,10 +105,7 @@ class Settings(InterfaceView):
 
         self._populate_checker_tab()
 
-    def _populate_checker_tab(self):
-        # This is a limitation of GLADE, and can be removed when we migrate to
-        # GTK2 Builder
-
+    def _get_checker_service(self):
         checker_service = None
         try:
             session_bus = dbus.SessionBus()
@@ -117,14 +114,19 @@ class Settings(InterfaceView):
                                     rabbitvcs.services.checkerservice.OBJECT_PATH)
         except dbus.DBusException, ex:
             rabbitvcs.ui.dialog.MessageBox(CHECKER_SERVICE_ERROR)
+        
+        return checker_service
 
+    def _populate_checker_tab(self):
+        # This is a limitation of GLADE, and can be removed when we migrate to
+        # GTK2 Builder
+
+        checker_service = self._get_checker_service()
         
         self.get_widget("restart_checker").set_image(
                                         gtk.image_new_from_stock(
                                             gtk.STOCK_EXECUTE,
                                             gtk.ICON_SIZE_BUTTON))
-
-        self.get_widget("restart_checker").set_sensitive(bool(checker_service))
 
         self.get_widget("refresh_info").set_image(
                                         gtk.image_new_from_stock(
@@ -150,8 +152,15 @@ class Settings(InterfaceView):
         self._populate_checker_tab()
             
     def on_stop_checker_clicked(self, widget):
-        if(self.checker_service):
-            self.checker_service.Quit()
+        checker_service = self._get_checker_service()
+        if(checker_service):
+            try:
+                checker_service.Quit()
+            except dbus.exceptions.DBusException:
+                # Ignore it, it will necessarily happen when we kill the service
+                pass
+        
+        self._populate_checker_tab()
 
     def on_destroy(self, widget):
         gtk.main_quit()
