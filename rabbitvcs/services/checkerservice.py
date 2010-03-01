@@ -186,11 +186,21 @@ class StatusCheckerStub:
                          (see the StatusCheckerPlus method documentation for
                          details)
         """
-        start()
-        
         self.session_bus = dbus.SessionBus()
         self.callback = callback
         
+        self.status_checker = None
+        
+        start()
+        self._connect_to_checker()
+    
+    def _connect_to_checker(self):
+
+        # Start the status checker, if it's not running this should start it up.
+        # Otherwise it leaves it alone.
+        # start()
+        
+        # Try to get a new checker
         try:
             self.status_checker = self.session_bus.get_object(SERVICE,
                                                               OBJECT_PATH)
@@ -201,7 +211,6 @@ class StatusCheckerStub:
         except dbus.DBusException, ex:
             # There is not much we should do about this...
             log.exception(ex)
-            raise
     
     def status_callback(self, *args, **kwargs):
         """ Notifies the callback of a completed status check.
@@ -235,6 +244,10 @@ class StatusCheckerStub:
                              "prop_status": "error"}}
             if summary:
                 status = (status, status)
+                
+            # Try to reconnect
+            self._connect_to_checker()
+                
         return status
     
 def start():
