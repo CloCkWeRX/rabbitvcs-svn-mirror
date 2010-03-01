@@ -109,7 +109,12 @@ class StatusChecker():
                                stdin = subprocess.PIPE,
                                stdout = subprocess.PIPE)
         statuses = cPickle.load(sc_process.stdout)
+        sc_process.stdout.close()
+        sc_process.stdin.close()
         return statuses
+    
+    def quit(self):
+        pass
 
 if __name__ == '__main__':
     # I have deliberately avoided rigourous input checking since this script is

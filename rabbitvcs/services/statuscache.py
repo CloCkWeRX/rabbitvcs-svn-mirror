@@ -333,6 +333,8 @@ class StatusCache():
         """
         self._alive.clear()
         self._paths_to_check.put(None)
+        self.worker.join()
+        self.checker.quit()
         
     def _status_update_loop(self):
         """ This loops until the status cache is "killed" (via the kill()

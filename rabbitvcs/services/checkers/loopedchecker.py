@@ -50,10 +50,17 @@ def Main():
     global log
     log = Log("rabbitvcs.statuschecker:PROCESS")
     
+    def interrupt_handler(*args):
+        log.debug("Checker loop interrupted, exiting")
+        sys.exit(0)
+    
+    # Upon interrupt, exit
+    signal.signal(signal.SIGINT, interrupt_handler)
+    
     vcs_client = rabbitvcs.lib.vcs.create_vcs_instance()
     pickler = cPickle.Pickler(sys.stdout, PICKLE_PROTOCOL)
     unpickler = cPickle.Unpickler(sys.stdin)
-    
+        
     while True:
         try:
             (path, recurse, summary) = unpickler.load()
@@ -153,8 +160,11 @@ class StatusChecker():
         return statuses
 
     def quit(self):
-        os.kill(self.sc_proc.pid, signal.SIGKILL)
-        sys.exit(0)
+        os.kill(self.sc_proc.pid, signal.SIGINT)
+        self.sc_proc.stdin.close()
+        self.sc_proc.stdout.close()
+        self.sc_proc.wait()
+        log.debug("Checker loop done.")
 
 if __name__ == '__main__':
     # I have deliberately avoided rigourous input checking since this script is

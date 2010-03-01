@@ -153,6 +153,7 @@ class StatusCheckerService(dbus.service.Object):
         log.debug("Quitting main loop...")
         self.mainloop.quit()
         
+        
 class StatusCheckerStub:
     """ StatusCheckerStub objects contain methods that call an actual status
     checker running in another process.
@@ -270,6 +271,8 @@ def Main():
     mainloop.run()
     
     log.debug("Checker: ended service: %s (%s)" % (OBJECT_PATH, os.getpid()))
+    
+    sys.exit(0)
 
 if __name__ == "__main__":
     rabbitvcs.util.locale.initialize_locale()

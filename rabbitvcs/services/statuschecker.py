@@ -82,3 +82,6 @@ class StatusChecker():
 
         return statuses
     
+    def kill(self):
+        # We will exit when the main process does
+        pass
