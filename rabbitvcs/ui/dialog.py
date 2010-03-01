@@ -30,6 +30,7 @@ import pango
 
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
+import rabbitvcs.ui.wraplabel
 import rabbitvcs.lib.helper
 
 GLADE = 'dialogs'
