@@ -196,11 +196,6 @@ class MenuItem(object):
             self.tooltip,
             self.icon 
         )
-        
-        if self.icon:
-            action.set_menu_item_type(gtk.ImageMenuItem)
-            menuitem = action.create_menu_item()
-            menuitem.set_image(gtk.image_new_from_icon_name(self.icon, gtk.ICON_SIZE_MENU))
             
         return action
         
