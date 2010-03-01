@@ -82,6 +82,12 @@ class StatusChecker():
 
         return statuses
     
-    def kill(self):
+    def get_memory_usage(self):
+        """ Returns any additional memory of any subprocesses used by this
+        checker. In other words, DO NOT return the memory usage of THIS process! 
+        """
+        return 0
+    
+    def quit(self):
         # We will exit when the main process does
         pass

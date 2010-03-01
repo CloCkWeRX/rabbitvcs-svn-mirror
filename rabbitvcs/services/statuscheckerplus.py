@@ -158,10 +158,18 @@ class StatusCheckerPlus():
         
         return statuses
         
-    def kill(self):
-        """ Stops operation of the cache. Future calls to check_status will just
-        get old information or a "calculating status", and callbacks will never
-        be called.
+    def get_memory_usage(self):
+        """ Returns any additional memory of any subprocesses used by this
+        checker. In other words, DO NOT return the memory usage of THIS process! 
+        """
+        return (self.checker.get_memory_usage()
+                + self.other_checker.get_memory_usage())        
+        
+        
+    def quit(self):
+        """ Stops operation of the checker. Future calls to check_status will
+        just get old information or a "calculating status", and callbacks will
+        never be called.
         
         This is here so that we can do necessary cleanup. There might be a GUI
         interface to kill the enclosing service at some later date.
@@ -173,14 +181,14 @@ class StatusCheckerPlus():
         self.other_checker.quit()
         
     def _status_update_loop(self):
-        """ This loops until the status cache is "killed" (via the kill()
+        """ This loops until the status cache is "killed" (via the quit()
         method), checking for new paths and doing the status check accordingly.
         """
-        # This loop will stop when the thread is killed via the kill() method
+        # This loop will stop when the thread is killed via the quit() method
         while self._alive.isSet():
             next = self._paths_to_check.get()
             
-            # This is a bit hackish, but basically when the kill method is
+            # This is a bit hackish, but basically when the quit method is
             # called, if we're idle we'll never know. This is a way of
             # interrupting the Queue.
             if next:

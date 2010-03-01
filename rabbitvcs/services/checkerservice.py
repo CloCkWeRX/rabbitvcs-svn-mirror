@@ -97,7 +97,10 @@ class StatusCheckerService(dbus.service.Object):
         
     @dbus.service.method(INTERFACE)
     def MemoryUsage(self):
-        return rabbitvcs.lib.helper.process_memory(os.getpid())
+        own_mem = rabbitvcs.lib.helper.process_memory(os.getpid())
+        checker_mem = self.status_checker.get_memory_usage() 
+        
+        return own_mem + checker_mem
         
     @dbus.service.method(INTERFACE)
     def PID(self):
@@ -152,7 +155,7 @@ class StatusCheckerService(dbus.service.Object):
         If calling this programmatically, then you can do "os.waitpid(pid, 0)"
         on the returned PID to prevent a zombie process.
         """
-        self.status_checker.kill()
+        self.status_checker.quit()
         log.debug("Quitting main loop...")
         self.mainloop.quit()
         return self.PID()

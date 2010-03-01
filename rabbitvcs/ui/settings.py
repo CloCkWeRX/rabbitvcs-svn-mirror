@@ -118,11 +118,11 @@ class Settings(InterfaceView):
         
         return checker_service
 
-    def _populate_checker_tab(self):
+    def _populate_checker_tab(self, report_failure=True):
         # This is a limitation of GLADE, and can be removed when we migrate to
         # GTK2 Builder
 
-        checker_service = self._get_checker_service()
+        checker_service = self._get_checker_service(report_failure)
         
         self.get_widget("restart_checker").set_image(
                                         gtk.image_new_from_stock(
@@ -179,7 +179,7 @@ class Settings(InterfaceView):
     
     def on_stop_checker_clicked(self, widget):
         self._stop_checker()
-        self._populate_checker_tab()
+        self._populate_checker_tab(report_failure=False)
 
     def on_destroy(self, widget):
         gtk.main_quit()

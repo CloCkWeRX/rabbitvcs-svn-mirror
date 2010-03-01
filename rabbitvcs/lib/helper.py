@@ -65,13 +65,15 @@ def process_memory(pid):
 
     (output, stdin) = psproc.communicate()
     
-    mem_in_kb = None
+    mem_in_kb = 0
     
     try:
         mem_in_kb = int(output)
     except ValueError:
         pass
-        
+
+    # log.debug("Memory for %i: %i" % (pid, mem_in_kb))
+
     return mem_in_kb
 
 def format_long_text(text, cols=None):

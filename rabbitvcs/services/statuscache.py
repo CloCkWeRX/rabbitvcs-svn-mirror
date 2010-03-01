@@ -323,7 +323,7 @@ class StatusCache():
         
         return statuses
         
-    def kill(self):
+    def quit(self):
         """ Stops operation of the cache. Future calls to check_status will just
         get old information or a "calculating status", and callbacks will never
         be called.
@@ -337,14 +337,14 @@ class StatusCache():
         self.checker.quit()
         
     def _status_update_loop(self):
-        """ This loops until the status cache is "killed" (via the kill()
+        """ This loops until the status cache is "killed" (via the quit()
         method), checking for new paths and doing the status check accordingly.
         """
-        # This loop will stop when the thread is killed via the kill() method
+        # This loop will stop when the thread is killed via the quit() method
         while self._alive.isSet():
             next = self._paths_to_check.get()
             
-            # This is a bit hackish, but basically when the kill method is
+            # This is a bit hackish, but basically when the quit method is
             # called, if we're idle we'll never know. This is a way of
             # interrupting the Queue.
             if next:

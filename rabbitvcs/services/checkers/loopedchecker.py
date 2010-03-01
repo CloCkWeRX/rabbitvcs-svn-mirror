@@ -26,6 +26,7 @@ import os, sys, signal
 import subprocess
 
 import rabbitvcs.lib.vcs
+import rabbitvcs.lib.helper
 
 import rabbitvcs.util.locale
 import rabbitvcs.util.vcs
@@ -158,6 +159,12 @@ class StatusChecker():
         self.sc_proc.stdin.flush()
         statuses = self.unpickler.load()
         return statuses
+
+    def get_memory_usage(self):
+        """ Returns any additional memory of any subprocesses used by this
+        checker. In other words, DO NOT return the memory usage of THIS process! 
+        """
+        return rabbitvcs.lib.helper.process_memory(self.sc_proc.pid)
 
     def quit(self):
         os.kill(self.sc_proc.pid, signal.SIGINT)
