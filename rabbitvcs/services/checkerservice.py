@@ -231,8 +231,10 @@ class StatusCheckerStub:
             # raise dbus.DBusException("Test")
         except dbus.DBusException, ex:
             log.exception(ex)
-            status = {path: {"text_status": "client_error",
-                             "prop_status": "client_error"}}
+            status = {path: {"text_status": "error",
+                             "prop_status": "error"}}
+            if summary:
+                status = (status, status)
         return status
     
 def start():
