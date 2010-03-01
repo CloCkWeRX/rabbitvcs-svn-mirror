@@ -168,6 +168,7 @@ class StatusCheckerPlus():
         """
         self._alive.clear()
         self._paths_to_check.put(None)
+        self.worker.join()
         self.checker.quit()
         self.other_checker.quit()
         

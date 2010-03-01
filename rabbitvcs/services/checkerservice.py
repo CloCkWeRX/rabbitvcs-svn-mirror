@@ -54,6 +54,7 @@ import dbus.mainloop.glib
 import dbus.service
 
 import rabbitvcs.util.locale
+import rabbitvcs.lib.helper
 import rabbitvcs.services.service
 from rabbitvcs.services.statuscheckerplus import StatusCheckerPlus
 
@@ -95,13 +96,13 @@ class StatusCheckerService(dbus.service.Object):
         self.status_checker = StatusCheckerPlus()
         
     @dbus.service.method(INTERFACE)
+    def MemoryUsage(self):
+        return rabbitvcs.lib.helper.process_memory(os.getpid())
+        
+    @dbus.service.method(INTERFACE)
     def PID(self):
         return os.getpid()
-    
-    @dbus.service.method(INTERFACE)
-    def MemoryUsage(self):
-        pass
-    
+        
     @dbus.service.method(INTERFACE)
     def CheckerType(self):
         return self.status_checker.CHECKER_NAME
@@ -193,9 +194,6 @@ class StatusCheckerStub:
             # There is not much we should do about this...
             log.exception(ex)
             raise
-    
-    def checker_type(self):
-        return self.status_checker.CheckerType()
     
     def status_callback(self, *args, **kwargs):
         """ Notifies the callback of a completed status check.

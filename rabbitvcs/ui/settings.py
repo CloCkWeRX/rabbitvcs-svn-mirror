@@ -142,16 +142,24 @@ class Settings(InterfaceView):
 
         if(checker_service):
             self.get_widget("checker_type").set_text(checker_service.CheckerType())
-        
             self.get_widget("pid").set_text(str(checker_service.PID()))
+            
+            memory = checker_service.MemoryUsage()
+                        
+            if memory:
+                self.get_widget("memory_usage").set_text("%s KB" % memory)
+            else:
+                self.get_widget("memory_usage").set_text(CHECKER_UNKNOWN_INFO)
+            
         else:
             self.get_widget("checker_type").set_text(CHECKER_UNKNOWN_INFO)
             self.get_widget("pid").set_text(CHECKER_UNKNOWN_INFO)
+            self.get_widget("memory_usage").set_text(CHECKER_UNKNOWN_INFO)
     
     def on_refresh_info_clicked(self, widget):
         self._populate_checker_tab()
-            
-    def on_stop_checker_clicked(self, widget):
+    
+    def _stop_checker(self):
         checker_service = self._get_checker_service()
         if(checker_service):
             try:
@@ -159,7 +167,14 @@ class Settings(InterfaceView):
             except dbus.exceptions.DBusException:
                 # Ignore it, it will necessarily happen when we kill the service
                 pass
-        
+    
+    def on_restart_checker_clicked(self, widget):
+        self._stop_checker()
+        rabbitvcs.services.checkerservice.start()
+        self._populate_checker_tab()
+    
+    def on_stop_checker_clicked(self, widget):
+        self._stop_checker()
         self._populate_checker_tab()
 
     def on_destroy(self, widget):

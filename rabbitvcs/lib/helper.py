@@ -52,6 +52,28 @@ LOCAL_DATETIME_FORMAT = locale.nl_langinfo(locale.D_T_FMT) # for UIs
 
 LINE_BREAK_CHAR = u'\u23CE'
 
+def process_memory(pid):
+    # ps -p 5205 -w -w -o rss --no-headers
+    psproc = subprocess.Popen(
+                            ["ps",
+                             "-p", str(pid),
+                             "-w", "-w",        # Extra-wide format
+                             "-o", "size",      # "Size" is probably the best all round
+                                                # memory measure.
+                             "--no-headers"],
+                             stdout=subprocess.PIPE)
+
+    (output, stdin) = psproc.communicate()
+    
+    mem_in_kb = None
+    
+    try:
+        mem_in_kb = int(output)
+    except ValueError:
+        pass
+        
+    return mem_in_kb
+
 def format_long_text(text, cols=None):
     """ Nicely formats text containing linebreaks to display in a single line
     by replacing newlines with U+23CE. If the param "cols" is given, the text
