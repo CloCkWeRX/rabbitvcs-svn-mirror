@@ -170,7 +170,11 @@ class Settings(InterfaceView):
                 # Ignore it, it will necessarily happen when we kill the service
                 pass
         if pid:
-            os.waitpid(pid, 0)
+            try:
+                os.waitpid(pid, 0)
+            except OSError:
+                # This occurs if the process is already gone.
+                pass
     
     def on_restart_checker_clicked(self, widget):
         self._stop_checker()
