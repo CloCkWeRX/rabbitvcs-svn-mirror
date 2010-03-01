@@ -148,10 +148,14 @@ class StatusCheckerService(dbus.service.Object):
         --dest=org.google.code.rabbitvcs.RabbitVCS.Checker \
         /org/google/code/rabbitvcs/StatusChecker \
         org.google.code.rabbitvcs.StatusChecker.Quit
+        
+        If calling this programmatically, then you can do "os.waitpid(pid, 0)"
+        on the returned PID to prevent a zombie process.
         """
         self.status_checker.kill()
         log.debug("Quitting main loop...")
         self.mainloop.quit()
+        return self.PID()
         
         
 class StatusCheckerStub:
@@ -257,7 +261,7 @@ def Main():
     
     mainloop = gobject.MainLoop()
      
-    StatusCheckerService(session_bus, mainloop)
+    checker_service = StatusCheckerService(session_bus, mainloop)
     
     # import cProfile
     # import rabbitvcs.lib.helper
@@ -271,8 +275,6 @@ def Main():
     mainloop.run()
     
     log.debug("Checker: ended service: %s (%s)" % (OBJECT_PATH, os.getpid()))
-    
-    sys.exit(0)
 
 if __name__ == "__main__":
     rabbitvcs.util.locale.initialize_locale()

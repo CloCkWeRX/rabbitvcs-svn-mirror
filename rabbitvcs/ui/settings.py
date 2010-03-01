@@ -105,7 +105,7 @@ class Settings(InterfaceView):
 
         self._populate_checker_tab()
 
-    def _get_checker_service(self):
+    def _get_checker_service(self, report_failure=True):
         checker_service = None
         try:
             session_bus = dbus.SessionBus()
@@ -113,7 +113,8 @@ class Settings(InterfaceView):
                                     rabbitvcs.services.checkerservice.SERVICE,
                                     rabbitvcs.services.checkerservice.OBJECT_PATH)
         except dbus.DBusException, ex:
-            rabbitvcs.ui.dialog.MessageBox(CHECKER_SERVICE_ERROR)
+            if report_failure:
+                rabbitvcs.ui.dialog.MessageBox(CHECKER_SERVICE_ERROR)
         
         return checker_service
 
@@ -160,13 +161,16 @@ class Settings(InterfaceView):
         self._populate_checker_tab()
     
     def _stop_checker(self):
-        checker_service = self._get_checker_service()
+        checker_service = self._get_checker_service(False)
+        pid = None
         if(checker_service):
             try:
-                checker_service.Quit()
+                pid = checker_service.Quit()
             except dbus.exceptions.DBusException:
                 # Ignore it, it will necessarily happen when we kill the service
                 pass
+        if pid:
+            os.waitpid(pid, 0)
     
     def on_restart_checker_clicked(self, widget):
         self._stop_checker()
