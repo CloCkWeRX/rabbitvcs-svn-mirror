@@ -25,6 +25,7 @@ import os
 import pygtk
 import gobject
 import gtk
+import pango
 import dbus
 
 from rabbitvcs.ui import InterfaceView
@@ -152,10 +153,57 @@ class Settings(InterfaceView):
             else:
                 self.get_widget("memory_usage").set_text(CHECKER_UNKNOWN_INFO)
             
+            self._populate_info_table(checker_service.ExtraInformation())
+            
         else:
             self.get_widget("checker_type").set_text(CHECKER_UNKNOWN_INFO)
             self.get_widget("pid").set_text(CHECKER_UNKNOWN_INFO)
             self.get_widget("memory_usage").set_text(CHECKER_UNKNOWN_INFO)
+            self._clear_info_table()
+
+    def _clear_info_table(self):
+        table = self.get_widget("info_table")
+        for info_label in table:
+            info_label.destroy()
+    
+        table.resize(1, 2)
+    
+    def _populate_info_table(self, info):
+        self._clear_info_table()
+        
+        table = self.get_widget("info_table")
+        
+        row = 0
+        
+        key_attrs = pango.AttrList()
+        key_attrs.insert(pango.AttrWeight(pango.WEIGHT_BOLD))
+        
+        table.resize(len(info), 2)
+        
+        for key, value in info.items():
+            
+            label_key = gtk.Label("<b>%s:</b>" % key)
+            label_key.set_properties(xalign=0, use_markup=True)
+            
+            label_value = gtk.Label(value)
+            label_value.set_properties(xalign=0)
+            
+            table.attach(label_key,
+                         0,1,
+                         row, row+1,
+                         xoptions=gtk.FILL)
+
+            table.attach(label_value,
+                         1,2,
+                         row, row+1,
+                         xoptions=gtk.FILL)
+            
+            label_key.show()
+            label_value.show()
+            
+            row += 1
+    
+        # table.show()
     
     def on_refresh_info_clicked(self, widget):
         self._populate_checker_tab()

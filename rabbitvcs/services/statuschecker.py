@@ -82,6 +82,9 @@ class StatusChecker():
 
         return statuses
     
+    def extra_info(self):
+        return None
+    
     def get_memory_usage(self):
         """ Returns any additional memory of any subprocesses used by this
         checker. In other words, DO NOT return the memory usage of THIS process! 

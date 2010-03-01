@@ -323,6 +323,18 @@ class StatusCache():
         
         return statuses
         
+    def extra_info(self):
+        return {
+                _("Asynchronous checker PID"): self.checker.get_extra_PID(),
+                _("Number of items in cache"): self.len(self._status_tree)
+                }
+
+    def get_memory_usage(self):
+        """ Returns any additional memory of any subprocesses used by this
+        checker. In other words, DO NOT return the memory usage of THIS process! 
+        """
+        return self.checker.get_memory_usage()    
+
     def quit(self):
         """ Stops operation of the cache. Future calls to check_status will just
         get old information or a "calculating status", and callbacks will never

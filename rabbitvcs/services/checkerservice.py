@@ -94,7 +94,11 @@ class StatusCheckerService(dbus.service.Object):
         # Start the status checking daemon so we can do requests in the
         # background
         self.status_checker = StatusCheckerPlus()
-        
+    
+    @dbus.service.method(INTERFACE)
+    def ExtraInformation(self):
+        return self.status_checker.extra_info()
+    
     @dbus.service.method(INTERFACE)
     def MemoryUsage(self):
         own_mem = rabbitvcs.lib.helper.process_memory(os.getpid())

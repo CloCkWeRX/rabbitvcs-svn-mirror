@@ -166,6 +166,9 @@ class StatusChecker():
         """
         return rabbitvcs.lib.helper.process_memory(self.sc_proc.pid)
 
+    def get_extra_PID(self):
+        return self.sc_proc.pid
+
     def quit(self):
         os.kill(self.sc_proc.pid, signal.SIGINT)
         self.sc_proc.stdin.close()

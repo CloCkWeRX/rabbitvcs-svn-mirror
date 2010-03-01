@@ -158,6 +158,12 @@ class StatusCheckerPlus():
         
         return statuses
         
+    def extra_info(self):
+        return {
+                _("Synchronous checker PID"): self.checker.get_extra_PID(),
+                _("Asynchronous checker PID"): self.other_checker.get_extra_PID()
+                }
+    
     def get_memory_usage(self):
         """ Returns any additional memory of any subprocesses used by this
         checker. In other words, DO NOT return the memory usage of THIS process! 
