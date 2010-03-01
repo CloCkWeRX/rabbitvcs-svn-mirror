@@ -194,11 +194,13 @@ class MenuItem(object):
             identifier,
             self.label,
             self.tooltip,
-            self.icon,
+            self.icon 
         )
         
         if self.icon:
-            action.set_icon_name(self.icon)
+            action.set_menu_item_type(gtk.ImageMenuItem)
+            menuitem = action.create_menu_item()
+            menuitem.set_image(gtk.image_new_from_icon_name(self.icon, gtk.ICON_SIZE_MENU))
             
         return action
         
@@ -659,6 +661,7 @@ class ThunarAction(gtk.Action):
     def __init__(self, name, label, tooltip, stock_id):
         gtk.Action.__init__(self, name, label, tooltip, stock_id)
         self.sub_actions = None
+        self.stock_id = stock_id
 
     def __repr__(self):
         return self.get_name()
@@ -668,11 +671,13 @@ class ThunarAction(gtk.Action):
 
     def do_create_menu_item(self):
         menu_item = gtk.ImageMenuItem()
-        
+        if self.stock_id:
+            menu_item.set_image(gtk.image_new_from_icon_name(self.stock_id, gtk.ICON_SIZE_MENU))
+
         if self.sub_actions is not None:
             menu = gtk.Menu()
             menu_item.set_submenu(menu)
-            
+
             for sub_action in self.sub_actions:
                 subitem = sub_action.create_menu_item()
                 menu.append(subitem)
