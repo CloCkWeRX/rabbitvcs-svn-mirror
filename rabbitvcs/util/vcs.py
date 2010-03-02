@@ -27,7 +27,7 @@ def condense_statuses(path, statuses):
         # This indicates a serious deviation from our expected API
         status = "error"
     
-    elif "client_error" in status_set:
+    elif "error" in status_set:
         status = "error"
 
     # We need to take special care of directories
