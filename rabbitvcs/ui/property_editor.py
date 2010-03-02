@@ -36,9 +36,9 @@ import gobject
 import gtk
 import gnomevfs
 
-from wraplabel import WrapLabel
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.lib.contextmenu import GtkContextMenu, GtkContextMenuCaller
+import rabbitvcs.ui.wraplabel
 import rabbitvcs.lib.contextmenuitems
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
@@ -85,7 +85,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         '''
         InterfaceView.__init__(self, "property_editor", "PropertyEditor")
         
-        note = WrapLabel(PROP_EDITOR_NOTE)
+        note = rabbitvcs.ui.wraplabel.WrapLabel(PROP_EDITOR_NOTE)
         note.set_use_markup(True)
         
         self.get_widget("note_box").pack_start(note)        
