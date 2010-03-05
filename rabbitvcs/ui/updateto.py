@@ -51,7 +51,8 @@ class UpdateToRevision(InterfaceView):
             self.vcs,
             revision=revision,
             url=self.path,
-            expand=True
+            expand=True,
+            revision_changed_callback=self.on_revision_changed
         )
 
     def on_destroy(self, widget):
@@ -65,24 +66,46 @@ class UpdateToRevision(InterfaceView):
         revision = self.revision_selector.get_revision_object()
         recursive = self.get_widget("recursive").get_active()
         omit_externals = self.get_widget("omit_externals").get_active()
+        rollback = self.get_widget("rollback").get_active()
 
         self.action = VCSAction(
             self.vcs,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         
-        self.action.append(self.action.set_header, _("Update To Revision"))
-        self.action.append(self.action.set_status, _("Updating..."))
-        self.action.append(
-            self.vcs.update, 
-            self.path,
-            revision=revision,
-            recurse=recursive,
-            ignore_externals=omit_externals
-        )
-        self.action.append(self.action.set_status, _("Completed Update"))
+        if rollback:
+            self.action.append(self.action.set_header, _("Rollback To Revision"))
+            self.action.append(self.action.set_status, _("Rolling Back..."))
+            self.action.append(
+                self.vcs.merge_ranges, 
+                self.vcs.get_repo_url(self.path),
+                [(self.vcs.revision("HEAD").primitive(), revision.primitive())],
+                self.vcs.revision("head"),
+                self.path
+            )
+            self.action.append(self.action.set_status, _("Completed Rollback"))
+        else:
+            self.action.append(self.action.set_header, _("Update To Revision"))
+            self.action.append(self.action.set_status, _("Updating..."))
+            self.action.append(
+                self.vcs.update, 
+                self.path,
+                revision=revision,
+                recurse=recursive,
+                ignore_externals=omit_externals
+            )
+            self.action.append(self.action.set_status, _("Completed Update"))
+            
         self.action.append(self.action.finish)
         self.action.start()
+
+    def on_revision_changed(self, revision_selector):
+        # Only allow rollback when a revision number is specified
+        if (revision_selector.revision_kind_opt.get_active() == 1
+                and revision_selector.revision_entry.get_text() != ""):
+            self.get_widget("rollback").set_sensitive(True)
+        else:
+            self.get_widget("rollback").set_sensitive(False)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main, REVISION_OPT

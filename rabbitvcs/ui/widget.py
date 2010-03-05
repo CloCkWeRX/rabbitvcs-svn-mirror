@@ -662,7 +662,8 @@ class RevisionSelector:
     ]
 
     def __init__(self, container, client, revision=None, 
-            url_combobox=None, url_entry=None, url=None, expand=False):
+            url_combobox=None, url_entry=None, url=None, expand=False,
+            revision_changed_callback=None):
         """
         @type   container: A gtk container object (i.e. HBox, VBox, Box)
         @param  container: The container that to add this widget
@@ -691,6 +692,7 @@ class RevisionSelector:
         self.url_combobox = url_combobox
         self.url_entry = url_entry
         self.url = url
+        self.revision_changed_callback = revision_changed_callback
     
         hbox = gtk.HBox(0, 4)
         
@@ -700,6 +702,7 @@ class RevisionSelector:
         hbox.pack_start(self.revision_kind_opt.cb, False, False, 0)
         
         self.revision_entry = gtk.Entry()
+        self.revision_entry.connect("changed", self.__revision_entry_changed)
         hbox.pack_start(self.revision_entry, expand, expand, 0)
         
         self.revision_browse = gtk.Button()
@@ -735,8 +738,15 @@ class RevisionSelector:
             self.revision_entry.set_text(data)
 
     def __revision_kind_changed(self, widget):
-        self.determine_widget_sensitivity()            
-    
+        self.determine_widget_sensitivity()
+        
+        if self.revision_changed_callback:
+            self.revision_changed_callback(self)
+
+    def __revision_entry_changed(self, widget):
+        if self.revision_changed_callback:
+            self.revision_changed_callback(self)
+
     def determine_widget_sensitivity(self):
         index = self.revision_kind_opt.get_active()
 
