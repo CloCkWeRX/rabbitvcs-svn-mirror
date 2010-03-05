@@ -27,11 +27,11 @@ from collections import deque
 import gtk
 import gobject
 
-from rabbitvcs.lib.vcs import create_vcs_instance
-from rabbitvcs.lib.log import Log
+from rabbitvcs.vcs import create_vcs_instance
+from rabbitvcs.util.log import Log
 from rabbitvcs import gettext
-from rabbitvcs.lib.settings import SettingsManager
-import rabbitvcs.lib.helper
+from rabbitvcs.util.settings import SettingsManager
+import rabbitvcs.util.helper
 
 # Yes, * imports are bad. You write it out then.
 from contextmenuitems import *
@@ -101,7 +101,7 @@ class MenuBuilder(object):
         last_item = last_menuitem = None        
 
         stack = [] # ([items], last_item, last_menuitem)
-        flat_structure = rabbitvcs.lib.helper.walk_tree_depth_first(
+        flat_structure = rabbitvcs.util.helper.walk_tree_depth_first(
                                 structure,
                                 show_levels=True,
                                 preprocess=lambda x: x(conditions, callbacks),
@@ -264,7 +264,7 @@ class ContextMenuCallbacks:
         @type   base_dir: string
 
         @param  vcs_client: The vcs client to be used
-        @type   vcs_client: rabbitvcs.lib.vcs.create_vcs_instance()
+        @type   vcs_client: rabbitvcs.vcs.create_vcs_instance()
         
         @param  paths: The selected paths
         @type   paths: list
@@ -339,104 +339,104 @@ class ContextMenuCallbacks:
     # End debugging callbacks
 
     def checkout(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("checkout", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("checkout", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
     
     def update(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("update", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("update", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def commit(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("commit", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("commit", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def add(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("add", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("add", self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def check_for_modifications(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("checkmods", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("checkmods", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def delete(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("delete", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("delete", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def revert(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("revert", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("revert", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def diff(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("diff", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("diff", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def diff_multiple(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("diff", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("diff", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def diff_previous_revision(self, widget, data1=None, data2=None):
         previous_revision_number = self.vcs_client.get_revision(self.paths[0]) - 1
     
-        pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.vcs_client.get_repo_url(self.paths[0]), previous_revision_number)
-        pathrev2 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "working")
+        pathrev1 = rabbitvcs.util.helper.create_path_revision_string(self.vcs_client.get_repo_url(self.paths[0]), previous_revision_number)
+        pathrev2 = rabbitvcs.util.helper.create_path_revision_string(self.paths[0], "working")
 
-        proc = rabbitvcs.lib.helper.launch_ui_window("diff", [pathrev1, pathrev2])
+        proc = rabbitvcs.util.helper.launch_ui_window("diff", [pathrev1, pathrev2])
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def compare_tool(self, widget, data1=None, data2=None):
-        pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "base")
-        pathrev2 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "working")
+        pathrev1 = rabbitvcs.util.helper.create_path_revision_string(self.paths[0], "base")
+        pathrev2 = rabbitvcs.util.helper.create_path_revision_string(self.paths[0], "working")
 
-        proc = rabbitvcs.lib.helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
+        proc = rabbitvcs.util.helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def compare_tool_multiple(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("diff", ["-s"] + self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("diff", ["-s"] + self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def compare_tool_previous_revision(self, widget, data1=None, data2=None):
         previous_revision_number = self.vcs_client.get_revision(self.paths[0]) - 1
 
-        pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.vcs_client.get_repo_url(self.paths[0]), previous_revision_number)
-        pathrev2 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0], "working")
+        pathrev1 = rabbitvcs.util.helper.create_path_revision_string(self.vcs_client.get_repo_url(self.paths[0]), previous_revision_number)
+        pathrev2 = rabbitvcs.util.helper.create_path_revision_string(self.paths[0], "working")
 
-        proc = rabbitvcs.lib.helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
+        proc = rabbitvcs.util.helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def show_changes(self, widget, data1=None, data2=None):
-        pathrev1 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[0])
+        pathrev1 = rabbitvcs.util.helper.create_path_revision_string(self.paths[0])
         pathrev2 = pathrev1
         if len(self.paths) == 2:
-            pathrev2 = rabbitvcs.lib.helper.create_path_revision_string(self.paths[1])
+            pathrev2 = rabbitvcs.util.helper.create_path_revision_string(self.paths[1])
         
-        proc = rabbitvcs.lib.helper.launch_ui_window("changes", [pathrev1, pathrev2])
+        proc = rabbitvcs.util.helper.launch_ui_window("changes", [pathrev1, pathrev2])
         self.caller.rescan_after_process_exit(proc, self.paths)
     
     def show_log(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("log", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("log", self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def rename(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("rename", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("rename", self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def create_patch(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("createpatch", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("createpatch", self.paths)
         self.caller.execute_after_process_exit(proc)
     
     def apply_patch(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("applypatch", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("applypatch", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
     
     def properties(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("property_editor", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("property_editor", self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def about(self, widget, data1=None, data2=None):
-        rabbitvcs.lib.helper.launch_ui_window("about")
+        rabbitvcs.util.helper.launch_ui_window("about")
         
     def settings(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("settings")
+        proc = rabbitvcs.util.helper.launch_ui_window("settings")
         self.caller.reload_settings(proc)
 
     def ignore_by_filename(self, widget, data1=None, data2=None):
@@ -451,7 +451,7 @@ class ContextMenuCallbacks:
 
     def ignore_by_file_extension(self, widget, data1=None, data2=None):
         prop_name = self.vcs_client.PROPERTIES["ignore"]
-        prop_value = "*%s" % rabbitvcs.lib.helper.get_file_extension(self.paths[0])            
+        prop_value = "*%s" % rabbitvcs.util.helper.get_file_extension(self.paths[0])            
         self.vcs_client.propset(
             self.base_dir,
             prop_name,
@@ -460,59 +460,59 @@ class ContextMenuCallbacks:
         )
 
     def get_lock(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("lock", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("lock", self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def branch_tag(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("branch", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("branch", self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def switch(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("switch", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("switch", self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def merge(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("merge", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("merge", self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def _import(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("import", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("import", self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def export(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("export", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("export", self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def update_to_revision(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("updateto", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("updateto", self.paths)
         self.caller.execute_after_process_exit(proc)
     
     def resolve(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("resolve", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("resolve", self.paths)
         self.caller.execute_after_process_exit(proc)
         
     def annotate(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("annotate", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("annotate", self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def unlock(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("unlock", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("unlock", self.paths)
         self.caller.execute_after_process_exit(proc)
         
     def create_repository(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("create", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("create", self.paths)
         self.caller.execute_after_process_exit(proc)
     
     def relocate(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("relocate", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("relocate", self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def cleanup(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("cleanup", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("cleanup", self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def restore(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("update", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("update", self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def _open(self, widget, data1=None, data2=None):
@@ -527,7 +527,7 @@ class ContextMenuCallbacks:
         if self.vcs_client.is_versioned(path):
             url = self.vcs_client.get_repo_url(path)        
     
-        proc = rabbitvcs.lib.helper.launch_ui_window("browser", [url])
+        proc = rabbitvcs.util.helper.launch_ui_window("browser", [url])
 
 
 class ContextMenuConditions:
@@ -845,7 +845,7 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
         @type   base_dir: string
 
         @param  vcs_client: The vcs client to be used
-        @type   vcs_client: rabbitvcs.lib.vcs.create_vcs_instance()
+        @type   vcs_client: rabbitvcs.vcs.create_vcs_instance()
         
         @param  paths: The selected paths
         @type   paths: list
@@ -855,18 +855,18 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
 
     def _open(self, widget, data1=None, data2=None):
         for path in self.paths:
-            rabbitvcs.lib.helper.open_item(path)
+            rabbitvcs.util.helper.open_item(path)
 
     def add(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("add", ["-q"] + self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("add", ["-q"] + self.paths)
         self.caller.execute_after_process_exit(proc)
 
     def revert(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("revert", ["-q"] + self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("revert", ["-q"] + self.paths)
         self.caller.execute_after_process_exit(proc)
     
     def browse_to(self, widget, data1=None, data2=None):
-        rabbitvcs.lib.helper.browse_to_item(self.paths[0])
+        rabbitvcs.util.helper.browse_to_item(self.paths[0])
 
     def delete(self, widget, data1=None, data2=None):
         if len(self.paths) > 0:
@@ -890,7 +890,7 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
     def ignore_by_file_extension(self, widget, data1=None, data2=None):
         for path in self.paths:
             prop_name = self.vcs_client.PROPERTIES["ignore"]
-            prop_value = "*%s" % rabbitvcs.lib.helper.get_file_extension(path)            
+            prop_value = "*%s" % rabbitvcs.util.helper.get_file_extension(path)            
             self.vcs_client.propset(
                 self.base_dir,
                 prop_name,
@@ -901,7 +901,7 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
         self.caller.reload_treeview()
    
     def update(self, data1=None, data2=None):
-        proc = rabbitvcs.lib.helper.launch_ui_window("update", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("update", self.paths)
         self.caller.execute_after_process_exit(proc)
     
     def unlock(self, data1=None, data2=None):
@@ -926,7 +926,7 @@ class GtkFilesContextMenuConditions(ContextMenuConditions):
     def __init__(self, vcs_client, paths=[]):
         """    
         @param  vcs_client: The vcs client to be used
-        @type   vcs_client: rabbitvcs.lib.vcs.create_vcs_instance()
+        @type   vcs_client: rabbitvcs.vcs.create_vcs_instance()
         
         @param  paths: The selected paths
         @type   paths: list
@@ -1046,7 +1046,7 @@ class MainContextMenuCallbacks(ContextMenuCallbacks):
         @type   base_dir: string
 
         @param  vcs_client: The vcs client to be used
-        @type   vcs_client: rabbitvcs.lib.vcs.create_vcs_instance()
+        @type   vcs_client: rabbitvcs.vcs.create_vcs_instance()
         
         @param  paths: The selected paths
         @type   paths: list
@@ -1064,7 +1064,7 @@ class MainContextMenuConditions(ContextMenuConditions):
     def __init__(self, vcs_client, paths=[]):
         """    
         @param  vcs_client: The vcs client to be used
-        @type   vcs_client: rabbitvcs.lib.vcs.create_vcs_instance()
+        @type   vcs_client: rabbitvcs.vcs.create_vcs_instance()
         
         @param  paths: The selected paths
         @type   paths: list

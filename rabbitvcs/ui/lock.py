@@ -29,13 +29,13 @@ import gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import VCSAction
-from rabbitvcs.lib.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
+from rabbitvcs.util.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
 from rabbitvcs.ui.log import LogDialog
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
-import rabbitvcs.lib.vcs
-import rabbitvcs.lib.helper
-from rabbitvcs.lib.log import Log
+import rabbitvcs.vcs
+import rabbitvcs.util.helper
+from rabbitvcs.util.log import Log
 
 log = Log("rabbitvcs.ui.lock")
 
@@ -63,7 +63,7 @@ class Lock(InterfaceView, GtkContextMenuCaller):
 
         self.paths = paths
         self.base_dir = base_dir
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
 
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
@@ -130,7 +130,7 @@ class Lock(InterfaceView, GtkContextMenuCaller):
             self.files_table.append([
                 False, 
                 item.path, 
-                rabbitvcs.lib.helper.get_file_extension(item.path),
+                rabbitvcs.util.helper.get_file_extension(item.path),
                 locked
             ])
 
@@ -166,7 +166,7 @@ class Lock(InterfaceView, GtkContextMenuCaller):
         
         self.action.append(self.action.set_header, _("Get Lock"))
         self.action.append(self.action.set_status, _("Running Lock Command..."))
-        self.action.append(rabbitvcs.lib.helper.save_log_message, message)
+        self.action.append(rabbitvcs.util.helper.save_log_message, message)
         for path in items:
             self.action.append(
                 self.vcs.lock, 

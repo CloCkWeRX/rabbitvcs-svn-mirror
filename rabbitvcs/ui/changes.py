@@ -27,9 +27,9 @@ import gtk
 
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
-import rabbitvcs.lib.helper
-from rabbitvcs.lib.contextmenu import GtkContextMenu
-from rabbitvcs.lib.contextmenuitems import *
+import rabbitvcs.util.helper
+from rabbitvcs.util.contextmenu import GtkContextMenu
+from rabbitvcs.util.contextmenuitems import *
 from rabbitvcs.ui.log import LogDialog
 from rabbitvcs.ui.action import VCSAction
 from rabbitvcs.ui.dialog import MessageBox
@@ -54,7 +54,7 @@ class Changes(InterfaceView):
     def __init__(self, path1=None, revision1=None, path2=None, revision2=None):
         InterfaceView.__init__(self, "changes", "Changes")
         
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
 
         self.MORE_ACTIONS_CALLBACKS = [
             None,
@@ -67,7 +67,7 @@ class Changes(InterfaceView):
         )
         self.more_actions.set_active(0)
 
-        repo_paths = rabbitvcs.lib.helper.get_repository_paths()
+        repo_paths = rabbitvcs.util.helper.get_repository_paths()
         self.first_urls = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("first_urls"), 
             repo_paths
@@ -256,8 +256,8 @@ class Changes(InterfaceView):
             second_url,
             second_rev
         )
-        self.action.append(rabbitvcs.lib.helper.save_repository_path, first_url)
-        self.action.append(rabbitvcs.lib.helper.save_repository_path, second_url)
+        self.action.append(rabbitvcs.util.helper.save_repository_path, first_url)
+        self.action.append(rabbitvcs.util.helper.save_repository_path, second_url)
         self.action.append(self.populate_table)
         self.action.append(self.enable_more_actions)
         self.action.start()
@@ -297,7 +297,7 @@ class Changes(InterfaceView):
             dest,
             revision=revision
         )
-        self.action.append(rabbitvcs.lib.helper.open_item, dest)
+        self.action.append(rabbitvcs.util.helper.open_item, dest)
         self.action.start()
     
     def view_selected_diff(self, sidebyside=False):
@@ -308,8 +308,8 @@ class Changes(InterfaceView):
             url1 = ""
             url2 = ""
 
-        url1 = rabbitvcs.lib.helper.url_join(self.first_urls.get_active_text(), url1)
-        url2 = rabbitvcs.lib.helper.url_join(self.second_urls.get_active_text(), url2)
+        url1 = rabbitvcs.util.helper.url_join(self.first_urls.get_active_text(), url1)
+        url2 = rabbitvcs.util.helper.url_join(self.second_urls.get_active_text(), url2)
         rev1 = self.get_first_revision()
         rev2 = self.get_second_revision()
 
@@ -413,7 +413,7 @@ class ChangesContextMenuCallbacks:
         if path == ".":
             path = ""
 
-        url = rabbitvcs.lib.helper.url_join(self.caller.first_urls.get_active_text(), path)
+        url = rabbitvcs.util.helper.url_join(self.caller.first_urls.get_active_text(), path)
         rev = self.caller.get_first_revision()
         dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(url)
         self.caller.open_item_from_revision(url, rev, dest)
@@ -423,7 +423,7 @@ class ChangesContextMenuCallbacks:
         if path == ".":
             path = ""
         
-        url = rabbitvcs.lib.helper.url_join(self.caller.second_urls.get_active_text(), path)
+        url = rabbitvcs.util.helper.url_join(self.caller.second_urls.get_active_text(), path)
         rev = self.caller.get_second_revision()
         dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(url)
         self.caller.open_item_from_revision(url, rev, dest)
@@ -438,8 +438,8 @@ class ChangesContextMenuCallbacks:
             url1 = ""
             url2 = ""
 
-        url1 = rabbitvcs.lib.helper.url_join(self.caller.first_urls.get_active_text(), url1)
-        url2 = rabbitvcs.lib.helper.url_join(self.caller.second_urls.get_active_text(), url2)
+        url1 = rabbitvcs.util.helper.url_join(self.caller.first_urls.get_active_text(), url1)
+        url2 = rabbitvcs.util.helper.url_join(self.caller.second_urls.get_active_text(), url2)
         rev1 = self.caller.get_first_revision()
         rev2 = self.caller.get_second_revision()
         
@@ -471,7 +471,7 @@ class ChangesContextMenu:
         """        
         self.caller = caller
         self.event = event
-        self.vcs_client = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs_client = rabbitvcs.vcs.create_vcs_instance()
 
         self.conditions = ChangesContextMenuConditions(
             self.caller,
@@ -507,10 +507,10 @@ if __name__ == "__main__":
         usage="Usage: rabbitvcs changes [url1@rev1] [url2@rev2]"
     )
     
-    pathrev1 = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
+    pathrev1 = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
     pathrev2 = (None, None)
     if len(args) > 0:
-        pathrev2 = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
+        pathrev2 = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
 
     window = Changes(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])
     window.register_gtk_quit()

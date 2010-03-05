@@ -35,10 +35,10 @@ from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import VCSAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
-import rabbitvcs.lib
-import rabbitvcs.lib.helper
-from rabbitvcs.lib.helper import get_common_directory
-from rabbitvcs.lib.log import Log
+import rabbitvcs.util
+import rabbitvcs.util.helper
+from rabbitvcs.util.helper import get_common_directory
+from rabbitvcs.util.log import Log
 from rabbitvcs.ui.commit import Commit
 
 log = Log("rabbitvcs.ui.createpatch")
@@ -72,8 +72,8 @@ class CreatePatch(Commit):
 
         self.paths = paths
         self.base_dir = base_dir
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
-        self.common = rabbitvcs.lib.helper.get_common_directory(paths)
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.common = rabbitvcs.util.helper.get_common_directory(paths)
         self.activated_cache = {}
 
         if not self.vcs.get_versioned_path(self.common):
@@ -166,7 +166,7 @@ class CreatePatch(Commit):
            
             # Add to the Patch file only the selected items
             for item in patch_items:
-                rel_path = rabbitvcs.lib.helper.get_relative_path(base_dir, item)
+                rel_path = rabbitvcs.util.helper.get_relative_path(base_dir, item)
                 diff_text = self.vcs.diff(
                     temp_dir, 
                     rel_path, 
@@ -189,7 +189,7 @@ class CreatePatch(Commit):
         self.action.start()
         
         # TODO: Open the diff file (meld is going to add support in a future version :()
-        # rabbitvcs.lib.helper.launch_diff_tool(path)
+        # rabbitvcs.util.helper.launch_diff_tool(path)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main, BASEDIR_OPT

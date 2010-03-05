@@ -33,7 +33,7 @@ be specified in the user's settings.  So to set up your module to log do the
 following:
 
 Usage:
-    from rabbitvcs.lib.log import Log
+    from rabbitvcs.util.log import Log
 
     log = Log("my.module")
     log.debug("a debug message")
@@ -45,7 +45,7 @@ from os.path import expanduser
 import logging
 import logging.handlers
 
-from rabbitvcs.lib.settings import SettingsManager, get_home_folder
+from rabbitvcs.util.settings import SettingsManager, get_home_folder
 
 LEVELS = {
     "debug":    logging.DEBUG,

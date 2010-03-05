@@ -43,7 +43,7 @@ class Update(InterfaceNonView):
 
     def __init__(self, paths):
         self.paths = paths
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
 
     def start(self):
         self.action = VCSAction(

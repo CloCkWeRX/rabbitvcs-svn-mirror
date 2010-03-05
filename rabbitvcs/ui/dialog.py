@@ -31,7 +31,7 @@ import pango
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.wraplabel
-import rabbitvcs.lib.helper
+import rabbitvcs.util.helper
 
 GLADE = 'dialogs'
 
@@ -53,14 +53,14 @@ class PreviousMessages(InterfaceView):
             [gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [_("Date"), _("Message")]
         )
-        self.entries = rabbitvcs.lib.helper.get_previous_messages()
+        self.entries = rabbitvcs.util.helper.get_previous_messages()
         if self.entries is None:
             return None
         
         for entry in self.entries:
             tmp = entry[1]
             
-            tmp = rabbitvcs.lib.helper.format_long_text(tmp, 80)
+            tmp = rabbitvcs.util.helper.format_long_text(tmp, 80)
         
             self.message_table.append([entry[0],tmp])
         

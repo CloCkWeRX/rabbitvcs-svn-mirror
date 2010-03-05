@@ -3,7 +3,7 @@ from os.path import isdir, isfile, realpath, basename
 
 import pysvn
 
-from rabbitvcs.lib.log import Log
+from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.util.vcs")
 
 

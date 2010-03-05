@@ -28,7 +28,7 @@ import subprocess
 
 import dbus
 
-from rabbitvcs.lib.log import Log
+from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.services.service")
 
 def start_service(script_file, dbus_service_name, dbus_object_path):

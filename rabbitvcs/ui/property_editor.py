@@ -37,15 +37,15 @@ import gtk
 import gnomevfs
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.lib.contextmenu import GtkContextMenu, GtkContextMenuCaller
+from rabbitvcs.util.contextmenu import GtkContextMenu, GtkContextMenuCaller
 import rabbitvcs.ui.wraplabel
-import rabbitvcs.lib.contextmenuitems
+import rabbitvcs.util.contextmenuitems
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
-import rabbitvcs.lib.vcs
-from rabbitvcs.lib.helper import format_long_text
-from rabbitvcs.lib.vcs.svn import Revision
-from rabbitvcs.lib.log import Log
+import rabbitvcs.vcs
+from rabbitvcs.util.helper import format_long_text
+from rabbitvcs.vcs.svn import Revision
+from rabbitvcs.util.log import Log
 
 log = Log("rabbitvcs.ui.property_editor")
 
@@ -63,11 +63,11 @@ Do you want to delete the selected properties from all files and subdirectories
 beneath this directory?""") 
 
 PROP_MENU_STRUCTURE = [
-    (rabbitvcs.lib.contextmenuitems.PropMenuEdit, None),
-    (rabbitvcs.lib.contextmenuitems.PropMenuRevert, None),
-    (rabbitvcs.lib.contextmenuitems.PropMenuRevertRecursive, None),
-    (rabbitvcs.lib.contextmenuitems.PropMenuDelete, None),
-    (rabbitvcs.lib.contextmenuitems.PropMenuDeleteRecursive, None)]
+    (rabbitvcs.util.contextmenuitems.PropMenuEdit, None),
+    (rabbitvcs.util.contextmenuitems.PropMenuRevert, None),
+    (rabbitvcs.util.contextmenuitems.PropMenuRevertRecursive, None),
+    (rabbitvcs.util.contextmenuitems.PropMenuDelete, None),
+    (rabbitvcs.util.contextmenuitems.PropMenuDeleteRecursive, None)]
 
 class PropEditor(InterfaceView, GtkContextMenuCaller):
     '''
@@ -95,7 +95,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         
         self.get_widget("wc_text").set_text(gnomevfs.get_uri_from_local_path(os.path.realpath(path)))
                 
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
                 
         if not self.vcs.is_versioned(self.path):
             rabbitvcs.ui.dialog.MessageBox(_("File is not under version control."))

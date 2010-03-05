@@ -20,12 +20,12 @@ Very simple status checking class. Useful when you can't get any of the others
 to work, or you need to prototype things. 
 """
 
-import rabbitvcs.lib.vcs
+import rabbitvcs.vcs
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-from rabbitvcs.lib.log import Log
+from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.services.statuschecker")
 
 def status_error(path):
@@ -44,7 +44,7 @@ class StatusChecker():
     
     def __init__(self):
         """ Initialises status checker. Obviously. """
-        self.vcs_client = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs_client = rabbitvcs.vcs.create_vcs_instance()
 
     def check_status(self, path, recurse, summary):
         """ Performs a status check, blocking until the check is done.

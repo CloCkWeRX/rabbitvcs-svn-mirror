@@ -27,8 +27,8 @@ import gtk
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import VCSAction
 from rabbitvcs.ui.dialog import MessageBox
-import rabbitvcs.lib.vcs
-import rabbitvcs.lib.helper
+import rabbitvcs.vcs
+import rabbitvcs.util.helper
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -50,7 +50,7 @@ class Relocate(InterfaceView):
         
 
         self.path = path
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
         
         repo = self.vcs.get_repo_url(self.path)
         self.get_widget("from_url").set_text(repo)
@@ -58,7 +58,7 @@ class Relocate(InterfaceView):
         
         self.repositories = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("to_urls"), 
-            rabbitvcs.lib.helper.get_repository_paths()
+            rabbitvcs.util.helper.get_repository_paths()
         )
 
     def on_destroy(self, widget):

@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import locale
 import os
 
-from rabbitvcs.lib.log import Log
+from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.util.locale")
 
 def initialize_locale():

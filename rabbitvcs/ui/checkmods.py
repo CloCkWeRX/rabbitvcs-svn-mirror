@@ -27,16 +27,16 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.lib.contextmenu import GtkContextMenu, \
+from rabbitvcs.util.contextmenu import GtkContextMenu, \
     GtkContextMenuCaller, GtkFilesContextMenuConditions
-from rabbitvcs.lib.contextmenuitems import MenuItem, MenuUpdate, MenuSeparator
+from rabbitvcs.util.contextmenuitems import MenuItem, MenuUpdate, MenuSeparator
 from rabbitvcs.ui.action import VCSAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.lib.helper
-from rabbitvcs.lib.log import Log
-from rabbitvcs.lib.decorators import gtk_unsafe
+import rabbitvcs.util.helper
+from rabbitvcs.util.log import Log
+from rabbitvcs.util.decorators import gtk_unsafe
 
 log = Log("rabbitvcs.ui.checkmods")
 
@@ -57,7 +57,7 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
 
         self.paths = paths
         self.base_dir = base_dir
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
         self.items = None
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"), 
@@ -125,7 +125,7 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
 
             self.files_table.append([
                 item.path, 
-                rabbitvcs.lib.helper.get_file_extension(item.path),
+                rabbitvcs.util.helper.get_file_extension(item.path),
                 item.repos_text_status,
                 item.repos_prop_status,
                 str(revision_number),
@@ -188,7 +188,7 @@ class CheckModsContextMenuCallbacks:
         self.paths = paths
 
     def update(self, data1=None, data2=None):
-        rabbitvcs.lib.helper.launch_ui_window(
+        rabbitvcs.util.helper.launch_ui_window(
             "update", 
             self.paths
         )

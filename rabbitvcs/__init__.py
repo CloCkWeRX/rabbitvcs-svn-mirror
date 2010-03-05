@@ -27,7 +27,7 @@ from locale import getdefaultlocale
 version = "0.13"
 APP_NAME = "RabbitVCS"
 TEMP_DIR_PREFIX = "rabbitvcs-"
-LOCALE_DIR = "%s/locale" % os.path.dirname(os.path.abspath(__file__))
+LOCALE_DIR = "%s/locale" % os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if not os.path.exists(LOCALE_DIR):
     LOCALE_DIR = "/usr/share/locale"
 

@@ -26,7 +26,7 @@ import gtk
 
 from rabbitvcs.ui import InterfaceNonView
 from rabbitvcs.ui.action import VCSAction
-import rabbitvcs.lib.vcs
+import rabbitvcs.vcs
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -54,7 +54,7 @@ class Ignore(InterfaceNonView):
         self.path = path
         self.pattern = pattern
         self.glob = glob
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
 
     def start(self):
         prop = self.vcs.PROPERTIES["ignore"]

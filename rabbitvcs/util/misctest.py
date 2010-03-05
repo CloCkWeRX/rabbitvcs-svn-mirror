@@ -14,9 +14,9 @@ import pysvn
 import rabbitvcs
 import rabbitvcs.services.statuscache
 import rabbitvcs.util.vcs
-import rabbitvcs.util.locale
+import rabbitvcs.util._locale
 
-rabbitvcs.util.locale.initialize_locale()
+rabbitvcs.util._locale.initialize_locale()
 
 class SummarizeTest(unittest.TestCase):
 

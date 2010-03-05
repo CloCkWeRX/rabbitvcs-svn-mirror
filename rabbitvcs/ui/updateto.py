@@ -44,7 +44,7 @@ class UpdateToRevision(InterfaceView):
         InterfaceView.__init__(self, "update", "Update")
         self.path = path
         self.revision = revision
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
 
         self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("revision_container"),

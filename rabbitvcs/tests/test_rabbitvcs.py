@@ -37,7 +37,7 @@ import traceback
 import nautilus
 import pysvn
 import rabbitvcs
-from rabbitvcs.lib.extensions.nautilus import RabbitVCS
+from rabbitvcs.util.extensions.nautilus import RabbitVCS
 
 
 class RabbitVCSTest(TestCase):

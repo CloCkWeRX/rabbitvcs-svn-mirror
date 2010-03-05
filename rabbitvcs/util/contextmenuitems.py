@@ -23,12 +23,12 @@ import os.path
 
 import gtk
 
-import rabbitvcs.lib.helper
+import rabbitvcs.util.helper
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-from rabbitvcs.lib.log import Log
+from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.ui.contextmenuitems")
 _ = gettext.gettext
 
@@ -628,7 +628,7 @@ def get_ignore_list_items(paths):
     # These are ignore-by-extension items
     ignorebyfileext_index = 0
     for path in paths:
-        extension = rabbitvcs.lib.helper.get_file_extension(path)
+        extension = rabbitvcs.util.helper.get_file_extension(path)
         
         ext_str = "*%s"%extension
         if ext_str not in added_ignore_labels:

@@ -30,11 +30,11 @@ import gtk
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
-import rabbitvcs.lib
-import rabbitvcs.lib.vcs
-import rabbitvcs.lib.helper
+import rabbitvcs.util
+import rabbitvcs.vcs
+import rabbitvcs.util.helper
 from rabbitvcs.ui.dialog import MessageBox
-from rabbitvcs.lib.decorators import gtk_unsafe
+from rabbitvcs.util.decorators import gtk_unsafe
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -209,7 +209,7 @@ class VCSAction(threading.Thread):
         self.client.set_callback_ssl_client_cert_password_prompt(self.get_ssl_password)
         self.client.set_callback_ssl_client_cert_prompt(self.get_client_cert)
         
-        self.queue = rabbitvcs.lib.FunctionQueue()
+        self.queue = rabbitvcs.util.FunctionQueue()
         
         self.login_tries = 0
         self.cancel = False
@@ -306,7 +306,7 @@ class VCSAction(threading.Thread):
             ])
             
             #FIXME: this is crap
-            if data["revision"].number != -1 and rabbitvcs.lib.helper.in_rich_compare(
+            if data["revision"].number != -1 and rabbitvcs.util.helper.in_rich_compare(
                     data["action"],
                     self.client.NOTIFY_ACTIONS_COMPLETE):
                 self.notification.append(

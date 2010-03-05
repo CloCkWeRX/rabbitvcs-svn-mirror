@@ -32,8 +32,8 @@ from rabbitvcs.ui.action import VCSAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.lib.helper
-from rabbitvcs.lib.log import Log
+import rabbitvcs.util.helper
+from rabbitvcs.util.log import Log
 
 log = Log("rabbitvcs.ui.unlock")
 
@@ -50,7 +50,7 @@ class Unlock(Add):
         self.paths = paths
         self.base_dir = base_dir
         self.last_row_clicked = None
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
         self.items = None
         self.statuses = None
         self.files_table = rabbitvcs.ui.widget.Table(
@@ -98,7 +98,7 @@ class Unlock(Add):
             self.files_table.append([
                 True, 
                 item.path, 
-                rabbitvcs.lib.helper.get_file_extension(item.path)
+                rabbitvcs.util.helper.get_file_extension(item.path)
             ])
             found += 1
             
@@ -137,7 +137,7 @@ class UnlockQuick(InterfaceNonView):
     def __init__(self, paths):
         InterfaceNonView.__init__(self)
         self.path = paths
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
 
     def start(self):
         for path in self.paths:

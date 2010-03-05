@@ -29,7 +29,7 @@ from rabbitvcs.ui.log import LogDialog
 from rabbitvcs.ui.action import VCSAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
-import rabbitvcs.lib.helper
+import rabbitvcs.util.helper
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -39,12 +39,12 @@ class Switch(InterfaceView):
         InterfaceView.__init__(self, "switch", "Switch")
 
         self.path = path
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
         
         self.get_widget("path").set_text(self.path)
         self.repositories = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("repositories"), 
-            rabbitvcs.lib.helper.get_repository_paths()
+            rabbitvcs.util.helper.get_repository_paths()
         )
 
         self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
@@ -79,7 +79,7 @@ class Switch(InterfaceView):
         
         self.action.append(self.action.set_header, _("Switch"))
         self.action.append(self.action.set_status, _("Running Switch Command..."))
-        self.action.append(rabbitvcs.lib.helper.save_repository_path, url)
+        self.action.append(rabbitvcs.util.helper.save_repository_path, url)
         self.action.append(
             self.vcs.switch,
             self.path,

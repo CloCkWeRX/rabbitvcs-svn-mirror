@@ -60,12 +60,12 @@ import dbus.glib # FIXME: this might actually already set the default loop
 import dbus.mainloop.glib
 import dbus.service
 
-import rabbitvcs.util.locale
-import rabbitvcs.lib.helper
+import rabbitvcs.util._locale
+import rabbitvcs.util.helper
 import rabbitvcs.services.service
 from rabbitvcs.services.statuscheckerplus import StatusCheckerPlus
 
-from rabbitvcs.lib.log import Log
+from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.services.checkerservice")
 
 INTERFACE = "org.google.code.rabbitvcs.StatusChecker"
@@ -114,7 +114,7 @@ class StatusCheckerService(dbus.service.Object):
     
     @dbus.service.method(INTERFACE)
     def MemoryUsage(self):
-        own_mem = rabbitvcs.lib.helper.process_memory(os.getpid())
+        own_mem = rabbitvcs.util.helper.process_memory(os.getpid())
         checker_mem = self.status_checker.get_memory_usage() 
         
         return own_mem + checker_mem
@@ -299,9 +299,9 @@ def Main():
     checker_service = StatusCheckerService(session_bus, mainloop)
     
     # import cProfile
-    # import rabbitvcs.lib.helper
+    # import rabbitvcs.util.helper
     # profile_data_file = os.path.join(
-    #                        rabbitvcs.lib.helper.get_home_folder(),
+    #                        rabbitvcs.util.helper.get_home_folder(),
     #                        "rvcs_checker.stats")
     # cProfile.run("mainloop.run()", profile_data_file)
     
@@ -312,5 +312,5 @@ def Main():
     log.debug("Checker: ended service: %s (%s)" % (OBJECT_PATH, os.getpid()))
 
 if __name__ == "__main__":
-    rabbitvcs.util.locale.initialize_locale()
+    rabbitvcs.util._locale.initialize_locale()
     Main()

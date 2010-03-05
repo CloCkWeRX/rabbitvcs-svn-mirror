@@ -32,8 +32,8 @@ from rabbitvcs.ui.action import VCSAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.lib.helper
-from rabbitvcs.lib.log import Log
+import rabbitvcs.util.helper
+from rabbitvcs.util.log import Log
 
 log = Log("rabbitvcs.ui.resolve")
 
@@ -50,7 +50,7 @@ class Resolve(Add):
         self.paths = paths
         self.base_dir = base_dir
         self.last_row_clicked = None
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
         self.items = None
         self.statuses = [self.vcs.STATUS["conflicted"]]
         self.files_table = rabbitvcs.ui.widget.Table(
@@ -81,7 +81,7 @@ class Resolve(Add):
             self.files_table.append([
                 True, 
                 item.path, 
-                rabbitvcs.lib.helper.get_file_extension(item.path),
+                rabbitvcs.util.helper.get_file_extension(item.path),
                 item.text_status,
                 item.prop_status
             ])

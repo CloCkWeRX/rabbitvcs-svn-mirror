@@ -29,13 +29,13 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.lib.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
+from rabbitvcs.util.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.lib.helper
-import rabbitvcs.lib.vcs
-from rabbitvcs.lib.log import Log
+import rabbitvcs.util.helper
+import rabbitvcs.vcs
+from rabbitvcs.util.log import Log
 
 log = Log("rabbitvcs.ui.add")
 
@@ -61,7 +61,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
         self.paths = paths
         self.base_dir = base_dir
         self.last_row_clicked = None
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
         self.items = []
         self.statuses = [self.vcs.STATUS["unversioned"], self.vcs.STATUS["obstructed"]]
         self.files_table = rabbitvcs.ui.widget.Table(
@@ -103,7 +103,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
             self.files_table.append([
                 True, 
                 item.path, 
-                rabbitvcs.lib.helper.get_file_extension(item.path)
+                rabbitvcs.util.helper.get_file_extension(item.path)
             ])
 
     def reload_treeview(self):
@@ -166,7 +166,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
 
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
-        rabbitvcs.lib.helper.launch_diff_tool(*paths)
+        rabbitvcs.util.helper.launch_diff_tool(*paths)
 
     def on_files_table_key_event(self, treeview, data=None):
         if gtk.gdk.keyval_name(data.keyval) == "Delete":
@@ -182,7 +182,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
 
 class AddQuiet:
     def __init__(self, paths):
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
         self.action = rabbitvcs.ui.action.VCSAction(
             self.vcs,
             run_in_thread=False

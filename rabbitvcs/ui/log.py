@@ -32,17 +32,17 @@ import gtk
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import VCSAction
 from rabbitvcs.ui.dialog import MessageBox
-from rabbitvcs.lib.contextmenu import GtkContextMenu
-from rabbitvcs.lib.contextmenuitems import *
+from rabbitvcs.util.contextmenu import GtkContextMenu
+from rabbitvcs.util.contextmenuitems import *
 import rabbitvcs.ui.widget
-import rabbitvcs.lib.helper
-import rabbitvcs.lib.vcs
-from rabbitvcs.lib.decorators import gtk_unsafe
+import rabbitvcs.util.helper
+import rabbitvcs.vcs
+from rabbitvcs.util.decorators import gtk_unsafe
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-DATETIME_FORMAT = rabbitvcs.lib.helper.LOCAL_DATETIME_FORMAT
+DATETIME_FORMAT = rabbitvcs.util.helper.LOCAL_DATETIME_FORMAT
 
 REVISION_LABEL = _("Revision")
 
@@ -68,7 +68,7 @@ class Log(InterfaceView):
         InterfaceView.__init__(self, "log", "Log")
 
         self.get_widget("Log").set_title(_("Log - %s") % path)
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
         
         self.path = path
         self.cache = LogCache()
@@ -156,7 +156,7 @@ class Log(InterfaceView):
 
     def on_revisions_table_row_activated(self, treeview, event, col):
         paths = self.revisions_table.get_selected_row_items(1)
-        rabbitvcs.lib.helper.launch_diff_tool(*paths)
+        rabbitvcs.util.helper.launch_diff_tool(*paths)
 
     def on_revisions_table_mouse_event(self, treeview, data=None):
         if len(self.revisions_table.get_selected_rows()) == 0:
@@ -274,7 +274,7 @@ class Log(InterfaceView):
             revisions.append(int(self.revisions_table.get_row(row)[0]))
 
         revisions.sort()
-        return rabbitvcs.lib.helper.encode_revisions(revisions)
+        return rabbitvcs.util.helper.encode_revisions(revisions)
 
     def get_selected_revision_number(self):
         if len(self.revisions_table.get_selected_rows()):
@@ -341,7 +341,7 @@ class Log(InterfaceView):
         self.set_end_revision(self.rev_end)
 
         for item in self.revision_items:
-            msg = rabbitvcs.lib.helper.format_long_text(item.message, 80)
+            msg = rabbitvcs.util.helper.format_long_text(item.message, 80)
             
             author = _("(no author)")
             if hasattr(item, "author"):
@@ -787,14 +787,14 @@ class LogTopContextMenu:
         @type   paths: string
         
         @param  revisions: The selected revisions
-        @type   revisions: list of rabbitvcs.lib.vcs.Revision object
+        @type   revisions: list of rabbitvcs.vcs.Revision object
         
         """        
         self.caller = caller
         self.event = event
         self.path = path
         self.revisions = revisions
-        self.vcs_client = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs_client = rabbitvcs.vcs.create_vcs_instance()
 
         self.conditions = LogTopContextMenuConditions(
             self.vcs_client, 
@@ -931,7 +931,7 @@ class LogBottomContextMenuCallbacks:
             dests.append(dest)
         
         for dest in dests:
-            self.action.append(rabbitvcs.lib.helper.open_item, dest)
+            self.action.append(rabbitvcs.util.helper.open_item, dest)
             
         self.action.start()
 
@@ -958,14 +958,14 @@ class LogBottomContextMenu:
         @type   paths: list
 
         @param  revision: The selected revision
-        @type   revision: rabbitvcs.lib.vcs.Revision object
+        @type   revision: rabbitvcs.vcs.Revision object
         
         """        
         self.caller = caller
         self.event = event
         self.paths = paths
         self.revisions = revisions
-        self.vcs_client = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs_client = rabbitvcs.vcs.create_vcs_instance()
 
         self.conditions = LogBottomContextMenuConditions(
             self.vcs_client, 

@@ -32,12 +32,12 @@ from os.path import isdir, isfile, dirname
 
 import pysvn
 
-import rabbitvcs.lib.vcs
-from rabbitvcs.lib.helper import abspaths
-from rabbitvcs.lib.decorators import timeit
-from rabbitvcs.lib.log import Log
+import rabbitvcs.vcs
+from rabbitvcs.util.helper import abspaths
+from rabbitvcs.util.decorators import timeit
+from rabbitvcs.util.log import Log
 
-log = Log("rabbitvcs.lib.vcs.svn")
+log = Log("rabbitvcs.vcs.svn")
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -87,7 +87,7 @@ def parse_patch_output(patch_file, base_dir):
         # sort.
         patch_proc.wait()
         output = line + patch_proc.stdout.read()
-        raise rabbitvcs.lib.vcs.ExternalUtilError("patch", output)
+        raise rabbitvcs.vcs.ExternalUtilError("patch", output)
         # Note the excluded case: empty line. This falls through, skips the loop
         # and returns.
     

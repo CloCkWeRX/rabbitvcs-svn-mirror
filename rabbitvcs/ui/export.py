@@ -30,7 +30,7 @@ from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.checkout import Checkout
 from rabbitvcs.ui.dialog import MessageBox
 from rabbitvcs.ui.action import VCSAction
-import rabbitvcs.lib.helper
+import rabbitvcs.util.helper
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -91,7 +91,7 @@ class Export(Checkout):
         
         self.action.append(self.action.set_header, _("Export"))
         self.action.append(self.action.set_status, _("Running Export Command..."))
-        self.action.append(rabbitvcs.lib.helper.save_repository_path, url)
+        self.action.append(rabbitvcs.util.helper.save_repository_path, url)
         self.action.append(
             self.vcs.export,
             url,

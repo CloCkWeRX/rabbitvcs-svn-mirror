@@ -45,7 +45,7 @@ class About:
     def __init__(self):
     
         def url_hook(dialog, url):
-            rabbitvcs.lib.helper.launch_url_in_webbrowser(url)
+            rabbitvcs.util.helper.launch_url_in_webbrowser(url)
     
         gtk.about_dialog_set_url_hook(url_hook)
         self.about = gtk.AboutDialog()

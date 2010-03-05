@@ -31,8 +31,8 @@ import dbus
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
-import rabbitvcs.lib.settings
-import rabbitvcs.lib.helper
+import rabbitvcs.util.settings
+import rabbitvcs.util.helper
 
 import rabbitvcs.services.checkerservice
 from rabbitvcs.services.checkerservice import StatusCheckerStub
@@ -52,7 +52,7 @@ class Settings(InterfaceView):
     
         InterfaceView.__init__(self, "settings", "Settings")
 
-        self.settings = rabbitvcs.lib.settings.SettingsManager()
+        self.settings = rabbitvcs.util.settings.SettingsManager()
         
         self.language = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("language"), 
@@ -307,7 +307,7 @@ class Settings(InterfaceView):
             _("Are you sure you want to clear your repository paths?")
         )
         if confirmation.run() == 1:
-            path = rabbitvcs.lib.helper.get_repository_paths_path()
+            path = rabbitvcs.util.helper.get_repository_paths_path()
             fh = open(path, "w")
             fh.write("")
             fh.close()
@@ -318,7 +318,7 @@ class Settings(InterfaceView):
             _("Are you sure you want to clear your previous messages?")
         )
         if confirmation.run() == 1:
-            path = rabbitvcs.lib.helper.get_previous_messages_path()
+            path = rabbitvcs.util.helper.get_previous_messages_path()
             fh = open(path, "w")
             fh.write("")
             fh.close()
@@ -329,7 +329,7 @@ class Settings(InterfaceView):
             _("Are you sure you want to clear your authentication information?")
         )
         if confirmation.run() == 1:
-            home_dir = rabbitvcs.lib.helper.get_user_path()
+            home_dir = rabbitvcs.util.helper.get_user_path()
             subpaths = [
                 '/.subversion/auth/svn.simple',
                 '/.subversion/auth/svn.ssl.server',

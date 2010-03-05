@@ -23,12 +23,12 @@ import os.path
 import gtk
 
 import rabbitvcs.ui
-import rabbitvcs.lib.vcs
+import rabbitvcs.vcs
 from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 from rabbitvcs.ui import STATUS_EMBLEMS
 from rabbitvcs.util.vcs import make_single_status
 
-from rabbitvcs.lib.log import Log
+from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.ui.property_page")
 
 class PropertyPage(rabbitvcs.ui.GladeWidgetWrapper):
@@ -39,7 +39,7 @@ class PropertyPage(rabbitvcs.ui.GladeWidgetWrapper):
     def __init__(self, paths, vcs = None):
         rabbitvcs.ui.GladeWidgetWrapper.__init__(self)
         self.paths = paths
-        self.vcs_client = vcs or rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs_client = vcs or rabbitvcs.vcs.create_vcs_instance()
         
         self.info_pane = self.get_widget("property_page") 
         
@@ -67,7 +67,7 @@ class FileInfoPane(rabbitvcs.ui.GladeWidgetWrapper):
     def __init__(self, path, vcs = None):
         rabbitvcs.ui.GladeWidgetWrapper.__init__(self)
         
-        self.vcs = vcs or rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = vcs or rabbitvcs.vcs.create_vcs_instance()
         self.checker = StatusChecker() 
                
         self.get_widget("file_name").set_text(os.path.basename(path))

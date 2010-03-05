@@ -39,12 +39,12 @@ try:
 except ImportError:
     HAS_GTKSOURCEVIEW = False
 
-import rabbitvcs.lib.helper
+import rabbitvcs.util.helper
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-from rabbitvcs.lib.log import Log
+from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.ui.widget")
 
 from rabbitvcs.ui import STATUS_EMBLEMS
@@ -127,7 +127,7 @@ def path_filter(row, column, user_data=None):
     base_dir = user_data["base_dir"]
 
     if row[column]:
-        relpath = rabbitvcs.lib.helper.get_relative_path(base_dir, row[column])
+        relpath = rabbitvcs.util.helper.get_relative_path(base_dir, row[column])
         if relpath == "":
             relpath = os.path.basename(row[column])
         return relpath
@@ -143,7 +143,7 @@ def long_text_filter(row, column, user_data=None):
     cols = user_data["cols"]
     
     if text:
-        text = rabbitvcs.lib.helper.format_long_text(text, cols)
+        text = rabbitvcs.util.helper.format_long_text(text, cols)
         
     return text
 
@@ -227,7 +227,7 @@ class TableBase:
                     }
                 else:
                     data = {
-                        "callback": rabbitvcs.lib.helper.get_node_kind,
+                        "callback": rabbitvcs.util.helper.get_node_kind,
                         "column": i
                     }
                 col.set_cell_data_func(cellpb, self.file_pixbuf, data)
@@ -669,7 +669,7 @@ class RevisionSelector:
         @param  container: The container that to add this widget
         
         @type   client: VCS client object
-        @param  client: A vcs client instance (i.e. rabbitvcs.lib.vcs.create_vcs_instance())
+        @param  client: A vcs client instance (i.e. rabbitvcs.vcs.create_vcs_instance())
         
         @type   revision: int
         @param  revision: A revision number to start with
@@ -778,7 +778,7 @@ class RevisionSelector:
 
     def get_revision_object(self):
         """
-        @rtype  rabbitvcs.lib.vcs.###.Revision
+        @rtype  rabbitvcs.vcs.###.Revision
         @return A rabbitvcs revision object
         
         """

@@ -29,7 +29,7 @@ import gtk
 from rabbitvcs.ui import InterfaceNonView
 from rabbitvcs.ui.action import VCSAction
 from rabbitvcs.ui.dialog import MessageBox, OneLineTextChange
-import rabbitvcs.lib.vcs
+import rabbitvcs.vcs
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -38,7 +38,7 @@ class Rename(InterfaceNonView):
     def __init__(self, path):
         InterfaceNonView.__init__(self)
 
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
         
         self.path = path
         (self.dir, self.filename) = os.path.split(self.path)

@@ -30,13 +30,13 @@ from time import sleep
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import VCSAction
-from rabbitvcs.lib.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
+from rabbitvcs.util.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
-import rabbitvcs.lib
-import rabbitvcs.lib.helper
-from rabbitvcs.lib.log import Log
-from rabbitvcs.lib.decorators import gtk_unsafe
+import rabbitvcs.util
+import rabbitvcs.util.helper
+from rabbitvcs.util.log import Log
+from rabbitvcs.util.decorators import gtk_unsafe
 
 log = Log("rabbitvcs.ui.commit")
 
@@ -65,7 +65,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         InterfaceView.__init__(self, "commit", "Commit")
 
         self.base_dir = base_dir
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
 
         self.paths = []
         for path in paths:
@@ -158,7 +158,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             self.files_table.append([
                 checked,
                 item.path, 
-                rabbitvcs.lib.helper.get_file_extension(item.path),
+                rabbitvcs.util.helper.get_file_extension(item.path),
                 item.text_status,
                 item.prop_status
             ])
@@ -222,7 +222,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         self.action.append(self.action.set_header, _("Commit"))
         self.action.append(self.action.set_status, _("Running Commit Command..."))
         self.action.append(
-            rabbitvcs.lib.helper.save_log_message, 
+            rabbitvcs.util.helper.save_log_message, 
             self.message.get_text()
         )
         self.action.append(self.vcs.commit, items, self.message.get_text())
@@ -257,7 +257,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
 
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
-        rabbitvcs.lib.helper.launch_diff_tool(*paths)
+        rabbitvcs.util.helper.launch_diff_tool(*paths)
 
     def on_files_table_key_event(self, treeview, data=None):
         if gtk.gdk.keyval_name(data.keyval) == "Delete":

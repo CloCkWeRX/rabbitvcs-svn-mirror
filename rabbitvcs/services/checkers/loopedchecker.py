@@ -25,15 +25,15 @@ import cPickle
 import os, sys, signal
 import subprocess
 
-import rabbitvcs.lib.vcs
-import rabbitvcs.lib.helper
+import rabbitvcs.vcs
+import rabbitvcs.util.helper
 
-import rabbitvcs.util.locale
+import rabbitvcs.util._locale
 import rabbitvcs.util.vcs
 
 from rabbitvcs.services.statuschecker import status_error
 
-from rabbitvcs.lib.log import Log
+from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.statuschecker_proc")
 
 PICKLE_PROTOCOL = cPickle.HIGHEST_PROTOCOL
@@ -58,7 +58,7 @@ def Main():
     # Upon interrupt, exit
     signal.signal(signal.SIGINT, interrupt_handler)
     
-    vcs_client = rabbitvcs.lib.vcs.create_vcs_instance()
+    vcs_client = rabbitvcs.vcs.create_vcs_instance()
     pickler = cPickle.Pickler(sys.stdout, PICKLE_PROTOCOL)
     unpickler = cPickle.Unpickler(sys.stdin)
         
@@ -164,7 +164,7 @@ class StatusChecker():
         """ Returns any additional memory of any subprocesses used by this
         checker. In other words, DO NOT return the memory usage of THIS process! 
         """
-        return rabbitvcs.lib.helper.process_memory(self.sc_proc.pid)
+        return rabbitvcs.util.helper.process_memory(self.sc_proc.pid)
 
     def get_extra_PID(self):
         return self.sc_proc.pid
@@ -180,14 +180,14 @@ if __name__ == '__main__':
     # I have deliberately avoided rigourous input checking since this script is
     # only designed to be called from our extension code.
    
-    rabbitvcs.util.locale.initialize_locale()
+    rabbitvcs.util._locale.initialize_locale()
     
     # Uncomment for profiling
-#    import rabbitvcs.lib.helper
+#    import rabbitvcs.util.helper
 #    import cProfile
 #    import os, os.path
 #    profile_data_file = os.path.join(
-#                            rabbitvcs.lib.helper.get_home_folder(),
+#                            rabbitvcs.util.helper.get_home_folder(),
 #                            "rvcs_checker.stats")
 #    cProfile.run("Main()", profile_data_file)
     Main()

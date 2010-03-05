@@ -30,8 +30,8 @@ import commands
 
 from rabbitvcs.ui import InterfaceNonView
 from rabbitvcs.ui.action import VCSAction
-import rabbitvcs.lib.vcs
-from rabbitvcs.lib.log import Log
+import rabbitvcs.vcs
+from rabbitvcs.util.log import Log
 
 log = Log("rabbitvcs.ui.applypatch")
 
@@ -47,8 +47,8 @@ class ApplyPatch(InterfaceNonView):
     def __init__(self, paths):
         InterfaceNonView.__init__(self)
         self.paths = paths
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
-        self.common = rabbitvcs.lib.helper.get_common_directory(paths)
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.common = rabbitvcs.util.helper.get_common_directory(paths)
 
     def choose_patch_path(self):
         path = None

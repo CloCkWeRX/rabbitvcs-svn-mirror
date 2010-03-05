@@ -34,14 +34,14 @@ from rabbitvcs.ui.log import LogDialog
 from rabbitvcs.ui.action import VCSAction
 import rabbitvcs.ui.widget
 from rabbitvcs.ui.dialog import MessageBox
-import rabbitvcs.lib.helper
-import rabbitvcs.lib.vcs
-from rabbitvcs.lib.decorators import gtk_unsafe
+import rabbitvcs.util.helper
+import rabbitvcs.vcs
+from rabbitvcs.util.decorators import gtk_unsafe
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-DATETIME_FORMAT = rabbitvcs.lib.helper.LOCAL_DATETIME_FORMAT
+DATETIME_FORMAT = rabbitvcs.util.helper.LOCAL_DATETIME_FORMAT
 
 class Annotate(InterfaceView):
     """
@@ -62,7 +62,7 @@ class Annotate(InterfaceView):
 
         self.get_widget("Annotate").set_title(_("Annotate - %s") % path)
         
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
         
         if revision is None:
             revision = "HEAD"
@@ -207,7 +207,7 @@ if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, args) = main(usage="Usage: rabbitvcs annotate [url@rev]")
     
-    pathrev = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
+    pathrev = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
 
     window = Annotate(pathrev[0], pathrev[1])
     window.register_gtk_quit()

@@ -29,8 +29,8 @@ import tempfile
 
 from rabbitvcs import TEMP_DIR_PREFIX
 from rabbitvcs.ui import InterfaceNonView
-from rabbitvcs.lib.vcs import create_vcs_instance
-import rabbitvcs.lib.helper
+from rabbitvcs.vcs import create_vcs_instance
+import rabbitvcs.util.helper
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -93,7 +93,7 @@ class Diff(InterfaceNonView):
         fh = tempfile.mkstemp("-rabbitvcs-" + str(self.revision1) + "-" + str(self.revision2) + ".diff")
         os.write(fh[0], diff_text)
         os.close(fh[0])
-        rabbitvcs.lib.helper.open_item(fh[1])
+        rabbitvcs.util.helper.open_item(fh[1])
         
     def launch_sidebyside_diff(self):
         """
@@ -112,7 +112,7 @@ class Diff(InterfaceNonView):
             dest2 = self._build_export_path(2, self.revision2, self.path2)
             self.vcs.export(self.path2, dest2, self.revision2)
     
-        rabbitvcs.lib.helper.launch_diff_tool(dest1, dest2)
+        rabbitvcs.util.helper.launch_diff_tool(dest1, dest2)
 
     def _build_export_path(self, index, revision, path):
         dest = "/tmp/rabbitvcs-%s-%s-%s" % (str(index), str(revision), os.path.basename(path))
@@ -142,9 +142,9 @@ if __name__ == "__main__":
         usage="Usage: rabbitvcs diff [url1@rev1] [url2@rev2]"
     )
     
-    pathrev1 = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
+    pathrev1 = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
     pathrev2 = (None, None)
     if len(args) > 0:
-        pathrev2 = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
+        pathrev2 = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
 
     SVNDiff(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1], sidebyside=options.sidebyside)

@@ -27,9 +27,9 @@ import gtk
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.log import LogDialog
 from rabbitvcs.ui.action import VCSAction
-import rabbitvcs.lib.vcs
+import rabbitvcs.vcs
 import rabbitvcs.ui.widget
-import rabbitvcs.lib.helper
+import rabbitvcs.util.helper
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -45,7 +45,7 @@ class Merge(InterfaceView):
         
         self.page = self.assistant.get_nth_page(0)
         
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
         
         if not self.vcs.has_merge2():
             self.get_widget("mergetype_range_opt").set_sensitive(False)
@@ -55,7 +55,7 @@ class Merge(InterfaceView):
         self.assistant.set_page_complete(self.page, True)
         self.assistant.set_forward_page_func(self.on_forward_clicked)
         
-        self.repo_paths = rabbitvcs.lib.helper.get_repository_paths()
+        self.repo_paths = rabbitvcs.util.helper.get_repository_paths()
         
         # Keeps track of which stages should be marked as complete
         self.type = None
@@ -135,7 +135,7 @@ class Merge(InterfaceView):
                         self.vcs.revision("number", number=int(high)).primitive(),
                     ))
 
-            action.append(rabbitvcs.lib.helper.save_repository_path, url)
+            action.append(rabbitvcs.util.helper.save_repository_path, url)
             
             # Build up args and kwargs because some args are not supported
             # with older versions of pysvn/svn
@@ -169,8 +169,8 @@ class Merge(InterfaceView):
                     number=int(self.get_widget("mergetree_to_revision_number").get_text())
                 )
 
-            action.append(rabbitvcs.lib.helper.save_repository_path, from_url)
-            action.append(rabbitvcs.lib.helper.save_repository_path, to_url)
+            action.append(rabbitvcs.util.helper.save_repository_path, from_url)
+            action.append(rabbitvcs.util.helper.save_repository_path, to_url)
 
             # Build up args and kwargs because some args are not supported
             # with older versions of pysvn/svn

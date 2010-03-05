@@ -37,8 +37,8 @@ import time
 import warnings
 import threading
 
-from rabbitvcs.lib.log import Log
-log = Log("rabbitvcs.lib.decorators")
+from rabbitvcs.util.log import Log
+log = Log("rabbitvcs.util.decorators")
 
 
 import gtk

@@ -27,8 +27,8 @@ import gtk
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
-import rabbitvcs.lib.vcs
-from rabbitvcs.lib.log import Log
+import rabbitvcs.vcs
+from rabbitvcs.util.log import Log
 
 log = Log("rabbitvcs.ui.properties")
 
@@ -64,7 +64,7 @@ class PropertiesBase(InterfaceView):
         )
         self.table.allow_multiple()
         
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
 
     #
     # UI Signal Callbacks

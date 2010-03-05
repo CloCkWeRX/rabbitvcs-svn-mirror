@@ -28,7 +28,7 @@ from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import VCSAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
-import rabbitvcs.lib.helper
+import rabbitvcs.util.helper
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -41,14 +41,14 @@ class Import(InterfaceView):
         self.get_widget("Import").set_title(_("Import - %s") % path)
         
         self.path = path
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
         
         if self.vcs.is_in_a_or_a_working_copy(path):
             self.get_widget("repository").set_text(self.vcs.get_repo_url(path))
         
         self.repositories = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("repositories"), 
-            rabbitvcs.lib.helper.get_repository_paths()
+            rabbitvcs.util.helper.get_repository_paths()
         )
         
         self.message = rabbitvcs.ui.widget.TextView(

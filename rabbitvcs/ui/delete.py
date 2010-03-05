@@ -28,8 +28,8 @@ import gtk
 
 from rabbitvcs.ui import InterfaceNonView
 from rabbitvcs.ui.action import VCSAction
-import rabbitvcs.lib.vcs
-from rabbitvcs.lib.log import Log
+import rabbitvcs.vcs
+from rabbitvcs.util.log import Log
 
 log = Log("rabbitvcs.ui.delete")
 
@@ -45,7 +45,7 @@ class Delete(InterfaceNonView):
     def __init__(self, paths):
         InterfaceNonView.__init__(self)
         self.paths = paths
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
 
     def start(self):
     
@@ -80,7 +80,7 @@ class Delete(InterfaceNonView):
             
             if unversioned:
                 for path in unversioned:
-                    rabbitvcs.lib.helper.delete_item(path)
+                    rabbitvcs.util.helper.delete_item(path)
         
 if __name__ == "__main__":
     from rabbitvcs.ui import main

@@ -39,10 +39,10 @@ import shutil
 
 import gobject
 
-import rabbitvcs.lib.settings
+import rabbitvcs.util.settings
 
-from rabbitvcs.lib.log import Log
-log = Log("rabbitvcs.lib.helper")
+from rabbitvcs.util.log import Log
+log = Log("rabbitvcs.util.helper")
 
 from rabbitvcs import gettext
 ngettext = gettext.ngettext
@@ -310,7 +310,7 @@ def get_diff_tool():
     @return:    A dictionary with the diff tool path and swap boolean value.
     """
     
-    sm = rabbitvcs.lib.settings.SettingsManager()
+    sm = rabbitvcs.util.settings.SettingsManager()
     diff_tool = sm.get("external", "diff_tool")
     diff_tool_swap = sm.get("external", "diff_tool_swap")
     
@@ -517,8 +517,8 @@ def launch_ui_window(filename, args=[]):
                         os.path.dirname(
                             os.path.realpath(__file__)))
     
-    if not head == "lib":
-        log.warning("Helper module (%s) not in \"lib\" dir" % __file__)
+    if not head == "util":
+        log.warning("Helper module (%s) not in \"util\" dir" % __file__)
 
     # Puts the whole path together.
     # path = "%s/ui/%s.py" % (basedir, filename)
@@ -531,11 +531,11 @@ def launch_ui_window(filename, args=[]):
         return None
 
 def get_log_messages_limit():
-    sm = rabbitvcs.lib.settings.SettingsManager()
+    sm = rabbitvcs.util.settings.SettingsManager()
     return int(sm.get("cache", "number_messages"))
 
 def get_repository_paths_limit():
-    sm = rabbitvcs.lib.settings.SettingsManager()
+    sm = rabbitvcs.util.settings.SettingsManager()
     return int(sm.get("cache", "number_repositories"))
 
 def get_common_directory(paths):
@@ -620,7 +620,7 @@ def get_relative_path(p1, p2):
     return os.sep.join(p)
 
 def launch_repo_browser(uri):
-    sm = rabbitvcs.lib.settings.SettingsManager()
+    sm = rabbitvcs.util.settings.SettingsManager()
     repo_browser = sm.get("external", "repo_browser")
     
     if repo_browser is not None:

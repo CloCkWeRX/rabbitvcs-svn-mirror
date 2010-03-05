@@ -158,7 +158,7 @@ def main(allowed_options=None, description=None, usage=None):
     from os import getcwd
     from sys import argv
     from optparse import OptionParser
-    from rabbitvcs.lib.helper import get_common_directory
+    from rabbitvcs.util.helper import get_common_directory
     
     parser = OptionParser(usage=usage, description=description)
     

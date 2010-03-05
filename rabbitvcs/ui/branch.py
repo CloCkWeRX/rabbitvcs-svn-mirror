@@ -29,8 +29,8 @@ from rabbitvcs.ui.log import LogDialog
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.lib.helper
-import rabbitvcs.lib.vcs
+import rabbitvcs.util.helper
+import rabbitvcs.vcs
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -47,19 +47,19 @@ class Branch(InterfaceView):
     def __init__(self, path, revision=None):
         InterfaceView.__init__(self, "branch", "Branch")
         
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
         
         self.path = path
         self.revision = revision
 
-        repo_paths = rabbitvcs.lib.helper.get_repository_paths()
+        repo_paths = rabbitvcs.util.helper.get_repository_paths()
         self.from_urls = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("from_urls"), 
             repo_paths
         )
         self.to_urls = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("to_urls"), 
-            rabbitvcs.lib.helper.get_repository_paths()
+            rabbitvcs.util.helper.get_repository_paths()
         )
         
         if self.vcs.is_path_repository_url(path):
@@ -106,7 +106,7 @@ class Branch(InterfaceView):
         self.action.set_log_message(self.message.get_text())
         
         self.action.append(
-            rabbitvcs.lib.helper.save_log_message, 
+            rabbitvcs.util.helper.save_log_message, 
             self.message.get_text()
         )
         

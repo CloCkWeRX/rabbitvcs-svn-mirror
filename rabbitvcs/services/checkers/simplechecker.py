@@ -25,13 +25,13 @@ import cPickle
 import sys
 import subprocess
 
-import rabbitvcs.util.locale
+import rabbitvcs.util._locale
 import rabbitvcs.util.vcs
-import rabbitvcs.lib.vcs
+import rabbitvcs.vcs
 
 from rabbitvcs.services.statuschecker import status_error
 
-from rabbitvcs.lib.log import Log
+from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.statuschecker_proc")
 
 PICKLE_PROTOCOL = cPickle.HIGHEST_PROTOCOL
@@ -44,7 +44,7 @@ def Main(path, recurse, summary):
     # NOTE: we cannot pickle status_list directly. It needs to be processed
     # here.
     try:
-        vcs_client = rabbitvcs.lib.vcs.create_vcs_instance()
+        vcs_client = rabbitvcs.vcs.create_vcs_instance()
         status_list = vcs_client.status(path, recurse=recurse)
         statuses = [(status.path,
                      str(status.text_status),
@@ -126,7 +126,7 @@ if __name__ == '__main__':
     # I have deliberately avoided rigourous input checking since this script is
     # only designed to be called from our extension code.
    
-    rabbitvcs.util.locale.initialize_locale()
+    rabbitvcs.util._locale.initialize_locale()
    
     # This is correct, and should work across all locales and encodings.
     path = unicode(sys.argv[1], "utf-8")

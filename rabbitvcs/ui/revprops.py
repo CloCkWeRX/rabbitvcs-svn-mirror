@@ -27,8 +27,8 @@ import gtk
 from rabbitvcs.ui.properties import PropertiesBase
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
-import rabbitvcs.lib.vcs
-from rabbitvcs.lib.log import Log
+import rabbitvcs.vcs
+from rabbitvcs.util.log import Log
 from rabbitvcs.ui.action import VCSAction
 
 log = Log("rabbitvcs.ui.revprops")
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, args) = main(usage="Usage: rabbitvcs revprops [url1@rev1]")
     
-    pathrev = rabbitvcs.lib.helper.parse_path_revision_string(args.pop(0))
+    pathrev = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
     window = SVNRevisionProperties(pathrev[0], pathrev[1])
     window.register_gtk_quit()
     gtk.main()

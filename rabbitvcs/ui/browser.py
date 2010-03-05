@@ -29,16 +29,16 @@ import gtk
 from datetime import datetime
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.lib.contextmenu import GtkContextMenu, GtkContextMenuCaller, \
+from rabbitvcs.util.contextmenu import GtkContextMenu, GtkContextMenuCaller, \
     GtkFilesContextMenuConditions
-from rabbitvcs.lib.contextmenuitems import *
+from rabbitvcs.util.contextmenuitems import *
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.lib.helper
-import rabbitvcs.lib.vcs
-from rabbitvcs.lib.log import Log
-from rabbitvcs.lib.decorators import gtk_unsafe
+import rabbitvcs.util.helper
+import rabbitvcs.vcs
+from rabbitvcs.util.log import Log
+from rabbitvcs.util.decorators import gtk_unsafe
 
 log = Log("rabbitvcs.ui.browser")
 
@@ -51,12 +51,12 @@ class Browser(InterfaceView, GtkContextMenuCaller):
     def __init__(self, url):
         InterfaceView.__init__(self, "browser", "Browser")
 
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
         self.url = self.vcs.get_repo_url(url)
 
         self.urls = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("urls"), 
-            rabbitvcs.lib.helper.get_repository_paths()
+            rabbitvcs.util.helper.get_repository_paths()
         )
         if self.url:
             self.urls.set_child_text(self.url)
@@ -115,7 +115,7 @@ class Browser(InterfaceView, GtkContextMenuCaller):
         self.repo_root_url = None
 
         if url:
-            rabbitvcs.lib.helper.save_repository_path(url)
+            rabbitvcs.util.helper.save_repository_path(url)
             self.load()
 
     def load(self):
@@ -218,7 +218,7 @@ class Browser(InterfaceView, GtkContextMenuCaller):
         """
 
         if self.file_column_callback(row[0]) == "file":
-            return rabbitvcs.lib.helper.pretty_filesize(row[column])
+            return rabbitvcs.util.helper.pretty_filesize(row[column])
 
         return ""
 
@@ -413,33 +413,33 @@ class BrowserContextMenuCallbacks:
                 export_path, revision=self.__get_browser_revision())
 
         for path in exported_paths:
-            self.caller.action.append(rabbitvcs.lib.helper.open_item, path)
+            self.caller.action.append(rabbitvcs.util.helper.open_item, path)
 
         self.caller.action.start()
     
     def show_log(self, data=None, user_data=None):
-        rabbitvcs.lib.helper.launch_ui_window("log", [self.paths[0]])
+        rabbitvcs.util.helper.launch_ui_window("log", [self.paths[0]])
     
     def annotate(self, data=None, user_data=None):
         urlrev = self.paths[0]
         revision = self.__get_browser_revision()
         if revision.kind == "number":
             urlrev += "@" + revision.value
-        rabbitvcs.lib.helper.launch_ui_window("annotate", [urlrev])
+        rabbitvcs.util.helper.launch_ui_window("annotate", [urlrev])
     
     def checkout(self, data=None, user_data=None):
         args = [self.paths[0]]
         revision = self.__get_browser_revision()
         if revision.kind == "number":
             args = ["-r", revision.value] + args
-        rabbitvcs.lib.helper.launch_ui_window("checkout", args)
+        rabbitvcs.util.helper.launch_ui_window("checkout", args)
     
     def export(self, data=None, user_data=None):
         args = [self.paths[0]]
         revision = self.__get_browser_revision()
         if revision.kind == "number":
             args = ["-r", revision.value] + args
-        rabbitvcs.lib.helper.launch_ui_window("export", args)
+        rabbitvcs.util.helper.launch_ui_window("export", args)
         
     def rename(self, data=None, user_data=None):
         (base, filename) = os.path.split(self.paths[0])

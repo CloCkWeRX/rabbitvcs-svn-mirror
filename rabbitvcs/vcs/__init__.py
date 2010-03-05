@@ -20,8 +20,8 @@
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from rabbitvcs.lib.vcs.svn import SVN
-from rabbitvcs.lib.decorators import deprecated
+from rabbitvcs.vcs.svn import SVN
+from rabbitvcs.util.decorators import deprecated
 
 from rabbitvcs import gettext
 _ = gettext.gettext

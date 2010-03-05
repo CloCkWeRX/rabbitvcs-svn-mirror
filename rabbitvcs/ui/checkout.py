@@ -31,8 +31,8 @@ from rabbitvcs.ui.log import LogDialog
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.lib.helper
-import rabbitvcs.lib.vcs
+import rabbitvcs.util.helper
+import rabbitvcs.vcs
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -52,11 +52,11 @@ class Checkout(InterfaceView):
         self.get_widget("Checkout").set_title(_("Checkout - %s") % path)
         
         self.path = path
-        self.vcs = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.create_vcs_instance()
 
         self.repositories = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("repositories"), 
-            rabbitvcs.lib.helper.get_repository_paths()
+            rabbitvcs.util.helper.get_repository_paths()
         )
         
         # We must set a signal handler for the gtk.Entry inside the combobox
@@ -74,7 +74,7 @@ class Checkout(InterfaceView):
             expand=True
         )
         
-        self.destination = rabbitvcs.lib.helper.get_user_path()
+        self.destination = rabbitvcs.util.helper.get_user_path()
         if path is not None:
             self.destination = path
             self.get_widget("destination").set_text(path)
@@ -118,7 +118,7 @@ class Checkout(InterfaceView):
         )
         self.action.append(self.action.set_header, _("Checkout"))
         self.action.append(self.action.set_status, _("Running Checkout Command..."))
-        self.action.append(rabbitvcs.lib.helper.save_repository_path, url)
+        self.action.append(rabbitvcs.util.helper.save_repository_path, url)
         self.action.append(
             self.vcs.checkout,
             url,

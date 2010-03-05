@@ -34,12 +34,12 @@ from Queue import Queue
 from rabbitvcs.services.checkers.loopedchecker import StatusChecker
 
 import rabbitvcs.util.vcs
-import rabbitvcs.lib.vcs.svn
+import rabbitvcs.vcs.svn
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-from rabbitvcs.lib.log import Log
+from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.services.statuscheckerplus")
 
 def status_calculating(path):
@@ -86,7 +86,7 @@ class StatusCheckerPlus():
         self.worker = threading.Thread(target = self._status_update_loop,
                                        name = "Status cache thread")
 
-        self.client = rabbitvcs.lib.vcs.create_vcs_instance()
+        self.client = rabbitvcs.vcs.create_vcs_instance()
 
         self._alive = threading.Event()
         self._alive.set()
