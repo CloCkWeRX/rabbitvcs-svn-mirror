@@ -1,0 +1,6 @@
+The "nautilusold" component is not packaged. It is designed for older distributions that don't necessarily have predictable dependencies, and I don't think there would be a great benefit for the effort and research involved.
+
+If you disagree, feel free to raise the issue on the RabbitVCS users list <rabbitvcs@googlegroups.com> or at our current bug tracker.
+
+Jason Heeris
+<jason.heeris@gmail.com>
