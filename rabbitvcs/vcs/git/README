@@ -1,0 +1,20 @@
+How to use the Git functionality
+-------------------------------
+
+Dependencies:
+    gittyup - http://github.com/adamplumb/gittyup
+    dulwich - http://github.com/jelmer/dulwich (>= 0.4.1)
+    
+    The way my workstation is set up, I have a ~/Development/python folder that
+    my $PYTHONPATH points to.  I check out gittyup and dulwich in my
+    ~/Development folder then create a symbolic link to the respective python
+    modules.
+    
+    $ cd ~/Development
+    $ git clone git://github.com/jelmer/dulwich.git
+    $ git clone git://github.com/adamplumb/gittyup.git
+    $ mkdir python
+    $ cd python
+    $ ln -s ~/Development/dulwich/dulwich
+    $ ln -s ~/Development/gittyup/gittyup
+    $ export PYTHONPATH="/home/$USER/Development/python"

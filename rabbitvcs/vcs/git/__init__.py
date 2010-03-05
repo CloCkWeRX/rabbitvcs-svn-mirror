@@ -24,7 +24,9 @@
 Concrete VCS implementation for Git functionality.
 """
 
-from gittyup.gittyup.client import GittyupClient
+import os.path
+
+from gittyup.client import GittyupClient
 
 import rabbitvcs.vcs
 from rabbitvcs.util.log import Log
@@ -35,5 +37,420 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Git:
-    def __init__(self, repo):
-        self.client = GittyupClient(repo)
+    def __init__(self, repo=None):
+        if repo:
+            self.client = GittyupClient(repo)
+        else:
+            self.client = GittyupClient()
+    
+    def set_repository(self, path):
+        self.client.set_repository(path)
+
+    def find_repository_path(self, path):
+        return self.client.find_repository_path(path)
+    
+    #
+    # Status Methods
+    #
+    
+    def status(self, path=None):
+        """
+        Generates a list of GittyupStatus objects for the specified file.
+        
+        @type   path: string
+        @param  path: The file to look up.  If the file is a directory, it will
+            return a recursive list of child path statuses
+        
+        """
+
+        statuses = self.client.status()
+        
+        if os.path.isdir(path):
+            path_statuses = []
+            for status in statuses:
+                if status.path.startswith(path):
+                    path_statuses.append(status)
+            return path_statuses
+        elif os.path.isfile(path):
+            return statuses[path]
+        elif not path:
+            return statuses
+        else:
+            return None
+    
+    def is_working_copy(self, path):
+        if (isdir(path) and
+                isdir(os.path.join(path, ".git"))):
+            return True
+        return False
+
+    def is_in_a_or_a_working_copy(self, path):
+        return (self.is_working_copy(path) or self.find_repository_path(os.path.split(path)[0]))
+    
+    def is_staged(self, path):
+        """
+        Determines if the specified path is staged
+        
+        @type   path: string
+        @param  path: A file path
+        
+        @rtype  boolean
+        
+        """
+        
+        return self.client.is_staged(path)
+    
+    def get_staged(self):
+        """
+        Gets a list of files that are staged
+        
+        """
+        
+        return self.client.get_staged()
+    
+    #
+    # Action Methods
+    #
+    
+    def stage(self, paths):
+        """
+        Stage files to be committed or tracked
+        
+        @type   paths: list
+        @param  paths: A list of files
+        
+        """
+        
+        return self.client.stage(paths)
+    
+    def stage_all(self):
+        """
+        Stage all files in a repository to be committed or tracked
+        
+        """
+        
+        return self.client.stage_all()
+    
+    def unstage(self, paths):
+        """
+        Unstage files so they are not committed or tracked
+        
+        @type   paths: list
+        @param  paths: A list of files
+        
+        """
+        
+        return self.client.unstage(paths)
+    
+    def unstage_all(self):
+        """
+        Unstage all files so they are not committed or tracked
+        
+        @type   paths: list
+        @param  paths: A list of files
+        
+        """
+        
+        return self.client.unstage_all()
+    
+    def branch(self, name, commit_sha=None, track=False):
+        """
+        Create a new branch
+        
+        @type   name: string
+        @param  name: The name of the new branch
+        
+        @type   commit_sha: string
+        @param  commit_sha: A commit sha to branch from.  If None, branches
+                    from head
+        
+        @type   track: boolean
+        @param  track: Whether or not to track the new branch, or just create it
+        
+        """
+        
+        return self.client.branch(name, commit_sha, track)
+    
+    def branch_delete(self, name):
+        """
+        Delete a branch
+        
+        @type   name: string
+        @param  name: The name of the branch
+        
+        """
+        
+        return self.client.branch_delete(name)
+        
+    def branch_rename(self, old_name, new_name):
+        """
+        Rename a branch
+
+        @type   old_name: string
+        @param  old_name: The name of the branch to be renamed
+
+        @type   new_name: string
+        @param  new_name: The name of the new branch
+
+        """
+
+        return self.client.branch_rename(old_name, new_name)
+        
+    def branch_list(self):
+        """
+        List all branches
+        
+        """
+        
+        return self.client.branch_list()
+        
+    def checkout(self, paths=[], tree_sha=None, commit_sha=None):
+        """
+        Checkout a series of paths from a tree or commit.  If no tree or commit
+        information is given, it will check out the files from head.  If no
+        paths are given, all files will be checked out from head.
+        
+        @type   paths: list
+        @param  paths: A list of files to checkout
+        
+        @type   tree_sha: string
+        @param  tree_sha: The sha of a tree to checkout
+
+        @type   commit_sha: string
+        @param  commit_sha: The sha of a commit to checkout
+
+        """
+        
+        return self.client.checkout(paths, tree_sha, commit_sha)
+        
+    def clone(self, host, path, bare=False, origin="origin"):
+        """
+        Clone a repository
+        
+        @type   host: string
+        @param  host: The url of the git repository
+        
+        @type   path: string
+        @param  path: The path to clone to
+        
+        @type   bare: boolean
+        @param  bare: Create a bare repository or not
+        
+        @type   origin: string
+        @param  origin: Specify the origin of the repository
+
+        """
+        
+        return self.client.clone(host, path, bare, origin)
+        
+    def commit(self, message, parents=None, committer=None, commit_time=None, 
+            commit_timezone=None, author=None, author_time=None, 
+            author_timezone=None, encoding=None, commit_all=False):
+        """
+        Commit staged files to the local repository
+        
+        @type   message: string
+        @param  message: The log message
+        
+        @type   parents: list
+        @param  parents: A list of parent SHAs.  Defaults to head.
+        
+        @type   committer: string
+        @param  committer: The person committing.  Defaults to 
+            "user.name <user.email>"
+        
+        @type   commit_time: int
+        @param  commit_time: The commit time.  Defaults to time.time()
+        
+        @type   commit_timezone: int
+        @param  commit_timezone: The commit timezone.  
+            Defaults to (-1 * time.timezone)
+        
+        @type   author: string
+        @param  author: The author of the file changes.  Defaults to 
+            "user.name <user.email>"
+            
+        @type   author_time: int
+        @param  author_time: The author time.  Defaults to time.time()
+        
+        @type   author_timezone: int
+        @param  author_timezone: The author timezone.  
+            Defaults to (-1 * time.timezone)
+        
+        @type   encoding: string
+        @param  encoding: The encoding of the commit.  Defaults to UTF-8.
+        
+        @type   commit_all: boolean
+        @param  commit_all: Stage all changed files before committing
+        
+        """
+        
+        return self.client.commit(message, parents, committer, commit_time,
+            commit_timezone, author, author_time, author_timezone, encoding,
+            commit_all)
+
+    def remove(self, paths):
+        """
+        Remove path from the repository.  Also deletes the local file.
+        
+        @type   paths: list
+        @param  paths: A list of paths to remove
+        
+        """
+        
+        return self.client.remove(paths)
+    
+    def move(self, source, dest):
+        """
+        Move a file within the repository
+        
+        @type   source: string
+        @param  source: The source file
+        
+        @type   dest: string
+        @param  dest: The destination.  If dest exists as a directory, source
+            will be added as a child.  Otherwise, source will be renamed to
+            dest.
+            
+        """
+        
+        return self.client.move(source, dest)
+        
+    def pull(self, repository="origin", refspec="master"):
+        """
+        Fetch objects from a remote repository and merge with the local 
+            repository
+            
+        @type   repository: string
+        @param  repository: The name of the repository
+        
+        @type   refspec: string
+        @param  refspec: The branch name to pull from
+        
+        """
+        
+        return self.client.pull(self, repository, refspec)
+
+    def push(self, repository="origin", refspec="master"):
+        """
+        Push objects from the local repository into the remote repository
+            and merge them.
+            
+        @type   repository: string
+        @param  repository: The name of the repository
+        
+        @type   refspec: string
+        @param  refspec: The branch name to pull from
+        
+        """
+
+        return self.client.push(self, repository, refspec)
+
+    def fetch(self, host):
+        """
+        Fetch objects from a remote repository.  This will not merge the files
+        into the local working copy, use pull for that.
+        
+        @type   host: string
+        @param  host: The git url from which to fetch
+        
+        """
+        
+        return self.client.fetch(host)
+
+    def remote_add(self, host, origin="origin"):
+        """
+        Add a remote repository
+        
+        @type   host: string
+        @param  host: The git url to add
+        
+        @type   origin: string
+        @param  origin: The name to give to the remote repository
+        
+        """
+        
+        return self.client.remote_add(host, origin)
+        
+    def remote_delete(self, origin="origin"):
+        """
+        Remove a remote repository
+        
+        @type   origin: string
+        @param  origin: The name of the remote repository to remove
+
+        """
+        
+        return self.client.remote_delete(origin)
+        
+    def remote_list(self):
+        """
+        Return a list of the remote repositories
+        
+        @rtype  list
+        @return A list of dicts with keys: remote, url, fetch
+            
+        """
+        
+        return self.client.remote_list()
+        
+    def tag(self, name, message, tagger=None, tag_time=None, tag_timezone=None,
+            tag_object=None, track=False):
+        """
+        Create a tag object
+        
+        @type   name: string
+        @param  name: The name to give the tag
+        
+        @type   message: string
+        @param  message: A log message
+        
+        @type   tagger: string
+        @param  tagger: The person tagging.  Defaults to 
+            "user.name <user.email>"
+        
+        @type   tag_time: int
+        @param  tag_time: The tag time.  Defaults to time.time()
+        
+        @type   tag_timezone: int
+        @param  tag_timezone: The tag timezone.  
+            Defaults to (-1 * time.timezone)
+        
+        @type   tag_object: string
+        @param  tag_object: The object to tag.  Defaults to HEAD
+        
+        @type   track: boolean
+        @param  track: Whether or not to track the tag
+        
+        """
+        
+        return self.client.tag(name, message, tagger, tag_time, tag_timezone,
+                tag_object, track)
+
+    def tag_delete(self, name):
+        """
+        Delete a tag
+        
+        @type   name: string
+        @param  name: The name of the tag to delete
+        
+        """
+        
+        return self.client.tag_delete(name)
+
+    def tag_list(self):
+        """
+        Return a list of Tag objects
+        
+        """
+        
+        return self.client.tag_list()
+
+
+    def log(self):
+        """
+        Returns a revision history list
+        
+        """
+        
+        return self.client.log()
