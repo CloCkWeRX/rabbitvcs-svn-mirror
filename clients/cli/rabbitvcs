@@ -24,7 +24,7 @@ import os.path
 import sys
 from optparse import OptionParser
 
-from rabbitvcs.lib.helper import launch_ui_window
+from rabbitvcs.util.helper import launch_ui_window
 
 usage = """Usage: rabbitvcs <module> [path1] [path2] ...
 

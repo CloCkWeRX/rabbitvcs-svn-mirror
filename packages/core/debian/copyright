@@ -30,7 +30,7 @@ License: GPL-2+
     License can be found in the `/usr/share/common-licenses/GPL-2'
     file.
 
-Files: rabbitvcs/lib/decorators.py
+Files: rabbitvcs/util/decorators.py
 Copyright: 2006-2008, Jason Field <jason@jasonfield.com>
            2007-2008, Bruce van der Kooij <brucevdkooij@gmail.com>
            2008-2008, Adam Plumb <adamplumb@gmail.com>

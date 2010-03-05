@@ -37,24 +37,24 @@ import pysvn
 import gobject
 import gtk
 
-from rabbitvcs.lib.vcs.svn import SVN
+from rabbitvcs.vcs.svn import SVN
 
 from rabbitvcs.util.vcs import *
 import rabbitvcs.ui
 import rabbitvcs.ui.property_page
-from rabbitvcs.lib.helper import launch_ui_window, launch_diff_tool
-from rabbitvcs.lib.helper import get_file_extension, get_common_directory
-from rabbitvcs.lib.helper import pretty_timedelta
-from rabbitvcs.lib.decorators import timeit, disable
-from rabbitvcs.lib.contextmenu import MainContextMenu, SEPARATOR
+from rabbitvcs.util.helper import launch_ui_window, launch_diff_tool
+from rabbitvcs.util.helper import get_file_extension, get_common_directory
+from rabbitvcs.util.helper import pretty_timedelta
+from rabbitvcs.util.decorators import timeit, disable
+from rabbitvcs.util.contextmenu import MainContextMenu, SEPARATOR
 
-from rabbitvcs.lib.log import Log, reload_log_settings
-log = Log("rabbitvcs.lib.extensions.thunarx.RabbitVCS")
+from rabbitvcs.util.log import Log, reload_log_settings
+log = Log("rabbitvcs.util.extensions.thunarx.RabbitVCS")
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-from rabbitvcs.lib.settings import SettingsManager
+from rabbitvcs.util.settings import SettingsManager
 settings = SettingsManager()
 
 import rabbitvcs.services.service
@@ -302,7 +302,7 @@ class RabbitVCS(thunarx.MenuProvider, thunarx.PropertyPageProvider):
     
         def do_reload_settings():
             globals()["settings"] = SettingsManager()
-            globals()["log"] = reload_log_settings()("rabbitvcs.lib.extensions.thunar")
+            globals()["log"] = reload_log_settings()("rabbitvcs.util.extensions.thunar")
             log.debug("Re-scanning settings")
             
         self.execute_after_process_exit(proc, do_reload_settings)
@@ -327,9 +327,9 @@ class RabbitVCS(thunarx.MenuProvider, thunarx.PropertyPageProvider):
         
         return [ppage]
 
-from rabbitvcs.lib.contextmenuitems import *
+from rabbitvcs.util.contextmenuitems import *
 
-class ThunarxContextMenu(rabbitvcs.lib.contextmenu.MenuBuilder):
+class ThunarxContextMenu(rabbitvcs.util.contextmenu.MenuBuilder):
     """
     Provides a standard Gtk Context Menu class used for all context menus
     in gtk dialogs/windows.

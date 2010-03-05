@@ -29,8 +29,8 @@ from __future__ import with_statement
 
 def log_all_exceptions(type, value, tb):
     import sys, traceback
-    from rabbitvcs.lib.log import Log
-    log = Log("rabbitvcs.lib.extensions.nautilus.RabbitVCS")
+    from rabbitvcs.util.log import Log
+    log = Log("rabbitvcs.util.extensions.nautilus.RabbitVCS")
     log.exception_info("Error caught by master exception hook!",
                        (type, value, tb))
     
@@ -63,25 +63,25 @@ import pysvn
 import gobject
 import gtk
 
-from rabbitvcs.lib.vcs.svn import SVN
+from rabbitvcs.vcs.svn import SVN
 
 from rabbitvcs.util.vcs import *
-from rabbitvcs.lib.helper import launch_ui_window, launch_diff_tool
-from rabbitvcs.lib.helper import get_file_extension, get_common_directory
-from rabbitvcs.lib.helper import pretty_timedelta
-from rabbitvcs.lib.decorators import timeit, disable
-from rabbitvcs.lib.contextmenu import MenuBuilder, MainContextMenu, SEPARATOR
+from rabbitvcs.util.helper import launch_ui_window, launch_diff_tool
+from rabbitvcs.util.helper import get_file_extension, get_common_directory
+from rabbitvcs.util.helper import pretty_timedelta
+from rabbitvcs.util.decorators import timeit, disable
+from rabbitvcs.util.contextmenu import MenuBuilder, MainContextMenu, SEPARATOR
 
 import rabbitvcs.ui
 import rabbitvcs.ui.property_page
 
-from rabbitvcs.lib.log import Log, reload_log_settings
-log = Log("rabbitvcs.lib.extensions.nautilus.RabbitVCS")
+from rabbitvcs.util.log import Log, reload_log_settings
+log = Log("rabbitvcs.util.extensions.nautilus.RabbitVCS")
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-from rabbitvcs.lib.settings import SettingsManager
+from rabbitvcs.util.settings import SettingsManager
 settings = SettingsManager()
 
 import rabbitvcs.services.service
@@ -522,7 +522,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
     
         def do_reload_settings():
             globals()["settings"] = SettingsManager()
-            globals()["log"] = reload_log_settings()("rabbitvcs.lib.extensions.nautilus")
+            globals()["log"] = reload_log_settings()("rabbitvcs.util.extensions.nautilus")
             log.debug("Re-scanning settings")
             
         self.execute_after_process_exit(proc, do_reload_settings)
@@ -589,7 +589,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         return [ppage]
         
 
-from rabbitvcs.lib.contextmenuitems import *
+from rabbitvcs.util.contextmenuitems import *
 
 class NautilusContextMenu(MenuBuilder):
     """

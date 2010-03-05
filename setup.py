@@ -82,16 +82,16 @@ for root, dirs, files in os.walk("rabbitvcs"):
         packages.append(root.replace(os.path.sep, "."))
 
 # Translation
-translations = include_by_pattern("rabbitvcs/locale", locale_directory, ".mo")
+translations = include_by_pattern("locale", locale_directory, ".mo")
 
 # Icons
-icons = include_by_pattern("rabbitvcs/data/icons/hicolor", icon_theme_directory, ".svg")
+icons = include_by_pattern("data/icons/hicolor", icon_theme_directory, ".svg")
 
 # Config parsing specification
 config_spec = [(
     # FIXME: hard coded prefix!
     "/usr/share/rabbitvcs",
-    ["rabbitvcs/lib/configspec/configspec.ini"]
+    ["rabbitvcs/util/configspec/configspec.ini"]
 )]
 
 # Documentation
