@@ -8,7 +8,7 @@ Build-Depends: debhelper (>= 6.0.4),
 Build-Depends-Indep: python-support (>= 0.5.3),
                      python-central (>= 0.6.5),
                      pkg-config (>= 0.20),
-                     patchutils (>= 0.2.31)
+                     libgtk2.0-bin (>= 2.8.20)
 Standards-Version: 3.8.3
 Homepage: http://www.rabbitvcs.org
 
@@ -25,7 +25,8 @@ Depends: ${misc:Depends},
          subversion (>= 1.4.6),
          meld (>=1.1.2), 
          ipython (>=0.7.1),
-         hicolor-icon-theme (>= 0.10-2)
+         hicolor-icon-theme (>= 0.10),
+         libgtk2.0-bin (>= 2.8.20)
 Conflicts: nautilussvn, rabbitvcs
 Replaces: nautilussvn
 Description: Easy version control
