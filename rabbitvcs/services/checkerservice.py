@@ -46,7 +46,14 @@ code).
 import os, os.path
 import sys
 
-import gobject, glib
+import gobject
+try:
+    # Older distributions will not have a glib module.  For them, they must
+    # still use the gobject module
+    import glib
+    HAS_GLIB = True
+except ImportError:
+    HAS_GLIB = False
 
 import dbus
 import dbus.glib # FIXME: this might actually already set the default loop
@@ -65,6 +72,12 @@ INTERFACE = "org.google.code.rabbitvcs.StatusChecker"
 OBJECT_PATH = "/org/google/code/rabbitvcs/StatusChecker"
 SERVICE = "org.google.code.rabbitvcs.RabbitVCS.Checker"
 TIMEOUT = 60*15*100 # seconds
+
+def idle_add(callback, *args, **kwargs):
+    if HAS_GLIB:
+        glib.idle_add(callback, *args, **kwargs)
+    else:
+        gobject.idle_add(callback, *args, **kwargs)
 
 class StatusCheckerService(dbus.service.Object):
     """ StatusCheckerService objects wrap a StatusCheckerPlus instance,
@@ -223,7 +236,7 @@ class StatusCheckerStub:
         basically a way of making this a lower priority than direct calls to
         "check_status", which need to return ASAP.
         """
-        glib.idle_add(self.callback, *args, **kwargs)
+        idle_add(self.callback, *args, **kwargs)
         # Switch to this method to just call it straight from here:
         # self.callback(*args, **kwargs)
     
@@ -292,8 +305,8 @@ def Main():
     #                        "rvcs_checker.stats")
     # cProfile.run("mainloop.run()", profile_data_file)
     
-    glib.idle_add(sys.stdout.write, "Started status checker service\n")
-    glib.idle_add(sys.stdout.flush)
+    idle_add(sys.stdout.write, "Started status checker service\n")
+    idle_add(sys.stdout.flush)
     mainloop.run()
     
     log.debug("Checker: ended service: %s (%s)" % (OBJECT_PATH, os.getpid()))
