@@ -21,6 +21,7 @@
 #
 
 import os.path
+import urllib
 
 import pygtk
 import gobject
@@ -89,6 +90,16 @@ class Checkout(InterfaceView):
     # UI Signal Callback Methods
     #
 
+    def _parse_path(self, path):
+        if path.startswith("file://"):
+            path = urllib.unquote(path)
+            path = path[7:]
+        return path
+            
+    def _get_path(self):
+        path = self._parse_path(self.get_widget("destination").get_text())
+        return os.path.normpath(path)
+
     def on_destroy(self, widget):
         self.close()
 
@@ -97,18 +108,14 @@ class Checkout(InterfaceView):
 
     def on_ok_clicked(self, widget):
         url = self.repositories.get_active_text()
-        path = self.get_widget("destination").get_text()
+        path = self._get_path()
         omit_externals = self.get_widget("omit_externals").get_active()
         recursive = self.get_widget("recursive").get_active()
         
         if not url or not path:
             rabbitvcs.ui.dialog.MessageBox(_("The repository URL and destination path are both required fields."))
             return
-
-        if path.startswith("file://"):
-            path = path[7:]
         
-        path = os.path.normpath(path)
         revision = self.revision_selector.get_revision_object()
     
         self.hide()

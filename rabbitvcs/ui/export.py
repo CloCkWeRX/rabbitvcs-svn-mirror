@@ -61,7 +61,7 @@ class Export(Checkout):
 
     def on_ok_clicked(self, widget):
         url = self.repositories.get_active_text()
-        path = self.get_widget("destination").get_text()
+        path = self._get_path()
         omit_externals = self.get_widget("omit_externals").get_active()
         recursive = self.get_widget("recursive").get_active()
 
@@ -70,15 +70,12 @@ class Export(Checkout):
             return
         
         if url.startswith("file://"):
-            url = url[7:]
+            url = self._parse_path(url)
         
         # Cannot do:
         # url = os.path.normpath(url)
         # ...in general, since it might be eg. an http URL. Doesn't seem to
         # affect pySvn though.
-        
-        if path.startswith("file://"):
-            path = path[7:]
         
         path = os.path.normpath(path)        
         revision = self.revision_selector.get_revision_object()
