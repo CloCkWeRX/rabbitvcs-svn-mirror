@@ -103,7 +103,8 @@ class FolderChooser:
         returner = None
         result = self.dialog.run()
         if result == gtk.RESPONSE_OK:
-            returner = self.dialog.get_uri()
+            # returner = self.dialog.get_uri()
+            returner = self.dialog.get_file().get_path()
         self.dialog.destroy()
         return returner
         
@@ -258,7 +259,7 @@ class FileChooser:
         returner = None
         result = self.dialog.run()
         if result == gtk.RESPONSE_OK:
-            returner = self.dialog.get_uri()
+            returner = self.dialog.get_file().get_path()
         self.dialog.destroy()
         return returner
 
