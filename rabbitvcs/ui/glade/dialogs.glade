@@ -1138,6 +1138,7 @@
                           <widget class="GtkEntry" id="certauth_password">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="visibility">False</property>
                             <property name="activates_default">True</property>
                           </widget>
                           <packing>
