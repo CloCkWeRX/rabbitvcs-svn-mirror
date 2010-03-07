@@ -820,7 +820,7 @@ class ContextMenuConditions:
         return True
     
     def help(self, data=None):
-        return True
+        return False
     
     def settings(self, data=None):
         return True
