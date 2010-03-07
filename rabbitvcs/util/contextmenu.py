@@ -955,9 +955,6 @@ class GtkFilesContextMenuConditions(ContextMenuConditions):
         self.text_statuses = [self.statuses[key]["text_status"] for key in self.statuses.keys()]
         self.prop_statuses = [self.statuses[key]["prop_status"] for key in self.statuses.keys()]
         
-    def delete(self, data=None):
-        return self.path_dict["exists"]
-
 class GtkFilesContextMenu:
     """
     Defines context menu items for a table with files

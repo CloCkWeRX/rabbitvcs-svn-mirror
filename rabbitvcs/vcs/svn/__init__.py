@@ -264,7 +264,7 @@ class SVN:
         pysvn.wc_notify_action.status_external:         _("External"),
         pysvn.wc_notify_action.commit_modified:         _("Modified"),
         pysvn.wc_notify_action.commit_added:            _("Added"),
-        pysvn.wc_notify_action.commit_deleted:          _("Copied"),
+        pysvn.wc_notify_action.commit_deleted:          _("Deleted"),
         pysvn.wc_notify_action.commit_replaced:         _("Replaced"),
         pysvn.wc_notify_action.commit_postfix_txdelta:  _("Changed"),
         pysvn.wc_notify_action.annotate_revision:       _("Annotated"),
