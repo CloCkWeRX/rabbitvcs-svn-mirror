@@ -304,6 +304,7 @@ class TableBase:
         self.treeview.connect("button-press-event", self.__button_press_event)
         self.treeview.connect("button-release-event", self.__button_release_event)
         self.treeview.connect("key-press-event", self.__key_press_event)
+        self.treeview.connect("select-cursor-row", self.__row_selected)
         self.callbacks = callbacks
         if self.callbacks:
             self.allow_multiple()
@@ -427,6 +428,11 @@ class TableBase:
         self.update_selection()
         if "row-activated" in self.callbacks:
             self.callbacks["row-activated"](treeview, data, col)
+    
+    def __row_selected(self, treeview, started_editing):
+        self.update_selection()
+        if "row-selected" in self.callbacks:
+            self.callbacks["row-selected"](treeview, started_editing)
         
     def __key_press_event(self, treeview, data):
         self.update_selection()
@@ -435,6 +441,8 @@ class TableBase:
 
     def __cursor_changed_event(self, treeview):
         self.update_selection()
+        if "cursor-changed" in self.callbacks:
+            self.callbacks["cursor-changed"](treeview)
         if "mouse-event" in self.callbacks:
             self.callbacks["mouse-event"](treeview)
 

@@ -51,18 +51,25 @@ class PreviousMessages(InterfaceView):
         self.message_table = rabbitvcs.ui.widget.Table(
             self.get_widget("prevmes_table"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [_("Date"), _("Message")]
+            [_("Date"), _("Message")],
+            filters=[{
+                "callback": rabbitvcs.ui.widget.long_text_filter,
+                "user_data": {
+                    "column": 1,
+                    "cols": 80
+                }
+            }],
+            callbacks={
+                "cursor-changed": self.on_prevmes_table_cursor_changed,
+                "row-activated":  self.on_prevmes_table_row_activated
+            }
         )
         self.entries = rabbitvcs.util.helper.get_previous_messages()
         if self.entries is None:
             return None
         
         for entry in self.entries:
-            tmp = entry[1]
-            
-            tmp = rabbitvcs.util.helper.format_long_text(tmp, 80)
-        
-            self.message_table.append([entry[0],tmp])
+            self.message_table.append([entry[0],entry[1]])
         
         if len(self.entries) > 0:
             self.message.set_text(self.entries[0][1])
@@ -81,14 +88,17 @@ class PreviousMessages(InterfaceView):
         self.dialog.destroy()
 
         return returner
-
-    def on_prevmes_table_button_pressed(self, treeview, event):
-        pathinfo = treeview.get_path_at_pos(int(event.x), int(event.y))
-        if pathinfo is not None:
-            path, col, cellx, celly = pathinfo
-            treeview.grab_focus()
-            treeview.set_cursor(path, col, 0)
-            self.message.set_text(self.entries[path[0]][1])
+        
+    def on_prevmes_table_row_activated(self, treeview, data, col):
+        self.dialog.response(gtk.RESPONSE_OK)
+    
+    def on_prevmes_table_cursor_changed(self, treeview):
+                
+        selection = self.message_table.get_selected_row_items(1)
+        
+        if selection:
+            selected_message = selection[-1]
+            self.message.set_text(selected_message)
         
 class FolderChooser:
     def __init__(self):
