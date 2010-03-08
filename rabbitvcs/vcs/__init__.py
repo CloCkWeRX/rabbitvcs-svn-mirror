@@ -20,7 +20,7 @@
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from rabbitvcs.vcs.svn import SVN
+import os.path
 from rabbitvcs.util.decorators import deprecated
 
 from rabbitvcs import gettext
@@ -28,25 +28,39 @@ _ = gettext.gettext
 
 EXT_UTIL_ERROR = _("The output from '%s' was not able to be processed.\n%s")
 
-
-class VCS:
-    pass
-    
-class VCSFactory:
-    
-    @deprecated
-    def create_vcs_instance(self):
-        """
-        @deprecated: Use create_vcs_instance() instead.
-        """
-        
-        return SVN()
-
-def create_vcs_instance():
+def create_vcs_instance(path=None, vcs=None):
     """
-    
+    Create a VCS instance based on the working copy path
     """
-    # TODO: we'll figure this out later by looking at the working copy.
+
+    # Determine the VCS instance based on the vcs parameter
+    if vcs:
+        if vcs == "svn":
+            from rabbitvcs.vcs.svn import SVN
+            return SVN()
+        elif vcs == "git":
+            from rabbitvcs.vcs.git import Git
+            git = Git()
+            if path:
+                repo_path = git.find_repository_path(path)
+                git.set_repository(repo_path)
+            
+            return git
+
+    # Determine the VCS instance based on the path
+    if path:
+        path_to_check = os.path.realpath(path)
+        while path_to_check != "/" and path_to_check != "":
+            if os.path.isdir(os.path.join(path_to_check, ".svn")):
+                from rabbitvcs.vcs.svn import SVN
+                return SVN()
+            elif os.path.isdir(os.path.join(path_to_check, ".git")):
+                from rabbitvcs.vcs.git import Git
+                return Git(path_to_check)
+                
+            path_to_check = os.path.split(path_to_check)[0]
+
+    from rabbitvcs.vcs.svn import SVN
     return SVN()
 
 class ExternalUtilError(Exception):

@@ -38,6 +38,8 @@ _ = gettext.gettext
 
 class Git:
     def __init__(self, repo=None):
+        self.vcs = "git"
+        self.interface = "gittyup"
         if repo:
             self.client = GittyupClient(repo)
         else:

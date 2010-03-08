@@ -329,6 +329,7 @@ class SVN:
     def __init__(self):
         self.client = pysvn.Client()
         self.interface = "pysvn"
+        self.vcs = "svn"
     
     def status(self, path, recurse=True, update=False):
         """
