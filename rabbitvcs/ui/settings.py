@@ -180,12 +180,12 @@ class Settings(InterfaceView):
         
         table.resize(len(info), 2)
         
-        for key, value in info.items():
+        for key, value in info:
             
             label_key = gtk.Label("<b>%s:</b>" % key)
             label_key.set_properties(xalign=0, use_markup=True)
             
-            label_value = gtk.Label(value)
+            label_value = gtk.Label("%s" % value)
             label_value.set_properties(xalign=0)
             
             table.attach(label_key,

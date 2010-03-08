@@ -20,6 +20,7 @@
 
 from __future__ import with_statement
 
+import os
 import threading
 from Queue import Queue
 
@@ -35,6 +36,7 @@ from rabbitvcs.services.checkers.loopedchecker import StatusChecker
 
 import rabbitvcs.util.vcs
 import rabbitvcs.vcs.svn
+import rabbitvcs.util.helper
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -159,10 +161,19 @@ class StatusCheckerPlus():
         return statuses
         
     def extra_info(self):
-        return {
-                _("Synchronous checker PID"): self.checker.get_extra_PID(),
-                _("Asynchronous checker PID"): self.other_checker.get_extra_PID()
-                }
+        pid1 = self.checker.get_extra_PID()
+        pid2 = self.other_checker.get_extra_PID()
+        mypid = os.getpid()
+        return [
+                (_("DBUS service memory usage"),
+                    "%s KB" % rabbitvcs.util.helper.process_memory(mypid)),
+                (_("Synchronous checker memory usage"),
+                    "%s KB" % rabbitvcs.util.helper.process_memory(pid1)),
+                (_("Asynchronous checker memory usage"),
+                    "%s KB" % rabbitvcs.util.helper.process_memory(pid2)),
+                (_("Synchronous checker PID"), str(pid1)),
+                (_("Asynchronous checker PID"), str(pid2)),
+                ]
     
     def get_memory_usage(self):
         """ Returns any additional memory of any subprocesses used by this

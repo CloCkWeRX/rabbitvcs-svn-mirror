@@ -324,10 +324,10 @@ class StatusCache():
         return statuses
         
     def extra_info(self):
-        return {
-                _("Asynchronous checker PID"): self.checker.get_extra_PID(),
-                _("Number of items in cache"): self.len(self._status_tree)
-                }
+        return [
+                (_("Asynchronous checker PID"), self.checker.get_extra_PID()),
+                (_("Number of items in cache"), self.len(self._status_tree))
+                ]
 
     def get_memory_usage(self):
         """ Returns any additional memory of any subprocesses used by this
