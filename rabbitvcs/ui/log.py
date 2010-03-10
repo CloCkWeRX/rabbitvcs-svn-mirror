@@ -100,7 +100,8 @@ class Log(InterfaceView):
             callbacks={
                 "mouse-event":      self.on_paths_table_mouse_event,
                 "row-activated":    self.on_paths_table_row_activated
-            }
+            },
+            sortable=True, sort_on=1
         )
 
         self.message = rabbitvcs.ui.widget.TextView(
@@ -172,7 +173,7 @@ class Log(InterfaceView):
 
         combined_paths = []
         subitems = []
-        
+               
         for selected_row in self.revisions_table.get_selected_rows():
             item = self.revision_items[selected_row]
             
