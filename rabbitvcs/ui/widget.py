@@ -66,8 +66,9 @@ def filter_router(model, iter, column, filters):
     Route filter requests for a table's columns.  This function is called for
     each cell of the table that gets displayed.
     
-    @type   model: gtk.TreeModelFilter
-    @param  model: The TreeModelFilter instance for our table
+    @type   model: gtk.TreeModelFilter or gtk.TreeModelSort
+    @param  model: The TreeModelFilter or gtk.TreeModelSort instance for our
+                   table
     
     @type   iter: gtk.TreeIter
     @param  iter: The TreeIter instance for the table row being filtered
@@ -93,8 +94,11 @@ def filter_router(model, iter, column, filters):
     @return    The filtered output defined for the given column
     
     """
+    real_model = model.get_model()
     
-    row = model.get_model()[model.get_path(iter)]
+    real_iter = model.convert_iter_to_child_iter(iter)
+    
+    row = real_model[real_model.get_path(real_iter)]
 
     if not filters:
         return row[column]
@@ -317,13 +321,13 @@ class TableBase:
                         filter_router,
                         filters)
         
-        self.sorted = gtk.TreeModelSort(self.filter)
-        
-        self.treeview.set_model(self.sorted)
+        self.sorted = None
 
 		# This runs through the columns, and sets the "compare_items" comparator
         # as needed. Note that the user data tells which column to sort on.
         if sortable:
+            self.sorted = gtk.TreeModelSort(self.filter)
+            
             self.sorted.set_default_sort_func(compare_items, None)
             
             for idx in range(0, i):
@@ -331,8 +335,10 @@ class TableBase:
                                           compare_items,
                                           (idx, coltypes[idx]))
                 
-            self.sorted.set_sort_column_id(sort_on, gtk.SORT_ASCENDING)
-
+            self.treeview.set_model(self.sorted)
+        else:
+            self.treeview.set_model(self.filter)
+        
         if len(values) > 0:
             self.populate(values)
     
@@ -350,16 +356,18 @@ class TableBase:
         if self.callbacks:
             self.allow_multiple()
 
-    def _realpath(self, sorted_path):
+    def _realpath(self, visible_path):
         """
-        Converts a path (ie. row number) that we get from the sorted view into a
-        path for the underlying data structure.
+        Converts a path (ie. row number) that we get from what the user selects
+        into a path for the underlying data structure. If the data is not
+        sorted, this is trivial; if it is sorted, the sorting model can figure
+        it out for us.
         """
-        path_in_filter = self.sorted.convert_path_to_child_path(sorted_path)
-        # Techincally, these should be the same, since a filter does no
-        # reordering, but I'm pedantic
-        path_in_data = self.filter.convert_path_to_child_path(path_in_filter)
-        return path_in_data
+        if self.sorted:
+            path = self.sorted.convert_path_to_child_path(visible_path)
+        else:
+            path = self.filter.convert_path_to_child_path(visible_path)
+        return path
 
     def toggled_cb(self, cell, path, column):
         model = self.data
@@ -438,8 +446,9 @@ class TableBase:
         (liststore, indexes) = selection.get_selected_rows()
 
         self.reset_selection()
+        
         for tup in indexes:
-            self.selected_rows.append(self._realpath(tup[0]))
+            self.selected_rows.append(self._realpath(tup)[0])
 
     def reset_selection(self):
         self.selected_rows = []
