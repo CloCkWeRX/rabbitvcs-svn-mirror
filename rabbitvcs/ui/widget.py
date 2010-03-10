@@ -154,9 +154,26 @@ def translate_filter(row, column, user_data=None):
     text = row[column]
     if text: return _(text)
     
+def compare_items(model, item1, item2, user_data=None):
+
+    if not user_data:
+        # No column data given => Give up
+        return 0
+
+    colnum, coltype = user_data
+    
+    value1 = model.get_value(item1, colnum)
+    value2 = model.get_value(item2, colnum)
+    if value1 == value2:
+        return 0
+    elif value1 < value2:
+        return -1
+    else:
+        return 1
+    
 class TableBase:
-    def __init__(self, treeview, coltypes, colnames, values=[], filters=None, 
-            filter_types=None, callbacks={}):
+    def __init__(self, treeview, coltypes, colnames, values=[], filters=None,
+                 filter_types=None, callbacks={}, sortable=False, sort_on=-1):
         """
         @type   treeview: gtk.Treeview
         @param  treeview: The treeview widget to use
@@ -166,6 +183,12 @@ class TableBase:
         
         @type   colnames: list
         @param  colnames: Contains the name string for each column
+        
+        @type   sortable: boolean
+        @param  sortable: whether the columns can be sorted
+        
+        @type   sort_on: int
+        @param  sort_on: the column number to initially sort by
         
         @type   values: list
         @param  values: Contains the data to be inserted into the table
@@ -273,11 +296,15 @@ class TableBase:
                 col = gtk.TreeViewColumn(name, cell)
                 col.set_attributes(cell, text=i)
 
+            if sortable:
+                col.set_sort_column_id(i)
+
             self.treeview.append_column(col)
             i += 1
 
         self.data = self.get_store(coltypes)
-        
+
+        # self.sorted == sorted view of data
         # self.filter == filtered data (abs paths -> rel paths)
         # self.data == actual data
 
@@ -290,7 +317,21 @@ class TableBase:
                         filter_router,
                         filters)
         
-        self.treeview.set_model(self.filter)
+        self.sorted = gtk.TreeModelSort(self.filter)
+        
+        self.treeview.set_model(self.sorted)
+
+		# This runs through the columns, and sets the "compare_items" comparator
+        # as needed. Note that the user data tells which column to sort on.
+        if sortable:
+            self.sorted.set_default_sort_func(compare_items, None)
+            
+            for idx in range(0, i):
+                self.sorted.set_sort_func(idx,
+                                          compare_items,
+                                          (idx, coltypes[idx]))
+                
+            self.sorted.set_sort_column_id(sort_on, gtk.SORT_ASCENDING)
 
         if len(values) > 0:
             self.populate(values)
@@ -309,9 +350,21 @@ class TableBase:
         if self.callbacks:
             self.allow_multiple()
 
+    def _realpath(self, sorted_path):
+        """
+        Converts a path (ie. row number) that we get from the sorted view into a
+        path for the underlying data structure.
+        """
+        path_in_filter = self.sorted.convert_path_to_child_path(sorted_path)
+        # Techincally, these should be the same, since a filter does no
+        # reordering, but I'm pedantic
+        path_in_data = self.filter.convert_path_to_child_path(path_in_filter)
+        return path_in_data
+
     def toggled_cb(self, cell, path, column):
         model = self.data
-        model[path][column] = not model[path][column]
+        realpath = self._realpath(path)
+        model[realpath][column] = not model[realpath][column]
 
     def append(self, row):
         self.data.append(row)
@@ -386,7 +439,7 @@ class TableBase:
 
         self.reset_selection()
         for tup in indexes:
-            self.selected_rows.append(tup[0])
+            self.selected_rows.append(self._realpath(tup[0]))
 
     def reset_selection(self):
         self.selected_rows = []
@@ -451,6 +504,9 @@ class TableBase:
         if "mouse-event" in self.callbacks:
             self.callbacks["mouse-event"](treeview, data)
 
+#    def __column_header_clicked(self, column, column_idx):
+#        self.data.set_sort_column_id(column_idx, )
+
     def status_pixbuf(self, column, cell, model, iter, colnum):
         status = self.data[model.get_path(iter)][colnum]
         
@@ -483,9 +539,9 @@ class Table(TableBase):
     """
     
     def __init__(self, treeview, coltypes, colnames, values=[], filters=None, 
-            filter_types=None, callbacks={}):
+            filter_types=None, callbacks={}, sortable=False, sort_on=-1):
         TableBase.__init__(self, treeview, coltypes, colnames, values, filters, 
-            filter_types, callbacks)
+            filter_types, callbacks, sortable)
     
     def get_store(self, coltypes):
         return gtk.ListStore(*coltypes)
