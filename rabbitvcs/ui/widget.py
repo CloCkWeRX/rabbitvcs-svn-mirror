@@ -334,8 +334,11 @@ class TableBase:
                 self.sorted.set_sort_func(idx,
                                           compare_items,
                                           (idx, coltypes[idx]))
-                
+               
+            self.sorted.set_sort_column_id(sort_on, gtk.SORT_ASCENDING)
+            
             self.treeview.set_model(self.sorted)
+            
         else:
             self.treeview.set_model(self.filter)
         
@@ -550,7 +553,7 @@ class Table(TableBase):
     def __init__(self, treeview, coltypes, colnames, values=[], filters=None, 
             filter_types=None, callbacks={}, sortable=False, sort_on=-1):
         TableBase.__init__(self, treeview, coltypes, colnames, values, filters, 
-            filter_types, callbacks, sortable)
+            filter_types, callbacks, sortable, sort_on)
     
     def get_store(self, coltypes):
         return gtk.ListStore(*coltypes)
