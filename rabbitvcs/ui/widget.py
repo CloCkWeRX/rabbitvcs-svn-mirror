@@ -158,7 +158,7 @@ def translate_filter(row, column, user_data=None):
     text = row[column]
     if text: return _(text)
     
-def compare_items(model, item1, item2, user_data=None):
+def compare_items(model, iter1, iter2, user_data=None):
 
     if not user_data:
         # No column data given => Give up
@@ -166,8 +166,16 @@ def compare_items(model, item1, item2, user_data=None):
 
     colnum, coltype = user_data
     
-    value1 = model.get_value(item1, colnum)
-    value2 = model.get_value(item2, colnum)
+    real_model = model.get_model()
+    real_iter1 = model.convert_iter_to_child_iter(iter1)
+    real_iter2 = model.convert_iter_to_child_iter(iter2)
+    
+    value1 = real_model.get_value(real_iter1, colnum)
+    value2 = real_model.get_value(real_iter2, colnum)
+    
+    print "V1: %s" % value1
+    print "V2: %s" % value2
+    
     if value1 == value2:
         return 0
     elif value1 < value2:
