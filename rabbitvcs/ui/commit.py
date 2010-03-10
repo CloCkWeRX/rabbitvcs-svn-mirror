@@ -89,7 +89,8 @@ class Commit(InterfaceView, GtkContextMenuCaller):
                 "row-activated":  self.on_files_table_row_activated,
                 "mouse-event":   self.on_files_table_mouse_event,
                 "key-event":     self.on_files_table_key_event
-            }
+            },
+            sortable=True, sort_on=1
         )
         self.files_table.allow_multiple()
         
