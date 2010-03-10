@@ -173,9 +173,6 @@ def compare_items(model, iter1, iter2, user_data=None):
     value1 = real_model.get_value(real_iter1, colnum)
     value2 = real_model.get_value(real_iter2, colnum)
     
-    print "V1: %s" % value1
-    print "V2: %s" % value2
-    
     if value1 == value2:
         return 0
     elif value1 < value2:
