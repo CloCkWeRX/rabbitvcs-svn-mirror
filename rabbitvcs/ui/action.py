@@ -298,12 +298,6 @@ class VCSAction(threading.Thread):
                 action = self.client.NOTIFY_ACTIONS[data["action"]]
             else:
                 action = data["action"]
-                
-            self.notification.append([
-                action,
-                data["path"],
-                data["mime_type"]
-            ])
             
             #FIXME: this is crap
             if data["revision"].number != -1 and rabbitvcs.util.helper.in_rich_compare(
@@ -312,6 +306,13 @@ class VCSAction(threading.Thread):
                 self.notification.append(
                     ["", "Revision %s" % data["revision"].number, ""]
                 )
+            else:
+                self.notification.append([
+                    action,
+                    data["path"],
+                    data["mime_type"]
+                ])
+
     
     def finish(self, message=None):
         """

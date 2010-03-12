@@ -45,6 +45,9 @@ _ = gettext.gettext
 PATCHING_RE = re.compile(r"patching file (.*)")
 REJECT_RE = re.compile(r".*saving rejects to file (.*)")
 
+# Extra "action" for "commit completed"
+commit_completed = "commit_completed"
+
 def parse_patch_output(patch_file, base_dir):
     """ Runs the GNU 'patch' utility, parsing the output. This is actually a
     generator which yields values as each section of the patch is applied. 
@@ -183,7 +186,7 @@ class Revision:
 class SVN:
     """
     
-    """
+    """    
     
     STATUS = {
         "none"          : pysvn.wc_status_kind.none,
@@ -276,7 +279,8 @@ class SVN:
     
     NOTIFY_ACTIONS_COMPLETE = [
         pysvn.wc_notify_action.status_completed,
-        pysvn.wc_notify_action.update_completed        
+        pysvn.wc_notify_action.update_completed,
+        commit_completed                
     ]
     
     NOTIFY_STATES = {
@@ -1257,7 +1261,13 @@ class SVN:
         
         """
 
-        return self.client.checkin(paths, log_message, recurse, keep_locks)
+        retval = self.client.checkin(paths, log_message, recurse, keep_locks)
+        dummy_commit_dict = {
+            "revision": retval,
+            "action": rabbitvcs.vcs.svn.commit_completed
+            }
+        self.client.callback_notify(dummy_commit_dict)
+        return retval
     
     def log(self, url_or_path, revision_start=Revision("head"), 
             revision_end=Revision("number", 0), limit=0, 
