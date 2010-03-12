@@ -525,7 +525,12 @@ class TableBase:
 #        self.data.set_sort_column_id(column_idx, )
 
     def status_pixbuf(self, column, cell, model, iter, colnum):
-        status = self.data[model.get_path(iter)][colnum]
+        
+        path = model.get_path(iter)
+    
+        real_path = model.convert_path_to_child_path(path)
+        
+        status = self.data[real_path][colnum]
         
         if status not in STATUS_EMBLEMS.keys():
             status = "error"
@@ -537,8 +542,13 @@ class TableBase:
 
     def file_pixbuf(self, column, cell, model, iter, data=None):
         stock_id = None
+        
+        path = model.get_path(iter)
+    
+        real_path = model.convert_path_to_child_path(path)
+            
         if data:
-            real_item = self.data[model.get_path(iter)][data["column"]]
+            real_item = self.data[real_path][data["column"]]
             kind = data["callback"](real_item)
             stock_id = gtk.STOCK_FILE
             if kind == "dir":
