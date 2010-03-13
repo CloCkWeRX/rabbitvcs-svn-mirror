@@ -586,3 +586,12 @@ class VCSAction(threading.Thread):
         
         self.queue.set_exception_callback(self.__queue_exception_callback)
         self.queue.start()
+
+    def run_single(self, func, *args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception, e:
+            self.__queue_exception_callback(e)
+            return None
+        finally:
+            self.notification.close()

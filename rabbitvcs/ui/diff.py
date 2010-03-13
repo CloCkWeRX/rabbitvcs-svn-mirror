@@ -30,6 +30,7 @@ import tempfile
 from rabbitvcs import TEMP_DIR_PREFIX
 from rabbitvcs.ui import InterfaceNonView
 from rabbitvcs.vcs import create_vcs_instance
+from rabbitvcs.ui.action import VCSAction
 import rabbitvcs.util.helper
 
 from rabbitvcs import gettext
@@ -82,14 +83,22 @@ class Diff(InterfaceNonView):
         Launch diff as a unified diff in a text editor or .diff viewer
         
         """
-        diff_text = self.vcs.diff(
+        
+        action = VCSAction(
+            self.vcs,
+            notification=False,
+            run_in_thread=False
+        )
+        
+        diff_text = action.run_single(
+            self.vcs.diff,
             self.temp_dir,
             self.path1,
             self.revision1,
             self.path2,
             self.revision2
         )
-        
+
         fh = tempfile.mkstemp("-rabbitvcs-" + str(self.revision1) + "-" + str(self.revision2) + ".diff")
         os.write(fh[0], diff_text)
         os.close(fh[0])
@@ -99,18 +108,35 @@ class Diff(InterfaceNonView):
         """
         Launch diff as a side-by-side comparison using our comparison tool
         
-        """        
+        """
+
+        action = VCSAction(
+            self.vcs,
+            notification=False,
+            run_in_thread=False
+        )
+
         if os.path.exists(self.path1) and self.revision1.kind != "base":
             dest1 = self.path1
         else:
             dest1 = self._build_export_path(1, self.revision1, self.path1)
-            self.vcs.export(self.path1, dest1, self.revision1)
+            action.run_single(
+                self.vcs.export, 
+                self.path1, 
+                dest1, 
+                self.revision1
+            )
     
         if os.path.exists(self.path2) and self.revision2.kind != "base":
             dest2 = self.path2
         else:
             dest2 = self._build_export_path(2, self.revision2, self.path2)
-            self.vcs.export(self.path2, dest2, self.revision2)
+            action.run_single(
+                self.vcs.export, 
+                self.path2, 
+                dest2, 
+                self.revision2
+            )
     
         rabbitvcs.util.helper.launch_diff_tool(dest1, dest2)
 
