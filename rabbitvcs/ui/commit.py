@@ -246,7 +246,6 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         self.SHOW_UNVERSIONED = not self.SHOW_UNVERSIONED
 
         if self.SHOW_UNVERSIONED:
-            self.initialize_activated_cache()
             self.populate_files_table()
         else:
             index = 0
