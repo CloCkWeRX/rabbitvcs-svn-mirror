@@ -27,6 +27,9 @@ Concrete VCS implementation for Git functionality.
 import os.path
 
 from gittyup.client import GittyupClient
+import gittyup.objects
+
+from rabbitvcs.util.helper import abspaths
 
 import rabbitvcs.vcs
 from rabbitvcs.util.log import Log
@@ -37,6 +40,33 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Git:
+    STATUS = {
+        "normal":       gittyup.objects.NormalStatus,
+        "added":        gittyup.objects.AddedStatus,
+        "renamed":      gittyup.objects.RenamedStatus,
+        "removed":      gittyup.objects.RemovedStatus,
+        "modified":     gittyup.objects.ModifiedStatus,
+        "killed":       gittyup.objects.KilledStatus,
+        "untracked":    gittyup.objects.UntrackedStatus,
+        "missing":      gittyup.objects.MissingStatus
+    }
+    
+    STATUS_REVERSE = {
+        gittyup.objects.NormalStatus:       "normal",
+        gittyup.objects.AddedStatus:        "added",
+        gittyup.objects.RenamedStatus:      "renamed",
+        gittyup.objects.RemovedStatus:      "removed",
+        gittyup.objects.ModifiedStatus:     "modified",
+        gittyup.objects.KilledStatus:       "killed",
+        gittyup.objects.UntrackedStatus:    "untracked",
+        gittyup.objects.MissingStatus:      "missing"
+    }
+
+    STATUSES_FOR_COMMIT = [
+        STATUS["untracked"],
+        STATUS["missing"]
+    ]
+
     def __init__(self, repo=None):
         self.vcs = "git"
         self.interface = "gittyup"
@@ -67,7 +97,9 @@ class Git:
 
         statuses = self.client.status()
         
-        if os.path.isdir(path):
+        if not path:
+            return statuses
+        elif os.path.isdir(path):
             path_statuses = []
             for status in statuses:
                 if status.path.startswith(path):
@@ -75,8 +107,6 @@ class Git:
             return path_statuses
         elif os.path.isfile(path):
             return statuses[path]
-        elif not path:
-            return statuses
         else:
             return None
     
@@ -109,6 +139,36 @@ class Git:
         """
         
         return self.client.get_staged()
+
+    def get_items(self, paths, statuses=[]):
+        """
+        Retrieves a list of files that have one of a set of statuses
+        
+        @type   paths:      list
+        @param  paths:      A list of paths or files.
+        
+        @type   statuses:   list
+        @param  statuses:   A list of statuses.
+        
+        @rtype:             list
+        @return:            A list of GittyupStatus objects.
+        
+        """
+
+        if paths is None:
+            return []
+        
+        items = []
+        st = self.status()
+        for path in abspaths(paths):
+            for st_item in st:
+                if statuses and st_item not in statuses:
+                    continue
+
+                items.append(st_item)
+
+        return items
+
     
     #
     # Action Methods
