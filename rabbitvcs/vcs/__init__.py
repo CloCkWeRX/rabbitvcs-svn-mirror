@@ -47,21 +47,36 @@ def create_vcs_instance(path=None, vcs=None):
             
             return git
 
+    guess = determine_vcs(path)
+    if guess["vcs"] == "git":
+        from rabbitvcs.vcs.git import Git
+        return Git(guess["repo_path"])
+    else:
+        from rabbitvcs.vcs.svn import SVN
+        return SVN()
+
+def determine_vcs(path):
     # Determine the VCS instance based on the path
     if path:
         path_to_check = os.path.realpath(path)
         while path_to_check != "/" and path_to_check != "":
             if os.path.isdir(os.path.join(path_to_check, ".svn")):
-                from rabbitvcs.vcs.svn import SVN
-                return SVN()
+                return {
+                    "vcs": "svn",
+                    "repo_path": path_to_check
+                }
             elif os.path.isdir(os.path.join(path_to_check, ".git")):
-                from rabbitvcs.vcs.git import Git
-                return Git(path_to_check)
+                return {
+                    "vcs": "git",
+                    "repo_path": path_to_check
+                }
                 
             path_to_check = os.path.split(path_to_check)[0]
 
-    from rabbitvcs.vcs.svn import SVN
-    return SVN()
+    return {
+        "vcs": "svn",
+        "repo_path": path
+    }
 
 class ExternalUtilError(Exception):
     """ Represents an error caused by unexpected output from an external
