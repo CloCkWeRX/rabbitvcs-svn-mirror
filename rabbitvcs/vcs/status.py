@@ -55,14 +55,6 @@ class GenericStatus(object):
                                     self.content,
                                     self.metadata)
 
-    def __getstate__(self):
-        return [self.content, self.metadata, self.single]
-    
-    def __setstate__(self, state):
-        self.content = state[0]
-        self.metadata = state[1]
-        self.single = state[3]
-
 class SVNStatus(GenericStatus):
     
     vcs_type = 'subversion'
