@@ -19,7 +19,7 @@ class GenericStatus(object):
     vcs_type = 'generic'
  
     clean_statuses = ['unchanged']
- 
+    
     content_status_map = None
     metadata_status_map = None
  
@@ -39,6 +39,7 @@ class GenericStatus(object):
         single = self.simple_content_status() or status_error
         if single in GenericStatus.clean_statuses:
             single = self.simple_metadata_status() or status_error
+        return single
 
     def simple_content_status(self):
         if self.content_status_map:
@@ -47,17 +48,34 @@ class GenericStatus(object):
     def simple_metadata_status(self):
         if self.metadata_status_map:
             return self.metadata_status_map.get(self.metadata)
-        
+    
     def __repr__(self):
         return "<%s (%s) %s/%s>" % (_("RabbitVCS status"),
                                     self.vcs_type,
                                     self.content,
                                     self.metadata)
 
+    def __getstate__(self):
+        return [self.content, self.metadata, self.single]
+    
+    def __setstate__(self, state):
+        self.content = state[0]
+        self.metadata = state[1]
+        self.single = state[3]
+
 class SVNStatus(GenericStatus):
     
     vcs_type = 'subversion'
     
+    content_status_map = {
+        'normal': status_unchanged,
+    }
+    
+    metadata_status_map = {
+        'normal': status_unchanged,
+        'none': status_unchanged
+        }
+        
     def __init__(self, pysvn_status):
         # There is a potential problem here: I'm pretty sure that PySVN statuses
         # do NOT have translatable representations, so this will always come out
