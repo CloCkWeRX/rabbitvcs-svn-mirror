@@ -23,8 +23,9 @@ class GenericStatus(object):
     content_status_map = None
     metadata_status_map = None
  
-    def __init__(self, content_status, metadata_status):
+    def __init__(self, path, content_status, metadata_status):
         # vcs_type may be None for things like error, calculating, etc
+        # self.path = path
         self.content = content_status
         self.metadata = metadata_status
         self.single = self._make_single_status()
@@ -50,7 +51,8 @@ class GenericStatus(object):
             return self.metadata_status_map.get(self.metadata)
     
     def __repr__(self):
-        return "<%s (%s) %s/%s>" % (_("RabbitVCS status"),
+        return "<%s (%s) %s %s/%s>" % (_("RabbitVCS status"),
+                                    self.path,
                                     self.vcs_type,
                                     self.content,
                                     self.metadata)
@@ -73,5 +75,6 @@ class SVNStatus(GenericStatus):
         # do NOT have translatable representations, so this will always come out
         # to be 'normal', 'modified' etc
         super(SVNStatus, self).__init__(
+            path=pysvn_status.path,
             content_status=str(pysvn_status.text_status),
             metadata_status=str(pysvn_status.prop_status))
