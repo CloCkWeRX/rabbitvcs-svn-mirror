@@ -25,7 +25,7 @@ class GenericStatus(object):
  
     def __init__(self, path, content_status, metadata_status):
         # vcs_type may be None for things like error, calculating, etc
-        # self.path = path
+        self.path = path
         self.content = content_status
         self.metadata = metadata_status
         self.single = self._make_single_status()
