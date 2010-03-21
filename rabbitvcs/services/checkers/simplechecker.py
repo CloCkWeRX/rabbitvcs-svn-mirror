@@ -30,8 +30,6 @@ import rabbitvcs.util.vcs
 import rabbitvcs.vcs
 import rabbitvcs.vcs.status
 
-from rabbitvcs.services.statuschecker import status_error
-
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.statuschecker_proc")
 
