@@ -28,13 +28,6 @@ _ = gettext.gettext
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.services.statuschecker")
 
-def status_error(path):
-    """
-    Create a pysvn-like status object that indicates an error.
-    """
-    status = (path, "error", "error")
-    return status
-
 class StatusChecker():
     """ A class for performing status checks. """
     

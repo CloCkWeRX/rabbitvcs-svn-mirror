@@ -6,6 +6,7 @@ import pysvn
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.util.vcs")
 
+import rabbitvcs.vcs.status
 
 #: A list of statuses which count as modified (for a directory) in 
 #: TortoiseSVN emblem speak.

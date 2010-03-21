@@ -30,8 +30,7 @@ import rabbitvcs.util.helper
 
 import rabbitvcs.util._locale
 import rabbitvcs.util.vcs
-
-from rabbitvcs.services.statuschecker import status_error
+import rabbitvcs.vcs.status
 
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.statuschecker_proc")
@@ -73,8 +72,8 @@ def Main():
         try:
             # log.debug("Checking: %s" % path)
             status_list = vcs_client.status(path, recurse=recurse)
-            statuses = [(status.path, str(status.text_status), str(status.prop_status))
-                       for status in status_list]
+            statuses = [rabbitvcs.vcs.status.SVNStatus(status)
+                        for status in status_list]
             
             # NOTE: this is useful for debugging. You can tweak MAGIC_NUMBER to
             # make status checks appear to take longer or shorter.
@@ -103,12 +102,17 @@ def Main():
             
         except Exception, ex:
             log.exception(ex)
-            statuses = [status_error(path)]
+            statuses = [rabbitvcs.vcs.status.Status.status_error(path)]
 
         if summary:
-            statuses = (statuses,
-                        rabbitvcs.util.vcs.summarize_status_pair_list(path,
-                                                                      statuses))
+            summary_status = rabbitvcs.vcs.status.summarise_statuses(path,
+                                                                     statuses[0],
+                                                                     statuses)
+        else:
+            summary_status = None
+            
+            
+        statuses = (statuses, summary_status)
 
         pickler.dump(statuses)
         sys.stdout.flush()

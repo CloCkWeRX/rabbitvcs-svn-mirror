@@ -28,6 +28,7 @@ import subprocess
 import rabbitvcs.util._locale
 import rabbitvcs.util.vcs
 import rabbitvcs.vcs
+import rabbitvcs.vcs.status
 
 from rabbitvcs.services.statuschecker import status_error
 
@@ -46,19 +47,21 @@ def Main(path, recurse, summary):
     try:
         vcs_client = rabbitvcs.vcs.create_vcs_instance()
         status_list = vcs_client.status(path, recurse=recurse)
-        statuses = [(status.path,
-                     str(status.text_status),
-                     str(status.prop_status)) for status in status_list]
+        statuses = [rabbitvcs.vcs.status.SVNStatus(status)
+                    for status in status_list]
         
     except Exception, ex:
         log.exception(ex)
-        statuses = [status_error(path)]
+        statuses = [rabbitvcs.vcs.status.Status.status_error(path)]
 
     if summary:
-        statuses = (statuses,
-                    rabbitvcs.util.vcs.summarize_status_pair_list(path,
-                                                                  statuses))
-
+        summary_status = rabbitvcs.vcs.status.summarise_statuses(path,
+                                                                 statuses[0],
+                                                                 statuses)
+    else:
+        summary_status = None 
+    
+    statuses = (statuses, summary_status)
     
     cPickle.dump(statuses, sys.stdout)
     sys.stdout.flush()
@@ -84,22 +87,6 @@ class StatusChecker():
         """ Performs a status check in a subprocess, blocking until the check is
         done. Even though we block here, this means that other threads can
         continue to run.
-        
-        The returned status data can have two forms. If a summary is requested,
-        it is:
-        
-            (status list, summarised dict)
-            
-        ...where the list is of the form
-        
-            [(path1, text_status1, prop_status1), (path2, ...), ...]
-            
-        ...and the dict is:
-        
-            {path: {"text_status": text_status,
-                    "prop_status": prop_status}}
-        
-        If no summary is requested, the return value is just the status list.
         """
 
         sc_process = subprocess.Popen([sys.executable, __file__,
