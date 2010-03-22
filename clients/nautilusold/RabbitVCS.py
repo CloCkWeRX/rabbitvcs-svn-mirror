@@ -48,7 +48,7 @@ sys.path.append(os.path.dirname(os.path.realpath(__file__.rstrip("c"))))
 
 # FIXME: this (and other) should be moved into a rabbitvcs module to prevent 
 # collisions with other modules on the path.
-import rabbitvcs.util.helper
+import rabbitvcs.lib.helper
 
 #============================================================================== 
 
@@ -223,6 +223,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         items = [ ('NautilusPython::svndelete_file_item', 'Delete' , 'Remove files from the repository.', self.OnDelete, "rabbitvcs-delete"),
 		          ('NautilusPython::svnrename_file_item', 'Rename' , 'Rename a file in the repository', self.OnRename, "rabbitvcs-rename"),
                   ('NautilusPython::svnrefreshstatus_file_item', 'Refresh Status', 'Refresh the display status of the selected files.', self.OnRefreshStatus, "rabbitvcs-refresh"),
+                  ('NautilusPython::svnrepo_file_item', 'Repository Browser' , 'View Repository Sources', self.OnRepoBrowser, gtk.STOCK_FIND)
         ]
 
         if len( files ) == 1:
@@ -313,6 +314,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         else:
             items = [     ('NautilusPython::svnlog_file_item', 'Log' , 'SVN Log of %s' % file.get_name(), self.OnShowLog, "rabbitvcs-show_log"),
                         ('NautilusPython::svncommit_file_item', 'Commit' , 'Commit %s back to the repository.' % file.get_name(), self.OnCommit, "rabbitvcs-commit"),
+                        ('NautilusPython::svnrepo_file_item', 'Repository Browser' , 'View Repository Sources', self.OnRepoBrowser, gtk.STOCK_FIND),
                         ('NautilusPython::svnupdate_file_item', 'Update' , 'Get the latest code from the repository.', self.OnUpdate, "rabbitvcs-update"),
                         ('NautilusPython::svnrefreshstatus_file_item', 'Refresh', 'Refresh the display status of %s.'%file.get_name(), self.OnRefreshStatus, "rabbitvcs-refresh"),
                         ('NautilusPython::svnmkdiffdir_file_item', 'Patch', 'Create a patch of %s from the repository version'%file.get_name(), self.OnMkDiffDir, "rabbitvcs-diff"),
@@ -385,14 +387,14 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         file = files[0]    
 
         path = gnomevfs.get_local_path_from_uri(file.get_uri())
-        rabbitvcs.util.helper.launch_diff_tool(path + ".mine", path)
+        rabbitvcs.lib.helper.launch_diff_tool(path + ".mine", path)
 
     #-------------------------------------------------------------------------- 
     def OnResolveConflicts(self, menuitem, window, files):
         """ Resolve Conflicts menu handler.
         """
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.util.helper.launch_ui_window("resolve", paths)
+        pid = rabbitvcs.lib.helper.launch_ui_window("resolve", paths)
         self.RescanFilesAfterProcess(pid)
 
     #--------------------------------------------------------------------------
@@ -401,7 +403,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """
 
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.util.helper.launch_ui_window("revert", paths)
+        pid = rabbitvcs.lib.helper.launch_ui_window("revert", paths)
         self.RescanFilesAfterProcess(pid)
 
     #--------------------------------------------------------------------------
@@ -409,7 +411,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """ Checkout menu handler.
         """
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.util.helper.launch_ui_window("checkout", paths)
+        pid = rabbitvcs.lib.helper.launch_ui_window("checkout", paths)
 
     #--------------------------------------------------------------------------
     def OnShowDiff(self, menuitem, window, files):
@@ -417,7 +419,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """
 
         paths = self.get_paths_from_files(files)
-        rabbitvcs.util.helper.launch_diff_tool(*paths)
+        rabbitvcs.lib.helper.launch_diff_tool(*paths)
 
     #--------------------------------------------------------------------------
     def OnShowLog(self, menuitem, window, files):
@@ -425,7 +427,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """
         
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.util.helper.launch_ui_window("log", paths)
+        pid = rabbitvcs.lib.helper.launch_ui_window("log", paths)
         self.RescanFilesAfterProcess(pid)
 
     #-------------------------------------------------------------------------- 
@@ -433,7 +435,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """ Commit menu handler.
         """
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.util.helper.launch_ui_window("commit", ["--base-dir=" + window.get_data("base_dir")] + paths)
+        pid = rabbitvcs.lib.helper.launch_ui_window("commit", ["--base-dir=" + window.get_data("base_dir")] + paths)
         self.RescanFilesAfterProcess(pid)
 
     #--------------------------------------------------------------------------
@@ -441,7 +443,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """ Update menu handler.
         """
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.util.helper.launch_ui_window("update", paths)
+        pid = rabbitvcs.lib.helper.launch_ui_window("update", paths)
         self.RescanFilesAfterProcess(pid)
 
     #--------------------------------------------------------------------------
@@ -449,7 +451,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """ Add menu handler.
         """
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.util.helper.launch_ui_window("add", paths)
+        pid = rabbitvcs.lib.helper.launch_ui_window("add", paths)
         self.RescanFilesAfterProcess(pid)
 
     #-------------------------------------------------------------------------- 
@@ -458,7 +460,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """
 
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.util.helper.launch_ui_window("delete", paths)
+        pid = rabbitvcs.lib.helper.launch_ui_window("delete", paths)
         self.RescanFilesAfterProcess(pid)
 
     #-------------------------------------------------------------------------- 
@@ -467,7 +469,16 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """
 
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.util.helper.launch_ui_window("rename", paths)
+        pid = rabbitvcs.lib.helper.launch_ui_window("rename", paths)
+        self.RescanFilesAfterProcess(pid)
+
+    #-------------------------------------------------------------------------- 
+    def OnRepoBrowser(self, menuitem, window, files):
+        """ Repository Browser menu handler.
+        """
+
+        paths = self.get_paths_from_files(files)
+        pid = rabbitvcs.lib.helper.launch_ui_window("browser", [paths[0]])
         self.RescanFilesAfterProcess(pid)
         
     #--------------------------------------------------------------------------
@@ -483,7 +494,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """
         file = files[0]
         path = gnomevfs.get_local_path_from_uri(file.get_uri())
-        pid = rabbitvcs.util.helper.launch_ui_window("property_editor", [path])
+        pid = rabbitvcs.lib.helper.launch_ui_window("property_editor", [path])
         self.RescanFilesAfterProcess(pid)
 
     #--------------------------------------------------------------------------
