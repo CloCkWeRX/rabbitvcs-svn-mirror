@@ -25,20 +25,35 @@ MODIFIED_CHILD_STATUSES = [
     status_replaced
 ]
 
-class StatusInfo(object):
+class Status(object):
 
+    @staticmethod
+    def status_unknown(path):
+        return Status(path, status_unknown)
+    
+    @staticmethod
+    def status_error(path):
+        return Status(path, status_error)
+    
+    @staticmethod
+    def status_calc(path):
+        return Status(path, status_calculating)
+    
     vcs_type = 'generic'
  
     clean_statuses = ['unchanged']
     
     content_status_map = None
     metadata_status_map = None
- 
-    def __init__(self, content_status, metadata_status = None):
-        # vcs_type may be None for things like error, calculating, etc
-        self.content = content_status
-        self.metadata = metadata_status
+    
+    def __init__(self, path, content, metadata = None, summary = None):
+        # own_status is a StatusInfo objects
+        # summary is one of the simple enumerations
+        self.path = path
+        self.content = content
+        self.metadata = metadata
         self.single = self._make_single_status()
+        self.summary = summary
  
     def _make_single_status(self):
         """
@@ -48,7 +63,7 @@ class StatusInfo(object):
         """     
         # Content status dominates
         single = self.simple_content_status() or status_error
-        if single in StatusInfo.clean_statuses:
+        if single in Status.clean_statuses:
             single = self.simple_metadata_status() or status_error
         return single
 
@@ -61,37 +76,21 @@ class StatusInfo(object):
             return self.metadata_status_map.get(self.metadata)
     
     def __repr__(self):
-        return "<%s (%s) %s/%s>" % (_("RabbitVCS status"),
-                                    self.vcs_type,
-                                    self.content,
-                                    self.metadata)
+        return "<%s %s (%s) %s/%s>" % (_("RabbitVCS status for"),
+                                        self.path,
+                                        self.vcs_type,
+                                        self.content,
+                                        self.metadata)
+    
+    def make_summary(self, child_statuses = None):
+        if child_statuses:
+            self.summary = summarise_statuses(self,
+                                              child_statuses)
+        else:
+            self.summary = self.single
 
-class Status(object):
-    
-    @staticmethod
-    def status_error(path):
-        return Status(path, StatusInfo(status_error, status_error))
-    
-    def __init__(self, path, own_status):
-        self.path = path
-        self.own_status = own_status
+class SVNStatus(Status):
 
-    def __repr__(self):
-        return "<%s %s>" % (_("RabbitVCS status for"), self.path)
-
-class StatusSummary(object):
-    
-    def __init__(self, own, summary):
-        self.own = own
-        self.summary = summary
-        
-    def __repr__(self):
-        return "<%s %s (%s)>" % (_("RabbitVCS status summary for"),
-                            self.single_status.path,
-                            self.summary)
-        
-class SVNStatusInfo(StatusInfo):
-    
     vcs_type = 'subversion'
     
     content_status_map = {
@@ -102,29 +101,20 @@ class SVNStatusInfo(StatusInfo):
         'normal': status_unchanged,
         'none': status_unchanged
         }
-        
+    
     def __init__(self, pysvn_status):
         # There is a potential problem here: I'm pretty sure that PySVN statuses
         # do NOT have translatable representations, so this will always come out
         # to be 'normal', 'modified' etc
         super(SVNStatus, self).__init__(
-            # path=pysvn_status.path,
-            content_status=str(pysvn_status.text_status),
-            metadata_status=str(pysvn_status.prop_status))
-
-class SVNStatus(Status):
-    
-    def __init__(self, pysvn_status):
-        super(SVNStatus, self).__init__(
             pysvn_status.path,
-            pysvn_status)
+            content=str(pysvn_status.text_status),
+            metadata=str(pysvn_status.prop_status))
 
 
-def summarise_statuses(top_dir, top_dir_status, statuses):
+def summarise_statuses(top_dir_status, statuses):
     """ Summarises statuses for directories.
     """    
-    assert top_dir_status.path == top_dir, "Incorrect top level status"
-    
     summary = status_unknown
     
     status_set = set([st.single for st in statuses])
@@ -136,14 +126,14 @@ def summarise_statuses(top_dir, top_dir_status, statuses):
     if status_complicated in status_set:
         summary = status_complicated
     
-    elif own_status.single in ["added", "modified", "deleted"]:
+    elif top_dir_status.single in ["added", "modified", "deleted"]:
         # These take priority over child statuses
-        summary = own_status.single
+        summary = top_dir_status.single
     
     elif len(set(MODIFIED_CHILD_STATUSES) & status_set):
         summary = status_changed
     
     else:
-        summary = own_status.single
+        summary = top_dir_status.single
     
-    return StatusSummary(top_dir_status, summary)
+    return summary

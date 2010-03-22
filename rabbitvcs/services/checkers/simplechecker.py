@@ -45,21 +45,19 @@ def Main(path, recurse, summary):
     try:
         vcs_client = rabbitvcs.vcs.create_vcs_instance()
         status_list = vcs_client.status(path, recurse=recurse)
-        statuses = [rabbitvcs.vcs.status.SVNStatus(status)
-                    for status in status_list]
+        all_statuses = [rabbitvcs.vcs.status.SVNStatus(status)
+                        for status in status_list]
         
     except Exception, ex:
         log.exception(ex)
-        statuses = [rabbitvcs.vcs.status.Status.status_error(path)]
+        all_statuses = [rabbitvcs.vcs.status.Status.status_error(path)]
+
+    path_status = all_statuses[0]
 
     if summary:
-        summary_status = rabbitvcs.vcs.status.summarise_statuses(path,
-                                                                 statuses[0],
-                                                                 statuses)
-    else:
-        summary_status = None 
+        path_status.make_summary(all_statuses)
     
-    statuses = (statuses, summary_status)
+    statuses = (path_status, all_statuses)
     
     cPickle.dump(statuses, sys.stdout)
     sys.stdout.flush()

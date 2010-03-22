@@ -43,6 +43,7 @@ data wherever possible (this is the case in the actual status cache and checker
 code).
 """
 
+import cPickle
 import os, os.path
 import sys
 
@@ -64,6 +65,8 @@ import rabbitvcs.util._locale
 import rabbitvcs.util.helper
 import rabbitvcs.services.service
 from rabbitvcs.services.statuscheckerplus import StatusCheckerPlus
+
+import rabbitvcs.vcs.status
 
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.services.checkerservice")
@@ -127,8 +130,16 @@ class StatusCheckerService(dbus.service.Object):
     def CheckerType(self):
         return self.status_checker.CHECKER_NAME
     
-    @dbus.service.signal(INTERFACE)
-    def CheckFinished(self, path, statuses):
+    def CheckFinishedPreprocess(self, status):
+        """ We need to render the statuses in a format that can be sent over
+        DBUS, and then unconvert them at the other end.
+        """
+        pickled_status = cPickle.dumps(status)
+        self.CheckFinished(pickled_status)
+        
+    
+    @dbus.service.signal(INTERFACE, signature='s')
+    def CheckFinished(self, status):
         """ Empty method for connection status check callbacks. This is a DBUS
         signal, and can be "connected" to as per the python DBUS docs.
         """
@@ -152,11 +163,12 @@ class StatusCheckerService(dbus.service.Object):
                          complete 
         @type callback: boolean
         """
-        callback = self.CheckFinished if callback else None
-        return self.status_checker.check_status(u"" + path, recurse=recurse,
-                                                invalidate=invalidate,
-                                                summary=summary,
-                                                callback=callback)
+        callback = self.CheckFinishedPreprocess if callback else None
+        status = self.status_checker.check_status(u"" + path, recurse=recurse,
+                                                  invalidate=invalidate,
+                                                  summary=summary,
+                                                  callback=callback)
+        return cPickle.dumps(status)
     
     @dbus.service.method(INTERFACE)
     def Quit(self):
@@ -223,22 +235,30 @@ class StatusCheckerStub:
                                                               OBJECT_PATH)
             if self.callback:
                 self.status_checker.connect_to_signal("CheckFinished",
-                                                      self.status_callback,
+                                                      self.idle_callback,
                                                       dbus_interface=INTERFACE)
         except dbus.DBusException, ex:
             # There is not much we should do about this...
             log.exception(ex)
     
-    def status_callback(self, *args, **kwargs):
+    def idle_callback(self, *args, **kwargs):
         """ Notifies the callback of a completed status check.
         
         The callback will be performed when the glib main loop is idle. This is
         basically a way of making this a lower priority than direct calls to
         "check_status", which need to return ASAP.
         """
-        idle_add(self.callback, *args, **kwargs)
+        idle_add(self.CheckFinishedDeprocess, *args, **kwargs)
         # Switch to this method to just call it straight from here:
-        # self.callback(*args, **kwargs)
+        # self.CheckFinishedDeprocess(*args, **kwargs)
+    
+    def CheckFinishedDeprocess(self, pickled_status):
+        """ This undoes the work of CheckFinishedPreprocess, re-creating the
+        real status objects from however they were transformed to send them over
+        DBUS.
+        """
+        status = cPickle.loads(str(pickled_status))
+        self.callback(status)
     
     def check_status(self, path, recurse=False, invalidate=False,
                        summary=False, callback=False):
@@ -249,18 +269,20 @@ class StatusCheckerStub:
         """
         status = None
         try:
-            status = self.status_checker.CheckStatus(path, recurse, invalidate,
-                                                     summary, callback,
-                                                     dbus_interface=INTERFACE,
-                                                     timeout=TIMEOUT)
+            pickled_status = self.status_checker.CheckStatus(path, recurse, invalidate,
+                                                             summary, callback,
+                                                             dbus_interface=INTERFACE,
+                                                             timeout=TIMEOUT)
+            status = cPickle.loads(str(pickled_status))
             # Test client error problems :)
             # raise dbus.DBusException("Test")
         except dbus.DBusException, ex:
             log.exception(ex)
-            status = {path: {"text_status": "error",
-                             "prop_status": "error"}}
+            
+            status = rabbitvcs.vcs.status.Status.status_error(path) 
+
             if summary:
-                status = (status, status)
+                status.make_summary()
                 
             # Try to reconnect
             self._connect_to_checker()

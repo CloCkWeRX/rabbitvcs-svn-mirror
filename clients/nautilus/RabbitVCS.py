@@ -532,19 +532,19 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
     # Callbacks
     # 
     
-    def cb_status(self, path, statuses):
+    def cb_status(self, status):
         """
         This is the callback that C{StatusMonitor} calls. 
         
         @type   path:   string
         @param  path:   The path of the item something interesting happened to.
         
-        @type   statuses: list of tuples of (path, status)
-        @param  statuses: The statuses (we do nothing with this now)
+        @type   statuses: list of status objects
+        @param  statuses: The statuses
         """
         # log.debug("CB Thread: %s" % threading.currentThread())
-        if path in self.nautilusVFSFile_table:
-            item = self.nautilusVFSFile_table[path]
+        if status.path in self.nautilusVFSFile_table:
+            item = self.nautilusVFSFile_table[status.path]
             # We need to invalidate the extension info for only one reason:
             #
             # - Invalidating the extension info will cause Nautilus to remove all
@@ -556,16 +556,14 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
             # Since invalidation triggers an "update_file_info" call, we can
             # tell it NOT to invalidate the status checker path.
             with self.callback_paths_lock:
-                from pprint import pformat
-                (single, summary) = statuses
-                self.paths_from_callback.append((path, single, summary))
+                self.paths_from_callback.append((status.path, status.status.single, status.summary))
                 # These are useful to establish whether the "update_status" call
                 # happens INSIDE this next call, or later, or in another thread. 
                 # log.debug("%s: Invalidating..." % threading.currentThread())
                 item.invalidate_extension_info()
                 # log.debug("%s: Done invalidate call." % threading.currentThread())
         else:
-            log.debug("Path [%s] not found in file table")
+            log.debug("Path [%s] not found in file table" % status.path)
 
     def get_property_pages(self, items):
 

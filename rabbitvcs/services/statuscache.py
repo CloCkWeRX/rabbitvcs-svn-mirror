@@ -53,16 +53,6 @@ log = Log("rabbitvcs.services.statuscache")
 # The debugging statements below will tell you how many items are being cached
 MAX_CACHE_SIZE = 1000000 # Items
 
-def status_calculating(path):
-    """ Creates a "calculating" status for the given path. """
-    return {path: {"text_status": "calculating",
-                   "prop_status": "calculating"}}
-
-def status_unknown(path):
-    """ Creates an "unknown" status for the given path. """
-    return {path: {"text_status": "unknown",
-                   "prop_status": "unknown"}}
-
 def is_under_dir(base_path, other_path):
     """ Checks whether the given "other_path" is under "base_path".
     
@@ -103,24 +93,6 @@ def is_directly_under_dir(base_path, other_path):
     check_path = base_path + "/"
     return (other_path.startswith(check_path)
             and "/" not in other_path.replace(check_path, "", 1).rstrip("/"))
-
-def make_summary(path, statuses):
-    """ Simple convenience method to make the path summaries we pass back to the
-    callbacks.
-    
-    @param path: the path that the statuses resulted from checking
-    @type path: string
-    
-    @param statuses: the status dict for the path
-    @type statuses: dict - {path: {"text_status": "whatever"
-                                   "prop_status": "whatever"}, path2: ...}
-                                   
-    @return: (single status, summarised status)
-    @rtype: see StatusCache documentation
-    """
-    return ({path: statuses[path]},
-            rabbitvcs.util.vcs.summarize_status_pair(path, statuses))
-
 
 class StatusCache():
     """ A StatusCache object maintains an internal cache of VCS status that have

@@ -72,8 +72,8 @@ def Main():
         try:
             # log.debug("Checking: %s" % path)
             status_list = vcs_client.status(path, recurse=recurse)
-            statuses = [rabbitvcs.vcs.status.SVNStatus(status)
-                        for status in status_list]
+            all_statuses = [rabbitvcs.vcs.status.SVNStatus(status)
+                            for status in status_list]
             
             # NOTE: this is useful for debugging. You can tweak MAGIC_NUMBER to
             # make status checks appear to take longer or shorter.
@@ -102,17 +102,16 @@ def Main():
             
         except Exception, ex:
             log.exception(ex)
-            statuses = [rabbitvcs.vcs.status.Status.status_error(path)]
+            all_statuses = [rabbitvcs.vcs.status.Status.status_error(path)]
+
+        path_status = (st for st in all_statuses if st.path == path).next()
+
+        assert path_status.path == path, "Path from PySVN %s != given path %s" % (path_status.path, path)
 
         if summary:
-            summary_status = rabbitvcs.vcs.status.summarise_statuses(path,
-                                                                     statuses[0],
-                                                                     statuses)
-        else:
-            summary_status = None
+            path_status.make_summary(all_statuses)
             
-            
-        statuses = (statuses, summary_status)
+        statuses = (path_status, all_statuses)
 
         pickler.dump(statuses)
         sys.stdout.flush()
@@ -142,22 +141,6 @@ class StatusChecker():
         """ Performs a status check in a subprocess, blocking until the check is
         done. Even though we block here, this means that other threads can
         continue to run.
-        
-        The returned status data can have two forms. If a summary is requested,
-        it is:
-        
-            (status list, summarised dict)
-            
-        ...where the list is of the form
-        
-            [(path1, text_status1, prop_status1), (path2, ...), ...]
-            
-        ...and the dict is:
-        
-            {path: {"text_status": text_status,
-                    "prop_status": prop_status}}
-        
-        If no summary is requested, the return value is just the status list.
         """
         self.pickler.dump((path, bool(recurse), bool(summary)))
         self.sc_proc.stdin.flush()
