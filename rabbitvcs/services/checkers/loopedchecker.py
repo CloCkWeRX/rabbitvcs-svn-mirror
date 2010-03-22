@@ -116,7 +116,7 @@ def Main():
         del statuses
         
 
-class StatusChecker():
+class StatusChecker:
     """ A class for performing status checks in a separate process.
     
     Since C extensions may lock the GIL, preventing multithreading and making

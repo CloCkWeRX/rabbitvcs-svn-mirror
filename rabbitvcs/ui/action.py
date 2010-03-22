@@ -589,9 +589,10 @@ class VCSAction(threading.Thread):
 
     def run_single(self, func, *args, **kwargs):
         try:
-            return func(*args, **kwargs)
+            ret = func(*args, **kwargs)
         except Exception, e:
             self.__queue_exception_callback(e)
-            return None
-        finally:
-            self.notification.close()
+            ret = None
+
+        self.notification.close()
+        return ret

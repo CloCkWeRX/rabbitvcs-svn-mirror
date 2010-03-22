@@ -17,9 +17,6 @@
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-
-from __future__ import with_statement
-
 import os
 import threading
 from Queue import Queue
@@ -72,7 +69,7 @@ def make_summary(path, statuses):
             rabbitvcs.util.vcs.summarize_status_pair(path, statuses))
 
 
-class StatusCheckerPlus():
+class StatusCheckerPlus:
 
     CHECKER_NAME = _("Multi-process status checker")
 

@@ -57,7 +57,12 @@ except ImportError:
 
 import dbus
 import dbus.glib # FIXME: this might actually already set the default loop
-import dbus.mainloop.glib
+try:
+    import dbus.mainloop.glib
+except ImportError, e:
+    # Older distributions do not have this module
+    print e
+    
 import dbus.service
 
 import rabbitvcs.util._locale
@@ -152,7 +157,10 @@ class StatusCheckerService(dbus.service.Object):
                          complete 
         @type callback: boolean
         """
-        callback = self.CheckFinished if callback else None
+        if callback:
+            callback = self.CheckFinished
+        else:
+            callback = None
         return self.status_checker.check_status(u"" + path, recurse=recurse,
                                                 invalidate=invalidate,
                                                 summary=summary,
