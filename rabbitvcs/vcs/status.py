@@ -51,7 +51,7 @@ class Status(object):
         # summary is one of the simple enumerations
         self.path = path
         self.content = content
-        self.metadata = metadata
+        self.metadata = metadata or content # a bit hackish, but makes sense
         self.single = self._make_single_status()
         self.summary = summary
  
@@ -70,10 +70,14 @@ class Status(object):
     def simple_content_status(self):
         if self.content_status_map:
             return self.content_status_map.get(self.content)
+        else:
+            return self.content
         
     def simple_metadata_status(self):
         if self.metadata_status_map:
             return self.metadata_status_map.get(self.metadata)
+        else:
+            return self.metadata
     
     def __repr__(self):
         return "<%s %s (%s) %s/%s>" % (_("RabbitVCS status for"),

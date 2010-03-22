@@ -48,8 +48,8 @@ def log_all_exceptions(type, value, tb):
     
     sys.__excepthook__(type, value, tb)
 
-import sys
-sys.excepthook = log_all_exceptions
+# import sys
+# sys.excepthook = log_all_exceptions
 
 import copy
 import os.path
@@ -93,27 +93,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
     This is the main class that implements all of our awesome features.
     
     """
-    
-    EMBLEMS = rabbitvcs.ui.STATUS_EMBLEMS
-    
-    #: A list of statuses which count as modified (for a directory) in 
-    #: TortoiseSVN emblem speak.
-    MODIFIED_STATUSES = [
-        SVN.STATUS["added"],
-        SVN.STATUS["deleted"],
-        SVN.STATUS["replaced"],
-        SVN.STATUS["modified"],
-        SVN.STATUS["missing"]
-    ]
-    
-    MODIFIED_TEXT_STATUSES = [
-        "added", 
-        "deleted",
-        "replaced",
-        "modified",
-        "missing"
-    ]
-    
+        
     #: This is our lookup table for C{NautilusVFSFile}s which we need for attaching
     #: emblems. This is mostly a workaround for not being able to turn a path/uri
     #: into a C{NautilusVFSFile}. It looks like:::
@@ -127,12 +107,6 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
     #: when an item is moved (renamed) C{update_file_info} doesn't get called. So
     #: we also add C{NautilusVFSFile}s to this table from C{get_file_items} etc.
     nautilusVFSFile_table = {}
-    
-    #: Without an actual status monitor it's not possible to just keep
-    #: track of stuff that happens (e.g. a commit happens, files are added,
-    #: such things). So at the moment we just add all interesting items
-    #: to this list.
-    monitored_files = []
     
     #: This is in case we want to permanently enable invalidation of the status
     #: checker info. We put a path here before we invalidate the item, so that
@@ -156,18 +130,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
     #: change in the future? Who knows. This should work for both the current
     #: situation, and the possibility that they are asynchronous.
     callback_paths_lock = threading.RLock()
-    
-    #: A list of statuses that we want to keep track of for when a process
-    #: might have done something.
-    STATUSES_TO_MONITOR = copy.copy(MODIFIED_TEXT_STATUSES)
-    STATUSES_TO_MONITOR.extend([
-        "unversioned",
-        # When doing a checkout Nautilus will notice a directory being
-        # added and call update_file_info, but at that stage the
-        # checkout likely hasn't completed yet and the status will be:
-        "incomplete"
-    ])
-    
+        
     def __init__(self):
         threading.currentThread().setName("RabbitVCS extension thread")
         
@@ -264,6 +227,8 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         found = False
         status = None
         
+        from pprint import pformat
+        
         with self.callback_paths_lock:
             # Could replace with (st for st in self.... if st.path ...).next()
             # Need to catch exception
@@ -274,6 +239,8 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
             if found: # We're here because we were triggered by a callback
                 status = self.statuses_from_callback[idx]
                 del self.statuses_from_callback[idx]
+                
+                log.debug("Found status in callback list: %s" % pformat(status.__dict__))
         
         # Don't bother the checker if we already have the info from a callback
         
@@ -284,15 +251,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
                                                  summary=True,
                                                  callback=True,
                                                  invalidate=self.always_invalidate)
-
-        # log.debug("US Thread: %s" % threading.currentThread())
-                
-        # summary = get_summarized_status_both(path, statuses)
-        # single_status = {path: statuses[path]}
-        
-#        from pprint import pformat
-#        log.debug("\n\tExtension: asked for summary [%s]\n\tGot paths:\n%s" % (path, pformat(summary.keys())))
-#        log.debug("\n\tExtension: asked for single [%s]\n\tGot paths:\n%s" % (path, pformat(single_status.keys())))
+            log.debug("Using immediate status: %s" % pformat(status.__dict__))
 
         # TODO: using pysvn directly because I don't like the current
         # SVN class.
@@ -358,8 +317,8 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         # 4. Callback triggers update
                 
         # Path == first index or last for old system?
-        if status.summary in self.EMBLEMS:
-            item.add_emblem(self.EMBLEMS[status.summary])
+        if status.summary in rabbitvcs.ui.STATUS_EMBLEMS:
+            item.add_emblem(rabbitvcs.ui.STATUS_EMBLEMS[status.summary])
         
     #~ @disable
     # @timeit
@@ -444,16 +403,6 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
     #
     
     def rescan_after_process_exit(self, proc, paths):
-        """ 
-        Rescans all of the items on our C{monitored_files} list after the
-        process specified by C{proc} completes. Also checks the paths
-        that were passed.
-        
-        TODO: the monitored_files list could grow quite large if somebody
-        browses a lot of working copies. It probably won't affect anything
-        (most importantly performance) all that negatively.
-        
-        """
         
         def do_check():
             # We'll check the paths first (these were the paths that

@@ -258,6 +258,8 @@ class StatusCheckerStub:
         DBUS.
         """
         status = cPickle.loads(str(pickled_status))
+        from pprint import pformat
+        log.debug(pformat(status.__dict__))
         self.callback(status)
     
     def check_status(self, path, recurse=False, invalidate=False,
