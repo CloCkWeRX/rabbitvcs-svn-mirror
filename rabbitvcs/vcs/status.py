@@ -99,12 +99,28 @@ class SVNStatus(Status):
     
     content_status_map = {
         'normal': status_unchanged,
+        'added': status_added,
+        'missing': status_missing,
+        'unversioned': status_unknown,
+        'deleted': status_deleted,
+        'replaced': status_changed,
+        'modified': status_changed,
+        'merged': status_changed,
+        'conflicted': status_complicated,
+        'ignored': status_ignored,
+        'obstructed': status_complicated,
+        # FIXME: is this the best representation of 'externally populated'?
+        'external': status_unchanged,
+        'incomplete': status_complicated
     }
     
     metadata_status_map = {
         'normal': status_unchanged,
         'none': status_unchanged
         }
+    
+#external - an unversioned path populated by an svn:external property
+#incomplete - a directory doesn't contain a complete entries list
     
     def __init__(self, pysvn_status):
         # There is a potential problem here: I'm pretty sure that PySVN statuses
