@@ -48,8 +48,8 @@ def log_all_exceptions(type, value, tb):
     
     sys.__excepthook__(type, value, tb)
 
-# import sys
-# sys.excepthook = log_all_exceptions
+import sys
+sys.excepthook = log_all_exceptions
 
 import copy
 import os.path
@@ -145,7 +145,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
     #: this - even when it's removed, Python may not release the memory. I do
     #: not know this for sure.
     #: This is of the form: [("path/to", {...status dict...}), ...]
-    paths_from_callback = []
+    statuses_from_callback = []
     
     
     #: It appears that the "update_file_info" call that is triggered by the
@@ -262,21 +262,23 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         # log.debug("%s: In update_status" % threading.currentThread())
         
         found = False
+        status = None
         
         with self.callback_paths_lock:
-            
-            for idx in xrange(len(self.paths_from_callback)):
-                found = (str(self.paths_from_callback[idx][0]) == str(path))
+            # Could replace with (st for st in self.... if st.path ...).next()
+            # Need to catch exception
+            for idx in xrange(len(self.statuses_from_callback)):
+                found = (self.statuses_from_callback[idx].path) == path
                 if found: break
             
             if found: # We're here because we were triggered by a callback
-                (cb_path, single_status, summary) = self.paths_from_callback[idx]
-                del self.paths_from_callback[idx]
+                status = self.statuses_from_callback[idx]
+                del self.statuses_from_callback[idx]
         
         # Don't bother the checker if we already have the info from a callback
         
         if not found:
-            (single_status, summary) = \
+            status = \
                 self.status_checker.check_status(path,
                                                  recurse=True,
                                                  summary=True,
@@ -297,13 +299,10 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         client = pysvn.Client()
         client_info = client.info(path)
 
-        assert summary.has_key(path), "Path [%s] not in status summary!" % summary
-        assert single_status.has_key(path), "Path [%s] not in single status!" % path
-
-        # if bool(int(settings.get("general", "enable_attributes"))): self.update_columns(item, path, single_status, client_info)
-        if bool(int(settings.get("general", "enable_emblems"))): self.update_status(item, path, summary, client_info)
+        # if bool(int(settings.get("general", "enable_attributes"))): self.update_columns(item, path, status, client_info)
+        if bool(int(settings.get("general", "enable_emblems"))): self.update_status(item, path, status, client_info)
         
-    def update_columns(self, item, path, statuses, client_info):
+    def update_columns(self, item, path, status, client_info):
         """
         Update the columns (attributes) for a given Nautilus item,
         filling them in with information from the version control
@@ -328,17 +327,8 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
                 values["status"] = SVN.STATUS_REVERSE[pysvn.wc_status_kind.unversioned]
             else:
                 info = client_info.data
-                # FIXME: replace
-                # status = client.status(path, recurse=False)[-1].data                
-                status = statuses[path]
-    
-                values["status"] = status["text_status"]
-
-                # If the text status shows it isn't modified, but the properties
-                # DO, let them take priority.
-                if status["text_status"] not in RabbitVCS.MODIFIED_TEXT_STATUSES \
-                  and status["prop_status"] in RabbitVCS.MODIFIED_TEXT_STATUSES:
-                    values["status"] = status["prop_status"]
+                    
+                values["status"] = status.summary
 
                 values["revision"] = str(info["commit_revision"].number)
                 values["url"] = str(info["url"])
@@ -356,7 +346,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
             item.add_string_attribute(key, value)
 
     
-    def update_status(self, item, path, summary, client_info):
+    def update_status(self, item, path, status, client_info):
         # If we are able to set an emblem that means we have a local status
         # available. The StatusMonitor will keep us up-to-date through the 
         # C{cb_status} callback.
@@ -368,12 +358,8 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         # 4. Callback triggers update
                 
         # Path == first index or last for old system?
-        if summary[path]["text_status"] == "calculating":
-            item.add_emblem(self.EMBLEMS["calculating"])
-        else:
-            single_status = make_single_status(summary[path])
-            if single_status in self.EMBLEMS:
-                item.add_emblem(self.EMBLEMS[single_status])
+        if status.summary in self.EMBLEMS:
+            item.add_emblem(self.EMBLEMS[status.summary])
         
     #~ @disable
     # @timeit
@@ -556,7 +542,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
             # Since invalidation triggers an "update_file_info" call, we can
             # tell it NOT to invalidate the status checker path.
             with self.callback_paths_lock:
-                self.paths_from_callback.append((status.path, status.status.single, status.summary))
+                self.statuses_from_callback.append(status)
                 # These are useful to establish whether the "update_status" call
                 # happens INSIDE this next call, or later, or in another thread. 
                 # log.debug("%s: Invalidating..." % threading.currentThread())

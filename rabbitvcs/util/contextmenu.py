@@ -554,15 +554,15 @@ class ContextMenuConditions:
             "is_working_copy"               : self.vcs_client.is_working_copy,
             "is_in_a_or_a_working_copy"     : self.vcs_client.is_in_a_or_a_working_copy,
             "is_versioned"                  : self.vcs_client.is_versioned,
-            "is_normal"                     : lambda path: self.statuses[path]["text_status"] == "normal" and self.statuses[path]["prop_status"] == "normal",
-            "is_added"                      : lambda path: self.statuses[path]["text_status"] == "added",
-            "is_modified"                   : lambda path: self.statuses[path]["text_status"] == "modified" or self.statuses[path]["prop_status"] == "modified",
-            "is_deleted"                    : lambda path: self.statuses[path]["text_status"] == "deleted",
-            "is_ignored"                    : lambda path: self.statuses[path]["text_status"] == "ignored",
-            "is_locked"                     : lambda path: self.statuses[path]["text_status"] == "locked",
-            "is_missing"                    : lambda path: self.statuses[path]["text_status"] == "missing",
-            "is_conflicted"                 : lambda path: self.statuses[path]["text_status"] == "conflicted",
-            "is_obstructed"                 : lambda path: self.statuses[path]["text_status"] == "obstructed",
+            "is_normal"                     : lambda path: self.statuses[path].content == "normal" and self.statuses[path].metadata == "normal",
+            "is_added"                      : lambda path: self.statuses[path].content == "added",
+            "is_modified"                   : lambda path: self.statuses[path].content == "modified" or self.statuses[path].metadata == "modified",
+            "is_deleted"                    : lambda path: self.statuses[path].content == "deleted",
+            "is_ignored"                    : lambda path: self.statuses[path].content == "ignored",
+            "is_locked"                     : lambda path: self.statuses[path].content == "locked",
+            "is_missing"                    : lambda path: self.statuses[path].content == "missing",
+            "is_conflicted"                 : lambda path: self.statuses[path].content == "conflicted",
+            "is_obstructed"                 : lambda path: self.statuses[path].content == "obstructed",
             "has_unversioned"               : lambda path: "unversioned" in self.text_statuses,
             "has_added"                     : lambda path: "added" in self.text_statuses,
             "has_modified"                  : lambda path: "modified" in self.text_statuses or "modified" in self.prop_statuses,
@@ -952,8 +952,8 @@ class GtkFilesContextMenuConditions(ContextMenuConditions):
                     "prop_status": self.vcs_client.STATUS_REVERSE[status.prop_status]
                 }
 
-        self.text_statuses = [self.statuses[key]["text_status"] for key in self.statuses.keys()]
-        self.prop_statuses = [self.statuses[key]["prop_status"] for key in self.statuses.keys()]
+        self.text_statuses = [self.statuses[key].content for key in self.statuses.keys()]
+        self.prop_statuses = [self.statuses[key].metadata for key in self.statuses.keys()]
         
 class GtkFilesContextMenu:
     """
@@ -1080,11 +1080,11 @@ class MainContextMenuConditions(ContextMenuConditions):
         self.statuses = {}
         for path in paths:
             # FIXME: possibly this should be a checker, not a cache?
-            self.statuses.update(self.status_checker.check_status(path,
-                                                                recurse=True))
+            status = self.status_checker.check_status(path, recurse=True)
+            self.statuses.update({status.path: status})
 
-        self.text_statuses = [self.statuses[key]["text_status"] for key in self.statuses.keys()]
-        self.prop_statuses = [self.statuses[key]["prop_status"] for key in self.statuses.keys()]
+        self.text_statuses = [self.statuses[key].content for key in self.statuses.keys()]
+        self.prop_statuses = [self.statuses[key].metadata for key in self.statuses.keys()]
 
 class MainContextMenu:
     """
