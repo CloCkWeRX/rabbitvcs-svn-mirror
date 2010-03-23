@@ -594,5 +594,7 @@ class VCSAction(threading.Thread):
             self.__queue_exception_callback(e)
             ret = None
 
-        self.notification.close()
         return ret
+    
+    def stop_loader(self):
+        self.stop()

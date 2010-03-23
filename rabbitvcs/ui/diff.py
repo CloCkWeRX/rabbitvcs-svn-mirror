@@ -98,6 +98,8 @@ class Diff(InterfaceNonView):
             self.path2,
             self.revision2
         )
+        
+        action.stop_loader()
 
         fh = tempfile.mkstemp("-rabbitvcs-" + str(self.revision1) + "-" + str(self.revision2) + ".diff")
         os.write(fh[0], diff_text)
@@ -138,6 +140,8 @@ class Diff(InterfaceNonView):
                 self.revision2
             )
     
+        action.stop_loader()
+    
         rabbitvcs.util.helper.launch_diff_tool(dest1, dest2)
 
     def _build_export_path(self, index, revision, path):
@@ -174,3 +178,4 @@ if __name__ == "__main__":
         pathrev2 = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
 
     SVNDiff(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1], sidebyside=options.sidebyside)
+    gtk.main()
