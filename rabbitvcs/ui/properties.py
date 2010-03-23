@@ -71,7 +71,7 @@ class PropertiesBase(InterfaceView):
     #
 
     def on_destroy(self, widget):
-        self.close()
+        self.destroy()
 
     def on_cancel_clicked(self, widget):
         self.close()

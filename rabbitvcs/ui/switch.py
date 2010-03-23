@@ -58,7 +58,7 @@ class Switch(InterfaceView):
         self.repositories.set_child_text(self.vcs.get_repo_url(self.path))
 
     def on_destroy(self, widget):
-        self.close()
+        self.destroy()
 
     def on_cancel_clicked(self, widget):
         self.close()

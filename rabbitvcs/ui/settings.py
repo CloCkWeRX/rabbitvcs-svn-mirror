@@ -234,14 +234,14 @@ class Settings(InterfaceView):
         self._populate_checker_tab(report_failure=False)
 
     def on_destroy(self, widget):
-        gtk.main_quit()
+        self.destroy()
 
     def on_cancel_clicked(self, widget):
-        gtk.main_quit()
+        self.close()
 
     def on_ok_clicked(self, widget):
         self.save()
-        gtk.main_quit()
+        self.close()
     
     def on_apply_clicked(self, widget):
         self.save()
