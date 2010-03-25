@@ -360,9 +360,11 @@ class GeditMenuBuilder(object):
             if item.icon:
                 action.set_icon_name(item.icon)
            
-            if item.signals:
-                for signal, info in item.signals.items():
-                    action.connect(signal, info["callback"], info["args"])
+            if item.callback:
+                if item.callback_args:
+                    action.connect("activate", item.callback, item.callback_args)
+                else:
+                    action.connect("activate", item.callback)
             
             action.set_property("visible", item.show())
             
