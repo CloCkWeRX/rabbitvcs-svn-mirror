@@ -484,6 +484,8 @@ class GeditContextMenu(MenuBuilder):
     Provides a standard gtk context menu (ie. a list of
     "gtk.MenuItem"s).
     """
+
+    signal = "activate"
         
     def make_menu_item(self, item, id_magic):
         return item.make_gtk_menu_item(id_magic)
