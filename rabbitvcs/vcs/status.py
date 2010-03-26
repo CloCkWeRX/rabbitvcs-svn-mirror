@@ -78,20 +78,31 @@ class Status(object):
             return self.metadata_status_map.get(self.metadata)
         else:
             return self.metadata
-    
-    def __repr__(self):
-        return "<%s %s (%s) %s/%s>" % (_("RabbitVCS status for"),
-                                        self.path,
-                                        self.vcs_type,
-                                        self.content,
-                                        self.metadata)
-    
+
     def make_summary(self, child_statuses = None):
         if child_statuses:
             self.summary = summarise_statuses(self,
                                               child_statuses)
         else:
             self.summary = self.single
+   
+    def __repr__(self):
+        return "<%s %s (%s) %s/%s>" % (_("RabbitVCS status for"),
+                                        self.path,
+                                        self.vcs_type,
+                                        self.content,
+                                        self.metadata)
+
+    def __getstate__(self):
+        attrs = self.__dict__.copy()
+        attrs['__type__'] = type(self).__name__
+        attrs['__module__'] = type(self).__module__
+        return attrs
+        
+    def __setstate__(self, dict):
+        del dict['__type__']
+        del dict['__module__']
+        self.__dict__ = dict
 
 class SVNStatus(Status):
 
@@ -116,7 +127,8 @@ class SVNStatus(Status):
     
     metadata_status_map = {
         'normal': status_unchanged,
-        'none': status_unchanged
+        'none': status_unchanged,
+        'modified': status_changed
         }
     
 #external - an unversioned path populated by an svn:external property
@@ -141,6 +153,7 @@ def summarise_statuses(top_dir_status, statuses):
     
     if not status_set:
         # This indicates a serious deviation from our expected API
+        log.debug("Status set for summary is empty!")
         summary = status_error
     
     if status_complicated in status_set:
@@ -157,3 +170,8 @@ def summarise_statuses(top_dir_status, statuses):
         summary = top_dir_status.single
     
     return summary
+
+STATUS_TYPES = [
+    Status,
+    SVNStatus
+]

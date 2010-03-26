@@ -43,9 +43,9 @@ data wherever possible (this is the case in the actual status cache and checker
 code).
 """
 
-import cPickle
 import os, os.path
 import sys
+import simplejson
 
 import gobject
 try:
@@ -82,6 +82,29 @@ def idle_add(callback, *args, **kwargs):
     else:
         gobject.idle_add(callback, *args, **kwargs)
 
+def find_class(module, name):
+    # From Python stdlib pickle module source
+    __import__(module)
+    mod = sys.modules[module]
+    klass = getattr(mod, name)
+    return klass
+
+def encode_status(status):
+    return status.__getstate__()
+
+def decode_status(json_dict):
+    cl = find_class(json_dict['__module__'], json_dict['__type__'])
+    st = None
+    if cl in rabbitvcs.vcs.status.STATUS_TYPES:
+        st = cl.__new__(cl)
+        st.__setstate__(json_dict)
+    elif json_dict.has_key('path'):
+        log.warning("Could not deduce status class: %s" % json_dict['__type__'])
+        st = rabbitvcs.vcs.status.Status.status_error(json_dict['path'])
+    else:
+        raise TypeError("RabbitVCS status object has no path")
+    return st
+
 class StatusCheckerService(dbus.service.Object):
     """ StatusCheckerService objects wrap a StatusCheckerPlus instance,
     exporting methods that can be called via DBUS.
@@ -105,6 +128,10 @@ class StatusCheckerService(dbus.service.Object):
         @type mainloop: any main loop with a quit() method
         """
         dbus.service.Object.__init__(self, connection, OBJECT_PATH)
+        
+        self.encoder = simplejson.JSONEncoder(default=encode_status,
+                                              separators=(',', ':'))
+        
         self.mainloop = mainloop
 
         # Start the status checking daemon so we can do requests in the
@@ -134,11 +161,10 @@ class StatusCheckerService(dbus.service.Object):
         """ We need to render the statuses in a format that can be sent over
         DBUS, and then unconvert them at the other end.
         """
-        pickled_status = cPickle.dumps(status)
-        self.CheckFinished(pickled_status)
+        self.CheckFinished(self.encoder.encode(status))
 
 
-    @dbus.service.signal(INTERFACE, signature='s')
+    @dbus.service.signal(INTERFACE)
     def CheckFinished(self, status):
         """ Empty method for connection status check callbacks. This is a DBUS
         signal, and can be "connected" to as per the python DBUS docs.
@@ -163,12 +189,14 @@ class StatusCheckerService(dbus.service.Object):
                          complete
         @type callback: boolean
         """
+        
         callback = self.CheckFinishedPreprocess if callback else None
-        status = self.status_checker.check_status(u"" + path, recurse=recurse,
+        status = self.status_checker.check_status(unicode(path), recurse=recurse,
                                                   invalidate=invalidate,
                                                   summary=summary,
                                                   callback=callback)
-        return cPickle.dumps(status)
+        
+        return self.encoder.encode(status)
 
     @dbus.service.method(INTERFACE)
     def Quit(self):
@@ -218,6 +246,8 @@ class StatusCheckerStub:
         self.session_bus = dbus.SessionBus()
         self.callback = callback
 
+        self.decoder = simplejson.JSONDecoder(object_hook=decode_status)
+
         self.status_checker = None
 
         start()
@@ -236,7 +266,8 @@ class StatusCheckerStub:
             if self.callback:
                 self.status_checker.connect_to_signal("CheckFinished",
                                                       self.idle_callback,
-                                                      dbus_interface=INTERFACE)
+                                                      dbus_interface=INTERFACE,
+                                                      byte_arrays=True)
         except dbus.DBusException, ex:
             # There is not much we should do about this...
             log.exception(ex)
@@ -252,12 +283,12 @@ class StatusCheckerStub:
         # Switch to this method to just call it straight from here:
         # self.CheckFinishedDeprocess(*args, **kwargs)
 
-    def CheckFinishedDeprocess(self, pickled_status):
+    def CheckFinishedDeprocess(self, json_status):
         """ This undoes the work of CheckFinishedPreprocess, re-creating the
         real status objects from however they were transformed to send them over
         DBUS.
         """
-        status = cPickle.loads(str(pickled_status))
+        status = self.decoder.decode(json_status)
         self.callback(status)
 
     def check_status(self, path, recurse=False, invalidate=False,
@@ -268,12 +299,14 @@ class StatusCheckerStub:
         service (which is, in turn, a wrapper around the real status checker).
         """
         status = None
+                
         try:
-            pickled_status = self.status_checker.CheckStatus(path, recurse, invalidate,
-                                                             summary, callback,
-                                                             dbus_interface=INTERFACE,
-                                                             timeout=TIMEOUT)
-            status = cPickle.loads(str(pickled_status))
+            json_status = self.status_checker.CheckStatus(path,
+                                                          recurse, invalidate,
+                                                          summary, callback,
+                                                          dbus_interface=INTERFACE,
+                                                          timeout=TIMEOUT)
+            status = self.decoder.decode(json_status)
             # Test client error problems :)
             # raise dbus.DBusException("Test")
         except dbus.DBusException, ex:

@@ -359,6 +359,7 @@ class SVN:
             # TODO: uncommenting these might not be a good idea
             #~ traceback.print_exc()
             log.debug("Exception occured in SVN.status() for %s" % path)
+            log.exception(ex)
             return [on_error]
 
     #~ @timeit
