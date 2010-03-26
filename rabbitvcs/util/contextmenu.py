@@ -684,8 +684,7 @@ class ContextMenuConditions:
                 self.path_dict["is_versioned"])
         
     def delete(self, data=None):
-        # FIXME: This should be False for the top-level WC folder
-        return self.path_dict["is_versioned"]
+        return self.path_dict["exists"]
         
     def revert(self, data=None):
         if self.path_dict["is_in_a_or_a_working_copy"]:
