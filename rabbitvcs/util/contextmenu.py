@@ -627,7 +627,8 @@ class ContextMenuConditions:
     def diff(self, data=None):
         if (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
-                (self.path_dict["is_modified"] or self.path_dict["has_modified"])):
+                (self.path_dict["is_modified"] or self.path_dict["has_modified"] or 
+                self.path_dict["is_conflicted"] or self.path_dict["has_conflicted"])):
             return True        
         return False
 
@@ -640,7 +641,8 @@ class ContextMenuConditions:
     def compare_tool(self, data=None):
         if (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
-                (self.path_dict["is_modified"] or self.path_dict["has_modified"])):
+                (self.path_dict["is_modified"] or self.path_dict["has_modified"] or 
+                self.path_dict["is_conflicted"] or self.path_dict["has_conflicted"])):
             return True        
         return False
 
