@@ -686,7 +686,7 @@ class ContextMenuConditions:
                 self.path_dict["is_versioned"])
         
     def delete(self, data=None):
-        return self.path_dict["exists"]
+        return self.path_dict["exists"] or self.path_dict["is_versioned"]
         
     def revert(self, data=None):
         if self.path_dict["is_in_a_or_a_working_copy"]:
