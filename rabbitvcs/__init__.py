@@ -39,7 +39,7 @@ if language:
     langs += language.split(":")
 if getdefaultlocale()[0] != None: 
     langs += [getdefaultlocale()[0]]
-print langs
+
 _gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
 _gettext.textdomain(APP_NAME)
 
