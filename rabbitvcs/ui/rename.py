@@ -46,10 +46,10 @@ class Rename(InterfaceNonView):
         dialog = OneLineTextChange(_("Rename"), _("New Name:"), self.filename)
         (result, new_filename) = dialog.run()
 
-        if result == gtk.RESPONSE_CANCEL:
+        if result != gtk.RESPONSE_OK:
             self.close()
             return
-       
+
         if not new_filename:
             MessageBox(_("The new name field is required"))
             return
