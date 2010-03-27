@@ -21,6 +21,7 @@ to work, or you need to prototype things.
 """
 
 import rabbitvcs.vcs
+import rabbitvcs.vcs.status
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -41,39 +42,16 @@ class StatusChecker():
 
     def check_status(self, path, recurse, summary):
         """ Performs a status check, blocking until the check is done.
-        
-        The returned status data can have two forms. If a summary is requested,
-        it is:
-        
-            (status list, summarised dict)
-            
-        ...where the list is of the form
-        
-            [(path1, text_status1, prop_status1), (path2, ...), ...]
-            
-        ...and the dict is:
-        
-            {path: {"text_status": text_status,
-                    "prop_status": prop_status}}
-        
-        If no summary is requested, the return value is just the status list.
         """
         
-        try:
-            status_list = self.vcs_client.status(path, recurse=recurse)
-            statuses = [(status.path,
-                         str(status.text_status),
-                         str(status.prop_status)) 
-                        for status in status_list]
-        except Exception:
-            statuses = [status_error(path)]
+        status_list = self.vcs_client.status(path, recurse=recurse)
+        
+        path_status = (st for st in all_statuses if st.path == path).next()
         
         if summary:
-            statuses = (statuses,
-                        rabbitvcs.util.vcs.summarize_status_pair_list(path,
-                                                                      statuses))
+            path_status.make_summary(status_list)
 
-        return statuses
+        return path_status
     
     def extra_info(self):
         return None

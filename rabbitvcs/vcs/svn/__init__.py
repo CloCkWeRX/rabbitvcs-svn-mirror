@@ -33,6 +33,7 @@ from os.path import isdir, isfile, dirname
 import pysvn
 
 import rabbitvcs.vcs
+import rabbitvcs.vcs.status
 from rabbitvcs.util.helper import abspaths
 from rabbitvcs.util.decorators import timeit
 from rabbitvcs.util.log import Log
@@ -342,22 +343,23 @@ class SVN:
 
         """
         # FIXME: this should be converted to return a generic status
-        on_error = pysvn.PysvnStatus({
-                    "text_status": pysvn.wc_status_kind.none,
-                    "prop_status": pysvn.wc_status_kind.none,
-                    "path": path
-            })
         
+        on_error = rabbitvcs.vcs.status.Status.status_unknown(path)
+                
         if not self.is_in_a_or_a_working_copy(path):
             return [on_error]
         
         try:
-            statuslist = self.client.status(path, recurse=recurse, update=update)
-            if not len(statuslist):
+            pysvn_statuses = self.client.status(path,
+                                                recurse=recurse,
+                                                update=update)
+            if not len(pysvn_statuses):
                 # This is NOT in the PySVN documentation, but sometimes it
                 # returns an empty list if the file goes missing...
                 return [on_error]
             else:
+                statuslist = [rabbitvcs.vcs.status.SVNStatus(st)
+                              for st in pysvn_statuses]
                 return statuslist
         except pysvn.ClientError, ex:
             # TODO: uncommenting these might not be a good idea

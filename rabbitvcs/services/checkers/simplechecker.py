@@ -40,26 +40,19 @@ def Main(path, recurse, summary):
     Perform a VCS status check on the given path (recursive as indicated). The
     results will be pickled and sent as a byte stream over stdout.
     """
-    # NOTE: we cannot pickle status_list directly. It needs to be processed
-    # here.
     try:
         vcs_client = rabbitvcs.vcs.create_vcs_instance()
-        status_list = vcs_client.status(path, recurse=recurse)
-        all_statuses = [rabbitvcs.vcs.status.SVNStatus(status)
-                        for status in status_list]
-        
+        all_statuses = vcs_client.status(path, recurse=recurse)
     except Exception, ex:
         log.exception(ex)
         all_statuses = [rabbitvcs.vcs.status.Status.status_error(path)]
 
-    path_status = all_statuses[0]
+    path_status = (st for st in all_statuses if st.path == path).next()
 
     if summary:
         path_status.make_summary(all_statuses)
     
-    statuses = (path_status, all_statuses)
-    
-    cPickle.dump(statuses, sys.stdout)
+    cPickle.dump(path_status)
     sys.stdout.flush()
 
 class StatusChecker():
@@ -91,10 +84,10 @@ class StatusChecker():
                                        str(summary)],
                                stdin = subprocess.PIPE,
                                stdout = subprocess.PIPE)
-        statuses = cPickle.load(sc_process.stdout)
+        status = cPickle.load(sc_process.stdout)
         sc_process.stdout.close()
         sc_process.stdin.close()
-        return statuses
+        return status
     
     def get_memory_usage(self):
         """ Returns any additional memory of any subprocesses used by this

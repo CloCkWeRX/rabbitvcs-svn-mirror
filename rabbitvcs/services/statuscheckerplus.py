@@ -105,17 +105,13 @@ class StatusCheckerPlus():
         
     def _check_status_without_callback(self, path, checker, recurse=False,
                                             summary=False):
-        
-        # This might be considered a little hacky, but we need to use a
-        # different checker for each thread.        
-        statuses = {}
-                    
+                            
         # Uncomment this for useful simulation of a looooong status check :)
         # log.debug("Sleeping for 10s...")
         # time.sleep(5)
         # log.debug("Done.")
         
-        (path_status, all_statuses) = \
+        path_status = \
             checker.check_status(path, recurse, summary)
                
         return path_status

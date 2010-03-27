@@ -71,34 +71,7 @@ def Main():
         
         try:
             # log.debug("Checking: %s" % path)
-            status_list = vcs_client.status(path, recurse=recurse)
-            all_statuses = [rabbitvcs.vcs.status.SVNStatus(status)
-                            for status in status_list]
-            
-            # NOTE: this is useful for debugging. You can tweak MAGIC_NUMBER to
-            # make status checks appear to take longer or shorter.
-#            import time, math, os.path
-#            statuses = []            
-#            MAGIC_NUMBER = 1
-#            if os.path.isdir(path):
-#                for root, dirnames, fnames in os.walk(path):
-#                    names = ["."]
-#                    names.extend(dirnames)
-#                    names.extend(fnames)
-#                    for name in names:
-#                        thing = os.path.abspath(os.path.join(root, name))
-#                        if "/.svn" not in thing:
-#                            num = 0
-#                            while num < 10:
-#                                math.sin(num)
-#                                num+=1
-#                            statuses.append( (thing, "added", "normal") )
-#            else:
-#                num = 0
-#                while num < 10:
-#                    math.sin(num)
-#                    num+=1
-#                statuses.append( (path, "added", "none") )
+            all_statuses = vcs_client.status(path, recurse=recurse)
             
         except Exception, ex:
             log.exception(ex)
@@ -111,12 +84,11 @@ def Main():
         if summary:
             path_status.make_summary(all_statuses)
             
-        statuses = (path_status, all_statuses)
-
-        pickler.dump(statuses)
+        pickler.dump(path_status)
         sys.stdout.flush()
         pickler.clear_memo()
-        del statuses
+        del all_statuses
+        del path_status
         
 
 class StatusChecker():
@@ -144,8 +116,8 @@ class StatusChecker():
         """
         self.pickler.dump((path, bool(recurse), bool(summary)))
         self.sc_proc.stdin.flush()
-        statuses = self.unpickler.load()
-        return statuses
+        status = self.unpickler.load()
+        return status
 
     def get_memory_usage(self):
         """ Returns any additional memory of any subprocesses used by this
