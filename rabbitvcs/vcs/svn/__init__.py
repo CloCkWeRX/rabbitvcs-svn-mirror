@@ -28,7 +28,7 @@ import traceback
 import subprocess
 import re
 import os.path
-from os.path import isdir, isfile, dirname
+from os.path import isdir, isfile, dirname, islink, realpath
 
 import pysvn
 
@@ -335,6 +335,11 @@ class SVN:
         self.interface = "pysvn"
         self.vcs = "svn"
     
+    def client_info(self, path):
+        if islink(path):
+            path = realpath(path)
+        return self.client.info(path)
+    
     def status(self, path, recurse=True, update=False):
         """
         
@@ -418,7 +423,7 @@ class SVN:
             # way to make sure that we're dealing with a working copy
             # is by verifying the SVN administration area exists.
             if (isdir(path) and
-                    self.client.info(path) and
+                    self.client_info(path) and
                     isdir(os.path.join(path, ".svn"))):
                 return True
             return False
@@ -436,7 +441,7 @@ class SVN:
         else:
             # info will return nothing for an unversioned file inside a working copy
             if (self.is_working_copy(os.path.split(path)[0]) and
-                    self.client.info(path)): 
+                    self.client_info(path)): 
                 return True
                 
             return False
@@ -640,7 +645,7 @@ class SVN:
         if not path:
             return ""
 
-        info = self.client.info(path)
+        info = self.client_info(path)
         returner = ""
         try:
             returner = info["url"]
@@ -690,7 +695,7 @@ class SVN:
         
         """
     
-        info = self.client.info(path)
+        info = self.client_info(path)
         
         returner = None
         try:
@@ -714,7 +719,7 @@ class SVN:
         
         """
 
-        info = self.client.info(path)
+        info = self.client_info(path)
         
         returner = None
         try:
