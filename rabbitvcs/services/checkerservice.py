@@ -83,6 +83,8 @@ def idle_add(callback, *args, **kwargs):
         gobject.idle_add(callback, *args, **kwargs)
 
 def find_class(module, name):
+    """ Given a module name and a class name, return the actual type object.
+    """
     # From Python stdlib pickle module source
     __import__(module)
     mod = sys.modules[module]
@@ -90,9 +92,16 @@ def find_class(module, name):
     return klass
 
 def encode_status(status):
+    """ Before encoding a status object to JSON, we need to turn it into
+    something simpler.
+    """
     return status.__getstate__()
 
 def decode_status(json_dict):
+    """ Once we get a JSON encoded string out the other side of DBUS, we need to
+    reconstitute the original object. This method is based on the pickle module
+    in the Python stdlib.
+    """
     cl = find_class(json_dict['__module__'], json_dict['__type__'])
     st = None
     if cl in rabbitvcs.vcs.status.STATUS_TYPES:
@@ -159,19 +168,21 @@ class StatusCheckerService(dbus.service.Object):
 
     def CheckFinishedPreprocess(self, status):
         """ We need to render the statuses in a format that can be sent over
-        DBUS, and then unconvert them at the other end.
+        DBUS, and then unconvert them at the other end. (The ONLY reason the
+        status objects can't be rendered by DBUS automatically is that they may
+        contain "None" values. Grr.)
         """
         self.CheckFinished(self.encoder.encode(status))
 
 
-    @dbus.service.signal(INTERFACE)
+    @dbus.service.signal(INTERFACE, signature='s')
     def CheckFinished(self, status):
         """ Empty method for connection status check callbacks. This is a DBUS
         signal, and can be "connected" to as per the python DBUS docs.
         """
         pass
 
-    @dbus.service.method(INTERFACE)
+    @dbus.service.method(INTERFACE, in_signature='sbbbb', out_signature='s')
     def CheckStatus(self, path, recurse=False, invalidate=False,
                       summary=False, callback=False):
         """ Requests a status check from the underlying status checker.
@@ -265,14 +276,13 @@ class StatusCheckerStub:
                                                               OBJECT_PATH)
             if self.callback:
                 self.status_checker.connect_to_signal("CheckFinished",
-                                                      self.idle_callback,
-                                                      dbus_interface=INTERFACE,
-                                                      byte_arrays=True)
+                                                      self._idle_callback,
+                                                      dbus_interface=INTERFACE)
         except dbus.DBusException, ex:
             # There is not much we should do about this...
             log.exception(ex)
 
-    def idle_callback(self, *args, **kwargs):
+    def _idle_callback(self, *args, **kwargs):
         """ Notifies the callback of a completed status check.
 
         The callback will be performed when the glib main loop is idle. This is
