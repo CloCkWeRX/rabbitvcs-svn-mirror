@@ -347,6 +347,10 @@ class SVN:
                     "prop_status": pysvn.wc_status_kind.none,
                     "path": path
             })
+        
+        if not self.is_in_a_or_a_working_copy(path):
+            return [on_error]
+        
         try:
             statuslist = self.client.status(path, recurse=recurse, update=update)
             if not len(statuslist):
