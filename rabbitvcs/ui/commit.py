@@ -37,6 +37,7 @@ import rabbitvcs.util
 import rabbitvcs.util.helper
 from rabbitvcs.util.log import Log
 from rabbitvcs.util.decorators import gtk_unsafe
+import rabbitvcs.vcs.status
 
 log = Log("rabbitvcs.ui.commit")
 
@@ -207,7 +208,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         added = 0
         for item in items:
             try:
-                if self.vcs.status(item, recurse=False)[0].text_status == self.vcs.STATUS["unversioned"]:
+                if self.vcs.status(item, summarize=False).text_status == rabbitvcs.vcs.status.status_unversioned:
                     self.vcs.add(item)
                     added += 1
             except Exception, e:

@@ -10,6 +10,8 @@ status_ignored = 'ignored'
 status_read_only = 'read-only'
 status_locked = 'locked'
 status_unknown = 'unknown'
+# Specifically: this means something IN A WORKING COPY but not added
+status_unversioned = 'unversioned'
 status_missing = 'missing'
 status_replaced = 'replaced'
 # "complicated" = anything we display with that exclamation mark icon
@@ -29,15 +31,15 @@ class Status(object):
 
     @staticmethod
     def status_unknown(path):
-        return Status(path, status_unknown)
+        return Status(path, status_unknown, summary = status_unknown)
     
     @staticmethod
     def status_error(path):
-        return Status(path, status_error)
+        return Status(path, status_error, summary = status_error)
     
     @staticmethod
     def status_calc(path):
-        return Status(path, status_calculating)
+        return Status(path, status_calculating, summary = status_calculating)
     
     vcs_type = 'generic'
  
@@ -86,6 +88,15 @@ class Status(object):
         else:
             self.summary = self.single
    
+    def is_modified(self):
+        # This may need to be more sophisticated... eg. is read-only modified?
+        # Unknown? etc... 
+        return self.single is not status_unchanged
+    
+    def has_modified(self):
+        # Includes self being modified!
+        return self.summary is not status_unchanged    
+    
     def __repr__(self):
         return "<%s %s (%s) %s/%s>" % (_("RabbitVCS status for"),
                                         self.path,
@@ -112,7 +123,7 @@ class SVNStatus(Status):
         'normal': status_unchanged,
         'added': status_added,
         'missing': status_missing,
-        'unversioned': status_unknown,
+        'unversioned': status_unversioned,
         'deleted': status_deleted,
         'replaced': status_changed,
         'modified': status_changed,

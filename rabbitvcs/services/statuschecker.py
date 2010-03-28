@@ -44,13 +44,8 @@ class StatusChecker():
         """ Performs a status check, blocking until the check is done.
         """
         
-        status_list = self.vcs_client.status(path, recurse=recurse)
+        path_status = self.vcs_client.status(path, summary)
         
-        path_status = (st for st in all_statuses if st.path == path).next()
-        
-        if summary:
-            path_status.make_summary(status_list)
-
         return path_status
     
     def extra_info(self):

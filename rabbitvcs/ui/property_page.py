@@ -26,7 +26,6 @@ import rabbitvcs.ui
 import rabbitvcs.vcs
 from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 from rabbitvcs.ui import STATUS_EMBLEMS
-from rabbitvcs.util.vcs import make_single_status
 
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.ui.property_page")

@@ -314,36 +314,17 @@ class SVN:
         pysvn.node_kind.unknown: "unknown"
     }
 
-    #: This variable is used to maintain a status cache. Paths function as keys
-    #: and every item in the cache has all the statuses for all the items below
-    #: it, though the last item is always the status for the path.
-    #:
-    #: It might look like:::
-    #:
-    #:     status_cache = {
-    #:        "/foo/bar/baz": [<PysvnStatus u'baz'>]
-    #:        "/foo/bar": [<PysvnStatus u'baz'>, <PysvnStatus u'bar'>, ]
-    #:        "/foo": [<PysvnStatus u'foo'>, <PysvnStatus u'bar'>, <PysvnStatus u'baz'>]
-    #:     }
-    #:
-    #: It is shared over all instances. Don't ask me why though, I don't
-    #: understand how it works myself.
-    #:
-    status_cache = {}
-
     def __init__(self):
         self.client = pysvn.Client()
         self.interface = "pysvn"
         self.vcs = "svn"
 
-    def status(self, path, recurse=True, update=False):
+    def statuses(self, path, recurse=True):
         """
 
         Look up the status for path.
 
         """
-        # FIXME: this should be converted to return a generic status
-        
         on_error = rabbitvcs.vcs.status.Status.status_unknown(path)
                 
         if not self.is_in_a_or_a_working_copy(path):
@@ -351,8 +332,7 @@ class SVN:
         
         try:
             pysvn_statuses = self.client.status(path,
-                                                recurse=recurse,
-                                                update=update)
+                                                recurse=recurse)
             if not len(pysvn_statuses):
                 # This is NOT in the PySVN documentation, but sometimes it
                 # returns an empty list if the file goes missing...
@@ -368,57 +348,18 @@ class SVN:
             log.exception(ex)
             return [on_error]
 
-    #~ @timeit
-    def status_with_cache(self, path, invalidate=False, recurse=True):
-        """
-
-        Look up the status for path.
-
-        If invalidate is set to False this function will look to see if a
-        status for the requested path is available in the cache and if so
-        return that. Otherwise it will bypass the cache entirely.
-
-        @type   path: string
-        @param  path: A path pointing to an item (file or directory).
-
-        @type   invalidate: boolean
-        @param  invalidate: Whether or not the cache should be bypassed.
-
-        @type   recurse: boolean
-        @param  recurse: Should status recurse or not
-
-        @rtype:        list of PysvnStatus
-        @return:       A list of statuses for the given path, with the status
-                       for the path being the first item in the list.
-
-        """
-
-        if (not invalidate and path in self.status_cache):
-            return self.status_cache[path]
-
-        # The cache was bypassed or does not contain the requested path.
-        statuses = self.status(path, recurse=recurse)
-
-        # Empty out all the caches
-        for status in statuses:
-            current_path = os.path.join(path, status.data["path"].encode("utf-8"))
-            while current_path != "/":
-                self.status_cache[current_path] = []
-                current_path = os.path.split(current_path)[0]
-
-        # Fill them back up
-        for status in statuses:
-            current_path = os.path.join(path, status.data["path"].encode("utf-8"))
-            while current_path != "/":
-                if current_path not in self.status_cache: break;
-                self.status_cache[current_path].append(status)
-                current_path = os.path.split(current_path)[0]
-
-        return self.status_cache[path]
-
-    #
-    # is
-    #
+    def status(self, path, summarize=True):
+        
+        all_statuses = self.statuses(path, recurse=summarize)
+        
+        if summarize:
+            path_status = (st for st in all_statuses if st.path == path).next()
+            path_status.make_summary(all_statuses)
+            
+        else:
+            path_status = all_statuses[0]
+        
+        return path_status
 
     def is_working_copy(self, path):
         try:
@@ -457,7 +398,7 @@ class SVN:
 
     def is_status(self, path, status_kind):
         try:
-            status = self.status(path, recurse=False)[-1]
+            status = self.status(path, summarize=False)
         except Exception, e:
             log.exception("is_status exception for %s" % path)
             return False
@@ -474,21 +415,6 @@ class SVN:
 
         return False
 
-    def is_normal(self, path):
-        return self.is_status(path, pysvn.wc_status_kind.normal)
-
-    def is_added(self, path):
-        return self.is_status(path, pysvn.wc_status_kind.added)
-
-    def is_modified(self, path):
-        return self.is_status(path, pysvn.wc_status_kind.modified)
-
-    def is_deleted(self, path):
-        return self.is_status(path, pysvn.wc_status_kind.deleted)
-
-    def is_ignored(self, path):
-        return self.is_status(path, pysvn.wc_status_kind.ignored)
-
     def is_locked(self, path):
         is_locked = False
         try:
@@ -498,82 +424,6 @@ class SVN:
             #log.exception("is_locked exception for %s" % path)
 
         return is_locked
-
-    def is_conflicted(self, path):
-        return self.is_status(path, pysvn.wc_status_kind.conflicted)
-
-    def is_missing(self, path):
-        return self.is_status(path, pysvn.wc_status_kind.missing)
-
-    def is_obstructed(self, path):
-        return self.is_status(path, pysvn.wc_status_kind.obstructed)
-
-    #
-    # has
-    #
-
-    def has_status(self, path, status_kind):
-        try:
-            statuses = self.status(path, recurse=True)[:-1]
-        except Exception, e:
-            log.exception("has_status exception for %s" % path)
-            return False
-
-        for status in statuses:
-            # If looking for "NORMAL", then both statuses must be normal (or propstatus=none)
-            # Otherwise, it is an either or situation
-            if status_kind == pysvn.wc_status_kind.normal:
-                if (status.data["text_status"] == status_kind
-                        and (status.data["prop_status"] == status_kind
-                            or status.data["prop_status"] == pysvn.wc_status_kind.none)):
-                    return True
-            else:
-                if (status.data["text_status"] == status_kind
-                        or status.data["prop_status"] == status_kind):
-                    return True
-
-        return False
-
-    def has_unversioned(self, path):
-        return self.has_status(path, pysvn.wc_status_kind.unversioned)
-
-    def has_added(self, path):
-        return self.has_status(path, pysvn.wc_status_kind.added)
-
-    def has_modified(self, path):
-        return self.has_status(path, pysvn.wc_status_kind.modified)
-
-    def has_deleted(self, path):
-        return self.has_status(path, pysvn.wc_status_kind.deleted)
-
-    def has_ignored(self, path):
-        return self.has_status(path, pysvn.wc_status_kind.ignored)
-
-    def has_locked(self, path):
-        try:
-            infos = self.client.info2(path)
-        except:
-            #log.exception("has_locked exception for %s" % path)
-            return False
-
-        for info in infos:
-            if info[1].lock is not None:
-                return True
-
-        return False
-
-    def has_conflicted(self, path):
-        return self.has_status(path, pysvn.wc_status_kind.conflicted)
-
-    def has_missing(self, path):
-        return self.has_status(path, pysvn.wc_status_kind.missing)
-
-    def has_obstructed(self, path):
-        return self.has_status(path, pysvn.wc_status_kind.obstructed)
-
-    #
-    # provides information for ui
-    #
 
     def get_items(self, paths, statuses=[]):
         """
@@ -596,7 +446,7 @@ class SVN:
         items = []
         for path in abspaths(paths):
             try:
-                st = self.status(path)
+                st = self.statuses(path)
             except Exception, e:
                 log.exception(e)
                 continue
@@ -604,27 +454,6 @@ class SVN:
             for st_item in st:
                 if statuses and st_item.text_status not in statuses \
                   and st_item.prop_status not in statuses:
-                    continue
-
-                items.append(st_item)
-
-        return items
-
-    def get_remote_updates(self, paths):
-        if paths is None:
-            return []
-
-        items = []
-        for path in abspaths(paths):
-            try:
-                st = self.client.status(path, update=True)
-            except Exception, e:
-                log.exception(e)
-                continue
-
-            for st_item in st:
-                if st_item.repos_text_status == pysvn.wc_status_kind.none and \
-                        st_item.repos_prop_status == pysvn.wc_status_kind.none:
                     continue
 
                 items.append(st_item)

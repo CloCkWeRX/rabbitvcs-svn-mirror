@@ -40,17 +40,17 @@ def Main(path, recurse, summary):
     Perform a VCS status check on the given path (recursive as indicated). The
     results will be pickled and sent as a byte stream over stdout.
     """
+    
     try:
+        # log.debug("Checking: %s" % path)
         vcs_client = rabbitvcs.vcs.create_vcs_instance()
-        all_statuses = vcs_client.status(path, recurse=recurse)
+        path_status = vcs_client.status(path, summarize=summary)
+        
     except Exception, ex:
         log.exception(ex)
-        all_statuses = [rabbitvcs.vcs.status.Status.status_error(path)]
+        path_status = rabbitvcs.vcs.status.Status.status_error(path)
 
-    path_status = (st for st in all_statuses if st.path == path).next()
-
-    if summary:
-        path_status.make_summary(all_statuses)
+    assert path_status.path == path, "Path from PySVN %s != given path %s" % (path_status.path, path)
     
     cPickle.dump(path_status)
     sys.stdout.flush()

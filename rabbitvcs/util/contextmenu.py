@@ -945,7 +945,7 @@ class GtkFilesContextMenuConditions(ContextMenuConditions):
             if not path:
                 continue
                 
-            statuses_tmp = self.vcs_client.status(path)
+            statuses_tmp = self.vcs_client.statuses(path)
             for status in statuses_tmp:
                 self.statuses[status.path] = {
                     "text_status": self.vcs_client.STATUS_REVERSE[status.text_status],

@@ -324,9 +324,6 @@ class StatusCheckerStub:
 
             status = rabbitvcs.vcs.status.Status.status_error(path)
 
-            if summary:
-                status.make_summary()
-
             # Try to reconnect
             self._connect_to_checker()
 

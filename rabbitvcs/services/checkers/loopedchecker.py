@@ -71,23 +71,17 @@ def Main():
         
         try:
             # log.debug("Checking: %s" % path)
-            all_statuses = vcs_client.status(path, recurse=recurse)
+            path_status = vcs_client.status(path, summarize=summary)
             
         except Exception, ex:
             log.exception(ex)
-            all_statuses = [rabbitvcs.vcs.status.Status.status_error(path)]
-
-        path_status = (st for st in all_statuses if st.path == path).next()
+            path_status = rabbitvcs.vcs.status.Status.status_error(path)
 
         assert path_status.path == path, "Path from PySVN %s != given path %s" % (path_status.path, path)
-
-        if summary:
-            path_status.make_summary(all_statuses)
             
         pickler.dump(path_status)
         sys.stdout.flush()
         pickler.clear_memo()
-        del all_statuses
         del path_status
         
 
