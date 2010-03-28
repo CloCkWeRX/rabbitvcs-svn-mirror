@@ -39,9 +39,6 @@ from Queue import Queue
 # from rabbitvcs.services.statuschecker import StatusChecker
 from rabbitvcs.services.checkers.loopedchecker import StatusChecker
 
-import rabbitvcs.util.vcs
-import rabbitvcs.vcs.svn
-
 from rabbitvcs import gettext
 _ = gettext.gettext
 

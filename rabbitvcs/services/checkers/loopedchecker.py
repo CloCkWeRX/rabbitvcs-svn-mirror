@@ -29,7 +29,6 @@ import rabbitvcs.vcs
 import rabbitvcs.util.helper
 
 import rabbitvcs.util._locale
-import rabbitvcs.util.vcs
 import rabbitvcs.vcs.status
 
 from rabbitvcs.util.log import Log

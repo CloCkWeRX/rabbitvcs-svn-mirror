@@ -26,7 +26,6 @@ import sys
 import subprocess
 
 import rabbitvcs.util._locale
-import rabbitvcs.util.vcs
 import rabbitvcs.vcs
 import rabbitvcs.vcs.status
 

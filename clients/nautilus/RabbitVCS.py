@@ -65,7 +65,6 @@ import gtk
 
 from rabbitvcs.vcs.svn import SVN
 
-from rabbitvcs.util.vcs import *
 from rabbitvcs.util.helper import launch_ui_window, launch_diff_tool
 from rabbitvcs.util.helper import get_file_extension, get_common_directory
 from rabbitvcs.util.helper import pretty_timedelta
