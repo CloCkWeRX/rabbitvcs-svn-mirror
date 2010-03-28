@@ -117,20 +117,16 @@ class Commit(InterfaceView, GtkContextMenuCaller):
           - Populates the files table with the retrieved items
           - Updates the status area        
         """
-        try:
-            gtk.gdk.threads_enter()
-            self.get_widget("status").set_text(_("Loading..."))
-            gtk.gdk.threads_leave()
-    
-            self.items = self.vcs.get_items(self.paths, self.vcs.STATUSES_FOR_COMMIT)
-    
-            gtk.gdk.threads_enter()
-            self.populate_files_table()
-            self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
-            gtk.gdk.threads_leave()
-        except Exception, ex:
-            log.exception(ex)
-            raise
+        gtk.gdk.threads_enter()
+        self.get_widget("status").set_text(_("Loading..."))
+        gtk.gdk.threads_leave()
+
+        self.items = self.vcs.get_items(self.paths, self.vcs.STATUSES_FOR_COMMIT)
+
+        gtk.gdk.threads_enter()
+        self.populate_files_table()
+        self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
+        gtk.gdk.threads_leave()
 
     def reload_treeview(self):
         self.initialize_items()
@@ -143,10 +139,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         Determines if a file should be activated or not
         """
         
-        if (item.path in self.paths or item.is_versioned()):
-            return True
-
-        return False
+        return (item.path in self.paths or item.is_versioned())
 
     def populate_files_table(self):
         """
