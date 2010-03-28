@@ -89,7 +89,8 @@ class Unlock(Add):
     def populate_files_table(self):
         found = 0
         for item in self.items:
-            if item.text_status in (self.vcs.STATUS["unversioned"], self.vcs.STATUS["ignored"]):
+            # FIXME: ...
+            if item.content in (self.vcs.STATUS["unversioned"], self.vcs.STATUS["ignored"]):
                 continue
                 
             if not self.vcs.is_locked(item.path):

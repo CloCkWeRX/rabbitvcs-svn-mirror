@@ -117,17 +117,20 @@ class Commit(InterfaceView, GtkContextMenuCaller):
           - Populates the files table with the retrieved items
           - Updates the status area        
         """
-
-        gtk.gdk.threads_enter()
-        self.get_widget("status").set_text(_("Loading..."))
-        gtk.gdk.threads_leave()
-
-        self.items = self.vcs.get_items(self.paths, self.vcs.STATUSES_FOR_COMMIT)
-
-        gtk.gdk.threads_enter()
-        self.populate_files_table()
-        self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
-        gtk.gdk.threads_leave()
+        try:
+            gtk.gdk.threads_enter()
+            self.get_widget("status").set_text(_("Loading..."))
+            gtk.gdk.threads_leave()
+    
+            self.items = self.vcs.get_items(self.paths, self.vcs.STATUSES_FOR_COMMIT)
+    
+            gtk.gdk.threads_enter()
+            self.populate_files_table()
+            self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
+            gtk.gdk.threads_leave()
+        except Exception, ex:
+            log.exception(ex)
+            raise
 
     def reload_treeview(self):
         self.initialize_items()
@@ -140,8 +143,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         Determines if a file should be activated or not
         """
         
-        if (item.path in self.paths
-                or item.is_versioned):
+        if (item.path in self.paths or item.is_versioned()):
             return True
 
         return False
@@ -161,8 +163,8 @@ class Commit(InterfaceView, GtkContextMenuCaller):
                 checked,
                 item.path, 
                 rabbitvcs.util.helper.get_file_extension(item.path),
-                item.text_status,
-                item.prop_status
+                item.content,
+                item.metadata
             ])
 
     def initialize_items(self):
@@ -208,7 +210,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         added = 0
         for item in items:
             try:
-                if self.vcs.status(item, summarize=False).text_status == rabbitvcs.vcs.status.status_unversioned:
+                if self.vcs.status(item, summarize=False).content == rabbitvcs.vcs.status.status_unversioned:
                     self.vcs.add(item)
                     added += 1
             except Exception, e:

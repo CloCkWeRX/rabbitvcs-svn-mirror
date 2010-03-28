@@ -202,39 +202,24 @@ class SVN:
         "incomplete"    : pysvn.wc_status_kind.incomplete
     }
 
-    STATUS_REVERSE = {
-        pysvn.wc_status_kind.none:          "none",
-        pysvn.wc_status_kind.unversioned:   "unversioned",
-        pysvn.wc_status_kind.normal:        "normal",
-        pysvn.wc_status_kind.added:         "added",
-        pysvn.wc_status_kind.missing:       "missing",
-        pysvn.wc_status_kind.deleted:       "deleted",
-        pysvn.wc_status_kind.replaced:      "replaced",
-        pysvn.wc_status_kind.modified:      "modified",
-        pysvn.wc_status_kind.merged:        "merged",
-        pysvn.wc_status_kind.conflicted:    "conflicted",
-        pysvn.wc_status_kind.ignored:       "ignored",
-        pysvn.wc_status_kind.obstructed:    "obstructed",
-        pysvn.wc_status_kind.external:      "external",
-        pysvn.wc_status_kind.incomplete:    "incomplete"
-    }
+    STATUSES_FOR_COMMIT = map(str,
+        [
+            pysvn.wc_status_kind.unversioned,
+            pysvn.wc_status_kind.added,
+            pysvn.wc_status_kind.deleted,
+            pysvn.wc_status_kind.replaced,
+            pysvn.wc_status_kind.modified,
+            pysvn.wc_status_kind.missing,
+            pysvn.wc_status_kind.obstructed
+        ])
 
-    STATUSES_FOR_COMMIT = [
-        STATUS["unversioned"],
-        STATUS["added"],
-        STATUS["deleted"],
-        STATUS["replaced"],
-        STATUS["modified"],
-        STATUS["missing"],
-        STATUS["obstructed"]
-    ]
-
-    STATUSES_FOR_REVERT = [
-        STATUS["missing"],
-        STATUS["added"],
-        STATUS["modified"],
-        STATUS["deleted"]
-    ]
+    STATUSES_FOR_REVERT = map(str,
+        [
+            pysvn.wc_status_kind.missing,
+            pysvn.wc_status_kind.added,
+            pysvn.wc_status_kind.modified,
+            pysvn.wc_status_kind.deleted
+        ])
 
     PROPERTIES = {
         "executable":   "svn:executable",
@@ -289,18 +274,6 @@ class SVN:
         pysvn.wc_notify_state.changed:                  _("Changed"),
         pysvn.wc_notify_state.merged:                   _("Merged"),
         pysvn.wc_notify_state.conflicted:               _("Conflicted")
-    }
-
-    DEPTHS_FOR_CHECKOUT = {
-        "Recursive": True,
-        "Not Recursive": False
-    }
-
-    NODE_KINDS = {
-        "none":         pysvn.node_kind.none,
-        "file":         pysvn.node_kind.file,
-        "dir":          pysvn.node_kind.dir,
-        "unknown":      pysvn.node_kind.unknown
     }
 
     NODE_KINDS_REVERSE = {
@@ -422,7 +395,7 @@ class SVN:
 
         return is_locked
 
-    def get_items(self, paths, statuses=[]):
+    def get_items(self, paths, statuses):
         """
         Retrieves a list of files that have one of a set of statuses
 
@@ -433,27 +406,19 @@ class SVN:
         @param  statuses:   A list of pysvn.wc_status_kind statuses.
 
         @rtype:             list
-        @return:            A list of PysvnStatus objects.
+        @return:            A list of statuses
 
         """
 
-        if paths is None:
-            return []
-
         items = []
+                
         for path in paths:
-            try:
-                st = self.statuses(path)
-            except Exception, e:
-                log.exception(e)
-                continue
+            
+            sts = self.statuses(path)
 
-            for st_item in st:
-                if statuses and st_item.text_status not in statuses \
-                  and st_item.prop_status not in statuses:
-                    continue
-
-                items.append(st_item)
+            for st in sts:
+                if (st.content in statuses or st.metadata in statuses):
+                    items.append(st)
 
         return items
 

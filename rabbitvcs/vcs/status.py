@@ -87,7 +87,10 @@ class Status(object):
                                               child_statuses)
         else:
             self.summary = self.single
-   
+    
+    def is_versioned(self):
+        return self.single is not status_unversioned
+            
     def is_modified(self):
         # This may need to be more sophisticated... eg. is read-only modified?
         # Unknown? etc... 
