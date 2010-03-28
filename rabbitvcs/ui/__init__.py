@@ -46,7 +46,6 @@ QUIET_OPT = (["-q", "--quiet"], {
 })
 
 #: Maps statuses to emblems.
-#: TODO: should probably be possible to create this dynamically
 STATUS_EMBLEMS = {
     rabbitvcs.vcs.status.status_unchanged : "rabbitvcs-normal",
     rabbitvcs.vcs.status.status_changed : "rabbitvcs-modified",
