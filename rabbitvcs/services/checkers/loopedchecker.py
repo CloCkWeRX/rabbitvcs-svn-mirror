@@ -75,8 +75,6 @@ def Main():
         except Exception, ex:
             log.exception(ex)
             path_status = rabbitvcs.vcs.status.Status.status_error(path)
-
-        assert path_status.path == path, "Path from PySVN %s != given path %s" % (path_status.path, path)
             
         pickler.dump(path_status)
         sys.stdout.flush()

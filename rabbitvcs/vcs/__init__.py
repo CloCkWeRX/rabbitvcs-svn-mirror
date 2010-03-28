@@ -21,8 +21,6 @@
 #
 
 import os.path
-from rabbitvcs.util.decorators import deprecated
-
 from rabbitvcs import gettext
 _ = gettext.gettext
 

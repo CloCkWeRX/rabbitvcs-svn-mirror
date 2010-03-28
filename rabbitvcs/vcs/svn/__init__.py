@@ -23,8 +23,6 @@
 """
 Concrete VCS implementation for Subversion functionality.
 """
-
-import traceback
 import subprocess
 import re
 import os.path
@@ -34,8 +32,6 @@ import pysvn
 
 import rabbitvcs.vcs
 import rabbitvcs.vcs.status
-from rabbitvcs.util.helper import abspaths
-from rabbitvcs.util.decorators import timeit
 from rabbitvcs.util.log import Log
 
 log = Log("rabbitvcs.vcs.svn")
@@ -330,9 +326,11 @@ class SVN:
         if not self.is_in_a_or_a_working_copy(path):
             return [on_error]
         
+        depth = pysvn.depth.infinity if recurse else pysvn.depth.empty
+        
         try:
             pysvn_statuses = self.client.status(path,
-                                                recurse=recurse)
+                                                depth=depth)
             if not len(pysvn_statuses):
                 # This is NOT in the PySVN documentation, but sometimes it
                 # returns an empty list if the file goes missing...
@@ -355,7 +353,6 @@ class SVN:
         if summarize:
             path_status = (st for st in all_statuses if st.path == path).next()
             path_status.make_summary(all_statuses)
-            
         else:
             path_status = all_statuses[0]
         
@@ -444,7 +441,7 @@ class SVN:
             return []
 
         items = []
-        for path in abspaths(paths):
+        for path in paths:
             try:
                 st = self.statuses(path)
             except Exception, e:

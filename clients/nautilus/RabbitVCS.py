@@ -64,6 +64,7 @@ import gobject
 import gtk
 
 from rabbitvcs.vcs.svn import SVN
+import rabbitvcs.vcs.status
 
 from rabbitvcs.util.helper import launch_ui_window, launch_diff_tool
 from rabbitvcs.util.helper import get_file_extension, get_common_directory
@@ -277,8 +278,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
             if client_info is None:
                 # It IS possible to reach here: ignored files satisfy the "is in
                 # WC" condition, but aren't themselves versioned!
-                log.debug("Unversioned file in WC: %s" % path)
-                values["status"] = SVN.STATUS_REVERSE[pysvn.wc_status_kind.unversioned]
+                values["status"] = rabbitvcs.vcs.status.status_unversioned
             else:
                 info = client_info.data
 

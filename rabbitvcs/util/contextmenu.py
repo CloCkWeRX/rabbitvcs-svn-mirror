@@ -947,10 +947,7 @@ class GtkFilesContextMenuConditions(ContextMenuConditions):
                 
             statuses_tmp = self.vcs_client.statuses(path)
             for status in statuses_tmp:
-                self.statuses[status.path] = {
-                    "text_status": self.vcs_client.STATUS_REVERSE[status.text_status],
-                    "prop_status": self.vcs_client.STATUS_REVERSE[status.prop_status]
-                }
+                self.statuses[status.path] = status
 
         self.text_statuses = [self.statuses[key].content for key in self.statuses.keys()]
         self.prop_statuses = [self.statuses[key].metadata for key in self.statuses.keys()]
