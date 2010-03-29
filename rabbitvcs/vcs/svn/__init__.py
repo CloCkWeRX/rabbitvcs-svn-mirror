@@ -221,6 +221,12 @@ class SVN:
             pysvn.wc_status_kind.deleted
         ])
 
+    STATUSES_FOR_ADD = map(str,
+        [
+            pysvn.wc_status_kind.unversioned,
+            pysvn.wc_status_kind.obstructed
+        ])
+
     PROPERTIES = {
         "executable":   "svn:executable",
         "mime-type":    "svn:mime-type",
@@ -295,12 +301,12 @@ class SVN:
 
         """
         on_error = rabbitvcs.vcs.status.Status.status_unknown(path)
-                
+
         if not self.is_in_a_or_a_working_copy(path):
             return [on_error]
-        
+
         depth = pysvn.depth.infinity if recurse else pysvn.depth.empty
-        
+
         try:
             pysvn_statuses = self.client.status(path,
                                                 depth=depth)
@@ -320,15 +326,15 @@ class SVN:
             return [on_error]
 
     def status(self, path, summarize=True):
-        
+
         all_statuses = self.statuses(path, recurse=summarize)
-        
+
         if summarize:
             path_status = (st for st in all_statuses if st.path == path).next()
             path_status.make_summary(all_statuses)
         else:
             path_status = all_statuses[0]
-        
+
         return path_status
 
     def is_working_copy(self, path):
@@ -411,9 +417,9 @@ class SVN:
         """
 
         items = []
-                
+
         for path in paths:
-            
+
             sts = self.statuses(path)
 
             for st in sts:

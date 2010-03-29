@@ -1,21 +1,21 @@
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2008 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -48,25 +48,25 @@ class Add(InterfaceView, GtkContextMenuCaller):
     """
     Provides an interface for the user to add unversioned files to a
     repository.  Also, provides a context menu with some extra functionality.
-    
+
     Send a list of paths to be added
-    
+
     """
 
     TOGGLE_ALL = True
 
     def __init__(self, paths, base_dir=None):
         InterfaceView.__init__(self, "add", "Add")
-        
+
         self.paths = paths
         self.base_dir = base_dir
         self.last_row_clicked = None
         self.vcs = rabbitvcs.vcs.create_vcs_instance()
         self.items = []
-        self.statuses = [self.vcs.STATUS["unversioned"], self.vcs.STATUS["obstructed"]]
+        self.statuses = self.vcs.STATUSES_FOR_ADD
         self.files_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("files_table"), 
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
+            self.get_widget("files_table"),
+            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH,
                 gobject.TYPE_STRING],
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
             filters=[{
@@ -101,8 +101,8 @@ class Add(InterfaceView, GtkContextMenuCaller):
         self.files_table.clear()
         for item in self.items:
             self.files_table.append([
-                True, 
-                item.path, 
+                True,
+                item.path,
                 rabbitvcs.util.helper.get_file_extension(item.path)
             ])
 
@@ -116,7 +116,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
         """
         Initializes the activated cache and loads the file items in a new thread
         """
-        
+
         try:
             thread.start_new_thread(self.load, ())
         except Exception, e:
@@ -129,14 +129,14 @@ class Add(InterfaceView, GtkContextMenuCaller):
             Delete(paths).start()
             sleep(1) # sleep so the items can be fully deleted before init
             self.initialize_items()
-    
+
     #
     # UI Signal Callbacks
     #
-    
+
     def on_destroy(self, widget):
         self.close()
-        
+
     def on_cancel_clicked(self, widget):
         self.close()
 
@@ -187,7 +187,7 @@ class AddQuiet:
             self.vcs,
             run_in_thread=False
         )
-        
+
         self.action.append(self.vcs.add, paths)
         self.action.run()
 
