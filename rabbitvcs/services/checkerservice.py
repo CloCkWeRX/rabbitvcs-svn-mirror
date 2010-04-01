@@ -61,7 +61,7 @@ try:
     import dbus.mainloop.glib
 except ImportError, e:
     # Older distributions do not have this module
-    print e
+    pass
     
 import dbus.service
 
