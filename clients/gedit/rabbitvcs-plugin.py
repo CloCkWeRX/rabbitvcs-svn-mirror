@@ -24,12 +24,12 @@ import os
 import gtk
 import gedit
 
-import rabbitvcs.lib.helper
-from rabbitvcs.lib.vcs import create_vcs_instance
-from rabbitvcs.lib.contextmenu import GtkFilesContextMenuConditions, \
+import rabbitvcs.util.helper
+from rabbitvcs.vcs import create_vcs_instance
+from rabbitvcs.util.contextmenu import GtkFilesContextMenuConditions, \
     GtkFilesContextMenuCallbacks, MainContextMenu, MainContextMenuCallbacks, \
     MenuBuilder
-from rabbitvcs.lib.contextmenuitems import *
+from rabbitvcs.util.contextmenuitems import *
 
 # Menu item example, insert a new item in the Tools menu
 ui_str = """<ui>
