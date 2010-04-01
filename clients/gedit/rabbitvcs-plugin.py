@@ -24,12 +24,12 @@ import os
 import gtk
 import gedit
 
-import rabbitvcs.util.helper
-from rabbitvcs.vcs import create_vcs_instance
-from rabbitvcs.util.contextmenu import GtkFilesContextMenuConditions, \
+import rabbitvcs.lib.helper
+from rabbitvcs.lib.vcs import create_vcs_instance
+from rabbitvcs.lib.contextmenu import GtkFilesContextMenuConditions, \
     GtkFilesContextMenuCallbacks, MainContextMenu, MainContextMenuCallbacks, \
     MenuBuilder
-from rabbitvcs.util.contextmenuitems import *
+from rabbitvcs.lib.contextmenuitems import *
 
 # Menu item example, insert a new item in the Tools menu
 ui_str = """<ui>
@@ -236,7 +236,7 @@ class RabbitVCSWindowHelper:
         manager = self._window.get_ui_manager()
         for menu_path in self._menu_paths:
             widget = manager.get_widget(menu_path)
-            self._menubar_menu.update_action(widget.get_related_action())
+            self._menubar_menu.update_action(widget.get_action())
 
     # Menu activate handlers
     def reload_settings(self, proc):
@@ -267,10 +267,11 @@ class RabbitVCSPlugin(gedit.Plugin):
         for signal in ('tab-added', 'tab-removed'):
             method = getattr(self, 'on_window_' + signal.replace('-', '_'))
             handler_ids.append(window.connect(signal, method))
+        
         window.set_data(self.id_name, handler_ids)
-
-        for view in window.get_views():
-            self._instances[window].connect_view(view, self.id_name)
+        if window in self._instances:
+            for view in window.get_views():
+                self._instances[window].connect_view(view, self.id_name)
 
     def deactivate(self, window):
         widgets = [window] + window.get_views()
@@ -281,14 +282,17 @@ class RabbitVCSPlugin(gedit.Plugin):
                     widget.disconnect(handler_id)
                 widget.set_data(self.id_name, None)
 
-        self._instances[window].deactivate()
-        del self._instances[window]
+        if window in self._instances:
+            self._instances[window].deactivate()
+            del self._instances[window]
 
     def update_ui(self, window):
-        self._instances[window].update_ui()
+        if window in self._instances:
+            self._instances[window].update_ui()
 
     def on_window_tab_added(self, window, tab):
-        self._instances[window].connect_view(tab.get_view(), self.id_name)
+        if window in self._instances:
+            self._instances[window].connect_view(tab.get_view(), self.id_name)
     
     def on_window_tab_removed(self, window, tab):
         pass
@@ -355,10 +359,7 @@ class GeditMenuBuilder(object):
             item = item_class(conditions, callbacks)
 
             default_name = MenuItem.make_default_name(item.identifier)            
-            action = gtk.Action(item.identifier, item.label, item.tooltip, item.icon)
-            
-            if item.icon:
-                action.set_icon_name(item.icon)
+            action = RabbitVCSAction(item.identifier, item.label, item.tooltip, item.icon)
            
             if item.callback:
                 if item.callback_args:

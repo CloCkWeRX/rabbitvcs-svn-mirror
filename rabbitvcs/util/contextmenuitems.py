@@ -190,7 +190,7 @@ class MenuItem(object):
 
     def make_thunar_action(self, id_magic = None):
         identifier = self.make_magic_id(id_magic)
-        action = ThunarAction(
+        action = RabbitVCSAction(
             identifier,
             self.label,
             self.tooltip,
@@ -246,7 +246,7 @@ class MenuSeparator(MenuItem):
         #~ identifier = self.make_magic_id(id_magic)
         #~ # This information is not actually used, but is necessary for
         #~ # the required subclassing of GtkAction.
-        #~ action = ThunarSeparator(
+        #~ action = RabbitVCSSeparator(
             #~ identifier,
             #~ self.label,
             #~ self.tooltip,
@@ -646,12 +646,12 @@ def get_ignore_list_items(paths):
 
     return ignore_items
 
-class ThunarAction(gtk.Action):
+class RabbitVCSAction(gtk.Action):
     """
     Sub-classes gtk.Action so that we can have submenus
     """
 
-    __gtype_name__ = "ThunarAction"
+    __gtype_name__ = "RabbitVCSAction"
 
     def __init__(self, name, label, tooltip, stock_id):
         gtk.Action.__init__(self, name, label, tooltip, stock_id)
@@ -682,7 +682,7 @@ class ThunarAction(gtk.Action):
 
 # FIXME: apparently it's possible to get real GtkSeparators in a Thunar
 # menu, but this doesn't seem to work.
-class ThunarSeparator(ThunarAction):
+class RabbitVCSSeparator(RabbitVCSAction):
 		
 	def do_create_menu_item(self):
 		return gtk.SeparatorMenuItem()
