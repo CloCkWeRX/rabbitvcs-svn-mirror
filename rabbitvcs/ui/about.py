@@ -22,6 +22,7 @@
 
 import os.path
 import string
+import re
 
 import pygtk
 import gobject
@@ -59,14 +60,22 @@ class About:
         self.about.set_website("http://www.rabbitvcs.org")
         self.about.set_website_label("http://www.rabbitvcs.org")
         
-        doc_path = "/usr/share/doc/rabbitvcs"
-        if not os.path.exists(doc_path):
+        doc_path_root = "/usr/share/doc"
+        doc_path_regex = re.compile("rabbitvcs")
+        for dir in os.listdir(doc_path_root):
+            if doc_path_regex.search(dir):
+                # Find all the doc directories containing "rabbitvcs"
+                authors_path = os.path.join(doc_path_root, dir, "AUTHORS")
+                if os.path.exists(authors_path):
+                    # At this point we have found a likely-looking AUTHORS
+                    break
+        else:
             # Assumes the user is running RabbitVCS through an svn checkout
             # and the doc files are two directories up (from rabbitvcs/ui).
             doc_path = os.path.dirname(os.path.realpath(__file__)).split('/')
             doc_path = '/'.join(doc_path[:-2])
-        
-        authors_path = os.path.join(doc_path, "AUTHORS")
+            authors_path = os.path.join(doc_path, "AUTHORS")
+
         authors = open(authors_path, "r").read()
 
         self.about.set_authors(authors.split("\n"))
