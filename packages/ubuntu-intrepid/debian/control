@@ -3,9 +3,10 @@ Maintainer: Jason Heeris <jason.heeris@gmail.com>
 Section: devel
 Priority: optional
 Build-Depends: debhelper (>= 7),
-               python (>= 2.5.2)
+               python (>= 2.5.2),
 Build-Depends-Indep: python-support (>= 0.5.3),
-                     pkg-config (>= 0.20)
+                     pkg-config (>= 0.20),
+                     libgtk2.0-bin (>= 2.8.20)
 Standards-Version: 3.8.4
 XS-Python-Version: >= 2.5
 Homepage: http://www.rabbitvcs.org
@@ -19,10 +20,12 @@ Depends: ${misc:Depends},
          python-gobject (>= 2.14.1),
          python-svn (>= 1.5.2),
          python-dbus (>= 0.82.4),
+         python-configobj (>= 4.4.0),
          subversion (>= 1.4.6),
          meld (>=1.1.2), 
          ipython (>=0.7.1),
-         hicolor-icon-theme (>= 0.10-2)
+         hicolor-icon-theme (>= 0.10),
+         libgtk2.0-bin (>= 2.8.20)
 Conflicts: nautilussvn, rabbitvcs
 Replaces: nautilussvn
 Description: Easy version control
