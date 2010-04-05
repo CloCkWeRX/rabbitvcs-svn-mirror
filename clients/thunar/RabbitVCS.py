@@ -39,7 +39,6 @@ import gtk
 
 from rabbitvcs.vcs.svn import SVN
 
-from rabbitvcs.util.vcs import *
 import rabbitvcs.ui
 import rabbitvcs.ui.property_page
 from rabbitvcs.util.helper import launch_ui_window, launch_diff_tool

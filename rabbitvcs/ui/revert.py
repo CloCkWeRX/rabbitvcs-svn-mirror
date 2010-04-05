@@ -82,8 +82,8 @@ class Revert(Add):
                 True, 
                 item.path, 
                 rabbitvcs.util.helper.get_file_extension(item.path),
-                item.text_status,
-                item.prop_status
+                item.content,
+                item.metadata
             ])
                     
     def on_ok_clicked(self, widget):

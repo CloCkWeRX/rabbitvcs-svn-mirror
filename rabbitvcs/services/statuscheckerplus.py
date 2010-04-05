@@ -31,8 +31,8 @@ from Queue import Queue
 # from rabbitvcs.services.statuschecker import StatusChecker
 from rabbitvcs.services.checkers.loopedchecker import StatusChecker
 
-import rabbitvcs.util.vcs
 import rabbitvcs.vcs.svn
+import rabbitvcs.vcs.status
 import rabbitvcs.util.helper
 
 from rabbitvcs import gettext
@@ -40,34 +40,6 @@ _ = gettext.gettext
 
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.services.statuscheckerplus")
-
-def status_calculating(path):
-    """ Creates a "calculating" status for the given path. """
-    return {path: {"text_status": "calculating",
-                   "prop_status": "calculating"}}
-
-def status_unknown(path):
-    """ Creates an "unknown" status for the given path. """
-    return {path: {"text_status": "unknown",
-                   "prop_status": "unknown"}}
-
-def make_summary(path, statuses):
-    """ Simple convenience method to make the path summaries we pass back to the
-    callbacks.
-
-    @param path: the path that the statuses resulted from checking
-    @type path: string
-
-    @param statuses: the status dict for the path
-    @type statuses: dict - {path: {"text_status": "whatever"
-                                   "prop_status": "whatever"}, path2: ...}
-
-    @return: (single status, summarised status)
-    @rtype: see StatusChecker documentation
-    """
-    return ({path: statuses[path]},
-            rabbitvcs.util.vcs.summarize_status_pair(path, statuses))
-
 
 class StatusCheckerPlus:
 
@@ -101,68 +73,46 @@ class StatusCheckerPlus:
                        recurse=False, invalidate=False,
                        summary=False, callback=None):
         # The invalidate parameter is not used.
-        statuses = None
-
+        status = None
+                
         if callback:
-            statuses = \
+            status = \
             self._check_status_with_callback(path, recurse, summary, callback)
         else:
-            statuses = \
+            status = \
             self._check_status_without_callback(path, self.checker, recurse,
                                                 summary)
 
-        return statuses
-
+        return status
+    
     def _check_status_with_callback(self, path, recurse=False,
                                          summary=False, callback=None):
 
         if self.client.is_in_a_or_a_working_copy(path):
-            statuses = status_calculating(path)
+            single = rabbitvcs.vcs.status.Status.status_calc(path)
             self._paths_to_check.put((path, recurse, summary, callback))
         else:
-            statuses = status_unknown(path)
+            single = rabbitvcs.vcs.status.Status.status_unknown(path)
 
         if summary:
-            statuses = make_summary(path, statuses)
-
-        return statuses
-
+            single.make_summary()
+            
+        return single
+        
     def _check_status_without_callback(self, path, checker, recurse=False,
                                             summary=False):
-
-        # This might be considered a little hacky, but we need to use a
-        # different checker for each thread.
-        statuses = {}
 
         # Uncomment this for useful simulation of a looooong status check :)
         # log.debug("Sleeping for 10s...")
         # time.sleep(5)
         # log.debug("Done.")
 
-        check_results = None
-        check_summary = None
-
-        if summary:
-            (check_results, check_summary) = \
-                checker.check_status(path, recurse, summary)
-        else:
-            check_results = checker.check_status(path, recurse, summary)
-
-        for result_path, text_status, prop_status in check_results:
-            statuses[result_path] = {"text_status" : text_status,
-                                     "prop_status" : prop_status}
-
-        # It is possible that:
-        #   1. Nautilus notices an item and requests a check for it
-        #   2. The item is deleted
-        #   3. The status check is done
-        #   4. We get back here
-        # In this situation, "statuses" will be empty.
-        if statuses and summary:
-            statuses = ({path: statuses[path]}, check_summary)
-
-        return statuses
-
+        
+        path_status = \
+            checker.check_status(path, recurse, summary)
+               
+        return path_status
+        
     def extra_info(self):
         pid1 = self.checker.get_extra_PID()
         pid2 = self.other_checker.get_extra_PID()
@@ -222,9 +172,8 @@ class StatusCheckerPlus:
 
     def _update_path_status(self, path, recurse=False,
                                summary=False, callback=None):
+                
+        status = self._check_status_without_callback(path, self.other_checker,
+                                                     recurse, summary)
 
-        statuses = self._check_status_without_callback(path, self.other_checker,
-                                                       recurse, summary)
-
-        if statuses and callback:
-            callback(path, statuses)
+        callback(status)

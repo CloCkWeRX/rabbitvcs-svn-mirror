@@ -39,9 +39,6 @@ from Queue import Queue
 # from rabbitvcs.services.statuschecker import StatusChecker
 from rabbitvcs.services.checkers.loopedchecker import StatusChecker
 
-import rabbitvcs.util.vcs
-import rabbitvcs.vcs.svn
-
 from rabbitvcs import gettext
 _ = gettext.gettext
 
@@ -52,16 +49,6 @@ log = Log("rabbitvcs.services.statuscache")
 # NOTE: try changing this to a few hundred, or a few thousand to check operation
 # The debugging statements below will tell you how many items are being cached
 MAX_CACHE_SIZE = 1000000 # Items
-
-def status_calculating(path):
-    """ Creates a "calculating" status for the given path. """
-    return {path: {"text_status": "calculating",
-                   "prop_status": "calculating"}}
-
-def status_unknown(path):
-    """ Creates an "unknown" status for the given path. """
-    return {path: {"text_status": "unknown",
-                   "prop_status": "unknown"}}
 
 def is_under_dir(base_path, other_path):
     """ Checks whether the given "other_path" is under "base_path".
@@ -104,24 +91,6 @@ def is_directly_under_dir(base_path, other_path):
     return (other_path.startswith(check_path)
             and "/" not in other_path.replace(check_path, "", 1).rstrip("/"))
 
-def make_summary(path, statuses):
-    """ Simple convenience method to make the path summaries we pass back to the
-    callbacks.
-    
-    @param path: the path that the statuses resulted from checking
-    @type path: string
-    
-    @param statuses: the status dict for the path
-    @type statuses: dict - {path: {"text_status": "whatever"
-                                   "prop_status": "whatever"}, path2: ...}
-                                   
-    @return: (single status, summarised status)
-    @rtype: see StatusCache documentation
-    """
-    return ({path: statuses[path]},
-            rabbitvcs.util.vcs.summarize_status_pair(path, statuses))
-
-
 class StatusCache():
     """ A StatusCache object maintains an internal cache of VCS status that have
     been previously checked. There are also hooks (as yet unimplemented) to be
@@ -130,27 +99,7 @@ class StatusCache():
     The actual status checks are done by a separate object, which should have
     a "check_status(self, path, recurse, summary)" method (see the specific
     classes for details).
-    
-    If a summary is requested, the return type/callback parameter will always be
-    of the form:
         
-        (non-recursive status dict, summarised recursive status dict)
-    
-    ...where both dicts are of the form:
-    
-        {path: {"text_status": text_status,
-                "prop_status": prop_status}}
-                
-    Otherwise, the return/callback value will be a single dict of the form:
-    
-        {path1: {"text_status": text_status1,
-                 "prop_status": prop_status1},
-                 
-         path2: {"text_status": text_status2,
-                 "prop_status": prop_status2},
-        
-        ...}
-    
     All thread synchronisation should be taken care of BY THIS CLASS. Callers
     of public methods should not have to worry about synchronisation, except
     that callbacks may originate from a different thread (since this class is
@@ -263,7 +212,7 @@ class StatusCache():
              with it. This will block for as long as any other thread has our
              status_tree locked.
         
-          2. If we haven't already got the path, return [(path, "calculating")]. 
+          2. If we haven't already got the path, return calculating status. 
              This will also block for max of (1) as long as the status_tree is 
              locked OR if the queue is blocking (should not be a significant
              problem). In the meantime, the thread will pop the path from the
@@ -279,11 +228,9 @@ class StatusCache():
                            force an update of the cache)
         @type invalidate: boolean
         
-        @param summary: If True, a summarised status will be returned, and if a
-                        callback is given then it will also pass back a summary.
-                        See the class level documentation for details of the
-                        summary. This is useful for easing inter-process
-                        communication congestion.
+        @param summary: If True, the status object will be told to calculate a 
+                        summary. If a callback is given then this will be done
+                        for the real status too.
         @type summary: boolean
         
         @param callback: This function will be called when the status check is

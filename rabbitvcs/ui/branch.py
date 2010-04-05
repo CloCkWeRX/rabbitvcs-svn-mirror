@@ -31,6 +31,7 @@ import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
 import rabbitvcs.util.helper
 import rabbitvcs.vcs
+import rabbitvcs.vcs.status
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -51,7 +52,9 @@ class Branch(InterfaceView):
         
         self.path = path
         self.revision = revision
-
+        
+        status = self.vcs.summarized_status(self.path)
+        
         repo_paths = rabbitvcs.util.helper.get_repository_paths()
         self.from_urls = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("from_urls"), 
@@ -79,8 +82,7 @@ class Branch(InterfaceView):
             expand=True
         )
         
-        if (self.revision is None and (self.vcs.has_modified(path) 
-                or self.vcs.is_modified(path))):
+        if (self.revision is None and status.has_modified()):
             self.revision_selector.set_kind_working()
 
     def on_destroy(self, widget):

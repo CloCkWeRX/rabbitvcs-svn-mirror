@@ -26,7 +26,6 @@ import rabbitvcs.ui
 import rabbitvcs.vcs
 from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 from rabbitvcs.ui import STATUS_EMBLEMS
-from rabbitvcs.util.vcs import make_single_status
 
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.ui.property_page")
@@ -86,25 +85,21 @@ class FileInfoPane(rabbitvcs.ui.GladeWidgetWrapper):
                                        invalidate = False,
                                        summary = False)
 
-        single_status = make_single_status(status[path])        
-        text_status = status[path]["text_status"]
-        prop_status = status[path]["prop_status"]
-        
-        self.get_widget("content_status").set_text(text_status)
-        self.get_widget("prop_status").set_text(prop_status)
+        self.get_widget("content_status").set_text(status.content)
+        self.get_widget("prop_status").set_text(status.metadata)
         
 
         self.set_icon_from_status(self.get_widget("content_status_icon"),
-                                                  text_status)
+                                                  status.content)
 
         self.set_icon_from_status(self.get_widget("prop_status_icon"),
-                                                  prop_status)
+                                                  status.metadata)
 
         self.set_icon_from_status(self.get_widget("vcs_icon"),
-                                  single_status, gtk.ICON_SIZE_DIALOG)
+                                  status.single, gtk.ICON_SIZE_DIALOG)
         
     def set_icon_from_status(self, icon, status, size=gtk.ICON_SIZE_BUTTON):
-        if status in STATUS_EMBLEMS:
+        if status in rabbitvcs.ui.STATUS_EMBLEMS:
             icon.set_from_icon_name("emblem-" + STATUS_EMBLEMS[status], size)
 
 class FileInfoExpander(rabbitvcs.ui.GladeWidgetWrapper):

@@ -26,10 +26,8 @@ import sys
 import subprocess
 
 import rabbitvcs.util._locale
-import rabbitvcs.util.vcs
 import rabbitvcs.vcs
-
-from rabbitvcs.services.statuschecker import status_error
+import rabbitvcs.vcs.status
 
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.statuschecker_proc")
@@ -41,26 +39,19 @@ def Main(path, recurse, summary):
     Perform a VCS status check on the given path (recursive as indicated). The
     results will be pickled and sent as a byte stream over stdout.
     """
-    # NOTE: we cannot pickle status_list directly. It needs to be processed
-    # here.
+    
     try:
+        # log.debug("Checking: %s" % path)
         vcs_client = rabbitvcs.vcs.create_vcs_instance()
-        status_list = vcs_client.status(path, recurse=recurse)
-        statuses = [(status.path,
-                     str(status.text_status),
-                     str(status.prop_status)) for status in status_list]
+        path_status = vcs_client.status(path, summarize=summary)
         
     except Exception, ex:
         log.exception(ex)
-        statuses = [status_error(path)]
+        path_status = rabbitvcs.vcs.status.Status.status_error(path)
 
-    if summary:
-        statuses = (statuses,
-                    rabbitvcs.util.vcs.summarize_status_pair_list(path,
-                                                                  statuses))
-
+    assert path_status.path == path, "Path from PySVN %s != given path %s" % (path_status.path, path)
     
-    cPickle.dump(statuses, sys.stdout)
+    cPickle.dump(path_status)
     sys.stdout.flush()
 
 class StatusChecker():
@@ -84,22 +75,6 @@ class StatusChecker():
         """ Performs a status check in a subprocess, blocking until the check is
         done. Even though we block here, this means that other threads can
         continue to run.
-        
-        The returned status data can have two forms. If a summary is requested,
-        it is:
-        
-            (status list, summarised dict)
-            
-        ...where the list is of the form
-        
-            [(path1, text_status1, prop_status1), (path2, ...), ...]
-            
-        ...and the dict is:
-        
-            {path: {"text_status": text_status,
-                    "prop_status": prop_status}}
-        
-        If no summary is requested, the return value is just the status list.
         """
 
         sc_process = subprocess.Popen([sys.executable, __file__,
@@ -108,10 +83,10 @@ class StatusChecker():
                                        str(summary)],
                                stdin = subprocess.PIPE,
                                stdout = subprocess.PIPE)
-        statuses = cPickle.load(sc_process.stdout)
+        status = cPickle.load(sc_process.stdout)
         sc_process.stdout.close()
         sc_process.stdin.close()
-        return statuses
+        return status
     
     def get_memory_usage(self):
         """ Returns any additional memory of any subprocesses used by this

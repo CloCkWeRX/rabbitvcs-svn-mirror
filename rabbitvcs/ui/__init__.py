@@ -35,6 +35,8 @@ import gtk.glade
 
 from rabbitvcs import APP_NAME, LOCALE_DIR
 
+import rabbitvcs.vcs.status
+
 REVISION_OPT = (["-r", "--revision"], {"help":"specify the revision number"})
 BASEDIR_OPT = (["-b", "--base-dir"], {})
 QUIET_OPT = (["-q", "--quiet"], {
@@ -44,25 +46,20 @@ QUIET_OPT = (["-q", "--quiet"], {
 })
 
 #: Maps statuses to emblems.
-#: TODO: should probably be possible to create this dynamically
 STATUS_EMBLEMS = {
-    "added" :       "rabbitvcs-added",
-    "deleted":      "rabbitvcs-deleted",
-    "removed":      "rabbitvcs-deleted",
-    "modified":     "rabbitvcs-modified",
-    "conflicted":   "rabbitvcs-conflicted",
-    "missing":      "rabbitvcs-conflicted",
-    "normal":       "rabbitvcs-normal",
-    "clean":        "rabbitvcs-normal",
-    "ignored":      "rabbitvcs-ignored",
-    "locked":       "rabbitvcs-locked",
-    "read_only":    "rabbitvcs-read_only",
-    "obstructed":   "rabbitvcs-obstructed",
-    "incomplete":   "rabbitvcs-incomplete",
-    "unversioned":  "rabbitvcs-unversioned",
-    "unknown":      "rabbitvcs-unknown",
-    "calculating":  "rabbitvcs-calculating",
-    "error":        "rabbitvcs-error"
+    rabbitvcs.vcs.status.status_unchanged : "rabbitvcs-normal",
+    rabbitvcs.vcs.status.status_changed : "rabbitvcs-modified",
+    rabbitvcs.vcs.status.status_added : "rabbitvcs-added",
+    rabbitvcs.vcs.status.status_deleted : "rabbitvcs-deleted",
+    rabbitvcs.vcs.status.status_ignored :"rabbitvcs-ignored",
+    rabbitvcs.vcs.status.status_read_only : "rabbitvcs-locked",
+    rabbitvcs.vcs.status.status_locked : "rabbitvcs-locked",
+    rabbitvcs.vcs.status.status_unknown : "rabbitvcs-unknown",
+    rabbitvcs.vcs.status.status_missing : "rabbitvcs-complicated",
+    rabbitvcs.vcs.status.status_replaced : "rabbitvcs-modified",
+    rabbitvcs.vcs.status.status_complicated : "rabbitvcs-complicated",
+    rabbitvcs.vcs.status.status_calculating : "rabbitvcs-calculating",
+    rabbitvcs.vcs.status.status_error : "rabbitvcs-error"
 }
 
 def get_glade_tree(filename, id):

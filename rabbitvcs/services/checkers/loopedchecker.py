@@ -29,9 +29,7 @@ import rabbitvcs.vcs
 import rabbitvcs.util.helper
 
 import rabbitvcs.util._locale
-import rabbitvcs.util.vcs
-
-from rabbitvcs.services.statuschecker import status_error
+import rabbitvcs.vcs.status
 
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.statuschecker_proc")
@@ -72,48 +70,16 @@ def Main():
         
         try:
             # log.debug("Checking: %s" % path)
-            status_list = vcs_client.status(path, recurse=recurse)
-            statuses = [(status.path, str(status.text_status), str(status.prop_status))
-                       for status in status_list]
-            
-            # NOTE: this is useful for debugging. You can tweak MAGIC_NUMBER to
-            # make status checks appear to take longer or shorter.
-#            import time, math, os.path
-#            statuses = []            
-#            MAGIC_NUMBER = 1
-#            if os.path.isdir(path):
-#                for root, dirnames, fnames in os.walk(path):
-#                    names = ["."]
-#                    names.extend(dirnames)
-#                    names.extend(fnames)
-#                    for name in names:
-#                        thing = os.path.abspath(os.path.join(root, name))
-#                        if "/.svn" not in thing:
-#                            num = 0
-#                            while num < 10:
-#                                math.sin(num)
-#                                num+=1
-#                            statuses.append( (thing, "added", "normal") )
-#            else:
-#                num = 0
-#                while num < 10:
-#                    math.sin(num)
-#                    num+=1
-#                statuses.append( (path, "added", "none") )
+            path_status = vcs_client.status(path, summarize=summary)
             
         except Exception, ex:
             log.exception(ex)
-            statuses = [status_error(path)]
-
-        if summary:
-            statuses = (statuses,
-                        rabbitvcs.util.vcs.summarize_status_pair_list(path,
-                                                                      statuses))
-
-        pickler.dump(statuses)
+            path_status = rabbitvcs.vcs.status.Status.status_error(path)
+            
+        pickler.dump(path_status)
         sys.stdout.flush()
         pickler.clear_memo()
-        del statuses
+        del path_status
         
 
 class StatusChecker:
@@ -138,27 +104,11 @@ class StatusChecker:
         """ Performs a status check in a subprocess, blocking until the check is
         done. Even though we block here, this means that other threads can
         continue to run.
-        
-        The returned status data can have two forms. If a summary is requested,
-        it is:
-        
-            (status list, summarised dict)
-            
-        ...where the list is of the form
-        
-            [(path1, text_status1, prop_status1), (path2, ...), ...]
-            
-        ...and the dict is:
-        
-            {path: {"text_status": text_status,
-                    "prop_status": prop_status}}
-        
-        If no summary is requested, the return value is just the status list.
         """
         self.pickler.dump((path, bool(recurse), bool(summary)))
         self.sc_proc.stdin.flush()
-        statuses = self.unpickler.load()
-        return statuses
+        status = self.unpickler.load()
+        return status
 
     def get_memory_usage(self):
         """ Returns any additional memory of any subprocesses used by this
@@ -188,6 +138,6 @@ if __name__ == '__main__':
 #    import os, os.path
 #    profile_data_file = os.path.join(
 #                            rabbitvcs.util.helper.get_home_folder(),
-#                            "rvcs_checker.stats")
+#                            "loopedchecker.stats")
 #    cProfile.run("Main()", profile_data_file)
     Main()

@@ -37,6 +37,7 @@ import rabbitvcs.util
 import rabbitvcs.util.helper
 from rabbitvcs.util.log import Log
 from rabbitvcs.util.decorators import gtk_unsafe
+import rabbitvcs.vcs.status
 
 log = Log("rabbitvcs.ui.commit")
 
@@ -116,7 +117,6 @@ class Commit(InterfaceView, GtkContextMenuCaller):
           - Populates the files table with the retrieved items
           - Updates the status area        
         """
-
         gtk.gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
         gtk.gdk.threads_leave()
@@ -138,13 +138,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         """
         Determines if a file should be activated or not
         """
-        
-        if ((item.path in self.paths
-                or item.is_versioned)
-                and os.path.exists(item.path)):
-            return True
-
-        return False
+        return (item.path in self.paths or item.is_versioned())
 
     def populate_files_table(self):
         """
@@ -161,8 +155,8 @@ class Commit(InterfaceView, GtkContextMenuCaller):
                 checked,
                 item.path, 
                 rabbitvcs.util.helper.get_file_extension(item.path),
-                item.text_status,
-                item.prop_status
+                item.content,
+                item.metadata
             ])
 
     def initialize_items(self):
@@ -208,7 +202,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         added = 0
         for item in items:
             try:
-                if self.vcs.status(item, recurse=False)[0].text_status == self.vcs.STATUS["unversioned"]:
+                if self.vcs.status(item, summarize=False).content == rabbitvcs.vcs.status.status_unversioned:
                     self.vcs.add(item)
                     added += 1
             except Exception, e:
