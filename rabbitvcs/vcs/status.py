@@ -1,3 +1,7 @@
+
+import os.path
+import unittest
+
 from rabbitvcs import gettext
 _ = gettext.gettext
 
@@ -49,11 +53,9 @@ class Status(object):
     metadata_status_map = None
     
     def __init__(self, path, content, metadata = None, summary = None):
-        # own_status is a StatusInfo objects
-        # summary is one of the simple enumerations
         self.path = path
         self.content = content
-        self.metadata = metadata or content # a bit hackish, but makes sense
+        self.metadata = metadata
         self.single = self._make_single_status()
         self.summary = summary
  
@@ -66,7 +68,8 @@ class Status(object):
         # Content status dominates
         single = self.simple_content_status() or status_error
         if single in Status.clean_statuses:
-            single = self.simple_metadata_status() or status_error
+            if self.metadata:
+                single = self.simple_metadata_status() or status_error
         return single
 
     def simple_content_status(self):
@@ -76,17 +79,35 @@ class Status(object):
             return self.content
         
     def simple_metadata_status(self):
-        if self.metadata_status_map:
+        if self.metadata and self.metadata_status_map:
             return self.metadata_status_map.get(self.metadata)
         else:
             return self.metadata
 
     def make_summary(self, child_statuses = None):
-        if child_statuses:
-            self.summary = summarise_statuses(self,
-                                              child_statuses)
+        """ Summarises statuses for directories.
+        """    
+        summary = status_unknown
+        
+        status_set = set([st.single for st in child_statuses])
+        
+        if not status_set:
+            self.summary = self.single
+        
+        if status_complicated in status_set:
+            self.summary = status_complicated
+        
+        elif self.single in ["added", "modified", "deleted"]:
+            # These take priority over child statuses
+            self.summary = self.single
+        
+        elif len(set(MODIFIED_CHILD_STATUSES) & status_set):
+            self.summary = status_changed
+        
         else:
             self.summary = self.single
+        
+        return summary
     
     def is_versioned(self):
         return self.single is not status_unversioned
@@ -113,10 +134,10 @@ class Status(object):
         attrs['__module__'] = type(self).__module__
         return attrs
         
-    def __setstate__(self, dict):
-        del dict['__type__']
-        del dict['__module__']
-        self.__dict__ = dict
+    def __setstate__(self, state_dict):
+        del state_dict['__type__']
+        del state_dict['__module__']
+        self.__dict__ = state_dict
 
 class SVNStatus(Status):
 
@@ -157,35 +178,98 @@ class SVNStatus(Status):
             content=str(pysvn_status.text_status),
             metadata=str(pysvn_status.prop_status))
 
-
-def summarise_statuses(top_dir_status, statuses):
-    """ Summarises statuses for directories.
-    """    
-    summary = status_unknown
-    
-    status_set = set([st.single for st in statuses])
-    
-    if not status_set:
-        # This indicates a serious deviation from our expected API
-        log.debug("Status set for summary is empty!")
-        summary = status_error
-    
-    if status_complicated in status_set:
-        summary = status_complicated
-    
-    elif top_dir_status.single in ["added", "modified", "deleted"]:
-        # These take priority over child statuses
-        summary = top_dir_status.single
-    
-    elif len(set(MODIFIED_CHILD_STATUSES) & status_set):
-        summary = status_changed
-    
-    else:
-        summary = top_dir_status.single
-    
-    return summary
-
 STATUS_TYPES = [
     Status,
     SVNStatus
 ]
+
+class TestStatusObjects(unittest.TestCase):
+    
+    base = "/path/to/test"
+        
+    children = [
+        os.path.join(base, chr(x)) for x in range(97,123) 
+                ]
+    
+    def testsingle_clean(self):
+        status = Status(self.base, status_unchanged)
+        self.assertEqual(status.single, status_unchanged)
+        
+    def testsingle_changed(self):
+        status = Status(self.base, status_changed)
+        self.assertEqual(status.single, status_changed)
+        
+    def testsingle_propclean(self):
+        status = Status(self.base, status_unchanged, status_unchanged)
+        self.assertEqual(status.single, status_unchanged)
+
+    def testsingle_propchanged(self):
+        status = Status(self.base, status_unchanged, status_changed)
+        self.assertEqual(status.single, status_changed)
+        
+    def testsummary_clean(self):
+        top_status = Status(self.base, status_unchanged)
+        child_sts = [Status(path, status_unchanged) for path in self.children]
+        top_status.make_summary(child_sts)
+        self.assertEqual(top_status.summary, status_unchanged)
+
+    def testsummary_changed(self):
+        top_status = Status(self.base, status_unchanged)
+        child_sts = [Status(path, status_unchanged) for path in self.children]
+        
+        child_sts[1] = Status(child_sts[1].path, status_changed)
+        
+        top_status.make_summary(child_sts)
+        self.assertEqual(top_status.summary, status_changed)
+
+    def testsummary_added(self):
+        top_status = Status(self.base, status_unchanged)
+        child_sts = [Status(path, status_unchanged) for path in self.children]
+        
+        child_sts[1] = Status(child_sts[1].path, status_added)
+        
+        top_status.make_summary(child_sts)
+        self.assertEqual(top_status.summary, status_changed)
+
+    def testsummary_complicated(self):
+        top_status = Status(self.base, status_unchanged)
+        child_sts = [Status(path, status_unchanged) for path in self.children]
+        
+        child_sts[1] = Status(child_sts[1].path, status_complicated)
+        
+        top_status.make_summary(child_sts)
+        self.assertEqual(top_status.summary, status_complicated)
+
+    def testsummary_propchange(self):
+        top_status = Status(self.base, status_unchanged)
+        child_sts = [Status(path, status_unchanged) for path in self.children]
+        
+        child_sts[1] = Status(child_sts[1].path,
+                              status_unchanged,
+                              status_changed)
+        
+        top_status.make_summary(child_sts)
+        self.assertEqual(top_status.summary, status_changed)
+
+    def testsummary_bothchange(self):
+        top_status = Status(self.base, status_unchanged)
+        child_sts = [Status(path, status_unchanged) for path in self.children]
+        
+        child_sts[1] = Status(child_sts[1].path,
+                              status_complicated,
+                              status_changed)
+        
+        top_status.make_summary(child_sts)
+        self.assertEqual(top_status.summary, status_complicated)
+
+    def testsummary_topadded(self):
+        top_status = Status(self.base, status_added)
+        child_sts = [Status(path, status_unchanged) for path in self.children]
+        
+        child_sts[1] = Status(child_sts[1].path, status_changed, status_changed)
+        
+        top_status.make_summary(child_sts)
+        self.assertEqual(top_status.summary, status_added)
+    
+if __name__ == "__main__":
+    unittest.main()
