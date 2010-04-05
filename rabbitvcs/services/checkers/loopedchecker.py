@@ -138,6 +138,6 @@ if __name__ == '__main__':
 #    import os, os.path
 #    profile_data_file = os.path.join(
 #                            rabbitvcs.util.helper.get_home_folder(),
-#                            "rvcs_checker.stats")
+#                            "loopedchecker.stats")
 #    cProfile.run("Main()", profile_data_file)
     Main()

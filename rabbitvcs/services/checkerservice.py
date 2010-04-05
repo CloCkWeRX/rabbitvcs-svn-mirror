@@ -360,19 +360,21 @@ def Main():
 
     checker_service = StatusCheckerService(session_bus, mainloop)
 
-    # import cProfile
-    # import rabbitvcs.util.helper
-    # profile_data_file = os.path.join(
-    #                        rabbitvcs.util.helper.get_home_folder(),
-    #                        "rvcs_checker.stats")
-    # cProfile.run("mainloop.run()", profile_data_file)
-
     idle_add(sys.stdout.write, "Started status checker service\n")
     idle_add(sys.stdout.flush)
+
     mainloop.run()
 
     log.debug("Checker: ended service: %s (%s)" % (OBJECT_PATH, os.getpid()))
 
 if __name__ == "__main__":
     rabbitvcs.util._locale.initialize_locale()
+
+#    import cProfile
+#    import rabbitvcs.util.helper
+#    profile_data_file = os.path.join(
+#                           rabbitvcs.util.helper.get_home_folder(),
+#                           "checkerservice.stats")
+#    cProfile.run("Main()", profile_data_file)
+
     Main()
