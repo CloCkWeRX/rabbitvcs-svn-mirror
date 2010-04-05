@@ -84,7 +84,7 @@ class Status(object):
         else:
             return self.metadata
 
-    def make_summary(self, child_statuses = None):
+    def make_summary(self, child_statuses = []):
         """ Summarises statuses for directories.
         """    
         summary = status_unknown
