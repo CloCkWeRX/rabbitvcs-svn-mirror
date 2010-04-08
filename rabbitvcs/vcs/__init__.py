@@ -33,15 +33,15 @@ class VCS:
     def __init__(self):
         pass
     
-    def __get_svn_client(self):
+    def svn(self):
         if "svn" in self.clients:
             return self.clients["svn"]
         else:
             from rabbitvcs.vcs.svn import SVN
             self.clients["svn"] = SVN()
             return self.clients["svn"]
-    
-    def __get_git_client(self, path, is_repo_path=False):
+
+    def git(self, path, is_repo_path=False):
         if "git" in self.clients:
             return self.clients["git"]
         else:
@@ -56,23 +56,23 @@ class VCS:
             
             self.clients["git"] = git
             return self.clients["git"]
-             
+
     def client(self, path, vcs=None):
         # Determine the VCS instance based on the vcs parameter
         if vcs:
             if vcs == "svn":
-                return self.__get_svn_client()
+                return self.svn()
             elif vcs == "git":
-                return self.__get_git_client(path)
+                return self.git(path)
 
         guess = self.guess(path)
         if guess["vcs"] == "git":
             from rabbitvcs.vcs.git import Git
             return Git(guess["repo_path"])
 
-            return self.__get_git_client(guess["repo_path"], is_repo_path=True)
+            return self.git(guess["repo_path"], is_repo_path=True)
         else:
-            return self.__get_svn_client()
+            return self.svn()
     
     def guess(self, path):
         # Determine the VCS instance based on the path
