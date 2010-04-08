@@ -63,7 +63,7 @@ import pysvn
 import gobject
 import gtk
 
-from rabbitvcs.vcs.svn import SVN
+from rabbitvcs.vcs import VCS
 import rabbitvcs.vcs.status
 
 from rabbitvcs.util.helper import launch_ui_window, launch_diff_tool
@@ -135,7 +135,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         threading.currentThread().setName("RabbitVCS extension thread")
 
         # Create a global client we can use to do VCS related stuff
-        self.vcs_client = SVN()
+        self.vcs_client = VCS()
 
         self.status_checker = StatusChecker(self.cb_status)
 
@@ -249,15 +249,10 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
                                                  callback=True,
                                                  invalidate=self.always_invalidate)
 
-        # TODO: using pysvn directly because I don't like the current
-        # SVN class.
-        client = pysvn.Client()
-        client_info = client.info(path)
+        # if bool(int(settings.get("general", "enable_attributes"))): self.update_columns(item, path, status)
+        if bool(int(settings.get("general", "enable_emblems"))): self.update_status(item, path, status)
 
-        # if bool(int(settings.get("general", "enable_attributes"))): self.update_columns(item, path, status, client_info)
-        if bool(int(settings.get("general", "enable_emblems"))): self.update_status(item, path, status, client_info)
-
-    def update_columns(self, item, path, status, client_info):
+    def update_columns(self, item, path, status):
         """
         Update the columns (attributes) for a given Nautilus item,
         filling them in with information from the version control
@@ -265,7 +260,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
 
         """
         # log.debug("update_colums called for %s" % path)
-
+        return
         values = {
             "status": "",
             "revision": "",
@@ -300,7 +295,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
             item.add_string_attribute(key, value)
 
 
-    def update_status(self, item, path, status, client_info):
+    def update_status(self, item, path, status):
         # If we are able to set an emblem that means we have a local status
         # available. The StatusMonitor will keep us up-to-date through the
         # C{cb_status} callback.

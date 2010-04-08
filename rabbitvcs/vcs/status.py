@@ -96,14 +96,11 @@ class Status(object):
         
         if status_complicated in status_set:
             self.summary = status_complicated
-        
         elif self.single in ["added", "modified", "deleted"]:
             # These take priority over child statuses
-            self.summary = self.single
-        
+            self.summary = self.single        
         elif len(set(MODIFIED_CHILD_STATUSES) & status_set):
             self.summary = status_changed
-        
         else:
             self.summary = self.single
         
@@ -178,9 +175,36 @@ class SVNStatus(Status):
             content=str(pysvn_status.text_status),
             metadata=str(pysvn_status.prop_status))
 
+class GitStatus(Status):
+
+    vcs_type = 'git'
+    
+    content_status_map = {
+        'normal': status_unchanged,
+        'added': status_added,
+        'missing': status_missing,
+        'untracked': status_unversioned,
+        'removed': status_deleted,
+        'modified': status_changed,
+        'renamed': status_changed,
+        'ignored': status_ignored
+    }
+    
+    metadata_status_map = {
+        'normal': status_unchanged,
+        None: status_unchanged
+    }
+
+    def __init__(self, gittyup_status):
+        super(GitStatus, self).__init__(
+            gittyup_status.path,
+            content=str(gittyup_status.identifier),
+            metadata=None)
+
 STATUS_TYPES = [
     Status,
-    SVNStatus
+    SVNStatus,
+    GitStatus
 ]
 
 class TestStatusObjects(unittest.TestCase):

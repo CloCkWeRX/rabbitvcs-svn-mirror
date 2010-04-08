@@ -27,8 +27,12 @@ Concrete VCS implementation for Git functionality.
 import os.path
 
 from gittyup.client import GittyupClient
+import gittyup.objects
+
+from rabbitvcs.util.helper import abspaths
 
 import rabbitvcs.vcs
+import rabbitvcs.vcs.status
 from rabbitvcs.util.log import Log
 
 log = Log("rabbitvcs.vcs.git")
@@ -37,6 +41,33 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 class Git:
+    STATUS = {
+        "normal":       gittyup.objects.NormalStatus,
+        "added":        gittyup.objects.AddedStatus,
+        "renamed":      gittyup.objects.RenamedStatus,
+        "removed":      gittyup.objects.RemovedStatus,
+        "modified":     gittyup.objects.ModifiedStatus,
+        "killed":       gittyup.objects.KilledStatus,
+        "untracked":    gittyup.objects.UntrackedStatus,
+        "missing":      gittyup.objects.MissingStatus
+    }
+    
+    STATUS_REVERSE = {
+        gittyup.objects.NormalStatus:       "normal",
+        gittyup.objects.AddedStatus:        "added",
+        gittyup.objects.RenamedStatus:      "renamed",
+        gittyup.objects.RemovedStatus:      "removed",
+        gittyup.objects.ModifiedStatus:     "modified",
+        gittyup.objects.KilledStatus:       "killed",
+        gittyup.objects.UntrackedStatus:    "untracked",
+        gittyup.objects.MissingStatus:      "missing"
+    }
+
+    STATUSES_FOR_COMMIT = [
+        STATUS["untracked"],
+        STATUS["missing"]
+    ]
+
     def __init__(self, repo=None):
         self.vcs = "git"
         self.interface = "gittyup"
@@ -48,6 +79,9 @@ class Git:
     def set_repository(self, path):
         self.client.set_repository(path)
 
+    def get_repository(self):
+        return self.client.get_repository(path)
+
     def find_repository_path(self, path):
         return self.client.find_repository_path(path)
     
@@ -55,7 +89,7 @@ class Git:
     # Status Methods
     #
     
-    def status(self, path=None):
+    def statuses(self, path):
         """
         Generates a list of GittyupStatus objects for the specified file.
         
@@ -65,51 +99,86 @@ class Git:
         
         """
 
-        statuses = self.client.status()
-        
-        if os.path.isdir(path):
-            path_statuses = []
-            for status in statuses:
-                if status.path.startswith(path):
-                    path_statuses.append(status)
-            return path_statuses
-        elif os.path.isfile(path):
-            return statuses[path]
-        elif not path:
-            return statuses
+        gittyup_statuses = self.client.status(path)
+
+        if not len(gittyup_statuses):
+            return [rabbitvcs.vcs.status.Status.status_unknown(path)]
         else:
-            return None
+            statuses = []
+            for st in gittyup_statuses:
+                # gittyup returns status paths relative to the repository root
+                # so we need to convert the path to an absolute path
+                st.path = self.client.get_absolute_path(st.path)
+                statuses.append(rabbitvcs.vcs.status.GitStatus(st))
+            return statuses
+    
+    def status(self, path, summarize=True):
+
+        all_statuses = self.statuses(path)
+
+        if summarize:
+            path_status = (st for st in all_statuses if st.path == path).next()
+            path_status.make_summary(all_statuses)
+        else:
+            path_status = all_statuses[0]
+
+        return path_status
     
     def is_working_copy(self, path):
-        if (isdir(path) and
-                isdir(os.path.join(path, ".git"))):
+        if (os.path.isdir(path) and
+                os.path.isdir(os.path.join(path, ".git"))):
             return True
         return False
 
     def is_in_a_or_a_working_copy(self, path):
         return (self.is_working_copy(path) or self.find_repository_path(os.path.split(path)[0]))
-    
-    def is_staged(self, path):
+
+    def is_versioned(self, path):
+        if self.is_working_copy(path):
+            return True
+        else:
+            st = self.client.status(path)
+            try:
+                if (st[0].path == self.client.get_absolute_path(path) and
+                        st[0].identifier != "untracked"):
+                    return True
+            except Exception:
+                return False
+
+            return False
+
+    def is_locked(self, path):
+        return False
+
+    def get_items(self, paths, statuses=[]):
         """
-        Determines if the specified path is staged
+        Retrieves a list of files that have one of a set of statuses
         
-        @type   path: string
-        @param  path: A file path
+        @type   paths:      list
+        @param  paths:      A list of paths or files.
         
-        @rtype  boolean
+        @type   statuses:   list
+        @param  statuses:   A list of statuses.
         
-        """
-        
-        return self.client.is_staged(path)
-    
-    def get_staged(self):
-        """
-        Gets a list of files that are staged
+        @rtype:             list
+        @return:            A list of GittyupStatus objects.
         
         """
+
+        if paths is None:
+            return []
         
-        return self.client.get_staged()
-    
+        items = []
+        st = self.status()
+        for path in abspaths(paths):
+            for st_item in st:
+                if statuses and st_item not in statuses:
+                    continue
+
+                items.append(st_item)
+
+        return items
+
     #
     # Action Methods
     #

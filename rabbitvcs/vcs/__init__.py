@@ -26,40 +26,125 @@ _ = gettext.gettext
 
 EXT_UTIL_ERROR = _("The output from '%s' was not able to be processed.\n%s")
 
+class VCS:
+    clients = {}
+    path_vcs_map = {}
+    
+    def __init__(self):
+        pass
+    
+    def __get_svn_client(self):
+        if "svn" in self.clients:
+            return self.clients["svn"]
+        else:
+            from rabbitvcs.vcs.svn import SVN
+            self.clients["svn"] = SVN()
+            return self.clients["svn"]
+    
+    def __get_git_client(self, path, is_repo_path=False):
+        if "git" in self.clients:
+            return self.clients["git"]
+        else:
+            from rabbitvcs.vcs.git import Git
+            git = Git()
+            if path:
+                if is_repo_path:
+                    git.set_repository(path)
+                else:
+                    repo_path = git.find_repository_path(path)
+                    git.set_repository(repo_path)
+            
+            self.clients["git"] = git
+            return self.clients["git"]
+             
+    def client(self, path, vcs=None):
+        # Determine the VCS instance based on the vcs parameter
+        if vcs:
+            if vcs == "svn":
+                return self.__get_svn_client()
+            elif vcs == "git":
+                return self.__get_git_client(path)
+
+        guess = self.guess(path)
+        if guess["vcs"] == "git":
+            from rabbitvcs.vcs.git import Git
+            return Git(guess["repo_path"])
+
+            return self.__get_git_client(guess["repo_path"], is_repo_path=True)
+        else:
+            return self.__get_svn_client()
+    
+    def guess(self, path):
+        # Determine the VCS instance based on the path
+        if path:
+        
+            if path in self.path_vcs_map:
+                return self.path_vcs_map[path]
+        
+            path_to_check = os.path.realpath(path)
+            while path_to_check != "/" and path_to_check != "":
+                if os.path.isdir(os.path.join(path_to_check, ".svn")):
+                    cache = {
+                        "vcs": "svn",
+                        "repo_path": path_to_check
+                    }
+                    
+                    self.path_vcs_map[path] = cache
+                    return cache
+
+                elif os.path.isdir(os.path.join(path_to_check, ".git")):
+                    cache = {
+                        "vcs": "git",
+                        "repo_path": path_to_check
+                    }
+
+                    self.path_vcs_map[path] = cache
+                    return cache
+                    
+                path_to_check = os.path.split(path_to_check)[0]
+
+        cache = {
+            "vcs": "svn",
+            "repo_path": path
+        }
+        self.path_vcs_map[path] = cache
+        return cache
+    
+    # Methods that call client methods
+    
+    def status(self, path, summarize=True):
+        client = self.client(path)
+        return client.status(path, summarize)
+
+    def is_working_copy(self, path):
+        client = self.client(path)
+        return client.is_working_copy(path)
+
+    def is_in_a_or_a_working_copy(self, path):
+        client = self.client(path)
+        return client.is_in_a_or_a_working_copy(path)
+
+    def is_versioned(self, path):
+        client = self.client(path)
+        return client.is_versioned(path)
+    
+    def is_locked(self, path):
+        client = self.client(path)
+        return client.is_locked(path)
+
+    def get_items(self, paths, statuses=[]):
+        client = self.client(path)
+        return client.get_items(paths, statuses)
+
 def create_vcs_instance(path=None, vcs=None):
     """
     Create a VCS instance based on the working copy path
     """
+    return VCS()
 
-    # Determine the VCS instance based on the vcs parameter
-    if vcs:
-        if vcs == "svn":
-            from rabbitvcs.vcs.svn import SVN
-            return SVN()
-        elif vcs == "git":
-            from rabbitvcs.vcs.git import Git
-            git = Git()
-            if path:
-                repo_path = git.find_repository_path(path)
-                git.set_repository(repo_path)
-            
-            return git
-
-    # Determine the VCS instance based on the path
-    if path:
-        path_to_check = os.path.realpath(path)
-        while path_to_check != "/" and path_to_check != "":
-            if os.path.isdir(os.path.join(path_to_check, ".svn")):
-                from rabbitvcs.vcs.svn import SVN
-                return SVN()
-            elif os.path.isdir(os.path.join(path_to_check, ".git")):
-                from rabbitvcs.vcs.git import Git
-                return Git(path_to_check)
-                
-            path_to_check = os.path.split(path_to_check)[0]
-
-    from rabbitvcs.vcs.svn import SVN
-    return SVN()
+def guess_vcs(path):
+    vcs = VCS()
+    return vcs.guess()
 
 class ExternalUtilError(Exception):
     """ Represents an error caused by unexpected output from an external
