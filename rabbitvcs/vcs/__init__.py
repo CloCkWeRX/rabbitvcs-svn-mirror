@@ -67,9 +67,6 @@ class VCS:
 
         guess = self.guess(path)
         if guess["vcs"] == "git":
-            from rabbitvcs.vcs.git import Git
-            return Git(guess["repo_path"])
-
             return self.git(guess["repo_path"], is_repo_path=True)
         else:
             return self.svn()
