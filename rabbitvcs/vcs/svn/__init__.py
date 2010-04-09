@@ -332,7 +332,6 @@ class SVN:
         if summarize:
             path_status = (st for st in all_statuses if st.path == path).next()
             path_status.make_summary(all_statuses)
-            print "aaa", path_status
         else:
             path_status = all_statuses[0]
 
