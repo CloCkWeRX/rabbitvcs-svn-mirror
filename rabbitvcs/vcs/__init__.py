@@ -130,6 +130,10 @@ class VCS:
         return cache
     
     # Methods that call client methods
+
+    def statuses(self, path, recurse=True):
+        client = self.client(path)
+        return client.statuses(path, recurse)
     
     def status(self, path, summarize=True):
         client = self.client(path)
@@ -152,7 +156,7 @@ class VCS:
         return client.is_locked(path)
 
     def get_items(self, paths, statuses=[]):
-        client = self.client(path)
+        client = self.client(paths[0])
         return client.get_items(paths, statuses)
 
 def create_vcs_instance(path=None, vcs=None):

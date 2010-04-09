@@ -42,3 +42,12 @@ class Dummy:
 
     def is_versioned(self, path):
         return False
+    
+    def get_items(self, paths, statuses=[]):
+        return []
+    
+    def is_locked(self, path):
+        return False
+    
+    def statuses(self, path, recurse=True):
+        return []

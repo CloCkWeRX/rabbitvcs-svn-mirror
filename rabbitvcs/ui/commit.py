@@ -66,7 +66,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         InterfaceView.__init__(self, "commit", "Commit")
 
         self.base_dir = base_dir
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
 
         self.paths = []
         for path in paths:
@@ -100,7 +100,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             (message and message or "")
         )
         self.get_widget("to").set_text(
-            self.vcs.get_repo_url(self.base_dir)
+            self.vcs.svn().get_repo_url(self.base_dir)
         )
 
         self.items = None
@@ -121,7 +121,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         self.get_widget("status").set_text(_("Loading..."))
         gtk.gdk.threads_leave()
 
-        self.items = self.vcs.get_items(self.paths, self.vcs.STATUSES_FOR_COMMIT)
+        self.items = self.vcs.get_items(self.paths, self.vcs.svn().STATUSES_FOR_COMMIT)
 
         gtk.gdk.threads_enter()
         self.populate_files_table()
@@ -204,7 +204,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         for item in items:
             try:
                 if self.vcs.status(item, summarize=False).content == rabbitvcs.vcs.status.status_unversioned:
-                    self.vcs.add(item)
+                    self.vcs.svn().add(item)
                     added += 1
             except Exception, e:
                 log.exception(e)
@@ -212,7 +212,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         ticks = added + len(items)*2
 
         self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs,
+            self.vcs.svn(),
             register_gtk_quit=self.gtk_quit_is_set()
         )
         self.action.set_pbar_ticks(ticks)
@@ -222,7 +222,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             rabbitvcs.util.helper.save_log_message, 
             self.message.get_text()
         )
-        self.action.append(self.vcs.commit, items, self.message.get_text())
+        self.action.append(self.vcs.svn().commit, items, self.message.get_text())
         self.action.append(self.action.set_status, _("Completed Commit"))
         self.action.append(self.action.finish)
         self.action.start()
