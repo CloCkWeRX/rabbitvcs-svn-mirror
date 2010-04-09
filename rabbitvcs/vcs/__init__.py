@@ -24,6 +24,9 @@ import os.path
 from rabbitvcs import gettext
 _ = gettext.gettext
 
+from rabbitvcs.util.log import Log
+log = Log("rabbitvcs.vcs")
+
 EXT_UTIL_ERROR = _("The output from '%s' was not able to be processed.\n%s")
 
 class VCS:
@@ -33,29 +36,48 @@ class VCS:
     def __init__(self):
         pass
     
+    def dummy(self):
+        if "dummy" in self.clients:
+            return self.clients["dummy"]
+        else:
+            from rabbitvcs.vcs.dummy import Dummy
+            self.clients["dummy"] = Dummy()
+            return self.clients["dummy"]
+    
     def svn(self):
         if "svn" in self.clients:
             return self.clients["svn"]
         else:
-            from rabbitvcs.vcs.svn import SVN
-            self.clients["svn"] = SVN()
-            return self.clients["svn"]
+            try:
+                from rabbitvcs.vcs.svn import SVN
+                self.clients["svn"] = SVN()
+                return self.clients["svn"]
+            except Exception, e:
+                log.debug("Unable to load SVN module: %s" % e)
+                self.clients["svn"] = self.dummy()
+                return self.clients["svn"]
 
     def git(self, path, is_repo_path=False):
         if "git" in self.clients:
             return self.clients["git"]
         else:
-            from rabbitvcs.vcs.git import Git
-            git = Git()
-            if path:
-                if is_repo_path:
-                    git.set_repository(path)
-                else:
-                    repo_path = git.find_repository_path(path)
-                    git.set_repository(repo_path)
-            
-            self.clients["git"] = git
-            return self.clients["git"]
+            try:
+                from rabbitvcs.vcs.git import Git
+                git = Git()
+
+                if path:
+                    if is_repo_path:
+                        git.set_repository(path)
+                    else:
+                        repo_path = git.find_repository_path(path)
+                        git.set_repository(repo_path)
+                
+                self.clients["git"] = git
+                return self.clients["git"]
+            except Exception, e:
+                log.debug("Unable to load Git module: %s" % e)
+                self.clients["git"] = self.dummy()
+                return self.clients["git"]
 
     def client(self, path, vcs=None):
         # Determine the VCS instance based on the vcs parameter
