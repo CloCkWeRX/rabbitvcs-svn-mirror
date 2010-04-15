@@ -628,6 +628,14 @@ class MenuPush(MenuItem):
     identifier = "RabbitVCS::Push"
     label = _("Push")
 
+class MenuStage(MenuItem):
+    identifier = "RabbitVCS::Stage"
+    label = _("Stage")
+
+class MenuUnstage(MenuItem):
+    identifier = "RabbitVCS::Unstage"
+    label = _("Unstage")
+
 
 def get_ignore_list_items(paths):
     """

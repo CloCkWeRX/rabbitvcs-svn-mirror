@@ -872,6 +872,12 @@ class ContextMenuConditions:
     def push(self, data=None):
         return True
 
+    def stage(self, data=None):
+        return True
+
+    def unstage(self, data=None):
+        return False
+
 class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
     """
     A callback class created for GtkFilesContextMenus.  This class inherits from
@@ -1236,6 +1242,10 @@ class MainContextMenu:
                 (MenuPull, None),
                 (MenuCommit, None),
                 (MenuPush, None),
+                (MenuSeparator, None),
+                (MenuStage, None),
+                (MenuUnstage, None),
+                (MenuAddToIgnoreList, ignore_items),
                 (MenuSeparator, None),
                 (MenuSettings, None),
                 (MenuAbout, None)
