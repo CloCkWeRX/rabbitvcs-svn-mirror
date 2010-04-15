@@ -529,6 +529,21 @@ class ContextMenuCallbacks:
     
         proc = rabbitvcs.util.helper.launch_ui_window("browser", [url])
 
+    def iniitalize_repository(self, widget, data1=None, data2=None):
+        pass
+
+    def clone(self, widget, data1=None, data2=None):
+        pass
+
+    def fetch(self, widget, data1=None, data2=None):
+        pass
+
+    def pull(self, widget, data1=None, data2=None):
+        pass
+
+    def push(self, widget, data1=None, data2=None):
+        pass
+
 
 class ContextMenuConditions:
     """
@@ -548,13 +563,15 @@ class ContextMenuConditions:
         }
 
         checks = {
+            "is_svn"                        : lambda path: (self.vcs_client.guess(path)["vcs"] == "svn"),
+            "is_git"                        : lambda path: (self.vcs_client.guess(path)["vcs"] == "git"),
             "is_dir"                        : os.path.isdir,
             "is_file"                       : os.path.isfile,
             "exists"                        : os.path.exists,
             "is_working_copy"               : self.vcs_client.is_working_copy,
             "is_in_a_or_a_working_copy"     : self.vcs_client.is_in_a_or_a_working_copy,
             "is_versioned"                  : self.vcs_client.is_versioned,
-            "is_normal"                     : lambda path: self.statuses[path].content == "normal" and self.statuses[path].metadata == "normal",
+            "is_normal"                     : lambda path: self.statuses[path].content == "unchanged" and self.statuses[path].metadata == "normal",
             "is_added"                      : lambda path: self.statuses[path].content == "added",
             "is_modified"                   : lambda path: self.statuses[path].content == "modified" or self.statuses[path].metadata == "modified",
             "is_deleted"                    : lambda path: self.statuses[path].content == "deleted",
@@ -581,10 +598,10 @@ class ContextMenuConditions:
         # If a check has returned True for any path, skip it for remaining paths
         for path in paths:
             for key, func in checks.items():
-                if not self.statuses.has_key(path):
-                    self.path_dict[key] = False
-                elif key not in self.path_dict or self.path_dict[key] is not True:
+                try:
                     self.path_dict[key] = func(path)
+                except KeyError, e:
+                    self.path_dict[key] = False
 
     def checkout(self, data=None):
         return (self.path_dict["length"] == 1 and
@@ -811,7 +828,15 @@ class ContextMenuConditions:
         return True
 
     def rabbitvcs(self, data=None):
-        return True
+        return False
+
+    def rabbitvcs_svn(self, data=None):
+        return (self.path_dict["is_svn"] or 
+            not self.path_dict["is_in_a_or_a_working_copy"])
+
+    def rabbitvcs_git(self, data=None):
+        return (self.path_dict["is_git"] or 
+            not self.path_dict["is_in_a_or_a_working_copy"])
     
     def debug(self, data=None):
         return settings.get("general", "show_debug")
@@ -829,6 +854,22 @@ class ContextMenuConditions:
         return True
     
     def bugs(self, data=None):
+        return True
+
+    def initialize_repository(self, data=None):
+        return (self.path_dict["is_dir"] and
+            not self.path_dict["is_in_a_or_a_working_copy"])
+
+    def clone(self, data=None):
+        return True
+
+    def fetch(self, data=None):
+        return True
+
+    def pull(self, data=None):
+        return True
+
+    def push(self, data=None):
         return True
 
 class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
@@ -1139,10 +1180,11 @@ class MainContextMenu:
                 (MenuDebugInvalidate, None),
                 (MenuDebugAddEmblem, None)
             ]),
-            (MenuCheckout, None),
-            (MenuUpdate, None),
-            (MenuCommit, None),
-            (MenuRabbitVCS, [
+            (MenuRabbitVCSSvn, [
+                (MenuCheckout, None),
+                (MenuUpdate, None),
+                (MenuCommit, None),
+                (MenuSeparator, None),
                 (MenuDiffMenu, [
                     (MenuDiff, None),
                     (MenuDiffPrevRev, None),
@@ -1183,7 +1225,18 @@ class MainContextMenu:
                 (MenuApplyPatch, None),
                 (MenuProperties, None),
                 (MenuSeparator, None),
-                (MenuHelp, None),
+                (MenuSettings, None),
+                (MenuAbout, None)
+            ]),
+            (MenuRabbitVCSGit, [
+                (MenuInitializeRepository, None),
+                (MenuClone, None),
+                (MenuSeparator, None),
+                (MenuFetch, None),
+                (MenuPull, None),
+                (MenuCommit, None),
+                (MenuPush, None),
+                (MenuSeparator, None),
                 (MenuSettings, None),
                 (MenuAbout, None)
             ])
