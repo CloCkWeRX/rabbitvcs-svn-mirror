@@ -29,6 +29,32 @@ log = Log("rabbitvcs.vcs")
 
 EXT_UTIL_ERROR = _("The output from '%s' was not able to be processed.\n%s")
 
+def guess(path):
+    # Determine the VCS instance based on the path
+    if path:
+        path_to_check = os.path.realpath(path)
+        while path_to_check != "/" and path_to_check != "":
+            if os.path.isdir(os.path.join(path_to_check, ".svn")):
+                cache = {
+                    "vcs": "svn",
+                    "repo_path": path_to_check
+                }
+                return cache
+
+            elif os.path.isdir(os.path.join(path_to_check, ".git")):
+                cache = {
+                    "vcs": "git",
+                    "repo_path": path_to_check
+                }
+                return cache
+                
+            path_to_check = os.path.split(path_to_check)[0]
+            
+    return {
+        "vcs": "dummy",
+        "repo_path": path
+    }
+
 class VCS:
     clients = {}
     path_vcs_map = {}
@@ -94,40 +120,15 @@ class VCS:
             return self.svn()
     
     def guess(self, path):
-        # Determine the VCS instance based on the path
-        if path:
-        
-            if path in self.path_vcs_map:
-                return self.path_vcs_map[path]
-        
-            path_to_check = os.path.realpath(path)
-            while path_to_check != "/" and path_to_check != "":
-                if os.path.isdir(os.path.join(path_to_check, ".svn")):
-                    cache = {
-                        "vcs": "svn",
-                        "repo_path": path_to_check
-                    }
-                    
-                    self.path_vcs_map[path] = cache
-                    return cache
+        log.debug("guess: %s"%path)
+        if path and path in self.path_vcs_map:
+            log.debug("Cached Answer:%s"%self.path_vcs_map[path])
+            return self.path_vcs_map[path]
 
-                elif os.path.isdir(os.path.join(path_to_check, ".git")):
-                    cache = {
-                        "vcs": "git",
-                        "repo_path": path_to_check
-                    }
-
-                    self.path_vcs_map[path] = cache
-                    return cache
-                    
-                path_to_check = os.path.split(path_to_check)[0]
-
-        cache = {
-            "vcs": "svn",
-            "repo_path": path
-        }
-        self.path_vcs_map[path] = cache
-        return cache
+        choice = guess(path)
+        log.debug("Guessed Answer:%s" %choice)
+        self.path_vcs_map[path] = choice
+        return choice
     
     # Methods that call client methods
 
@@ -145,7 +146,8 @@ class VCS:
 
     def is_in_a_or_a_working_copy(self, path):
         client = self.client(path)
-        return client.is_in_a_or_a_working_copy(path)
+        ret = client.is_in_a_or_a_working_copy(path)
+        return ret
 
     def is_versioned(self, path):
         client = self.client(path)
