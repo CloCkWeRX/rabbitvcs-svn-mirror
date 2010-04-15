@@ -131,7 +131,10 @@ class Git:
         return False
 
     def is_in_a_or_a_working_copy(self, path):
-        return (self.is_working_copy(path) or self.find_repository_path(os.path.split(path)[0]))
+        if self.is_working_copy(path):
+            return True
+
+        return (self.find_repository_path(os.path.split(path)[0]) != "")
 
     def is_versioned(self, path):
         if self.is_working_copy(path):
