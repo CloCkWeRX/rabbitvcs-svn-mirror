@@ -64,8 +64,11 @@ class Git:
     }
 
     STATUSES_FOR_COMMIT = [
-        STATUS["untracked"],
-        STATUS["missing"]
+        "untracked",
+        "missing",
+        "renamed",
+        "modified",
+        "added"
     ]
 
     def __init__(self, repo=None):
@@ -89,7 +92,7 @@ class Git:
     # Status Methods
     #
     
-    def statuses(self, path):
+    def statuses(self, path, recurse=False):
         """
         Generates a list of GittyupStatus objects for the specified file.
         
@@ -170,14 +173,14 @@ class Git:
 
         if paths is None:
             return []
-        
-        items = []
-        st = self.status()
-        for path in abspaths(paths):
-            for st_item in st:
-                if statuses and st_item not in statuses:
-                    continue
 
+        items = []
+        st = self.statuses(paths)
+        for st_item in st:
+            if st_item.content == "modified" and os.path.isdir(st_item.path):
+                continue
+        
+            if st_item.content in statuses:
                 items.append(st_item)
 
         return items

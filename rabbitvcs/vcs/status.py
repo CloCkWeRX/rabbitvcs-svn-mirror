@@ -194,12 +194,16 @@ class GitStatus(Status):
         'normal': status_unchanged,
         None: status_unchanged
     }
+    
+    is_staged = False
 
     def __init__(self, gittyup_status):
         super(GitStatus, self).__init__(
             gittyup_status.path,
             content=str(gittyup_status.identifier),
             metadata=None)
+        
+        self.is_staged = gittyup_status.is_staged
 
 STATUS_TYPES = [
     Status,
