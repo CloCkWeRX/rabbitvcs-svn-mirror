@@ -116,12 +116,11 @@ class Git:
             return statuses
     
     def status(self, path, summarize=True):
-
         all_statuses = self.statuses(path)
-
+        
         if summarize:
             path_status = (st for st in all_statuses if st.path == path).next()
-            path_status.make_summary(all_statuses)
+            path_status.summary = path_status.single
         else:
             path_status = all_statuses[0]
 
