@@ -141,16 +141,16 @@ class Git:
     def is_versioned(self, path):
         if self.is_working_copy(path):
             return True
-        else:
-            st = self.client.status(path)
-            try:
-                if (st[0].path == self.client.get_absolute_path(path) and
-                        st[0].identifier != "untracked"):
-                    return True
-            except Exception:
-                return False
 
+        st = self.client.status(path)
+        try:
+            if (st[0].path == self.client.get_relative_path(path) and
+                    st[0].identifier != "untracked"):
+                return True
+        except Exception:
             return False
+
+        return False
 
     def is_locked(self, path):
         return False
