@@ -58,6 +58,7 @@ class Status(object):
         self.metadata = metadata
         self.single = self._make_single_status()
         self.summary = summary
+        self.is_staged = False
  
     def _make_single_status(self):
         """
