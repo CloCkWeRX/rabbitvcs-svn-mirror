@@ -292,7 +292,7 @@ class SVNCommit(Commit):
 
         ticks = added + len(items)*2
 
-        self.action = rabbitvcs.ui.action.VCSAction(
+        self.action = rabbitvcs.ui.action.SVNAction(
             self.vcs.svn(),
             register_gtk_quit=self.gtk_quit_is_set()
         )
@@ -379,7 +379,7 @@ class GitCommit(Commit):
 
         ticks = staged + len(items)*2
 
-        self.action = rabbitvcs.ui.action.VCSAction(
+        self.action = rabbitvcs.ui.action.GitAction(
             self.vcs.git(self.paths[0]),
             register_gtk_quit=self.gtk_quit_is_set()
         )
@@ -390,7 +390,7 @@ class GitCommit(Commit):
             rabbitvcs.util.helper.save_log_message, 
             self.message.get_text()
         )
-        self.action.append(self.vcs.git().commit, self.message.get_text())
+        self.action.append(self.vcs.git(items[0]).commit, self.message.get_text())
         self.action.append(self.action.set_status, _("Completed Commit"))
         self.action.append(self.action.finish)
         self.action.start()
