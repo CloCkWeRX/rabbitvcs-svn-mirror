@@ -530,3 +530,6 @@ class Git:
         """
         
         return self.client.log()
+        
+    def set_callback_notify(self, func):
+        self.client.set_callback_notify(func)
