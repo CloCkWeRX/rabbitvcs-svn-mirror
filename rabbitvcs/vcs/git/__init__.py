@@ -179,7 +179,7 @@ class Git:
             if st_item.content == "modified" and os.path.isdir(st_item.path):
                 continue
         
-            if st_item.content in statuses:
+            if st_item.content in statuses or len(statuses) == 0:
                 items.append(st_item)
 
         return items
