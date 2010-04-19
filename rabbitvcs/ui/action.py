@@ -200,15 +200,6 @@ class VCSAction(threading.Thread):
         
         self.message = None
         
-        self.client = client
-        self.client.set_callback_cancel(self.cancel)
-        self.client.set_callback_notify(self.notify)
-        self.client.set_callback_get_log_message(self.get_log_message)
-        self.client.set_callback_get_login(self.get_login)
-        self.client.set_callback_ssl_server_trust_prompt(self.get_ssl_trust)
-        self.client.set_callback_ssl_client_cert_password_prompt(self.get_ssl_password)
-        self.client.set_callback_ssl_client_cert_prompt(self.get_client_cert)
-        
         self.queue = rabbitvcs.util.FunctionQueue()
         
         self.login_tries = 0
@@ -595,3 +586,39 @@ class VCSAction(threading.Thread):
             return None
         finally:
             self.notification.close()
+
+class SVNAction(VCSAction):
+    def __init__(self, client, register_gtk_quit=False, notification=True,
+            run_in_thread=True):
+            
+        self.client = client
+        self.client.set_callback_cancel(self.cancel)
+        self.client.set_callback_notify(self.notify)
+        self.client.set_callback_get_log_message(self.get_log_message)
+        self.client.set_callback_get_login(self.get_login)
+        self.client.set_callback_ssl_server_trust_prompt(self.get_ssl_trust)
+        self.client.set_callback_ssl_client_cert_password_prompt(self.get_ssl_password)
+        self.client.set_callback_ssl_client_cert_prompt(self.get_client_cert)
+        
+        VCSAction.__init__(self, client, register_gtk_quit, notification,
+            run_in_thread)
+
+class GitAction(VCSAction):
+    def __init__(self, client, register_gtk_quit=False, notification=True,
+            run_in_thread=True):
+
+        self.client = client
+        self.client.set_callback_notify(self.notify)
+        
+        VCSAction.__init__(self, client, register_gtk_quit, notification,
+            run_in_thread)
+
+def vcs_action_factory(client, register_gtk_quit=False, notification=True, 
+        run_in_thread=True):
+
+    if client.vcs == "git":
+        return GitAction(client, register_gtk_quit, notification, 
+            run_in_thread)
+    else:
+        return SVNAction(client, register_gtk_quit, notification, 
+            run_in_thread)
