@@ -580,6 +580,7 @@ class ContextMenuConditions:
             "is_missing"                    : lambda path: self.statuses[path].content == "missing",
             "is_conflicted"                 : lambda path: self.statuses[path].content == "conflicted",
             "is_obstructed"                 : lambda path: self.statuses[path].content == "obstructed",
+            "is_staged"                     : lambda path: self.statuses[path].is_staged == True,
             "has_unversioned"               : lambda path: "unversioned" in self.text_statuses,
             "has_added"                     : lambda path: "added" in self.text_statuses,
             "has_modified"                  : lambda path: "modified" in self.text_statuses or "modified" in self.prop_statuses,
@@ -679,6 +680,9 @@ class ContextMenuConditions:
                 not self.path_dict["is_added"])
         
     def add(self, data=None):
+        if not self.path_dict["is_svn"]:
+            return False
+            
         if (self.path_dict["is_dir"] and
                 self.path_dict["is_in_a_or_a_working_copy"]):
             return True
@@ -692,9 +696,6 @@ class ContextMenuConditions:
         return (self.path_dict["is_working_copy"] or
             self.path_dict["is_versioned"])
 
-#    def add_to_ignore_list(self, data=None):
-#        return self.path_dict["is_versioned"]
-        
     def rename(self, data=None):
         return (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
@@ -864,19 +865,19 @@ class ContextMenuConditions:
         return True
 
     def fetch(self, data=None):
-        return True
+        return (self.path_dict["is_git"])
 
     def pull(self, data=None):
-        return True
+        return (self.path_dict["is_git"])
 
     def push(self, data=None):
-        return True
+        return (self.path_dict["is_git"])
 
     def stage(self, data=None):
-        return True
+        return (self.path_dict["is_git"] and not self.path_dict["is_staged"])
 
     def unstage(self, data=None):
-        return False
+        return (self.path_dict["is_git"] and self.path_dict["is_staged"])
 
 class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
     """
@@ -1058,6 +1059,8 @@ class GtkFilesContextMenu:
             (MenuRevert, None),
             (MenuRestore, None),
             (MenuAdd, None),
+            (MenuStage, None),
+            (MenuUnstage, None),
             (MenuAddToIgnoreList, ignore_items)
         ]
         
