@@ -34,7 +34,7 @@ import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
 import rabbitvcs.util.helper
 from rabbitvcs.util.log import Log
-import rabbitvcs.vcs.git
+import rabbitvcs.vcs
 
 log = Log("rabbitvcs.ui.stage")
 
@@ -46,12 +46,12 @@ class GitUnstage(Add):
         InterfaceView.__init__(self, "add", "Add")
 
         self.window = self.get_widget("Add")
-        self.window.set_title(_("Stage"))
+        self.window.set_title(_("Unstage"))
 
         self.paths = paths
         self.base_dir = base_dir
         self.last_row_clicked = None
-        self.git = rabbitvcs.vcs.git.Git(paths[0])
+        self.git = rabbitvcs.vcs.VCS().git(paths[0])
         self.items = None
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"), 
@@ -115,9 +115,9 @@ class GitUnstage(Add):
         self.action.append(self.action.finish)
         self.action.start()
 
-class GitStageQuiet:
+class GitUnstageQuiet:
     def __init__(self, paths):
-        self.git = rabbitvcs.vcs.VCS(paths[0])
+        self.git = rabbitvcs.vcs.VCS().git(paths[0])
         self.action = rabbitvcs.ui.action.GitAction(
             self.git,
             run_in_thread=False
@@ -127,12 +127,15 @@ class GitStageQuiet:
         self.action.run()
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main, BASEDIR_OPT
+    from rabbitvcs.ui import main, BASEDIR_OPT, QUIET_OPT
     (options, paths) = main(
-        [BASEDIR_OPT],
+        [BASEDIR_OPT, QUIET_OPT],
         usage="Usage: rabbitvcs unstage [path1] [path2] ..."
     )
-
-    window = GitUnstage(paths, options.base_dir)
-    window.register_gtk_quit()
-    gtk.main()
+    
+    if options.quiet:
+        GitUnstageQuiet(paths)
+    else:
+        window = GitUnstage(paths, options.base_dir)
+        window.register_gtk_quit()
+        gtk.main()

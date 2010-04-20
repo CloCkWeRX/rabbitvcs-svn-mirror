@@ -544,6 +544,14 @@ class ContextMenuCallbacks:
     def push(self, widget, data1=None, data2=None):
         pass
 
+    def stage(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("stage", self.paths)
+        self.caller.execute_after_process_exit(proc)
+
+    def unstage(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("unstage", self.paths)
+        self.caller.execute_after_process_exit(proc)
+
 
 class ContextMenuConditions:
     """
@@ -963,6 +971,13 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
         from rabbitvcs.ui.log import LogDialog
         LogDialog(self.vcs_client.get_repo_url(self.paths[0]))
 
+    def stage(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("stage", ["-q"] + self.paths)
+        self.caller.execute_after_process_exit(proc)
+
+    def unstage(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("unstage", ["-q"] + self.paths)
+        self.caller.execute_after_process_exit(proc)
 
 class GtkFilesContextMenuConditions(ContextMenuConditions):
     """
