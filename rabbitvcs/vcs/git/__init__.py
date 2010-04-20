@@ -78,9 +78,10 @@ class Git:
             self.client = GittyupClient(repo)
         else:
             self.client = GittyupClient()
-    
+
     def set_repository(self, path):
         self.client.set_repository(path)
+        self.config = self.client.config
 
     def get_repository(self):
         return self.client.get_repository(path)
