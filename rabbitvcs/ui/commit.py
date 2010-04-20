@@ -221,6 +221,8 @@ class SVNCommit(Commit):
     def __init__(self, paths, base_dir=None, message=None):
         Commit.__init__(self, paths, base_dir, message)
 
+        self.get_widget("commit_to_box").show()
+
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
             [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
@@ -312,6 +314,20 @@ class GitCommit(Commit):
     def __init__(self, paths, base_dir=None, message=None):
         Commit.__init__(self, paths, base_dir, message)
 
+        self.git = self.vcs.git(paths[0])
+
+        self.get_widget("git_options_box").show()
+        
+        self.committer_name = self.get_widget("committer_name")
+        self.committer_email = self.get_widget("committer_email")
+        self.author_name = self.get_widget("author_name")
+        self.author_email = self.get_widget("author_email")
+        
+        self.committer_name.set_text(self.git.config.get("user", "name"))
+        self.committer_email.set_text(self.git.config.get("user", "email"))
+        self.author_name.set_text(self.git.config.get("user", "name"))
+        self.author_email.set_text(self.git.config.get("user", "email"))
+
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
             [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
@@ -372,15 +388,32 @@ class GitCommit(Commit):
         staged = 0
         for item in items:
             try:
-                self.vcs.git(item).stage(item)
+                self.git.stage(item)
                 staged += 1
             except Exception, e:
                 log.exception(e)
 
         ticks = staged + len(items)*2
 
+        # Get committer and author information
+        committer_name = self.committer_name.get_text()
+        committer_email = self.committer_email.get_text()
+        author_name = self.author_name.get_text()
+        author_email = self.author_email.get_text()
+
+        committer = committer_name
+        author = author_name
+        if committer_name and committer_email:
+            committer += " <%s>" % committer_email
+        if author_name and author_email:
+            author += " <%s>" % author_email
+
+        self.git.config.set("user", "name", committer_name)
+        self.git.config.set("user", "email", committer_email)
+        self.git.config.write()
+
         self.action = rabbitvcs.ui.action.GitAction(
-            self.vcs.git(self.paths[0]),
+            self.git,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         self.action.set_pbar_ticks(ticks)
@@ -390,7 +423,12 @@ class GitCommit(Commit):
             rabbitvcs.util.helper.save_log_message, 
             self.message.get_text()
         )
-        self.action.append(self.vcs.git(items[0]).commit, self.message.get_text())
+        self.action.append(
+            self.git.commit, 
+            self.message.get_text(),
+            committer=committer,
+            author=author
+        )
         self.action.append(self.action.set_status, _("Completed Commit"))
         self.action.append(self.action.finish)
         self.action.start()
