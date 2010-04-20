@@ -85,18 +85,25 @@ class VCS:
 
     def git(self, path, is_repo_path=False):
         if "git" in self.clients:
-            return self.clients["git"]
+            git = self.clients["git"]
+
+            if is_repo_path:
+                git.set_repository(path)
+            else:
+                repo_path = git.find_repository_path(path)
+                git.set_repository(repo_path)
+
+            return git
         else:
             try:
                 from rabbitvcs.vcs.git import Git
                 git = Git()
 
-                if path:
-                    if is_repo_path:
-                        git.set_repository(path)
-                    else:
-                        repo_path = git.find_repository_path(path)
-                        git.set_repository(repo_path)
+                if is_repo_path:
+                    git.set_repository(path)
+                else:
+                    repo_path = git.find_repository_path(path)
+                    git.set_repository(repo_path)
                 
                 self.clients["git"] = git
                 return self.clients["git"]
@@ -120,13 +127,10 @@ class VCS:
             return self.svn()
     
     def guess(self, path):
-        log.debug("guess: %s"%path)
         if path and path in self.path_vcs_map:
-            log.debug("Cached Answer:%s"%self.path_vcs_map[path])
             return self.path_vcs_map[path]
 
         choice = guess(path)
-        log.debug("Guessed Answer:%s" %choice)
         self.path_vcs_map[path] = choice
         return choice
     
