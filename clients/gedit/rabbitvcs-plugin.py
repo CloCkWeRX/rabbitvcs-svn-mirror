@@ -34,104 +34,102 @@ from rabbitvcs.util.contextmenuitems import *
 # Menu item example, insert a new item in the Tools menu
 ui_str = """<ui>
   <menubar name="MenuBar">
-    <menu name="ToolsMenu" action="Tools">
-      <placeholder name="RabbitVCSMenu">
+    <placeholder name="ExtraMenu_1">
+    <menu name="RabbitVCSMenu" action="RabbitVCSMenu">
         <menuitem name="RabbitVCS::Commit" action="RabbitVCS::Commit" />
         <menuitem name="RabbitVCS::Update" action="RabbitVCS::Update" />
         <menuitem name="RabbitVCS::Checkout" action="RabbitVCS::Checkout" />
-        <menu name="RabbitVCS::RabbitVCS" action="RabbitVCS::RabbitVCS">
-            <menu name="RabbitVCS::Diff_Menu" action="RabbitVCS::Diff_Menu">
-                <menuitem name="RabbitVCS::Diff" action="RabbitVCS::Diff" />
-                <menuitem name="RabbitVCS::Diff_Previous_Revision" action="RabbitVCS::Diff_Previous_Revision" />
-                <menuitem name="RabbitVCS::Diff_Multiple" action="RabbitVCS::Diff_Multiple" />
-                <menuitem name="RabbitVCS::Compare_Tool" action="RabbitVCS::Compare_Tool" />
-                <menuitem name="RabbitVCS::Compare_Tool_Previous_Revision" action="RabbitVCS::Compare_Tool_Previous_Revision" />
-                <menuitem name="RabbitVCS::Compare_Tool_Multiple" action="RabbitVCS::Compare_Tool_Multiple" />
-                <menuitem name="RabbitVCS::Show_Changes" action="RabbitVCS::Show_Changes" />
-            </menu>
-            <menuitem name="RabbitVCS::Show_Log" action="RabbitVCS::Show_Log" />
-            <menuitem name="RabbitVCS::Repo_Browser" action="RabbitVCS::Repo_Browser" />
-            <menuitem name="RabbitVCS::Check_For_Modifications" action="RabbitVCS::Check_For_Modifications" />
-            <separator />
-            <menuitem name="RabbitVCS::Add" action="RabbitVCS::Add" />
-            <menu name="RabbitVCS::Add_To_Ignore_List" action="RabbitVCS::Add_To_Ignore_List">
-                <menuitem name="RabbitVCS::Ignore_By_Filename" action="RabbitVCS::Ignore_By_Filename" />
-                <menuitem name="RabbitVCS::Ignore_By_File_Extension" action="RabbitVCS::Ignore_By_File_Extension" />
-            </menu>
-            <separator />
-            <menuitem name="RabbitVCS::Update_To_Revision" action="RabbitVCS::Update_To_Revision" />
-            <menuitem name="RabbitVCS::Rename" action="RabbitVCS::Rename" />
-            <menuitem name="RabbitVCS::Delete" action="RabbitVCS::Delete" />
-            <menuitem name="RabbitVCS::Revert" action="RabbitVCS::Revert" />
-            <menuitem name="RabbitVCS::Resolve" action="RabbitVCS::Resolve" />
-            <menuitem name="RabbitVCS::Relocate" action="RabbitVCS::Relocate" />
-            <menuitem name="RabbitVCS::Get_Lock" action="RabbitVCS::Get_Lock" />
-            <menuitem name="RabbitVCS::Unlock" action="RabbitVCS::Unlock" />
-            <menuitem name="RabbitVCS::Cleanup" action="RabbitVCS::Cleanup" />
-            <menuitem name="RabbitVCS::Annotate" action="RabbitVCS::Annotate" />
-            <separator />
-            <menuitem name="RabbitVCS::Export" action="RabbitVCS::Export" />
-            <menuitem name="RabbitVCS::Create_Repository" action="RabbitVCS::Create_Repository" />
-            <menuitem name="RabbitVCS::Import" action="RabbitVCS::Import" />
-            <separator />
-            <menuitem name="RabbitVCS::Branch_Tag" action="RabbitVCS::Branch_Tag" />
-            <menuitem name="RabbitVCS::Switch" action="RabbitVCS::Switch" />
-            <menuitem name="RabbitVCS::Merge" action="RabbitVCS::Merge" />
-            <separator />
-            <menuitem name="RabbitVCS::Apply_Patch" action="RabbitVCS::Apply_Patch" />
-            <menuitem name="RabbitVCS::Create_Patch" action="RabbitVCS::Create_Patch" />
-            <menuitem name="RabbitVCS::Properties" action="RabbitVCS::Properties" />
-            <separator />
-            <menuitem name="RabbitVCS::Settings" action="RabbitVCS::Settings" />
-            <menuitem name="RabbitVCS::About" action="RabbitVCS::About" />
+        <menu name="RabbitVCS::Diff_Menu" action="RabbitVCS::Diff_Menu">
+            <menuitem name="RabbitVCS::Diff" action="RabbitVCS::Diff" />
+            <menuitem name="RabbitVCS::Diff_Previous_Revision" action="RabbitVCS::Diff_Previous_Revision" />
+            <menuitem name="RabbitVCS::Diff_Multiple" action="RabbitVCS::Diff_Multiple" />
+            <menuitem name="RabbitVCS::Compare_Tool" action="RabbitVCS::Compare_Tool" />
+            <menuitem name="RabbitVCS::Compare_Tool_Previous_Revision" action="RabbitVCS::Compare_Tool_Previous_Revision" />
+            <menuitem name="RabbitVCS::Compare_Tool_Multiple" action="RabbitVCS::Compare_Tool_Multiple" />
+            <menuitem name="RabbitVCS::Show_Changes" action="RabbitVCS::Show_Changes" />
         </menu>
-      </placeholder>
+        <menuitem name="RabbitVCS::Show_Log" action="RabbitVCS::Show_Log" />
+        <menuitem name="RabbitVCS::Repo_Browser" action="RabbitVCS::Repo_Browser" />
+        <menuitem name="RabbitVCS::Check_For_Modifications" action="RabbitVCS::Check_For_Modifications" />
+        <separator />
+        <menuitem name="RabbitVCS::Add" action="RabbitVCS::Add" />
+        <menu name="RabbitVCS::Add_To_Ignore_List" action="RabbitVCS::Add_To_Ignore_List">
+            <menuitem name="RabbitVCS::Ignore_By_Filename" action="RabbitVCS::Ignore_By_Filename" />
+            <menuitem name="RabbitVCS::Ignore_By_File_Extension" action="RabbitVCS::Ignore_By_File_Extension" />
+        </menu>
+        <separator />
+        <menuitem name="RabbitVCS::Update_To_Revision" action="RabbitVCS::Update_To_Revision" />
+        <menuitem name="RabbitVCS::Rename" action="RabbitVCS::Rename" />
+        <menuitem name="RabbitVCS::Delete" action="RabbitVCS::Delete" />
+        <menuitem name="RabbitVCS::Revert" action="RabbitVCS::Revert" />
+        <menuitem name="RabbitVCS::Resolve" action="RabbitVCS::Resolve" />
+        <menuitem name="RabbitVCS::Relocate" action="RabbitVCS::Relocate" />
+        <menuitem name="RabbitVCS::Get_Lock" action="RabbitVCS::Get_Lock" />
+        <menuitem name="RabbitVCS::Unlock" action="RabbitVCS::Unlock" />
+        <menuitem name="RabbitVCS::Cleanup" action="RabbitVCS::Cleanup" />
+        <menuitem name="RabbitVCS::Annotate" action="RabbitVCS::Annotate" />
+        <separator />
+        <menuitem name="RabbitVCS::Export" action="RabbitVCS::Export" />
+        <menuitem name="RabbitVCS::Create_Repository" action="RabbitVCS::Create_Repository" />
+        <menuitem name="RabbitVCS::Import" action="RabbitVCS::Import" />
+        <separator />
+        <menuitem name="RabbitVCS::Branch_Tag" action="RabbitVCS::Branch_Tag" />
+        <menuitem name="RabbitVCS::Switch" action="RabbitVCS::Switch" />
+        <menuitem name="RabbitVCS::Merge" action="RabbitVCS::Merge" />
+        <separator />
+        <menuitem name="RabbitVCS::Apply_Patch" action="RabbitVCS::Apply_Patch" />
+        <menuitem name="RabbitVCS::Create_Patch" action="RabbitVCS::Create_Patch" />
+        <menuitem name="RabbitVCS::Properties" action="RabbitVCS::Properties" />
+        <separator />
+        <menuitem name="RabbitVCS::Settings" action="RabbitVCS::Settings" />
+        <menuitem name="RabbitVCS::About" action="RabbitVCS::About" />
     </menu>
+    </placeholder>
   </menubar>
 </ui>
 """
 class RabbitVCSWindowHelper:
 
     _menu_paths = [
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::Commit",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::Update",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::Checkout",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Diff_Menu",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Diff_Menu/RabbitVCS::Diff",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Diff_Menu/RabbitVCS::Diff_Previous_Revision",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Diff_Menu/RabbitVCS::Diff_Multiple",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Diff_Menu/RabbitVCS::Compare_Tool",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Diff_Menu/RabbitVCS::Compare_Tool_Previous_Revision",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Diff_Menu/RabbitVCS::Compare_Tool_Multiple",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Diff_Menu/RabbitVCS::Show_Changes",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Show_Log",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Repo_Browser",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Check_For_Modifications",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Add",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Add_To_Ignore_List",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Add_To_Ignore_List/RabbitVCS::Ignore_By_Filename",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Add_To_Ignore_List/RabbitVCS::Ignore_By_File_Extension",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Update_To_Revision",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Rename",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Delete",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Revert",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Resolve",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Get_Lock",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Unlock",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Cleanup",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Annotate",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Export",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Create_Repository",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Import",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Branch_Tag",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Switch",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Merge",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Apply_Patch",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Create_Patch",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Properties",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::Settings",
-        "/MenuBar/ToolsMenu/RabbitVCSMenu/RabbitVCS::RabbitVCS/RabbitVCS::About"
+#        "/MenuBar/RabbitVCSMenu",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Commit",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Update",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Checkout",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Diff_Menu",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Diff_Menu/RabbitVCS::Diff",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Diff_Menu/RabbitVCS::Diff_Previous_Revision",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Diff_Menu/RabbitVCS::Diff_Multiple",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Diff_Menu/RabbitVCS::Compare_Tool",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Diff_Menu/RabbitVCS::Compare_Tool_Previous_Revision",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Diff_Menu/RabbitVCS::Compare_Tool_Multiple",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Diff_Menu/RabbitVCS::Show_Changes",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Show_Log",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Repo_Browser",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Check_For_Modifications",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Add",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Add_To_Ignore_List",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Add_To_Ignore_List/RabbitVCS::Ignore_By_Filename",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Add_To_Ignore_List/RabbitVCS::Ignore_By_File_Extension",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Update_To_Revision",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Rename",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Delete",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Revert",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Resolve",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Get_Lock",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Unlock",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Cleanup",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Annotate",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Export",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Create_Repository",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Import",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Branch_Tag",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Switch",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Merge",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Apply_Patch",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Create_Patch",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Properties",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::Settings",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::About"
     ]
 
     _default_base_dir = os.path.expanduser("~")
@@ -141,6 +139,7 @@ class RabbitVCSWindowHelper:
         self._plugin = plugin
         self.base_dir = self._default_base_dir
         self._menubar_menu = None
+        self._menu_action = None
 
         # Insert menu items
         self._insert_menu()
@@ -160,9 +159,12 @@ class RabbitVCSWindowHelper:
         manager = self._window.get_ui_manager()
 
         self._menubar_menu = GeditMenu(self, self.base_dir, [self._get_document_path()])
+        self._menu_action = gtk.Action( name="RabbitVCSMenu", label="RabbitVCS", tooltip="Excellent Version Control for Linux", stock_id=None )
+#        self._menu_action.connect( "activate", lambda a: self.update_ui() )
         
         self._action_group = gtk.ActionGroup("RabbitVCSActions")
         self._action_group = self._menubar_menu.get_action_group(self._action_group)
+        self._action_group.add_action( self._menu_action )
 
         # Insert the action group
         manager.insert_action_group(self._action_group, 0)
@@ -190,8 +192,8 @@ class RabbitVCSWindowHelper:
         self._action_group.set_sensitive(document != None)
         if document != None:
             manager = self._window.get_ui_manager()
-            manager.get_widget("/MenuBar/ToolsMenu/RabbitVCSMenu").set_sensitive(True)
-            
+            manager.get_widget("/MenuBar/ExtraMenu_1/RabbitVCSMenu").set_sensitive(True)
+#            self._menu_action.set_sensitive(True)
             self._menubar_menu.set_paths([self._get_document_path()])
             self._determine_menu_sensitivity([self._get_document_path()])
 
@@ -360,6 +362,9 @@ class GeditMenuBuilder(object):
 
             default_name = MenuItem.make_default_name(item.identifier)            
             action = RabbitVCSAction(item.identifier, item.label, item.tooltip, item.icon)
+
+            if item.icon and hasattr(action, "set_icon_name"):
+                action.set_icon_name(item.icon)
            
             if item.callback:
                 if item.callback_args:
