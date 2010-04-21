@@ -61,7 +61,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
         self.paths = paths
         self.base_dir = base_dir
         self.last_row_clicked = None
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
         self.items = []
         self.statuses = self.vcs.STATUSES_FOR_ADD
         self.files_table = rabbitvcs.ui.widget.Table(

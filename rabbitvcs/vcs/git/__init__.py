@@ -63,6 +63,13 @@ class Git:
         gittyup.objects.MissingStatus:      "missing"
     }
 
+    STATUSES_FOR_REVERT = [
+        "missing",
+        "renamed",
+        "modified",
+        "removed"
+    ]
+
     STATUSES_FOR_COMMIT = [
         "untracked",
         "missing",

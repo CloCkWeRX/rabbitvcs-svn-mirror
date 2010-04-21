@@ -169,6 +169,10 @@ class VCS:
         client = self.client(paths[0])
         return client.STATUSES_FOR_COMMIT
 
+    def statuses_for_revert(self, paths):
+        client = self.client(paths[0])
+        return client.STATUSES_FOR_REVERT
+
 def create_vcs_instance(path=None, vcs=None):
     """
     Create a VCS instance based on the working copy path
