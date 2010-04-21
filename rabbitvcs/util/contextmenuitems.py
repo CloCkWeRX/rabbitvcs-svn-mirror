@@ -615,14 +615,10 @@ class MenuClone(MenuItem):
     label = _("Clone")
     icon = "rabbitvcs-checkout"
 
-class MenuFetch(MenuItem):
-    identifier = "RabbitVCS::Fetch"
-    label = _("Fetch")
+class MenuFetchPull(MenuItem):
+    identifier = "RabbitVCS::Fetch_Pull"
+    label = _("Fetch/Pull")
     icon = "rabbitvcs-update"
-
-class MenuPull(MenuItem):
-    identifier = "RabbitVCS::Pull"
-    label = _("Pull")
 
 class MenuPush(MenuItem):
     identifier = "RabbitVCS::Push"

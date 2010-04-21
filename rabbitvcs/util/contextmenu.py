@@ -535,10 +535,7 @@ class ContextMenuCallbacks:
     def clone(self, widget, data1=None, data2=None):
         pass
 
-    def fetch(self, widget, data1=None, data2=None):
-        pass
-
-    def pull(self, widget, data1=None, data2=None):
+    def fetch_pull(self, widget, data1=None, data2=None):
         pass
 
     def push(self, widget, data1=None, data2=None):
@@ -872,10 +869,7 @@ class ContextMenuConditions:
     def clone(self, data=None):
         return True
 
-    def fetch(self, data=None):
-        return (self.path_dict["is_git"])
-
-    def pull(self, data=None):
+    def fetch_pull(self, data=None):
         return (self.path_dict["is_git"])
 
     def push(self, data=None):
@@ -1253,13 +1247,12 @@ class MainContextMenu:
                 (MenuAbout, None)
             ]),
             (MenuRabbitVCSGit, [
-                (MenuInitializeRepository, None),
-                (MenuClone, None),
-                (MenuSeparator, None),
-                (MenuFetch, None),
-                (MenuPull, None),
+                (MenuFetchPull, None),
                 (MenuCommit, None),
                 (MenuPush, None),
+                (MenuSeparator, None),
+                (MenuInitializeRepository, None),
+                (MenuClone, None),
                 (MenuSeparator, None),
                 (MenuStage, None),
                 (MenuUnstage, None),
