@@ -140,41 +140,6 @@ class Commit(InterfaceView, GtkContextMenuCaller):
     def on_cancel_clicked(self, widget, data=None):
         self.close()
         
-    def on_ok_clicked(self, widget, data=None):
-        items = self.files_table.get_activated_rows(1)
-        self.hide()
-
-        if len(items) == 0:
-            self.close()
-            return
-
-        added = 0
-        for item in items:
-            try:
-                if self.vcs.status(item, summarize=False).content == rabbitvcs.vcs.status.status_unversioned:
-                    self.vcs.svn().add(item)
-                    added += 1
-            except Exception, e:
-                log.exception(e)
-
-        ticks = added + len(items)*2
-
-        self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs.svn(),
-            register_gtk_quit=self.gtk_quit_is_set()
-        )
-        self.action.set_pbar_ticks(ticks)
-        self.action.append(self.action.set_header, _("Commit"))
-        self.action.append(self.action.set_status, _("Running Commit Command..."))
-        self.action.append(
-            rabbitvcs.util.helper.save_log_message, 
-            self.message.get_text()
-        )
-        self.action.append(self.vcs.svn().commit, items, self.message.get_text())
-        self.action.append(self.action.set_status, _("Completed Commit"))
-        self.action.append(self.action.finish)
-        self.action.start()
-        
     def on_key_pressed(self, widget, data):
         if (data.state & (gtk.gdk.SHIFT_MASK | gtk.gdk.CONTROL_MASK) and 
                 gtk.gdk.keyval_name(data.keyval) == "Return"):
