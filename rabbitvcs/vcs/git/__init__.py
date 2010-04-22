@@ -324,7 +324,7 @@ class Git:
         @param  origin: Specify the origin of the repository
 
         """
-        print "clone",host,path
+        
         return self.client.clone(host, path, bare, origin)
         
     def commit(self, message, parents=None, committer=None, commit_time=None, 

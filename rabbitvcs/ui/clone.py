@@ -40,12 +40,13 @@ _ = gettext.gettext
 
 class GitClone(Checkout):
     def __init__(self, path=None, url=None):
-        print 
         Checkout.__init__(self, path, url)
         
         self.git = self.vcs.git()
         
         self.get_widget("Checkout").set_title(_("Clone"))
+
+        self.check_form()
 
     def on_ok_clicked(self, widget):
         url = self.repositories.get_active_text()
@@ -56,7 +57,7 @@ class GitClone(Checkout):
             return
     
         self.hide()
-        self.action = rabbitvcs.ui.action.VCSAction(
+        self.action = rabbitvcs.ui.action.GitAction(
             self.git,
             register_gtk_quit=self.gtk_quit_is_set()
         )

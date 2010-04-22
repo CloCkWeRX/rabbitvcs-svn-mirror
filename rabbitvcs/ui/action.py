@@ -81,7 +81,7 @@ class MessageCallbackNotifier(VCSNotifier):
     glade_filename = "notification"
     glade_id = "Notification"
     
-    def __init__(self, callback_cancel=None, visible=True):
+    def __init__(self, callback_cancel=None, visible=True, client_in_same_thread=True):
         """
         @type   callback_cancel: def
         @param  callback_cancel: A method to call when cancel button is clicked.
@@ -92,6 +92,8 @@ class MessageCallbackNotifier(VCSNotifier):
         """
         
         VCSNotifier.__init__(self, callback_cancel, visible)
+        
+        self.client_in_same_thread = client_in_same_thread
         
         self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
@@ -118,30 +120,50 @@ class MessageCallbackNotifier(VCSNotifier):
     def on_ok_clicked(self, widget):
         self.close()
 
-    @gtk_unsafe
     def toggle_ok_button(self, sensitive):
+        if not self.client_in_same_thread:
+            gtk.gdk.threads_enter()
+            
         self.finished = True
         self.get_widget("ok").set_sensitive(sensitive)
-            
-    @gtk_unsafe
+        
+        if not self.client_in_same_thread:
+            gtk.gdk.threads_leave()
+
     def append(self, entry):
+        if not self.client_in_same_thread:
+            gtk.gdk.threads_enter()
+            
         self.table.append(entry)
         self.table.scroll_to_bottom()
+        
+        if not self.client_in_same_thread:
+            gtk.gdk.threads_leave()
     
     def get_title(self):
         return self.get_widget("Notification").get_title()
     
-    @gtk_unsafe
     def set_title(self, title):
+        if not self.client_in_same_thread:
+            gtk.gdk.threads_enter()
+            
         self.get_widget("Notification").set_title(title)
+        
+        if not self.client_in_same_thread:
+            gtk.gdk.threads_leave()
     
     def set_header(self, header):
         self.set_title(header)
-        gtk.gdk.threads_enter()
+
+        if not self.client_in_same_thread:
+            gtk.gdk.threads_enter()
+
         self.get_widget("action").set_markup(
             "<span size=\"xx-large\"><b>%s</b></span>" % header
         )
-        gtk.gdk.threads_leave()
+
+        if not self.client_in_same_thread:
+            gtk.gdk.threads_leave()
 
     def focus_on_ok_button(self):
         self.get_widget("ok").grab_focus()
@@ -211,7 +233,8 @@ class VCSAction(threading.Thread):
         if notification is True:
             self.notification = MessageCallbackNotifier(
                 self.set_cancel,
-                notification
+                notification,
+                client_in_same_thread=self.client_in_same_thread
             )
             self.has_notifier = True
         else:
@@ -263,47 +286,6 @@ class VCSAction(threading.Thread):
         self.cancel = cancel
         self.notification.set_canceled_by_user(True)
         self.queue.cancel_queue()
-    
-    def notify(self, data):
-        """
-        This method is called every time the VCS function wants to tell us
-        something.  It passes us a dictionary of useful information.  When
-        this method is called, it appends some useful data to the notifcation
-        window.
-        
-        TODO: We need to implement this in a more VCS-agnostic way, since the
-        supplied data dictionary is pysvn-dependent.  I'm going to implement
-        something in lib/vcs/svn.py soon.
-        
-        """
-
-        if self.has_notifier:
-            if self.pbar_ticks is not None:
-                self.pbar_ticks_current += 1
-                frac = self.pbar_ticks_current / self.pbar_ticks
-                if frac > 1:
-                    frac = 1
-                self.notification.pbar.update(frac)
-            
-            if self.client.NOTIFY_ACTIONS.has_key(data["action"]):
-                action = self.client.NOTIFY_ACTIONS[data["action"]]
-            else:
-                action = data["action"]
-            
-            #FIXME: this is crap
-            if data["revision"].number != -1 and rabbitvcs.util.helper.in_rich_compare(
-                    data["action"],
-                    self.client.NOTIFY_ACTIONS_COMPLETE):
-                self.notification.append(
-                    ["", "Revision %s" % data["revision"].number, ""]
-                )
-            else:
-                self.notification.append([
-                    action,
-                    data["path"],
-                    data["mime_type"]
-                ])
-
     
     def finish(self, message=None):
         """
@@ -590,7 +572,9 @@ class VCSAction(threading.Thread):
 class SVNAction(VCSAction):
     def __init__(self, client, register_gtk_quit=False, notification=True,
             run_in_thread=True):
-            
+        
+        self.client_in_same_thread = False
+        
         self.client = client
         self.client.set_callback_cancel(self.cancel)
         self.client.set_callback_notify(self.notify)
@@ -603,15 +587,62 @@ class SVNAction(VCSAction):
         VCSAction.__init__(self, client, register_gtk_quit, notification,
             run_in_thread)
 
+    
+    def notify(self, data):
+        """
+        This method is called every time the VCS function wants to tell us
+        something.  It passes us a dictionary of useful information.  When
+        this method is called, it appends some useful data to the notifcation
+        window.
+        
+        TODO: We need to implement this in a more VCS-agnostic way, since the
+        supplied data dictionary is pysvn-dependent.  I'm going to implement
+        something in lib/vcs/svn.py soon.
+        
+        """
+
+        if self.has_notifier:
+            if self.pbar_ticks is not None:
+                self.pbar_ticks_current += 1
+                frac = self.pbar_ticks_current / self.pbar_ticks
+                if frac > 1:
+                    frac = 1
+                self.notification.pbar.update(frac)
+            
+            if self.client.NOTIFY_ACTIONS.has_key(data["action"]):
+                action = self.client.NOTIFY_ACTIONS[data["action"]]
+            else:
+                action = data["action"]
+            
+            #FIXME: this is crap
+            if data["revision"].number != -1 and rabbitvcs.util.helper.in_rich_compare(
+                    data["action"],
+                    self.client.NOTIFY_ACTIONS_COMPLETE):
+                self.notification.append(
+                    ["", "Revision %s" % data["revision"].number, ""]
+                )
+            else:
+                self.notification.append([
+                    action,
+                    data["path"],
+                    data["mime_type"]
+                ])
+
 class GitAction(VCSAction):
     def __init__(self, client, register_gtk_quit=False, notification=True,
             run_in_thread=True):
+
+        self.client_in_same_thread = True
 
         self.client = client
         self.client.set_callback_notify(self.notify)
         
         VCSAction.__init__(self, client, register_gtk_quit, notification,
             run_in_thread)
+
+    def notify(self, data):
+        if self.has_notifier:
+            self.notification.append(["", data, ""])
 
 def vcs_action_factory(client, register_gtk_quit=False, notification=True, 
         run_in_thread=True):

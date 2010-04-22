@@ -73,7 +73,6 @@ class Checkout(InterfaceView):
             self.repositories.set_child_text(url)
         
         self.complete = False
-        self.check_form()
         
     #
     # UI Signal Callback Methods
@@ -123,7 +122,17 @@ class Checkout(InterfaceView):
         self.repositories.set_child_text(new_url)
         self.check_form()
 
-
+    def check_form(self):
+        self.complete = True
+        if self.repositories.get_active_text() == "":
+            self.complete = False
+        if self.get_widget("destination").get_text() == "":
+            self.complete = False
+        
+        self.get_widget("ok").set_sensitive(self.complete)
+        
+        if hasattr(self, "revision_selector"):
+            self.revision_selector.determine_widget_sensitivity()
 
 class SVNCheckout(Checkout):
     def __init__(self, path=None, url=None, revision=None):
@@ -134,7 +143,7 @@ class SVNCheckout(Checkout):
 
         self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("revision_container"),
-            self.vcs,
+            self.svn,
             revision=revision,
             url_combobox=self.repositories,
             expand=True
@@ -142,6 +151,8 @@ class SVNCheckout(Checkout):
 
         self.get_widget("options_box").show()
         self.get_widget("revision_selector_box").show()
+
+        self.check_form()
 
     def on_ok_clicked(self, widget):
         url = self.repositories.get_active_text()
@@ -156,15 +167,15 @@ class SVNCheckout(Checkout):
         revision = self.revision_selector.get_revision_object()
     
         self.hide()
-        self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         self.action.append(self.action.set_header, _("Checkout"))
         self.action.append(self.action.set_status, _("Running Checkout Command..."))
         self.action.append(rabbitvcs.util.helper.save_repository_path, url)
         self.action.append(
-            self.vcs.checkout,
+            self.svn.checkout,
             url,
             path,
             recurse=recursive,
@@ -196,22 +207,12 @@ class SVNCheckout(Checkout):
         
         self.check_form()
 
-    def check_form(self):
-        self.complete = True
-        if self.repositories.get_active_text() == "":
-            self.complete = False
-        if self.get_widget("destination").get_text() == "":
-            self.complete = False
-        
-        self.get_widget("ok").set_sensitive(self.complete)
-        self.revision_selector.determine_widget_sensitivity()
-
 classes_map = {
     "svn": SVNCheckout
 }
 
 def checkout_factory(classes_map, vcs, path=None, url=None, revision=None):
-    return classes_map[vcs](path=None, url=None, revision=None)
+    return classes_map[vcs](path, url, revision)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT
