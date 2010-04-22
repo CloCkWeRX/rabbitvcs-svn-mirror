@@ -331,9 +331,9 @@ class GitCommit(Commit):
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
             [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
+                gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
-                _("Status"), _("Staged")],
+                _("Status")],
             filters=[{
                 "callback": rabbitvcs.ui.widget.path_filter,
                 "user_data": {
@@ -373,8 +373,7 @@ class GitCommit(Commit):
                 checked,
                 item.path, 
                 rabbitvcs.util.helper.get_file_extension(item.path),
-                item.content,
-                item.is_staged
+                item.content
             ])
 
     def on_ok_clicked(self, widget, data=None):
