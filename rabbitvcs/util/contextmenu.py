@@ -541,14 +541,6 @@ class ContextMenuCallbacks:
     def push(self, widget, data1=None, data2=None):
         pass
 
-    def stage(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window("stage", self.paths)
-        self.caller.execute_after_process_exit(proc)
-
-    def unstage(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window("unstage", self.paths)
-        self.caller.execute_after_process_exit(proc)
-
 
 class ContextMenuConditions:
     """
@@ -875,12 +867,6 @@ class ContextMenuConditions:
     def push(self, data=None):
         return (self.path_dict["is_git"])
 
-    def stage(self, data=None):
-        return (self.path_dict["is_git"] and not self.path_dict["is_staged"])
-
-    def unstage(self, data=None):
-        return (self.path_dict["is_git"] and self.path_dict["is_staged"])
-
 class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
     """
     A callback class created for GtkFilesContextMenus.  This class inherits from
@@ -964,14 +950,6 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
     def show_log(self, data1=None, data2=None):
         from rabbitvcs.ui.log import LogDialog
         LogDialog(self.vcs_client.get_repo_url(self.paths[0]))
-
-    def stage(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window("stage", ["-q"] + self.paths)
-        self.caller.execute_after_process_exit(proc)
-
-    def unstage(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window("unstage", ["-q"] + self.paths)
-        self.caller.execute_after_process_exit(proc)
 
 class GtkFilesContextMenuConditions(ContextMenuConditions):
     """
@@ -1068,8 +1046,6 @@ class GtkFilesContextMenu:
             (MenuRevert, None),
             (MenuRestore, None),
             (MenuAdd, None),
-            (MenuStage, None),
-            (MenuUnstage, None),
             (MenuAddToIgnoreList, ignore_items)
         ]
         
@@ -1254,8 +1230,7 @@ class MainContextMenu:
                 (MenuInitializeRepository, None),
                 (MenuClone, None),
                 (MenuSeparator, None),
-                (MenuStage, None),
-                (MenuUnstage, None),
+                (MenuRevert, None),
                 (MenuAddToIgnoreList, ignore_items),
                 (MenuSeparator, None),
                 (MenuSettings, None),
