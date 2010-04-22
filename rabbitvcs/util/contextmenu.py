@@ -859,7 +859,8 @@ class ContextMenuConditions:
             not self.path_dict["is_in_a_or_a_working_copy"])
 
     def clone(self, data=None):
-        return True
+        return (self.path_dict["is_dir"] and
+            not self.path_dict["is_in_a_or_a_working_copy"])
 
     def fetch_pull(self, data=None):
         return (self.path_dict["is_git"])

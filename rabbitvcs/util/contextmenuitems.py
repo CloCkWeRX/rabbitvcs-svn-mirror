@@ -608,7 +608,7 @@ class PropMenuEdit(MenuItem):
 class MenuInitializeRepository(MenuItem):
     identifier = "RabbitVCS::Initialize_Repository"
     label = _("Initialize Repository")
-    icon = "rabbitvcs-create"
+    icon = "rabbitvcs-run"
 
 class MenuClone(MenuItem):
     identifier = "RabbitVCS::Clone"
