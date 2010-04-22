@@ -413,7 +413,7 @@ class Git:
         
         """
         
-        return self.client.pull(self, repository, refspec)
+        return self.client.pull(repository, refspec)
 
     def push(self, repository="origin", refspec="master"):
         """
@@ -428,7 +428,7 @@ class Git:
         
         """
 
-        return self.client.push(self, repository, refspec)
+        return self.client.push(repository, refspec)
 
     def fetch(self, host):
         """
