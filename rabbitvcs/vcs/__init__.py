@@ -83,15 +83,16 @@ class VCS:
                 self.clients["svn"] = self.dummy()
                 return self.clients["svn"]
 
-    def git(self, path, is_repo_path=False):
+    def git(self, path=None, is_repo_path=False):
         if "git" in self.clients:
             git = self.clients["git"]
 
-            if is_repo_path:
-                git.set_repository(path)
-            else:
-                repo_path = git.find_repository_path(path)
-                git.set_repository(repo_path)
+            if path:
+                if is_repo_path:
+                    git.set_repository(path)
+                else:
+                    repo_path = git.find_repository_path(path)
+                    git.set_repository(repo_path)
 
             return git
         else:
@@ -99,11 +100,12 @@ class VCS:
                 from rabbitvcs.vcs.git import Git
                 git = Git()
 
-                if is_repo_path:
-                    git.set_repository(path)
-                else:
-                    repo_path = git.find_repository_path(path)
-                    git.set_repository(repo_path)
+                if path:
+                    if is_repo_path:
+                        git.set_repository(path)
+                    else:
+                        repo_path = git.find_repository_path(path)
+                        git.set_repository(repo_path)
                 
                 self.clients["git"] = git
                 return self.clients["git"]

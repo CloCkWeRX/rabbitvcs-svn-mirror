@@ -48,12 +48,9 @@ class Checkout(InterfaceView):
 
     def __init__(self, path=None, url=None, revision=None):
         InterfaceView.__init__(self, "checkout", "Checkout")
-
-
-        self.get_widget("Checkout").set_title(_("Checkout - %s") % path)
         
         self.path = path
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
 
         self.repositories = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("repositories"), 
@@ -67,19 +64,11 @@ class Checkout(InterfaceView):
             self.on_repositories_key_released
         )
 
-        self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
-            self.get_widget("revision_container"),
-            self.vcs,
-            revision=revision,
-            url_combobox=self.repositories,
-            expand=True
-        )
-        
         self.destination = rabbitvcs.util.helper.get_user_path()
         if path is not None:
             self.destination = path
             self.get_widget("destination").set_text(path)
-        
+
         if url is not None:
             self.repositories.set_child_text(url)
         
@@ -105,6 +94,54 @@ class Checkout(InterfaceView):
 
     def on_cancel_clicked(self, widget):
         self.close()
+
+    def on_file_chooser_clicked(self, widget, data=None):
+        chooser = rabbitvcs.ui.dialog.FolderChooser()
+        path = chooser.run()
+        if path is not None:
+            self.get_widget("destination").set_text(path)
+
+    def on_repositories_key_released(self, widget, data, userdata=None):
+        if gtk.gdk.keyval_name(data.keyval) == "Return":
+            if self.complete:
+                self.on_ok_clicked(widget)
+
+    def on_destination_changed(self, widget, data=None):
+        self.check_form()
+
+    def on_destination_key_released(self, widget, data):
+        if gtk.gdk.keyval_name(data.keyval) == "Return":
+            if self.complete:
+                self.on_ok_clicked(widget)
+
+    def on_repo_chooser_clicked(self, widget, data=None):
+        from rabbitvcs.ui.browser import BrowserDialog
+        BrowserDialog(self.repositories.get_active_text(), 
+            callback=self.on_repo_chooser_closed)
+
+    def on_repo_chooser_closed(self, new_url):
+        self.repositories.set_child_text(new_url)
+        self.check_form()
+
+
+
+class SVNCheckout(Checkout):
+    def __init__(self, path=None, url=None, revision=None):
+        Checkout.__init__(self, path, url, revision)
+        self.get_widget("Checkout").set_title(_("Checkout - %s") % path)
+
+        self.svn = self.vcs.svn()
+
+        self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("revision_container"),
+            self.vcs,
+            revision=revision,
+            url_combobox=self.repositories,
+            expand=True
+        )
+
+        self.get_widget("options_box").show()
+        self.get_widget("revision_selector_box").show()
 
     def on_ok_clicked(self, widget):
         url = self.repositories.get_active_text()
@@ -138,12 +175,6 @@ class Checkout(InterfaceView):
         self.action.append(self.action.finish)
         self.action.start()
 
-    def on_file_chooser_clicked(self, widget, data=None):
-        chooser = rabbitvcs.ui.dialog.FolderChooser()
-        path = chooser.run()
-        if path is not None:
-            self.get_widget("destination").set_text(path)
-
     def on_repositories_changed(self, widget, data=None):
         url = self.repositories.get_active_text()
         tmp = url.replace("//", "/").split("/")[1:]
@@ -165,28 +196,6 @@ class Checkout(InterfaceView):
         
         self.check_form()
 
-    def on_repositories_key_released(self, widget, data, userdata=None):
-        if gtk.gdk.keyval_name(data.keyval) == "Return":
-            if self.complete:
-                self.on_ok_clicked(widget)
-
-    def on_destination_changed(self, widget, data=None):
-        self.check_form()
-
-    def on_destination_key_released(self, widget, data):
-        if gtk.gdk.keyval_name(data.keyval) == "Return":
-            if self.complete:
-                self.on_ok_clicked(widget)
-
-    def on_repo_chooser_clicked(self, widget, data=None):
-        from rabbitvcs.ui.browser import BrowserDialog
-        BrowserDialog(self.repositories.get_active_text(), 
-            callback=self.on_repo_chooser_closed)
-
-    def on_repo_chooser_closed(self, new_url):
-        self.repositories.set_child_text(new_url)
-        self.check_form()
-
     def check_form(self):
         self.complete = True
         if self.repositories.get_active_text() == "":
@@ -197,12 +206,23 @@ class Checkout(InterfaceView):
         self.get_widget("ok").set_sensitive(self.complete)
         self.revision_selector.determine_widget_sensitivity()
 
+classes_map = {
+    "svn": SVNCheckout
+}
+
+def checkout_factory(classes_map, vcs, path=None, url=None, revision=None):
+    return classes_map[vcs](path=None, url=None, revision=None)
+
 if __name__ == "__main__":
-    from rabbitvcs.ui import main, REVISION_OPT
+    from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT
     (options, args) = main(
-        [REVISION_OPT],
-        usage="Usage: rabbitvcs checkout [url] [path]"
+        [REVISION_OPT, VCS_OPT],
+        usage="Usage: rabbitvcs checkout --vcs=svn [url] [path]"
     )
+    
+    vcs = "svn"
+    if options.vcs:
+        vcs = options.vcs
     
     # If two arguments are passed:
     #   The first argument is expected to be a url
@@ -220,6 +240,6 @@ if __name__ == "__main__":
         else:
             url = args[0]
 
-    window = Checkout(path=path, url=url, revision=options.revision)
+    window = checkout_factory(classes_map, vcs, path=path, url=url, revision=options.revision)
     window.register_gtk_quit()
     gtk.main()
