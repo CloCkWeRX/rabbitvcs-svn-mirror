@@ -539,7 +539,8 @@ class ContextMenuCallbacks:
         pass
 
     def push(self, widget, data1=None, data2=None):
-        pass
+        proc = rabbitvcs.util.helper.launch_ui_window("push", self.paths)
+        self.caller.execute_after_process_exit(proc)
 
 
 class ContextMenuConditions:
