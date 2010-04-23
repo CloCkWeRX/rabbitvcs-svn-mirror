@@ -47,10 +47,17 @@ log = Log("rabbitvcs.util.helper")
 from rabbitvcs import gettext
 ngettext = gettext.ngettext
 
-DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S" # for log files
+DATETIME_FORMAT = "%Y-%m-%d %H:%M" # for log files
 LOCAL_DATETIME_FORMAT = locale.nl_langinfo(locale.D_T_FMT) # for UIs
 
+DT_FORMAT_THISWEEK = "%a %I:%M%p"
+DT_FORMAT_THISYEAR = "%b %Y %I:%M%p"
+DT_FORMAT_ALL = "%b %d %Y %I:%M%p"
+
 LINE_BREAK_CHAR = u'\u23CE'
+
+from rabbitvcs import gettext
+_ = gettext.gettext
 
 def process_memory(pid):
     # ps -p 5205 -w -w -o rss --no-headers
@@ -86,6 +93,29 @@ def format_long_text(text, cols=None):
         text = u"%s..." % text[0:cols]
 
     return text
+
+def format_datetime(dt, format=None):
+    if format:
+        return dt.strftime(format)
+
+    now = datetime.datetime.now()
+    delta = now - dt
+    
+    if delta.days == 0:
+        if delta.seconds < 60:
+            return _("just now")
+        elif delta.seconds >= 60 and delta.seconds < 600:
+            return _("%d minute(s) ago") % (delta.seconds/60)
+        elif delta.seconds >= 600 and delta.seconds < 43200:
+            return dt.strftime("%I:%M%P")
+        else:
+            return dt.strftime(DT_FORMAT_THISWEEK)
+    elif delta.days > 0 and delta.days < 7:
+        return dt.strftime(DT_FORMAT_THISWEEK)
+    elif delta.days >= 7 and delta.days < 365:
+        return dt.strftime(DT_FORMAT_THISYEAR)
+    else:
+        return dt.strftime(DT_FORMAT_ALL)
 
 def in_rich_compare(item, list):
     """ Tests whether the item is in the given list. This is mainly to work
