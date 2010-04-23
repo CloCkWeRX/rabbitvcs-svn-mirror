@@ -25,6 +25,7 @@ import os.path
 import pygtk
 import gobject
 import gtk
+from datetime import datetime
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.log import LogDialog
@@ -36,6 +37,8 @@ import rabbitvcs.vcs
 
 from rabbitvcs import gettext
 _ = gettext.gettext
+
+DATETIME_FORMAT = rabbitvcs.util.helper.DT_FORMAT_THISWEEK
 
 class Push(InterfaceView):
     def __init__(self, path):
@@ -85,6 +88,17 @@ class GitPush(Push):
         if len(tmp_branches) == 1:
             self.branches.set_active(0)
 
+        self.log_table = rabbitvcs.ui.widget.Table(
+            self.get_widget("log"),
+            [gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [_("Date"), _("Message")],
+            sortable=True, 
+            sort_on=0
+        )
+        
+        self.local_log = self.git.log("HEAD", limit=10)        
+        self.load_log()
+
     def on_ok_clicked(self, widget, data=None):
         self.hide()
     
@@ -101,6 +115,34 @@ class GitPush(Push):
         self.action.append(self.action.set_status, _("Completed Push"))
         self.action.append(self.action.finish)
         self.action.start()
+
+    def load_log(self):
+        repository = self.repositories.get_active_text()
+        branch = self.branches.get_active_text()
+        
+        refspec = "refs/remotes/%s/%s" % (repository, branch)
+        remote_log = self.git.log(refspec, limit=10)
+        
+        has_commits = False
+        
+        for item in self.local_log:
+            try:
+                remote_log_item = remote_log[0]
+
+                if remote_log_item.sha != item.sha:
+                    self.log_table.append([
+                        rabbitvcs.util.helper.format_datetime(datetime.fromtimestamp(item.commit_time)),
+                        rabbitvcs.util.helper.format_long_text(item.message.rstrip("\n"))
+                    ])
+                    has_commits = True
+                else:
+                    break
+
+            except IndexError:
+                break
+
+        if not has_commits:
+            self.get_widget("ok").set_sensitive(False)
 
 classes_map = {
     "git": GitPush
