@@ -531,13 +531,13 @@ class Git:
         return self.client.tag_list()
 
 
-    def log(self):
+    def log(self, refspec="HEAD", limit=10):
         """
         Returns a revision history list
         
         """
         
-        return self.client.log()
+        return self.client.log(refspec, limit)
         
     def set_callback_notify(self, func):
         self.client.set_callback_notify(func)
