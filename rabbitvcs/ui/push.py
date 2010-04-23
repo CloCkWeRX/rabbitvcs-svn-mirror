@@ -69,7 +69,6 @@ class GitPush(Push):
         tmp_repos = []
         for item in self.git.remote_list():
             tmp_repos.append(item["remote"])
-        
         self.repositories = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("repositories"), 
             tmp_repos
@@ -80,7 +79,6 @@ class GitPush(Push):
         tmp_branches = []
         for item in self.git.branch_list():
             tmp_branches.append(item.name)
-
         self.branches = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("branches"), 
             tmp_branches
