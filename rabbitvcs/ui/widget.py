@@ -895,3 +895,44 @@ class RevisionSelector:
     def set_kind_working(self):
         self.revision_kind_opt.set_active(2)
         self.determine_widget_sensitivity()
+
+class InfoTable(gtk.Table):
+    """
+    Simple extension of a GTK table to display a two-column table of information
+    with labels.
+    """
+    
+    
+    def __init__(self, stuff):
+        """
+        @param stuff: a list of two-element tuples - the first element of the
+                      tuple is the key/label, and the second element is the
+                      information
+        """
+        super(InfoTable, self).__init__(len(stuff), 2)
+        
+        row = 0
+        
+        for key, value in stuff:
+            print "Adding: %s, %s" % (key, value)
+            label_key = gtk.Label("<b>%s:</b>" % key)
+            label_key.set_properties(xalign=0, use_markup=True)
+            
+            label_value = gtk.Label("%s" % value)
+            label_value.set_properties(xalign=0)
+            
+            self.attach(label_key,
+                         0,1,
+                         row, row+1,
+                         xoptions=gtk.FILL)
+
+            self.attach(label_value,
+                         1,2,
+                         row, row+1,
+                         xoptions=gtk.FILL)
+            
+            label_key.show()
+            label_value.show()
+            
+            row += 1
+        
