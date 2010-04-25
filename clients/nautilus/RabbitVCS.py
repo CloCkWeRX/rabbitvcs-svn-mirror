@@ -497,8 +497,10 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         for item in items:
             if self.valid_uri(item.get_uri()):
                 path = realpath(unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8"))
-                paths.append(path)
-                self.nautilusVFSFile_table[path] = item
+                
+                if self.vcs_client.is_in_a_or_a_working_copy(path):
+                    paths.append(path)
+                    self.nautilusVFSFile_table[path] = item
 
         if len(paths) == 0: return []
 
