@@ -67,29 +67,29 @@ class VCS:
         pass
     
     def dummy(self):
-        if "dummy" in self.clients:
-            return self.clients["dummy"]
+        if VCS_DUMMY in self.clients:
+            return self.clients[VCS_DUMMY]
         else:
             from rabbitvcs.vcs.dummy import Dummy
-            self.clients["dummy"] = Dummy()
-            return self.clients["dummy"]
+            self.clients[VCS_DUMMY] = Dummy()
+            return self.clients[VCS_DUMMY]
     
     def svn(self):
-        if "svn" in self.clients:
-            return self.clients["svn"]
+        if VCS_SVN in self.clients:
+            return self.clients[VCS_SVN]
         else:
             try:
                 from rabbitvcs.vcs.svn import SVN
-                self.clients["svn"] = SVN()
-                return self.clients["svn"]
+                self.clients[VCS_SVN] = SVN()
+                return self.clients[VCS_SVN]
             except Exception, e:
                 log.debug("Unable to load SVN module: %s" % e)
-                self.clients["svn"] = self.dummy()
-                return self.clients["svn"]
+                self.clients[VCS_SVN] = self.dummy()
+                return self.clients[VCS_SVN]
 
     def git(self, path=None, is_repo_path=False):
-        if "git" in self.clients:
-            git = self.clients["git"]
+        if VCS_GIT in self.clients:
+            git = self.clients[VCS_GIT]
 
             if path:
                 if is_repo_path:
@@ -111,23 +111,23 @@ class VCS:
                         repo_path = git.find_repository_path(path)
                         git.set_repository(repo_path)
                 
-                self.clients["git"] = git
-                return self.clients["git"]
+                self.clients[VCS_GIT] = git
+                return self.clients[VCS_GIT]
             except Exception, e:
                 log.debug("Unable to load Git module: %s" % e)
-                self.clients["git"] = self.dummy()
-                return self.clients["git"]
+                self.clients[VCS_GIT] = self.dummy()
+                return self.clients[VCS_GIT]
 
     def client(self, path, vcs=None):
         # Determine the VCS instance based on the vcs parameter
         if vcs:
-            if vcs == "svn":
+            if vcs == VCS_SVN:
                 return self.svn()
-            elif vcs == "git":
+            elif vcs == VCS_GIT:
                 return self.git(path)
 
         guess = self.guess(path)
-        if guess["vcs"] == "git":
+        if guess["vcs"] == VCS_GIT:
             return self.git(guess["repo_path"], is_repo_path=True)
         else:
             return self.svn()

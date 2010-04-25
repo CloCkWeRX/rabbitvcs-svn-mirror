@@ -647,7 +647,7 @@ class GitAction(VCSAction):
 def vcs_action_factory(client, register_gtk_quit=False, notification=True, 
         run_in_thread=True):
 
-    if client.vcs == "git":
+    if client.vcs == rabbitvcs.vcs.VCS_GIT:
         return GitAction(client, register_gtk_quit, notification, 
             run_in_thread)
     else:

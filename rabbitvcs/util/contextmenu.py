@@ -27,7 +27,7 @@ from collections import deque
 import gtk
 import gobject
 
-from rabbitvcs.vcs import create_vcs_instance
+from rabbitvcs.vcs import create_vcs_instance, VCS_SVN, VCS_GIT, VCS_DUMMY
 from rabbitvcs.util.log import Log
 from rabbitvcs import gettext
 from rabbitvcs.util.settings import SettingsManager
@@ -170,7 +170,7 @@ class MenuBuilder(object):
         if stack:
             self.menu = self.top_level_menu(stack[0][0])
         else:
-            print "Empty top level menu!"
+            log.debug("Empty top level menu!")
             self.menu = self.top_level_menu([])
             
     def connect_signal(self, menuitem, callback, callback_args):
@@ -561,8 +561,8 @@ class ContextMenuConditions:
         }
 
         checks = {
-            "is_svn"                        : lambda path: (self.vcs_client.guess(path)["vcs"] == "svn"),
-            "is_git"                        : lambda path: (self.vcs_client.guess(path)["vcs"] == "git"),
+            "is_svn"                        : lambda path: (self.vcs_client.guess(path)["vcs"] == VCS_SVN),
+            "is_git"                        : lambda path: (self.vcs_client.guess(path)["vcs"] == VCS_GIT),
             "is_dir"                        : os.path.isdir,
             "is_file"                       : os.path.isfile,
             "exists"                        : os.path.exists,

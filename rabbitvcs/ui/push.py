@@ -143,7 +143,7 @@ class GitPush(Push):
             self.get_widget("ok").set_sensitive(False)
 
 classes_map = {
-    "git": GitPush
+    rabbitvcs.vcs.VCS_GIT: GitPush
 }
 
 def push_factory(path):

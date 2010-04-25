@@ -35,6 +35,8 @@ import rabbitvcs.ui.action
 import rabbitvcs.util.helper
 from rabbitvcs.util.log import Log
 
+import rabbitvcs.vcs
+
 log = Log("rabbitvcs.ui.revert")
 
 from rabbitvcs import gettext
@@ -194,13 +196,13 @@ class GitRevertQuiet:
         self.action.run()
 
 classes_map = {
-    "svn": SVNRevert, 
-    "git": GitRevert
+    rabbitvcs.vcs.VCS_SVN: SVNRevert, 
+    rabbitvcs.vcs.VCS_GIT: GitRevert
 }
 
 quiet_classes_map = {
-    "svn": SVNRevertQuiet, 
-    "git": GitRevertQuiet
+    rabbitvcs.vcs.VCS_SVN: SVNRevertQuiet, 
+    rabbitvcs.vcs.VCS_GIT: GitRevertQuiet
 }
 
 def revert_factory(classes_map, paths, base_dir=None):

@@ -79,7 +79,7 @@ class Git:
     ]
 
     def __init__(self, repo=None):
-        self.vcs = "git"
+        self.vcs = rabbitvcs.vcs.VCS_GIT
         self.interface = "gittyup"
         if repo:
             self.client = GittyupClient(repo)

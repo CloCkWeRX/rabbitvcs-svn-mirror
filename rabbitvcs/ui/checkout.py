@@ -208,11 +208,16 @@ class SVNCheckout(Checkout):
         self.check_form()
 
 classes_map = {
-    "svn": SVNCheckout
+    rabbitvcs.vcs.VCS_SVN: SVNCheckout
 }
 
 def checkout_factory(classes_map, vcs, path=None, url=None, revision=None):
     return classes_map[vcs](path, url, revision)
+
+CLI_OPTIONS = {
+    'svn': rabbitvcs.vcs.VCS_SVN,
+    'git': rabbitvcs.vcs.VCS_GIT
+               }
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT
@@ -221,9 +226,10 @@ if __name__ == "__main__":
         usage="Usage: rabbitvcs checkout --vcs=svn [url] [path]"
     )
     
-    vcs = "svn"
+    vcs = rabbitvcs.vcs.VCS_SVN
     if options.vcs:
-        vcs = options.vcs
+        # FIXME: is this sensible?
+        vcs = CLI_OPTIONS.get(options.vcs, rabbitvcs.vcs.VCS_DUMMY)
     
     # If two arguments are passed:
     #   The first argument is expected to be a url

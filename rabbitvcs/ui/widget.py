@@ -911,7 +911,7 @@ class KeyValueTable(gtk.Table):
                       tuple is the key/label, and the second element is the
                       information
         """
-        if len(stuff) == 0:
+        if not stuff or len(stuff) == 0:
             super(KeyValueTable, self).__init__()
         else:
             super(KeyValueTable, self).__init__(len(stuff), 2)

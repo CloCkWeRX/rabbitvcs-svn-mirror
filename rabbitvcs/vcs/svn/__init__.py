@@ -292,7 +292,7 @@ class SVN:
     def __init__(self):
         self.client = pysvn.Client()
         self.interface = "pysvn"
-        self.vcs = "svn"
+        self.vcs = rabbitvcs.vcs.VCS_SVN
 
     def statuses(self, path, recurse=True):
         """

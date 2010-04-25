@@ -106,7 +106,7 @@ class GitClone(Checkout):
         self.get_widget("ok").set_sensitive(self.complete)
 
 classes_map = {
-    "git": GitClone
+    rabbitvcs.vcs.VCS_GIT: GitClone
 }
 
 def clone_factory(classes_map, vcs, path=None, url=None):
@@ -120,7 +120,7 @@ if __name__ == "__main__":
     )
     
     # Default to using git
-    vcs = "git"
+    vcs = rabbitvcs.vcs.VCS_GIT
     if options.vcs:
         vcs = options.vcs
     

@@ -398,8 +398,8 @@ class GitCommit(Commit):
         self.action.start()
 
 classes_map = {
-    "svn": SVNCommit, 
-    "git": GitCommit
+    rabbitvcs.vcs.VCS_SVN: SVNCommit, 
+    rabbitvcs.vcs.VCS_GIT: GitCommit
 }
 
 def commit_factory(classes_mappaths, base_dir=None, message=None):
