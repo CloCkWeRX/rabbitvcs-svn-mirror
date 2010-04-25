@@ -29,6 +29,10 @@ log = Log("rabbitvcs.vcs")
 
 EXT_UTIL_ERROR = _("The output from '%s' was not able to be processed.\n%s")
 
+VCS_SVN = 'Subversion'
+VCS_GIT = 'Git'
+VCS_DUMMY = 'Unknown'
+
 def guess(path):
     # Determine the VCS instance based on the path
     if path:
@@ -36,14 +40,14 @@ def guess(path):
         while path_to_check != "/" and path_to_check != "":
             if os.path.isdir(os.path.join(path_to_check, ".svn")):
                 cache = {
-                    "vcs": "svn",
+                    "vcs": VCS_SVN,
                     "repo_path": path_to_check
                 }
                 return cache
 
             elif os.path.isdir(os.path.join(path_to_check, ".git")):
                 cache = {
-                    "vcs": "git",
+                    "vcs": VCS_GIT,
                     "repo_path": path_to_check
                 }
                 return cache
@@ -51,7 +55,7 @@ def guess(path):
             path_to_check = os.path.split(path_to_check)[0]
             
     return {
-        "vcs": "dummy",
+        "vcs": VCS_DUMMY,
         "repo_path": path
     }
 
@@ -183,7 +187,7 @@ def create_vcs_instance(path=None, vcs=None):
 
 def guess_vcs(path):
     vcs = VCS()
-    return vcs.guess()
+    return vcs.guess(path)
 
 class ExternalUtilError(Exception):
     """ Represents an error caused by unexpected output from an external

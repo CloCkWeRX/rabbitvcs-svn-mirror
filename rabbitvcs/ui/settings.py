@@ -173,12 +173,7 @@ class Settings(InterfaceView):
         table_place = self.get_widget("info_table_area")
         
         table = rabbitvcs.ui.widget.InfoTable(info)
-        table.set_col_spacings(12)
-        table.set_row_spacings(6)
-        table.set_name("info_table")
-        
         table_place.add(table)
-        
         table.show()
         
     

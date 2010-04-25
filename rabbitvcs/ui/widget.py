@@ -902,37 +902,44 @@ class InfoTable(gtk.Table):
     with labels.
     """
     
-    
+    default_col_spacing = 12
+    default_row_spacing = 6
+        
     def __init__(self, stuff):
         """
         @param stuff: a list of two-element tuples - the first element of the
                       tuple is the key/label, and the second element is the
                       information
         """
-        super(InfoTable, self).__init__(len(stuff), 2)
+        if len(stuff) == 0:
+            super(InfoTable, self).__init__()
+        else:
+            super(InfoTable, self).__init__(len(stuff), 2)
+            
+            row = 0
+            
+            for key, value in stuff:
+                label_key = gtk.Label("<b>%s:</b>" % key)
+                label_key.set_properties(xalign=0, use_markup=True)
+                
+                label_value = gtk.Label("%s" % value)
+                label_value.set_properties(xalign=0,
+                                           ellipsize=pango.ELLIPSIZE_MIDDLE)
+                                
+                self.attach(label_key,
+                             0,1,
+                             row, row+1,
+                             xoptions=gtk.FILL)
+    
+                self.attach(label_value,
+                             1,2,
+                             row, row+1,
+                             xoptions=gtk.FILL|gtk.EXPAND)
+                        
+                label_key.show()
+                label_value.show()
+                
+                row += 1
         
-        row = 0
-        
-        for key, value in stuff:
-            print "Adding: %s, %s" % (key, value)
-            label_key = gtk.Label("<b>%s:</b>" % key)
-            label_key.set_properties(xalign=0, use_markup=True)
-            
-            label_value = gtk.Label("%s" % value)
-            label_value.set_properties(xalign=0)
-            
-            self.attach(label_key,
-                         0,1,
-                         row, row+1,
-                         xoptions=gtk.FILL)
-
-            self.attach(label_value,
-                         1,2,
-                         row, row+1,
-                         xoptions=gtk.FILL)
-            
-            label_key.show()
-            label_value.show()
-            
-            row += 1
-        
+        self.set_col_spacings(self.default_col_spacing)
+        self.set_row_spacings(self.default_row_spacing)

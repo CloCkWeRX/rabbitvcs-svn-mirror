@@ -22,6 +22,7 @@ import os.path
 
 import gtk
 
+from collections import defaultdict
 import rabbitvcs.ui
 import rabbitvcs.ui.widget
 import rabbitvcs.vcs
@@ -30,6 +31,9 @@ from rabbitvcs.ui import STATUS_EMBLEMS
 
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.ui.property_page")
+
+from rabbitvcs import gettext
+_ = gettext.gettext
 
 class PropertyPage(rabbitvcs.ui.GladeWidgetWrapper):
     
@@ -65,6 +69,7 @@ class FileInfoPane(rabbitvcs.ui.GladeWidgetWrapper):
     def __init__(self, path, vcs = None):
         rabbitvcs.ui.GladeWidgetWrapper.__init__(self)
         
+        self.path = path
         self.vcs = vcs or rabbitvcs.vcs.create_vcs_instance()
         self.checker = StatusChecker() 
                
@@ -93,15 +98,30 @@ class FileInfoPane(rabbitvcs.ui.GladeWidgetWrapper):
         
         additional_props_table = rabbitvcs.ui.widget.InfoTable(
                                     self.get_additional_info())
-        
+
+        additional_props_table.show()
+
         self.get_widget("file_info_table").pack_end(additional_props_table)
-        
+                        
     def set_icon_from_status(self, icon, status, size=gtk.ICON_SIZE_BUTTON):
         if status in rabbitvcs.ui.STATUS_EMBLEMS:
             icon.set_from_icon_name("emblem-" + STATUS_EMBLEMS[status], size)
 
     def get_additional_info(self):
-        return []
+        vcs_type = rabbitvcs.vcs.guess_vcs(self.path)['vcs']
+                
+        if(vcs_type == rabbitvcs.vcs.VCS_SVN):
+            return self.get_additional_info_svn()
+        else:
+            return []
+                
+    def get_additional_info_svn(self):
+        
+        repo_url = self.vcs.svn().get_repo_url(self.path)
+        
+        return [
+            (_("Repository URL"), repo_url)]
+        
 
 class FileInfoExpander(rabbitvcs.ui.GladeWidgetWrapper):
 

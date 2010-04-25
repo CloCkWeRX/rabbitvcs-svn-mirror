@@ -2,6 +2,8 @@
 import os.path
 import unittest
 
+import rabbitvcs.vcs
+
 from rabbitvcs import gettext
 _ = gettext.gettext
 
@@ -45,7 +47,7 @@ class Status(object):
     def status_calc(path):
         return Status(path, status_calculating, summary = status_calculating)
     
-    vcs_type = 'generic'
+    vcs_type = rabbitvcs.vcs.VCS_DUMMY
  
     clean_statuses = ['unchanged']
     
@@ -139,7 +141,7 @@ class Status(object):
 
 class SVNStatus(Status):
 
-    vcs_type = 'subversion'
+    vcs_type = rabbitvcs.vcs.VCS_SVN
     
     content_status_map = {
         'normal': status_unchanged,
