@@ -96,7 +96,7 @@ class FileInfoPane(rabbitvcs.ui.GladeWidgetWrapper):
         self.set_icon_from_status(self.get_widget("vcs_icon"),
                                   self.status.single, gtk.ICON_SIZE_DIALOG)
         
-        additional_props_table = rabbitvcs.ui.widget.InfoTable(
+        additional_props_table = rabbitvcs.ui.widget.KeyValueTable(
                                     self.get_additional_info())
 
         additional_props_table.show()

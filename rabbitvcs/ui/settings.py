@@ -172,7 +172,7 @@ class Settings(InterfaceView):
         
         table_place = self.get_widget("info_table_area")
         
-        table = rabbitvcs.ui.widget.InfoTable(info)
+        table = rabbitvcs.ui.widget.KeyValueTable(info)
         table_place.add(table)
         table.show()
         

@@ -896,7 +896,7 @@ class RevisionSelector:
         self.revision_kind_opt.set_active(2)
         self.determine_widget_sensitivity()
 
-class InfoTable(gtk.Table):
+class KeyValueTable(gtk.Table):
     """
     Simple extension of a GTK table to display a two-column table of information
     with labels.
@@ -912,9 +912,9 @@ class InfoTable(gtk.Table):
                       information
         """
         if len(stuff) == 0:
-            super(InfoTable, self).__init__()
+            super(KeyValueTable, self).__init__()
         else:
-            super(InfoTable, self).__init__(len(stuff), 2)
+            super(KeyValueTable, self).__init__(len(stuff), 2)
             
             row = 0
             
