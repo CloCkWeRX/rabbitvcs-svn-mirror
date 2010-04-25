@@ -137,7 +137,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = VCS()
 
-        self.status_checker = StatusChecker(self.cb_status)
+        self.status_checker = StatusChecker()
 
     def get_columns(self):
         """
@@ -178,7 +178,6 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
             )
         )
 
-    #~ @timeit
     def update_file_info(self, item):
         """
 
@@ -246,7 +245,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
                 self.status_checker.check_status(path,
                                                  recurse=True,
                                                  summary=True,
-                                                 callback=True,
+                                                 callback=self.cb_status,
                                                  invalidate=self.always_invalidate)
 
         # if bool(int(settings.get("general", "enable_attributes"))): self.update_columns(item, path, status)
@@ -296,17 +295,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
 
 
     def update_status(self, item, path, status):
-        # If we are able to set an emblem that means we have a local status
-        # available. The StatusMonitor will keep us up-to-date through the
-        # C{cb_status} callback.
-        # Warning! If you use invalidate=True here, it will set up an endless
-        # loop:
-        # 1. Update requests status (inv=True)
-        # 2. Status checker returns "calculating"
-        # 3. Status checker calculates status, calls callback
-        # 4. Callback triggers update
-
-        # Path == first index or last for old system?
+        log.debug("Updating: %s [%s]" % (path, status.summary))
         if status.summary in rabbitvcs.ui.STATUS_EMBLEMS:
             item.add_emblem(rabbitvcs.ui.STATUS_EMBLEMS[status.summary])
 
@@ -407,7 +396,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
                 self.status_checker.check_status(path,
                                                  recurse=True,
                                                  invalidate=True,
-                                                 callback=True,
+                                                 callback=self.cb_status,
                                                  summary=True)
 
         self.execute_after_process_exit(proc, do_check)
