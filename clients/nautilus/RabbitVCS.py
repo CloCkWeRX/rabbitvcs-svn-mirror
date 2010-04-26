@@ -55,7 +55,6 @@ import copy
 import os.path
 from os.path import isdir, isfile, realpath, basename
 import datetime
-import threading
 
 import gnomevfs
 import nautilus
@@ -106,39 +105,25 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
     #: Keeping track of C{NautilusVFSFile}s is a little bit complicated because
     #: when an item is moved (renamed) C{update_file_info} doesn't get called. So
     #: we also add C{NautilusVFSFile}s to this table from C{get_file_items} etc.
+    # FIXME: this may be the source of the memory hogging seen in the extension
+    # script itself.
     nautilusVFSFile_table = {}
 
     #: This is in case we want to permanently enable invalidation of the status
-    #: checker info. We put a path here before we invalidate the item, so that
-    #: we don't enter an endless loop when updating the status.
-    #: The callback should acquire this lock when pushing the path to this.
+    #: checker info.
     always_invalidate = True
 
-    #: When we get the statuses from the callback, but them here for further
-    #: use. There is a possible memory problem here if we put a lot of data in
-    #: this - even when it's removed, Python may not release the memory. I do
-    #: not know this for sure.
-    #: This is of the form: [("path/to", {...status dict...}), ...]
+    #: When we get the statuses from the callback, put them here for further
+    #: use. This is of the form: [("path/to", {...status dict...}), ...]
     statuses_from_callback = []
 
-
-    #: It appears that the "update_file_info" call that is triggered by the
-    #: "invalidate_extension_info" in the callback function happens
-    #: synchronously (ie. in the same thread). However, given the nature of the
-    #: python/nautilus extensions module, I'm not sure how reliable this is.
-    #: It's certainly supported by debugging statements, but maybe it will
-    #: change in the future? Who knows. This should work for both the current
-    #: situation, and the possibility that they are asynchronous.
-    callback_paths_lock = threading.RLock()
-
     def __init__(self):
-        threading.currentThread().setName("RabbitVCS extension thread")
-
+        
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = VCS()
 
         self.status_checker = StatusChecker()
-
+        
     def get_columns(self):
         """
         Return all the columns we support.
@@ -197,7 +182,13 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         @param  item:
 
         """
-        if not self.valid_uri(item.get_uri()): return
+        enable_emblems = bool(int(settings.get("general", "enable_emblems")))
+        enable_attrs = bool(int(settings.get("general", "enable_attributes")))
+        
+        if not (enable_emblems or enable_attrs): return nautilus.OPERATION_COMPLETE
+                
+        if not self.valid_uri(item.get_uri()): return nautilus.OPERATION_FAILED
+        
         path = realpath(unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8"))
 
         # log.debug("update_file_info() called for %s" % path)
@@ -212,7 +203,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         # when we remove this line (detected as working copies, even though
         # they are not)? That shouldn't happen.
         is_in_a_or_a_working_copy = self.vcs_client.is_in_a_or_a_working_copy(path)
-        if not is_in_a_or_a_working_copy: return
+        if not is_in_a_or_a_working_copy: return nautilus.OPERATION_COMPLETE
 
         # Do our magic...
 
@@ -220,26 +211,19 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         # (paths_from_callback) that should allow us to work around this for
         # now. But it'd be good to have an actual status monitor.
 
-        # Useful for figuring out order of calls. See "cb_status".
-        # log.debug("%s: In update_status" % threading.currentThread())
-
         found = False
         status = None
+        # Could replace with (st for st in self.... if st.path ...).next()
+        # Need to catch exception
+        for idx in xrange(len(self.statuses_from_callback)):
+            found = (self.statuses_from_callback[idx].path) == path
+            if found: break
 
-        with self.callback_paths_lock:
-            # Could replace with (st for st in self.... if st.path ...).next()
-            # Need to catch exception
-            for idx in xrange(len(self.statuses_from_callback)):
-                found = (self.statuses_from_callback[idx].path) == path
-                if found: break
-
-            if found: # We're here because we were triggered by a callback
-                status = self.statuses_from_callback[idx]
-                del self.statuses_from_callback[idx]
-
+        if found: # We're here because we were triggered by a callback
+            status = self.statuses_from_callback[idx]
+            del self.statuses_from_callback[idx]
 
         # Don't bother the checker if we already have the info from a callback
-
         if not found:
             status = \
                 self.status_checker.check_status(path,
@@ -248,8 +232,11 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
                                                  callback=self.cb_status,
                                                  invalidate=self.always_invalidate)
 
-        # if bool(int(settings.get("general", "enable_attributes"))): self.update_columns(item, path, status)
-        if bool(int(settings.get("general", "enable_emblems"))): self.update_status(item, path, status)
+        # FIXME: when did this get disabled?
+        # if enable_attrs: self.update_columns(item, path, status)
+        if enable_emblems: self.update_status(item, path, status)
+        
+        return nautilus.OPERATION_COMPLETE
 
     def update_columns(self, item, path, status):
         """
@@ -295,12 +282,13 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
 
 
     def update_status(self, item, path, status):
-        log.debug("Updating: %s [%s]" % (path, status.summary))
         if status.summary in rabbitvcs.ui.STATUS_EMBLEMS:
             item.add_emblem(rabbitvcs.ui.STATUS_EMBLEMS[status.summary])
 
     #~ @disable
     # @timeit
+    # FIXME: this is a bottleneck. See generate_statuses() in
+    # MainContextMenuConditions.
     def get_file_items(self, window, items):
         """
         Menu activated with items selected. Nautilus also calls this function
@@ -333,7 +321,25 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         return NautilusMainContextMenu(self, window.get_data("base_dir"), paths).get_menu()
 
     #~ @disable
-    @timeit
+    # This is useful for profiling. Rename it to "get_background_items" and then
+    # rename the real function "get_background_items_real". 
+    def get_background_items_profile(self, window, item):
+        import cProfile
+        import rabbitvcs.util.helper
+        
+        path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()),
+                       "utf-8").replace("/", ":")
+        
+        profile_data_file = os.path.join(
+                               rabbitvcs.util.helper.get_home_folder(),
+                               "checkerservice_%s.stats" % path)
+        
+        prof = cProfile.Profile()
+        retval = prof.runcall(self.get_background_items_real, window, item)
+        prof.dump_stats(profile_data_file)
+        log.debug("Dumped: %s" % profile_data_file)
+        return retval
+       
     def get_background_items(self, window, item):
         """
         Menu activated on entering a directory. Builds context menu for File
@@ -456,7 +462,6 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         @type   statuses: list of status objects
         @param  statuses: The statuses
         """
-        # log.debug("CB Thread: %s" % threading.currentThread())
         if status.path in self.nautilusVFSFile_table:
             item = self.nautilusVFSFile_table[status.path]
             # We need to invalidate the extension info for only one reason:
@@ -469,13 +474,10 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
 
             # Since invalidation triggers an "update_file_info" call, we can
             # tell it NOT to invalidate the status checker path.
-            with self.callback_paths_lock:
-                self.statuses_from_callback.append(status)
-                # These are useful to establish whether the "update_status" call
-                # happens INSIDE this next call, or later, or in another thread.
-                # log.debug("%s: Invalidating..." % threading.currentThread())
-                item.invalidate_extension_info()
-                # log.debug("%s: Done invalidate call." % threading.currentThread())
+            self.statuses_from_callback.append(status)
+            # NOTE! There is a call to "update_file_info" WITHIN the call to
+            # invalidate_extension_info() - beware recursion!
+            item.invalidate_extension_info()
         else:
             log.debug("Path [%s] not found in file table" % status.path)
 

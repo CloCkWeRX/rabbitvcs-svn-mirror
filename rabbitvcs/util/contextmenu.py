@@ -1110,6 +1110,7 @@ class MainContextMenuConditions(ContextMenuConditions):
         self.generate_statuses(paths)
         self.generate_path_dict(paths)
         
+    # FIXME: major bottleneck
     def generate_statuses(self, paths):
         self.statuses = {}
         for path in paths:

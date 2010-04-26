@@ -65,7 +65,8 @@ import rabbitvcs.util.decorators
 import rabbitvcs.util._locale
 import rabbitvcs.util.helper
 import rabbitvcs.services.service
-# from rabbitvcs.services.statuscheckerplus import StatusCheckerPlus
+#from rabbitvcs.services.statuscheckerplus import StatusCheckerPlus
+#from rabbitvcs.services.statuscheckerex import StatusCheckerEx
 from rabbitvcs.services.statuschecker import StatusChecker
 
 import rabbitvcs.vcs.status
@@ -354,11 +355,11 @@ def Main():
 if __name__ == "__main__":
     rabbitvcs.util._locale.initialize_locale()
 
-#    import cProfile
-#    import rabbitvcs.util.helper
-#    profile_data_file = os.path.join(
-#                           rabbitvcs.util.helper.get_home_folder(),
-#                           "checkerservice.stats")
-#    cProfile.run("Main()", profile_data_file)
+    # import cProfile
+    # import rabbitvcs.util.helper
+    # profile_data_file = os.path.join(
+    #                        rabbitvcs.util.helper.get_home_folder(),
+    #                        "checkerservice.stats")
+    # cProfile.run("Main()", profile_data_file)
 
     Main()
