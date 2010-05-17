@@ -44,7 +44,7 @@ _ = gettext.gettext
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.services.statuscheckerplus")
 
-class StatusCheckerPlus():
+class StatusCheckerPlus:
 
     CHECKER_NAME = _("Multi-process status checker")
 

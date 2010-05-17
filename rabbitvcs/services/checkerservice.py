@@ -58,7 +58,12 @@ except ImportError:
 
 import dbus
 import dbus.glib # FIXME: this might actually already set the default loop
-import dbus.mainloop.glib
+try:
+    import dbus.mainloop.glib
+except ImportError, e:
+    # Older distributions do not have this module
+    print e
+
 import dbus.service
 
 import rabbitvcs.util.decorators

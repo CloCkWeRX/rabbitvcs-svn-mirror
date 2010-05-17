@@ -29,7 +29,7 @@ _ = gettext.gettext
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.services.statuschecker")
 
-class StatusChecker():
+class StatusChecker:
     """ A class for performing status checks. """
     
     # All subclasses should override this! This is to be displayed in the

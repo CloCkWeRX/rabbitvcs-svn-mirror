@@ -568,6 +568,7 @@ class VCSAction(threading.Thread):
             return None
         finally:
             self.notification.close()
+            return None
 
 class SVNAction(VCSAction):
     def __init__(self, client, register_gtk_quit=False, notification=True,
