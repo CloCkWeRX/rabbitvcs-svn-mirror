@@ -223,6 +223,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         items = [ ('NautilusPython::svndelete_file_item', 'Delete' , 'Remove files from the repository.', self.OnDelete, "rabbitvcs-delete"),
 		          ('NautilusPython::svnrename_file_item', 'Rename' , 'Rename a file in the repository', self.OnRename, "rabbitvcs-rename"),
                   ('NautilusPython::svnrefreshstatus_file_item', 'Refresh Status', 'Refresh the display status of the selected files.', self.OnRefreshStatus, "rabbitvcs-refresh"),
+                  ('NautilusPython::svnrepo_file_item', 'Repository Browser' , 'View Repository Sources', self.OnRepoBrowser, gtk.STOCK_FIND)
         ]
 
         if len( files ) == 1:
@@ -313,6 +314,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         else:
             items = [     ('NautilusPython::svnlog_file_item', 'Log' , 'SVN Log of %s' % file.get_name(), self.OnShowLog, "rabbitvcs-show_log"),
                         ('NautilusPython::svncommit_file_item', 'Commit' , 'Commit %s back to the repository.' % file.get_name(), self.OnCommit, "rabbitvcs-commit"),
+                        ('NautilusPython::svnrepo_file_item', 'Repository Browser' , 'View Repository Sources', self.OnRepoBrowser, gtk.STOCK_FIND),
                         ('NautilusPython::svnupdate_file_item', 'Update' , 'Get the latest code from the repository.', self.OnUpdate, "rabbitvcs-update"),
                         ('NautilusPython::svnrefreshstatus_file_item', 'Refresh', 'Refresh the display status of %s.'%file.get_name(), self.OnRefreshStatus, "rabbitvcs-refresh"),
                         ('NautilusPython::svnmkdiffdir_file_item', 'Patch', 'Create a patch of %s from the repository version'%file.get_name(), self.OnMkDiffDir, "rabbitvcs-diff"),
@@ -468,6 +470,15 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
 
         paths = self.get_paths_from_files(files)
         pid = rabbitvcs.util.helper.launch_ui_window("rename", paths)
+        self.RescanFilesAfterProcess(pid)
+
+    #-------------------------------------------------------------------------- 
+    def OnRepoBrowser(self, menuitem, window, files):
+        """ Repository Browser menu handler.
+        """
+
+        paths = self.get_paths_from_files(files)
+        pid = rabbitvcs.util.helper.launch_ui_window("browser", [paths[0]])
         self.RescanFilesAfterProcess(pid)
         
     #--------------------------------------------------------------------------
