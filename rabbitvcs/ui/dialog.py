@@ -371,10 +371,11 @@ class OneLineTextChange(InterfaceView):
     def run(self):
         dialog = self.get_widget("OneLineTextChange")
         result = dialog.run()
-        
+        new_text = self.new_text.get_text()
+
         dialog.destroy()
         
-        return (result, self.new_text.get_text())
+        return (result, new_text)
 
 class NewFolder(InterfaceView):
     def __init__(self):

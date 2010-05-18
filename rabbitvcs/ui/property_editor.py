@@ -93,7 +93,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
                 
         self.path = path
         
-        self.get_widget("wc_text").set_text(gnomevfs.get_uri_from_local_path(path))
+        self.get_widget("wc_text").set_text(gnomevfs.get_uri_from_local_path(os.path.realpath(path)))
                 
         self.vcs = rabbitvcs.vcs.create_vcs_instance()
                 

@@ -62,14 +62,17 @@ try:
     import dbus.mainloop.glib
 except ImportError, e:
     # Older distributions do not have this module
-    pass
-    
+    print e
+
 import dbus.service
 
+import rabbitvcs.util.decorators
 import rabbitvcs.util._locale
 import rabbitvcs.util.helper
 import rabbitvcs.services.service
-from rabbitvcs.services.statuscheckerplus import StatusCheckerPlus
+#from rabbitvcs.services.statuscheckerplus import StatusCheckerPlus
+#from rabbitvcs.services.statuscheckerex import StatusCheckerEx
+from rabbitvcs.services.statuschecker import StatusChecker
 
 import rabbitvcs.vcs.status
 
@@ -150,7 +153,7 @@ class StatusCheckerService(dbus.service.Object):
 
         # Start the status checking daemon so we can do requests in the
         # background
-        self.status_checker = StatusCheckerPlus()
+        self.status_checker = StatusChecker()
 
     @dbus.service.method(INTERFACE)
     def ExtraInformation(self):
@@ -171,49 +174,15 @@ class StatusCheckerService(dbus.service.Object):
     def CheckerType(self):
         return self.status_checker.CHECKER_NAME
 
-    def CheckFinishedPreprocess(self, status):
-        """ We need to render the statuses in a format that can be sent over
-        DBUS, and then unconvert them at the other end. (The ONLY reason the
-        status objects can't be rendered by DBUS automatically is that they may
-        contain "None" values. Grr.)
-        """
-        self.CheckFinished(self.encoder.encode(status))
-
-
-    @dbus.service.signal(INTERFACE, signature='s')
-    def CheckFinished(self, status):
-        """ Empty method for connection status check callbacks. This is a DBUS
-        signal, and can be "connected" to as per the python DBUS docs.
-        """
-        pass
-
-    @dbus.service.method(INTERFACE, in_signature='sbbbb', out_signature='s')
+    @dbus.service.method(INTERFACE, in_signature='sbbb', out_signature='s')
     def CheckStatus(self, path, recurse=False, invalidate=False,
-                      summary=False, callback=False):
+                      summary=False):
         """ Requests a status check from the underlying status checker.
-
-        See the StatusCheckerPlus documentation for details of the parameters,
-        but note that "callback" behaves differently. The actual callback that
-        is given to the status checker is the "CheckFinished" method of this
-        object, if callback is True.
-
-        Any entity wanting notification of a completed status check should
-        connect to the DBUS signal "CheckFinished", and sort out its own
-        logic from there.
-
-        @param callback: whether or not to notify when a status check is
-                         complete
-        @type callback: boolean
         """
-        if callback:
-            callback = self.CheckFinishedPreprocess
-        else:
-            callback = None
-
-        status = self.status_checker.check_status(unicode(path), recurse=recurse,
-                                                  invalidate=invalidate,
+        status = self.status_checker.check_status(unicode(path),
+                                                  recurse=recurse,
                                                   summary=summary,
-                                                  callback=callback)
+                                                  invalidate=invalidate)
         
         return self.encoder.encode(status)
 
@@ -244,31 +213,18 @@ class StatusCheckerStub:
     These objects should be created by the GUI as needed (eg. the nautilus
     extension code).
 
-    Note that even though the status checker itself takes a callback for each
-    call to "check_status", this stub requires it to be provided at
-    initialisation. The callback can be triggered (or not) using the boolean
-    callback parameter of the "check_status" method.
-
     The inter-process communication is via DBUS.
     """
 
-    def __init__(self, callback=None):
+    def __init__(self):
         """ Creates an object that can call the VCS status checker via DBUS.
 
         If there is not already a DBUS object with the path "OBJECT_PATH", we
         create one by starting a new Python process that runs this file.
-
-        @param callback: the function to call when status checks are completed
-                         (see the StatusCheckerPlus method documentation for
-                         details)
         """
         self.session_bus = dbus.SessionBus()
-        self.callback = callback
-
         self.decoder = simplejson.JSONDecoder(object_hook=decode_status)
-
         self.status_checker = None
-
         start()
         self._connect_to_checker()
 
@@ -282,46 +238,19 @@ class StatusCheckerStub:
         try:
             self.status_checker = self.session_bus.get_object(SERVICE,
                                                               OBJECT_PATH)
-            if self.callback:
-                self.status_checker.connect_to_signal("CheckFinished",
-                                                      self._idle_callback,
-                                                      dbus_interface=INTERFACE)
         except dbus.DBusException, ex:
             # There is not much we should do about this...
             log.exception(ex)
 
-    def _idle_callback(self, *args, **kwargs):
-        """ Notifies the callback of a completed status check.
-
-        The callback will be performed when the glib main loop is idle. This is
-        basically a way of making this a lower priority than direct calls to
-        "check_status", which need to return ASAP.
-        """
-        idle_add(self.CheckFinishedDeprocess, *args, **kwargs)
-        # Switch to this method to just call it straight from here:
-        # self.CheckFinishedDeprocess(*args, **kwargs)
-
-    def CheckFinishedDeprocess(self, json_status):
-        """ This undoes the work of CheckFinishedPreprocess, re-creating the
-        real status objects from however they were transformed to send them over
-        DBUS.
-        """
-        status = self.decoder.decode(json_status)
-        self.callback(status)
-
-    def check_status(self, path, recurse=False, invalidate=False,
-                       summary=False, callback=False):
-        """ Check the VCS status of the given path.
-
-        This is a pass-through method to the check_status method of the DBUS
-        service (which is, in turn, a wrapper around the real status checker).
-        """
+    def check_status_now(self, path, recurse=False, invalidate=False,
+                       summary=False):
+        
         status = None
                 
         try:
             json_status = self.status_checker.CheckStatus(path,
                                                           recurse, invalidate,
-                                                          summary, callback,
+                                                          summary,
                                                           dbus_interface=INTERFACE,
                                                           timeout=TIMEOUT)
             status = self.decoder.decode(json_status)
@@ -336,6 +265,59 @@ class StatusCheckerStub:
             self._connect_to_checker()
 
         return status
+        
+    def check_status_later(self, path, callback, recurse=False,
+                           invalidate=False, summary=False):
+        
+        def real_reply_handler(json_status):
+            # Note that this a closure referring to the outer functions callback
+            # parameter
+            status = self.decoder.decode(json_status)
+            assert status.path == path, "Status check returned the wrong path "\
+                                        "(asked about %s, got back %s)" % \
+                                        (path, status.path)
+            callback(status)
+        
+        def reply_handler(*args, **kwargs):
+            # The callback should be performed as a low priority task, so we
+            # keep Nautilus as responsive as possible.
+            idle_add(real_reply_handler, *args, **kwargs)
+        
+        def error_handler(dbus_ex):
+            log.exception(dbus_ex)
+            self._connect_to_checker()
+            callback(rabbitvcs.vcs.status.Status.status_error(path))
+        
+        try:
+            self.status_checker.CheckStatus(path,
+                                            recurse, invalidate,
+                                            summary,
+                                            dbus_interface=INTERFACE,
+                                            timeout=TIMEOUT,
+                                            reply_handler=reply_handler,
+                                            error_handler=error_handler)
+        except dbus.DBusException, ex:
+            log.exception(ex)
+            callback(rabbitvcs.vcs.status.Status.status_error(path))
+            # Try to reconnect
+            self._connect_to_checker()
+
+    # @rabbitvcs.util.decorators.deprecated
+    # Can't decide whether this should be deprecated or not... -JH
+    def check_status(self, path, recurse=False, invalidate=False,
+                       summary=False, callback=None):
+        """ Check the VCS status of the given path.
+
+        This is a pass-through method to the check_status method of the DBUS
+        service (which is, in turn, a wrapper around the real status checker).
+        """
+        if callback:
+            idle_add(self.check_status_later,
+                     path, callback, recurse, invalidate, summary)
+            return rabbitvcs.vcs.status.Status.status_calc(path)
+        else:
+            return self.check_status_now(path, recurse, invalidate, summary)
+
 
 def start():
     """ Starts the checker service, via the utility method in "service.py". """
@@ -378,11 +360,11 @@ def Main():
 if __name__ == "__main__":
     rabbitvcs.util._locale.initialize_locale()
 
-#    import cProfile
-#    import rabbitvcs.util.helper
-#    profile_data_file = os.path.join(
-#                           rabbitvcs.util.helper.get_home_folder(),
-#                           "checkerservice.stats")
-#    cProfile.run("Main()", profile_data_file)
+    # import cProfile
+    # import rabbitvcs.util.helper
+    # profile_data_file = os.path.join(
+    #                        rabbitvcs.util.helper.get_home_folder(),
+    #                        "checkerservice.stats")
+    # cProfile.run("Main()", profile_data_file)
 
     Main()

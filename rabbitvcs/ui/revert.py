@@ -35,12 +35,14 @@ import rabbitvcs.ui.action
 import rabbitvcs.util.helper
 from rabbitvcs.util.log import Log
 
+import rabbitvcs.vcs
+
 log = Log("rabbitvcs.ui.revert")
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Revert(Add):
+class SVNRevert(Add):
     def __init__(self, paths, base_dir=None):
         InterfaceView.__init__(self, "add", "Add")
 
@@ -50,9 +52,9 @@ class Revert(Add):
         self.paths = paths
         self.base_dir = base_dir
         self.last_row_clicked = None
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
         self.items = None
-        self.statuses = self.vcs.STATUSES_FOR_REVERT
+        self.statuses = self.vcs.svn().STATUSES_FOR_REVERT
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"), 
             [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
@@ -93,28 +95,119 @@ class Revert(Add):
             return
         self.hide()
 
-        self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.vcs.svn(),
             register_gtk_quit=self.gtk_quit_is_set()
         )
         
         self.action.append(self.action.set_header, _("Revert"))
         self.action.append(self.action.set_status, _("Running Revert Command..."))
-        self.action.append(self.vcs.revert, items, recurse=True)
+        self.action.append(self.vcs.svn().revert, items, recurse=True)
         self.action.append(self.action.set_status, _("Completed Revert"))
         self.action.append(self.action.finish)
         self.action.start()
 
-class RevertQuiet:
-    def __init__(self, paths):
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
-        self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs,
+class GitRevert(Add):
+    def __init__(self, paths, base_dir=None):
+        InterfaceView.__init__(self, "add", "Add")
+
+        self.window = self.get_widget("Add")
+        self.window.set_title(_("Revert"))
+
+        self.paths = paths
+        self.base_dir = base_dir
+        self.last_row_clicked = None
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.git = self.vcs.git(self.paths[0])
+        self.items = None
+        self.statuses = self.git.STATUSES_FOR_REVERT
+        self.files_table = rabbitvcs.ui.widget.Table(
+            self.get_widget("files_table"), 
+            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
+                gobject.TYPE_STRING ,gobject.TYPE_STRING], 
+            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
+                _("Status")],
+            filters=[{
+                "callback": rabbitvcs.ui.widget.path_filter,
+                "user_data": {
+                    "base_dir": base_dir,
+                    "column": 1
+                }
+            }],
+            callbacks={
+                "row-activated":  self.on_files_table_row_activated,
+                "mouse-event":   self.on_files_table_mouse_event,
+                "key-event":     self.on_files_table_key_event
+            }
+        )
+
+        self.initialize_items()
+
+    def populate_files_table(self):
+        self.files_table.clear()
+        for item in self.items:
+            self.files_table.append([
+                True, 
+                item.path, 
+                rabbitvcs.util.helper.get_file_extension(item.path),
+                item.content
+            ])
+                    
+    def on_ok_clicked(self, widget):
+        items = self.files_table.get_activated_rows(1)
+        if not items:
+            self.close()
+            return
+        self.hide()
+
+        self.action = rabbitvcs.ui.action.GitAction(
+            self.git,
+            register_gtk_quit=self.gtk_quit_is_set()
+        )
+        
+        self.action.append(self.action.set_header, _("Revert"))
+        self.action.append(self.action.set_status, _("Running Revert Command..."))
+        self.action.append(self.git.checkout, items)
+        self.action.append(self.action.set_status, _("Completed Revert"))
+        self.action.append(self.action.finish)
+        self.action.start()
+
+class SVNRevertQuiet:
+    def __init__(self, paths, base_dir=None):
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.vcs.svn(),
             run_in_thread=False
         )
         
-        self.action.append(self.vcs.revert, paths)
+        self.action.append(self.vcs.svn().revert, paths)
         self.action.run()
+
+class GitRevertQuiet:
+    def __init__(self, paths, base_dir=None):
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.git = self.vcs.git(paths[0])
+        self.action = rabbitvcs.ui.action.GitAction(
+            self.git,
+            run_in_thread=False
+        )
+        
+        self.action.append(self.git.checkout, paths)
+        self.action.run()
+
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNRevert, 
+    rabbitvcs.vcs.VCS_GIT: GitRevert
+}
+
+quiet_classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNRevertQuiet, 
+    rabbitvcs.vcs.VCS_GIT: GitRevertQuiet
+}
+
+def revert_factory(classes_map, paths, base_dir=None):
+    guess = rabbitvcs.vcs.guess(paths[0])
+    return classes_map[guess["vcs"]](paths, base_dir)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main, BASEDIR_OPT, QUIET_OPT
@@ -124,8 +217,8 @@ if __name__ == "__main__":
     )
 
     if options.quiet:
-        RevertQuiet(paths)
+        revert_factory(quiet_classes_map, paths)
     else:
-        window = Revert(paths, options.base_dir)
+        window = revert_factory(classes_map, paths, options.base_dir)
         window.register_gtk_quit()
         gtk.main()

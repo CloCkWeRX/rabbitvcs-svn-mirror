@@ -49,7 +49,7 @@ class Rename(InterfaceNonView):
         if result != gtk.RESPONSE_OK:
             self.close()
             return
-
+       
         if not new_filename:
             MessageBox(_("The new name field is required"))
             return

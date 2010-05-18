@@ -40,12 +40,10 @@ class StatusChecker:
         """ Initialises status checker. Obviously. """
         self.vcs_client = rabbitvcs.vcs.create_vcs_instance()
 
-    def check_status(self, path, recurse, summary):
+    def check_status(self, path, recurse, summary, *args, **kwargs):
         """ Performs a status check, blocking until the check is done.
         """
-        
         path_status = self.vcs_client.status(path, summary)
-        
         return path_status
     
     def extra_info(self):

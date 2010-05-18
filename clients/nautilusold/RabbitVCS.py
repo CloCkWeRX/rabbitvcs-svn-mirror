@@ -48,7 +48,7 @@ sys.path.append(os.path.dirname(os.path.realpath(__file__.rstrip("c"))))
 
 # FIXME: this (and other) should be moved into a rabbitvcs module to prevent 
 # collisions with other modules on the path.
-import rabbitvcs.lib.helper
+import rabbitvcs.util.helper
 
 #============================================================================== 
 
@@ -387,14 +387,14 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         file = files[0]    
 
         path = gnomevfs.get_local_path_from_uri(file.get_uri())
-        rabbitvcs.lib.helper.launch_diff_tool(path + ".mine", path)
+        rabbitvcs.util.helper.launch_diff_tool(path + ".mine", path)
 
     #-------------------------------------------------------------------------- 
     def OnResolveConflicts(self, menuitem, window, files):
         """ Resolve Conflicts menu handler.
         """
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.lib.helper.launch_ui_window("resolve", paths)
+        pid = rabbitvcs.util.helper.launch_ui_window("resolve", paths)
         self.RescanFilesAfterProcess(pid)
 
     #--------------------------------------------------------------------------
@@ -403,7 +403,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """
 
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.lib.helper.launch_ui_window("revert", paths)
+        pid = rabbitvcs.util.helper.launch_ui_window("revert", paths)
         self.RescanFilesAfterProcess(pid)
 
     #--------------------------------------------------------------------------
@@ -411,7 +411,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """ Checkout menu handler.
         """
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.lib.helper.launch_ui_window("checkout", paths)
+        pid = rabbitvcs.util.helper.launch_ui_window("checkout", paths)
 
     #--------------------------------------------------------------------------
     def OnShowDiff(self, menuitem, window, files):
@@ -419,7 +419,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """
 
         paths = self.get_paths_from_files(files)
-        rabbitvcs.lib.helper.launch_diff_tool(*paths)
+        rabbitvcs.util.helper.launch_diff_tool(*paths)
 
     #--------------------------------------------------------------------------
     def OnShowLog(self, menuitem, window, files):
@@ -427,7 +427,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """
         
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.lib.helper.launch_ui_window("log", paths)
+        pid = rabbitvcs.util.helper.launch_ui_window("log", paths)
         self.RescanFilesAfterProcess(pid)
 
     #-------------------------------------------------------------------------- 
@@ -435,7 +435,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """ Commit menu handler.
         """
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.lib.helper.launch_ui_window("commit", ["--base-dir=" + window.get_data("base_dir")] + paths)
+        pid = rabbitvcs.util.helper.launch_ui_window("commit", ["--base-dir=" + window.get_data("base_dir")] + paths)
         self.RescanFilesAfterProcess(pid)
 
     #--------------------------------------------------------------------------
@@ -443,7 +443,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """ Update menu handler.
         """
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.lib.helper.launch_ui_window("update", paths)
+        pid = rabbitvcs.util.helper.launch_ui_window("update", paths)
         self.RescanFilesAfterProcess(pid)
 
     #--------------------------------------------------------------------------
@@ -451,7 +451,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """ Add menu handler.
         """
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.lib.helper.launch_ui_window("add", paths)
+        pid = rabbitvcs.util.helper.launch_ui_window("add", paths)
         self.RescanFilesAfterProcess(pid)
 
     #-------------------------------------------------------------------------- 
@@ -460,7 +460,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """
 
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.lib.helper.launch_ui_window("delete", paths)
+        pid = rabbitvcs.util.helper.launch_ui_window("delete", paths)
         self.RescanFilesAfterProcess(pid)
 
     #-------------------------------------------------------------------------- 
@@ -469,7 +469,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """
 
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.lib.helper.launch_ui_window("rename", paths)
+        pid = rabbitvcs.util.helper.launch_ui_window("rename", paths)
         self.RescanFilesAfterProcess(pid)
 
     #-------------------------------------------------------------------------- 
@@ -478,7 +478,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """
 
         paths = self.get_paths_from_files(files)
-        pid = rabbitvcs.lib.helper.launch_ui_window("browser", [paths[0]])
+        pid = rabbitvcs.util.helper.launch_ui_window("browser", [paths[0]])
         self.RescanFilesAfterProcess(pid)
         
     #--------------------------------------------------------------------------
@@ -494,7 +494,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """
         file = files[0]
         path = gnomevfs.get_local_path_from_uri(file.get_uri())
-        pid = rabbitvcs.lib.helper.launch_ui_window("property_editor", [path])
+        pid = rabbitvcs.util.helper.launch_ui_window("property_editor", [path])
         self.RescanFilesAfterProcess(pid)
 
     #--------------------------------------------------------------------------

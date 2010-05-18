@@ -1,6 +1,0 @@
-rabbitvcs (0.13.1-1) unstable; urgency=low
-
-  * Replaced multiple tarballs with single tarball plus split-out binary
-    packages.
-
- -- Jason Heeris <jason.heeris@gmail.com>  Fri, 02 Apr 2010 17:03:15 +0800

@@ -292,12 +292,7 @@ class SVN:
     def __init__(self):
         self.client = pysvn.Client()
         self.interface = "pysvn"
-        self.vcs = "svn"
-    
-    def client_info(self, path):
-        if islink(path):
-            path = realpath(path)
-        return self.client.info(path)
+        self.vcs = rabbitvcs.vcs.VCS_SVN
 
     def statuses(self, path, recurse=True):
         """
@@ -329,6 +324,11 @@ class SVN:
             log.debug("Exception occured in SVN.status() for %s" % path)
             log.exception(ex)
             return [on_error]
+
+    def client_info(self, path):
+        if islink(path):
+            path = realpath(path)
+        return self.client.info(path)
 
     def status(self, path, summarize=True):
 
@@ -372,7 +372,7 @@ class SVN:
         else:
             # info will return nothing for an unversioned file inside a working copy
             if (self.is_working_copy(os.path.split(path)[0]) and
-                    self.client_info(path)): 
+                    self.client_info(path)):
                 return True
 
             return False
@@ -406,7 +406,7 @@ class SVN:
 
         return is_locked
 
-    def get_items(self, paths, statuses):
+    def get_items(self, paths, statuses=[]):
         """
         Retrieves a list of files that have one of a set of statuses
 
@@ -505,9 +505,9 @@ class SVN:
         @return:        A repository revision.
 
         """
-    
+
         info = self.client_info(path)
-        
+
         returner = None
         try:
             returner = info["commit_revision"].number
@@ -531,7 +531,7 @@ class SVN:
         """
 
         info = self.client_info(path)
-        
+
         returner = None
         try:
             returner = info["revision"].number

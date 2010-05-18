@@ -2,6 +2,8 @@
 import os.path
 import unittest
 
+import rabbitvcs.vcs
+
 from rabbitvcs import gettext
 _ = gettext.gettext
 
@@ -45,7 +47,7 @@ class Status(object):
     def status_calc(path):
         return Status(path, status_calculating, summary = status_calculating)
     
-    vcs_type = 'generic'
+    vcs_type = rabbitvcs.vcs.VCS_DUMMY
  
     clean_statuses = ['unchanged']
     
@@ -58,6 +60,7 @@ class Status(object):
         self.metadata = metadata
         self.single = self._make_single_status()
         self.summary = summary
+        self.is_staged = False
  
     def _make_single_status(self):
         """
@@ -96,14 +99,11 @@ class Status(object):
         
         if status_complicated in status_set:
             self.summary = status_complicated
-        
         elif self.single in ["added", "modified", "deleted"]:
             # These take priority over child statuses
-            self.summary = self.single
-        
+            self.summary = self.single        
         elif len(set(MODIFIED_CHILD_STATUSES) & status_set):
             self.summary = status_changed
-        
         else:
             self.summary = self.single
         
@@ -141,7 +141,7 @@ class Status(object):
 
 class SVNStatus(Status):
 
-    vcs_type = 'subversion'
+    vcs_type = rabbitvcs.vcs.VCS_SVN
     
     content_status_map = {
         'normal': status_unchanged,
@@ -178,9 +178,40 @@ class SVNStatus(Status):
             content=str(pysvn_status.text_status),
             metadata=str(pysvn_status.prop_status))
 
+class GitStatus(Status):
+
+    vcs_type = 'git'
+    
+    content_status_map = {
+        'normal': status_unchanged,
+        'added': status_added,
+        'missing': status_missing,
+        'untracked': status_unversioned,
+        'removed': status_deleted,
+        'modified': status_changed,
+        'renamed': status_changed,
+        'ignored': status_ignored
+    }
+    
+    metadata_status_map = {
+        'normal': status_unchanged,
+        None: status_unchanged
+    }
+    
+    is_staged = False
+
+    def __init__(self, gittyup_status):
+        super(GitStatus, self).__init__(
+            gittyup_status.path,
+            content=str(gittyup_status.identifier),
+            metadata=None)
+        
+        self.is_staged = gittyup_status.is_staged
+
 STATUS_TYPES = [
     Status,
-    SVNStatus
+    SVNStatus,
+    GitStatus
 ]
 
 class TestStatusObjects(unittest.TestCase):

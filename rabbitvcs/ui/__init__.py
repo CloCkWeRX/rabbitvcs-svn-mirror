@@ -44,6 +44,7 @@ QUIET_OPT = (["-q", "--quiet"], {
     "action":   "store_true", 
     "default":  False
 })
+VCS_OPT = (["--vcs"], {"help":"specify the version control system"})
 
 #: Maps statuses to emblems.
 STATUS_EMBLEMS = {
@@ -153,6 +154,13 @@ class InterfaceNonView:
     
     def gtk_quit_is_set(self):
         return self.do_gtk_quit
+
+class VCSNotSupportedError(Exception):
+    """Indicates the desired VCS is not valid for a given action"""
+
+    def __init__(self, *args, **kwargs):
+        Exception.__init__(self, *args, **kwargs)
+
 
 def main(allowed_options=None, description=None, usage=None):
     from os import getcwd

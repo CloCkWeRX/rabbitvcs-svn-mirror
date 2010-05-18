@@ -22,13 +22,18 @@ import os.path
 
 import gtk
 
+from collections import defaultdict
 import rabbitvcs.ui
+import rabbitvcs.ui.widget
 import rabbitvcs.vcs
 from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 from rabbitvcs.ui import STATUS_EMBLEMS
 
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.ui.property_page")
+
+from rabbitvcs import gettext
+_ = gettext.gettext
 
 class PropertyPage(rabbitvcs.ui.GladeWidgetWrapper):
     
@@ -55,9 +60,7 @@ class PropertyPage(rabbitvcs.ui.GladeWidgetWrapper):
             except Exception, ex:
                 log.exception(ex)
                 raise
-                
-        
-    
+                   
 class FileInfoPane(rabbitvcs.ui.GladeWidgetWrapper):
 
     glade_filename = "property_page"
@@ -66,41 +69,59 @@ class FileInfoPane(rabbitvcs.ui.GladeWidgetWrapper):
     def __init__(self, path, vcs = None):
         rabbitvcs.ui.GladeWidgetWrapper.__init__(self)
         
+        self.path = path
         self.vcs = vcs or rabbitvcs.vcs.create_vcs_instance()
         self.checker = StatusChecker() 
                
         self.get_widget("file_name").set_text(os.path.basename(path))
         
-        #FIXME: I'm not sure where this should actually come from
-        vcstype = "none"
-        if self.vcs.is_in_a_or_a_working_copy(path):
-            vcstype = "subversion"
-        
-        self.get_widget("vcs_type").set_text(vcstype)
-        
-        self.get_widget("remote_url").set_text(self.vcs.get_repo_url(path))
+        self.status = self.checker.check_status(path,
+                                                recurse = False, 
+                                                invalidate = False,
+                                                summary = False)
 
-        status = self.checker.check_status(path,
-                                       recurse = False, 
-                                       invalidate = False,
-                                       summary = False)
+        self.get_widget("vcs_type").set_text(self.status.vcs_type)
+        
 
-        self.get_widget("content_status").set_text(status.content)
-        self.get_widget("prop_status").set_text(status.metadata)
+        self.get_widget("content_status").set_text(self.status.content)
+        self.get_widget("prop_status").set_text(self.status.metadata)
         
 
         self.set_icon_from_status(self.get_widget("content_status_icon"),
-                                                  status.content)
+                                                  self.status.content)
 
         self.set_icon_from_status(self.get_widget("prop_status_icon"),
-                                                  status.metadata)
+                                                  self.status.metadata)
 
         self.set_icon_from_status(self.get_widget("vcs_icon"),
-                                  status.single, gtk.ICON_SIZE_DIALOG)
+                                  self.status.single, gtk.ICON_SIZE_DIALOG)
         
+        additional_props_table = rabbitvcs.ui.widget.KeyValueTable(
+                                    self.get_additional_info())
+
+        additional_props_table.show()
+
+        self.get_widget("file_info_table").pack_end(additional_props_table)
+                        
     def set_icon_from_status(self, icon, status, size=gtk.ICON_SIZE_BUTTON):
         if status in rabbitvcs.ui.STATUS_EMBLEMS:
             icon.set_from_icon_name("emblem-" + STATUS_EMBLEMS[status], size)
+
+    def get_additional_info(self):
+        vcs_type = rabbitvcs.vcs.guess_vcs(self.path)['vcs']
+                
+        if(vcs_type == rabbitvcs.vcs.VCS_SVN):
+            return self.get_additional_info_svn()
+        else:
+            return []
+                
+    def get_additional_info_svn(self):
+        
+        repo_url = self.vcs.svn().get_repo_url(self.path)
+        
+        return [
+            (_("Repository URL"), repo_url)]
+        
 
 class FileInfoExpander(rabbitvcs.ui.GladeWidgetWrapper):
 

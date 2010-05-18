@@ -48,12 +48,9 @@ class Checkout(InterfaceView):
 
     def __init__(self, path=None, url=None, revision=None):
         InterfaceView.__init__(self, "checkout", "Checkout")
-
-
-        self.get_widget("Checkout").set_title(_("Checkout - %s") % path)
         
         self.path = path
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
 
         self.repositories = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("repositories"), 
@@ -67,24 +64,15 @@ class Checkout(InterfaceView):
             self.on_repositories_key_released
         )
 
-        self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
-            self.get_widget("revision_container"),
-            self.vcs,
-            revision=revision,
-            url_combobox=self.repositories,
-            expand=True
-        )
-        
         self.destination = rabbitvcs.util.helper.get_user_path()
         if path is not None:
             self.destination = path
             self.get_widget("destination").set_text(path)
-        
+
         if url is not None:
             self.repositories.set_child_text(url)
         
         self.complete = False
-        self.check_form()
         
     #
     # UI Signal Callback Methods
@@ -106,64 +94,11 @@ class Checkout(InterfaceView):
     def on_cancel_clicked(self, widget):
         self.close()
 
-    def on_ok_clicked(self, widget):
-        url = self.repositories.get_active_text()
-        path = self._get_path()
-        omit_externals = self.get_widget("omit_externals").get_active()
-        recursive = self.get_widget("recursive").get_active()
-        
-        if not url or not path:
-            rabbitvcs.ui.dialog.MessageBox(_("The repository URL and destination path are both required fields."))
-            return
-        
-        revision = self.revision_selector.get_revision_object()
-    
-        self.hide()
-        self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs,
-            register_gtk_quit=self.gtk_quit_is_set()
-        )
-        self.action.append(self.action.set_header, _("Checkout"))
-        self.action.append(self.action.set_status, _("Running Checkout Command..."))
-        self.action.append(rabbitvcs.util.helper.save_repository_path, url)
-        self.action.append(
-            self.vcs.checkout,
-            url,
-            path,
-            recurse=recursive,
-            revision=revision,
-            ignore_externals=omit_externals
-        )
-        self.action.append(self.action.set_status, _("Completed Checkout"))
-        self.action.append(self.action.finish)
-        self.action.start()
-
     def on_file_chooser_clicked(self, widget, data=None):
         chooser = rabbitvcs.ui.dialog.FolderChooser()
         path = chooser.run()
         if path is not None:
             self.get_widget("destination").set_text(path)
-
-    def on_repositories_changed(self, widget, data=None):
-        url = self.repositories.get_active_text()
-        tmp = url.replace("//", "/").split("/")[1:]
-        append = ""
-        prev = ""
-        while len(tmp):
-            prev = append
-            append = tmp.pop()
-            if append not in ("trunk", "branches", "tags"):
-                break
-                
-            if append in ("http:", "https:", "file:", "svn:", "svn+ssh:"):
-                append = ""
-                break
-                
-        self.get_widget("destination").set_text(
-            os.path.join(self.destination, append)
-        )
-        
-        self.check_form()
 
     def on_repositories_key_released(self, widget, data, userdata=None):
         if gtk.gdk.keyval_name(data.keyval) == "Return":
@@ -195,14 +130,106 @@ class Checkout(InterfaceView):
             self.complete = False
         
         self.get_widget("ok").set_sensitive(self.complete)
-        self.revision_selector.determine_widget_sensitivity()
+        
+        if hasattr(self, "revision_selector"):
+            self.revision_selector.determine_widget_sensitivity()
+
+class SVNCheckout(Checkout):
+    def __init__(self, path=None, url=None, revision=None):
+        Checkout.__init__(self, path, url, revision)
+        self.get_widget("Checkout").set_title(_("Checkout - %s") % path)
+
+        self.svn = self.vcs.svn()
+
+        self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("revision_container"),
+            self.svn,
+            revision=revision,
+            url_combobox=self.repositories,
+            expand=True
+        )
+
+        self.get_widget("options_box").show()
+        self.get_widget("revision_selector_box").show()
+
+        self.check_form()
+
+    def on_ok_clicked(self, widget):
+        url = self.repositories.get_active_text()
+        path = self._get_path()
+        omit_externals = self.get_widget("omit_externals").get_active()
+        recursive = self.get_widget("recursive").get_active()
+        
+        if not url or not path:
+            rabbitvcs.ui.dialog.MessageBox(_("The repository URL and destination path are both required fields."))
+            return
+        
+        revision = self.revision_selector.get_revision_object()
+    
+        self.hide()
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
+            register_gtk_quit=self.gtk_quit_is_set()
+        )
+        self.action.append(self.action.set_header, _("Checkout"))
+        self.action.append(self.action.set_status, _("Running Checkout Command..."))
+        self.action.append(rabbitvcs.util.helper.save_repository_path, url)
+        self.action.append(
+            self.svn.checkout,
+            url,
+            path,
+            recurse=recursive,
+            revision=revision,
+            ignore_externals=omit_externals
+        )
+        self.action.append(self.action.set_status, _("Completed Checkout"))
+        self.action.append(self.action.finish)
+        self.action.start()
+
+    def on_repositories_changed(self, widget, data=None):
+        url = self.repositories.get_active_text()
+        tmp = url.replace("//", "/").split("/")[1:]
+        append = ""
+        prev = ""
+        while len(tmp):
+            prev = append
+            append = tmp.pop()
+            if append not in ("trunk", "branches", "tags"):
+                break
+                
+            if append in ("http:", "https:", "file:", "svn:", "svn+ssh:"):
+                append = ""
+                break
+                
+        self.get_widget("destination").set_text(
+            os.path.join(self.destination, append)
+        )
+        
+        self.check_form()
+
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNCheckout
+}
+
+def checkout_factory(classes_map, vcs, path=None, url=None, revision=None):
+    return classes_map[vcs](path, url, revision)
+
+CLI_OPTIONS = {
+    'svn': rabbitvcs.vcs.VCS_SVN,
+    'git': rabbitvcs.vcs.VCS_GIT
+               }
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main, REVISION_OPT
+    from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT
     (options, args) = main(
-        [REVISION_OPT],
-        usage="Usage: rabbitvcs checkout [url] [path]"
+        [REVISION_OPT, VCS_OPT],
+        usage="Usage: rabbitvcs checkout --vcs=svn [url] [path]"
     )
+    
+    vcs = rabbitvcs.vcs.VCS_SVN
+    if options.vcs:
+        # FIXME: is this sensible?
+        vcs = CLI_OPTIONS.get(options.vcs, rabbitvcs.vcs.VCS_DUMMY)
     
     # If two arguments are passed:
     #   The first argument is expected to be a url
@@ -220,6 +247,6 @@ if __name__ == "__main__":
         else:
             url = args[0]
 
-    window = Checkout(path=path, url=url, revision=options.revision)
+    window = checkout_factory(classes_map, vcs, path=path, url=url, revision=options.revision)
     window.register_gtk_quit()
     gtk.main()

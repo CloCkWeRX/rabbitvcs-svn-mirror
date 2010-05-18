@@ -246,7 +246,7 @@ class MenuSeparator(MenuItem):
         #~ identifier = self.make_magic_id(id_magic)
         #~ # This information is not actually used, but is necessary for
         #~ # the required subclassing of GtkAction.
-        #~ action = RabbitVCSSeparator(
+        #~ action = ThunarSeparator(
             #~ identifier,
             #~ self.label,
             #~ self.tooltip,
@@ -312,6 +312,7 @@ class MenuCheckout(MenuItem):
     label = _("Checkout...")
     tooltip = _("Check out a working copy")
     icon = "rabbitvcs-checkout"
+    
 class MenuUpdate(MenuItem):
     identifier = "RabbitVCS::Update"
     label = _("Update")
@@ -327,6 +328,16 @@ class MenuCommit(MenuItem):
 class MenuRabbitVCS(MenuItem):
     identifier = "RabbitVCS::RabbitVCS"
     label = _("RabbitVCS")
+    icon = "rabbitvcs"
+
+class MenuRabbitVCSSvn(MenuItem):
+    identifier = "RabbitVCS::RabbitVCS_Svn"
+    label = _("RabbitVCS SVN")
+    icon = "rabbitvcs"
+
+class MenuRabbitVCSGit(MenuItem):
+    identifier = "RabbitVCS::RabbitVCS_Git"
+    label = _("RabbitVCS Git")
     icon = "rabbitvcs"
 
 class MenuRepoBrowser(MenuItem):
@@ -594,6 +605,26 @@ class PropMenuEdit(MenuItem):
     icon = gtk.STOCK_EDIT
     tooltip = _("Show and edit property details")
 
+class MenuInitializeRepository(MenuItem):
+    identifier = "RabbitVCS::Initialize_Repository"
+    label = _("Initialize Repository")
+    icon = "rabbitvcs-run"
+
+class MenuClone(MenuItem):
+    identifier = "RabbitVCS::Clone"
+    label = _("Clone")
+    icon = "rabbitvcs-checkout"
+
+class MenuFetchPull(MenuItem):
+    identifier = "RabbitVCS::Fetch_Pull"
+    label = _("Fetch/Pull")
+    icon = "rabbitvcs-update"
+
+class MenuPush(MenuItem):
+    identifier = "RabbitVCS::Push"
+    label = _("Push")
+
+
 def get_ignore_list_items(paths):
     """
     Build up a list of items to ignore based on the selected paths
@@ -682,7 +713,7 @@ class RabbitVCSAction(gtk.Action):
 
 # FIXME: apparently it's possible to get real GtkSeparators in a Thunar
 # menu, but this doesn't seem to work.
-class RabbitVCSSeparator(RabbitVCSAction):
+class ThunarSeparator(RabbitVCSAction):
 		
 	def do_create_menu_item(self):
 		return gtk.SeparatorMenuItem()

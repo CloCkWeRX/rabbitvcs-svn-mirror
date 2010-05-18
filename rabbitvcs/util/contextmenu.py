@@ -27,7 +27,7 @@ from collections import deque
 import gtk
 import gobject
 
-from rabbitvcs.vcs import create_vcs_instance
+from rabbitvcs.vcs import create_vcs_instance, VCS_SVN, VCS_GIT, VCS_DUMMY
 from rabbitvcs.util.log import Log
 from rabbitvcs import gettext
 from rabbitvcs.util.settings import SettingsManager
@@ -170,7 +170,7 @@ class MenuBuilder(object):
         if stack:
             self.menu = self.top_level_menu(stack[0][0])
         else:
-            print "Empty top level menu!"
+            log.debug("Empty top level menu!")
             self.menu = self.top_level_menu([])
             
     def connect_signal(self, menuitem, callback, callback_args):
@@ -529,6 +529,19 @@ class ContextMenuCallbacks:
     
         proc = rabbitvcs.util.helper.launch_ui_window("browser", [url])
 
+    def iniitalize_repository(self, widget, data1=None, data2=None):
+        pass
+
+    def clone(self, widget, data1=None, data2=None):
+        pass
+
+    def fetch_pull(self, widget, data1=None, data2=None):
+        pass
+
+    def push(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("push", self.paths)
+        self.caller.execute_after_process_exit(proc)
+
 
 class ContextMenuConditions:
     """
@@ -548,13 +561,15 @@ class ContextMenuConditions:
         }
 
         checks = {
+            "is_svn"                        : lambda path: (self.vcs_client.guess(path)["vcs"] == VCS_SVN),
+            "is_git"                        : lambda path: (self.vcs_client.guess(path)["vcs"] == VCS_GIT),
             "is_dir"                        : os.path.isdir,
             "is_file"                       : os.path.isfile,
             "exists"                        : os.path.exists,
             "is_working_copy"               : self.vcs_client.is_working_copy,
             "is_in_a_or_a_working_copy"     : self.vcs_client.is_in_a_or_a_working_copy,
             "is_versioned"                  : self.vcs_client.is_versioned,
-            "is_normal"                     : lambda path: self.statuses[path].content == "normal" and self.statuses[path].metadata == "normal",
+            "is_normal"                     : lambda path: self.statuses[path].content == "unchanged" and self.statuses[path].metadata == "normal",
             "is_added"                      : lambda path: self.statuses[path].content == "added",
             "is_modified"                   : lambda path: self.statuses[path].content == "modified" or self.statuses[path].metadata == "modified",
             "is_deleted"                    : lambda path: self.statuses[path].content == "deleted",
@@ -563,6 +578,7 @@ class ContextMenuConditions:
             "is_missing"                    : lambda path: self.statuses[path].content == "missing",
             "is_conflicted"                 : lambda path: self.statuses[path].content == "conflicted",
             "is_obstructed"                 : lambda path: self.statuses[path].content == "obstructed",
+            "is_staged"                     : lambda path: self.statuses[path].is_staged == True,
             "has_unversioned"               : lambda path: "unversioned" in self.text_statuses,
             "has_added"                     : lambda path: "added" in self.text_statuses,
             "has_modified"                  : lambda path: "modified" in self.text_statuses or "modified" in self.prop_statuses,
@@ -581,10 +597,10 @@ class ContextMenuConditions:
         # If a check has returned True for any path, skip it for remaining paths
         for path in paths:
             for key, func in checks.items():
-                if not self.statuses.has_key(path):
-                    self.path_dict[key] = False
-                elif key not in self.path_dict or self.path_dict[key] is not True:
+                try:
                     self.path_dict[key] = func(path)
+                except KeyError, e:
+                    self.path_dict[key] = False
 
     def checkout(self, data=None):
         return (self.path_dict["length"] == 1 and
@@ -664,6 +680,9 @@ class ContextMenuConditions:
                 not self.path_dict["is_added"])
         
     def add(self, data=None):
+        if not self.path_dict["is_svn"]:
+            return False
+            
         if (self.path_dict["is_dir"] and
                 self.path_dict["is_in_a_or_a_working_copy"]):
             return True
@@ -677,9 +696,6 @@ class ContextMenuConditions:
         return (self.path_dict["is_working_copy"] or
             self.path_dict["is_versioned"])
 
-#    def add_to_ignore_list(self, data=None):
-#        return self.path_dict["is_versioned"]
-        
     def rename(self, data=None):
         return (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
@@ -812,7 +828,15 @@ class ContextMenuConditions:
         return True
 
     def rabbitvcs(self, data=None):
-        return True
+        return False
+
+    def rabbitvcs_svn(self, data=None):
+        return (self.path_dict["is_svn"] or 
+            not self.path_dict["is_in_a_or_a_working_copy"])
+
+    def rabbitvcs_git(self, data=None):
+        return (self.path_dict["is_git"] or 
+            not self.path_dict["is_in_a_or_a_working_copy"])
     
     def debug(self, data=None):
         return settings.get("general", "show_debug")
@@ -831,6 +855,20 @@ class ContextMenuConditions:
     
     def bugs(self, data=None):
         return True
+
+    def initialize_repository(self, data=None):
+        return (self.path_dict["is_dir"] and
+            not self.path_dict["is_in_a_or_a_working_copy"])
+
+    def clone(self, data=None):
+        return (self.path_dict["is_dir"] and
+            not self.path_dict["is_in_a_or_a_working_copy"])
+
+    def fetch_pull(self, data=None):
+        return (self.path_dict["is_git"])
+
+    def push(self, data=None):
+        return (self.path_dict["is_git"])
 
 class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
     """
@@ -915,7 +953,6 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
     def show_log(self, data1=None, data2=None):
         from rabbitvcs.ui.log import LogDialog
         LogDialog(self.vcs_client.get_repo_url(self.paths[0]))
-
 
 class GtkFilesContextMenuConditions(ContextMenuConditions):
     """
@@ -1074,6 +1111,7 @@ class MainContextMenuConditions(ContextMenuConditions):
         self.generate_statuses(paths)
         self.generate_path_dict(paths)
         
+    # FIXME: major bottleneck
     def generate_statuses(self, paths):
         self.statuses = {}
         for path in paths:
@@ -1140,10 +1178,11 @@ class MainContextMenu:
                 (MenuDebugInvalidate, None),
                 (MenuDebugAddEmblem, None)
             ]),
-            (MenuCheckout, None),
-            (MenuUpdate, None),
-            (MenuCommit, None),
-            (MenuRabbitVCS, [
+            (MenuRabbitVCSSvn, [
+                (MenuCheckout, None),
+                (MenuUpdate, None),
+                (MenuCommit, None),
+                (MenuSeparator, None),
                 (MenuDiffMenu, [
                     (MenuDiff, None),
                     (MenuDiffPrevRev, None),
@@ -1184,7 +1223,20 @@ class MainContextMenu:
                 (MenuApplyPatch, None),
                 (MenuProperties, None),
                 (MenuSeparator, None),
-                (MenuHelp, None),
+                (MenuSettings, None),
+                (MenuAbout, None)
+            ]),
+            (MenuRabbitVCSGit, [
+                (MenuFetchPull, None),
+                (MenuCommit, None),
+                (MenuPush, None),
+                (MenuSeparator, None),
+                (MenuInitializeRepository, None),
+                (MenuClone, None),
+                (MenuSeparator, None),
+                (MenuRevert, None),
+                (MenuAddToIgnoreList, ignore_items),
+                (MenuSeparator, None),
                 (MenuSettings, None),
                 (MenuAbout, None)
             ])

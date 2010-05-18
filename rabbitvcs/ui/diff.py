@@ -98,8 +98,6 @@ class Diff(InterfaceNonView):
             self.path2,
             self.revision2
         )
-        
-        action.stop_loader()
 
         fh = tempfile.mkstemp("-rabbitvcs-" + str(self.revision1) + "-" + str(self.revision2) + ".diff")
         os.write(fh[0], diff_text)
@@ -128,6 +126,7 @@ class Diff(InterfaceNonView):
                 dest1, 
                 self.revision1
             )
+            action.stop_loader()
     
         if os.path.exists(self.path2) and self.revision2.kind != "base":
             dest2 = self.path2
@@ -139,8 +138,7 @@ class Diff(InterfaceNonView):
                 dest2, 
                 self.revision2
             )
-    
-        action.stop_loader()
+            action.stop_loader()
     
         rabbitvcs.util.helper.launch_diff_tool(dest1, dest2)
 

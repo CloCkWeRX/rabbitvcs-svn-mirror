@@ -162,48 +162,20 @@ class Settings(InterfaceView):
             self._clear_info_table()
 
     def _clear_info_table(self):
-        table = self.get_widget("info_table")
-        for info_label in table:
-            info_label.destroy()
-    
-        table.resize(1, 2)
-    
+        info_table = self.get_widget("info_table_area").get_child()
+        
+        if info_table:
+            info_table.destroy()
+
     def _populate_info_table(self, info):
         self._clear_info_table()
         
-        table = self.get_widget("info_table")
+        table_place = self.get_widget("info_table_area")
         
-        row = 0
+        table = rabbitvcs.ui.widget.KeyValueTable(info)
+        table_place.add(table)
+        table.show()
         
-        key_attrs = pango.AttrList()
-        key_attrs.insert(pango.AttrWeight(pango.WEIGHT_BOLD))
-        
-        table.resize(len(info), 2)
-        
-        for key, value in info:
-            
-            label_key = gtk.Label("<b>%s:</b>" % key)
-            label_key.set_properties(xalign=0, use_markup=True)
-            
-            label_value = gtk.Label("%s" % value)
-            label_value.set_properties(xalign=0)
-            
-            table.attach(label_key,
-                         0,1,
-                         row, row+1,
-                         xoptions=gtk.FILL)
-
-            table.attach(label_value,
-                         1,2,
-                         row, row+1,
-                         xoptions=gtk.FILL)
-            
-            label_key.show()
-            label_value.show()
-            
-            row += 1
-    
-        # table.show()
     
     def on_refresh_info_clicked(self, widget):
         self._populate_checker_tab()
@@ -234,14 +206,14 @@ class Settings(InterfaceView):
         self._populate_checker_tab(report_failure=False)
 
     def on_destroy(self, widget):
-        self.destroy()
+        gtk.main_quit()
 
     def on_cancel_clicked(self, widget):
-        self.close()
+        gtk.main_quit()
 
     def on_ok_clicked(self, widget):
         self.save()
-        self.close()
+        gtk.main_quit()
     
     def on_apply_clicked(self, widget):
         self.save()
