@@ -109,9 +109,9 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         if ((item.path in self.paths
                 or item.is_versioned)
                 and os.path.exists(item.path)):
-             return True
+            return True
  
-         return False
+        return False
 
     def initialize_items(self):
         """
