@@ -117,7 +117,7 @@ class Log(InterfaceView):
     #
 
     def on_destroy(self, widget, data=None):
-        self.close()
+        self.destroy()
 
     def on_close_clicked(self, widget, data=None):
         if self.is_loading:

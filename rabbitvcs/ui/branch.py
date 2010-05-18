@@ -86,7 +86,7 @@ class Branch(InterfaceView):
             self.revision_selector.set_kind_working()
 
     def on_destroy(self, widget):
-        self.close()
+        self.destroy()
 
     def on_cancel_clicked(self, widget):
         self.close()

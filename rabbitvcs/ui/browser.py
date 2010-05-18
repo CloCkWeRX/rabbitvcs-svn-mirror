@@ -151,7 +151,7 @@ class Browser(InterfaceView, GtkContextMenuCaller):
             self.repo_root_url = self.vcs.get_repo_root_url(self.url)
     
     def on_destroy(self, widget):
-        self.close()
+        self.destroy()
     
     def on_close_clicked(self, widget):
         self.close()

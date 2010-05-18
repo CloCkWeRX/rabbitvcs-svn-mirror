@@ -89,7 +89,7 @@ class Checkout(InterfaceView):
         return os.path.normpath(path)
 
     def on_destroy(self, widget):
-        self.close()
+        self.destroy()
 
     def on_cancel_clicked(self, widget):
         self.close()
