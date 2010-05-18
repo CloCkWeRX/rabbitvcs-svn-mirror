@@ -70,7 +70,7 @@ class Delete(InterfaceNonView):
 
         # If the user wants to continue (or there are no unversioned files)
         # remove or delete the given files
-        if result:
+        if result == gtk.RESPONSE_OK or result == True:
             if versioned:
                 try:
                     self.vcs.remove(versioned, force=True)
