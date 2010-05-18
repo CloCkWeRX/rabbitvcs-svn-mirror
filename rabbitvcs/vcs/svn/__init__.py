@@ -1054,7 +1054,7 @@ class SVN:
 
         return self.client.revert(paths)
 
-    def commit(self, paths, log_message="", recurse=True, keep_locks=False):
+    def commit(self, paths, log_message="", recurse=False, keep_locks=False):
         """
         Commit a list of files to the repository.
 
@@ -1071,8 +1071,18 @@ class SVN:
         @param  keep_locks: Whether or not to keep locks on commit.
 
         """
-
-        retval = self.client.checkin(paths, log_message, recurse, keep_locks)
+        
+        kwargs = {"keep_locks": keep_locks}
+        try:
+            # Simply setting recurse=False will not stop child files from getting
+            # committed.  The pysvn.depth kwarg must be set to empty.
+            # Unfortunately, older pysvn/svn installations do not have the depth
+            # enum so for those, recurse must be used.
+            kwargs["depth"] = (recurse and pysvn.depth.infinity or pysvn.depth.empty)
+        except AttributeError:
+            kwargs["recurse"] = recurse
+        
+        retval = self.client.checkin(paths, log_message, **kwargs)
         dummy_commit_dict = {
             "revision": retval,
             "action": rabbitvcs.vcs.svn.commit_completed
