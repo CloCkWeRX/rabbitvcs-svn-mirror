@@ -766,7 +766,7 @@ class LogTopContextMenuCallbacks:
         if result == gtk.RESPONSE_OK:
             self.caller.edit_revprop("svn:log", new_message, self.caller.on_log_message_edited)
 
-    def edit_rev_props(self, widget, data=None):
+    def edit_revision_properties(self, widget, data=None):
         from rabbitvcs.ui.revprops import SVNRevisionProperties
         url = self.vcs_client.get_repo_url(self.path)
         SVNRevisionProperties(url, self.revisions[0]["revision"].value)
