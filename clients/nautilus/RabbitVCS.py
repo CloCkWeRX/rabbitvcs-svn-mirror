@@ -312,7 +312,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         paths = []
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = realpath(unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8"))
+                path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
                 paths.append(path)
                 self.nautilusVFSFile_table[path] = item
 
@@ -357,7 +357,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         """
 
         if not self.valid_uri(item.get_uri()): return
-        path = realpath(unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8"))
+        path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
         self.nautilusVFSFile_table[path] = item
 
         # log.debug("get_background_items() called")
@@ -487,7 +487,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
 
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = realpath(unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8"))
+                path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
                 
                 if self.vcs_client.is_in_a_or_a_working_copy(path):
                     paths.append(path)
