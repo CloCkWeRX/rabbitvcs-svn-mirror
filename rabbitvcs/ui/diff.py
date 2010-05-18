@@ -126,6 +126,7 @@ class Diff(InterfaceNonView):
                 dest1, 
                 self.revision1
             )
+            action.stop_loader()
     
         if os.path.exists(self.path2) and self.revision2.kind != "base":
             dest2 = self.path2
@@ -137,6 +138,7 @@ class Diff(InterfaceNonView):
                 dest2, 
                 self.revision2
             )
+            action.stop_loader()
     
         rabbitvcs.util.helper.launch_diff_tool(dest1, dest2)
 
@@ -174,3 +176,4 @@ if __name__ == "__main__":
         pathrev2 = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
 
     SVNDiff(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1], sidebyside=options.sidebyside)
+    gtk.main()

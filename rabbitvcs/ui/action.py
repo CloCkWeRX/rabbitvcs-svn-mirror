@@ -570,6 +570,9 @@ class VCSAction(threading.Thread):
             self.notification.close()
             return None
 
+    def stop_loader(self):
+        self.stop()
+
 class SVNAction(VCSAction):
     def __init__(self, client, register_gtk_quit=False, notification=True,
             run_in_thread=True):
