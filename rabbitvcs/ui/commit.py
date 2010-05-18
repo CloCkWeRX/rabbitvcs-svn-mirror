@@ -106,7 +106,12 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         Determines if a file should be activated or not
         """
         
-        return (item.path in self.paths or item.is_versioned())
+        if ((item.path in self.paths
+                or item.is_versioned)
+                and os.path.exists(item.path)):
+             return True
+ 
+         return False
 
     def initialize_items(self):
         """
