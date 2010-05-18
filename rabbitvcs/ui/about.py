@@ -50,7 +50,11 @@ class About:
         gtk.about_dialog_set_url_hook(url_hook)
         self.about = gtk.AboutDialog()
         self.about.set_name(rabbitvcs.APP_NAME)
-        self.about.set_program_name(rabbitvcs.APP_NAME)
+
+		# The set_program_name method was not added until PyGTK 2.12
+        if hasattr(self.about, "set_program_name"):
+	        self.about.set_program_name(rabbitvcs.APP_NAME)
+
         self.about.set_version(rabbitvcs.version)
         self.about.set_website("http://www.rabbitvcs.org")
         self.about.set_website_label("http://www.rabbitvcs.org")
