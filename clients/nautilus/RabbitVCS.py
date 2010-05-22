@@ -189,7 +189,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
                 
         if not self.valid_uri(item.get_uri()): return nautilus.OPERATION_FAILED
         
-        path = realpath(unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8"))
+        path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
 
         # log.debug("update_file_info() called for %s" % path)
 
