@@ -172,8 +172,11 @@ class Browser(InterfaceView, GtkContextMenuCaller):
         else:
             self.url = path
 
-        self.urls.set_child_text(self.url)
-        self.load()
+        if self.file_column_callback(self.url) == "dir":
+            self.urls.set_child_text(self.url)
+            self.load()
+        else:
+            self._open([self.url])
 
     def on_urls_key_released(self, widget, data, userdata):
         if gtk.gdk.keyval_name(data.keyval) == "Return":
@@ -286,6 +289,24 @@ class Browser(InterfaceView, GtkContextMenuCaller):
 
     def get_url(self):
         return self.urls.get_active_text()
+
+    def _open(self, paths):
+        self.action = rabbitvcs.ui.action.VCSAction(
+            self.vcs,
+            notification=False
+        )
+        
+        exported_paths = []
+        for path in paths:
+            export_path = "/tmp/" + os.path.basename(paths[0])
+            exported_paths.append(export_path)
+            self.action.append(self.vcs.export, paths[0], 
+                export_path, revision=self.revision_selector.get_revision_object())
+
+        for path in exported_paths:
+            self.action.append(rabbitvcs.util.helper.open_item, path)
+
+        self.action.start()
 
 class BrowserDialog(Browser):
     def __init__(self, path, callback=None):
@@ -409,22 +430,7 @@ class BrowserContextMenuCallbacks:
         return sources
 
     def _open(self, data=None, user_data=None):
-        self.caller.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs_client,
-            notification=False
-        )
-        
-        exported_paths = []
-        for path in self.paths:
-            export_path = "/tmp/" + os.path.basename(self.paths[0])
-            exported_paths.append(export_path)
-            self.caller.action.append(self.vcs_client.export, self.paths[0], 
-                export_path, revision=self.__get_browser_revision())
-
-        for path in exported_paths:
-            self.caller.action.append(rabbitvcs.util.helper.open_item, path)
-
-        self.caller.action.start()
+        self.caller._open(self.paths)
     
     def show_log(self, data=None, user_data=None):
         rabbitvcs.util.helper.launch_ui_window("log", [self.paths[0]])
