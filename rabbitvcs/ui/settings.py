@@ -278,7 +278,7 @@ class Settings(InterfaceView):
         confirmation = rabbitvcs.ui.dialog.Confirmation(
             _("Are you sure you want to clear your repository paths?")
         )
-        if confirmation.run() == 1:
+        if confirmation.run() == gtk.RESPONSE_OK:
             path = rabbitvcs.util.helper.get_repository_paths_path()
             fh = open(path, "w")
             fh.write("")
@@ -289,7 +289,7 @@ class Settings(InterfaceView):
         confirmation = rabbitvcs.ui.dialog.Confirmation(
             _("Are you sure you want to clear your previous messages?")
         )
-        if confirmation.run() == 1:
+        if confirmation.run() == gtk.RESPONSE_OK:
             path = rabbitvcs.util.helper.get_previous_messages_path()
             fh = open(path, "w")
             fh.write("")
@@ -300,7 +300,7 @@ class Settings(InterfaceView):
         confirmation = rabbitvcs.ui.dialog.Confirmation(
             _("Are you sure you want to clear your authentication information?")
         )
-        if confirmation.run() == 1:
+        if confirmation.run() == gtk.RESPONSE_OK:
             home_dir = rabbitvcs.util.helper.get_user_path()
             subpaths = [
                 '/.subversion/auth/svn.simple',
