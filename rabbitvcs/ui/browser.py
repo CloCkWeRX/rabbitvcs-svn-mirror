@@ -177,6 +177,7 @@ class Browser(InterfaceView, GtkContextMenuCaller):
 
     def on_urls_key_released(self, widget, data, userdata):
         if gtk.gdk.keyval_name(data.keyval) == "Return":
+            rabbitvcs.util.helper.save_repository_path(self.urls.get_active_text())
             self.load()
 
     def file_column_callback(self, filename):
