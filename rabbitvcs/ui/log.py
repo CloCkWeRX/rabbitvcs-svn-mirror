@@ -530,6 +530,12 @@ class MenuShowChangesRevisions(MenuItem):
     label = _("Show changes between revisions")
     icon = "rabbitvcs-changes"
 
+class MenuUpdateToThisRevision(MenuItem):
+    identifier = "RabbitVCS::Update_To_This_Revision"
+    label = _("Update to this revision")
+    tooltip = _("Update the selected path to this revision")
+    icon = "rabbitvcs-update"
+
 class MenuEditAuthor(MenuItem):
     identifier = "RabbitVCS::Edit_Author"
     label = _("Edit author...")
@@ -580,7 +586,7 @@ class LogTopContextMenuConditions:
     def show_changes_revisions(self, data=None):
         return (len(self.revisions) > 1)
 
-    def update_to(self, data=None):
+    def update_to_this_revision(self, data=None):
         return (len(self.revisions) == 1)
 
     def checkout(self, data=None):
@@ -744,9 +750,23 @@ class LogTopContextMenuCallbacks:
             rev_first
         )
 
-    def update_to(self, widget, data=None):
-        from rabbitvcs.ui.updateto import UpdateToRevision
-        UpdateToRevision(self.path, self.revisions[0]["revision"].value)
+    def update_to_this_revision(self, widget, data=None):
+        action = VCSAction(
+            self.vcs_client
+        )
+
+        action.append(action.set_header, _("Update To Revision"))
+        action.append(action.set_status, _("Updating..."))
+        action.append(
+            self.vcs_client.update, 
+            self.path,
+            revision=self.vcs_client.revision("number", self.revisions[0]["revision"].value),
+            recurse=True,
+            ignore_externals=False
+        )
+        action.append(action.set_status, _("Completed Update"))
+        action.append(action.finish)
+        action.start()
         
     def checkout(self, widget, data=None):
         from rabbitvcs.ui.checkout import Checkout
@@ -803,8 +823,8 @@ class LogTopContextMenu:
         @param  base_dir: The curent working directory
         @type   base_dir: string
         
-        @param  paths: The loaded path
-        @type   paths: string
+        @param  path: The loaded path
+        @type   path: string
         
         @param  revisions: The selected revisions
         @type   revisions: list of rabbitvcs.vcs.Revision object
@@ -842,7 +862,7 @@ class LogTopContextMenu:
             (MenuShowChangesPreviousRevision, None),
             (MenuShowChangesRevisions, None),
             (MenuSeparator, None),
-            (MenuUpdateToRevision, None),
+            (MenuUpdateToThisRevision, None),
             (MenuCheckout, None),
             (MenuBranchTag, None),
             (MenuExport, None),
