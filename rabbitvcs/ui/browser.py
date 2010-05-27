@@ -162,6 +162,7 @@ class Browser(InterfaceView, GtkContextMenuCaller):
         self.close()
 
     def on_refresh_clicked(self, widget):
+        rabbitvcs.util.helper.save_repository_path(self.urls.get_active_text())
         self.load()
 
     def on_row_activated(self, treeview, data, col):
