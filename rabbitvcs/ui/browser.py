@@ -294,6 +294,9 @@ class BrowserDialog(Browser):
         Also, provide a callback for when the close button is clicked so that we
         can get some desired data.
         """
+        
+        gtk.stock_add([(gtk.STOCK_CLOSE, _("Select"), 0, 0, "")])
+        
         Browser.__init__(self, path)
         self.callback = callback
         
@@ -306,7 +309,7 @@ class BrowserDialog(Browser):
             path = self.urls.get_active_text()
             selected = self.list_table.get_selected_row_items(0)
             if len(selected) > 0:
-                path = selected
+                path = selected[0]
             self.callback(path)
 
 
