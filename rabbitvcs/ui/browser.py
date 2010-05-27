@@ -52,7 +52,12 @@ class Browser(InterfaceView, GtkContextMenuCaller):
         InterfaceView.__init__(self, "browser", "Browser")
 
         self.vcs = rabbitvcs.vcs.create_vcs_instance()
-        self.url = self.vcs.get_repo_url(url)
+
+        self.url = ""
+        if self.vcs.is_in_a_or_a_working_copy(url):
+            self.url = self.vcs.get_repo_url(url)
+        elif self.vcs.is_path_repository_url(url):
+            self.url = url
 
         self.urls = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("urls"), 
@@ -114,7 +119,7 @@ class Browser(InterfaceView, GtkContextMenuCaller):
         self.url_clipboard = gtk.Clipboard()
         self.repo_root_url = None
 
-        if url:
+        if self.url:
             rabbitvcs.util.helper.save_repository_path(url)
             self.load()
 
@@ -147,7 +152,7 @@ class Browser(InterfaceView, GtkContextMenuCaller):
             ])
     
     def init_repo_root_url(self):
-        if self.repo_root_url is None:
+        if self.repo_root_url is None and self.vcs.is_in_a_or_a_working_copy(self.url):
             self.repo_root_url = self.vcs.get_repo_root_url(self.url)
     
     def on_destroy(self, widget):
