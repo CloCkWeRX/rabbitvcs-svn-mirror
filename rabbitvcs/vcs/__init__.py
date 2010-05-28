@@ -29,8 +29,8 @@ log = Log("rabbitvcs.vcs")
 
 EXT_UTIL_ERROR = _("The output from '%s' was not able to be processed.\n%s")
 
-VCS_SVN = 'Subversion'
-VCS_GIT = 'Git'
+VCS_SVN = 'svn'
+VCS_GIT = 'git'
 VCS_DUMMY = 'Unknown'
 
 def guess(path):
