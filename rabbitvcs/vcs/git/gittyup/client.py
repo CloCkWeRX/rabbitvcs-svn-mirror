@@ -596,7 +596,7 @@ class GittyupClient:
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.callback_notify).execute()
         except GittyupCommandError, e:
-            print e
+            self.callback_notify(e)
     
     def commit(self, message, parents=None, committer=None, commit_time=None, 
             commit_timezone=None, author=None, author_time=None, 
@@ -761,7 +761,7 @@ class GittyupClient:
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
         except GittyupCommandError, e:
-            print e
+            self.callback_notify(e)
     
     def push(self, repository="origin", refspec="master"):
         """
@@ -780,7 +780,7 @@ class GittyupClient:
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
         except GittyupCommandError, e:
-            print e
+            self.callback_notify(e)
 
     def fetch(self, host):
         """
