@@ -1,0 +1,20 @@
+#
+# This is the config file, and
+# a '#' or ';' character indicates
+# a comment
+#
+
+; core variables
+[core]
+        ; Don't trust file modes
+        filemode = false
+
+; Our diff algorithm
+[diff]
+        external = /usr/local/bin/diff-wrapper
+        renames = true
+
+; Proxy settings
+[core]
+        gitproxy="proxy-command"
+        gitproxy=default-proxy ; for all the rest
