@@ -273,7 +273,7 @@ class GittyupClient:
         return None
 
     def get_relative_path(self, path):
-        return gittyup.util.relativepath(os.path.realpath(self.repo.path), path)      
+        return util.relativepath(os.path.realpath(self.repo.path), path)      
     
     def get_absolute_path(self, path):
         return os.path.join(self.repo.path, path).rstrip("/")
@@ -792,7 +792,7 @@ class GittyupClient:
         
         """
         
-        client, host_path = gittyup.util.get_transport_and_path(host)
+        client, host_path = util.get_transport_and_path(host)
 
         graphwalker = self.repo.get_graph_walker()
         f, commit = self.repo.object_store.add_pack()
