@@ -943,3 +943,73 @@ class KeyValueTable(gtk.Table):
         
         self.set_col_spacings(self.default_col_spacing)
         self.set_row_spacings(self.default_row_spacing)
+
+class GitRepositorySelector:
+    def __init__(self, container, git, changed_callback=None):
+        self.git = git
+        self.changed_callback = changed_callback
+        
+        vbox = gtk.VBox(False, 4)
+        
+        # Set up the Repository Line
+        label = gtk.Label(_("Repository:"))
+        label.set_size_request(90, -1)
+        label.set_justify(gtk.JUSTIFY_LEFT)
+
+        tmp_repos = []
+        for item in self.git.remote_list():
+            tmp_repos.append(item["remote"])
+        self.repository_opt = ComboBox(gtk.ComboBox(), tmp_repos)
+        self.repository_opt.set_active(0)
+        self.repository_opt.cb.connect("changed", self.__repository_changed)
+        self.repository_opt.cb.set_size_request(175, -1)
+        
+        hbox = gtk.HBox(False, 0)
+        hbox.pack_start(label, False, False, 0)
+        hbox.pack_start(self.repository_opt.cb, False, False, 0)
+        vbox.pack_start(hbox, False, False, 0)
+
+
+        # Set up the Branch line
+        label = gtk.Label(_("Branch:"))
+        label.set_size_request(90, -1)
+        label.set_justify(gtk.JUSTIFY_LEFT)
+
+        tmp_branches = []
+        for item in self.git.branch_list():
+            tmp_branches.append(item.name)
+        self.branch_opt = ComboBox(gtk.ComboBox(), tmp_branches)
+        self.branch_opt.set_active(0)
+        self.branch_opt.cb.connect("changed", self.__branch_changed)
+        self.branch_opt.cb.set_size_request(175, -1)
+        
+        hbox = gtk.HBox(False, 0)
+        hbox.pack_start(label, False, False, 0)
+        hbox.pack_start(self.branch_opt.cb, False, False, 0)
+        vbox.pack_start(hbox, False, False, 0)
+        
+        # Set up the Host line
+        label = gtk.Label(_("Host:"))
+        label.set_justify(gtk.JUSTIFY_LEFT)
+        label.set_size_request(90, -1)
+        self.host = gtk.Label()
+        self.host.set_justify(gtk.JUSTIFY_LEFT)
+        hbox = gtk.HBox(False, 0)
+        hbox.pack_start(label, False, False, 0)
+        hbox.pack_start(self.host, False, False, 0)
+        vbox.pack_start(hbox, False, False, 4)
+
+        vbox.show_all()
+        container.add(vbox)
+        
+        self.__update_host()
+    
+    def __update_host(self):
+        repo = "origin"
+        self.host.set_text(self.git.config.get('remote "%s"' % repo, "url"))
+    
+    def __repository_changed(self, repository_opt):
+        pass
+   
+    def __branch_changed(self, branch_opt):
+        pass

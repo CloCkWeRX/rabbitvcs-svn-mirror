@@ -66,25 +66,10 @@ class GitPush(Push):
 
         self.git = self.vcs.git(path)
         
-        tmp_repos = []
-        for item in self.git.remote_list():
-            tmp_repos.append(item["remote"])
-        self.repositories = rabbitvcs.ui.widget.ComboBox(
-            self.get_widget("repositories"), 
-            tmp_repos
+        self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
+            self.get_widget("repository_container"),
+            self.git
         )
-        if len(tmp_repos) == 1:
-            self.repositories.set_active(0)
-
-        tmp_branches = []
-        for item in self.git.branch_list():
-            tmp_branches.append(item.name)
-        self.branches = rabbitvcs.ui.widget.ComboBox(
-            self.get_widget("branches"), 
-            tmp_branches
-        )
-        if len(tmp_branches) == 1:
-            self.branches.set_active(0)
 
         self.log_table = rabbitvcs.ui.widget.Table(
             self.get_widget("log"),
@@ -100,8 +85,8 @@ class GitPush(Push):
     def on_ok_clicked(self, widget, data=None):
         self.hide()
     
-        repository = self.repositories.get_active_text()
-        branch = self.branches.get_active_text()
+        repository = self.repository_selector.repository_opt.get_active_text()
+        branch = self.repository_selector.branch_opt.get_active_text()
         
         self.action = rabbitvcs.ui.action.GitAction(
             self.git,
@@ -115,8 +100,8 @@ class GitPush(Push):
         self.action.start()
 
     def load_log(self):
-        repository = self.repositories.get_active_text()
-        branch = self.branches.get_active_text()
+        repository = self.repository_selector.repository_opt.get_active_text()
+        branch = self.repository_selector.branch_opt.get_active_text()
         
         refspec = "refs/remotes/%s/%s" % (repository, branch)
         remote_log = self.git.log(refspec, limit=10)
