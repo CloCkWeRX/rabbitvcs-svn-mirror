@@ -407,7 +407,7 @@ classes_map = {
     rabbitvcs.vcs.VCS_GIT: GitCommit
 }
 
-def commit_factory(classes_mappaths, base_dir=None, message=None):
+def commit_factory(paths, base_dir=None, message=None):
     guess = rabbitvcs.vcs.guess(paths[0])
     return classes_map[guess["vcs"]](paths, base_dir, message)
 
