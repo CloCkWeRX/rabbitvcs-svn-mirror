@@ -536,7 +536,8 @@ class ContextMenuCallbacks:
         pass
 
     def fetch_pull(self, widget, data1=None, data2=None):
-        pass
+        proc = rabbitvcs.util.helper.launch_ui_window("update", self.paths)
+        self.caller.execute_after_process_exit(proc)
 
     def push(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("push", self.paths)

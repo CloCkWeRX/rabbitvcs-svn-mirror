@@ -24,16 +24,16 @@ import pygtk
 import gobject
 import gtk
 
-from rabbitvcs.ui import InterfaceNonView
+from rabbitvcs.ui import InterfaceNonView, InterfaceView
 from rabbitvcs.ui.log import LogDialog
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction, GitAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Update(InterfaceNonView):
+class SVNUpdate(InterfaceNonView):
     """
     This class provides an interface to generate an "update".
     Pass it a path and it will start an update, running the notification dialog.  
@@ -43,25 +43,83 @@ class Update(InterfaceNonView):
 
     def __init__(self, paths):
         self.paths = paths
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
 
     def start(self):
-        self.action = VCSAction(
-            self.vcs,
+        self.action = SVNAction(
+            self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         self.action.append(self.action.set_header, _("Update"))
         self.action.append(self.action.set_status, _("Updating..."))
-        self.action.append(self.vcs.update, self.paths)
+        self.action.append(self.svn.update, self.paths)
         self.action.append(self.action.set_status, _("Completed Update"))
         self.action.append(self.action.finish)
         self.action.start()
+
+class GitUpdate(InterfaceView):
+    """
+    This class provides an interface to generate an "update".
+    Pass it a path and it will start an update, running the notification dialog.  
+    There is no glade .
+    
+    """
+
+    def __init__(self, paths):
+        InterfaceView.__init__(self, "git-update", "Update")
+
+        self.paths = paths
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.git = self.vcs.git(paths[0])
+
+        self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
+            self.get_widget("repository_container"),
+            self.git
+        )
+
+    def on_destroy(self, widget):
+        self.destroy()
+        
+    def on_cancel_clicked(self, widget, data=None):
+        self.close()
+
+    def on_ok_clicked(self, widget, data=None):
+        self.hide()
+        merge = self.get_widget("merge").get_sensitive()
+        
+        repository = self.repository_selector.repository_opt.get_active_text()
+        branch = self.repository_selector.branch_opt.get_active_text()
+    
+        self.action = GitAction(
+            self.git,
+            register_gtk_quit=self.gtk_quit_is_set()
+        )
+        self.action.append(self.action.set_header, _("Update"))
+        self.action.append(self.action.set_status, _("Updating..."))
+        if merge:
+            self.action.append(self.git.pull, repository, branch)
+        else:
+            self.action.append(self.git.fetch, repository, branch)
+        self.action.append(self.action.set_status, _("Completed Update"))
+        self.action.append(self.action.finish)
+        self.action.start()
+
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNUpdate, 
+    rabbitvcs.vcs.VCS_GIT: GitUpdate
+}
+
+def update_factory(paths):
+    guess = rabbitvcs.vcs.guess(paths[0])
+    return classes_map[guess["vcs"]](paths)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main(usage="Usage: rabbitvcs update [path1] [path2] ...")
 
-    window = Update(paths)
+    window = update_factory(paths)
     window.register_gtk_quit()
-    window.start()
+    if isinstance(window, SVNUpdate):
+        window.start()
     gtk.main()
