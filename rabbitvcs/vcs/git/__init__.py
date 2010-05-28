@@ -196,6 +196,20 @@ class Git:
     # Action Methods
     #
     
+    def initialize_repository(self, path, bare=False):
+        """
+        Initialize a Git repository
+        
+        @type   path: string
+        @param  path: The folder to initialize as a repository
+
+        @type   bare: boolean
+        @param  bare: Whether the repository should be "bare" or not
+        
+        """
+        
+        return self.client.initialize_repository(path, bare)
+    
     def stage(self, paths):
         """
         Stage files to be committed or tracked
