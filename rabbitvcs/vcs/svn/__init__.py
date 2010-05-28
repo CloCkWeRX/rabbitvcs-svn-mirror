@@ -294,7 +294,7 @@ class SVN:
         self.interface = "pysvn"
         self.vcs = rabbitvcs.vcs.VCS_SVN
 
-    def statuses(self, path, recurse=True):
+    def statuses(self, path, recurse=True, update=False):
         """
 
         Look up the status for path.
@@ -309,7 +309,8 @@ class SVN:
 
         try:
             pysvn_statuses = self.client.status(path,
-                                                depth=depth)
+                                                depth=depth,
+                                                update=update)
             if not len(pysvn_statuses):
                 # This is NOT in the PySVN documentation, but sometimes it
                 # returns an empty list if the file goes missing...
@@ -430,6 +431,31 @@ class SVN:
             for st in sts:
                 if (st.content in statuses or st.metadata in statuses):
                     items.append(st)
+
+        return items
+
+    def get_remote_updates(self, paths):
+        if paths is None:
+            return []
+        
+        items = []
+        for path in paths:
+            try:
+                sts = self.statuses(path, update=True)
+            except Exception, e:
+                log.exception(e)
+                continue
+
+            for st in sts:
+                repos = st.get_user_data("repos")
+                if repos is None:
+                    continue
+
+                if repos["repos_content"] == "none" and \
+                        repos["repos_metadata"] == "none":
+                    continue
+
+                items.append(st)
 
         return items
 

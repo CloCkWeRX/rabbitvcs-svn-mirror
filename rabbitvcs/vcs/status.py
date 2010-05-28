@@ -61,6 +61,7 @@ class Status(object):
         self.single = self._make_single_status()
         self.summary = summary
         self.is_staged = False
+        self.user_data = {}
  
     def _make_single_status(self):
         """
@@ -139,6 +140,15 @@ class Status(object):
         del state_dict['__module__']
         self.__dict__ = state_dict
 
+    def set_user_data(self, key, val):
+        self.user_data[key] = val
+    
+    def get_user_data(self, key):
+        if self.user_data.has_key(key):
+            return self.user_data[key]
+        
+        return None
+
 class SVNStatus(Status):
 
     vcs_type = rabbitvcs.vcs.VCS_SVN
@@ -177,6 +187,11 @@ class SVNStatus(Status):
             pysvn_status.path,
             content=str(pysvn_status.text_status),
             metadata=str(pysvn_status.prop_status))
+
+        if hasattr(pysvn_status, "repos_text_status"):
+            self.set_user_data("repos_content", str(pysvn_status.repos_text_status))
+        if hasattr(pysvn_status, "repos_prop_status"):
+            self.set_user_data("repos_metadata", str(pysvn_status.repos_prop_status))
 
 class GitStatus(Status):
 
