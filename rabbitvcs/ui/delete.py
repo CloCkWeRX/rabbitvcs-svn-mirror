@@ -27,7 +27,7 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceNonView
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.vcs
 from rabbitvcs.util.log import Log
 
@@ -45,7 +45,7 @@ class Delete(InterfaceNonView):
     def __init__(self, paths):
         InterfaceNonView.__init__(self)
         self.paths = paths
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
 
     def start(self):
     
@@ -73,7 +73,7 @@ class Delete(InterfaceNonView):
         if result == gtk.RESPONSE_OK or result == True:
             if versioned:
                 try:
-                    self.vcs.remove(versioned, force=True)
+                    self.vcs_remove(versioned, force=True)
                 except Exception, e:
                     log.exception()
                     return
@@ -81,11 +81,27 @@ class Delete(InterfaceNonView):
             if unversioned:
                 for path in unversioned:
                     rabbitvcs.util.helper.delete_item(path)
-        
+
+class SVNDelete(Delete):
+    def __init__(self, paths):
+        Delete.__init__(self, paths)
+    
+    def vcs_remove(self, path, **kwargs):
+        if self.vcs.vcs == rabbitvcs.vcs.VCS_SVN:
+            self.vcs.svn().remove(path, **kwargs)
+
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNDelete
+}
+
+def delete_factory(paths):
+    guess = rabbitvcs.vcs.guess(paths[0])
+    return classes_map[guess["vcs"]](paths)
+
 if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main(usage="Usage: rabbitvcs delete [path1] [path2] ...")
 
-    window = Delete(paths)
+    window = delete_factory(paths)
     window.register_gtk_quit()
     window.start()

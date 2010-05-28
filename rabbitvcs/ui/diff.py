@@ -29,8 +29,8 @@ import tempfile
 
 from rabbitvcs import TEMP_DIR_PREFIX
 from rabbitvcs.ui import InterfaceNonView
-from rabbitvcs.vcs import create_vcs_instance
-from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.vcs
+from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.util.helper
 
 from rabbitvcs import gettext
@@ -41,106 +41,22 @@ class Diff(InterfaceNonView):
             sidebyside=False):
         InterfaceNonView.__init__(self)
 
-        self.vcs = create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
 
         self.path1 = path1
         self.path2 = path2
         self.sidebyside = sidebyside
-        self.revision1 = self.get_revision_object(revision1, "base")
-        self.revision2 = self.get_revision_object(revision2, "working")
 
         self.temp_dir = tempfile.mkdtemp(prefix=TEMP_DIR_PREFIX)
 
         if path2 is None:
             self.path2 = path1
-
-    def get_revision_object(self, value, default):
-        # If value is a rabbitvcs Revision object, return it
-        if hasattr(value, "is_revision_object"):
-            return value
-        
-        # If value is None, use the default
-        if value is None:
-            return self.vcs.revision(default)          
-
-        # If the value is an integer number, return a numerical revision object
-        # otherwise, a string revision value has been passed, use that as "kind"
-        try:
-            value = int(value)
-            return self.vcs.revision("number", value)
-        except ValueError:
-            # triggered when passed a string
-            return self.vcs.revision(value)
                 
     def launch(self):
         if self.sidebyside:
             self.launch_sidebyside_diff()
         else:
             self.launch_unified_diff()
-    
-    def launch_unified_diff(self):
-        """
-        Launch diff as a unified diff in a text editor or .diff viewer
-        
-        """
-        
-        action = VCSAction(
-            self.vcs,
-            notification=False,
-            run_in_thread=False
-        )
-        
-        diff_text = action.run_single(
-            self.vcs.diff,
-            self.temp_dir,
-            self.path1,
-            self.revision1,
-            self.path2,
-            self.revision2
-        )
-
-        fh = tempfile.mkstemp("-rabbitvcs-" + str(self.revision1) + "-" + str(self.revision2) + ".diff")
-        os.write(fh[0], diff_text)
-        os.close(fh[0])
-        rabbitvcs.util.helper.open_item(fh[1])
-        
-    def launch_sidebyside_diff(self):
-        """
-        Launch diff as a side-by-side comparison using our comparison tool
-        
-        """
-
-        action = VCSAction(
-            self.vcs,
-            notification=False,
-            run_in_thread=False
-        )
-
-        if os.path.exists(self.path1) and self.revision1.kind != "base":
-            dest1 = self.path1
-        else:
-            dest1 = self._build_export_path(1, self.revision1, self.path1)
-            action.run_single(
-                self.vcs.export, 
-                self.path1, 
-                dest1, 
-                self.revision1
-            )
-            action.stop_loader()
-    
-        if os.path.exists(self.path2) and self.revision2.kind != "base":
-            dest2 = self.path2
-        else:
-            dest2 = self._build_export_path(2, self.revision2, self.path2)
-            action.run_single(
-                self.vcs.export, 
-                self.path2, 
-                dest2, 
-                self.revision2
-            )
-            action.stop_loader()
-    
-        rabbitvcs.util.helper.launch_diff_tool(dest1, dest2)
 
     def _build_export_path(self, index, revision, path):
         dest = "/tmp/rabbitvcs-%s-%s-%s" % (str(index), str(revision), os.path.basename(path))
@@ -157,7 +73,97 @@ class SVNDiff(Diff):
             sidebyside=False):
         Diff.__init__(self, path1, revision1, path2, revision2, sidebyside)
 
+        self.svn = self.vcs.svn()
+
+        self.revision1 = self.get_revision_object(revision1, "base")
+        self.revision2 = self.get_revision_object(revision2, "working")
+
         self.launch()
+
+    def get_revision_object(self, value, default):
+        # If value is a rabbitvcs Revision object, return it
+        if hasattr(value, "is_revision_object"):
+            return value
+        
+        # If value is None, use the default
+        if value is None:
+            return self.svn.revision(default)          
+
+        # If the value is an integer number, return a numerical revision object
+        # otherwise, a string revision value has been passed, use that as "kind"
+        try:
+            value = int(value)
+            return self.svn.revision("number", value)
+        except ValueError:
+            # triggered when passed a string
+            return self.svn.revision(value)
+
+    def launch_unified_diff(self):
+        """
+        Launch diff as a unified diff in a text editor or .diff viewer
+        
+        """
+        
+        action = SVNAction(
+            self.svn,
+            notification=False,
+            run_in_thread=False
+        )
+        
+        diff_text = action.run_single(
+            self.svn.diff,
+            self.temp_dir,
+            self.path1,
+            self.revision1,
+            self.path2,
+            self.revision2
+        )
+        if diff_text is None:
+            diff_text = ""
+
+        fh = tempfile.mkstemp("-rabbitvcs-" + str(self.revision1) + "-" + str(self.revision2) + ".diff")
+        os.write(fh[0], diff_text)
+        os.close(fh[0])
+        rabbitvcs.util.helper.open_item(fh[1])
+        
+    def launch_sidebyside_diff(self):
+        """
+        Launch diff as a side-by-side comparison using our comparison tool
+        
+        """
+
+        action = SVNAction(
+            self.svn,
+            notification=False,
+            run_in_thread=False
+        )
+
+        if os.path.exists(self.path1) and self.revision1.kind != "base":
+            dest1 = self.path1
+        else:
+            dest1 = self._build_export_path(1, self.revision1, self.path1)
+            action.run_single(
+                self.svn.export, 
+                self.path1, 
+                dest1, 
+                self.revision1
+            )
+            action.stop_loader()
+    
+        if os.path.exists(self.path2) and self.revision2.kind != "base":
+            dest2 = self.path2
+        else:
+            dest2 = self._build_export_path(2, self.revision2, self.path2)
+            action.run_single(
+                self.svn.export, 
+                self.path2, 
+                dest2, 
+                self.revision2
+            )
+            action.stop_loader()
+    
+        rabbitvcs.util.helper.launch_diff_tool(dest1, dest2)
+
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main

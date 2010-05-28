@@ -27,29 +27,31 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.ui.checkout import Checkout
+from rabbitvcs.ui.checkout import SVNCheckout
 from rabbitvcs.ui.dialog import MessageBox
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.util.helper
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Export(Checkout):
+class SVNExport(SVNCheckout):
     def __init__(self, path=None, revision=None):
-        Checkout.__init__(self, path, url=None, revision=revision)
+        SVNCheckout.__init__(self, path, url=None, revision=revision)
+        
+        self.svn = self.vcs.svn()
         
         self.get_widget("Checkout").set_title(_("Export - %s") % path)
         
         # Determine behavior based on the given path
-        if self.vcs.is_in_a_or_a_working_copy(path):
+        if self.svn.is_in_a_or_a_working_copy(path):
             # If path is from a working copy, export FROM path and set revision
             # to working copy
             self.repositories.set_child_text(path)
             self.get_widget("destination").set_text("")
             if revision is None:
                 self.revision_selector.set_kind_working()
-        elif self.vcs.is_path_repository_url(path):
+        elif self.svn.is_path_repository_url(path):
             # If path is a repository, export FROM path
             self.repositories.set_child_text(path)
             self.get_widget("destination").set_text("")
@@ -81,8 +83,8 @@ class Export(Checkout):
         revision = self.revision_selector.get_revision_object()
 
         self.hide()
-        self.action = VCSAction(
-            self.vcs,
+        self.action = SVNAction(
+            self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         
@@ -90,7 +92,7 @@ class Export(Checkout):
         self.action.append(self.action.set_status, _("Running Export Command..."))
         self.action.append(rabbitvcs.util.helper.save_repository_path, url)
         self.action.append(
-            self.vcs.export,
+            self.svn.export,
             url,
             path,
             force=True,
@@ -109,6 +111,6 @@ if __name__ == "__main__":
         usage="Usage: rabbitvcs export [url_or_path]"
     )
             
-    window = Export(paths[0], revision=options.revision)
+    window = SVNExport(paths[0], revision=options.revision)
     window.register_gtk_quit()
     gtk.main()

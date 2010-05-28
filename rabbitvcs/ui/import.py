@@ -25,7 +25,7 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.util.helper
@@ -33,18 +33,18 @@ import rabbitvcs.util.helper
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Import(InterfaceView):
+class SVNImport(InterfaceView):
     def __init__(self, path):
         InterfaceView.__init__(self, "import", "Import")
-        
         
         self.get_widget("Import").set_title(_("Import - %s") % path)
         
         self.path = path
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
         
-        if self.vcs.is_in_a_or_a_working_copy(path):
-            self.get_widget("repository").set_text(self.vcs.get_repo_url(path))
+        if self.svn.is_in_a_or_a_working_copy(path):
+            self.get_widget("repository").set_text(self.svn.get_repo_url(path))
         
         self.repositories = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("repositories"), 
@@ -72,15 +72,15 @@ class Import(InterfaceView):
         
         self.hide()
 
-        self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         
         self.action.append(self.action.set_header, _("Import"))
         self.action.append(self.action.set_status, _("Running Import Command..."))
         self.action.append(
-            self.vcs.import_, 
+            self.svn.import_, 
             self.path,
             url,
             self.message.get_text(),
@@ -96,10 +96,18 @@ class Import(InterfaceView):
         if message is not None:
             self.message.set_text(message)
 
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNImport
+}
+
+def import_factory(path):
+    guess = rabbitvcs.vcs.guess(path)
+    return classes_map[guess["vcs"]](path)
+
 if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main(usage="Usage: rabbitvcs import [path]")
             
-    window = Import(paths[0])
+    window = import_factory(paths[0])
     window.register_gtk_quit()
     gtk.main()

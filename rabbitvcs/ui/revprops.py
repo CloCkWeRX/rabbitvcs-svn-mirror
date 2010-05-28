@@ -29,7 +29,7 @@ import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.vcs
 from rabbitvcs.util.log import Log
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 
 log = Log("rabbitvcs.ui.revprops")
 
@@ -40,17 +40,23 @@ class SVNRevisionProperties(PropertiesBase):
     def __init__(self, path, revision=None):
         PropertiesBase.__init__(self, path)
         
+        self.svn = self.vcs.svn()
+        
+        if not self.svn.is_path_repository_url(path):
+            self.path = self.svn.get_repo_url(path)
+            self.get_widget("path").set_text(self.path)
+        
         self.revision = revision
         self.revision_obj = None
         if revision is not None:
-            self.revision_obj = self.vcs.revision("number", revision)
+            self.revision_obj = self.svn.revision("number", revision)
 
         self.load()
 
     def load(self):
         self.table.clear()
         try:
-            self.proplist = self.vcs.revproplist(
+            self.proplist = self.svn.revproplist(
                 self.get_widget("path").get_text(),
                 self.revision_obj
             )
@@ -66,14 +72,14 @@ class SVNRevisionProperties(PropertiesBase):
     def save(self):
         delete_recurse = self.get_widget("delete_recurse").get_active()
         
-        self.action = VCSAction(
-            self.vcs,
+        self.action = SVNAction(
+            self.svn,
             notification=False
         )
         
         for row in self.delete_stack:
             self.action.append(
-                self.vcs.revpropdel,
+                self.svn.revpropdel,
                 self.path, 
                 row[1], 
                 self.revision_obj, 
@@ -82,7 +88,7 @@ class SVNRevisionProperties(PropertiesBase):
 
         for row in self.table.get_items():
             self.action.append(
-                self.vcs.revpropset,
+                self.svn.revpropset,
                 row[1], 
                 row[2], 
                 self.path,

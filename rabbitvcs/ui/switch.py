@@ -26,7 +26,7 @@ import gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.log import LogDialog
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.util.helper
@@ -34,12 +34,13 @@ import rabbitvcs.util.helper
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Switch(InterfaceView):
+class SVNSwitch(InterfaceView):
     def __init__(self, path, revision=None):
         InterfaceView.__init__(self, "switch", "Switch")
 
         self.path = path
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
         
         self.get_widget("path").set_text(self.path)
         self.repositories = rabbitvcs.ui.widget.ComboBox(
@@ -49,13 +50,13 @@ class Switch(InterfaceView):
 
         self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("revision_container"),
-            self.vcs,
+            self.svn,
             revision=revision,
             url_combobox=self.repositories,
             expand=True
         )
         
-        self.repositories.set_child_text(self.vcs.get_repo_url(self.path))
+        self.repositories.set_child_text(self.svn.get_repo_url(self.path))
 
     def on_destroy(self, widget):
         self.destroy()
@@ -72,8 +73,8 @@ class Switch(InterfaceView):
 
         revision = self.revision_selector.get_revision_object()
         self.hide()
-        self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         
@@ -81,7 +82,7 @@ class Switch(InterfaceView):
         self.action.append(self.action.set_status, _("Running Switch Command..."))
         self.action.append(rabbitvcs.util.helper.save_repository_path, url)
         self.action.append(
-            self.vcs.switch,
+            self.svn.switch,
             self.path,
             url,
             revision=revision
@@ -90,6 +91,13 @@ class Switch(InterfaceView):
         self.action.append(self.action.finish)
         self.action.start()
 
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNSwitch
+}
+
+def switch_factory(path, revision=None):
+    guess = rabbitvcs.vcs.guess(path)
+    return classes_map[guess["vcs"]](path, revision)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main, REVISION_OPT
@@ -98,6 +106,6 @@ if __name__ == "__main__":
         usage="Usage: rabbitvcs switch [url]"
     )
             
-    window = Switch(args[0], revision=options.revision)
+    window = switch_factory(args[0], revision=options.revision)
     window.register_gtk_quit()
     gtk.main()

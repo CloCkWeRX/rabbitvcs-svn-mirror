@@ -95,14 +95,15 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         
         self.get_widget("wc_text").set_text(gnomevfs.get_uri_from_local_path(os.path.realpath(path)))
                 
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
                 
-        if not self.vcs.is_versioned(self.path):
+        if not self.svn.is_versioned(self.path):
             rabbitvcs.ui.dialog.MessageBox(_("File is not under version control."))
             self.close()
             return
         
-        self.get_widget("remote_uri_text").set_text(self.vcs.get_repo_url(path))
+        self.get_widget("remote_uri_text").set_text(self.svn.get_repo_url(path))
                
         self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
@@ -147,7 +148,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         propdets = {}
                 
         try:
-            propdets = self.vcs.propdetails(self.path)
+            propdets = self.svn.propdetails(self.path)
                        
         except Exception, e:
             log.exception(e)
@@ -177,13 +178,13 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
 
     def edit_property(self, name=""):
         
-        value = self.vcs.propget(self.path, name)
+        value = self.svn.propget(self.path, name)
         
         dialog = rabbitvcs.ui.dialog.Property(name, value)
         
         name,value,recurse = dialog.run()
         if name:
-            success = self.vcs.propset(self.path, name, value, overwrite=True, recurse=False)
+            success = self.svn.propset(self.path, name, value, overwrite=True, recurse=False)
             if not success:
                 rabbitvcs.ui.dialog.MessageBox(_("Unable to set new value for property."))
             
@@ -198,7 +199,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
             recursive = dialog.run()
         
         for name in names:
-            self.vcs.propdel(self.path, name, recurse=recursive)
+            self.svn.propdel(self.path, name, recurse=recursive)
 
         self.refresh()
 
@@ -218,7 +219,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
     def show_menu(self, data):
         # self.show_files_table_popup_menu(treeview, data)
         selected_propnames = self.table.get_selected_row_items(0)
-        propdetails = self.vcs.propdetails(self.path)
+        propdetails = self.svn.propdetails(self.path)
         
         filtered_details = {}
         for propname, detail in propdetails.items():
@@ -238,6 +239,7 @@ class PropMenuCallbacks:
         self.caller = caller
         self.propdetails = propdetails
         self.vcs = vcs
+        self.svn = self.vcs.svn()
 
     def property_edit(self, widget, *args):
         if self.propdetails.keys():
@@ -246,12 +248,12 @@ class PropMenuCallbacks:
             
     def property_delete(self, widget, *args):
         for propname in self.propdetails.keys():
-            self.vcs.propdel(self.path, propname, recurse=False)
+            self.svn.propdel(self.path, propname, recurse=False)
         self.caller.refresh()
     
     def property_delete_recursive(self, widget, *args):
         for propname in self.propdetails.keys():
-            self.vcs.propdel(self.path, propname, recurse=True)
+            self.svn.propdel(self.path, propname, recurse=True)
         self.caller.refresh()
     
     def property_revert(self, widget, *args):

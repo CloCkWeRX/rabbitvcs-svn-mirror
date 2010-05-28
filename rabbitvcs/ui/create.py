@@ -28,13 +28,10 @@ import rabbitvcs.ui.dialog
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Create:
+class SVNCreate:
     """
-    Provides an interface to create a vcs repository
+    Provides an interface to create a svn repository
     """
-    
-    # TODO: This class in massively Subversion-biased.  In the future, we'll
-    # need to refactor to make it platform-agnostic
     
     # Also, might want to just launch a terminal window instead of this
     def __init__(self, path):
@@ -49,15 +46,26 @@ class Create:
             rabbitvcs.ui.dialog.MessageBox(_("Repository successfully created"))
         else:
             rabbitvcs.ui.dialog.MessageBox(_("There was an error creating the repository.  Make sure the given folder is empty."))
-        
+
+class GitCreate:
+    # Also, might want to just launch a terminal window instead of this
+    def __init__(self, path):
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.git = self.vcs.git()
+        try:
+            self.git.initialize_repository(path)
+        except Exception, e:
+            rabbitvcs.ui.dialog.MessageBox(str(e))
+
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNCreate,
+    rabbitvcs.vcs.VCS_GIT: GitCreate
+}
+
 if __name__ == "__main__":
-    from os import getcwd
-    from sys import argv
-    
-    args = argv[1:]
-    path = getcwd()
-    if args:
-        if args[0] != ".":
-            path = args[0]
-            
-    Create(path)
+    from rabbitvcs.ui import main, VCS_OPT, VCS_OPT_ERROR
+    (options, paths) = main([VCS_OPT], usage="Usage: rabbitvcs create --vcs [svn|git] path")
+    if options.vcs:
+        classes_map[options.vcs](paths[0])
+    else:
+        rabbitvcs.ui.dialog.MessageBox(VCS_OPT_ERROR)

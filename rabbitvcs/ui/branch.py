@@ -36,7 +36,7 @@ import rabbitvcs.vcs.status
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Branch(InterfaceView):
+class SVNBranch(InterfaceView):
     """
     Provides a UI interface to copy/branch/tag items in the repository or
     working copy.
@@ -48,12 +48,13 @@ class Branch(InterfaceView):
     def __init__(self, path, revision=None):
         InterfaceView.__init__(self, "branch", "Branch")
         
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
         
         self.path = path
         self.revision = revision
         
-        status = self.vcs.summarized_status(self.path)
+        status = self.vcs.status(self.path)
         
         repo_paths = rabbitvcs.util.helper.get_repository_paths()
         self.from_urls = rabbitvcs.ui.widget.ComboBox(
@@ -65,7 +66,7 @@ class Branch(InterfaceView):
             rabbitvcs.util.helper.get_repository_paths()
         )
         
-        if self.vcs.is_path_repository_url(path):
+        if self.svn.is_path_repository_url(path):
             self.from_urls.set_child_text(path)
         else:
             self.to_urls.set_child_text(path)
@@ -76,7 +77,7 @@ class Branch(InterfaceView):
 
         self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("revision_container"),
-            self.vcs,
+            self.svn,
             revision=revision,
             url_combobox=self.from_urls,
             expand=True
@@ -101,8 +102,8 @@ class Branch(InterfaceView):
         
         revision = self.revision_selector.get_revision_object()
         self.hide()
-        self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         self.action.set_log_message(self.message.get_text())
@@ -114,7 +115,7 @@ class Branch(InterfaceView):
         
         self.action.append(self.action.set_header, _("Branch/tag"))
         self.action.append(self.action.set_status, _("Running Branch/tag Command..."))
-        self.action.append(self.vcs.copy, src, dest, revision)
+        self.action.append(self.svn.copy, src, dest, revision)
         self.action.append(self.action.set_status, _("Completed Branch/tag"))
         self.action.append(self.action.finish)
         self.action.start()
@@ -133,6 +134,14 @@ class Branch(InterfaceView):
     def on_repo_browser_closed(self, new_url):
         self.from_urls.set_child_text(new_url)
 
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNBranch
+}
+
+def branch_factory(path, revision=None):
+    guess = rabbitvcs.vcs.guess(path)
+    return classes_map[guess["vcs"]](path, revision)
+
 if __name__ == "__main__":
     from rabbitvcs.ui import main, REVISION_OPT
     (options, args) = main(
@@ -140,6 +149,6 @@ if __name__ == "__main__":
         usage="Usage: rabbitvcs branch [url_or_path]"
     )
 
-    window = Branch(args[0], options.revision)
+    window = branch_factory(args[0], options.revision)
     window.register_gtk_quit()
     gtk.main()

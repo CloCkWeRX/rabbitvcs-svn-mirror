@@ -40,15 +40,15 @@ class PropertyPage(rabbitvcs.ui.GladeWidgetWrapper):
     glade_filename = "property_page"
     glade_id = "property_page"
     
-    def __init__(self, paths, vcs = None):
+    def __init__(self, paths, vcs=None):
         rabbitvcs.ui.GladeWidgetWrapper.__init__(self)
         self.paths = paths
-        self.vcs_client = vcs or rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = vcs or rabbitvcs.vcs.VCS()
         
         self.info_pane = self.get_widget("property_page") 
         
         if len(paths) == 1:
-            file_info = FileInfoPane(paths[0], self.vcs_client)
+            file_info = FileInfoPane(paths[0], self.vcs)
             self.info_pane.pack_start(file_info.get_widget(),
                                       expand=False)
         elif len(paths) > 1:
@@ -70,7 +70,7 @@ class FileInfoPane(rabbitvcs.ui.GladeWidgetWrapper):
         rabbitvcs.ui.GladeWidgetWrapper.__init__(self)
         
         self.path = path
-        self.vcs = vcs or rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = vcs or rabbitvcs.vcs.VCS()
         self.checker = StatusChecker() 
                
         self.get_widget("file_name").set_text(os.path.basename(path))

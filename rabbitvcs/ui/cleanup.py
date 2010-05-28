@@ -25,13 +25,13 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceNonView
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.vcs
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Cleanup(InterfaceNonView):
+class SVNCleanup(InterfaceNonView):
     """
     This class provides a handler to the Cleanup window view.
     The idea is that it displays a large folder icon with a label like
@@ -43,17 +43,18 @@ class Cleanup(InterfaceNonView):
     def __init__(self, path):
         InterfaceNonView.__init__(self)
         self.path = path
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
 
     def start(self):
-        self.action = VCSAction(
-            self.vcs,
+        self.action = SVNAction(
+            self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         
         self.action.append(self.action.set_header, _("Cleanup"))
         self.action.append(self.action.set_status, _("Cleaning Up..."))
-        self.action.append(self.vcs.cleanup, self.path)
+        self.action.append(self.svn.cleanup, self.path)
         self.action.append(self.action.set_status, _("Completed Cleanup"))
         self.action.append(self.action.finish)
         self.action.start()
@@ -63,7 +64,7 @@ if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main(usage="Usage: rabbitvcs cleanup [path]")
             
-    window = Cleanup(paths[0])
+    window = SVNCleanup(paths[0])
     window.register_gtk_quit()
     window.start()
     gtk.main()

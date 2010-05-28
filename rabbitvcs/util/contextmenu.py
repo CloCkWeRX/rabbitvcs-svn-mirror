@@ -339,7 +339,7 @@ class ContextMenuCallbacks:
     # End debugging callbacks
 
     def checkout(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window("checkout", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("checkout", ["--vcs", "svn"] + self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
     
     def update(self, widget, data1=None, data2=None):

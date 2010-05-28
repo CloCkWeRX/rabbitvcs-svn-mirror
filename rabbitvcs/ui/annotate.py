@@ -31,7 +31,7 @@ import time
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.log import LogDialog
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.ui.widget
 from rabbitvcs.ui.dialog import MessageBox
 import rabbitvcs.util.helper
@@ -61,26 +61,7 @@ class Annotate(InterfaceView):
         InterfaceView.__init__(self, "annotate", "Annotate")
 
         self.get_widget("Annotate").set_title(_("Annotate - %s") % path)
-        
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
-        
-        if revision is None:
-            revision = "HEAD"
-        
-        self.path = path
-        self.get_widget("from").set_text(str(1))
-        self.get_widget("to").set_text(str(revision))
-
-        self.table = rabbitvcs.ui.widget.Table(
-            self.get_widget("table"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [_("Line"), _("Revision"), _("Author"), 
-                _("Date"), _("Text")]
-        )
-        self.table.allow_multiple()
-        
-        self.load()
+        self.vcs = rabbitvcs.vcs.VCS()
         
     def on_destroy(self, widget):
         self.destroy()
@@ -107,7 +88,48 @@ class Annotate(InterfaceView):
     def on_to_log_closed(self, data):
         if data is not None:
             self.get_widget("to").set_text(data)
+    
+    @gtk_unsafe
+    def enable_saveas(self):
+        self.get_widget("save").set_sensitive(True)
 
+    def disable_saveas(self):
+        self.get_widget("save").set_sensitive(False)
+
+    def save(self, path=None):
+        if path is None:
+            from rabbitvcs.ui.dialog import FileSaveAs
+            dialog = FileSaveAs()
+            path = dialog.run()
+
+        if path is not None:
+            fh = open(path, "w")
+            fh.write(self.generate_string_from_result())
+            fh.close()
+
+class SVNAnnotate(Annotate):
+    def __init__(self, path, revision=None):
+        Annotate.__init__(self, path, revision)
+
+        self.svn = self.vcs.svn()
+
+        if revision is None:
+            revision = "HEAD"
+        
+        self.path = path
+        self.get_widget("from").set_text(str(1))
+        self.get_widget("to").set_text(str(revision))
+
+        self.table = rabbitvcs.ui.widget.Table(
+            self.get_widget("table"),
+            [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING, 
+                gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [_("Line"), _("Revision"), _("Author"), 
+                _("Date"), _("Text")]
+        )
+        self.table.allow_multiple()
+        
+        self.load()
 
     #
     # Helper methods
@@ -121,19 +143,19 @@ class Annotate(InterfaceView):
             MessageBox(_("The from revision field must be an integer"))
             return
              
-        from_rev = self.vcs.revision("number", number=int(from_rev_num))
+        from_rev = self.svn.revision("number", number=int(from_rev_num))
         
-        to_rev = self.vcs.revision("head")
+        to_rev = self.svn.revision("head")
         if to_rev_num.isdigit():
             to_rev = self.vcs.revision("number", number=int(to_rev_num))
         
-        self.action = VCSAction(
-            self.vcs,
+        self.action = SVNAction(
+            self.svn,
             notification=False
         )    
 
         self.action.append(
-            self.vcs.annotate,
+            self.svn.annotate,
             self.path,
             from_rev,
             to_rev
@@ -184,24 +206,14 @@ class Annotate(InterfaceView):
             )
         
         return text
-    
-    @gtk_unsafe
-    def enable_saveas(self):
-        self.get_widget("save").set_sensitive(True)
 
-    def disable_saveas(self):
-        self.get_widget("save").set_sensitive(False)
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNAnnotate
+}
 
-    def save(self, path=None):
-        if path is None:
-            from rabbitvcs.ui.dialog import FileSaveAs
-            dialog = FileSaveAs()
-            path = dialog.run()
-
-        if path is not None:
-            fh = open(path, "w")
-            fh.write(self.generate_string_from_result())
-            fh.close()
+def annotate_factory(path, revision=None):
+    guess = rabbitvcs.vcs.guess(path)
+    return classes_map[guess["vcs"]](path, revision)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
@@ -209,6 +221,6 @@ if __name__ == "__main__":
     
     pathrev = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
 
-    window = Annotate(pathrev[0], pathrev[1])
+    window = annotate_factory(pathrev[0], pathrev[1])
     window.register_gtk_quit()
     gtk.main()

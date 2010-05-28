@@ -62,8 +62,9 @@ class Add(InterfaceView, GtkContextMenuCaller):
         self.base_dir = base_dir
         self.last_row_clicked = None
         self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
         self.items = []
-        self.statuses = self.vcs.STATUSES_FOR_ADD
+        self.statuses = self.svn.STATUSES_FOR_ADD
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
             [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH,
@@ -148,13 +149,13 @@ class Add(InterfaceView, GtkContextMenuCaller):
 
         self.hide()
 
-        self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         self.action.append(self.action.set_header, _("Add"))
         self.action.append(self.action.set_status, _("Running Add Command..."))
-        self.action.append(self.vcs.add, items)
+        self.action.append(self.svn.add, items)
         self.action.append(self.action.set_status, _("Completed Add"))
         self.action.append(self.action.finish)
         self.action.start()
@@ -182,13 +183,14 @@ class Add(InterfaceView, GtkContextMenuCaller):
 
 class AddQuiet:
     def __init__(self, paths):
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
-        self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs,
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             run_in_thread=False
         )
 
-        self.action.append(self.vcs.add, paths)
+        self.action.append(self.svn.add, paths)
         self.action.run()
 
 if __name__ == "__main__":

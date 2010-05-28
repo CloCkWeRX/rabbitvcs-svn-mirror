@@ -28,7 +28,7 @@ import gtk
 
 from rabbitvcs.ui import InterfaceView, InterfaceNonView
 from rabbitvcs.ui.add import Add
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
@@ -40,7 +40,7 @@ log = Log("rabbitvcs.ui.unlock")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Unlock(Add):
+class SVNUnlock(Add):
     def __init__(self, paths, base_dir):
         InterfaceView.__init__(self, "add", "Add")
 
@@ -50,7 +50,8 @@ class Unlock(Add):
         self.paths = paths
         self.base_dir = base_dir
         self.last_row_clicked = None
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
         self.items = None
         self.statuses = None
         self.files_table = rabbitvcs.ui.widget.Table(
@@ -90,10 +91,10 @@ class Unlock(Add):
         found = 0
         for item in self.items:
             # FIXME: ...
-            if item.content in (self.vcs.STATUS["unversioned"], self.vcs.STATUS["ignored"]):
+            if item.content in (rabbitvcs.vcs.status.status_unversioned, rabbitvcs.vcs.status.status_ignored):
                 continue
                 
-            if not self.vcs.is_locked(item.path):
+            if not self.svn.is_locked(item.path):
                 continue
         
             self.files_table.append([
@@ -116,20 +117,20 @@ class Unlock(Add):
             return
         self.hide()
 
-        self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         
         self.action.append(self.action.set_header, _("Unlock"))
         self.action.append(self.action.set_status, _("Running Unlock Command..."))
         for item in items:
-            self.action.append(self.vcs.unlock, item, force=True)
+            self.action.append(self.svn.unlock, item, force=True)
         self.action.append(self.action.set_status, _("Completed Unlock"))
         self.action.append(self.action.finish)
         self.action.start()
 
-class UnlockQuick(InterfaceNonView):
+class SVNUnlockQuiet(InterfaceNonView):
     """
     This class provides a handler to unlock functionality.
     
@@ -138,19 +139,35 @@ class UnlockQuick(InterfaceNonView):
     def __init__(self, paths):
         InterfaceNonView.__init__(self)
         self.path = paths
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
 
     def start(self):
         for path in self.paths:
-            self.vcs.unlock(self.paths, force=True)
-        
+            self.svn.unlock(self.paths, force=True)
+
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNUnlock
+}
+
+quiet_classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNUnlockQuiet
+}
+
+def unlock_factory(cmap, paths, base_dir=None):
+    guess = rabbitvcs.vcs.guess(paths[0])
+    return cmap[guess["vcs"]](paths, base_dir)
+
 if __name__ == "__main__":
-    from rabbitvcs.ui import main, BASEDIR_OPT
+    from rabbitvcs.ui import main, BASEDIR_OPT, QUIET_OPT
     (options, paths) = main(
-        [BASEDIR_OPT],
+        [BASEDIR_OPT, QUIET_OPT],
         usage="Usage: rabbitvcs unlock [path1] [path2] ..."
     )
         
-    window = Unlock(paths, options.base_dir)
-    window.register_gtk_quit()
-    gtk.main()
+    if options.quiet:
+        unlock_factory(quiet_classes_map, paths)
+    else:
+        window = unlock_factory(classes_map, paths, options.base_dir)
+        window.register_gtk_quit()
+        gtk.main()

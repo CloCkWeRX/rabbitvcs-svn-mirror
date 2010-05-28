@@ -30,7 +30,7 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 from rabbitvcs.ui.dialog import MessageBox
 from rabbitvcs.util.contextmenu import GtkContextMenu
 from rabbitvcs.util.contextmenuitems import *
@@ -46,7 +46,7 @@ DATETIME_FORMAT = rabbitvcs.util.helper.LOCAL_DATETIME_FORMAT
 
 REVISION_LABEL = _("Revision")
 
-class Log(InterfaceView):
+class SVNLog(InterfaceView):
     """
     Provides an interface to the Log UI
     
@@ -68,7 +68,8 @@ class Log(InterfaceView):
         InterfaceView.__init__(self, "log", "Log")
 
         self.get_widget("Log").set_title(_("Log - %s") % path)
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
         
         self.path = path
         self.cache = LogCache()
@@ -109,7 +110,7 @@ class Log(InterfaceView):
         )
 
         self.stop_on_copy = False
-        self.root_url = self.vcs.get_repo_root_url(self.path)
+        self.root_url = self.svn.get_repo_root_url(self.path)
         self.load_or_refresh()
 
     #
@@ -215,7 +216,7 @@ class Log(InterfaceView):
         revisions = []
         for row in self.revisions_table.get_selected_rows():
             revisions.append({
-                "revision": self.vcs.revision("number", number=self.revision_items[row].revision.number),
+                "revision": self.svn.revision("number", number=self.revision_items[row].revision.number),
                 "author": self.revision_items[row].author,
                 "message": self.revision_items[row].message
             })
@@ -240,7 +241,7 @@ class Log(InterfaceView):
         revisions = []
         for row in self.revisions_table.get_selected_rows():
             revisions.append({
-                "revision": self.vcs.revision("number", number=self.revision_items[row].revision.number),
+                "revision": self.svn.revision("number", number=self.revision_items[row].revision.number),
                 "author": self.revision_items[row].author,
                 "message": self.revision_items[row].message
             })
@@ -369,17 +370,17 @@ class Log(InterfaceView):
     def load(self):
         self.set_loading(True)
         
-        self.action = VCSAction(
-            self.vcs,
+        self.action = SVNAction(
+            self.svn,
             notification=False
         )        
 
-        start = self.vcs.revision("head")
+        start = self.svn.revision("head")
         if self.rev_start:
-            start = self.vcs.revision("number", number=self.rev_start)
+            start = self.svn.revision("number", number=self.rev_start)
 
         self.action.append(
-            self.vcs.log, 
+            self.svn.log, 
             self.path,
             revision_start=start,
             limit=self.limit+1,
@@ -402,8 +403,8 @@ class Log(InterfaceView):
         if earliest_revision_number == None:
             earliest_revision_number = latest_revision_number
         
-        self.action = VCSAction(
-            self.vcs,
+        self.action = SVNAction(
+            self.svn,
             notification=False
         )
         self.action.append(
@@ -419,21 +420,21 @@ class Log(InterfaceView):
     def edit_revprop(self, prop_name, prop_value, callback=None):
 
         failure = False
-        url = self.vcs.get_repo_url(self.path)
+        url = self.svn.get_repo_url(self.path)
 
-        self.action = VCSAction(
-            self.vcs,
+        self.action = SVNAction(
+            self.svn,
             notification=False
         )
 
         for row in self.revisions_table.get_selected_rows():
             item = self.revision_items[row]
             self.action.append(
-                self.vcs.revpropset,
+                self.svn.revpropset,
                 prop_name,
                 prop_value,
                 url,
-                self.vcs.revision("number", item.revision.number)
+                self.svn.revision("number", item.revision.number)
             )
             
             callback(row, prop_value)
@@ -554,8 +555,8 @@ class MenuEditRevisionProperties(MenuItem):
     icon = gtk.STOCK_EDIT
 
 class LogTopContextMenuConditions:
-    def __init__(self, vcs_client, path, revisions):
-        self.vcs_client = vcs_client
+    def __init__(self, vcs, path, revisions):
+        self.vcs = vcs
         self.path = path
         self.revisions = revisions
         
@@ -611,16 +612,17 @@ class LogTopContextMenuConditions:
         return True
 
 class LogTopContextMenuCallbacks:
-    def __init__(self, caller, vcs_client, path, revisions):
+    def __init__(self, caller, vcs, path, revisions):
         self.caller = caller
-        self.vcs_client = vcs_client
+        self.vcs = vcs
+        self.svn = self.vcs.svn()
         self.path = path
         self.revisions = revisions
         
     def view_diff_working_copy(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
-        self.action = VCSAction(
-            self.vcs_client,
+        self.action = SVNAction(
+            self.svn,
             notification=False
         )
         self.action.append(
@@ -634,8 +636,8 @@ class LogTopContextMenuCallbacks:
         from rabbitvcs.ui.diff import SVNDiff
 
         item = self.revisions[0]["revision"]
-        self.action = VCSAction(
-            self.vcs_client,
+        self.action = SVNAction(
+            self.svn,
             notification=False
         )
         self.action.append(
@@ -653,13 +655,13 @@ class LogTopContextMenuCallbacks:
         rev_first = self.revisions[0]["revision"].value
         rev_second = self.revisions[-1]["revision"].value
         
-        self.action = VCSAction(
-            self.vcs_client,
+        self.action = SVNAction(
+            self.svn,
             notification=False
         )
         self.action.append(
             SVNDiff,
-            self.vcs_client.get_repo_url(self.path), 
+            self.svn.get_repo_url(self.path), 
             rev_second, 
             self.path, 
             rev_first
@@ -668,13 +670,13 @@ class LogTopContextMenuCallbacks:
 
     def compare_working_copy(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
-        self.action = VCSAction(
-            self.vcs_client,
+        self.action = SVNAction(
+            self.svn,
             notification=False
         )
         self.action.append(
             SVNDiff,
-            self.vcs_client.get_repo_url(self.path), 
+            self.svn.get_repo_url(self.path), 
             self.revisions[0]["revision"],
             self.path,
             sidebyside=True
@@ -684,10 +686,10 @@ class LogTopContextMenuCallbacks:
     def compare_previous_revision(self, widget, data=None):
         from rabbitvcs.ui.diff import SVNDiff
 
-        url = self.vcs_client.get_repo_url(self.path)
+        url = self.svn.get_repo_url(self.path)
         item = self.revisions[0]["revision"]
-        self.action = VCSAction(
-            self.vcs_client,
+        self.action = SVNAction(
+            self.svn,
             notification=False
         )
         self.action.append(
@@ -706,15 +708,15 @@ class LogTopContextMenuCallbacks:
         rev_first = self.revisions[0]["revision"].value
         rev_second = self.revisions[-1]["revision"].value
         
-        self.action = VCSAction(
-            self.vcs_client,
+        self.action = SVNAction(
+            self.svn,
             notification=False
         )
         self.action.append(
             SVNDiff,
-            self.vcs_client.get_repo_url(self.path), 
+            self.svn.get_repo_url(self.path), 
             rev_second, 
-            self.vcs_client.get_repo_url(self.path), 
+            self.svn.get_repo_url(self.path), 
             rev_first,
             sidebyside=True
         )
@@ -724,7 +726,7 @@ class LogTopContextMenuCallbacks:
         from rabbitvcs.ui.changes import Changes
         rev_first = self.revisions[0]["revision"].value
         rev_last = rev_first - 1
-        path = self.vcs_client.get_repo_url(self.path)
+        path = self.svn.get_repo_url(self.path)
 
         # FIXME: why does this have the opposite sense to the callback from the
         # paths list?
@@ -739,7 +741,7 @@ class LogTopContextMenuCallbacks:
         from rabbitvcs.ui.changes import Changes
         rev_first = self.revisions[0]["revision"].value
         rev_last = self.revisions[-1]["revision"].value
-        path = self.vcs_client.get_repo_url(self.path)
+        path = self.svn.get_repo_url(self.path)
 
         # FIXME: why does this have the opposite sense to the callback from the
         # paths list?
@@ -751,16 +753,16 @@ class LogTopContextMenuCallbacks:
         )
 
     def update_to_this_revision(self, widget, data=None):
-        action = VCSAction(
-            self.vcs_client
+        action = SVNAction(
+            self.svn
         )
 
         action.append(action.set_header, _("Update To Revision"))
         action.append(action.set_status, _("Updating..."))
         action.append(
-            self.vcs_client.update, 
+            self.svn.update, 
             self.path,
-            revision=self.vcs_client.revision("number", self.revisions[0]["revision"].value),
+            revision=self.svn.revision("number", self.revisions[0]["revision"].value),
             recurse=True,
             ignore_externals=False
         )
@@ -770,7 +772,7 @@ class LogTopContextMenuCallbacks:
         
     def checkout(self, widget, data=None):
         from rabbitvcs.ui.checkout import Checkout
-        url = self.vcs_client.get_repo_url(self.path)
+        url = self.svn.get_repo_url(self.path)
         Checkout(url=url, revision=self.revisions[0]["revision"].value).show()
 
     def branch_tag(self, widget, data=None):
@@ -807,7 +809,7 @@ class LogTopContextMenuCallbacks:
 
     def edit_revision_properties(self, widget, data=None):
         from rabbitvcs.ui.revprops import SVNRevisionProperties
-        url = self.vcs_client.get_repo_url(self.path)
+        url = self.svn.get_repo_url(self.path)
         SVNRevisionProperties(url, self.revisions[0]["revision"].value)
 
 class LogTopContextMenu:
@@ -834,17 +836,18 @@ class LogTopContextMenu:
         self.event = event
         self.path = path
         self.revisions = revisions
-        self.vcs_client = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
 
         self.conditions = LogTopContextMenuConditions(
-            self.vcs_client, 
+            self.vcs, 
             self.path, 
             self.revisions
         )
         
         self.callbacks = LogTopContextMenuCallbacks(
             self.caller,
-            self.vcs_client, 
+            self.vcs, 
             self.path,
             self.revisions
         )
@@ -881,8 +884,8 @@ class LogTopContextMenu:
 
 
 class LogBottomContextMenuConditions:
-    def __init__(self, vcs_client, paths, revisions):
-        self.vcs_client = vcs_client
+    def __init__(self, vcs, paths, revisions):
+        self.vcs = vcs
         self.paths = paths
         self.revisions = revisions
 
@@ -923,9 +926,10 @@ class LogBottomContextMenuConditions:
         return True
 
 class LogBottomContextMenuCallbacks:
-    def __init__(self, caller, vcs_client, paths, revisions):
+    def __init__(self, caller, vcs, paths, revisions):
         self.caller = caller
-        self.vcs_client = vcs_client
+        self.vcs = vcs
+        self.svn = self.vcs.svn()
         self.paths = paths
         self.revisions = revisions
 
@@ -988,8 +992,8 @@ class LogBottomContextMenuCallbacks:
         )
 
     def _open(self, widget, data=None):
-        self.action = VCSAction(
-            self.vcs_client,
+        self.action = SVNAction(
+            self.svn,
             notification=False
         )
 
@@ -999,7 +1003,7 @@ class LogBottomContextMenuCallbacks:
             url = self.caller.root_url + path
             dest = "/tmp/rabbitvcs-" + str(self.revisions[0]["revision"].value) + "-" + os.path.basename(path)
             self.action.append(
-                self.vcs_client.export,
+                self.svn.export,
                 url,
                 dest,
                 revision=self.revisions[0]["revision"]
@@ -1041,17 +1045,18 @@ class LogBottomContextMenu:
         self.event = event
         self.paths = paths
         self.revisions = revisions
-        self.vcs_client = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
 
         self.conditions = LogBottomContextMenuConditions(
-            self.vcs_client, 
+            self.vcs, 
             self.paths, 
             self.revisions
         )
         
         self.callbacks = LogBottomContextMenuCallbacks(
             self.caller,
-            self.vcs_client, 
+            self.vcs, 
             self.paths,
             self.revisions
         )
@@ -1078,11 +1083,18 @@ class LogBottomContextMenu:
         context_menu = GtkContextMenu(self.structure, self.conditions, self.callbacks)
         context_menu.show(self.event)
 
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNLog
+}
+
+def log_factory(path):
+    guess = rabbitvcs.vcs.guess(path)
+    return classes_map[guess["vcs"]](path)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main(usage="Usage: rabbitvcs log [url_or_path]")
             
-    window = Log(paths[0])
+    window = log_factory(paths[0])
     window.register_gtk_quit()
     gtk.main()

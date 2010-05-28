@@ -29,8 +29,8 @@ import gtk
 from time import sleep
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.ui.action import VCSAction
 from rabbitvcs.util.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
+import rabbitvcs.ui.action
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.util

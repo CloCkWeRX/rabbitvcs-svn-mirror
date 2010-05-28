@@ -33,7 +33,8 @@ import gobject
 import gtk
 import gtk.glade
 
-from rabbitvcs import APP_NAME, LOCALE_DIR
+from rabbitvcs import APP_NAME, LOCALE_DIR, gettext
+_ = gettext.gettext
 
 import rabbitvcs.vcs.status
 
@@ -45,6 +46,8 @@ QUIET_OPT = (["-q", "--quiet"], {
     "default":  False
 })
 VCS_OPT = (["--vcs"], {"help":"specify the version control system"})
+
+VCS_OPT_ERROR = _("You must specify a version control system using the --vcs [svn|git] option")
 
 #: Maps statuses to emblems.
 STATUS_EMBLEMS = {

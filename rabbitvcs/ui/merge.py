@@ -26,7 +26,7 @@ import gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.log import LogDialog
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.vcs
 import rabbitvcs.ui.widget
 import rabbitvcs.util.helper
@@ -34,7 +34,7 @@ import rabbitvcs.util.helper
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Merge(InterfaceView):
+class SVNMerge(InterfaceView):
     def __init__(self, path):
         InterfaceView.__init__(self, "merge", "Merge")
         
@@ -45,9 +45,10 @@ class Merge(InterfaceView):
         
         self.page = self.assistant.get_nth_page(0)
         
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
         
-        if not self.vcs.has_merge2():
+        if not self.svn.has_merge2():
             self.get_widget("mergetype_range_opt").set_sensitive(False)
             self.get_widget("mergetype_tree_opt").set_active(True)
             self.get_widget("mergeoptions_only_record").set_active(False)
@@ -94,10 +95,10 @@ class Merge(InterfaceView):
         ignore_ancestry = self.get_widget("mergeoptions_ignore_ancestry").get_active()
         
         record_only = False
-        if self.vcs.has_merge2():
+        if self.svn.has_merge2():
             record_only = self.get_widget("mergeoptions_only_record").get_active()
 
-        action = VCSAction(self.vcs, register_gtk_quit=(not test))
+        action = SVNAction(self.svn, register_gtk_quit=(not test))
         action.append(action.set_header, _("Merge"))
         action.append(action.set_status, startcmd)
         
@@ -106,7 +107,7 @@ class Merge(InterfaceView):
         
         if self.type == "range":
             url = self.get_widget("mergerange_from_url").get_text()
-            head_revision = self.vcs.get_head(self.path)
+            head_revision = self.svn.get_head(self.path)
             revisions = self.get_widget("mergerange_revisions").get_text()
             if revisions == "":
                 revisions = "head"
@@ -125,16 +126,16 @@ class Merge(InterfaceView):
                 # Before pysvn v1.6.3, there was a bug that required the ranges 
                 # tuple to have three elements, even though only two were used
                 # Fixed in Pysvn Revision 1114
-                if (self.vcs.interface == "pysvn" and self.vcs.is_version_less_than((1,6,3,0))):
+                if (self.svn.interface == "pysvn" and self.svn.is_version_less_than((1,6,3,0))):
                     ranges.append((
-                        self.vcs.revision("number", number=int(low)).primitive(),
-                        self.vcs.revision("number", number=int(high)).primitive(),
+                        self.svn.revision("number", number=int(low)).primitive(),
+                        self.svn.revision("number", number=int(high)).primitive(),
                         None
                     ))
                 else:
                     ranges.append((
-                        self.vcs.revision("number", number=int(low)).primitive(),
-                        self.vcs.revision("number", number=int(high)).primitive(),
+                        self.svn.revision("number", number=int(low)).primitive(),
+                        self.svn.revision("number", number=int(high)).primitive(),
                     ))
 
             action.append(rabbitvcs.util.helper.save_repository_path, url)
@@ -142,10 +143,10 @@ class Merge(InterfaceView):
             # Build up args and kwargs because some args are not supported
             # with older versions of pysvn/svn
             args = (
-                self.vcs.merge_ranges,
+                self.svn.merge_ranges,
                 url,
                 ranges,
-                self.vcs.revision("head"),
+                self.svn.revision("head"),
                 self.path
             )
             kwargs = {
@@ -157,16 +158,16 @@ class Merge(InterfaceView):
 
         elif self.type == "tree":
             from_url = self.get_widget("mergetree_from_url").get_text()
-            from_revision = self.vcs.revision("head")
+            from_revision = self.svn.revision("head")
             if self.get_widget("mergetree_from_revision_number_opt").get_active():
-                from_revision = self.vcs.revision(
+                from_revision = self.svn.revision(
                     "number",
                     number=int(self.get_widget("mergetree_from_revision_number").get_text())
                 )
             to_url = self.get_widget("mergetree_to_url").get_text()
-            to_revision = self.vcs.revision("head")
+            to_revision = self.svn.revision("head")
             if self.get_widget("mergetree_to_revision_number_opt").get_active():
-                to_revision = self.vcs.revision(
+                to_revision = self.svn.revision(
                     "number",
                     number=int(self.get_widget("mergetree_to_revision_number").get_text())
                 )
@@ -177,7 +178,7 @@ class Merge(InterfaceView):
             # Build up args and kwargs because some args are not supported
             # with older versions of pysvn/svn
             args = (
-                self.vcs.merge_trees,
+                self.svn.merge_trees,
                 from_url,
                 from_revision,
                 to_url,
@@ -365,6 +366,6 @@ if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main(usage="Usage: rabbitvcs merge [path]")
             
-    window = Merge(paths[0])
+    window = SVNMerge(paths[0])
     window.register_gtk_quit()
     gtk.main()

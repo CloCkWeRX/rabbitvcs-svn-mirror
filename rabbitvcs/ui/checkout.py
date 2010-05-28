@@ -211,25 +211,15 @@ classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNCheckout
 }
 
-def checkout_factory(classes_map, vcs, path=None, url=None, revision=None):
+def checkout_factory(vcs, path=None, url=None, revision=None):
     return classes_map[vcs](path, url, revision)
 
-CLI_OPTIONS = {
-    'svn': rabbitvcs.vcs.VCS_SVN,
-    'git': rabbitvcs.vcs.VCS_GIT
-               }
-
 if __name__ == "__main__":
-    from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT
+    from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT, VCS_OPT_ERROR
     (options, args) = main(
         [REVISION_OPT, VCS_OPT],
         usage="Usage: rabbitvcs checkout --vcs=svn [url] [path]"
     )
-    
-    vcs = rabbitvcs.vcs.VCS_SVN
-    if options.vcs:
-        # FIXME: is this sensible?
-        vcs = CLI_OPTIONS.get(options.vcs, rabbitvcs.vcs.VCS_DUMMY)
     
     # If two arguments are passed:
     #   The first argument is expected to be a url
@@ -247,6 +237,9 @@ if __name__ == "__main__":
         else:
             url = args[0]
 
-    window = checkout_factory(classes_map, vcs, path=path, url=url, revision=options.revision)
-    window.register_gtk_quit()
-    gtk.main()
+    if options.vcs:
+        window = checkout_factory(options.vcs, path=path, url=url, revision=options.revision)
+        window.register_gtk_quit()
+        gtk.main()
+    else:
+        rabbitvcs.ui.dialog.MessageBox(VCS_OPT_ERROR)

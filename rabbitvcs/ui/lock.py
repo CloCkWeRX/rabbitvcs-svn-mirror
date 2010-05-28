@@ -28,7 +28,7 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 from rabbitvcs.util.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
 from rabbitvcs.ui.log import LogDialog
 import rabbitvcs.ui.widget
@@ -44,7 +44,7 @@ _ = gettext.gettext
 
 gtk.gdk.threads_init()
 
-class Lock(InterfaceView, GtkContextMenuCaller):
+class SVNLock(InterfaceView, GtkContextMenuCaller):
     """
     Provides an interface to lock any number of files in a working copy.
     
@@ -63,7 +63,8 @@ class Lock(InterfaceView, GtkContextMenuCaller):
 
         self.paths = paths
         self.base_dir = base_dir
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
 
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
@@ -122,9 +123,9 @@ class Lock(InterfaceView, GtkContextMenuCaller):
         for item in self.items:
         
             locked = ""
-            if self.vcs.is_locked(item.path):
+            if self.svn.is_locked(item.path):
                 locked = _("Yes")
-            if not self.vcs.is_versioned(item.path):
+            if not self.svn.is_versioned(item.path):
                 continue
         
             self.files_table.append([
@@ -159,8 +160,8 @@ class Lock(InterfaceView, GtkContextMenuCaller):
         
         self.hide()
 
-        self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         
@@ -169,7 +170,7 @@ class Lock(InterfaceView, GtkContextMenuCaller):
         self.action.append(rabbitvcs.util.helper.save_log_message, message)
         for path in items:
             self.action.append(
-                self.vcs.lock, 
+                self.svn.lock, 
                 path,
                 message,
                 force=steal_locks
@@ -192,7 +193,15 @@ class Lock(InterfaceView, GtkContextMenuCaller):
         message = dialog.run()
         if message is not None:
             self.message.set_text(message)
-    
+
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNLock
+}
+
+def lock_factory(paths, base_dir):
+    guess = rabbitvcs.vcs.guess(paths[0])
+    return classes_map[guess["vcs"]](paths, base_dir)
+
 if __name__ == "__main__":
     from rabbitvcs.ui import main, BASEDIR_OPT
     (options, paths) = main(
@@ -200,6 +209,6 @@ if __name__ == "__main__":
         usage="Usage: rabbitvcs lock [path1] [path2] ..."
     )
 
-    window = Lock(paths, options.base_dir)
+    window = lock_factory(paths, options.base_dir)
     window.register_gtk_quit()
     gtk.main()

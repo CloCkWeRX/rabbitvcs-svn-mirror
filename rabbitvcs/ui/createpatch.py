@@ -32,14 +32,14 @@ import tempfile
 import shutil
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.util
 import rabbitvcs.util.helper
 from rabbitvcs.util.helper import get_common_directory
 from rabbitvcs.util.log import Log
-from rabbitvcs.ui.commit import Commit
+from rabbitvcs.ui.commit import SVNCommit
 
 log = Log("rabbitvcs.ui.createpatch")
 
@@ -48,7 +48,7 @@ _ = gettext.gettext
 
 gtk.gdk.threads_init()
 
-class CreatePatch(Commit):
+class CreatePatch:
     """
     Provides a user interface for the user to create a Patch file
     
@@ -72,11 +72,43 @@ class CreatePatch(Commit):
 
         self.paths = paths
         self.base_dir = base_dir
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
-        self.common = rabbitvcs.util.helper.get_common_directory(paths)
+        self.vcs = rabbitvcs.vcs.VCS()
         self.activated_cache = {}
 
-        if not self.vcs.get_versioned_path(self.common):
+    #
+    # Helper functions
+    # 
+
+    def choose_patch_path(self):
+        path = ""
+        
+        dialog = gtk.FileChooserDialog(
+            _("Create Patch"),
+            None,
+            gtk.FILE_CHOOSER_ACTION_SAVE,(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                                          gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+        dialog.set_do_overwrite_confirmation(True)
+        dialog.set_default_response(gtk.RESPONSE_OK)
+        dialog.set_current_folder_uri(
+            gnomevfs.get_uri_from_local_path(get_common_directory(self.paths))
+        )
+        response = dialog.run()
+        
+        if response == gtk.RESPONSE_OK:
+            path = dialog.get_filename()
+            
+        dialog.destroy()
+        
+        return path
+
+class SVNCreatePatch(CreatePatch, SVNCommit):
+    def __init__(self, paths, base_dir=None):
+        CreatePatch.__init__(self, paths, base_dir)
+
+        self.svn = self.vcs.svn()
+        self.common = rabbitvcs.util.helper.get_common_directory(paths)
+
+        if not self.svn.get_versioned_path(self.common):
             rabbitvcs.ui.dialog.MessageBox(_("The given path is not a working copy"))
             raise SystemExit()
 
@@ -105,32 +137,6 @@ class CreatePatch(Commit):
         self.initialize_items()
 
     #
-    # Helper functions
-    # 
-
-    def choose_patch_path(self):
-        path = ""
-        
-        dialog = gtk.FileChooserDialog(
-            _("Create Patch"),
-            None,
-            gtk.FILE_CHOOSER_ACTION_SAVE,(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                                          gtk.STOCK_SAVE, gtk.RESPONSE_OK))
-        dialog.set_do_overwrite_confirmation(True)
-        dialog.set_default_response(gtk.RESPONSE_OK)
-        dialog.set_current_folder_uri(
-            gnomevfs.get_uri_from_local_path(get_common_directory(self.paths))
-        )
-        response = dialog.run()
-        
-        if response == gtk.RESPONSE_OK:
-            path = dialog.get_filename()
-            
-        dialog.destroy()
-        
-        return path
-
-    #
     # Event handlers
     #
         
@@ -148,8 +154,8 @@ class CreatePatch(Commit):
             return
       
         ticks = len(items)*2
-        self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         self.action.set_pbar_ticks(ticks)
@@ -167,12 +173,12 @@ class CreatePatch(Commit):
             # Add to the Patch file only the selected items
             for item in patch_items:
                 rel_path = rabbitvcs.util.helper.get_relative_path(base_dir, item)
-                diff_text = self.vcs.diff(
+                diff_text = self.svn.diff(
                     temp_dir, 
                     rel_path, 
-                    self.vcs.revision("base"), 
+                    self.svn.revision("base"), 
                     rel_path, 
-                    self.vcs.revision("working")
+                    self.svn.revision("working")
                 )
                 fileObj.write(diff_text)
     
@@ -191,6 +197,14 @@ class CreatePatch(Commit):
         # TODO: Open the diff file (meld is going to add support in a future version :()
         # rabbitvcs.util.helper.launch_diff_tool(path)
 
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNCreatePatch
+}
+
+def createpatch_factory(paths, base_dir):
+    guess = rabbitvcs.vcs.guess(paths[0])
+    return classes_map[guess["vcs"]](paths, base_dir)
+
 if __name__ == "__main__":
     from rabbitvcs.ui import main, BASEDIR_OPT
     (options, paths) = main(
@@ -198,6 +212,6 @@ if __name__ == "__main__":
         usage="Usage: rabbitvcs createpatch [path1] [path2] ..."
     )
         
-    window = CreatePatch(paths, options.base_dir)
+    window = createpatch_factory(paths, options.base_dir)
     window.register_gtk_quit()
     gtk.main()

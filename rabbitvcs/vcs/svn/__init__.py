@@ -227,6 +227,11 @@ class SVN:
             pysvn.wc_status_kind.obstructed
         ])
 
+    STATUSES_FOR_RESOLVE = map(str,
+        [
+            pysvn.wc_status_kind.conflicted
+        ])
+
     PROPERTIES = {
         "executable":   "svn:executable",
         "mime-type":    "svn:mime-type",
@@ -427,9 +432,8 @@ class SVN:
         for path in paths:
 
             sts = self.statuses(path)
-
             for st in sts:
-                if (st.content in statuses or st.metadata in statuses):
+                if (not statuses) or (st.content in statuses or st.metadata in statuses):
                     items.append(st)
 
         return items

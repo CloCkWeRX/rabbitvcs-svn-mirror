@@ -25,7 +25,7 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 from rabbitvcs.ui.dialog import MessageBox
 import rabbitvcs.vcs
 import rabbitvcs.util.helper
@@ -50,9 +50,10 @@ class Relocate(InterfaceView):
         
 
         self.path = path
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
         
-        repo = self.vcs.get_repo_url(self.path)
+        repo = self.svn.get_repo_url(self.path)
         self.get_widget("from_url").set_text(repo)
         self.get_widget("to_url").set_text(repo)
         
@@ -78,15 +79,15 @@ class Relocate(InterfaceView):
     
         self.hide()
 
-        self.action = VCSAction(
-            self.vcs,
+        self.action = SVNAction(
+            self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         
         self.action.append(self.action.set_header, _("Relocate"))
         self.action.append(self.action.set_status, _("Running Relocate Command..."))
         self.action.append(
-            self.vcs.relocate, 
+            self.svn.relocate, 
             from_url,
             to_url,
             self.path

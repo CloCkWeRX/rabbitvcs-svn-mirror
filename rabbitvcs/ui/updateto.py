@@ -26,14 +26,14 @@ import gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.log import LogDialog
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class UpdateToRevision(InterfaceView):
+class SVNUpdateToRevision(InterfaceView):
     """
     This class provides an interface to update a working copy to a specific
     revision.  It has a glade .
@@ -44,11 +44,12 @@ class UpdateToRevision(InterfaceView):
         InterfaceView.__init__(self, "update", "Update")
         self.path = path
         self.revision = revision
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
 
         self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("revision_container"),
-            self.vcs,
+            self.svn,
             revision=revision,
             url=self.path,
             expand=True,
@@ -68,8 +69,8 @@ class UpdateToRevision(InterfaceView):
         omit_externals = self.get_widget("omit_externals").get_active()
         rollback = self.get_widget("rollback").get_active()
 
-        self.action = VCSAction(
-            self.vcs,
+        self.action = SVNAction(
+            self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         
@@ -77,10 +78,10 @@ class UpdateToRevision(InterfaceView):
             self.action.append(self.action.set_header, _("Rollback To Revision"))
             self.action.append(self.action.set_status, _("Rolling Back..."))
             self.action.append(
-                self.vcs.merge_ranges, 
-                self.vcs.get_repo_url(self.path),
-                [(self.vcs.revision("HEAD").primitive(), revision.primitive())],
-                self.vcs.revision("head"),
+                self.svn.merge_ranges, 
+                self.svn.get_repo_url(self.path),
+                [(self.svn.revision("HEAD").primitive(), revision.primitive())],
+                self.svn.revision("head"),
                 self.path
             )
             self.action.append(self.action.set_status, _("Completed Rollback"))
@@ -88,7 +89,7 @@ class UpdateToRevision(InterfaceView):
             self.action.append(self.action.set_header, _("Update To Revision"))
             self.action.append(self.action.set_status, _("Updating..."))
             self.action.append(
-                self.vcs.update, 
+                self.svn.update, 
                 self.path,
                 revision=revision,
                 recurse=recursive,
@@ -107,6 +108,14 @@ class UpdateToRevision(InterfaceView):
         else:
             self.get_widget("rollback").set_sensitive(False)
 
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNUpdateToRevision
+}
+
+def updateto_factory(path, revision=None):
+    guess = rabbitvcs.vcs.guess(path)
+    return classes_map[guess["vcs"]](path, revision)
+
 if __name__ == "__main__":
     from rabbitvcs.ui import main, REVISION_OPT
     (options, args) = main(
@@ -114,6 +123,6 @@ if __name__ == "__main__":
         usage="Usage: rabbitvcs updateto [path]"
     )
  
-    window = UpdateToRevision(args[0], revision=options.revision)
+    window = updateto_factory(args[0], revision=options.revision)
     window.register_gtk_quit()
     gtk.main()

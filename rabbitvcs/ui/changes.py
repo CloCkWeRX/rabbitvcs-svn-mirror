@@ -31,12 +31,12 @@ import rabbitvcs.util.helper
 from rabbitvcs.util.contextmenu import GtkContextMenu
 from rabbitvcs.util.contextmenuitems import *
 from rabbitvcs.ui.log import LogDialog
-from rabbitvcs.ui.action import VCSAction
+import rabbitvcs.ui.action
 from rabbitvcs.ui.dialog import MessageBox
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Changes(InterfaceView):
+class SVNChanges(InterfaceView):
     """
     Show how files and folders are different between revisions.
     
@@ -54,7 +54,8 @@ class Changes(InterfaceView):
     def __init__(self, path1=None, revision1=None, path2=None, revision2=None):
         InterfaceView.__init__(self, "changes", "Changes")
         
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
 
         self.MORE_ACTIONS_CALLBACKS = [
             None,
@@ -82,25 +83,25 @@ class Changes(InterfaceView):
 
         self.first_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("first_revision_container"),
-            self.vcs,
+            self.svn,
             revision=revision1,
             url_combobox=self.first_urls
         )
 
         self.second_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("second_revision_container"),
-            self.vcs,
+            self.svn,
             revision=revision2,
             url_combobox=self.second_urls
         )
 
         if path1 is not None:
-            self.first_urls.set_child_text(self.vcs.get_repo_url(path1))
+            self.first_urls.set_child_text(self.svn.get_repo_url(path1))
             
         if path2 is not None:
-            self.second_urls.set_child_text(self.vcs.get_repo_url(path2))
+            self.second_urls.set_child_text(self.svn.get_repo_url(path2))
         elif path1 is not None:
-            self.second_urls.set_child_text(self.vcs.get_repo_url(path1))
+            self.second_urls.set_child_text(self.svn.get_repo_url(path1))
 
         self.changes_table = rabbitvcs.ui.widget.Table(
             self.get_widget("changes_table"),
@@ -244,13 +245,13 @@ class Changes(InterfaceView):
         second_rev = self.get_second_revision()        
         second_url = self.second_urls.get_active_text()
 
-        self.action = VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             notification=False
         )
         self.action.append(self.disable_more_actions)
         self.action.append(
-            self.vcs.diff_summarize,
+            self.svn.diff_summarize,
             first_url,
             first_rev,
             second_url,
@@ -287,12 +288,12 @@ class Changes(InterfaceView):
         self.more_actions.set_sensitive(False)
 
     def open_item_from_revision(self, url, revision, dest):
-        self.action = VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             notification=False
         )
         self.action.append(
-            self.vcs.export,
+            self.svn.export,
             url,
             dest,
             revision=revision
@@ -313,8 +314,8 @@ class Changes(InterfaceView):
         rev1 = self.get_first_revision()
         rev2 = self.get_second_revision()
 
-        self.action = VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             notification=False
         )
         self.action.append(
@@ -339,8 +340,8 @@ class Changes(InterfaceView):
         second_rev = self.get_second_revision()        
         second_url = self.second_urls.get_active_text()
 
-        self.action = VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             notification=False
         )
         self.action.append(
@@ -375,9 +376,9 @@ class MenuCompare(MenuItem):
     icon = "rabbitvcs-compare"
 
 class ChangesContextMenuConditions:
-    def __init__(self, caller, vcs_client):
+    def __init__(self, caller, vcs):
         self.caller = caller
-        self.vcs_client = vcs_client
+        self.vcs = vcs
 
     def open_first(self):
         return (
@@ -404,9 +405,9 @@ class ChangesContextMenuConditions:
         )
 
 class ChangesContextMenuCallbacks:
-    def __init__(self, caller, vcs_client):
+    def __init__(self, caller, vcs):
         self.caller = caller
-        self.vcs_client = vcs_client
+        self.vcs = vcs
 
     def open_first(self, widget, data=None):
         path = self.caller.changes_table.get_row(self.caller.selected_rows[0])[0]
@@ -444,8 +445,8 @@ class ChangesContextMenuCallbacks:
         rev2 = self.caller.get_second_revision()
         
         from rabbitvcs.ui.diff import SVNDiff
-        self.action = VCSAction(
-            self.vcs_client,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             notification=False
         )
         self.action.append(
@@ -471,16 +472,17 @@ class ChangesContextMenu:
         """        
         self.caller = caller
         self.event = event
-        self.vcs_client = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
 
         self.conditions = ChangesContextMenuConditions(
             self.caller,
-            self.vcs_client
+            self.vcs
         )
         
         self.callbacks = ChangesContextMenuCallbacks(
             self.caller,
-            self.vcs_client
+            self.vcs
         )
 
         # The first element of each tuple is a key that matches a
@@ -500,6 +502,13 @@ class ChangesContextMenu:
         context_menu = GtkContextMenu(self.structure, self.conditions, self.callbacks)
         context_menu.show(self.event)
 
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNChanges
+}
+
+def changes_factory(path1=None, revision1=None, path2=None, revision2=None):
+    guess = rabbitvcs.vcs.guess(path1)
+    return classes_map[guess["vcs"]](path1, revision1, path2, revision2)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
@@ -512,6 +521,6 @@ if __name__ == "__main__":
     if len(args) > 0:
         pathrev2 = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
 
-    window = Changes(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])
+    window = changes_factory(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])
     window.register_gtk_quit()
     gtk.main()

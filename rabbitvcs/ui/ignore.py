@@ -20,18 +20,20 @@
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from os import getcwd
+
 import pygtk
 import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceNonView
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.vcs
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Ignore(InterfaceNonView):
+class SVNIgnore(InterfaceNonView):
     """
     This class provides a handler to Ignore functionality.
     
@@ -54,25 +56,35 @@ class Ignore(InterfaceNonView):
         self.path = path
         self.pattern = pattern
         self.glob = glob
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
 
     def start(self):
-        prop = self.vcs.PROPERTIES["ignore"]
-        return self.vcs.propset(self.path, prop, self.pattern, recurse=self.glob)
-        
+        prop = self.svn.PROPERTIES["ignore"]
+        return self.svn.propset(self.path, prop, self.pattern, recurse=self.glob)
+
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNIgnore
+}
+
+def ignore_factory(path, pattern):
+    guess = rabbitvcs.vcs.guess(path)
+    return classes_map[guess["vcs"]](path, pattern)
+
 if __name__ == "__main__":
-    from os import getcwd
-    from sys import argv
+    from rabbitvcs.ui import main
+    (options, args) = main(usage="Usage: rabbitvcs ignore <folder> <pattern>")
     
-    args = argv[1:]
     path = getcwd()
     pattern = ""
     if args:
-        if args[0] != ".":
-            path = args[0]
-        if "1" in args:
-            pattern = args[1]
-            
-    window = Ignore(path, pattern)
-    window.register_gtk_quit()
+        if len(args) == 1:
+            pattern = args[0]
+        else:
+            if args[0] != ".":
+                path = args[0]
+            if "1" in args:
+                pattern = args[1]
+
+    window = ignore_factory(path, pattern)
     window.start()

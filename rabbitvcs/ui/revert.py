@@ -28,7 +28,7 @@ import gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.add import Add
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action

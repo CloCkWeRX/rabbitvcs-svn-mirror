@@ -64,7 +64,7 @@ class PropertiesBase(InterfaceView):
         )
         self.table.allow_multiple()
         
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
 
     #
     # UI Signal Callbacks
@@ -146,12 +146,13 @@ class PropertiesBase(InterfaceView):
 class SVNProperties(PropertiesBase):
     def __init__(self, path):
         PropertiesBase.__init__(self, path)
+        self.svn = self.vcs.svn()
         self.load()
 
     def load(self):
         self.table.clear()
         try:
-            self.proplist = self.vcs.proplist(self.get_widget("path").get_text())
+            self.proplist = self.svn.proplist(self.get_widget("path").get_text())
         except Exception, e:
             log.exception(e)
             rabbitvcs.ui.dialog.MessageBox(_("Unable to retrieve properties list"))
@@ -165,11 +166,11 @@ class SVNProperties(PropertiesBase):
         delete_recurse = self.get_widget("delete_recurse").get_active()
         
         for row in self.delete_stack:
-            self.vcs.propdel(self.path, row[1], recurse=delete_recurse)
+            self.svn.propdel(self.path, row[1], recurse=delete_recurse)
 
         failure = False
         for row in self.table.get_items():
-            if (not self.vcs.propset(self.path, row[1], row[2],
+            if (not self.svn.propset(self.path, row[1], row[2],
                              overwrite=True, recurse=row[0])):
                 failure = True
                 break

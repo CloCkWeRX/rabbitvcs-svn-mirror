@@ -30,7 +30,6 @@ from rabbitvcs.ui import InterfaceView
 from rabbitvcs.util.contextmenu import GtkContextMenu, \
     GtkContextMenuCaller, GtkFilesContextMenuConditions
 from rabbitvcs.util.contextmenuitems import MenuItem, MenuUpdate, MenuSeparator
-from rabbitvcs.ui.action import VCSAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
@@ -45,7 +44,7 @@ _ = gettext.gettext
 
 gtk.gdk.threads_init()
 
-class CheckForModifications(InterfaceView, GtkContextMenuCaller):
+class SVNCheckForModifications(InterfaceView, GtkContextMenuCaller):
     """
     Provides a way for the user to see what files have been changed on the 
     repository.
@@ -57,7 +56,8 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
 
         self.paths = paths
         self.base_dir = base_dir
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
         self.items = None
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"), 
@@ -104,11 +104,11 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
     #
     
     def load(self):
-        self.action = VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             notification=False
         )
-        self.action.append(self.vcs.get_remote_updates, self.paths)
+        self.action.append(self.svn.get_remote_updates, self.paths)
         self.action.append(self.populate_files_table)
         self.action.start()
 
@@ -140,10 +140,10 @@ class CheckForModifications(InterfaceView, GtkContextMenuCaller):
         from rabbitvcs.ui.diff import SVNDiff
         
         path_local = path
-        path_remote = self.vcs.get_repo_url(path_local)
+        path_remote = self.svn.get_repo_url(path_local)
         
-        self.action = VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             notification=False
         )
         self.action.append(
@@ -166,8 +166,8 @@ class MenuCompare(MenuItem):
     icon = "rabbitvcs-compare"
 
 class CheckModsContextMenuConditions(GtkFilesContextMenuConditions):
-    def __init__(self, vcs_client, paths=[]):
-        GtkFilesContextMenuConditions.__init__(self, vcs_client, paths)
+    def __init__(self, vcs, paths=[]):
+        GtkFilesContextMenuConditions.__init__(self, vcs, paths)
 
     def update(self, data=None):
         return True
@@ -181,10 +181,11 @@ class CheckModsContextMenuConditions(GtkFilesContextMenuConditions):
             and self.path_dict["length"] == 1)
 
 class CheckModsContextMenuCallbacks:
-    def __init__(self, caller, base_dir, vcs_client, paths=[]):
+    def __init__(self, caller, base_dir, vcs, paths=[]):
         self.caller = caller
         self.base_dir = base_dir
-        self.vcs_client = vcs_client
+        self.vcs = vcs
+        self.svn = self.vcs.svn()
         self.paths = paths
 
     def update(self, data1=None, data2=None):
@@ -200,10 +201,10 @@ class CheckModsContextMenuCallbacks:
         from rabbitvcs.ui.diff import SVNDiff
         
         path_local = self.paths[0]
-        path_remote = self.vcs_client.get_repo_url(path_local)
+        path_remote = self.svn.get_repo_url(path_local)
         
-        self.action = VCSAction(
-            self.vcs_client,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             notification=False
         )
         self.action.append(
@@ -217,19 +218,19 @@ class CheckModsContextMenuCallbacks:
         self.action.start()
 
 class CheckModsContextMenu:
-    def __init__(self, caller, event, base_dir, vcs_client, paths=[]):
+    def __init__(self, caller, event, base_dir, vcs, paths=[]):
         
         self.caller = caller
         self.event = event
         self.paths = paths
         self.base_dir = base_dir
-        self.vcs_client = vcs_client
+        self.vcs = vcs
         
-        self.conditions = CheckModsContextMenuConditions(self.vcs_client, paths)
+        self.conditions = CheckModsContextMenuConditions(self.vcs, paths)
         self.callbacks = CheckModsContextMenuCallbacks(
             self.caller, 
             self.base_dir,
-            self.vcs_client, 
+            self.vcs, 
             paths
         )
         
@@ -247,6 +248,14 @@ class CheckModsContextMenu:
         context_menu = GtkContextMenu(self.structure, self.conditions, self.callbacks)
         context_menu.show(self.event)
 
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNCheckForModifications
+}
+
+def checkmods_factory(paths, base_dir):
+    guess = rabbitvcs.vcs.guess(paths[0])
+    return classes_map[guess["vcs"]](paths, base_dir)
+
 if __name__ == "__main__":
     from rabbitvcs.ui import main, BASEDIR_OPT
     (options, paths) = main(
@@ -254,6 +263,6 @@ if __name__ == "__main__":
         usage="Usage: rabbitvcs checkmods [url_or_path]"
     )
 
-    window = CheckForModifications(paths, options.base_dir)
+    window = checkmods_factory(paths, options.base_dir)
     window.register_gtk_quit()
     gtk.main()

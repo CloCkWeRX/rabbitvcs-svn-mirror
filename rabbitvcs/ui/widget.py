@@ -760,7 +760,7 @@ class RevisionSelector:
         @param  container: The container that to add this widget
         
         @type   client: VCS client object
-        @param  client: A vcs client instance (i.e. rabbitvcs.vcs.create_vcs_instance())
+        @param  client: A vcs client instance (i.e. rabbitvcs.vcs.VCS())
         
         @type   revision: int
         @param  revision: A revision number to start with

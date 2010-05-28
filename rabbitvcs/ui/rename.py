@@ -27,18 +27,19 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceNonView
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 from rabbitvcs.ui.dialog import MessageBox, OneLineTextChange
 import rabbitvcs.vcs
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Rename(InterfaceNonView):
+class SVNRename(InterfaceNonView):
     def __init__(self, path):
         InterfaceNonView.__init__(self)
 
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.svn = self.vcs.svn()
         
         self.path = path
         (self.dir, self.filename) = os.path.split(self.path)
@@ -56,26 +57,34 @@ class Rename(InterfaceNonView):
         
         new_path = os.path.join(self.dir, new_filename)
         
-        self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         
         self.action.append(self.action.set_header, _("Rename"))
         self.action.append(self.action.set_status, _("Running Rename Command..."))
         self.action.append(
-            self.vcs.move, 
+            self.svn.move, 
             self.path,
             new_path
         )
         self.action.append(self.action.set_status, _("Completed Rename"))
         self.action.append(self.action.finish)
         self.action.start()
-        
+
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNRename
+}
+
+def rename_factory(path):
+    guess = rabbitvcs.vcs.guess(path)
+    return classes_map[guess["vcs"]](path)
+
 if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main(usage="Usage: rabbitvcs rename [path]")
             
-    window = Rename(paths[0])
+    window = rename_factory(paths[0])
     window.register_gtk_quit()
     gtk.main()

@@ -29,7 +29,7 @@ import os
 import commands
 
 from rabbitvcs.ui import InterfaceNonView
-from rabbitvcs.ui.action import VCSAction
+from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.vcs
 from rabbitvcs.util.log import Log
 
@@ -47,7 +47,7 @@ class ApplyPatch(InterfaceNonView):
     def __init__(self, paths):
         InterfaceNonView.__init__(self)
         self.paths = paths
-        self.vcs = rabbitvcs.vcs.create_vcs_instance()
+        self.vcs = rabbitvcs.vcs.VCS()
         self.common = rabbitvcs.util.helper.get_common_directory(paths)
 
     def choose_patch_path(self):
@@ -86,7 +86,13 @@ class ApplyPatch(InterfaceNonView):
         dialog.destroy()
         
         return dir
-    
+
+class SVNApplyPatch(ApplyPatch):
+    def __init__(self, paths):
+        ApplyPatch.__init__(self, paths)
+        
+        self.svn = self.vcs.svn()
+
     def start(self):
     
         path = self.choose_patch_path()
@@ -99,23 +105,31 @@ class ApplyPatch(InterfaceNonView):
             return        
         
         ticks = 2
-        self.action = rabbitvcs.ui.action.VCSAction(
-            self.vcs,
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         self.action.set_pbar_ticks(ticks)
         self.action.append(self.action.set_header, _("Apply Patch"))
         self.action.append(self.action.set_status, _("Applying Patch File..."))
-        self.action.append(self.vcs.apply_patch, path, base_dir)
+        self.action.append(self.svn.apply_patch, path, base_dir)
         self.action.append(self.action.set_status, _("Patch File Applied"))
         self.action.append(self.action.finish)
         self.action.start()
-    
+
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNApplyPatch
+}
+
+def applypatch_factory(paths):
+    guess = rabbitvcs.vcs.guess(paths[0])
+    return classes_map[guess["vcs"]](paths)
+
 if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main(usage="Usage: rabbitvcs applypatch [path1] [path2] ...")
 
-    window = ApplyPatch(paths)
+    window = applypatch_factory(paths)
     window.register_gtk_quit()
     window.start()
     gtk.main()
