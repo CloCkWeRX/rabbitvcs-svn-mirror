@@ -70,8 +70,6 @@ import rabbitvcs.util.decorators
 import rabbitvcs.util._locale
 import rabbitvcs.util.helper
 import rabbitvcs.services.service
-#from rabbitvcs.services.statuscheckerplus import StatusCheckerPlus
-#from rabbitvcs.services.statuscheckerex import StatusCheckerEx
 from rabbitvcs.services.statuschecker import StatusChecker
 
 import rabbitvcs.vcs.status
@@ -109,7 +107,7 @@ def decode_status(json_dict):
     """ Once we get a JSON encoded string out the other side of DBUS, we need to
     reconstitute the original object. This method is based on the pickle module
     in the Python stdlib.
-    """
+    """    
     cl = find_class(json_dict['__module__'], json_dict['__type__'])
     st = None
     if cl in rabbitvcs.vcs.status.STATUS_TYPES:
