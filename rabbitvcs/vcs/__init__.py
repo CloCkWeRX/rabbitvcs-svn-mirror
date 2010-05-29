@@ -31,7 +31,7 @@ EXT_UTIL_ERROR = _("The output from '%s' was not able to be processed.\n%s")
 
 VCS_SVN = 'svn'
 VCS_GIT = 'git'
-VCS_DUMMY = 'Unknown'
+VCS_DUMMY = 'unknown'
 
 def guess(path):
     # Determine the VCS instance based on the path
