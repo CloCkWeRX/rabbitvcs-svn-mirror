@@ -127,7 +127,12 @@ class Git:
         all_statuses = self.statuses(path)
         
         if summarize:
-            path_status = (st for st in all_statuses if st.path == path).next()
+            path_status = None
+            for st in all_statuses:
+                if st.path == path:
+                    path_status = st
+                    break
+
             path_status.summary = path_status.single
         else:
             path_status = all_statuses[0]
