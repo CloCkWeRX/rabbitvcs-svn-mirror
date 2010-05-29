@@ -72,6 +72,16 @@ class VCSNotifier(InterfaceView):
     def focus_on_ok_button(self):
         pass
 
+class DummyNotifier:
+    def __init__(self):
+        pass
+    
+    def close(self):
+        pass
+
+    def set_canceled_by_user(self, was_canceled_by_user):
+        pass
+
 class MessageCallbackNotifier(VCSNotifier):
     """
     Provides an interface to handle the Notification UI.
@@ -244,17 +254,19 @@ class VCSAction(threading.Thread):
         self.has_loader = False
         self.has_notifier = False
 
-        if notification is True:
+        if notification:
             self.notification = MessageCallbackNotifier(
                 self.set_cancel,
                 notification,
                 client_in_same_thread=self.client_in_same_thread
             )
             self.has_notifier = True
-        else:
+        elif run_in_thread:
             visible = run_in_thread
             self.notification = LoadingNotifier(self.set_cancel, visible=visible)
             self.has_loader = True
+        else:
+            self.notification = DummyNotifier()
             
         self.pbar_ticks = None
         self.pbar_ticks_current = -1
