@@ -1947,7 +1947,7 @@
     <property name="height_request">300</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">RabbitVCS Error</property>
-    <property name="icon_name">rabbitvcs</property>
+    <property name="icon_name">rabbitvcs-small</property>
     <property name="type_hint">normal</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
