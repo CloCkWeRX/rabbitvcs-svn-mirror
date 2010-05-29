@@ -25,13 +25,6 @@
       </packing>
     </child>
   </widget>
-  <widget class="GtkVBox" id="property_page">
-    <property name="visible">True</property>
-    <property name="orientation">vertical</property>
-    <child>
-      <placeholder/>
-    </child>
-  </widget>
   <widget class="GtkExpander" id="file_info_expander">
     <property name="visible">True</property>
     <property name="can_focus">True</property>
@@ -234,6 +227,27 @@
       <packing>
         <property name="position">2</property>
       </packing>
+    </child>
+  </widget>
+  <widget class="GtkScrolledWindow" id="prop_page_scroller">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="hscrollbar_policy">never</property>
+    <property name="vscrollbar_policy">automatic</property>
+    <child>
+      <widget class="GtkViewport" id="prop_page_viewport">
+        <property name="visible">True</property>
+        <property name="resize_mode">queue</property>
+        <child>
+          <widget class="GtkVBox" id="property_page">
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <placeholder/>
+            </child>
+          </widget>
+        </child>
+      </widget>
     </child>
   </widget>
 </glade-interface>

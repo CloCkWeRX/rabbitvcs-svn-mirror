@@ -38,7 +38,7 @@ _ = gettext.gettext
 class PropertyPage(rabbitvcs.ui.GladeWidgetWrapper):
     
     glade_filename = "property_page"
-    glade_id = "property_page"
+    glade_id = "prop_page_scroller"
     
     def __init__(self, paths, vcs=None):
         rabbitvcs.ui.GladeWidgetWrapper.__init__(self)
@@ -82,7 +82,6 @@ class FileInfoPane(rabbitvcs.ui.GladeWidgetWrapper):
 
         self.get_widget("vcs_type").set_text(self.status.vcs_type)
         
-
         self.get_widget("content_status").set_text(self.status.content)
         self.get_widget("prop_status").set_text(self.status.metadata)
         
@@ -141,14 +140,15 @@ class FileInfoExpander(rabbitvcs.ui.GladeWidgetWrapper):
         self.file_info = None
         
         self.expander = self.get_widget()
+        log.debug("Expander: %s" % self.expander)
         
         # There seems to be no easy way to connect to this in glade
         self.expander.connect("notify::expanded", self.on_expand)
 
     def on_expand(self, param_spec, user_data):
         if self.expander.get_expanded() and not self.file_info:
-                self.file_info = FileInfoPane(self.path, self.vcs).get_widget()
-                self.expander.add(self.file_info)
+            self.file_info = FileInfoPane(self.path, self.vcs).get_widget()
+            self.expander.add(self.file_info)
 
 class PropertyPageLabel(rabbitvcs.ui.GladeWidgetWrapper):
     glade_filename = "property_page"
