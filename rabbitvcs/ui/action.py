@@ -107,10 +107,17 @@ class MessageCallbackNotifier(VCSNotifier):
         self.pbar.start_pulsate()
         self.finished = False
 
+    def on_destroy(self, widget):
+        if self.callback_cancel is not None:
+            self.callback_cancel()
+
+        self.canceled = True
+        self.close()
+
     def on_cancel_clicked(self, widget):
 
         if self.canceled or self.finished:
-            self.close();
+            self.close()
 
         if self.callback_cancel is not None:
             self.callback_cancel()
@@ -184,6 +191,13 @@ class LoadingNotifier(VCSNotifier):
             self.get_widget("pbar")
         )
         self.pbar.start_pulsate()
+
+    def on_destroy(self, widget):
+        self.set_canceled_by_user(True)
+        if self.callback_cancel is not None:
+            self.callback_cancel()
+
+        self.close()
 
     def on_loading_cancel_clicked(self, widget):
         self.set_canceled_by_user(True)

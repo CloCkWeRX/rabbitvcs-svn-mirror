@@ -1650,6 +1650,7 @@
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
     <property name="has_separator">False</property>
+    <signal name="destroy" handler="on_destroy"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox13">
         <property name="visible">True</property>
