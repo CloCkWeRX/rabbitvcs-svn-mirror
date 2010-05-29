@@ -140,7 +140,6 @@ class FileInfoExpander(rabbitvcs.ui.GladeWidgetWrapper):
         self.file_info = None
         
         self.expander = self.get_widget()
-        log.debug("Expander: %s" % self.expander)
         
         # There seems to be no easy way to connect to this in glade
         self.expander.connect("notify::expanded", self.on_expand)
