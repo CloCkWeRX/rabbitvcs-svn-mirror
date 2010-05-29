@@ -451,12 +451,13 @@ class SVN:
                 continue
 
             for st in sts:
-                repos = st.get_user_data("repos")
-                if repos is None:
+                repo_text_st = st.remote_content
+                repo_prop_st = st.remote_metadata
+                
+                if repo_text_st is None and repo_prop_st is None:
                     continue
 
-                if repos["repos_content"] == "none" and \
-                        repos["repos_metadata"] == "none":
+                if repo_text_st == "none" and repo_prop_st == "none":
                     continue
 
                 items.append(st)
