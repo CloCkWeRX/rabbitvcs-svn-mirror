@@ -43,6 +43,12 @@ class Rename(InterfaceNonView):
         self.vcs = rabbitvcs.vcs.VCS()
 
         self.path = path
+        
+        if not os.path.exists(self.path):
+            MessageBox(_("The requested file or folder does not exist."))
+            self.close()
+            return
+        
         (self.dir, self.filename) = os.path.split(self.path)
         
         dialog = OneLineTextChange(_("Rename"), _("New Name:"), self.filename)

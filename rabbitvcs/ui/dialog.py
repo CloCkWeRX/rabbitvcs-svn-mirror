@@ -367,13 +367,21 @@ class OneLineTextChange(InterfaceView):
         
         if current_text:
             self.new_text.set_text(current_text)
-        
+    
+        self.dialog = self.get_widget("OneLineTextChange")
+    
+    def on_key_release_event(self, widget, data):
+        # The gtk.Dialog.response() method emits the "response" signal,
+        # which tells gtk.Dialog.run() asyncronously to stop.  This allows the
+        # user to press the "Return" button when done writing in the new text
+        if gtk.gdk.keyval_name(data.keyval) == "Return":
+            self.dialog.response(gtk.RESPONSE_OK)
+    
     def run(self):
-        dialog = self.get_widget("OneLineTextChange")
-        result = dialog.run()
+        result = self.dialog.run()
         new_text = self.new_text.get_text()
 
-        dialog.destroy()
+        self.dialog.destroy()
         
         return (result, new_text)
 
