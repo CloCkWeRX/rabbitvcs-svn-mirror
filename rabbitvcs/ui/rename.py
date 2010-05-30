@@ -34,13 +34,14 @@ import rabbitvcs.vcs
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class SVNRename(InterfaceNonView):
+class Rename(InterfaceNonView):
+    DO_RENAME = False
+    
     def __init__(self, path):
         InterfaceNonView.__init__(self)
 
         self.vcs = rabbitvcs.vcs.VCS()
-        self.svn = self.vcs.svn()
-        
+
         self.path = path
         (self.dir, self.filename) = os.path.split(self.path)
         
@@ -53,9 +54,18 @@ class SVNRename(InterfaceNonView):
        
         if not new_filename:
             MessageBox(_("The new name field is required"))
+        
+        self.new_path = os.path.join(self.dir, new_filename)
+        self.DO_RENAME = True
+
+class SVNRename(Rename):
+    def __init__(self, path):
+        Rename.__init__(self, path)
+        
+        if not self.DO_RENAME:
             return
         
-        new_path = os.path.join(self.dir, new_filename)
+        self.svn = self.vcs.svn()
         
         self.action = rabbitvcs.ui.action.SVNAction(
             self.svn,
@@ -67,14 +77,40 @@ class SVNRename(InterfaceNonView):
         self.action.append(
             self.svn.move, 
             self.path,
-            new_path
+            self.new_path
+        )
+        self.action.append(self.action.set_status, _("Completed Rename"))
+        self.action.append(self.action.finish)
+        self.action.start()
+
+class GitRename(Rename):
+    def __init__(self, path):
+        Rename.__init__(self, path)
+
+        if not self.DO_RENAME:
+            return
+        
+        self.git = self.vcs.git(path)
+        
+        self.action = rabbitvcs.ui.action.GitAction(
+            self.git,
+            register_gtk_quit=self.gtk_quit_is_set()
+        )
+        
+        self.action.append(self.action.set_header, _("Rename"))
+        self.action.append(self.action.set_status, _("Running Rename Command..."))
+        self.action.append(
+            self.git.move, 
+            self.path,
+            self.new_path
         )
         self.action.append(self.action.set_status, _("Completed Rename"))
         self.action.append(self.action.finish)
         self.action.start()
 
 classes_map = {
-    rabbitvcs.vcs.VCS_SVN: SVNRename
+    rabbitvcs.vcs.VCS_SVN: SVNRename,
+    rabbitvcs.vcs.VCS_GIT: GitRename
 }
 
 def rename_factory(path):
