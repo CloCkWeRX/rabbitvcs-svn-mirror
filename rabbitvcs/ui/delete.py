@@ -86,12 +86,21 @@ class SVNDelete(Delete):
     def __init__(self, paths):
         Delete.__init__(self, paths)
     
-    def vcs_remove(self, path, **kwargs):
-        if self.vcs.vcs == rabbitvcs.vcs.VCS_SVN:
-            self.vcs.svn().remove(path, **kwargs)
+    def vcs_remove(self, paths, **kwargs):
+        if rabbitvcs.vcs.guess(paths[0])["vcs"] == rabbitvcs.vcs.VCS_SVN:
+            self.vcs.svn().remove(paths, **kwargs)
+
+class GitDelete(Delete):
+    def __init__(self, paths):
+        Delete.__init__(self, paths)
+    
+    def vcs_remove(self, paths, **kwargs):
+        if rabbitvcs.vcs.guess(paths[0])["vcs"] == rabbitvcs.vcs.VCS_GIT:
+            self.vcs.git(paths[0]).remove(paths)
 
 classes_map = {
-    rabbitvcs.vcs.VCS_SVN: SVNDelete
+    rabbitvcs.vcs.VCS_SVN: SVNDelete,
+    rabbitvcs.vcs.VCS_GIT: GitDelete
 }
 
 def delete_factory(paths):
