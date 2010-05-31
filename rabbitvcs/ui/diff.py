@@ -182,4 +182,3 @@ if __name__ == "__main__":
         pathrev2 = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
 
     SVNDiff(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1], sidebyside=options.sidebyside)
-    gtk.main()
