@@ -48,4 +48,4 @@ class GittyupCommand:
         if status != 0:
             raise GittyupCommandError(self.command, status, stderr_value)
         
-        return (status, None, stderr_value)
+        return (status, stdout_value, stderr_value)
