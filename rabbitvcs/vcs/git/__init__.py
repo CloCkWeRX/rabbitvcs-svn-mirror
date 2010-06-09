@@ -40,6 +40,36 @@ log = Log("rabbitvcs.vcs.git")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
+class Revision:
+    """
+    Implements a simple revision object as a wrapper around the gittyup revision
+    object.  This allows us to provide a standard interface to the object data.
+    """
+
+    def __init__(self, kind, value=None):
+        self.kind = kind.upper()
+        self.value = value
+        
+        if self.kind == "HEAD":
+            self.value = "HEAD"
+        
+        self.is_revision_object = True
+
+    def __unicode__(self):
+        if self.value:
+            return unicode(self.value)
+        else:
+            return self.kind
+
+    def __str__(self):
+        return self.__unicode__()
+
+    def __repr__(self):
+        return self.__unicode__()
+
+    def primitive(self):
+        return self.value
+
 class Git:
     STATUS = {
         "normal":       gittyup.objects.NormalStatus,
@@ -196,6 +226,27 @@ class Git:
                 items.append(st_item)
 
         return items
+
+    def revision(self, kind, number=None):
+        """
+        Create a revision object usable by pysvn
+
+        @type   kind:   string
+        @param  kind:   HEAD or a sha1 hash
+
+        @type   number: integer
+        @param  number: Used for kind=number, specifies the revision hash.
+
+        @rtype:         Revision object
+        @return:        A Revision object.
+
+        """
+
+        value = None
+        if number:
+            value = number
+
+        return Revision(kind, value)
 
     #
     # Action Methods
@@ -557,6 +608,20 @@ class Git:
         """
         
         return self.client.log(refspec, limit)
+    
+    def annotate(self, path, revision=Revision("head")):
+        """
+        Returns an annotation for a specified file
+            
+        @type   path: string
+        @param  path: The absolute path to a tracked file
+        
+        @type   revision: string
+        @param  revision: HEAD or a sha1 hash
+        
+        """
+
+        return self.client.annotate(path, revision.primitive())
         
     def set_callback_notify(self, func):
         self.client.set_callback_notify(func)

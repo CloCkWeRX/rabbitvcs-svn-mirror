@@ -31,7 +31,7 @@ import time
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.log import LogDialog
-from rabbitvcs.ui.action import SVNAction
+from rabbitvcs.ui.action import SVNAction, GitAction
 import rabbitvcs.ui.widget
 from rabbitvcs.ui.dialog import MessageBox
 import rabbitvcs.util.helper
@@ -185,7 +185,7 @@ class SVNAnnotate(Annotate):
                 item["number"],
                 item["revision"].number,
                 item["author"],
-                datetime.strftime(date,DATETIME_FORMAT),
+                rabbitvcs.util.helper.format_datetime(date),
                 item["line"]
             ])
             
@@ -201,14 +201,94 @@ class SVNAnnotate(Annotate):
                 item["number"],
                 item["revision"].number,
                 item["author"],
-                datetime.strftime(date,DATETIME_FORMAT),
+                rabbitvcs.util.helper.format_datetime(date),
+                item["line"]
+            )
+        
+        return text
+
+class GitAnnotate(Annotate):
+    def __init__(self, path, revision=None):
+        Annotate.__init__(self, path, revision)
+
+        self.git = self.vcs.git(path)
+
+        if revision is None:
+            revision = "HEAD"
+        
+        self.path = path
+        self.get_widget("from_revision_container").hide()
+        self.get_widget("to_show_log").hide()
+        self.get_widget("to").set_text(str(revision))
+
+        self.table = rabbitvcs.ui.widget.Table(
+            self.get_widget("table"),
+            [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING, 
+                gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [_("Line"), _("Revision"), _("Author"), 
+                _("Date"), _("Text")]
+        )
+        self.table.allow_multiple()
+        
+        self.load()
+
+    #
+    # Helper methods
+    #
+    
+    def load(self):
+        to_rev_num = self.get_widget("to").get_text()
+             
+        to_rev = self.git.revision("head")
+        if to_rev_num.upper() != "HEAD":
+            to_rev = self.git.revision("hash", number=to_rev_num)
+        
+        self.action = GitAction(
+            self.git,
+            notification=False
+        )    
+
+        self.action.append(
+            self.git.annotate,
+            self.path,
+            to_rev
+        )
+        self.action.append(self.populate_table)
+        self.action.append(self.enable_saveas)
+        self.action.start()
+
+    @gtk_unsafe
+    def populate_table(self):
+        blamedict = self.action.get_result(0)
+
+        self.table.clear()
+        for item in blamedict:
+            self.table.append([
+                item["number"],
+                item["revision"],
+                item["author"],
+                rabbitvcs.util.helper.format_datetime(item["date"]),
+                item["line"]
+            ])
+            
+    def generate_string_from_result(self):
+        blamedict = self.action.get_result(0)
+        
+        text = ""
+        for item in blamedict:
+            text += "%s\t%s\t%s\t%s\t%s\n" % (
+                item["number"],
+                item["revision"],
+                item["author"],
+                rabbitvcs.util.helper.format_datetime(item["date"]),
                 item["line"]
             )
         
         return text
 
 classes_map = {
-    rabbitvcs.vcs.VCS_SVN: SVNAnnotate
+    rabbitvcs.vcs.VCS_SVN: SVNAnnotate,
+    rabbitvcs.vcs.VCS_GIT: GitAnnotate
 }
 
 def annotate_factory(path, revision=None):

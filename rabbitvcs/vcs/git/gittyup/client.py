@@ -6,7 +6,8 @@ import os
 import re
 import shutil
 import fnmatch
-from time import time, timezone
+import time
+from datetime import datetime
 
 import dulwich.errors
 import dulwich.repo
@@ -20,7 +21,7 @@ from objects import *
 from config import GittyupLocalFallbackConfig
 from command import GittyupCommand
 
-TZ = -1 * timezone
+TZ = -1 * time.timezone
 ENCODING = "UTF-8"
 
 DULWICH_COMMIT_TYPE = 1
@@ -286,6 +287,12 @@ class GittyupClient:
 
     def tracking(self):
         return self.repo.refs.read_ref("HEAD")[5:]
+    
+    def get_sha1_from_refspec(self, refspec):
+        if refspec in self.repo.refs:
+            return self.repo.refs[refspec]
+        else:
+            return None
     
     def stage(self, paths):
         """
@@ -663,11 +670,11 @@ class GittyupClient:
                 raise ValueError("The author has not been specified")
 
         commit.committer = (committer and committer or config_user)
-        commit.commit_time = (commit_time and commit_time or int(time()))
+        commit.commit_time = (commit_time and commit_time or int(time.time()))
         commit.commit_timezone = (commit_timezone and commit_timezone or TZ)
         
         commit.author = (author and author or config_user)
-        commit.author_time = (author_time and author_time or int(time()))
+        commit.author_time = (author_time and author_time or int(time.time()))
         commit.author_timezone = (author_timezone and author_timezone or TZ)        
         
         commit.encoding = (encoding and encoding or ENCODING)
@@ -894,7 +901,7 @@ class GittyupClient:
         tag.name = name
         tag.message = message
         tag.tagger = (tagger and tagger or config_user)
-        tag.tag_time = (tag_time and tag_time or int(time()))
+        tag.tag_time = (tag_time and tag_time or int(time.time()))
         tag.tag_timezone = (tag_timezone and tag_timezone or TZ)
         
         if tag_object is None:
@@ -1061,6 +1068,50 @@ class GittyupClient:
         except dulwich.errors.NotCommitError:
             raise NotCommitError()
             return None
+
+    def annotate(self, path, revision="HEAD"):
+        """
+        Returns an annotation for a specified file
+            
+        @type   path: string
+        @param  path: The absolute path to a tracked file
+        
+        @type   revision: string
+        @param  revision: HEAD or a sha1 hash
+        
+        """
+
+        cmd = ["git", "annotate", "-l", path]
+        if revision == "HEAD":
+            cmd += [self.get_sha1_from_refspec("HEAD")]
+        else:
+            cmd += [revision]
+
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
+            stdout = ""
+
+        returner = []
+        lines = stdout.split("\n")
+        for line in lines:
+            components = re.split("\t", line)
+            if len(components) < 4:
+                continue
+
+            dt = datetime(*time.strptime(components[2][:-6],"%Y-%m-%d %H:%M:%S")[:-2])
+
+            message = re.match("^([0-9]+)\)(.*?)$", components[3])
+            returner.append({
+                "revision": components[0],
+                "author": components[1][1:],
+                "date": dt,
+                "line": message.group(2),
+                "number": message.group(1)
+            })
+        
+        return returner
 
     def set_callback_notify(self, func):
         self.callback_notify = func

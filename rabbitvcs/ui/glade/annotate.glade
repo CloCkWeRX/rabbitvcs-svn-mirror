@@ -47,7 +47,7 @@
                     <property name="visible">True</property>
                     <property name="spacing">12</property>
                     <child>
-                      <widget class="GtkVBox" id="vbox3">
+                      <widget class="GtkVBox" id="from_revision_container">
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <property name="spacing">6</property>

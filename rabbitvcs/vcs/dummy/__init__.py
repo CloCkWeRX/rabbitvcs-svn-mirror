@@ -51,3 +51,6 @@ class Dummy:
     
     def statuses(self, path, recurse=True):
         return []
+        
+    def revision(self, kind, number=None):
+        return None
