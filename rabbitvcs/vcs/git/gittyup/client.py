@@ -1057,7 +1057,10 @@ class GittyupClient:
         
         """
         
-        sha = self.repo.refs[refspec]
+        try:
+            sha = self.repo.refs[refspec]
+        except KeyError:
+            return []
         
         try:
             history = self.repo.revision_history(sha)
@@ -1072,7 +1075,7 @@ class GittyupClient:
 
         except dulwich.errors.NotCommitError:
             raise NotCommitError()
-            return None
+            return []
 
     def annotate(self, path, revision="HEAD"):
         """
