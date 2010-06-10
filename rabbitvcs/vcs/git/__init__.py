@@ -249,7 +249,7 @@ class Git:
         return revision
 
     def is_tracking(self, name):
-        return self.client.is_tracking(name)
+        return self.client.is_tracking("refs/heads/%s" % name)
         
 
     #

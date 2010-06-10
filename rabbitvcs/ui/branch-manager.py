@@ -214,7 +214,7 @@ class GitBranchManager(InterfaceView):
         self.branch_list = self.git.branch_list()
         for item in self.branch_list:
             track_str = ""
-            if self.git.is_tracking("refs/heads/%s" % item.name):
+            if self.git.is_tracking(item.name):
                 track_str = "*"
                 
             self.branches_treeview.append([track_str, item.name])
@@ -307,7 +307,7 @@ class GitBranchManager(InterfaceView):
         self.message_label.set_text(self.selected_branch.message.rstrip("\n"))
         self.author_label.set_text(self.selected_branch.author)
         self.date_label.set_text(rabbitvcs.util.helper.format_datetime(datetime.fromtimestamp(self.selected_branch.commit_time)))
-        if self.git.is_tracking("refs/heads/%s" % self.selected_branch.name):
+        if self.git.is_tracking(self.selected_branch.name):
             self.checkout_checkbox.set_active(True)
             self.checkout_checkbox.set_sensitive(False)
         else:
