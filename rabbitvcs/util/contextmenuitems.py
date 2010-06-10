@@ -624,6 +624,10 @@ class MenuPush(MenuItem):
     identifier = "RabbitVCS::Push"
     label = _("Push")
 
+class MenuBranchManager(MenuItem):
+    identifier = "RabbitVCS::Branch_Manager"
+    label = _("Branch Manager")
+    icon = "rabbitvcs-branch"
 
 def get_ignore_list_items(paths):
     """
