@@ -81,6 +81,9 @@ class GittyupClient:
     def _get_working_tree(self):
         return self.repo[commit_index(self.repo.object_store, self._get_index())]
 
+    def _get_tree_from_sha1(self, sha1):
+        return self.repo[self.repo[sha1].tree]
+
     def _get_tree_index(self, tree=None):
         if tree is None:
             tree = self._get_tree_at_head()
@@ -280,10 +283,10 @@ class GittyupClient:
         return os.path.join(self.repo.path, path).rstrip("/")
 
     def track(self, name):
-        self.repo.refs["HEAD"] = self.repo.refs[name]
+        self.repo.refs.set_symbolic_ref("HEAD", name)
 
     def is_tracking(self, name):
-        return (self.repo.refs["HEAD"] == self.repo.refs[name])
+        return (self.repo.refs.read_ref("HEAD")[5:] == name)
 
     def tracking(self):
         return self.repo.refs.read_ref("HEAD")[5:]
@@ -468,10 +471,7 @@ class GittyupClient:
             commit = self.repo[self.repo.head()]
 
         self.repo.refs["refs/heads/%s" % name] = commit.id
-        
-        if track:
-            self.track("refs/heads/%s" % name)
-        
+
         return commit.id
 
     def branch_delete(self, name):
@@ -528,7 +528,7 @@ class GittyupClient:
         
         return branches
 
-    def checkout(self, paths=[], tree_sha=None, commit_sha=None):
+    def checkout(self, paths=[], tree_sha=None, commit_sha=None, branch_name=None):
         """
         Checkout a series of paths from a tree or commit.  If no tree or commit
         information is given, it will check out the files from head.  If no
@@ -543,7 +543,17 @@ class GittyupClient:
         @type   commit_sha: string
         @param  commit_sha: The sha of a commit to checkout
 
+        @type   branch_name: string
+        @param  branch_name: Checkout a branch
+
         """
+        
+        if branch_name:
+            try:
+                commit_sha = self.get_sha1_from_refspec("refs/heads/%s" % branch_name)
+                self.track("refs/heads/%s" % branch_name)
+            except Exception, e:
+                raise NotCommitError(e)
         
         tree = None
         if tree_sha:
@@ -554,7 +564,7 @@ class GittyupClient:
         elif commit_sha:
             try:
                 commit = self.repo[commit_sha]
-                tree = commit.tree
+                tree = self._get_tree_from_sha1(commit_sha)
             except AssertionError:
                 raise NotCommitError(commit_sha)
 

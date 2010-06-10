@@ -227,7 +227,7 @@ class Git:
 
         return items
 
-    def revision(self, kind, number=None):
+    def revision(self, val):
         """
         Create a revision object usable by pysvn
 
@@ -242,11 +242,15 @@ class Git:
 
         """
 
-        value = None
-        if number:
-            value = number
+        revision = Revision("HEAD")
+        if val.upper() != "HEAD":
+            revision = Revision("hash", val)
 
-        return Revision(kind, value)
+        return revision
+
+    def is_tracking(self, name):
+        return self.client.is_tracking(name)
+        
 
     #
     # Action Methods
@@ -307,23 +311,22 @@ class Git:
         
         return self.client.unstage_all()
     
-    def branch(self, name, commit_sha=None, track=False):
+    def branch(self, name, revision=Revision("head"), track=False):
         """
         Create a new branch
         
         @type   name: string
         @param  name: The name of the new branch
         
-        @type   commit_sha: string
-        @param  commit_sha: A commit sha to branch from.  If None, branches
-                    from head
+        @type   revision: git.Revision
+        @param  revision: A revision to branch from.
         
         @type   track: boolean
         @param  track: Whether or not to track the new branch, or just create it
         
         """
         
-        return self.client.branch(name, commit_sha, track)
+        return self.client.branch(name, revision.primitive(), track)
     
     def branch_delete(self, name):
         """
@@ -358,7 +361,7 @@ class Git:
         
         return self.client.branch_list()
         
-    def checkout(self, paths=[], tree_sha=None, commit_sha=None):
+    def checkout(self, paths=[], tree_sha=None, commit_sha=None, branch_name=None):
         """
         Checkout a series of paths from a tree or commit.  If no tree or commit
         information is given, it will check out the files from head.  If no
@@ -373,9 +376,12 @@ class Git:
         @type   commit_sha: string
         @param  commit_sha: The sha of a commit to checkout
 
+        @type   branch_name: string
+        @param  branch_name: Checkout a branch
+
         """
         
-        return self.client.checkout(paths, tree_sha, commit_sha)
+        return self.client.checkout(paths, tree_sha, commit_sha, branch_name)
         
     def clone(self, host, path, bare=False, origin="origin"):
         """
