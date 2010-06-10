@@ -237,11 +237,7 @@ class GitAnnotate(Annotate):
     #
     
     def load(self):
-        to_rev_num = self.get_widget("to").get_text()
-             
-        to_rev = self.git.revision("head")
-        if to_rev_num.upper() != "HEAD":
-            to_rev = self.git.revision("hash", number=to_rev_num)
+        to_rev = self.git.revision(self.get_widget("to").get_text())
         
         self.action = GitAction(
             self.git,
