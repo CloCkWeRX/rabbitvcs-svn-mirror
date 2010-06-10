@@ -24,11 +24,6 @@ from command import GittyupCommand
 TZ = -1 * time.timezone
 ENCODING = "UTF-8"
 
-DULWICH_COMMIT_TYPE = 1
-DULWICH_TREE_TYPE = 2
-DULWICH_BLOB_TYPE = 3
-DULWICH_TAG_TYPE = 4
-
 def callback_notify_null(val):
     pass
 
@@ -907,7 +902,7 @@ class GittyupClient:
         if config_user is None:
             if tagger is None:
                 raise ValueError("The tagging person has not been specified")
-        
+
         tag.name = name
         tag.message = message
         tag.tagger = (tagger and tagger or config_user)
@@ -915,9 +910,9 @@ class GittyupClient:
         tag.tag_timezone = (tag_timezone and tag_timezone or TZ)
         
         if tag_object is None:
-            tag_object = (DULWICH_COMMIT_TYPE, self.repo.head())
+            tag_object = (dulwich.objects.Commit, self.repo.head())
 
-        tag.set_object(tag_object)
+        tag.object = tag_object
 
         self.repo.object_store.add_object(tag)
         
