@@ -549,6 +549,10 @@ class ContextMenuCallbacks:
         proc = rabbitvcs.util.helper.launch_ui_window("branch-manager", [self.paths[0]])
         self.caller.execute_after_process_exit(proc)
 
+    def tag_manager(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("tag-manager", [self.paths[0]])
+        self.caller.execute_after_process_exit(proc)
+
 class ContextMenuConditions:
     """
     Provides a standard interface to checking conditions for menu items.
@@ -877,6 +881,9 @@ class ContextMenuConditions:
         return (self.path_dict["is_git"])
 
     def branch_manager(self, data=None):
+        return (self.path_dict["is_git"])
+
+    def tag_manager(self, data=None):
         return (self.path_dict["is_git"])
 
 class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
@@ -1247,6 +1254,7 @@ class MainContextMenu:
                 (MenuAddToIgnoreList, ignore_items),
                 (MenuSeparator, None),
                 (MenuBranchManager, None),
+                (MenuTagManager, None),
                 (MenuSeparator, None),
                 (MenuAnnotate, None),
                 (MenuSeparator, None),

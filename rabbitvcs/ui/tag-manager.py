@@ -43,7 +43,7 @@ _ = gettext.gettext
 STATE_ADD = 0
 STATE_EDIT = 1
 
-class GitBranchManager(InterfaceView):
+class GitTagManager(InterfaceView):
     """
     Provides a UI interface to manage items
     
@@ -56,14 +56,14 @@ class GitBranchManager(InterfaceView):
         self.vcs = rabbitvcs.vcs.VCS()
         self.git = self.vcs.git(path)
         
-        self.get_widget("Manager").set_title(_("Branch Manager"))
-        self.get_widget("items_label").set_markup(_("<b>Branches</b>"))
+        self.get_widget("Manager").set_title(_("Tag Manager"))
+        self.get_widget("items_label").set_markup(_("<b>Tags</b>"))
         
-        self.selected_branch = None
+        self.selected_tag = None
         self.items_treeview = rabbitvcs.ui.widget.Table(
             self.get_widget("items_treeview"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            ["", _("Branch")],
+            [gobject.TYPE_STRING], 
+            [_("Tag")],
             callbacks={
                 "mouse-event":   self.on_treeview_mouse_event,
                 "key-event":     self.on_treeview_key_event
@@ -83,45 +83,31 @@ class GitBranchManager(InterfaceView):
 
         vbox = gtk.VBox(False, 6)
 
-        # Set up the Branch line
+        # Set up the Tag line
         label = gtk.Label(_("Name:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=.5)
-        self.branch_entry = gtk.Entry()
-        self.branch_name_container = gtk.HBox(False, 0)
-        self.branch_name_container.pack_start(label, False, False, 0)
-        self.branch_name_container.pack_start(self.branch_entry, False, False, 0)
-        vbox.pack_start(self.branch_name_container, False, False, 0)
+        self.tag_entry = gtk.Entry()
+        self.tag_name_container = gtk.HBox(False, 0)
+        self.tag_name_container.pack_start(label, False, False, 0)
+        self.tag_name_container.pack_start(self.tag_entry, False, False, 0)
+        vbox.pack_start(self.tag_name_container, False, False, 0)
 
-        # Set up the Commit-sha line
-        label = gtk.Label(_("Start Point:"))
+        # Set up the Log Message Entry line
+        label = gtk.Label(_("Message:"))
         label.set_size_request(90, -1)
-        label.set_properties(xalign=0,yalign=.5)
-        self.start_point_entry = gtk.Entry()
-        self.start_point_entry.set_size_request(300, -1)
-        self.start_point_container = gtk.HBox(False, 0)
-        self.start_point_container.pack_start(label, False, False, 0)
-        self.start_point_container.pack_start(self.start_point_entry, False, False, 0)
-        vbox.pack_start(self.start_point_container, False, False, 0)
+        label.set_properties(xalign=0,yalign=0)
+        self.message_entry = rabbitvcs.ui.widget.TextView()
+        self.message_entry.view.set_size_request(300, 75)
+        swin = gtk.ScrolledWindow()
+        swin.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        swin.add(self.message_entry.view)
+        self.message_entry_container = gtk.HBox(False, 0)
+        self.message_entry_container.pack_start(label, False, False, 0)
+        self.message_entry_container.pack_start(swin, False, False, 0)
+        vbox.pack_start(self.message_entry_container, False, False, 0)
 
-        # Set up the Track line
-        label = gtk.Label("")
-        label.set_size_request(90, -1)
-        self.track_checkbox = gtk.CheckButton(_("Keep old branch's history"))
-        self.track_container = gtk.HBox(False, 0)
-        self.track_container.pack_start(label, False, False, 0)
-        self.track_container.pack_start(self.track_checkbox, False, False, 0)
-        vbox.pack_start(self.track_container, False, False, 0)
-
-        # Set up the checkout line
-        label = gtk.Label("")
-        label.set_size_request(90, -1)
-        self.checkout_checkbox = gtk.CheckButton(_("Set as active branch"))
-        self.checkout_container = gtk.HBox(False, 0)
-        self.checkout_container.pack_start(label, False, False, 0)
-        self.checkout_container.pack_start(self.checkout_checkbox, False, False, 0)
-        vbox.pack_start(self.checkout_container, False, False, 0)
-        
         # Set up Save button
         label = gtk.Label("")
         label.set_size_request(90, -1)
@@ -132,17 +118,17 @@ class GitBranchManager(InterfaceView):
         self.save_container.pack_start(self.save_button, False, False, 0)
         vbox.pack_start(self.save_container, False, False, 0)
 
-        # Set up the Author line
-        label = gtk.Label(_("Author:"))
+        # Set up the tagger line
+        label = gtk.Label(_("Tagger:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=0)
-        self.author_label = gtk.Label("")
-        self.author_label.set_properties(xalign=0,yalign=0,selectable=True)
-        self.author_label.set_line_wrap(True)
-        self.author_container = gtk.HBox(False, 0)
-        self.author_container.pack_start(label, False, False, 0)
-        self.author_container.pack_start(self.author_label, False, False, 0)
-        vbox.pack_start(self.author_container, False, False, 0)
+        self.tagger_label = gtk.Label("")
+        self.tagger_label.set_properties(xalign=0,yalign=0,selectable=True)
+        self.tagger_label.set_line_wrap(True)
+        self.tagger_container = gtk.HBox(False, 0)
+        self.tagger_container.pack_start(label, False, False, 0)
+        self.tagger_container.pack_start(self.tagger_label, False, False, 0)
+        vbox.pack_start(self.tagger_container, False, False, 0)
 
         # Set up the Date line
         label = gtk.Label(_("Date:"))
@@ -180,18 +166,15 @@ class GitBranchManager(InterfaceView):
         self.message_container.pack_start(self.message_label, False, False, 0)
         vbox.pack_start(self.message_container, False, False, 0)
         
-        self.add_containers = [self.branch_name_container, self.track_container, 
-            self.save_container, self.start_point_container,
-            self.checkout_container]
+        self.add_containers = [self.tag_name_container, self.message_entry_container,
+            self.save_container]
             
-        self.view_containers = [self.branch_name_container, self.author_container,
-            self.date_container, self.revision_container, self.message_container,
-            self.save_container,  self.checkout_container]
+        self.view_containers = [self.tag_name_container, self.tagger_container,
+            self.date_container, self.revision_container, self.message_container]
 
-        self.all_containers = [self.branch_name_container, self.track_container,
-            self.author_container, self.date_container, self.revision_container,
-            self.message_container, self.save_container, 
-            self.start_point_container, self.checkout_container]
+        self.all_containers = [self.tag_name_container,  self.tagger_container, 
+            self.date_container, self.revision_container, self.message_container, 
+            self.message_entry_container, self.save_container]
 
         vbox.show()
         self.detail_container.add(vbox)
@@ -199,13 +182,9 @@ class GitBranchManager(InterfaceView):
     def load(self, callback, *args, **kwargs):
         self.items_treeview.clear()
 
-        self.branch_list = self.git.branch_list()
-        for item in self.branch_list:
-            track_str = ""
-            if self.git.is_tracking(item.name):
-                track_str = "*"
-                
-            self.items_treeview.append([track_str, item.name])
+        self.tag_list = self.git.tag_list()
+        for item in self.tag_list:
+            self.items_treeview.append([item.name])
 
         if callback:
             callback(*args, **kwargs)
@@ -214,35 +193,23 @@ class GitBranchManager(InterfaceView):
         self.show_add()
 
     def on_delete_clicked(self, widget):
-        selected = self.items_treeview.get_selected_row_items(1)
+        selected = self.items_treeview.get_selected_row_items(0)
     
         confirm = rabbitvcs.ui.dialog.Confirmation(_("Are you sure you want to delete %s?" % ", ".join(selected)))
         result = confirm.run()
         
         if result == gtk.RESPONSE_OK or result == True:
-            for branch in selected:
-                self.git.branch_delete(branch)
+            for tag in selected:
+                self.git.tag_delete(tag)
             
             self.load(self.show_add)
 
     def on_save_clicked(self, widget):
-        if self.state == STATE_ADD:
-            branch_name = self.branch_entry.get_text()
-            branch_track = self.track_checkbox.get_active()
-            start_point = self.git.revision(self.start_point_entry.get_text())
+        tag_name = self.tag_entry.get_text()
+        tag_message = self.message_entry.get_text()
 
-            self.git.branch(branch_name, revision=start_point)
-        elif self.state == STATE_EDIT:
-            branch_name = self.branch_entry.get_text()
-            branch_track = self.track_checkbox.get_active()
-            
-            if self.selected_branch.name != branch_name:
-                self.git.branch_rename(self.selected_branch.name, branch_name)
-    
-        if self.checkout_checkbox.get_active():
-            self.git.checkout(branch_name=branch_name)
-
-        self.load(self.show_edit, branch_name)
+        self.git.tag(tag_name, tag_message)
+        self.load(self.show_detail, tag_name)
 
     def on_treeview_key_event(self, treeview, data=None):
         if gtk.gdk.keyval_name(data.keyval) in ("Up", "Down", "Return"):
@@ -252,10 +219,10 @@ class GitBranchManager(InterfaceView):
         self.on_treeview_event(treeview, data)
 
     def on_treeview_event(self, treeview, data):
-        selected = self.items_treeview.get_selected_row_items(1)
+        selected = self.items_treeview.get_selected_row_items(0)
         if len(selected) > 0:
             if len(selected) == 1:
-                self.show_edit(selected[0])
+                self.show_detail(selected[0])
             self.get_widget("delete").set_sensitive(True)
         else:
             self.show_add()
@@ -267,48 +234,35 @@ class GitBranchManager(InterfaceView):
             container.show_all()
 
     def show_add(self):
-        self.state = STATE_ADD
-
         self.items_treeview.unselect_all()
-        self.branch_entry.set_text("")
+        self.tag_entry.set_text("")
+        self.message_entry.set_text("")
         self.save_button.set_label(_("Add"))
-        self.start_point_entry.set_text("HEAD")
-        self.track_checkbox.set_active(True)
-        self.checkout_checkbox.set_sensitive(True)
-        self.checkout_checkbox.set_active(False)
         self.show_containers(self.add_containers)
-        self.get_widget("detail_label").set_markup(_("<b>Add Branch</b>"))
+        self.get_widget("detail_label").set_markup(_("<b>Add Tag</b>"))
     
-    def show_edit(self, branch_name):
-        self.state = STATE_EDIT
-
-        self.selected_branch = None
-        for item in self.branch_list:
-            if item.name == branch_name:
-                self.selected_branch = item
+    def show_detail(self, tag_name):
+        self.selected_tag = None
+        for item in self.tag_list:
+            if item.name == tag_name:
+                self.selected_tag = item
                 break
 
         self.save_button.set_label(_("Save"))
+        if self.selected_tag:
+            self.tag_entry.set_text(self.selected_tag.name)
+            self.revision_label.set_text(self.selected_tag.sha)
+            self.message_label.set_text(self.selected_tag.message.rstrip("\n"))
+            self.tagger_label.set_text(self.selected_tag.tagger)
+            self.date_label.set_text(rabbitvcs.util.helper.format_datetime(datetime.fromtimestamp(self.selected_tag.tag_time)))
 
-        self.branch_entry.set_text(self.selected_branch.name)
-        self.revision_label.set_text(self.selected_branch.sha)
-        self.message_label.set_text(self.selected_branch.message.rstrip("\n"))
-        self.author_label.set_text(self.selected_branch.author)
-        self.date_label.set_text(rabbitvcs.util.helper.format_datetime(datetime.fromtimestamp(self.selected_branch.commit_time)))
-        if self.git.is_tracking(self.selected_branch.name):
-            self.checkout_checkbox.set_active(True)
-            self.checkout_checkbox.set_sensitive(False)
-        else:
-            self.checkout_checkbox.set_active(False)
-            self.checkout_checkbox.set_sensitive(True)
-
-        self.show_containers(self.view_containers)
-        self.get_widget("detail_label").set_markup(_("<b>Branch Detail</b>"))
+            self.show_containers(self.view_containers)
+            self.get_widget("detail_label").set_markup(_("<b>Tag Detail</b>"))
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, paths) = main(usage="Usage: rabbitvcs branch-manager path")
+    (options, paths) = main(usage="Usage: rabbitvcs tag-manager path")
     
-    window = GitBranchManager(paths[0])
+    window = GitTagManager(paths[0])
     window.register_gtk_quit()
     gtk.main()

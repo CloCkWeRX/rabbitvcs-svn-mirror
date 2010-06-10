@@ -629,6 +629,12 @@ class MenuBranchManager(MenuItem):
     label = _("Branch Manager")
     icon = "rabbitvcs-branch"
 
+class MenuTagManager(MenuItem):
+    identifier = "RabbitVCS::Tag_Manager"
+    label = _("Tag Manager")
+    icon = "rabbitvcs-branch"
+
+
 def get_ignore_list_items(paths):
     """
     Build up a list of items to ignore based on the selected paths
