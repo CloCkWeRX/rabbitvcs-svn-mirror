@@ -234,8 +234,14 @@ class TableBase:
             if coltypes[i] == gobject.TYPE_BOOLEAN:
                 cell = gtk.CellRendererToggle()
                 cell.set_property('activatable', True)
+                cell.set_property('xalign', 0)
                 cell.connect("toggled", self.toggled_cb, i)
-                col = gtk.TreeViewColumn("", cell)
+                
+                colname = ""
+                if name != TOGGLE_BUTTON:
+                    colname = name
+                
+                col = gtk.TreeViewColumn(colname, cell)
                 col.set_attributes(cell, active=i)
             elif coltypes[i] == TYPE_PATH:
                 # The type should be str but we have to use TYPE_PATH to
@@ -420,7 +426,7 @@ class TableBase:
     
     def allow_multiple(self):
         self.treeview.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-        
+
     def get_activated_rows(self, column=None):
         returner = []
         for row in self.data:
@@ -470,6 +476,9 @@ class TableBase:
 
     def get_selected_rows(self):
         return self.selected_rows
+        
+    def unselect_all(self):
+        self.treeview.get_selection().unselect_all()
 
     def __button_press_event(self, treeview, data):
         info = treeview.get_path_at_pos(int(data.x), int(data.y))
