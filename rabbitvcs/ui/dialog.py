@@ -90,10 +90,13 @@ class PreviousMessages(InterfaceView):
         return returner
         
     def on_prevmes_table_row_activated(self, treeview, data, col):
+        self.update_message_table()
         self.dialog.response(gtk.RESPONSE_OK)
     
     def on_prevmes_table_cursor_changed(self, treeview):
-                
+        self.update_message_table()
+
+    def update_message_table(self):
         selection = self.message_table.get_selected_row_items(1)
         
         if selection:
