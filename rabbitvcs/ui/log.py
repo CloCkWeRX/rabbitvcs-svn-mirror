@@ -110,7 +110,7 @@ class SVNLog(InterfaceView):
         )
 
         self.stop_on_copy = False
-        self.root_url = self.svn.get_repo_root_url(self.path)
+        self.initialize_root_url()
         self.load_or_refresh()
 
     #
@@ -260,6 +260,18 @@ class SVNLog(InterfaceView):
     #
     # Helper methods
     #
+
+    def initialize_root_url(self):
+        action = SVNAction(
+            self.svn,
+            notification=False,
+            run_in_thread=False
+        )
+        
+        self.root_url = action.run_single(
+            self.svn.get_repo_root_url,
+            self.path
+        )
 
     def load_or_refresh(self):
         if self.cache.has(self.rev_start):

@@ -56,7 +56,8 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
 
         self.url = ""
         if self.svn.is_in_a_or_a_working_copy(url):
-            self.url = self.svn.get_repo_url(url)
+            action = rabbitvcs.ui.action.SVNAction(self.svn, notification=False, run_in_thread=False)
+            self.url = action.run_single(self.svn.get_repo_url, url)
         elif self.svn.is_path_repository_url(url):
             self.url = url
 
@@ -154,7 +155,8 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
     
     def init_repo_root_url(self):
         if self.repo_root_url is None and self.svn.is_in_a_or_a_working_copy(self.url):
-            self.repo_root_url = self.svn.get_repo_root_url(self.url)
+            action = rabbitvcs.ui.action.SVNAction(self.svn, notification=False, run_in_thread=False)
+            self.repo_root_url = action.run_single(self.svn.get_repo_root_url, self.url)
     
     def on_destroy(self, widget):
         self.destroy()
