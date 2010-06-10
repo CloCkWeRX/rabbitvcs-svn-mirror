@@ -176,7 +176,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
         else:
             self.url = path
 
-        if self.file_column_callback(self.url) == "dir":
+        if self.file_column_callback(self.url) == "dir" or self.url != path:
             self.urls.set_child_text(self.url)
             self.load()
         else:
