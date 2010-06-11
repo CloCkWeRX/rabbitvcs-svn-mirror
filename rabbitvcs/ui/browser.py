@@ -622,7 +622,8 @@ class BrowserContextMenu:
         context_menu.show(self.event)
 
 classes_map = {
-    rabbitvcs.vcs.VCS_SVN: SVNBrowser
+    rabbitvcs.vcs.VCS_SVN: SVNBrowser,
+    rabbitvcs.vcs.VCS_DUMMY: SVNBrowser
 }
 
 def browser_factory(path):
