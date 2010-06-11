@@ -27,9 +27,21 @@ ENCODING = "UTF-8"
 def callback_notify_null(val):
     pass
 
+def callback_get_user():
+    from pwd import getpwuid
+    pwuid = getpwuid(os.getuid())
+    
+    user = pwuid[0]
+    fullname = pwuid[4]
+    host = os.getenv("HOSTNAME")
+    
+    return (fullname, "%s@%s" % (user, host))
+
 class GittyupClient:
     def __init__(self, path=None, create=False):
         self.callback_notify = callback_notify_null
+        self.callback_get_user = None
+
         self.global_ignore_patterns = []
         
         if path:
@@ -211,9 +223,18 @@ class GittyupClient:
         try:
             config_user_name = self.config.get("user", "name")
             config_user_email = self.config.get("user", "email")
-            return "%s <%s>" % (config_user_name, config_user_email)
+            if config_user_name == "" or config_user_email == "":
+                raise KeyError()
         except KeyError:
-            return None
+            (config_user_name, config_user_email) = self.callback_get_user()
+            
+            if config_user_name == None and config_user_email == None:
+                return None
+            
+        self.config.set("user", "name", config_user_name)
+        self.config.set("user", "email", config_user_email)
+        self.config.write()
+        return "%s <%s>" % (config_user_name, config_user_email)
     
     def _write_packed_refs(self, refs):
         packed_refs_str = ""
@@ -652,6 +673,15 @@ class GittyupClient:
         
         """
 
+        if not committer:
+            committer = self._get_config_user()
+            if not committer:
+                raise GittyupCommandError("A committer was not specified")
+        if not author:
+            author = self._get_config_user()
+            if not author:
+                raise GittyupCommandError("An author was not specified")
+
         if commit_all:
             self.stage_all()
 
@@ -667,18 +697,11 @@ class GittyupClient:
             initial_commit = True
             pass
 
-        config_user = self._get_config_user()
-        if config_user is None:
-            if committer is None:
-                raise ValueError("The committing person has not been specified")
-            if author is None:
-                raise ValueError("The author has not been specified")
-
-        commit.committer = (committer and committer or config_user)
+        commit.committer = committer
         commit.commit_time = (commit_time and commit_time or int(time.time()))
         commit.commit_timezone = (commit_timezone and commit_timezone or TZ)
         
-        commit.author = (author and author or config_user)
+        commit.author = author
         commit.author_time = (author_time and author_time or int(time.time()))
         commit.author_timezone = (author_timezone and author_timezone or TZ)        
         
@@ -895,17 +918,17 @@ class GittyupClient:
         
         """
         
-        tag = dulwich.objects.Tag()
+        if not tagger:
+            tagger = self._get_config_user()
         
-        config_user = self._get_config_user()
+        if not tagger:
+            raise GittyupCommandError("A tagger was not specified")
 
-        if config_user is None:
-            if tagger is None:
-                raise ValueError("The tagging person has not been specified")
+        tag = dulwich.objects.Tag()
 
         tag.name = name
         tag.message = message
-        tag.tagger = (tagger and tagger or config_user)
+        tag.tagger = (tagger and tagger or self._get_config_user())
         tag.tag_time = (tag_time and tag_time or int(time.time()))
         tag.tag_timezone = (tag_timezone and tag_timezone or TZ)
         
@@ -1123,6 +1146,9 @@ class GittyupClient:
 
     def set_callback_notify(self, func):
         self.callback_notify = func
+
+    def set_callback_get_user(self, func):
+        self.callback_get_user = func
     
     def notify(self, data):
         if self.callback_notify is not None:

@@ -670,6 +670,7 @@ class GitAction(VCSAction):
 
         self.client = client
         self.client.set_callback_notify(self.notify)
+        self.client.set_callback_get_user(self.get_user)
         
         VCSAction.__init__(self, client, register_gtk_quit, notification,
             run_in_thread)
@@ -677,6 +678,14 @@ class GitAction(VCSAction):
     def notify(self, data):
         if self.has_notifier:
             self.notification.append(["", data, ""])
+
+    def get_user(self):
+        gtk.gdk.threads_enter()
+        dialog = rabbitvcs.ui.dialog.NameEmailPrompt()
+        result = dialog.run()
+        gtk.gdk.threads_leave()
+
+        return result
 
 def vcs_action_factory(client, register_gtk_quit=False, notification=True, 
         run_in_thread=True):

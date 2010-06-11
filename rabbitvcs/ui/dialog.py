@@ -436,3 +436,27 @@ class ErrorNotification(InterfaceView):
         dialog = self.get_widget("ErrorNotification")
         dialog.run()
         dialog.destroy()
+
+class NameEmailPrompt(InterfaceView):
+    def __init__(self):
+        InterfaceView.__init__(self, GLADE, "NameEmailPrompt")
+
+        self.dialog = self.get_widget("NameEmailPrompt")
+    
+    def on_key_release_event(self, widget, data):
+        # The gtk.Dialog.response() method emits the "response" signal,
+        # which tells gtk.Dialog.run() asyncronously to stop.  This allows the
+        # user to press the "Return" button when done writing in the new text
+        if gtk.gdk.keyval_name(data.keyval) == "Return":
+            self.dialog.response(gtk.RESPONSE_OK)
+    
+    def run(self):
+        result = self.dialog.run()
+        name = self.get_widget("name").get_text()
+        email = self.get_widget("email").get_text()
+        self.dialog.destroy()
+        
+        if result == gtk.RESPONSE_OK:
+            return (name, email)
+        else:
+            return (None, None)

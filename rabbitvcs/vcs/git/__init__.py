@@ -631,3 +631,6 @@ class Git:
         
     def set_callback_notify(self, func):
         self.client.set_callback_notify(func)
+    
+    def set_callback_get_user(self, func):
+        self.client.set_callback_get_user(func)
