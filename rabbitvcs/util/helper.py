@@ -380,7 +380,7 @@ def launch_diff_tool(path1, path2=None):
         open("/tmp/tmp.patch", "w").write(patch)
         
         tmp_path = "/tmp/%s" % os.path.split(path1)[-1]
-        shutil.copy(path1, "/tmp")
+        shutil.copytree(path1, tmp_path)
         os.popen(
             "patch --reverse '%s' < /tmp/tmp.patch" % 
             tmp_path
