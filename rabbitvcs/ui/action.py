@@ -82,6 +82,10 @@ class DummyNotifier:
     def set_canceled_by_user(self, was_canceled_by_user):
         pass
 
+    @gtk_unsafe
+    def exception_callback(self, e):
+        MessageBox(str(e))
+
 class MessageCallbackNotifier(VCSNotifier):
     """
     Provides an interface to handle the Notification UI.
