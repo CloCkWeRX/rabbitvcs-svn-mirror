@@ -1213,6 +1213,7 @@
             <property name="xalign">0</property>
             <property name="xpad">6</property>
             <property name="ypad">6</property>
+            <property name="selectable">True</property>
           </widget>
           <packing>
             <property name="position">1</property>
