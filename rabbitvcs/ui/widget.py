@@ -321,6 +321,20 @@ class TableBase:
 
         self.sorted = None
 
+        # self.sorted == sorted view of data
+        # self.filter == filtered data (abs paths -> rel paths)
+        # self.data == actual data
+
+        # The filter is there to change the way data is displayed. The data
+        # should always be accessed via self.data, NOT self.filter.
+        self.filter = self.data.filter_new()
+        types = (filter_types and filter_types or coltypes)
+        self.filter.set_modify_func(
+                        types,
+                        filter_router,
+                        filters)
+
+
 		# This runs through the columns, and sets the "compare_items" comparator
         # as needed. Note that the user data tells which column to sort on.
         if sortable:
@@ -338,20 +352,7 @@ class TableBase:
             self.treeview.set_model(self.sorted)
             
         elif filters:
-            # self.sorted == sorted view of data
-            # self.filter == filtered data (abs paths -> rel paths)
-            # self.data == actual data
-
-            # The filter is there to change the way data is displayed. The data
-            # should always be accessed via self.data, NOT self.filter.
-            self.filter = self.data.filter_new()
-            types = (filter_types and filter_types or coltypes)
-            self.filter.set_modify_func(
-                            types,
-                            filter_router,
-                            filters)
             self.treeview.set_model(self.filter)
-            
         else:
             self.treeview.set_model(self.data)
 
