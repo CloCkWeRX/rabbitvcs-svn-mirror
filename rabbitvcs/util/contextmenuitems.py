@@ -623,6 +623,7 @@ class MenuFetchPull(MenuItem):
 class MenuPush(MenuItem):
     identifier = "RabbitVCS::Push"
     label = _("Push")
+    icon = "rabbitvcs-push"
 
 class MenuBranchManager(MenuItem):
     identifier = "RabbitVCS::Branch_Manager"
