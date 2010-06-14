@@ -126,12 +126,13 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
             self.load()
 
     def load(self):
+        self.url = self.urls.get_active_text()
         self.action = rabbitvcs.ui.action.SVNAction(
             self.svn,
             notification=False
         )
         revision = self.revision_selector.get_revision_object()
-        self.action.append(self.svn.list, self.urls.get_active_text(), 
+        self.action.append(self.svn.list, self.url, 
             revision=revision, recurse=False)
         self.action.append(self.init_repo_root_url)
         self.action.append(self.populate_table, 0)
