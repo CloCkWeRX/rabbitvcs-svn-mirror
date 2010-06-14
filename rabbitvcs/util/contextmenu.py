@@ -500,7 +500,7 @@ class ContextMenuCallbacks:
         self.caller.execute_after_process_exit(proc)
         
     def create_repository(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window("create", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("create", ["--vcs", "svn", self.paths[0]])
         self.caller.execute_after_process_exit(proc)
     
     def relocate(self, widget, data1=None, data2=None):
@@ -609,16 +609,14 @@ class ContextMenuConditions:
                     self.path_dict[key] = False
 
     def checkout(self, data=None):
-        return (self.path_dict["is_svn"] and        
-                self.path_dict["length"] == 1 and
+        return (self.path_dict["length"] == 1 and
                 self.path_dict["is_dir"] and
                 not self.path_dict["is_working_copy"])
                 
     def update(self, data=None):
-        return (self.path_dict["is_svn"] and
-                (self.path_dict["is_in_a_or_a_working_copy"] and
+        return (self.path_dict["is_in_a_or_a_working_copy"] and
                 self.path_dict["is_versioned"] and
-                not self.path_dict["is_added"]))
+                not self.path_dict["is_added"])
                         
     def commit(self, data=None):
         if self.path_dict["is_svn"] or self.path_dict["is_git"]:
