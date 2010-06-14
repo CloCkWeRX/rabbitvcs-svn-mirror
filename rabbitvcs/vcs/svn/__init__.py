@@ -1070,6 +1070,8 @@ class SVN:
 
         """
 
+        url = rabbitvcs.util.helper.urlize(url)
+
         return self.client.checkout(url, path, recurse=recurse,
             revision=revision.primitive(), ignore_externals=ignore_externals)
 
@@ -1556,6 +1558,7 @@ class SVN:
             url_or_path2, revision2.primitive(), recurse, ignore_ancestry)
 
     def list(self, url_or_path, revision=Revision("HEAD"), recurse=True):
+        url_or_path = rabbitvcs.util.helper.urlize(url_or_path)
         return self.client.list(url_or_path, revision=revision.primitive(),
             recurse=recurse)
 

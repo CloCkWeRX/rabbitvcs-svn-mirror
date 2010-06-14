@@ -771,4 +771,9 @@ def walk_tree_depth_first(tree, show_levels=False,
         if children:
             annotated_children = [(level+1, child) for child in children]
             annotated_children.reverse()
-            to_process.extendleft(annotated_children)        
+            to_process.extendleft(annotated_children)
+
+def urlize(path):
+    if path.startswith("/"):
+        return "file://%s" % path
+    return path
