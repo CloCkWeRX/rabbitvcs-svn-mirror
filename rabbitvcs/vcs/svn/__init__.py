@@ -1018,7 +1018,8 @@ class SVN:
         @param  revision: A pysvn.Revision object.
 
         """
-
+        src = rabbitvcs.util.helper.urlize(src)
+        dest = rabbitvcs.util.helper.urlize(dest)
         return self.client.copy(src, dest, revision.primitive())
 
     def copy_all(self, sources, dest_url_or_path, copy_as_child=False,
@@ -1043,7 +1044,7 @@ class SVN:
         @param  ignore_externals: Omit externals
 
         """
-
+        
         return self.client.copy2(sources, dest_url_or_path, copy_as_child,
             make_parents, None, ignore_externals)
 
@@ -1180,7 +1181,8 @@ class SVN:
         @param  recurse: Whether or not to run a recursive checkout.
 
         """
-
+        
+        src_url_or_path = rabbitvcs.util.helper.urlize(src_url_or_path)
         return self.client.export(src_url_or_path, dest_path, force,
             revision.primitive(), native_eol, ignore_externals, recurse)
 
@@ -1203,6 +1205,7 @@ class SVN:
 
         """
 
+        url = rabbitvcs.util.helper.urlize(url)
         return self.client.import_(path, url, log_message, ignore)
 
     def lock(self, url_or_path, lock_comment, force=False):
@@ -1238,7 +1241,9 @@ class SVN:
         @param  path: The path of the local working copy
 
         """
-
+        
+        from_url = rabbitvcs.util.helper.urlize(from_url)
+        to_url = rabbitvcs.util.helper.urlize(to_url)
         return self.client.relocate(from_url, to_url, path, recurse)
 
     def move(self, src_url_or_path, dest_url_or_path):
@@ -1344,6 +1349,7 @@ class SVN:
 
         """
 
+        url = rabbitvcs.util.helper.urlize(url)
         return self.client.switch(path, url, revision.primitive())
 
     def unlock(self, path, force=False):
@@ -1483,6 +1489,8 @@ class SVN:
 
         """
 
+        url_or_path1 = rabbitvcs.util.helper.urlize(url_or_path1)
+        url_or_path2 = rabbitvcs.util.helper.urlize(url_or_path2)
         return self.client.merge(url_or_path1, revision1.primitive(),
             url_or_path2, revision2.primitive(), local_path, force, recurse,
             record_only)
