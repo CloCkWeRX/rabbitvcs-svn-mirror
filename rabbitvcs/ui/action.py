@@ -575,7 +575,8 @@ class VCSAction(threading.Thread):
             self.stop()
 
     def stop(self):
-        self.notification.close()
+        if self.notification:
+            self.notification.close()
 
     def run(self):
         """
@@ -592,12 +593,14 @@ class VCSAction(threading.Thread):
 
     def run_single(self, func, *args, **kwargs):
         try:
-            return func(*args, **kwargs)
+            returner = func(*args, **kwargs)
         except Exception, e:
             self.__queue_exception_callback(e)
-            return None
+            returner = None
         finally:
-            self.notification.close()
+            self.stop()
+
+        return returner
 
     def stop_loader(self):
         self.stop()
