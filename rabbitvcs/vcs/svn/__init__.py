@@ -1182,7 +1182,6 @@ class SVN:
 
         """
         
-        src_url_or_path = rabbitvcs.util.helper.urlize(src_url_or_path)
         return self.client.export(src_url_or_path, dest_path, force,
             revision.primitive(), native_eol, ignore_externals, recurse)
 
