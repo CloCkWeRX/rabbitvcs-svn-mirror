@@ -107,10 +107,9 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         """
         
         if ((item.path in self.paths
-                or item.is_versioned)
-                and os.path.exists(item.path)):
+                or item.is_versioned)):
             return True
- 
+
         return False
 
     def initialize_items(self):
@@ -254,11 +253,15 @@ class SVNCommit(Commit):
             return
 
         added = 0
+        recurse = False
         for item in items:
+            status = self.vcs.status(item, summarize=False).content
             try:
-                if self.vcs.status(item, summarize=False).content == rabbitvcs.vcs.status.status_unversioned:
+                if status == rabbitvcs.vcs.status.status_unversioned:
                     self.vcs.svn().add(item)
                     added += 1
+                elif status == rabbitvcs.vcs.status.status_deleted:
+                    recurse = True
             except Exception, e:
                 log.exception(e)
 
@@ -275,7 +278,7 @@ class SVNCommit(Commit):
             rabbitvcs.util.helper.save_log_message, 
             self.message.get_text()
         )
-        self.action.append(self.vcs.svn().commit, items, self.message.get_text())
+        self.action.append(self.vcs.svn().commit, items, self.message.get_text(), recurse=recurse)
         self.action.append(self.action.set_status, _("Completed Commit"))
         self.action.append(self.action.finish)
         self.action.start()
