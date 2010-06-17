@@ -66,27 +66,34 @@ STATUS_EMBLEMS = {
     rabbitvcs.vcs.status.status_error : "rabbitvcs-error"
 }
 
-def get_glade_tree(filename, id):
-        path = "%s/glade/%s.glade" % (
-            os.path.dirname(os.path.realpath(__file__)), 
-            filename
-        )
-        gtk.glade.bindtextdomain(APP_NAME, LOCALE_DIR)
-        gtk.glade.textdomain(APP_NAME)
-        tree = gtk.glade.XML(path, id, APP_NAME)
-        return tree
-
 class GladeWidgetWrapper:
-    
-    def __init__(self, glade_filename = None, glade_id = None):
+        
+    def __init__(self, glade_filename = None,
+                 glade_id = None, claim_domain=True):
         if glade_filename:
             self.glade_filename = glade_filename
         
         if glade_id:
             self.glade_id = glade_id
+        
+        self.claim_domain = claim_domain
             
-        self.tree = get_glade_tree(self.glade_filename, self.glade_id)
+        self.tree = self.get_glade_tree()
+        
         self.tree.signal_autoconnect(self)
+ 
+    def get_glade_tree(self):
+        if self.claim_domain:
+            gtk.glade.bindtextdomain(APP_NAME, LOCALE_DIR)
+            gtk.glade.textdomain(APP_NAME)
+
+        path = "%s/glade/%s.glade" % (
+            os.path.dirname(os.path.realpath(__file__)), 
+            self.glade_filename
+        )
+            
+        tree = gtk.glade.XML(path, self.glade_id, APP_NAME)
+        return tree
     
     def get_widget(self, id = None):
         if not id:

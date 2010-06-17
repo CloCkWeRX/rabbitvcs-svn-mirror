@@ -40,21 +40,24 @@ class PropertyPage(rabbitvcs.ui.GladeWidgetWrapper):
     glade_filename = "property_page"
     glade_id = "prop_page_scroller"
     
-    def __init__(self, paths, vcs=None):
-        rabbitvcs.ui.GladeWidgetWrapper.__init__(self)
+    def __init__(self, paths, vcs=None, claim_domain=True):
+        rabbitvcs.ui.GladeWidgetWrapper.__init__(self,
+                                                 claim_domain=claim_domain)
         self.paths = paths
         self.vcs = vcs or rabbitvcs.vcs.VCS()
         
         self.info_pane = self.get_widget("property_page") 
         
         if len(paths) == 1:
-            file_info = FileInfoPane(paths[0], self.vcs)
+            file_info = FileInfoPane(paths[0], self.vcs,
+                                     claim_domain=self.claim_domain)
             self.info_pane.pack_start(file_info.get_widget(),
                                       expand=False)
         elif len(paths) > 1:
             try:
                 for path in paths:
-                    expander = FileInfoExpander(path, vcs)
+                    expander = FileInfoExpander(path, self.vcs_client,
+                                                claim_domain=self.claim_domain)
                     self.info_pane.pack_start(expander.get_widget(),
                                               expand=False)
             except Exception, ex:
@@ -66,8 +69,9 @@ class FileInfoPane(rabbitvcs.ui.GladeWidgetWrapper):
     glade_filename = "property_page"
     glade_id = "file_info_table"
     
-    def __init__(self, path, vcs = None):
-        rabbitvcs.ui.GladeWidgetWrapper.__init__(self)
+    def __init__(self, path, vcs=None, claim_domain=True):
+        rabbitvcs.ui.GladeWidgetWrapper.__init__(self,
+                                                 claim_domain=claim_domain)
         
         self.path = path
         self.vcs = vcs or rabbitvcs.vcs.VCS()
@@ -127,12 +131,13 @@ class FileInfoExpander(rabbitvcs.ui.GladeWidgetWrapper):
     glade_filename = "property_page"
     glade_id = "file_info_expander"
 
-    def __init__(self, path, vcs = None):
+    def __init__(self, path, vcs=None, claim_domain=True):
         
         # Might be None, but that's okay, only subclasses use it
         self.vcs = vcs
         
-        rabbitvcs.ui.GladeWidgetWrapper.__init__(self)
+        rabbitvcs.ui.GladeWidgetWrapper.__init__(self,
+                                                 claim_domain=claim_domain)
         self.path = path
         self.get_widget("file_expander_path").set_label(path)
         
@@ -146,7 +151,9 @@ class FileInfoExpander(rabbitvcs.ui.GladeWidgetWrapper):
 
     def on_expand(self, param_spec, user_data):
         if self.expander.get_expanded() and not self.file_info:
-            self.file_info = FileInfoPane(self.path, self.vcs).get_widget()
+            self.file_info = FileInfoPane(self.path, self.vcs,
+                                          claim_domain=self.claim_domain
+                                          ).get_widget()
             self.expander.add(self.file_info)
 
 class PropertyPageLabel(rabbitvcs.ui.GladeWidgetWrapper):
