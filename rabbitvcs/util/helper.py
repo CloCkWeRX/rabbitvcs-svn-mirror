@@ -643,14 +643,19 @@ def _commonpath(l1, l2, common=[]):
     if l1[0] != l2[0]: return (common, l1, l2)
     return _commonpath(l1[1:], l2[1:], common+[l1[0]])
     
-def get_relative_path(p1, p2):
+def get_relative_path(from_path, to_path):
     """
     Method that returns the relative path between the specified paths
     """
-    (common,l1,l2) = _commonpath(p1.split(os.path.sep), p2.split(os.path.sep))
+    
+    nice_path1 = from_path.rstrip(os.path.sep).split(os.path.sep)
+    nice_path2 = to_path.rstrip(os.path.sep).split(os.path.sep)
+    
+    (common,l1,l2) = _commonpath(nice_path1, nice_path2)
+    
     p = []
     if len(l1) > 0:
-        p = [ '../' * len(l1) ]
+        p = ['..'] * len(l1)
     p = p + l2
     
     return os.sep.join(p)
