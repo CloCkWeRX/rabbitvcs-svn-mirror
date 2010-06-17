@@ -176,7 +176,7 @@ class SVNCheckout(Checkout):
         self.action.append(rabbitvcs.util.helper.save_repository_path, url)
         self.action.append(
             self.svn.checkout,
-            url,
+            rabbitvcs.lib.helper.quote_url(url),
             path,
             recurse=recursive,
             revision=revision,
@@ -187,6 +187,7 @@ class SVNCheckout(Checkout):
         self.action.start()
 
     def on_repositories_changed(self, widget, data=None):
+        # Do not use quoting for this bit
         url = self.repositories.get_active_text()
         tmp = url.replace("//", "/").split("/")[1:]
         append = ""
@@ -200,7 +201,7 @@ class SVNCheckout(Checkout):
             if append in ("http:", "https:", "file:", "svn:", "svn+ssh:"):
                 append = ""
                 break
-                
+        
         self.get_widget("destination").set_text(
             os.path.join(self.destination, append)
         )
