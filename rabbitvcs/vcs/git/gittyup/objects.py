@@ -38,7 +38,9 @@ class UntrackedStatus(GittyupStatus):
 class MissingStatus(GittyupStatus):
     identifier = "missing"
 
-
+class NoStatus(GittyupStatus):
+    def __eq__(self, other):
+        return (self.path == other.path)
 
 class GittyupObject:
     def __init__(self, sha, obj):
@@ -46,6 +48,11 @@ class GittyupObject:
         self.obj = obj
 
 class Commit(GittyupObject):
+    def __init__(self, sha, obj, changed_paths=[]):
+        self.sha = sha
+        self.obj = obj
+        self.changed_paths = changed_paths
+
     def __repr__(self):
         return "<Commit %s>" % self.sha
 
@@ -84,6 +91,9 @@ class Commit(GittyupObject):
     @property
     def encoding(self):
         return self.obj.encoding
+
+    def __eq__(self, other):
+        return self.sha == other.sha
 
 class Tag(GittyupObject):
     def __repr__(self):

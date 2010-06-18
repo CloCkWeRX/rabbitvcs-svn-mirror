@@ -227,26 +227,30 @@ class Git:
 
         return items
 
-    def revision(self, val):
+    def revision(self, value):
         """
         Create a revision object usable by pysvn
 
         @type   kind:   string
         @param  kind:   HEAD or a sha1 hash
 
-        @type   number: integer
-        @param  number: Used for kind=number, specifies the revision hash.
+        @type   value: integer
+        @param  value: Used for kind=number, specifies the revision hash.
 
         @rtype:         Revision object
         @return:        A Revision object.
 
         """
-
-        revision = Revision("HEAD")
-        if val.upper() != "HEAD":
-            revision = Revision("hash", val)
-
-        return revision
+        if value is None:
+            return Revision("WORKING")
+        
+        value_upper = value.upper()
+        if value_upper == "HEAD" or value_upper == "BASE":
+            return Revision("HEAD")
+        elif value_upper == "WORKING":
+            return Revision("WORKING")
+        else:
+            return Revision("hash", val)
 
     def is_tracking(self, name):
         return self.client.is_tracking("refs/heads/%s" % name)
@@ -607,15 +611,30 @@ class Git:
         return self.client.tag_list()
 
 
-    def log(self, refspec="HEAD", limit=10):
+    def log(self, path=None, refspec="HEAD", start_point=None, limit=None):
         """
         Returns a revision history list
         
+        @type   path    string
+        @param  path    If a path is specified, return commits that contain
+                        changes to the specified path only
+        
+        @type   refspec string
+        @param  refspec Determines which branch to find commits for
+        
+        @type   start_point sha1 hash string
+        @param  start_point Start at a given revision
+        
+        @type   limit   int
+        @param  limit   If given, returns a limited number of commits
+        
+        @returns    A list of commits
+        
         """
         
-        return self.client.log(refspec, limit)
+        return self.client.log(path, refspec, start_point, limit)
     
-    def annotate(self, path, revision=Revision("head")):
+    def annotate(self, path, revision_obj=Revision("head")):
         """
         Returns an annotation for a specified file
             
@@ -627,7 +646,42 @@ class Git:
         
         """
 
-        return self.client.annotate(path, revision.primitive())
+        return self.client.annotate(path, revision_obj.primitive())
+
+    def show(self, path, revision_obj):
+        """
+        Returns a particular file at a given revision object.
+        
+        @type   path: string
+        @param  path: The absolute path to a file
+
+        @type   revision_obj: git.Revision()
+        @param  revision_obj: The revision object for path
+        
+        """
+
+        return self.client.show(path, revision_obj.primitive())
+
+    def diff(self, path1, revision_obj1, path2=None, revision_obj2=None):
+        """
+        Returns the diff between the path(s)/revision(s)
+        
+        @type   path1: string
+        @param  path1: The absolute path to a file
+
+        @type   revision_obj1: git.Revision()
+        @param  revision_obj1: The revision object for path1
+
+        @type   path2: string
+        @param  path2: The absolute path to a file
+
+        @type   revision_obj2: git.Revision()
+        @param  revision_obj2: The revision object for path2
+               
+        """
+
+        return self.client.diff(path1, revision_obj1.primitive(), path2,
+            revision_obj2.primitive())
         
     def set_callback_notify(self, func):
         self.client.set_callback_notify(func)

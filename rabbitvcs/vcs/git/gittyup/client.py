@@ -101,6 +101,34 @@ class GittyupClient:
                 tree_index[item[0]] = (item[1], item[2])
         return tree_index
 
+    def _get_tree_diff(self, tree1, tree2):
+        index1 = self._get_tree_index(tree1)
+        index2 = self._get_tree_index(tree2)
+        
+        diff = []
+        index2_paths = set(index2)
+        for name1, data1 in index1.iteritems():
+            (mode1, sha11) = data1
+            
+            try:
+                data2 = index2[name1]
+
+                (mode2, sha12) = data2
+                if sha11 != sha12:
+                    diff.append(ModifiedStatus(name1))
+            except KeyError:
+                diff.append(RemovedStatus(name1))
+            
+            try:
+                index2_paths.remove(name1)
+            except KeyError:
+                pass
+                
+        for name in index2_paths:
+            diff.append(AddedStatus(name))
+        
+        return diff    
+
     def _get_global_ignore_patterns(self):
         """
         Get ignore patterns from $GIT_DIR/info/exclude then from
@@ -1072,35 +1100,93 @@ class GittyupClient:
         for index,st in enumerate(final_statuses):
             final_statuses[index].is_staged = (st.path in staged_files)
 
-        return final_statuses
+        return final_statuses            
     
-    def log(self, refspec="HEAD", limit=None):
+    def log(self, path=None, refspec="HEAD", start_point=None, limit=None):
         """
         Returns a revision history list
         
+        @type   path    string
+        @param  path    If a path is specified, return commits that contain
+                        changes to the specified path only
+        
+        @type   refspec string
+        @param  refspec Determines which branch to find commits for
+        
+        @type   start_point sha1 hash string
+        @param  start_point Start at a given revision
+        
+        @type   limit   int
+        @param  limit   If given, returns a limited number of commits
+        
+        @returns    A list of commits
+        
         """
         
-        try:
-            sha = self.repo.refs[refspec]
-        except KeyError:
-            return []
+        if start_point:
+            head = start_point
+        else:
+            try:
+                head = self.repo.refs[refspec]
+            except KeyError:
+                return []
+
+        relative_path = None
+        if path:
+            relative_path = self.get_relative_path(path)
+
+        # We build the list backwards, as parents are more likely to be older
+        # than children
+        pending_commits = [head]
+        history = []
+        added_count = 0
+        known_commits = []
+        while pending_commits != []:
+            head = pending_commits.pop(0)
+            commit = self.repo[head]
+            if type(commit) != dulwich.objects.Commit:
+                raise NotCommitError(commit)
+            if commit.id in known_commits:
+                continue
+
+            add_to_history = True
+            diff = []
+            if relative_path:
+                if len(commit.parents) > 0:
+                    tree1 = self.repo[commit.parents[0]].tree
+                    tree2 = commit.tree
+                    
+                    changes = self.repo.object_store.tree_changes(tree1, tree2)
+                    for item in changes:
+                        diff.append(item[0][0])
+                else:
+                    tree_index = self._get_tree_index(self.repo[commit.tree])
+                    for name,data in tree_index.iteritems():
+                        diff.append(name)
+                
+                add_to_history = relative_path in diff
+            
+            if add_to_history:
+                i = 0
+                for known_commit in history:
+                    if known_commit.commit_time > commit.commit_time:
+                        break
+                    i += 1
+
+                history.insert(i, Commit(commit.id, commit, changed_paths=diff))
+                added_count += 1
+
+            known_commits.append(commit.id)
+
+            if limit is not None and added_count >= limit:
+                break
+          
+            pending_commits += commit.parents
+
+        history.reverse()
+        return history
         
-        try:
-            history = self.repo.revision_history(sha)
-            commits = []
-            for item in history:
-                commits.append(Commit(item.id, item))
-
-            if limit:
-                return commits[0:limit-1]
-            else:
-                return commits
-
-        except dulwich.errors.NotCommitError:
-            raise NotCommitError()
-            return []
-
-    def annotate(self, path, revision="HEAD"):
+    def annotate(self, path, revision_obj="HEAD"):
         """
         Returns an annotation for a specified file
             
@@ -1112,11 +1198,9 @@ class GittyupClient:
         
         """
 
-        cmd = ["git", "annotate", "-l", path]
-        if revision == "HEAD":
-            cmd += [self.get_sha1_from_refspec("HEAD")]
-        else:
-            cmd += [revision]
+        relative_path = self.get_relative_path(path)
+
+        cmd = ["git", "annotate", "-l", revision_obj, relative_path]
 
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
@@ -1143,6 +1227,72 @@ class GittyupClient:
             })
         
         return returner
+
+    def show(self, path, revision_obj):
+        """
+        Returns a particular file at a given revision object.
+        
+        @type   path: string
+        @param  path: The absolute path to a file
+
+        @type   revision_obj: git.Revision()
+        @param  revision_obj: The revision object for path
+        
+        """
+        if not revision_obj:
+            revision_obj = "HEAD"
+
+        relative_path = self.get_relative_path(path)
+
+        cmd = ["git", "show", "%s:%s" % (revision_obj, relative_path)]
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
+            stdout = ""
+
+        return stdout
+
+    def diff(self, path1, revision_obj1, path2=None, revision_obj2=None):
+        """
+        Returns the diff between the path(s)/revision(s)
+        
+        @type   path1: string
+        @param  path1: The absolute path to a file
+
+        @type   revision_obj1: git.Revision()
+        @param  revision_obj1: The revision object for path1
+
+        @type   path2: string
+        @param  path2: The absolute path to a file
+
+        @type   revision_obj2: git.Revision()
+        @param  revision_obj2: The revision object for path2
+               
+        """
+        relative_path1 = None
+        relative_path2 = None
+        if path1:
+            relative_path1 = self.get_relative_path(path1)
+        if path2:
+            relative_path2 = self.get_relative_path(path2)
+
+        cmd = ["git", "diff"]
+        if revision_obj1:
+            cmd += [revision_obj1]
+        if revision_obj2 and path2:
+            cmd += [revision_obj2]
+        cmd += [relative_path1]
+        if relative_path2 and relative_path2 != relative_path1:
+            cmd += [relative_path2]
+
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
+            stdout = ""
+
+        return stdout
 
     def set_callback_notify(self, func):
         self.callback_notify = func
