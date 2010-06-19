@@ -391,6 +391,9 @@ class TableBase:
         model = self.data
         realpath = self._realpath(path)
         model[realpath][column] = not model[realpath][column]
+        if "row-toggled" in self.callbacks:
+            self.callbacks["row-toggled"](model[realpath], column)
+
 
     def append(self, row):
         self.data.append(row)

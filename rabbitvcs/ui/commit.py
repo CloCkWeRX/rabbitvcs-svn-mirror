@@ -73,6 +73,11 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             if self.vcs.is_in_a_or_a_working_copy(path):
                 self.paths.append(path)
         
+        # This keeps track of any changes that the user has made to the row
+        # selections
+        self.changes = {}
+
+        
     #
     # Helper functions
     # 
@@ -152,6 +157,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             
     def on_toggle_show_all_toggled(self, widget, data=None):
         self.TOGGLE_ALL = not self.TOGGLE_ALL
+        self.changes.clear()
         for row in self.files_table.get_items():
             row[0] = self.TOGGLE_ALL
             
@@ -208,7 +214,8 @@ class SVNCommit(Commit):
             callbacks={
                 "row-activated":  self.on_files_table_row_activated,
                 "mouse-event":   self.on_files_table_mouse_event,
-                "key-event":     self.on_files_table_key_event
+                "key-event":     self.on_files_table_key_event,
+                "row-toggled":   self.on_files_table_toggle_event
             },
             sortable=True, sort_on=1
         )
@@ -234,7 +241,10 @@ class SVNCommit(Commit):
         
         self.files_table.clear()
         for item in self.items:
-            checked = self.should_item_be_activated(item)
+            if item.path in self.changes:
+                checked = self.changes[item.path]
+            else:
+                checked = self.should_item_be_activated(item)
             
             self.files_table.append([
                 checked,
@@ -283,6 +293,10 @@ class SVNCommit(Commit):
         self.action.append(self.action.finish)
         self.action.start()
 
+    def on_files_table_toggle_event(self, row, col):
+        # Adds path: True/False to the dict
+        self.changes[row[1]] = row[col]
+
 class GitCommit(Commit):
     def __init__(self, paths, base_dir=None, message=None):
         Commit.__init__(self, paths, base_dir, message)
@@ -305,7 +319,8 @@ class GitCommit(Commit):
             callbacks={
                 "row-activated":  self.on_files_table_row_activated,
                 "mouse-event":   self.on_files_table_mouse_event,
-                "key-event":     self.on_files_table_key_event
+                "key-event":     self.on_files_table_key_event,
+                "row-toggled":   self.on_files_table_toggle_event
             },
             sortable=True, sort_on=1
         )
@@ -373,6 +388,11 @@ class GitCommit(Commit):
         self.action.append(self.action.set_status, _("Completed Commit"))
         self.action.append(self.action.finish)
         self.action.start()
+
+    def on_files_table_toggle_event(self, row, col):
+        # Adds path: True/False to the dict
+        self.changes[row[1]] = row[col]
+
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNCommit, 
