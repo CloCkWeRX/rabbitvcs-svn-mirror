@@ -30,7 +30,7 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.ui.action import SVNAction
+from rabbitvcs.ui.action import SVNAction, GitAction
 from rabbitvcs.ui.dialog import MessageBox
 from rabbitvcs.util.contextmenu import GtkContextMenu
 from rabbitvcs.util.contextmenuitems import *
@@ -46,7 +46,7 @@ DATETIME_FORMAT = rabbitvcs.util.helper.LOCAL_DATETIME_FORMAT
 
 REVISION_LABEL = _("Revision")
 
-class SVNLog(InterfaceView):
+class Log(InterfaceView):
     """
     Provides an interface to the Log UI
     
@@ -69,12 +69,13 @@ class SVNLog(InterfaceView):
 
         self.get_widget("Log").set_title(_("Log - %s") % path)
         self.vcs = rabbitvcs.vcs.VCS()
-        self.svn = self.vcs.svn()
         
         self.path = path
         self.cache = LogCache()
 
+        self.rev_first = None
         self.rev_start = None
+        self.rev_end = None
         self.rev_max = 1
         self.previous_starts = []
         self.initialize_revision_labels()
@@ -92,26 +93,11 @@ class SVNLog(InterfaceView):
             }
         )
 
-        self.paths_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("paths_table"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [_("Action"), _("Path"), 
-                _("Copy From Path"), _("Copy From Revision")],
-            callbacks={
-                "mouse-event":      self.on_paths_table_mouse_event,
-                "row-activated":    self.on_paths_table_row_activated
-            },
-            sortable=True, sort_on=1
-        )
-
         self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message")
         )
 
         self.stop_on_copy = False
-        self.initialize_root_url()
-        self.load_or_refresh()
 
     #
     # UI Signal Callback Methods
@@ -127,20 +113,6 @@ class SVNLog(InterfaceView):
             self.set_loading(False)
 
         self.close()
-
-    def on_previous_clicked(self, widget):
-        self.rev_start = self.previous_starts.pop()
-        self.load_or_refresh()
-                    
-    def on_next_clicked(self, widget):
-        self.override_limit = True
-        self.previous_starts.append(self.rev_start)
-        self.rev_start = self.rev_end - 1
-
-        if self.rev_start < 1:
-            self.rev_start = 1
-
-        self.load_or_refresh()
     
     def on_stop_on_copy_toggled(self, widget):
         self.stop_on_copy = self.get_widget("stop_on_copy").get_active()
@@ -172,56 +144,8 @@ class SVNLog(InterfaceView):
         self.paths_table.clear()
         self.message.set_text("")
 
-        combined_paths = []
-        subitems = []
-               
-        for selected_row in self.revisions_table.get_selected_rows():
-            item = self.revision_items[selected_row]
-            
-            if len(self.revisions_table.get_selected_rows()) == 1:
-                self.message.set_text(item.message)
-            else:
-                indented_message = item.message.replace("\n","\n\t")
-                self.message.append_text(
-					"%s %s:\n\t%s\n" % (REVISION_LABEL,
-                                        str(item.revision.number),
-                                        indented_message))
-            if item.changed_paths is not None:
-                for subitem in item.changed_paths:
-                    
-                    copyfrom_rev = ""
-                    if hasattr(subitem.copyfrom_revision, "number"):
-                        copyfrom_rev = subitem.copyfrom_revision.number
-                    
-                    if subitem.path not in combined_paths:
-                        combined_paths.append(subitem.path)
-                        
-                        subitems.append([
-                            subitem.action,
-                            subitem.path,
-                            subitem.copyfrom_path,
-                            copyfrom_rev
-                        ])
-        
-        subitems.sort(lambda x, y: cmp(x[1],y[1]))
-        for subitem in subitems:
-            self.paths_table.append([
-                subitem[0],
-                subitem[1],
-                subitem[2],
-                subitem[3]
-            ])                
+        self.update_revision_message()             
 
-    def show_revisions_table_popup_menu(self, treeview, data):
-        revisions = []
-        for row in self.revisions_table.get_selected_rows():
-            revisions.append({
-                "revision": self.svn.revision("number", number=self.revision_items[row].revision.number),
-                "author": self.revision_items[row].author,
-                "message": self.revision_items[row].message
-            })
-            
-        LogTopContextMenu(self, data, self.path, revisions).show()
 
     #
     # Paths table callbacks
@@ -236,42 +160,10 @@ class SVNLog(InterfaceView):
     def on_paths_table_mouse_event(self, treeview, data=None):
         if data is not None and data.button == 3:
             self.show_paths_table_popup_menu(treeview, data)
-
-    def show_paths_table_popup_menu(self, treeview, data):
-        revisions = []
-        for row in self.revisions_table.get_selected_rows():
-            revisions.append({
-                "revision": self.svn.revision("number", number=self.revision_items[row].revision.number),
-                "author": self.revision_items[row].author,
-                "message": self.revision_items[row].message
-            })
-        
-        # If we don't do this, we actually get the revisions in reverse order
-        # (usually, always?). Don't worry about non-numeric revisions (eg.
-        # HEAD), since we explicitly construct them above with a number
-        revisions.sort(key=lambda item: item["revision"].value)
-        
-        paths = []
-        for row in self.paths_table.get_selected_rows():
-            paths.append(self.paths_table.get_row(row)[1])
-        
-        LogBottomContextMenu(self, data, paths, revisions).show()
     
     #
     # Helper methods
     #
-
-    def initialize_root_url(self):
-        action = SVNAction(
-            self.svn,
-            notification=False,
-            run_in_thread=False
-        )
-        
-        self.root_url = action.run_single(
-            self.svn.get_repo_root_url,
-            self.path
-        )
 
     def load_or_refresh(self):
         if self.cache.has(self.rev_start):
@@ -295,19 +187,6 @@ class SVNLog(InterfaceView):
             return self.revisions_table.get_row(self.revisions_table.get_selected_rows()[0])[0]
         else:
             return ""
-
-    def check_previous_sensitive(self):
-        sensitive = (self.rev_start < self.rev_max)
-        self.get_widget("previous").set_sensitive(sensitive)
-
-    def check_next_sensitive(self):
-        sensitive = True
-        if self.rev_end == 1:
-            sensitive = False
-        if len(self.revision_items) <= self.limit:
-            sensitive = False
-
-        self.get_widget("next").set_sensitive(sensitive)
     
     def set_start_revision(self, rev):
         self.get_widget("start").set_text(str(rev))
@@ -318,6 +197,68 @@ class SVNLog(InterfaceView):
     def initialize_revision_labels(self):
         self.set_start_revision(_("N/A"))
         self.set_end_revision(_("N/A"))
+
+    def set_loading(self, loading):
+        self.is_loading = loading
+
+
+    #
+    # Other helper methods
+    #
+
+    def view_diff_for_path(self, url, latest_revision_number, earliest_revision_number=None, sidebyside=False):
+        from rabbitvcs.ui.diff import diff_factory
+
+        if earliest_revision_number == None:
+            earliest_revision_number = latest_revision_number
+        
+        self.action = vcs_action_factory(
+            self.vcs,
+            notification=False
+        )
+        self.action.append(
+            diff_factory,
+            url, 
+            earliest_revision_number - 1,
+            url, 
+            latest_revision_number,
+            sidebyside=sidebyside
+        )
+        self.action.start()
+
+class SVNLog(Log):
+    def __init__(self, path):
+        Log.__init__(self, path)
+                
+        self.svn = self.vcs.svn()
+
+        self.paths_table = rabbitvcs.ui.widget.Table(
+            self.get_widget("paths_table"),
+            [gobject.TYPE_STRING, gobject.TYPE_STRING, 
+                gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [_("Action"), _("Path"), 
+                _("Copy From Path"), _("Copy From Revision")],
+            callbacks={
+                "mouse-event":      self.on_paths_table_mouse_event,
+                "row-activated":    self.on_paths_table_row_activated
+            },
+            sortable=True, sort_on=1
+        )
+
+        self.initialize_root_url()
+        self.load_or_refresh()
+
+    def initialize_root_url(self):
+        action = SVNAction(
+            self.svn,
+            notification=False,
+            run_in_thread=False
+        )
+        
+        self.root_url = action.run_single(
+            self.svn.get_repo_root_url,
+            self.path
+        )
 
     #
     # Log-loading callback methods
@@ -343,6 +284,9 @@ class SVNLog(InterfaceView):
         # Get the starting/ending point from the actual returned revisions
         self.rev_start = self.revision_items[0].revision.number
         self.rev_end = self.revision_items[-1].revision.number
+        
+        if not self.rev_first:
+            self.rev_first = self.rev_start
         
         self.cache.set(self.rev_start, self.revision_items)
         
@@ -401,34 +345,6 @@ class SVNLog(InterfaceView):
         self.action.append(self.refresh)
         self.action.start()
 
-    def set_loading(self, loading):
-        self.is_loading = loading
-
-
-    #
-    # Other helper methods
-    #
-
-    def view_diff_for_path(self, url, latest_revision_number, earliest_revision_number=None, sidebyside=False):
-        from rabbitvcs.ui.diff import SVNDiff
-
-        if earliest_revision_number == None:
-            earliest_revision_number = latest_revision_number
-        
-        self.action = SVNAction(
-            self.svn,
-            notification=False
-        )
-        self.action.append(
-            SVNDiff,
-            url, 
-            earliest_revision_number - 1,
-            url, 
-            latest_revision_number,
-            sidebyside=sidebyside
-        )
-        self.action.start()
-
     def edit_revprop(self, prop_name, prop_value, callback=None):
 
         failure = False
@@ -461,6 +377,262 @@ class SVNLog(InterfaceView):
     def on_author_edited(self, index, val):
         self.revision_items[index].author = val
         self.revisions_table.set_row_item(index, 1, val)
+
+    def update_revision_message(self):
+        combined_paths = []
+        subitems = []
+               
+        for selected_row in self.revisions_table.get_selected_rows():
+            item = self.revision_items[selected_row]
+            
+            if len(self.revisions_table.get_selected_rows()) == 1:
+                self.message.set_text(item.message)
+            else:
+                indented_message = item.message.replace("\n","\n\t")
+                self.message.append_text(
+					"%s %s:\n\t%s\n" % (REVISION_LABEL,
+                                        str(item.revision.number),
+                                        indented_message))
+            if item.changed_paths is not None:
+                for subitem in item.changed_paths:
+                    
+                    copyfrom_rev = ""
+                    if hasattr(subitem.copyfrom_revision, "number"):
+                        copyfrom_rev = subitem.copyfrom_revision.number
+                    
+                    if subitem.path not in combined_paths:
+                        combined_paths.append(subitem.path)
+                        
+                        subitems.append([
+                            subitem.action,
+                            subitem.path,
+                            subitem.copyfrom_path,
+                            copyfrom_rev
+                        ])
+
+        subitems.sort(lambda x, y: cmp(x[1],y[1]))
+        for subitem in subitems:
+            self.paths_table.append([
+                subitem[0],
+                subitem[1],
+                subitem[2],
+                subitem[3]
+            ])
+
+    def show_revisions_table_popup_menu(self, treeview, data):
+        revisions = []
+        for row in self.revisions_table.get_selected_rows():
+            revisions.append({
+                "revision": self.svn.revision("number", number=self.revision_items[row].revision.number),
+                "author": self.revision_items[row].author,
+                "message": self.revision_items[row].message
+            })
+            
+        SVNLogTopContextMenu(self, data, self.path, revisions).show()
+
+    def show_paths_table_popup_menu(self, treeview, data):
+        revisions = []
+        for row in self.revisions_table.get_selected_rows():
+            revisions.append({
+                "revision": self.svn.revision("number", number=self.revision_items[row].revision.number),
+                "author": self.revision_items[row].author,
+                "message": self.revision_items[row].message
+            })
+        
+        # If we don't do this, we actually get the revisions in reverse order
+        # (usually, always?). Don't worry about non-numeric revisions (eg.
+        # HEAD), since we explicitly construct them above with a number
+        revisions.sort(key=lambda item: item["revision"].value)
+        
+        paths = []
+        for row in self.paths_table.get_selected_rows():
+            paths.append(self.paths_table.get_row(row)[1])
+        
+        SVNLogBottomContextMenu(self, data, paths, revisions).show()
+
+    def on_previous_clicked(self, widget):
+        self.rev_start = self.previous_starts.pop()
+        self.load_or_refresh()
+                    
+    def on_next_clicked(self, widget):
+        self.override_limit = True
+        self.previous_starts.append(self.rev_start)
+        self.rev_start = self.rev_end - 1
+
+        if self.rev_start < 1:
+            self.rev_start = 1
+
+        self.load_or_refresh()
+
+    def check_previous_sensitive(self):
+        sensitive = (self.rev_start < self.rev_max)
+        self.get_widget("previous").set_sensitive(sensitive)
+
+    def check_next_sensitive(self):
+        sensitive = True
+        if self.rev_end == 1:
+            sensitive = False
+        if len(self.revision_items) <= self.limit:
+            sensitive = False
+
+        self.get_widget("next").set_sensitive(sensitive)
+
+class GitLog(Log):
+    def __init__(self, path):
+        Log.__init__(self, path)
+        
+        self.git = self.vcs.git(path)
+
+        self.paths_table = rabbitvcs.ui.widget.Table(
+            self.get_widget("paths_table"),
+            [gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [_("Action"), _("Path")],
+            callbacks={
+                "mouse-event":      self.on_paths_table_mouse_event,
+                "row-activated":    self.on_paths_table_row_activated
+            },
+            sortable=True, sort_on=1
+        )
+
+        self.load_or_refresh()
+
+    #
+    # Log-loading callback methods
+    #
+    
+    def refresh(self):
+        """
+        Refresh the items in the main log table that shows Revision/Author/etc.
+        
+        """
+        
+        self.revisions_table.clear()
+        self.message.set_text("")
+        self.paths_table.clear()
+        
+        # Make sure the int passed is the order the log call was made
+        if not hasattr(self, 'revision_items'):
+            self.revision_items = self.action.get_result(0)
+            if len(self.revision_items) == 0:
+                return
+        
+        if not self.rev_start:
+            self.rev_start = 0
+        if not self.rev_end:
+            self.rev_end = self.limit
+
+        len_revision_items = len(self.revision_items)
+        if self.rev_end >= len_revision_items - 1:
+            self.rev_end = len_revision_items - 1
+
+        self.set_start_revision(self.revision_items[self.rev_start].sha[:7])
+        self.set_end_revision(self.revision_items[self.rev_end].sha[:7])
+
+        for item in self.revision_items[self.rev_start:self.rev_end+1]:
+            msg = rabbitvcs.util.helper.format_long_text(item.message, 80)
+            
+            author = _("(no author)")
+            if hasattr(item, "author"):
+                author = item.committer
+
+            self.revisions_table.append([
+                item.sha[:7],
+                author,
+                datetime.fromtimestamp(item.commit_time).strftime(DATETIME_FORMAT),
+                msg
+            ])
+            
+        self.check_previous_sensitive()
+        self.check_next_sensitive()
+        self.set_loading(False)
+    
+    def load(self):
+        self.set_loading(True)
+        
+        self.action = GitAction(
+            self.git,
+            notification=False
+        )        
+
+        start_point = None
+        if self.rev_start:
+            start_point = self.rev_start
+
+        self.action.append(
+            self.git.log,
+            path=self.path,
+            start_point=start_point,
+            discover_changed_paths=True
+        )
+        self.action.append(self.refresh)
+        self.action.start()
+
+    def update_revision_message(self):
+        combined_paths = []
+        subitems = []
+            
+        for selected_row in self.revisions_table.get_selected_rows():
+            item = self.revision_items[selected_row]
+
+            if len(self.revisions_table.get_selected_rows()) == 1:
+                self.message.set_text(item.message)
+            else:
+                indented_message = item.message.replace("\n","\n\t")
+                self.message.append_text(
+					"%s %s:\n\t%s\n" % (REVISION_LABEL,
+                                        item.sha[:7],
+                                        indented_message))
+            if item.changed_paths is not None:
+                for subitem in item.changed_paths:
+                    
+                    if subitem.path not in combined_paths:
+                        combined_paths.append(subitem.path)
+                        
+                        subitems.append([
+                            subitem.identifier.capitalize(),
+                            subitem.path
+                        ])
+
+        subitems.sort(lambda x, y: cmp(x[1],y[1]))
+        for subitem in subitems:
+            self.paths_table.append([
+                subitem[0],
+                subitem[1]
+            ])
+
+    def show_revisions_table_popup_menu(self, treeview, data):
+        return
+
+    def show_paths_table_popup_menu(self, treeview, data):
+        return
+
+    def on_previous_clicked(self, widget):
+        self.rev_start = self.previous_starts.pop()
+        self.refresh()
+                    
+    def on_next_clicked(self, widget):
+        self.override_limit = True
+        self.previous_starts.append(self.rev_start)
+        self.rev_start = self.rev_end
+        self.rev_end = self.rev_end + self.limit
+
+        if self.rev_start < 0:
+            self.rev_start = 0
+
+        self.refresh()
+
+    def check_previous_sensitive(self):
+        sensitive = (self.rev_start > 0)
+        self.get_widget("previous").set_sensitive(sensitive)
+
+    def check_next_sensitive(self):
+        sensitive = True
+        if self.rev_end == 0:
+            sensitive = False
+        if len(self.revision_items) - 1 <= self.rev_end:
+            sensitive = False
+
+        self.get_widget("next").set_sensitive(sensitive)
 
 class LogDialog(Log):
     def __init__(self, path, ok_callback=None, multiple=False):
@@ -566,7 +738,7 @@ class MenuEditRevisionProperties(MenuItem):
     label = _("Edit revision properties...")
     icon = gtk.STOCK_EDIT
 
-class LogTopContextMenuConditions:
+class SVNLogTopContextMenuConditions:
     def __init__(self, vcs, path, revisions):
         self.vcs = vcs
         self.path = path
@@ -623,7 +795,7 @@ class LogTopContextMenuConditions:
     def separator(self, data=None):
         return True
 
-class LogTopContextMenuCallbacks:
+class SVNLogTopContextMenuCallbacks:
     def __init__(self, caller, vcs, path, revisions):
         self.caller = caller
         self.vcs = vcs
@@ -824,7 +996,7 @@ class LogTopContextMenuCallbacks:
         url = self.svn.get_repo_url(self.path)
         SVNRevisionProperties(url, self.revisions[0]["revision"].value)
 
-class LogTopContextMenu:
+class SVNLogTopContextMenu:
     """
     Defines context menu items for a table with files
     
@@ -851,13 +1023,13 @@ class LogTopContextMenu:
         self.vcs = rabbitvcs.vcs.VCS()
         self.svn = self.vcs.svn()
 
-        self.conditions = LogTopContextMenuConditions(
+        self.conditions = SVNLogTopContextMenuConditions(
             self.vcs, 
             self.path, 
             self.revisions
         )
         
-        self.callbacks = LogTopContextMenuCallbacks(
+        self.callbacks = SVNLogTopContextMenuCallbacks(
             self.caller,
             self.vcs, 
             self.path,
@@ -895,7 +1067,7 @@ class LogTopContextMenu:
         context_menu.show(self.event)
 
 
-class LogBottomContextMenuConditions:
+class SVNLogBottomContextMenuConditions:
     def __init__(self, vcs, paths, revisions):
         self.vcs = vcs
         self.paths = paths
@@ -937,7 +1109,7 @@ class LogBottomContextMenuConditions:
     def separator(self, data=None):
         return True
 
-class LogBottomContextMenuCallbacks:
+class SVNLogBottomContextMenuCallbacks:
     def __init__(self, caller, vcs, paths, revisions):
         self.caller = caller
         self.vcs = vcs
@@ -1033,7 +1205,7 @@ class LogBottomContextMenuCallbacks:
         from rabbitvcs.ui.annotate import Annotate
         Annotate(url, self.revisions[0]["revision"].value)
 
-class LogBottomContextMenu:
+class SVNLogBottomContextMenu:
     """
     Defines context menu items for a table with files
     
@@ -1096,7 +1268,8 @@ class LogBottomContextMenu:
         context_menu.show(self.event)
 
 classes_map = {
-    rabbitvcs.vcs.VCS_SVN: SVNLog
+    rabbitvcs.vcs.VCS_SVN: SVNLog,
+    rabbitvcs.vcs.VCS_GIT: GitLog
 }
 
 def log_factory(path):

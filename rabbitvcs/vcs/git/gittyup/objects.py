@@ -39,6 +39,7 @@ class MissingStatus(GittyupStatus):
     identifier = "missing"
 
 class NoStatus(GittyupStatus):
+    identifier = ""
     def __eq__(self, other):
         return (self.path == other.path)
 

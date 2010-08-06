@@ -321,6 +321,9 @@ class GittyupClient:
         return None
 
     def get_relative_path(self, path):
+        if os.path.realpath(path) == self.repo.path:
+            return ""
+
         return util.relativepath(os.path.realpath(self.repo.path), path)      
     
     def get_absolute_path(self, path):
@@ -1102,7 +1105,8 @@ class GittyupClient:
 
         return final_statuses            
     
-    def log(self, path=None, refspec="HEAD", start_point=None, limit=None):
+    def log(self, path=None, refspec="HEAD", start_point=None, limit=None,
+            discover_changed_paths=False):
         """
         Returns a revision history list
         
@@ -1148,23 +1152,31 @@ class GittyupClient:
                 raise NotCommitError(commit)
             if commit.id in known_commits:
                 continue
-
-            add_to_history = True
+            
             diff = []
-            if relative_path:
+            add_to_history = True
+            if discover_changed_paths:
                 if len(commit.parents) > 0:
                     tree1 = self.repo[commit.parents[0]].tree
                     tree2 = commit.tree
                     
                     changes = self.repo.object_store.tree_changes(tree1, tree2)
                     for item in changes:
-                        diff.append(item[0][0])
+                        if item[0][0] == item[0][1]:
+                            diff.append(ModifiedStatus(item[0][1]))
+                        elif item[0][0] is None:
+                            if item[0][1] is not None:
+                                diff.append(AddedStatus(item[0][1]))
+                        elif item[0][1] is None:
+                            if item[0][0] is not None:
+                                diff.append(RemovedStatus(item[0][0]))
                 else:
                     tree_index = self._get_tree_index(self.repo[commit.tree])
                     for name,data in tree_index.iteritems():
-                        diff.append(name)
-                
-                add_to_history = relative_path in diff
+                        diff.append(AddedStatus(name))
+
+                if relative_path:
+                    add_to_history = NoStatus(relative_path) in diff
             
             if add_to_history:
                 i = 0
