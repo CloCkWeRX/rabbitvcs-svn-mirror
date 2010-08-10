@@ -250,7 +250,7 @@ class Git:
         elif value_upper == "WORKING":
             return Revision("WORKING")
         else:
-            return Revision("hash", val)
+            return Revision("hash", value)
 
     def is_tracking(self, name):
         return self.client.is_tracking("refs/heads/%s" % name)
