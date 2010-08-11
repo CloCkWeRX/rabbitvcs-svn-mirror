@@ -1294,16 +1294,17 @@ class GittyupClient:
             cmd += [revision_obj1]
         if revision_obj2 and path2:
             cmd += [revision_obj2]
-        cmd += [relative_path1]
+        if relative_path1:
+            cmd += [relative_path1]
         if relative_path2 and relative_path2 != relative_path1:
             cmd += [relative_path2]
-
+        
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
             stdout = ""
-
+        
         return stdout
 
     def set_callback_notify(self, func):

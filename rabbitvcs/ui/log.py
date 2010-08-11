@@ -422,13 +422,17 @@ class SVNLog(Log):
     def show_revisions_table_popup_menu(self, treeview, data):
         revisions = []
         for row in self.revisions_table.get_selected_rows():
-            revisions.append({
+            line = {
                 "revision": self.svn.revision("number", number=self.revision_items[row].revision.number),
                 "author": self.revision_items[row].author,
                 "message": self.revision_items[row].message
-            })
+            }
+            if self.revision_items[row+1]:
+                line["next_revision"] = self.svn.revision("number", number=self.revision_items[row+1].revision.number)
             
-        SVNLogTopContextMenu(self, data, self.path, revisions).show()
+            revisions.append(line)
+            
+        LogTopContextMenu(self, data, self.path, revisions).show()
 
     def show_paths_table_popup_menu(self, treeview, data):
         revisions = []
@@ -601,7 +605,19 @@ class GitLog(Log):
             ])
 
     def show_revisions_table_popup_menu(self, treeview, data):
-        return
+        revisions = []
+        for row in self.revisions_table.get_selected_rows():
+            line = {
+                "revision": self.git.revision(self.revision_items[row].sha),
+                "author": self.revision_items[row].author,
+                "message": self.revision_items[row].message
+            }
+            if self.revision_items[row+1]:
+                line["next_revision"] = self.git.revision(self.revision_items[row+1].sha)
+
+            revisions.append(line)
+            
+        LogTopContextMenu(self, data, self.path, revisions).show()
 
     def show_paths_table_popup_menu(self, treeview, data):
         return
@@ -738,11 +754,12 @@ class MenuEditRevisionProperties(MenuItem):
     label = _("Edit revision properties...")
     icon = gtk.STOCK_EDIT
 
-class SVNLogTopContextMenuConditions:
+class LogTopContextMenuConditions:
     def __init__(self, vcs, path, revisions):
         self.vcs = vcs
         self.path = path
         self.revisions = revisions
+        self.guess = self.vcs.guess(path)
         
     def view_diff_working_copy(self, data=None):
         return (len(self.revisions) == 1)
@@ -766,36 +783,36 @@ class SVNLogTopContextMenuConditions:
 
     def show_changes_previous_revision(self, data=None):
         item = self.revisions[0]["revision"]
-        return (item.value > 1 and len(self.revisions) == 1)
+        return (self.guess["vcs"] == "svn" and item.value > 1 and len(self.revisions) == 1)
 
     def show_changes_revisions(self, data=None):
-        return (len(self.revisions) > 1)
+        return (self.guess["vcs"] == "svn" and len(self.revisions) > 1)
 
     def update_to_this_revision(self, data=None):
-        return (len(self.revisions) == 1)
+        return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)
 
     def checkout(self, data=None):
-        return (len(self.revisions) == 1)
+        return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)
 
     def branch_tag(self, data=None):
-        return (len(self.revisions) == 1)
+        return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)
 
     def export(self, data=None):
-        return (len(self.revisions) == 1)
+        return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)
 
     def edit_author(self, data=None):
-        return True
+        return self.guess["vcs"] == "svn"
 
     def edit_log_message(self, data=None):
-        return True
+        return self.guess["vcs"] == "svn"
 
     def edit_revision_properties(self, data=None):
-        return (len(self.revisions) == 1)
+        return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)
 
     def separator(self, data=None):
-        return True
+        return self.guess["vcs"] == "svn"
 
-class SVNLogTopContextMenuCallbacks:
+class LogTopContextMenuCallbacks:
     def __init__(self, caller, vcs, path, revisions):
         self.caller = caller
         self.vcs = vcs
@@ -804,107 +821,51 @@ class SVNLogTopContextMenuCallbacks:
         self.revisions = revisions
         
     def view_diff_working_copy(self, widget, data=None):
-        from rabbitvcs.ui.diff import SVNDiff
-        self.action = SVNAction(
-            self.svn,
-            notification=False
-        )
-        self.action.append(
-            SVNDiff,
-            self.path, 
-            self.revisions[0]["revision"]
-        )
-        self.action.start()
+        rabbitvcs.util.helper.launch_ui_window("diff", ["%s@%s" % (self.path, self.revisions[0]["revision"].value)])
 
     def view_diff_previous_revision(self, widget, data=None):
-        from rabbitvcs.ui.diff import SVNDiff
-
-        item = self.revisions[0]["revision"]
-        self.action = SVNAction(
-            self.svn,
-            notification=False
-        )
-        self.action.append(
-            SVNDiff,
-            self.path, 
-            item.value-1, 
-            self.path, 
-            item.value
-        )
-        self.action.start()
+        rabbitvcs.util.helper.launch_ui_window("diff", [
+            "%s@%s" % (self.path, self.revisions[0]["revision"].value),
+            "%s@%s" % (self.path, self.revisions[0]["next_revision"].value)
+        ])
 
     def view_diff_revisions(self, widget, data=None):
-        from rabbitvcs.ui.diff import SVNDiff
-        
-        rev_first = self.revisions[0]["revision"].value
-        rev_second = self.revisions[-1]["revision"].value
-        
-        self.action = SVNAction(
-            self.svn,
-            notification=False
-        )
-        self.action.append(
-            SVNDiff,
-            self.svn.get_repo_url(self.path), 
-            rev_second, 
-            self.path, 
-            rev_first
-        )
-        self.action.start()
+        path_older = self.path
+        if self.vcs.guess(self.path) == rabbitvcs.vcs.VCS_SVN:
+            path_older = self.vcs.svn.get_repo_url(self.path)
+    
+        rabbitvcs.util.helper.launch_ui_window("diff", [
+            "%s@%s" % (path_older, self.revisions[1]["revision"].value),
+            "%s@%s" % (self.path, self.revisions[0]["revision"].value)
+        ])
 
     def compare_working_copy(self, widget, data=None):
-        from rabbitvcs.ui.diff import SVNDiff
-        self.action = SVNAction(
-            self.svn,
-            notification=False
-        )
-        self.action.append(
-            SVNDiff,
-            self.svn.get_repo_url(self.path), 
-            self.revisions[0]["revision"],
-            self.path,
-            sidebyside=True
-        )
-        self.action.start()
+        path_older = self.path
+        if self.vcs.guess(self.path) == rabbitvcs.vcs.VCS_SVN:
+            path_older = self.vcs.svn.get_repo_url(self.path)
+    
+        rabbitvcs.util.helper.launch_ui_window("diff", [
+            "%s@%s" % (path_older, self.revisions[0]["revision"].value),
+            "%s" % (self.path)
+        ])
 
     def compare_previous_revision(self, widget, data=None):
-        from rabbitvcs.ui.diff import SVNDiff
-
-        url = self.svn.get_repo_url(self.path)
-        item = self.revisions[0]["revision"]
-        self.action = SVNAction(
-            self.svn,
-            notification=False
-        )
-        self.action.append(
-            SVNDiff,
-            url, 
-            item.value-1, 
-            url, 
-            item.value,
-            sidebyside=True
-        )
-        self.action.start()
+        rabbitvcs.util.helper.launch_ui_window("diff", [
+            "-s",
+            "%s@%s" % (self.path, self.revisions[0]["revision"].value),
+            "%s@%s" % (self.path, self.revisions[0]["next_revision"].value)
+        ])
 
     def compare_revisions(self, widget, data=None):
-        from rabbitvcs.ui.diff import SVNDiff
-        
-        rev_first = self.revisions[0]["revision"].value
-        rev_second = self.revisions[-1]["revision"].value
-        
-        self.action = SVNAction(
-            self.svn,
-            notification=False
-        )
-        self.action.append(
-            SVNDiff,
-            self.svn.get_repo_url(self.path), 
-            rev_second, 
-            self.svn.get_repo_url(self.path), 
-            rev_first,
-            sidebyside=True
-        )
-        self.action.start()
+        path_older = self.path
+        if self.vcs.guess(self.path) == rabbitvcs.vcs.VCS_SVN:
+            path_older = self.vcs.svn.get_repo_url(self.path)
+    
+        rabbitvcs.util.helper.launch_ui_window("diff", [
+            "-s",
+            "%s@%s" % (path_older, self.revisions[1]["revision"].value),
+            "%s@%s" % (self.path, self.revisions[0]["revision"].value)
+        ])
 
     def show_changes_previous_revision(self, widget, data=None):
         from rabbitvcs.ui.changes import Changes
@@ -996,7 +957,7 @@ class SVNLogTopContextMenuCallbacks:
         url = self.svn.get_repo_url(self.path)
         SVNRevisionProperties(url, self.revisions[0]["revision"].value)
 
-class SVNLogTopContextMenu:
+class LogTopContextMenu:
     """
     Defines context menu items for a table with files
     
@@ -1021,15 +982,14 @@ class SVNLogTopContextMenu:
         self.path = path
         self.revisions = revisions
         self.vcs = rabbitvcs.vcs.VCS()
-        self.svn = self.vcs.svn()
 
-        self.conditions = SVNLogTopContextMenuConditions(
+        self.conditions = LogTopContextMenuConditions(
             self.vcs, 
             self.path, 
             self.revisions
         )
         
-        self.callbacks = SVNLogTopContextMenuCallbacks(
+        self.callbacks = LogTopContextMenuCallbacks(
             self.caller,
             self.vcs, 
             self.path,

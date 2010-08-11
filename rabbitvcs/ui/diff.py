@@ -184,8 +184,12 @@ class GitDiff(Diff):
         if hasattr(value, "is_revision_object"):
             return value        
 
+        value_to_pass = value
+        if not value_to_pass:
+            value_to_pass = default
+
         # triggered when passed a string
-        return self.git.revision(default)
+        return self.git.revision(value_to_pass)
 
     def save_diff_to_file(self, path, data):
         dirname = os.path.dirname(path)
@@ -214,7 +218,7 @@ class GitDiff(Diff):
             notification=False,
             run_in_thread=False
         )
-        
+
         diff_text = action.run_single(
             self.git.diff,
             self.path1,
@@ -288,5 +292,5 @@ if __name__ == "__main__":
     pathrev2 = (None, None)
     if len(args) > 0:
         pathrev2 = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
-    
+    print pathrev1,pathrev2
     diff_factory(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1], sidebyside=options.sidebyside)
