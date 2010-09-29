@@ -182,7 +182,7 @@ def compare_items(model, iter1, iter2, user_data=None):
     
 class TableBase:
     def __init__(self, treeview, coltypes, colnames, values=[], filters=None,
-                 filter_types=None, callbacks={}, sortable=False, sort_on=-1):
+                 filter_types=None, callbacks={}, flags={}):
         """
         @type   treeview: gtk.Treeview
         @param  treeview: The treeview widget to use
@@ -192,12 +192,6 @@ class TableBase:
         
         @type   colnames: list
         @param  colnames: Contains the name string for each column
-        
-        @type   sortable: boolean
-        @param  sortable: whether the columns can be sorted
-        
-        @type   sort_on: int
-        @param  sort_on: the column number to initially sort by
         
         @type   values: list
         @param  values: Contains the data to be inserted into the table
@@ -224,7 +218,27 @@ class TableBase:
         @param  callbacks: A dict of callbacks to be used.  Some are for signal
             handling while others are useful for other things.
             
+        @type   flags: dict
+        @param  flags: A dict of flags
+        
+        FLAGS:
+            @type   sortable: boolean
+            @param  sortable: whether the columns can be sorted
+            
+            @type   sort_on: int
+            @param  sort_on: the column number to initially sort by
+            
+            @type   editable: list
+            @param  editable: A list of which columns are editable
+        
         """
+
+        if not flags.has_key("sortable"):
+            flags["sortable"] = False
+        if not flags.has_key("sort_on"):
+            flags["sort_on"] = -1
+        if not flags.has_key("editable"):
+            flags["editable"] = ()
     
         self.treeview = treeview
         self.selected_rows = []
@@ -308,10 +322,13 @@ class TableBase:
                 cell = gtk.CellRendererText()
                 cell.set_property('yalign', 0)
                 cell.set_property('xalign', 0)
+                if i in flags["editable"]:
+                    cell.set_property('editable', True)
+                    cell.connect("edited", self.__cell_edited, i)
                 col = gtk.TreeViewColumn(name, cell)
                 col.set_attributes(cell, text=i)
 
-            if sortable:
+            if flags["sortable"]:
                 col.set_sort_column_id(i)
 
             self.treeview.append_column(col)
@@ -337,7 +354,7 @@ class TableBase:
 
 		# This runs through the columns, and sets the "compare_items" comparator
         # as needed. Note that the user data tells which column to sort on.
-        if sortable:
+        if flags["sortable"]:
             self.sorted = gtk.TreeModelSort(self.filter)
             
             self.sorted.set_default_sort_func(compare_items, None)
@@ -347,7 +364,7 @@ class TableBase:
                                           compare_items,
                                           (idx, coltypes[idx]))
                
-            self.sorted.set_sort_column_id(sort_on, gtk.SORT_ASCENDING)
+            self.sorted.set_sort_column_id(flags["sort_on"], gtk.SORT_ASCENDING)
             
             self.treeview.set_model(self.sorted)
             
@@ -487,6 +504,11 @@ class TableBase:
     def unselect_all(self):
         self.treeview.get_selection().unselect_all()
 
+    def focus(self, row, column):
+        treecol = self.treeview.get_column(column)
+        self.treeview.set_cursor((row,), treecol)
+        self.treeview.grab_focus()
+
     def __button_press_event(self, treeview, data):
         info = treeview.get_path_at_pos(int(data.x), int(data.y))
         selection = treeview.get_selection()
@@ -537,6 +559,11 @@ class TableBase:
         if "mouse-event" in self.callbacks:
             self.callbacks["mouse-event"](treeview, data)
 
+    def __cell_edited(self, cell, row, data, column):
+        self.update_selection()
+        if "cell-edited" in self.callbacks:
+            self.callbacks["cell-edited"](cell, row, data, column)
+
 #    def __column_header_clicked(self, column, column_idx):
 #        self.data.set_sort_column_id(column_idx, )
 
@@ -582,9 +609,9 @@ class Table(TableBase):
     """
     
     def __init__(self, treeview, coltypes, colnames, values=[], filters=None, 
-            filter_types=None, callbacks={}, sortable=False, sort_on=-1):
+            filter_types=None, callbacks={}, flags={}):
         TableBase.__init__(self, treeview, coltypes, colnames, values, filters, 
-            filter_types, callbacks, sortable, sort_on)
+            filter_types, callbacks, flags)
     
     def get_store(self, coltypes):
         return gtk.ListStore(*coltypes)
@@ -615,9 +642,9 @@ class Tree(TableBase):
 
     """
     def __init__(self, treeview, coltypes, colnames, values=[], filters=None, 
-            filter_types=None, callbacks={}):
+            filter_types=None, callbacks={}, flags={}):
         TableBase.__init__(self, treeview, coltypes, colnames, values, filters, 
-            filter_types, callbacks)
+            filter_types, callbacks, flags={})
     
     def get_store(self, coltypes):
         return gtk.TreeStore(*coltypes)

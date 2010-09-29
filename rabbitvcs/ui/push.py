@@ -75,8 +75,10 @@ class GitPush(Push):
             self.get_widget("log"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [_("Date"), _("Message")],
-            sortable=True, 
-            sort_on=0
+            flags={
+                "sortable": True, 
+                "sort_on": 0
+            }
         )
         
         self.local_log = self.git.log("HEAD", limit=10)        

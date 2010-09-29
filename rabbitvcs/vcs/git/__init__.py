@@ -522,30 +522,58 @@ class Git:
         
         return self.client.fetch(host)
 
-    def remote_add(self, host, origin="origin"):
+    def remote_add(self, name, host):
         """
         Add a remote repository
+        
+        @type   name: string
+        @param  name: The name to give to the remote repository
         
         @type   host: string
         @param  host: The git url to add
         
-        @type   origin: string
-        @param  origin: The name to give to the remote repository
-        
         """
         
-        return self.client.remote_add(host, origin)
+        return self.client.remote_add(name, host)
         
-    def remote_delete(self, origin="origin"):
+    def remote_delete(self, name):
         """
         Remove a remote repository
         
-        @type   origin: string
-        @param  origin: The name of the remote repository to remove
+        @type   name: string
+        @param  name: The name of the remote repository to remove
 
         """
         
-        return self.client.remote_delete(origin)
+        return self.client.remote_delete(name)
+        
+    def remote_rename(self, current_name, new_name):
+        """
+        Rename a remote repository
+        
+        @type   current_name: string
+        @param  current_name: The current name of the repository
+        
+        @type   new_name: string
+        @param  new_name: The name to give to the remote repository
+        
+        """
+        
+        return self.client.remote_rename(current_name, new_name)
+        
+    def remote_set_url(self, name, url):
+        """
+        Change a remote repository's url
+        
+        @type   name: string
+        @param  name: The name of the repository
+        
+        @type   url: string
+        @param  url: The url for the repository
+        
+        """
+        
+        return self.client.remote_set_url(name, url)
         
     def remote_list(self):
         """

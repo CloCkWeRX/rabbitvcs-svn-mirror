@@ -217,7 +217,10 @@ class SVNCommit(Commit):
                 "key-event":     self.on_files_table_key_event,
                 "row-toggled":   self.on_files_table_toggle_event
             },
-            sortable=True, sort_on=1
+            flags={
+                "sortable": True, 
+                "sort_on": 1
+            }
         )
         self.files_table.allow_multiple()
         
@@ -322,7 +325,10 @@ class GitCommit(Commit):
                 "key-event":     self.on_files_table_key_event,
                 "row-toggled":   self.on_files_table_toggle_event
             },
-            sortable=True, sort_on=1
+            flags={
+                "sortable": True, 
+                "sort_on": 1
+            }
         )
         self.files_table.allow_multiple()
         

@@ -242,7 +242,10 @@ class SVNLog(Log):
                 "mouse-event":      self.on_paths_table_mouse_event,
                 "row-activated":    self.on_paths_table_row_activated
             },
-            sortable=True, sort_on=1
+            flags={
+                "sortable": True, 
+                "sort_on": 1
+            }
         )
 
         self.initialize_root_url()
@@ -495,7 +498,10 @@ class GitLog(Log):
                 "mouse-event":      self.on_paths_table_mouse_event,
                 "row-activated":    self.on_paths_table_row_activated
             },
-            sortable=True, sort_on=1
+            flags={
+                "sortable": True, 
+                "sort_on": 1
+            }
         )
 
         self.load_or_refresh()

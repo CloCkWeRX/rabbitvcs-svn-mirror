@@ -869,33 +869,74 @@ class GittyupClient:
         
         return refs
     
-    def remote_add(self, host, origin="origin"):
+    def remote_add(self, name, host):
         """
         Add a remote repository
         
+        @type   name: string
+        @param  name: The name to give to the remote repository
+                
         @type   host: string
         @param  host: The git url to add
         
-        @type   origin: string
-        @param  origin: The name to give to the remote repository
+        """
+        
+        cmd = ["git", "remote", "add", name, host]
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
+    
+    def remote_rename(self, current_name, new_name):
+        """
+        Rename a remote repository
+        
+        @type   current_name: string
+        @param  current_name: The current name of the repository
+        
+        @type   new_name: string
+        @param  new_name: The name to give to the remote repository
         
         """
         
-        self.config.set("remote \"%s\"" % origin, "fetch", "+refs/heads/*:refs/remotes/%s/*" % origin)
-        self.config.set("remote \"%s\"" % origin, "url", host)
-        self.config.write()
+        cmd = ["git", "remote", "rename", current_name, new_name]
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
     
-    def remote_delete(self, origin="origin"):
+    def remote_set_url(self, name, url):
+        """
+        Change a remote repository's url
+        
+        @type   name: string
+        @param  name: The name of the repository
+        
+        @type   url: string
+        @param  url: The url for the repository
+        
+        """
+        
+        cmd = ["git", "remote", "set-url", name, url]
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
+    
+    def remote_delete(self, name):
         """
         Remove a remote repository
         
-        @type   origin: string
-        @param  origin: The name of the remote repository to remove
+        @type   name: string
+        @param  name: The name of the remote repository to remove
 
         """
         
-        self.config.remove_section("remote \"%s\"" % origin)
-        self.config.write()
+        cmd = ["git", "remote", "rm", name]
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
     
     def remote_list(self):
         """
@@ -906,18 +947,35 @@ class GittyupClient:
             
         """
         
-        ret = []
-        for section, values in self.config.get_all():
-            if section.startswith("remote"):
-                m = re.match("^remote \"(.*?)\"$", section)
-                if m:
-                    ret.append({
-                        "remote": m.group(1),
-                        "url": values["url"],
-                        "fetch": values["fetch"]
-                    })
+        cmd = ["git", "remote", "-v"]
 
-        return ret
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
+            stdout = ""
+            
+        returner = []
+        lines = stdout.split("\n")
+        for line in lines:
+            components = re.match("^(.*?)\t(.*?)\s\((.*?)\)$", line)
+
+            if components:
+                name = components.group(1)
+                host = components.group(2)
+                
+                add = True
+                for item in returner:
+                    if item["name"] == name:
+                        add = False
+                
+                if add: 
+                    returner.append({
+                        "name": name,
+                        "host": host
+                    })
+                    
+        return returner
     
     def tag(self, name, message, tagger=None, tag_time=None, tag_timezone=None,
             tag_object=None, track=False):
