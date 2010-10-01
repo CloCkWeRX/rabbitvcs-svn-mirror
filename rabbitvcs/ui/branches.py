@@ -53,11 +53,14 @@ class GitBranchManager(InterfaceView):
     
     def __init__(self, path):
         InterfaceView.__init__(self, "manager", "Manager")
-        self.vcs = rabbitvcs.vcs.VCS()
-        self.git = self.vcs.git(path)
-        
+
+        self.get_widget("right_side").show()        
+        self.get_widget("Manager").set_size_request(695, -1)
         self.get_widget("Manager").set_title(_("Branch Manager"))
         self.get_widget("items_label").set_markup(_("<b>Branches</b>"))
+
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.git = self.vcs.git(path)
         
         self.selected_branch = None
         self.items_treeview = rabbitvcs.ui.widget.Table(
