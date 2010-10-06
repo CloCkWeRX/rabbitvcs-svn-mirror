@@ -40,7 +40,7 @@ def callback_get_user():
 class GittyupClient:
     def __init__(self, path=None, create=False):
         self.callback_notify = callback_notify_null
-        self.callback_get_user = None
+        self.callback_get_user = callback_get_user
 
         self.global_ignore_patterns = []
         
