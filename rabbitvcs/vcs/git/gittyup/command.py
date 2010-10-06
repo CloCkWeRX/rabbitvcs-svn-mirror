@@ -3,6 +3,7 @@
 #
 
 import subprocess
+from os import getcwd
 
 from exceptions import GittyupCommandError
 
@@ -19,7 +20,7 @@ class GittyupCommand:
 
         self.cwd = cwd
         if not self.cwd:
-            self.cwd = os.getcwd()
+            self.cwd = getcwd()
     
     def callback_stack(self, val):
         lines = val.rstrip("\n").split("\n")
