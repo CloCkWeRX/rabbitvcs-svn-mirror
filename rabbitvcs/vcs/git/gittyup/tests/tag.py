@@ -38,4 +38,6 @@ else:
     tag_id = g.tag("tag1", "Tagging as tag1", track=True)
     assert (g.is_tracking("refs/tags/tag1"))
     
+    assert (len(g.tag_list()) == 1)
+    
     print "tag.py pass"

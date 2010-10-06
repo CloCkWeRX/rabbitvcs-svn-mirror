@@ -54,7 +54,7 @@ else:
     assert (not os.path.exists(DIR+"/test2.txt"))
     assert (os.path.exists(DIR+"/fol/test2.txt"))
     assert (g.is_staged(DIR+"/fol/test2.txt"))
-    assert (st[0] == RemovedStatus)
+    assert (st[1] == RemovedStatus)
     assert (st[2] == AddedStatus)
     g.commit("Committing the test2 move")
 

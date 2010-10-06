@@ -26,11 +26,11 @@ else:
 
     os.mkdir(DIR)
     g = GittyupClient(DIR, create=True)
-    g.remote_add("git://github.com/adamplumb/sprout.git", "origin")
+    g.remote_add("origin", "git://github.com/adamplumb/sprout.git")
     l = g.remote_list()
 
     assert (len(l) == 1)
-    assert (l[0]["url"] == "git://github.com/adamplumb/sprout.git")
+    assert (l[0]["host"] == "git://github.com/adamplumb/sprout.git")
     
     g.remote_delete("origin")
     l = g.remote_list()

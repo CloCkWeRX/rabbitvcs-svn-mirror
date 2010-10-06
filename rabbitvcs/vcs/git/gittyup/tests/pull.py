@@ -25,7 +25,7 @@ else:
         raise SystemExit("This test script has already been run.  Please call this script with --cleanup to start again")
 
     g = GittyupClient(DIR, create=True)
-    g.remote_add("git://github.com/adamplumb/gittyup.git")
+    g.remote_add("origin", "git://github.com/adamplumb/gittyup.git")
     g.pull("origin", "master")
 
     print "pull.py pass"
