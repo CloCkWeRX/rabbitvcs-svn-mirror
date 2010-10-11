@@ -53,11 +53,14 @@ class GitTagManager(InterfaceView):
     
     def __init__(self, path):
         InterfaceView.__init__(self, "manager", "Manager")
-        self.vcs = rabbitvcs.vcs.VCS()
-        self.git = self.vcs.git(path)
         
+        self.get_widget("right_side").show()        
+        self.get_widget("Manager").set_size_request(695, -1)
         self.get_widget("Manager").set_title(_("Tag Manager"))
         self.get_widget("items_label").set_markup(_("<b>Tags</b>"))
+                
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.git = self.vcs.git(path)
         
         self.selected_tag = None
         self.items_treeview = rabbitvcs.ui.widget.Table(
@@ -67,6 +70,10 @@ class GitTagManager(InterfaceView):
             callbacks={
                 "mouse-event":   self.on_treeview_mouse_event,
                 "key-event":     self.on_treeview_key_event
+            },
+            flags={
+                "sortable": True,
+                "sort_on": 0
             }
         )
         self.initialize_detail()
@@ -183,6 +190,7 @@ class GitTagManager(InterfaceView):
         self.items_treeview.clear()
 
         self.tag_list = self.git.tag_list()
+
         for item in self.tag_list:
             self.items_treeview.append([item.name])
 
