@@ -1056,10 +1056,14 @@ class GittyupClient:
         """
     
         refs = self.repo.get_refs()
+
         tags = []
         for ref,tag_sha in refs.items():
             if ref.startswith("refs/tags"):
-                tag = Tag(tag_sha, self.repo[tag_sha])
+                if type(self.repo[tag_sha]) == dulwich.objects.Commit:
+                    tag = CommitTag(ref[10:], tag_sha, self.repo[tag_sha])
+                else:
+                    tag = Tag(tag_sha, self.repo[tag_sha])
                 tags.append(tag)
         
         return tags
