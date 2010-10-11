@@ -625,16 +625,20 @@ class MenuPush(MenuItem):
     label = _("Push")
     icon = "rabbitvcs-push"
 
-class MenuBranchManager(MenuItem):
-    identifier = "RabbitVCS::Branch_Manager"
-    label = _("Branch Manager")
+class MenuBranches(MenuItem):
+    identifier = "RabbitVCS::Branches"
+    label = _("Branches")
     icon = "rabbitvcs-branch"
 
-class MenuTagManager(MenuItem):
-    identifier = "RabbitVCS::Tag_Manager"
-    label = _("Tag Manager")
+class MenuTags(MenuItem):
+    identifier = "RabbitVCS::Tags"
+    label = _("Tags")
     icon = "rabbitvcs-branch"
 
+class MenuRemotes(MenuItem):
+    identifier = "RabbitVCS::Remotes"
+    label = _("Remotes")
+    icon = "rabbitvcs-checkmods"
 
 def get_ignore_list_items(paths):
     """

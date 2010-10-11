@@ -545,12 +545,16 @@ class ContextMenuCallbacks:
         proc = rabbitvcs.util.helper.launch_ui_window("push", self.paths)
         self.caller.execute_after_process_exit(proc)
 
-    def branch_manager(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window("branch-manager", [self.paths[0]])
+    def branches(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("branches", [self.paths[0]])
         self.caller.execute_after_process_exit(proc)
 
-    def tag_manager(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window("tag-manager", [self.paths[0]])
+    def tags(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("tags", [self.paths[0]])
+        self.caller.execute_after_process_exit(proc)
+
+    def remotes(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("remotes", [self.paths[0]])
         self.caller.execute_after_process_exit(proc)
 
 class ContextMenuConditions:
@@ -881,10 +885,13 @@ class ContextMenuConditions:
     def push(self, data=None):
         return (self.path_dict["is_git"])
 
-    def branch_manager(self, data=None):
+    def branches(self, data=None):
         return (self.path_dict["is_git"])
 
-    def tag_manager(self, data=None):
+    def tags(self, data=None):
+        return (self.path_dict["is_git"])
+        
+    def remotes(self, data=None):
         return (self.path_dict["is_git"])
 
 class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
@@ -1259,8 +1266,9 @@ class MainContextMenu:
                 (MenuRevert, None),
                 (MenuAddToIgnoreList, ignore_items),
                 (MenuSeparator, None),
-                (MenuBranchManager, None),
-                (MenuTagManager, None),
+                (MenuBranches, None),
+                (MenuTags, None),
+                (MenuRemotes, None),
                 (MenuSeparator, None),
                 (MenuAnnotate, None),
                 (MenuSeparator, None),
