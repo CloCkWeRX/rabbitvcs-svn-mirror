@@ -1069,103 +1069,51 @@ class GittyupClient:
         return tags
     
     def status(self, paths_to_return=[]):
-        """
-        Generates a list of GittyupStatus objects for all files in the 
-            repository.
-        
-        """
-
         if type(paths_to_return) in (str, unicode):
             paths_to_return = [paths_to_return]
-    
-        tree = self._get_tree_at_head()
-        tree_index = self._get_tree_index(tree)
-        index = self._get_index()
+        
         (files, directories) = self._read_directory_tree(self.repo.path)
-
-        statuses = []
-        tracked_paths = set(index)
-        if len(tree_index) > 0:
-            for (name, mode, sha) in self.repo.object_store.iter_tree_contents(tree.id):
-                if name in tracked_paths:
-                    if name in tree_index:
-                        absolute_path = self.get_absolute_path(name)
-                        if os.path.exists(absolute_path):
-                            # Cached, determine if modified or not                        
-                            blob = self._get_blob_from_file(absolute_path)
-                            if blob.id == tree_index[name][1]:
-                                statuses.append(NormalStatus(name))
-                            else:
-                                statuses.append(ModifiedStatus(name))
-                        else:
-                            # Missing
-                            statuses.append(MissingStatus(name))
-                    else:
-                        statuses.append(AddedStatus(name))
-                        
-                    tracked_paths.remove(name)
-                else:
-                    # Removed
-                    statuses.append(RemovedStatus(name))
-
-                try:
-                    files.remove(name)
-                except ValueError:
-                    pass
-
-        for name in tracked_paths:
-            # Added
-            statuses.append(AddedStatus(name))
-            try:
-                files.remove(name)
-            except ValueError:
-                pass
-
-        # Find untracked files
-        for f in files:
-            statuses.append(UntrackedStatus(f))
-
-        # If path is specified as a parameter, narrow the list down
-        final_statuses = []
-        if len(paths_to_return) > 0:
-            for path_to_return in paths_to_return:
-                if path_to_return and self.get_absolute_path(path_to_return) != self.repo.path:
-                    relative_path = self.get_relative_path(path_to_return)
-                    if os.path.isdir(path_to_return):
-                        for st in statuses:
-                            if st.path.startswith(relative_path) or relative_path == "":
-                                final_statuses.append(st)
-                    elif os.path.isfile(path_to_return):
-                        for st in statuses:
-                            if st.path == relative_path:
-                                final_statuses.append(st)
-                                break
-                else:
-                    final_statuses = statuses
-                    break
-        else:
-            final_statuses = statuses
             
-        del statuses
+        cmd = ["git", "status", "--porcelain", self.repo.path]
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
+        
+        statuses = []
+        for line in stdout.split("\n"):
+            components = re.match("^(\s)?(.*?)\s(.*?)$", line)
+
+            if components:
+                status = components.group(2)
+                path = components.group(3)
+
+                if status == "M" or status == "R" or status == "U":
+                    statuses.append(ModifiedStatus(path))
+                elif status == "A" or status == "C":
+                    statuses.append(AddedStatus(path))
+                elif status == "D":
+                    statuses.append(DeletedStatus(path))
+                elif status == "??":
+                    statuses.append(UntrackedStatus(path))
+                
+                files.remove(path)
+
+        for file in files:
+            statuses.append(NormalStatus(file))
 
         # Determine status of folders based on child contents
         for d in directories:
             d_status = NormalStatus(d)
-            for st in final_statuses:
+            for st in statuses:
                 if os.path.join(d, os.path.basename(st.path)) == st.path:
 
                     if st.identifier != "normal" and st.identifier != "untracked":
                         d_status = ModifiedStatus(d)
-            
 
-            final_statuses.append(d_status)
+            statuses.append(d_status)
 
-        # Calculate which files are staged
-        staged_files = self.get_staged()
-        for index,st in enumerate(final_statuses):
-            final_statuses[index].is_staged = (st.path in staged_files)
-
-        return final_statuses            
+        return statuses
     
     def log(self, path=None, refspec="HEAD", start_point=None, limit=None,
             discover_changed_paths=False):
