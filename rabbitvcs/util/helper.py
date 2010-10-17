@@ -54,8 +54,8 @@ DATETIME_FORMAT = "%Y-%m-%d %H:%M" # for log files
 LOCAL_DATETIME_FORMAT = locale.nl_langinfo(locale.D_T_FMT) # for UIs
 
 DT_FORMAT_THISWEEK = "%a %I:%M%p"
-DT_FORMAT_THISYEAR = "%b %Y %I:%M%p"
-DT_FORMAT_ALL = "%b %d %Y %I:%M%p"
+DT_FORMAT_THISYEAR = "%b %d %Y"
+DT_FORMAT_ALL = "%b %d %Y"
 
 LINE_BREAK_CHAR = u'\u23CE'
 
