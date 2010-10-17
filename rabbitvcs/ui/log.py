@@ -302,11 +302,11 @@ class SVNLog(Log):
         self.set_end_revision(self.rev_end)
 
         for item in self.revision_items:
-            msg = rabbitvcs.util.helper.format_long_text(item.message, 80)
+            msg = rabbitvcs.util.helper.format_long_text(item["message"], 80)
             
             author = _("(no author)")
             if hasattr(item, "author"):
-                author = item.author
+                author = item["author"]
 
             self.revisions_table.append([
                 item.revision.number,
@@ -373,12 +373,12 @@ class SVNLog(Log):
         self.action.start()
 
     def on_log_message_edited(self, index, val):
-        self.revision_items[index].message = val
+        self.revision_items[index]["message"] = val
         self.revisions_table.set_row_item(index, 3, val)
         self.message.set_text(val)
 
     def on_author_edited(self, index, val):
-        self.revision_items[index].author = val
+        self.revision_items[index]["author"] = val
         self.revisions_table.set_row_item(index, 1, val)
 
     def update_revision_message(self):
@@ -389,9 +389,9 @@ class SVNLog(Log):
             item = self.revision_items[selected_row]
             
             if len(self.revisions_table.get_selected_rows()) == 1:
-                self.message.set_text(item.message)
+                self.message.set_text(item["message"])
             else:
-                indented_message = item.message.replace("\n","\n\t")
+                indented_message = item["message"].replace("\n","\n\t")
                 self.message.append_text(
 					"%s %s:\n\t%s\n" % (REVISION_LABEL,
                                         str(item.revision.number),
@@ -427,8 +427,8 @@ class SVNLog(Log):
         for row in self.revisions_table.get_selected_rows():
             line = {
                 "revision": self.svn.revision("number", number=self.revision_items[row].revision.number),
-                "author": self.revision_items[row].author,
-                "message": self.revision_items[row].message
+                "author": self.revision_items[row]["author"],
+                "message": self.revision_items[row]["message"]
             }
             if self.revision_items[row+1]:
                 line["next_revision"] = self.svn.revision("number", number=self.revision_items[row+1].revision.number)
@@ -442,8 +442,8 @@ class SVNLog(Log):
         for row in self.revisions_table.get_selected_rows():
             revisions.append({
                 "revision": self.svn.revision("number", number=self.revision_items[row].revision.number),
-                "author": self.revision_items[row].author,
-                "message": self.revision_items[row].message
+                "author": self.revision_items[row]["author"],
+                "message": self.revision_items[row]["message"]
             })
         
         # If we don't do this, we actually get the revisions in reverse order
@@ -462,7 +462,6 @@ class SVNLog(Log):
         self.load_or_refresh()
                     
     def on_next_clicked(self, widget):
-        self.override_limit = True
         self.previous_starts.append(self.rev_start)
         self.rev_start = self.rev_end - 1
 
@@ -503,7 +502,7 @@ class GitLog(Log):
                 "sort_on": 1
             }
         )
-
+        self.start_point = 0
         self.load_or_refresh()
 
     #
@@ -521,34 +520,26 @@ class GitLog(Log):
         self.paths_table.clear()
         
         # Make sure the int passed is the order the log call was made
-        if not hasattr(self, 'revision_items'):
-            self.revision_items = self.action.get_result(0)
-            if len(self.revision_items) == 0:
-                return
+        self.revision_items = self.action.get_result(0)
         
-        if not self.rev_start:
-            self.rev_start = 0
-        if not self.rev_end:
-            self.rev_end = self.limit
+        self.set_start_revision(self.revision_items[0]["commit"][:7])
+        self.set_end_revision(self.revision_items[-1]["commit"][:7])
 
-        len_revision_items = len(self.revision_items)
-        if self.rev_end >= len_revision_items - 1:
-            self.rev_end = len_revision_items - 1
-
-        self.set_start_revision(self.revision_items[self.rev_start].sha[:7])
-        self.set_end_revision(self.revision_items[self.rev_end].sha[:7])
-
-        for item in self.revision_items[self.rev_start:self.rev_end+1]:
-            msg = rabbitvcs.util.helper.format_long_text(item.message, 80)
+        for item in self.revision_items:
+            msg = rabbitvcs.util.helper.format_long_text(item["message"], 80)
             
             author = _("(no author)")
-            if hasattr(item, "author"):
-                author = item.committer
+            if "committer" in item:
+                author = item["committer"]
+                pos = author.find("<")
+                if pos != -1:
+                    author = author[0:pos-1]
 
+            commit_date = datetime.strptime(item["commit_date"][0:-6], "%a %b %d %H:%M:%S %Y")
             self.revisions_table.append([
-                item.sha[:7],
+                item["commit"][:7],
                 author,
-                datetime.fromtimestamp(item.commit_time).strftime(DATETIME_FORMAT),
+                rabbitvcs.util.helper.format_datetime(commit_date),
                 msg
             ])
             
@@ -564,15 +555,11 @@ class GitLog(Log):
             notification=False
         )        
 
-        start_point = None
-        if self.rev_start:
-            start_point = self.rev_start
-
         self.action.append(
             self.git.log,
             path=self.path,
-            start_point=start_point,
-            discover_changed_paths=True
+            skip=self.start_point,
+            limit=self.limit+1
         )
         self.action.append(self.refresh)
         self.action.start()
@@ -580,27 +567,29 @@ class GitLog(Log):
     def update_revision_message(self):
         combined_paths = []
         subitems = []
-            
+        
         for selected_row in self.revisions_table.get_selected_rows():
             item = self.revision_items[selected_row]
 
             if len(self.revisions_table.get_selected_rows()) == 1:
-                self.message.set_text(item.message)
+                self.message.set_text(item["message"])
             else:
-                indented_message = item.message.replace("\n","\n\t")
+                indented_message = item["message"].replace("\n","\n\t")
                 self.message.append_text(
 					"%s %s:\n\t%s\n" % (REVISION_LABEL,
-                                        item.sha[:7],
+                                        item["commit"][:7],
                                         indented_message))
-            if item.changed_paths is not None:
-                for subitem in item.changed_paths:
+
+            if item["changed_paths"]:
+                for subitem in item["changed_paths"]:
                     
-                    if subitem.path not in combined_paths:
-                        combined_paths.append(subitem.path)
+                    if subitem["path"] not in combined_paths:
+                        combined_paths.append(subitem["path"])
                         
+                        change = "+%s/-%s" % (subitem["additions"], subitem["removals"])
                         subitems.append([
-                            subitem.identifier.capitalize(),
-                            subitem.path
+                            change,
+                            subitem["path"]
                         ])
 
         subitems.sort(lambda x, y: cmp(x[1],y[1]))
@@ -614,12 +603,12 @@ class GitLog(Log):
         revisions = []
         for row in self.revisions_table.get_selected_rows():
             line = {
-                "revision": self.git.revision(self.revision_items[row].sha),
-                "author": self.revision_items[row].author,
-                "message": self.revision_items[row].message
+                "revision": self.git.revision(self.revision_items[row]["commit"]),
+                "author": self.revision_items[row]["author"],
+                "message": self.revision_items[row]["message"]
             }
             if self.revision_items[row+1]:
-                line["next_revision"] = self.git.revision(self.revision_items[row+1].sha)
+                line["next_revision"] = self.git.revision(self.revision_items[row+1]["commit"])
 
             revisions.append(line)
             
@@ -629,29 +618,22 @@ class GitLog(Log):
         return
 
     def on_previous_clicked(self, widget):
-        self.rev_start = self.previous_starts.pop()
-        self.refresh()
+        self.start_point -= self.limit
+        if self.start_point < 0:
+            self.start_point = 0
+        self.load_or_refresh()
                     
     def on_next_clicked(self, widget):
-        self.override_limit = True
-        self.previous_starts.append(self.rev_start)
-        self.rev_start = self.rev_end
-        self.rev_end = self.rev_end + self.limit
-
-        if self.rev_start < 0:
-            self.rev_start = 0
-
-        self.refresh()
+        self.start_point += self.limit
+        self.load()
 
     def check_previous_sensitive(self):
-        sensitive = (self.rev_start > 0)
+        sensitive = (self.start_point > 0)
         self.get_widget("previous").set_sensitive(sensitive)
 
     def check_next_sensitive(self):
         sensitive = True
-        if self.rev_end == 0:
-            sensitive = False
-        if len(self.revision_items) - 1 <= self.rev_end:
+        if len(self.revision_items) <= self.limit:
             sensitive = False
 
         self.get_widget("next").set_sensitive(sensitive)

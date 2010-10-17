@@ -1115,98 +1115,78 @@ class GittyupClient:
 
         return statuses
     
-    def log(self, path=None, refspec="HEAD", start_point=None, limit=None,
-            discover_changed_paths=False):
-        """
-        Returns a revision history list
+    def log(self, path="", skip=0, limit=None):
         
-        @type   path    string
-        @param  path    If a path is specified, return commits that contain
-                        changes to the specified path only
-        
-        @type   refspec string
-        @param  refspec Determines which branch to find commits for
-        
-        @type   start_point sha1 hash string
-        @param  start_point Start at a given revision
-        
-        @type   limit   int
-        @param  limit   If given, returns a limited number of commits
-        
-        @returns    A list of commits
-        
-        """
-        
-        if start_point:
-            head = start_point
-        else:
-            try:
-                head = self.repo.refs[refspec]
-            except KeyError:
-                return []
+        cmd = ["git", "--no-pager", "log", "--numstat", "--parents", "--pretty=fuller", 
+            "--boundary", "--date-order"]            
+        if limit:
+            cmd.append("-%s" % limit)
+        if skip:
+            cmd.append("--skip=%s" % skip)
 
-        relative_path = None
+        if path == self.repo.path:
+            path = ""
+        
         if path:
-            relative_path = self.get_relative_path(path)
+            cmd.append("-- %s" % path)
 
-        # We build the list backwards, as parents are more likely to be older
-        # than children
-        pending_commits = [head]
-        history = []
-        added_count = 0
-        known_commits = []
-        while pending_commits != []:
-            head = pending_commits.pop(0)
-            commit = self.repo[head]
-            if type(commit) != dulwich.objects.Commit:
-                raise NotCommitError(commit)
-            if commit.id in known_commits:
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)        
+    
+        lines = stdout.split("\n")
+        revisions = []
+        revision = {}
+        changed_file = {}
+        for line in lines:
+            if line == "":
                 continue
             
-            diff = []
-            add_to_history = True
-            if discover_changed_paths:
-                if len(commit.parents) > 0:
-                    tree1 = self.repo[commit.parents[0]].tree
-                    tree2 = commit.tree
-                    
-                    changes = self.repo.object_store.tree_changes(tree1, tree2)
-                    for item in changes:
-                        if item[0][0] == item[0][1]:
-                            diff.append(ModifiedStatus(item[0][1]))
-                        elif item[0][0] is None:
-                            if item[0][1] is not None:
-                                diff.append(AddedStatus(item[0][1]))
-                        elif item[0][1] is None:
-                            if item[0][0] is not None:
-                                diff.append(RemovedStatus(item[0][0]))
-                else:
-                    tree_index = self._get_tree_index(self.repo[commit.tree])
-                    for name,data in tree_index.iteritems():
-                        diff.append(AddedStatus(name))
-
-                if relative_path:
-                    add_to_history = NoStatus(relative_path) in diff
+            if line[0:6] == "commit":
+                if revision:
+                    if "changed_paths" not in revision:
+                        revision["changed_paths"] = {}
+                    revisions.append(revision)
             
-            if add_to_history:
-                i = 0
-                for known_commit in history:
-                    if known_commit.commit_time > commit.commit_time:
-                        break
-                    i += 1
+                revision = {}
+                changed_file = {}
+                commit_line = line.split(" ")
+                revision["commit"] = commit_line[1]
+                revision["parents"] = []
+                for parent in commit_line[2:]:
+                    revision["parents"].append(parent)
+            elif line[0:7] == "Author:":
+                revision["author"] = line[7:].strip()
+            elif line[0:11] == "AuthorDate:":
+                revision["author_date"] = line[11:].strip()
+            elif line[0:7] == "Commit:":
+                revision["committer"] = line[7:].strip()
+            elif line[0:11] == "CommitDate:":
+                revision["commit_date"] = line[11:].strip()
+            elif line[0:4] == "    ":
+                message = line[4:]
+                if "message" not in revision:
+                    revision["message"] = ""
 
-                history.insert(i, Commit(commit.id, commit, changed_paths=diff))
-                added_count += 1
+                revision["message"] = revision["message"] + message
+            elif line[0].isdigit():
+                file_line = line.split("\t")
+                if not changed_file:
+                    revision["changed_paths"] = []
 
-            known_commits.append(commit.id)
+                if len(file_line) == 3:
+                    changed_file = {
+                        "additions": file_line[0],
+                        "removals": file_line[1],
+                        "path": file_line[2]
+                    }
+                    revision["changed_paths"].append(changed_file)
 
-            if limit is not None and added_count >= limit:
-                break
-          
-            pending_commits += commit.parents
+        if len(revisions) == 0 and revision:
+            revisions.append(revision)
 
-        history.reverse()
-        return history
+        return revisions
         
     def annotate(self, path, revision_obj="HEAD"):
         """

@@ -639,8 +639,7 @@ class Git:
         return self.client.tag_list()
 
 
-    def log(self, path=None, refspec="HEAD", start_point=None, limit=None,
-            discover_changed_paths=False):
+    def log(self, path=None, skip=0, limit=None):
         """
         Returns a revision history list
         
@@ -661,7 +660,7 @@ class Git:
         
         """
         
-        return self.client.log(path, refspec, start_point, limit, discover_changed_paths)
+        return self.client.log(path, skip, limit)
     
     def annotate(self, path, revision_obj=Revision("head")):
         """
