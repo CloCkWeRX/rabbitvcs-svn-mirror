@@ -623,7 +623,7 @@ class GitLog(Log):
     
     def load(self):
         self.set_loading(True)
-        
+
         self.action = GitAction(
             self.git,
             notification=False,
@@ -682,9 +682,11 @@ class GitLog(Log):
                 "author": self.revision_items[row]["author"],
                 "message": self.revision_items[row]["message"]
             }
-            if self.revision_items[row+1]:
+            try:
                 line["next_revision"] = self.git.revision(self.revision_items[row+1]["commit"])
-
+            except IndexError,e:
+                pass
+                
             revisions.append(line)
             
         LogTopContextMenu(self, data, self.path, revisions).show()
