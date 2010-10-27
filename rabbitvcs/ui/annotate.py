@@ -30,7 +30,7 @@ from datetime import datetime
 import time
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.ui.log import LogDialog
+from rabbitvcs.ui.log import log_dialog_factory
 from rabbitvcs.ui.action import SVNAction, GitAction
 import rabbitvcs.ui.widget
 from rabbitvcs.ui.dialog import MessageBox
@@ -76,14 +76,14 @@ class Annotate(InterfaceView):
         self.load()
 
     def on_from_show_log_clicked(self, widget, data=None):
-        LogDialog(self.path, ok_callback=self.on_from_log_closed)
+        log_dialog_factory(self.path, ok_callback=self.on_from_log_closed)
     
     def on_from_log_closed(self, data):
         if data is not None:
             self.get_widget("from").set_text(data)
 
     def on_to_show_log_clicked(self, widget, data=None):
-        LogDialog(self.path, ok_callback=self.on_to_log_closed)
+        log_dialog_factory(self.path, ok_callback=self.on_to_log_closed)
     
     def on_to_log_closed(self, data):
         if data is not None:

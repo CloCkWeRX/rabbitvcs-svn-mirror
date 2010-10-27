@@ -30,7 +30,6 @@ import gtk
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import SVNAction
 from rabbitvcs.util.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
-from rabbitvcs.ui.log import LogDialog
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.vcs

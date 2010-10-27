@@ -30,7 +30,6 @@ import rabbitvcs.ui.widget
 import rabbitvcs.util.helper
 from rabbitvcs.util.contextmenu import GtkContextMenu
 from rabbitvcs.util.contextmenuitems import *
-from rabbitvcs.ui.log import LogDialog
 import rabbitvcs.ui.action
 from rabbitvcs.ui.dialog import MessageBox
 from rabbitvcs import gettext
