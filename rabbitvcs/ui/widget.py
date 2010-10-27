@@ -25,6 +25,8 @@ import gobject
 import gtk
 import pango
 
+from renderers.graphcell import CellRendererGraph
+
 import os.path
 
 try:
@@ -53,6 +55,7 @@ TOGGLE_BUTTON = 'TOGGLE_BUTTON'
 TYPE_PATH = 'TYPE_PATH'
 TYPE_STATUS = 'TYPE_STATUS'
 TYPE_ELLIPSIZED = 'TYPE_ELLIPSIZED'
+TYPE_GRAPH = 'TYPE_GRAPH'
 
 ELLIPSIZE_COLUMN_CHARS = 20
 
@@ -60,7 +63,6 @@ PATH_ENTRY = 'PATH_ENTRY'
 SEPARATOR = u'\u2015' * 10
 
 from pprint import pformat
-
 def filter_router(model, iter, column, filters):
     """
     Route filter requests for a table's columns.  This function is called for
@@ -318,6 +320,11 @@ class TableBase:
                 cell.set_property('width-chars', ELLIPSIZE_COLUMN_CHARS)
                 col = gtk.TreeViewColumn(name, cell)
                 col.set_attributes(cell, text=i)
+            elif coltypes[i] == TYPE_GRAPH:
+                coltypes[i] = gobject.TYPE_PYOBJECT
+                cell = CellRendererGraph()
+                col = gtk.TreeViewColumn(name, cell)
+                col.add_attribute(cell, "graph", i)
             else:
                 cell = gtk.CellRendererText()
                 cell.set_property('yalign', 0)
@@ -470,6 +477,9 @@ class TableBase:
     def set_resizable(self, resizable=True):
         for col in self.treeview.get_columns():
             col.set_resizable(resizable)
+
+    def get_column(self, column):
+        return self.treeview.get_column(column)
 
     def set_column_width(self, column, width=None):
         col = self.treeview.get_column(column)

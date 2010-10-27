@@ -7,6 +7,7 @@ import re
 import shutil
 import fnmatch
 import time
+from string import ascii_letters, digits
 from datetime import datetime
 
 import dulwich.errors
@@ -1114,11 +1115,11 @@ class GittyupClient:
             statuses.append(d_status)
 
         return statuses
-    
+
     def log(self, path="", skip=0, limit=None):
         
         cmd = ["git", "--no-pager", "log", "--numstat", "--parents", "--pretty=fuller", 
-            "--boundary", "--date-order"]            
+            "--date-order"]            
         if limit:
             cmd.append("-%s" % limit)
         if skip:
@@ -1133,8 +1134,8 @@ class GittyupClient:
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
         except GittyupCommandError, e:
-            self.callback_notify(e)        
-    
+            self.callback_notify(e)
+
         lines = stdout.split("\n")
         revisions = []
         revision = {}
@@ -1183,7 +1184,7 @@ class GittyupClient:
                     }
                     revision["changed_paths"].append(changed_file)
 
-        if len(revisions) == 0 and revision:
+        if revision:
             revisions.append(revision)
 
         return revisions

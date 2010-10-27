@@ -46,6 +46,54 @@ DATETIME_FORMAT = rabbitvcs.util.helper.LOCAL_DATETIME_FORMAT
 
 REVISION_LABEL = _("Revision")
 
+def revision_grapher(history):
+    """
+    Expects a list of revision items like so:
+    [
+        {"commit": "...", "parents": ["...", "..."]}
+    ]
+    
+    Output can be put directly into the CellRendererGraph
+    """
+    items = []
+    revisions = []
+    last_lines = []
+    color = "#d3b9d3"
+    for item in history:
+        commit = item["commit"][0:6]
+        parents = []
+        for parent in item["parents"]:
+            parents.append(parent[0:6])
+
+        if commit not in revisions:
+            revisions.append(commit)
+
+        index = revisions.index(commit)
+        next_revisions = revisions[:]
+        
+        parents_to_add = []
+        for parent in parents:
+            if parent not in next_revisions:
+                parents_to_add.append(parent)
+        
+        next_revisions[index:index+1] = parents_to_add
+
+        lines = []
+        for i, revision in enumerate(revisions):
+            if revision in next_revisions:
+                lines.append((i, next_revisions.index(revision), color))
+            elif revision == commit:
+                for parent in parents:
+                    lines.append((i, next_revisions.index(parent), color))
+
+        node = (index, "#a9f9d2")
+
+        items.append((item, node, last_lines, lines))
+        revisions = next_revisions
+        last_lines = lines
+
+    return items
+
 class Log(InterfaceView):
     """
     Provides an interface to the Log UI
@@ -81,17 +129,6 @@ class Log(InterfaceView):
         self.initialize_revision_labels()
         
         self.get_widget("limit").set_text(str(self.limit))
-        
-        self.revisions_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("revisions_table"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [_("Revision"), _("Author"), 
-                _("Date"), _("Message")],
-            callbacks={
-                "mouse-event":   self.on_revisions_table_mouse_event
-            }
-        )
 
         self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message")
@@ -231,6 +268,17 @@ class SVNLog(Log):
         Log.__init__(self, path)
                 
         self.svn = self.vcs.svn()
+
+        self.revisions_table = rabbitvcs.ui.widget.Table(
+            self.get_widget("revisions_table"),
+            [gobject.TYPE_STRING, gobject.TYPE_STRING, 
+                gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [_("Revision"), _("Author"), 
+                _("Date"), _("Message")],
+            callbacks={
+                "mouse-event":   self.on_revisions_table_mouse_event
+            }
+        )
 
         self.paths_table = rabbitvcs.ui.widget.Table(
             self.get_widget("paths_table"),
@@ -488,6 +536,18 @@ class GitLog(Log):
         Log.__init__(self, path)
         
         self.git = self.vcs.git(path)
+        self.limit = 500
+
+        self.revisions_table = rabbitvcs.ui.widget.Table(
+            self.get_widget("revisions_table"),
+            [rabbitvcs.ui.widget.TYPE_GRAPH, gobject.TYPE_STRING, gobject.TYPE_STRING, 
+                gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [_("Graph"), _("Revision"), _("Author"), 
+                _("Date"), _("Message")],
+            callbacks={
+                "mouse-event":   self.on_revisions_table_mouse_event
+            }
+        )
 
         self.paths_table = rabbitvcs.ui.widget.Table(
             self.get_widget("paths_table"),
@@ -525,7 +585,17 @@ class GitLog(Log):
         self.set_start_revision(self.revision_items[0]["commit"][:7])
         self.set_end_revision(self.revision_items[-1]["commit"][:7])
 
-        for item in self.revision_items:
+        grapher = revision_grapher(self.revision_items)
+        max_columns = 1
+        for (item, node, in_lines, out_lines) in grapher:
+            if max_columns < len(out_lines):
+                max_columns = len(out_lines)
+
+        graph_column = self.revisions_table.get_column(0)
+        cell = graph_column.get_cell_renderers()[0]
+        self.revisions_table.set_column_width(0, 16*max_columns)
+
+        for (item, node, in_lines, out_lines) in grapher:
             msg = rabbitvcs.util.helper.format_long_text(item["message"], 80)
             
             author = _("(no author)")
@@ -537,12 +607,13 @@ class GitLog(Log):
 
             commit_date = datetime.strptime(item["commit_date"][0:-6], "%a %b %d %H:%M:%S %Y")
             self.revisions_table.append([
+                (node, in_lines, out_lines),
                 item["commit"][:7],
                 author,
                 rabbitvcs.util.helper.format_datetime(commit_date),
                 msg
             ])
-            
+
         self.check_previous_sensitive()
         self.check_next_sensitive()
         self.set_loading(False)
@@ -552,7 +623,8 @@ class GitLog(Log):
         
         self.action = GitAction(
             self.git,
-            notification=False
+            notification=False,
+            run_in_thread=False
         )        
 
         self.action.append(
@@ -562,7 +634,7 @@ class GitLog(Log):
             limit=self.limit+1
         )
         self.action.append(self.refresh)
-        self.action.start()
+        self.action.run()
 
     def update_revision_message(self):
         combined_paths = []
