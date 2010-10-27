@@ -148,9 +148,21 @@ def long_text_filter(row, column, user_data=None):
     
     cols = user_data["cols"]
     
+    
     if text:
         text = rabbitvcs.util.helper.format_long_text(text, cols)
         
+    return text
+
+def git_revision_filter(row, column, user_data=None):
+    """
+    Only show the first six characters of a git revision hash
+    """
+    
+    text = row[column]
+    if text:
+        text = text[0:7]
+
     return text
 
 def translate_filter(row, column, user_data=None):

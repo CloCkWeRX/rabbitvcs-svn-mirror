@@ -252,7 +252,7 @@ class GitBranchManager(InterfaceView):
                 self.git.branch_rename(self.selected_branch.name, branch_name)
     
         if self.checkout_checkbox.get_active():
-            self.git.checkout(branch_name=branch_name)
+            self.git.checkout([], self.git.revision(branch_name))
 
         self.load(self.show_edit, branch_name)
 

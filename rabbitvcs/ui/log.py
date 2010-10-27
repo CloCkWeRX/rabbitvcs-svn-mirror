@@ -60,10 +60,8 @@ def revision_grapher(history):
     last_lines = []
     color = "#d3b9d3"
     for item in history:
-        commit = item["commit"][0:6]
-        parents = []
-        for parent in item["parents"]:
-            parents.append(parent[0:6])
+        commit = item["commit"]
+        parents = item["parents"]
 
         if commit not in revisions:
             revisions.append(commit)
@@ -547,6 +545,12 @@ class GitLog(Log):
                 gobject.TYPE_STRING, gobject.TYPE_STRING], 
             [_("Graph"), _("Revision"), _("Author"), 
                 _("Date"), _("Message")],
+            filters=[{
+                "callback": rabbitvcs.ui.widget.git_revision_filter,
+                "user_data": {
+                    "column": 1
+                }
+            }],
             callbacks={
                 "mouse-event":   self.on_revisions_table_mouse_event
             }
@@ -611,7 +615,7 @@ class GitLog(Log):
             commit_date = datetime.strptime(item["commit_date"][0:-6], "%a %b %d %H:%M:%S %Y")
             self.revisions_table.append([
                 (node, in_lines, out_lines),
-                item["commit"][:7],
+                item["commit"],
                 author,
                 rabbitvcs.util.helper.format_datetime(commit_date),
                 msg
