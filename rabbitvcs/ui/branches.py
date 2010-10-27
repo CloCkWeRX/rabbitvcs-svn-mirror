@@ -32,6 +32,7 @@ import time
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import GitAction
+from rabbitvcs.ui.log import log_dialog_factory
 import rabbitvcs.ui.widget
 from rabbitvcs.ui.dialog import DeleteConfirmation
 import rabbitvcs.util.helper
@@ -54,7 +55,9 @@ class GitBranchManager(InterfaceView):
     def __init__(self, path):
         InterfaceView.__init__(self, "manager", "Manager")
 
-        self.get_widget("right_side").show()        
+        self.path = path
+        
+        self.get_widget("right_side").show()
         self.get_widget("Manager").set_size_request(695, -1)
         self.get_widget("Manager").set_title(_("Branch Manager"))
         self.get_widget("items_label").set_markup(_("<b>Branches</b>"))
@@ -103,8 +106,14 @@ class GitBranchManager(InterfaceView):
         self.start_point_entry = gtk.Entry()
         self.start_point_entry.set_size_request(300, -1)
         self.start_point_container = gtk.HBox(False, 0)
+        self.log_dialog_button = gtk.Button()
+        self.log_dialog_button.connect("clicked", self.on_log_dialog_button_clicked)
+        image = gtk.Image()
+        image.set_from_icon_name("rabbitvcs-show_log", 2)
+        self.log_dialog_button.set_image(image)
         self.start_point_container.pack_start(label, False, False, 0)
         self.start_point_container.pack_start(self.start_point_entry, False, False, 0)
+        self.start_point_container.pack_start(self.log_dialog_button, False, False, 0)
         vbox.pack_start(self.start_point_container, False, False, 0)
 
         # Set up the Track line
@@ -307,6 +316,16 @@ class GitBranchManager(InterfaceView):
 
         self.show_containers(self.view_containers)
         self.get_widget("detail_label").set_markup(_("<b>Branch Detail</b>"))
+
+    def on_log_dialog_button_clicked(self, widget):
+        log_dialog_factory(
+            self.path,
+            ok_callback=self.on_log_dialog_closed
+        )
+    
+    def on_log_dialog_closed(self, data):
+        if data:
+            self.start_point_entry.set_text(data)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main

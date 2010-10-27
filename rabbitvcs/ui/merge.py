@@ -25,7 +25,7 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.ui.log import LogDialog
+from rabbitvcs.ui.log import log_dialog_factory
 from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.vcs
 import rabbitvcs.ui.widget
@@ -238,7 +238,7 @@ class SVNMerge(InterfaceView):
         self.mergerange_check_ready()
         
     def on_mergerange_show_log1_clicked(self, widget):
-        LogDialog(
+        log_dialog_factory(
             self.get_widget("mergerange_from_url").get_text(),
             ok_callback=self.on_mergerange_log1_closed, 
             multiple=True
@@ -278,10 +278,10 @@ class SVNMerge(InterfaceView):
             self.get_widget("mergebranch_working_copy").set_text(self.path)
 
     def on_mergebranch_show_log1_clicked(self, widget):
-        LogDialog(self.path)
+        log_dialog_factory(self.path)
 
     def on_mergebranch_show_log2_clicked(self, widget):
-        LogDialog(self.path)
+        log_dialog_factory(self.path)
         
     def on_mergebranch_from_url_changed(self, widget):
         self.mergebranch_check_ready()
@@ -310,7 +310,7 @@ class SVNMerge(InterfaceView):
             self.get_widget("mergetree_working_copy").set_text(self.path)
 
     def on_mergetree_from_show_log_clicked(self, widget):
-        LogDialog(
+        log_dialog_factory(
             self.path,
             ok_callback=self.on_mergetree_from_show_log_closed, 
             multiple=False
@@ -321,7 +321,7 @@ class SVNMerge(InterfaceView):
         self.get_widget("mergetree_from_revision_number_opt").set_active(True)
 
     def on_mergetree_to_show_log_clicked(self, widget):
-        LogDialog(
+        log_dialog_factory(
             self.path,
             ok_callback=self.on_mergetree_to_show_log_closed, 
             multiple=False
@@ -332,7 +332,7 @@ class SVNMerge(InterfaceView):
         self.get_widget("mergetree_to_revision_number_opt").set_active(True)
 
     def on_mergetree_working_copy_show_log_clicked(self, widget):
-        LogDialog(self.path)
+        log_dialog_factory(self.path)
         
     def on_mergetree_from_revision_number_focused(self, widget, data):
         self.get_widget("mergetree_from_revision_number_opt").set_active(True)

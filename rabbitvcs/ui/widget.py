@@ -870,8 +870,8 @@ class RevisionSelector:
         container.add(hbox)
     
     def __revision_browse_clicked(self, widget):
-        from rabbitvcs.ui.log import LogDialog
-        LogDialog(
+        from rabbitvcs.ui.log import log_dialog_factory
+        log_dialog_factory(
             self.get_url(), 
             ok_callback=self.__log_closed
         )

@@ -127,6 +127,7 @@ class Log(InterfaceView):
         self.rev_max = 1
         self.previous_starts = []
         self.initialize_revision_labels()
+        self.revision_number_column = 0
         
         self.get_widget("limit").set_text(str(self.limit))
 
@@ -214,14 +215,14 @@ class Log(InterfaceView):
 
         revisions = []
         for row in self.revisions_table.get_selected_rows():
-            revisions.append(int(self.revisions_table.get_row(row)[0]))
+            revisions.append(int(self.revisions_table.get_row(row)[self.revision_number_column]))
 
         revisions.sort()
         return rabbitvcs.util.helper.encode_revisions(revisions)
 
     def get_selected_revision_number(self):
         if len(self.revisions_table.get_selected_rows()):
-            return self.revisions_table.get_row(self.revisions_table.get_selected_rows()[0])[0]
+            return self.revisions_table.get_row(self.revisions_table.get_selected_rows()[0])[self.revision_number_column]
         else:
             return ""
     
@@ -537,6 +538,8 @@ class GitLog(Log):
         
         self.git = self.vcs.git(path)
         self.limit = 500
+        
+        self.revision_number_column = 1
 
         self.revisions_table = rabbitvcs.ui.widget.Table(
             self.get_widget("revisions_table"),
@@ -710,14 +713,36 @@ class GitLog(Log):
 
         self.get_widget("next").set_sensitive(sensitive)
 
-class LogDialog(Log):
+class SVNLogDialog(SVNLog):
     def __init__(self, path, ok_callback=None, multiple=False):
         """
-        Override the normal Log class so that we can hide the window as we need.
+        Override the normal SVNLog class so that we can hide the window as we need.
         Also, provide a callback for when the OK button is clicked so that we
         can get some desired data.
         """
-        Log.__init__(self, path)
+        SVNLog.__init__(self, path)
+        self.ok_callback = ok_callback
+        self.multiple = multiple
+        
+    def on_destroy(self, widget):
+        pass
+    
+    def on_close_clicked(self, widget, data=None):
+        self.hide()
+        if self.ok_callback is not None:
+            if self.multiple == True:
+                self.ok_callback(self.get_selected_revision_numbers())
+            else:
+                self.ok_callback(self.get_selected_revision_number())
+
+class GitLogDialog(GitLog):
+    def __init__(self, path, ok_callback=None, multiple=False):
+        """
+        Override the normal GitLog class so that we can hide the window as we need.
+        Also, provide a callback for when the OK button is clicked so that we
+        can get some desired data.
+        """
+        GitLog.__init__(self, path)
         self.ok_callback = ok_callback
         self.multiple = multiple
         
@@ -1292,9 +1317,18 @@ classes_map = {
     rabbitvcs.vcs.VCS_GIT: GitLog
 }
 
+dialogs_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNLogDialog,
+    rabbitvcs.vcs.VCS_GIT: GitLogDialog
+}
+
 def log_factory(path):
     guess = rabbitvcs.vcs.guess(path)
     return classes_map[guess["vcs"]](path)
+
+def log_dialog_factory(path, ok_callback=None, multiple=False):
+    guess = rabbitvcs.vcs.guess(path)
+    return dialogs_map[guess["vcs"]](path, ok_callback, multiple)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main

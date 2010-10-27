@@ -25,7 +25,6 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceNonView, InterfaceView
-from rabbitvcs.ui.log import LogDialog
 from rabbitvcs.ui.action import SVNAction, GitAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
