@@ -576,7 +576,7 @@ class GittyupClient:
         
         return branches
 
-    def checkout(self, paths=[], tree_sha=None, commit_sha=None, branch_name=None):
+    def checkout(self, paths=[], revision="HEAD"):
         """
         Checkout a series of paths from a tree or commit.  If no tree or commit
         information is given, it will check out the files from head.  If no
@@ -585,53 +585,17 @@ class GittyupClient:
         @type   paths: list
         @param  paths: A list of files to checkout
         
-        @type   tree_sha: string
-        @param  tree_sha: The sha of a tree to checkout
-
-        @type   commit_sha: string
-        @param  commit_sha: The sha of a commit to checkout
-
-        @type   branch_name: string
-        @param  branch_name: Checkout a branch
+        @type   revision: string
+        @param  revision: The sha or branch to checkout
 
         """
+
+        cmd = ["git", "checkout", revision] + paths
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
         
-        if branch_name:
-            try:
-                commit_sha = self.get_sha1_from_refspec("refs/heads/%s" % branch_name)
-                self.track("refs/heads/%s" % branch_name)
-            except Exception, e:
-                raise NotCommitError(e)
-        
-        tree = None
-        if tree_sha:
-            try:
-                tree = self.repo[tree_sha]
-            except AssertionError:
-                raise NotTreeError(tree_sha)
-        elif commit_sha:
-            try:
-                commit = self.repo[commit_sha]
-                tree = self._get_tree_from_sha1(commit_sha)
-            except AssertionError:
-                raise NotCommitError(commit_sha)
-
-        if not tree:
-            tree = self._get_tree_at_head()
-
-        relative_paths = []
-        for path in paths:
-            relative_paths = self.get_relative_path(path)
-
-        index = self._get_index()
-        for (name, mode, sha) in self.repo.object_store.iter_tree_contents(tree.id):
-            if name in relative_paths or len(paths) == 0:
-                blob = self.repo[sha]
-                absolute_path = self.get_absolute_path(name)
-                self._write_blob_to_file(absolute_path, blob)                
-
-                (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(absolute_path)
-                index[name] = (ctime, mtime, dev, ino, mode, uid, gid, size, blob.id, 0)
     
     def clone(self, host, path, bare=False, origin="origin"):
         """

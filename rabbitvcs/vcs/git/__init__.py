@@ -365,7 +365,7 @@ class Git:
         
         return self.client.branch_list()
         
-    def checkout(self, paths=[], tree_sha=None, commit_sha=None, branch_name=None):
+    def checkout(self, paths=[], revision="HEAD"):
         """
         Checkout a series of paths from a tree or commit.  If no tree or commit
         information is given, it will check out the files from head.  If no
@@ -374,18 +374,12 @@ class Git:
         @type   paths: list
         @param  paths: A list of files to checkout
         
-        @type   tree_sha: string
-        @param  tree_sha: The sha of a tree to checkout
-
-        @type   commit_sha: string
-        @param  commit_sha: The sha of a commit to checkout
-
-        @type   branch_name: string
-        @param  branch_name: Checkout a branch
+        @type   revision: string
+        @param  revision: The sha or branch to checkout
 
         """
         
-        return self.client.checkout(paths, tree_sha, commit_sha, branch_name)
+        return self.client.checkout(paths, revision.primitive())
         
     def clone(self, host, path, bare=False, origin="origin"):
         """

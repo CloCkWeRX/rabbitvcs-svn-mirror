@@ -33,7 +33,7 @@ import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
 import rabbitvcs.util.helper
 import rabbitvcs.vcs
-
+from rabbitvcs.ui.updateto import GitUpdateToRevision
 from rabbitvcs import gettext
 _ = gettext.gettext
 
@@ -207,18 +207,29 @@ class SVNCheckout(Checkout):
         
         self.check_form()
 
+class GitCheckout(GitUpdateToRevision):
+    def __init__(self, path, url, revision):
+        GitUpdateToRevision.__init__(self, path, revision)
+        self.get_widget("Update").set_title(_("Checkout - %s") % path)
+        self.get_widget("options_box").hide()
+
 classes_map = {
-    rabbitvcs.vcs.VCS_SVN: SVNCheckout
+    rabbitvcs.vcs.VCS_SVN: SVNCheckout,
+    rabbitvcs.vcs.VCS_GIT: GitCheckout
 }
 
 def checkout_factory(vcs, path=None, url=None, revision=None):
+    if not vcs:
+        guess = rabbitvcs.vcs.guess(path)
+        vcs = guess["vcs"]
+        
     return classes_map[vcs](path, url, revision)
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT, VCS_OPT_ERROR
+    from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT
     (options, args) = main(
         [REVISION_OPT, VCS_OPT],
-        usage="Usage: rabbitvcs checkout --vcs=svn [url] [path]"
+        usage="Usage: rabbitvcs checkout --vcs=[git|svn] [url] [path]"
     )
     
     # If two arguments are passed:
@@ -237,9 +248,6 @@ if __name__ == "__main__":
         else:
             url = args[0]
 
-    if options.vcs:
-        window = checkout_factory(options.vcs, path=path, url=url, revision=options.revision)
-        window.register_gtk_quit()
-        gtk.main()
-    else:
-        rabbitvcs.ui.dialog.MessageBox(VCS_OPT_ERROR)
+    window = checkout_factory(options.vcs, path=path, url=url, revision=options.revision)
+    window.register_gtk_quit()
+    gtk.main()

@@ -799,11 +799,6 @@ class RevisionSelector:
     Provides a standard way to generate a revision object from the UI.
     
     """
-    OPTIONS = [
-        _("HEAD"),
-        _("Number"),
-        _("Working Copy")
-    ]
 
     def __init__(self, container, client, revision=None, 
             url_combobox=None, url_entry=None, url=None, expand=False,
@@ -831,6 +826,19 @@ class RevisionSelector:
                 be excluded.
 
         """
+        
+        if client.vcs == rabbitvcs.vcs.VCS_GIT:
+            self.OPTIONS = [
+                _("HEAD"),
+                _("Revision")
+            ]
+        elif client.vcs == rabbitvcs.vcs.VCS_SVN:
+            self.OPTIONS = [
+                _("HEAD"),
+                _("Number"),
+                _("Working Copy")
+            ]
+        
         self.client = client
         self.revision = revision
         self.url_combobox = url_combobox
@@ -931,7 +939,10 @@ class RevisionSelector:
         if index == 0:
             return self.client.revision("head")
         elif index == 1:
-            return self.client.revision("number", self.revision_entry.get_text())
+            if self.client.vcs == rabbitvcs.vcs.VCS_SVN:
+                return self.client.revision("number", self.revision_entry.get_text())
+            if self.client.vcs == rabbitvcs.vcs.VCS_GIT:
+                return self.client.revision(self.revision_entry.get_text())
         elif index == 2:
             return self.client.revision("working")
 
