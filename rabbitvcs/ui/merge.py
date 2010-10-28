@@ -362,10 +362,56 @@ class SVNMerge(InterfaceView):
     def on_mergeoptions_prepare(self):
         self.assistant.set_page_complete(self.page, True)
 
+class BranchMerge(InterfaceView):
+    def __init__(self, path, branch1=None, branch2=None):
+        InterfaceView.__init__(self, "branch-merge", "Merge")
+
+        self.path = path
+        self.branch1 = branch1
+        self.branch2 = branch2
+        self.vcs = rabbitvcs.vcs.VCS()
+
+    def on_destroy(self, widget):
+        self.destroy()
+        
+    def on_cancel_clicked(self, widget, data=None):
+        self.close()
+
+class GitMerge(BranchMerge):
+    def __init__(self, path, branch1=None, branch2=None):
+        BranchMerge.__init__(self, path, branch1, branch2)
+        self.git = self.vcs.git(path)
+
+        self.from_branches = rabbitvcs.ui.widget.ComboBox(self.get_widget("from_branches"))
+        self.to_branches = rabbitvcs.ui.widget.ComboBox(self.get_widget("to_branches"))
+        
+        self.branch_list = self.git.branch_list()
+        for item in self.branch_list:
+            self.from_branches.append(item.name)
+            if self.git.is_tracking(item.name):
+                self.from_branches.set_active_from_value(item.name)
+
+        for item in self.branch_list:
+            self.to_branches.append(item.name)
+            
+        self.to_branches.set_active_from_value("master")
+
+    def on_ok_clicked(self, widget, data=None):
+        pass
+
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNMerge, 
+    rabbitvcs.vcs.VCS_GIT: GitMerge
+}
+
+def merge_factory(path):
+    guess = rabbitvcs.vcs.guess(path)
+    return classes_map[guess["vcs"]](path)
+
 if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main(usage="Usage: rabbitvcs merge [path]")
-            
-    window = SVNMerge(paths[0])
+
+    window = merge_factory(paths[0])
     window.register_gtk_quit()
     gtk.main()

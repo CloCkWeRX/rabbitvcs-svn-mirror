@@ -515,6 +515,9 @@ class Git:
         """
         
         return self.client.fetch(host)
+        
+    def merge(self, branch1, branch2="master"):
+        return self.client.merge(branch1, branch2)
 
     def remote_add(self, name, host):
         """
