@@ -238,30 +238,6 @@ class Log(InterfaceView):
         self.is_loading = loading
 
 
-    #
-    # Other helper methods
-    #
-
-    def view_diff_for_path(self, url, latest_revision_number, earliest_revision_number=None, sidebyside=False):
-        from rabbitvcs.ui.diff import diff_factory
-
-        if earliest_revision_number == None:
-            earliest_revision_number = latest_revision_number
-        
-        self.action = vcs_action_factory(
-            self.vcs,
-            notification=False
-        )
-        self.action.append(
-            diff_factory,
-            url, 
-            earliest_revision_number - 1,
-            url, 
-            latest_revision_number,
-            sidebyside=sidebyside
-        )
-        self.action.start()
-
 class SVNLog(Log):
     def __init__(self, path):
         Log.__init__(self, path)
@@ -530,6 +506,26 @@ class SVNLog(Log):
 
         self.get_widget("next").set_sensitive(sensitive)
 
+    def view_diff_for_path(self, url, latest_revision_number, earliest_revision_number=None, sidebyside=False):
+        from rabbitvcs.ui.diff import diff_factory
+
+        if earliest_revision_number == None:
+            earliest_revision_number = latest_revision_number
+        
+        self.action = SVNAction(
+            self.svn,
+            notification=False
+        )
+        self.action.append(
+            diff_factory,
+            url, 
+            earliest_revision_number - 1,
+            url, 
+            latest_revision_number,
+            sidebyside=sidebyside
+        )
+        self.action.start()
+
 class GitLog(Log):
     def __init__(self, path):
         Log.__init__(self, path)
@@ -718,6 +714,9 @@ class GitLog(Log):
             sensitive = False
 
         self.get_widget("next").set_sensitive(sensitive)
+
+    def view_diff_for_path(self, url, latest_revision_number, earliest_revision_number=None, sidebyside=False):
+        pass
 
 class SVNLogDialog(SVNLog):
     def __init__(self, path, ok_callback=None, multiple=False):
