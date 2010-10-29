@@ -399,7 +399,7 @@ class ContextMenuCallbacks:
     def compare_tool_previous_revision(self, widget, data1=None, data2=None):
         guess = self.vcs_client.guess(self.paths[0])
         if guess["vcs"] == rabbitvcs.vcs.VCS_SVN:
-            previous_revision_number = self.vcs_client.get_revision(self.paths[0]) - 1
+            previous_revision_number = self.vcs_client.svn().get_revision(self.paths[0]) - 1
 
             pathrev1 = rabbitvcs.util.helper.create_path_revision_string(self.vcs_client.get_repo_url(self.paths[0]), previous_revision_number)
             pathrev2 = rabbitvcs.util.helper.create_path_revision_string(self.paths[0], "working")
