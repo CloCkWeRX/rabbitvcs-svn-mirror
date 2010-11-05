@@ -50,7 +50,8 @@ def revision_grapher(history):
     """
     Expects a list of revision items like so:
     [
-        {"commit": "...", "parents": ["...", "..."]}
+        item.commit = "..."
+        item.parents = ["...", "..."]
     ]
     
     Output can be put directly into the CellRendererGraph
@@ -60,8 +61,10 @@ def revision_grapher(history):
     last_lines = []
     color = "#d3b9d3"
     for item in history:
-        commit = item["commit"]
-        parents = item["parents"]
+        commit = unicode(item.revision)
+        parents = []
+        for parent in item.parents:
+            parents.append(unicode(parent))
 
         if commit not in revisions:
             revisions.append(commit)
@@ -73,7 +76,7 @@ def revision_grapher(history):
         for parent in parents:
             if parent not in next_revisions:
                 parents_to_add.append(parent)
-        
+
         next_revisions[index:index+1] = parents_to_add
 
         lines = []
@@ -237,6 +240,51 @@ class Log(InterfaceView):
     def set_loading(self, loading):
         self.is_loading = loading
 
+    def show_revisions_table_popup_menu(self, treeview, data):
+        revisions = []
+        for row in self.revisions_table.get_selected_rows():
+            line = {
+                "revision": self.revision_items[row].revision,
+                "author": self.revision_items[row].author,
+                "message": self.revision_items[row].message
+            }
+            try:
+                line["next_revision"] = self.revision_items[row+1].revision
+            except IndexError,e:
+                pass
+
+            try:
+                line["previous_revision"] = self.revision_items[row-1].revision
+            except IndexError,e:
+                pass          
+                      
+            revisions.append(line)
+            
+        LogTopContextMenu(self, data, self.path, revisions).show()
+
+    #
+    # Other helper methods
+    #
+
+    def view_diff_for_path(self, url, latest_revision_number, earliest_revision_number=None, sidebyside=False):
+        from rabbitvcs.ui.diff import diff_factory
+
+        if earliest_revision_number == None:
+            earliest_revision_number = latest_revision_number
+        
+        self.action = vcs_action_factory(
+            self.vcs,
+            notification=False
+        )
+        self.action.append(
+            diff_factory,
+            url, 
+            earliest_revision_number - 1,
+            url, 
+            latest_revision_number,
+            sidebyside=sidebyside
+        )
+        self.action.start()
 
 class SVNLog(Log):
     def __init__(self, path):
@@ -460,26 +508,6 @@ class SVNLog(Log):
             
         LogTopContextMenu(self, data, self.path, revisions).show()
 
-    def show_paths_table_popup_menu(self, treeview, data):
-        revisions = []
-        for row in self.revisions_table.get_selected_rows():
-            revisions.append({
-                "revision": self.svn.revision("number", number=self.revision_items[row].revision.number),
-                "author": self.revision_items[row]["author"],
-                "message": self.revision_items[row]["message"]
-            })
-        
-        # If we don't do this, we actually get the revisions in reverse order
-        # (usually, always?). Don't worry about non-numeric revisions (eg.
-        # HEAD), since we explicitly construct them above with a number
-        revisions.sort(key=lambda item: item["revision"].value)
-        
-        paths = []
-        for row in self.paths_table.get_selected_rows():
-            paths.append(self.paths_table.get_row(row)[1])
-        
-        SVNLogBottomContextMenu(self, data, paths, revisions).show()
-
     def on_previous_clicked(self, widget):
         self.rev_start = self.previous_starts.pop()
         self.load_or_refresh()
@@ -506,32 +534,12 @@ class SVNLog(Log):
 
         self.get_widget("next").set_sensitive(sensitive)
 
-    def view_diff_for_path(self, url, latest_revision_number, earliest_revision_number=None, sidebyside=False):
-        from rabbitvcs.ui.diff import diff_factory
-
-        if earliest_revision_number == None:
-            earliest_revision_number = latest_revision_number
-        
-        self.action = SVNAction(
-            self.svn,
-            notification=False
-        )
-        self.action.append(
-            diff_factory,
-            url, 
-            earliest_revision_number - 1,
-            url, 
-            latest_revision_number,
-            sidebyside=sidebyside
-        )
-        self.action.start()
-
 class GitLog(Log):
     def __init__(self, path):
         Log.__init__(self, path)
         
         self.git = self.vcs.git(path)
-        self.limit = 500
+        self.limit = 50
         
         self.revision_number_column = 1
 
@@ -585,8 +593,8 @@ class GitLog(Log):
         # Make sure the int passed is the order the log call was made
         self.revision_items = self.action.get_result(0)
         
-        self.set_start_revision(self.revision_items[0]["commit"][:7])
-        self.set_end_revision(self.revision_items[-1]["commit"][:7])
+        self.set_start_revision(self.revision_items[0].revision.short())
+        self.set_end_revision(self.revision_items[-1].revision.short())
 
         grapher = revision_grapher(self.revision_items)
         max_columns = 1
@@ -599,21 +607,12 @@ class GitLog(Log):
         self.revisions_table.set_column_width(0, 16*max_columns)
 
         for (item, node, in_lines, out_lines) in grapher:
-            msg = rabbitvcs.util.helper.format_long_text(item["message"], 80)
-            
-            author = _("(no author)")
-            if "committer" in item:
-                author = item["committer"]
-                pos = author.find("<")
-                if pos != -1:
-                    author = author[0:pos-1]
-
-            commit_date = datetime.strptime(item["commit_date"][0:-6], "%a %b %d %H:%M:%S %Y")
+            msg = rabbitvcs.util.helper.format_long_text(item.message, 80)
             self.revisions_table.append([
                 (node, in_lines, out_lines),
-                item["commit"],
-                author,
-                rabbitvcs.util.helper.format_datetime(commit_date),
+                unicode(item.revision),
+                item.author,
+                rabbitvcs.util.helper.format_datetime(item.date),
                 msg
             ])
 
@@ -647,25 +646,23 @@ class GitLog(Log):
             item = self.revision_items[selected_row]
 
             if len(self.revisions_table.get_selected_rows()) == 1:
-                self.message.set_text(item["message"])
+                self.message.set_text(item.message)
             else:
-                indented_message = item["message"].replace("\n","\n\t")
+                indented_message = item.message.replace("\n","\n\t")
                 self.message.append_text(
 					"%s %s:\n\t%s\n" % (REVISION_LABEL,
-                                        item["commit"][:7],
+                                        item.revision.short(),
                                         indented_message))
 
-            if item["changed_paths"]:
-                for subitem in item["changed_paths"]:
+            for subitem in item.changed_paths:
+                
+                if subitem.path not in combined_paths:
+                    combined_paths.append(subitem.path)
                     
-                    if subitem["path"] not in combined_paths:
-                        combined_paths.append(subitem["path"])
-                        
-                        change = "+%s/-%s" % (subitem["additions"], subitem["removals"])
-                        subitems.append([
-                            change,
-                            subitem["path"]
-                        ])
+                    subitems.append([
+                        subitem.action,
+                        subitem.path
+                    ])
 
         subitems.sort(lambda x, y: cmp(x[1],y[1]))
         for subitem in subitems:
@@ -673,23 +670,6 @@ class GitLog(Log):
                 subitem[0],
                 subitem[1]
             ])
-
-    def show_revisions_table_popup_menu(self, treeview, data):
-        revisions = []
-        for row in self.revisions_table.get_selected_rows():
-            line = {
-                "revision": self.git.revision(self.revision_items[row]["commit"]),
-                "author": self.revision_items[row]["author"],
-                "message": self.revision_items[row]["message"]
-            }
-            try:
-                line["next_revision"] = self.git.revision(self.revision_items[row+1]["commit"])
-            except IndexError,e:
-                pass
-                
-            revisions.append(line)
-            
-        LogTopContextMenu(self, data, self.path, revisions).show()
 
     def show_paths_table_popup_menu(self, treeview, data):
         return
@@ -714,9 +694,6 @@ class GitLog(Log):
             sensitive = False
 
         self.get_widget("next").set_sensitive(sensitive)
-
-    def view_diff_for_path(self, url, latest_revision_number, earliest_revision_number=None, sidebyside=False):
-        pass
 
 class SVNLogDialog(SVNLog):
     def __init__(self, path, ok_callback=None, multiple=False):
@@ -856,7 +833,7 @@ class LogTopContextMenuConditions:
 
     def view_diff_previous_revision(self, data=None):
         item = self.revisions[0]["revision"]
-        return (item.value > 1 and len(self.revisions) == 1)
+        return ("previous_revision" in self.revisions[0] and len(self.revisions) == 1)
 
     def view_diff_revisions(self, data=None):
         return (len(self.revisions) > 1)
@@ -866,14 +843,14 @@ class LogTopContextMenuConditions:
 
     def compare_previous_revision(self, data=None):
         item = self.revisions[0]["revision"]
-        return (item.value > 1 and len(self.revisions) == 1)
+        return ("previous_revision" in self.revisions[0] and len(self.revisions) == 1)
 
     def compare_revisions(self, data=None):
         return (len(self.revisions) > 1)
 
     def show_changes_previous_revision(self, data=None):
         item = self.revisions[0]["revision"]
-        return (self.guess["vcs"] == "svn" and item.value > 1 and len(self.revisions) == 1)
+        return (self.guess["vcs"] == "svn" and "previous_revision" in self.revisions[0] and len(self.revisions) == 1)
 
     def show_changes_revisions(self, data=None):
         return (self.guess["vcs"] == "svn" and len(self.revisions) > 1)
@@ -911,12 +888,12 @@ class LogTopContextMenuCallbacks:
         self.revisions = revisions
         
     def view_diff_working_copy(self, widget, data=None):
-        rabbitvcs.util.helper.launch_ui_window("diff", ["%s@%s" % (self.path, self.revisions[0]["revision"].value)])
+        rabbitvcs.util.helper.launch_ui_window("diff", ["%s@%s" % (self.path, unicode(self.revisions[0]["revision"]))])
 
     def view_diff_previous_revision(self, widget, data=None):
         rabbitvcs.util.helper.launch_ui_window("diff", [
-            "%s@%s" % (self.path, self.revisions[0]["revision"].value),
-            "%s@%s" % (self.path, self.revisions[0]["next_revision"].value)
+            "%s@%s" % (self.path, unicode(self.revisions[0]["revision"])),
+            "%s@%s" % (self.path, unicode(self.revisions[0]["next_revision"]))
         ])
 
     def view_diff_revisions(self, widget, data=None):
@@ -926,7 +903,7 @@ class LogTopContextMenuCallbacks:
     
         rabbitvcs.util.helper.launch_ui_window("diff", [
             "%s@%s" % (path_older, self.revisions[1]["revision"].value),
-            "%s@%s" % (self.path, self.revisions[0]["revision"].value)
+            "%s@%s" % (self.path, unicode(self.revisions[0]["revision"]))
         ])
 
     def compare_working_copy(self, widget, data=None):
@@ -935,15 +912,15 @@ class LogTopContextMenuCallbacks:
             path_older = self.vcs.svn.get_repo_url(self.path)
     
         rabbitvcs.util.helper.launch_ui_window("diff", [
-            "%s@%s" % (path_older, self.revisions[0]["revision"].value),
+            "%s@%s" % (path_older, unicode(self.revisions[0]["revision"])),
             "%s" % (self.path)
         ])
 
     def compare_previous_revision(self, widget, data=None):
         rabbitvcs.util.helper.launch_ui_window("diff", [
             "-s",
-            "%s@%s" % (self.path, self.revisions[0]["revision"].value),
-            "%s@%s" % (self.path, self.revisions[0]["next_revision"].value)
+            "%s@%s" % (self.path, unicode(self.revisions[0]["revision"])),
+            "%s@%s" % (self.path, unicode(self.revisions[0]["next_revision"]))
         ])
 
     def compare_revisions(self, widget, data=None):
@@ -954,12 +931,12 @@ class LogTopContextMenuCallbacks:
         rabbitvcs.util.helper.launch_ui_window("diff", [
             "-s",
             "%s@%s" % (path_older, self.revisions[1]["revision"].value),
-            "%s@%s" % (self.path, self.revisions[0]["revision"].value)
+            "%s@%s" % (self.path, unicode(self.revisions[0]["revision"]))
         ])
 
     def show_changes_previous_revision(self, widget, data=None):
         from rabbitvcs.ui.changes import Changes
-        rev_first = self.revisions[0]["revision"].value
+        rev_first = unicode(self.revisions[0]["revision"])
         rev_last = rev_first - 1
         path = self.svn.get_repo_url(self.path)
 
@@ -974,7 +951,7 @@ class LogTopContextMenuCallbacks:
 
     def show_changes_revisions(self, widget, data=None):
         from rabbitvcs.ui.changes import Changes
-        rev_first = self.revisions[0]["revision"].value
+        rev_first = unicode(self.revisions[0]["revision"])
         rev_last = self.revisions[-1]["revision"].value
         path = self.svn.get_repo_url(self.path)
 
@@ -997,7 +974,7 @@ class LogTopContextMenuCallbacks:
         action.append(
             self.svn.update, 
             self.path,
-            revision=self.svn.revision("number", self.revisions[0]["revision"].value),
+            revision=self.svn.revision("number", unicode(self.revisions[0]["revision"])),
             recurse=True,
             ignore_externals=False
         )
@@ -1008,15 +985,15 @@ class LogTopContextMenuCallbacks:
     def checkout(self, widget, data=None):
         from rabbitvcs.ui.checkout import Checkout
         url = self.svn.get_repo_url(self.path)
-        Checkout(url=url, revision=self.revisions[0]["revision"].value).show()
+        Checkout(url=url, revision=unicode(self.revisions[0]["revision"])).show()
 
     def branch_tag(self, widget, data=None):
         from rabbitvcs.ui.branch import Branch
-        Branch(self.path, revision=self.revisions[0]["revision"].value).show()
+        Branch(self.path, revision=unicode(self.revisions[0]["revision"])).show()
 
     def export(self, widget, data=None):
         from rabbitvcs.ui.export import Export
-        Export(self.path, revision=self.revisions[0]["revision"].value).show()
+        Export(self.path, revision=unicode(self.revisions[0]["revision"])).show()
 
     def edit_author(self, widget, data=None):
         message = ""
@@ -1045,7 +1022,7 @@ class LogTopContextMenuCallbacks:
     def edit_revision_properties(self, widget, data=None):
         from rabbitvcs.ui.revprops import SVNRevisionProperties
         url = self.svn.get_repo_url(self.path)
-        SVNRevisionProperties(url, self.revisions[0]["revision"].value)
+        SVNRevisionProperties(url, unicode(self.revisions[0]["revision"]))
 
 class LogTopContextMenu:
     """
@@ -1128,7 +1105,7 @@ class SVNLogBottomContextMenuConditions:
 
     def view_diff_previous_revision(self, data=None):
         item = self.revisions[0]["revision"]
-        return (item.value > 1 and len(self.revisions) == 1)
+        return ("previous_revision" in self.revisions[0] and len(self.revisions) == 1)
 
     def view_diff_revisions(self, data=None):
         return (len(self.paths) == 1 and len(self.revisions) > 1)
@@ -1138,14 +1115,14 @@ class SVNLogBottomContextMenuConditions:
 
     def compare_previous_revision(self, data=None):
         item = self.revisions[0]["revision"]
-        return (item.value > 1 and len(self.revisions) == 1)
+        return ("previous_revision" in self.revisions[0] and len(self.revisions) == 1)
 
     def compare_revisions(self, data=None):
         return (len(self.paths) == 1 and len(self.revisions) > 1)
 
     def show_changes_previous_revision(self, data=None):
         item = self.revisions[0]["revision"]
-        return (item.value > 1 and len(self.revisions) == 1)
+        return ("previous_revision" in self.revisions[0] and len(self.revisions) == 1)
 
     def show_changes_revisions(self, data=None):
         return (len(self.paths) == 1 and len(self.revisions) > 1)
@@ -1168,13 +1145,13 @@ class SVNLogBottomContextMenuCallbacks:
         self.revisions = revisions
 
     def view_diff_previous_revision(self, widget, data=None):
-        rev = self.revisions[0]["revision"].value
+        rev = unicode(self.revisions[0]["revision"])
         path_item = self.paths[0]
         url = self.caller.root_url + path_item
         self.caller.view_diff_for_path(url, rev)
 
     def view_diff_revisions(self, widget, data=None):
-        rev_first = self.revisions[0]["revision"].value - 1
+        rev_first = unicode(self.revisions[0]["revision"]) - 1
         rev_last = self.revisions[-1]["revision"].value
         path_item = self.paths[0]
         url = self.caller.root_url + path_item
@@ -1182,13 +1159,13 @@ class SVNLogBottomContextMenuCallbacks:
                                        earliest_revision_number=rev_first)
 
     def compare_previous_revision(self, widget, data=None):
-        rev = self.revisions[0]["revision"].value
+        rev = unicode(self.revisions[0]["revision"])
         path_item = self.paths[0]
         url = self.caller.root_url + path_item
         self.caller.view_diff_for_path(url, rev, sidebyside=True)
     
     def compare_revisions(self, widget, data=None):
-        earliest_rev = self.revisions[0]["revision"].value
+        earliest_rev = unicode(self.revisions[0]["revision"])
         latest_rev = self.revisions[-1]["revision"].value
         path_item = self.paths[0]
         url = self.caller.root_url + path_item
@@ -1198,7 +1175,7 @@ class SVNLogBottomContextMenuCallbacks:
                                         earliest_revision_number=earliest_rev)
 
     def show_changes_previous_revision(self, widget, data=None):
-        rev_first = self.revisions[0]["revision"].value - 1
+        rev_first = unicode(self.revisions[0]["revision"]) - 1
         rev_last = rev_first - 1
         path_item = self.paths[0]
         url = self.caller.root_url + path_item
@@ -1212,7 +1189,7 @@ class SVNLogBottomContextMenuCallbacks:
         )
     
     def show_changes_revisions(self, widget, data=None):
-        rev_first = self.revisions[0]["revision"].value - 1
+        rev_first = unicode(self.revisions[0]["revision"]) - 1
         rev_last = self.revisions[-1]["revision"].value
         path_item = self.paths[0]
         url = self.caller.root_url + path_item
@@ -1235,7 +1212,7 @@ class SVNLogBottomContextMenuCallbacks:
         dests = []
         for path in self.paths:
             url = self.caller.root_url + path
-            dest = "/tmp/rabbitvcs-" + str(self.revisions[0]["revision"].value) + "-" + os.path.basename(path)
+            dest = "/tmp/rabbitvcs-" + str(unicode(self.revisions[0]["revision"])) + "-" + os.path.basename(path)
             self.action.append(
                 self.svn.export,
                 url,
@@ -1253,7 +1230,7 @@ class SVNLogBottomContextMenuCallbacks:
         url = self.caller.root_url + self.paths[0]
 
         from rabbitvcs.ui.annotate import Annotate
-        Annotate(url, self.revisions[0]["revision"].value)
+        Annotate(url, unicode(self.revisions[0]["revision"]))
 
 class SVNLogBottomContextMenu:
     """

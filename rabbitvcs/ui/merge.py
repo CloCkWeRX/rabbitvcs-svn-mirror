@@ -397,7 +397,22 @@ class GitMerge(BranchMerge):
         self.to_branches.set_active_from_value("master")
 
     def on_ok_clicked(self, widget, data=None):
-        pass
+        from_branch = self.from_branches.get_active_text()
+        to_branch = self.to_branches.get_active_text()
+        
+        self.action = rabbitvcs.ui.action.GitAction(
+            self.git,
+            register_gtk_quit=self.gtk_quit_is_set()
+        )
+        
+        self.action.append(
+            self.git.merge,
+            from_branch,
+            to_branch
+        )
+        
+        self.action.append(self.action.finish)
+        self.action.start()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNMerge, 

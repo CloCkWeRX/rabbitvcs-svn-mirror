@@ -840,11 +840,6 @@ class GittyupClient:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
-            
-        print "stdout"
-        print stdout
-        print "stderr"
-        print stderr
     
     def remote_add(self, name, host):
         """

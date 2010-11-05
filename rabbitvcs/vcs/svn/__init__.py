@@ -32,6 +32,7 @@ import pysvn
 
 import rabbitvcs.vcs
 import rabbitvcs.vcs.status
+import rabbitvcs.vcs.log
 from rabbitvcs.util.log import Log
 
 log = Log("rabbitvcs.vcs.svn")
@@ -170,6 +171,9 @@ class Revision:
             return "r" + unicode(self.value)
         else:
             return self.kind
+
+    def short(self):
+        return self.__unicode__()
 
     def __str__(self):
         return self.__unicode__()
@@ -1154,9 +1158,42 @@ class SVN:
 
         """
 
-        return self.client.log(url_or_path, revision_start.primitive(),
+        log = self.client.log(url_or_path, revision_start.primitive(),
             revision_end.primitive(), discover_changed_paths,
             strict_node_history, limit)
+
+        returner = []
+        for item in log:
+            revision = Revision(pysvn.opt_revision_kind.number, item.revision.number)
+            date = datetime.fromtimestamp(item.date).strftime(DATETIME_FORMAT)
+            
+            author = _("(no author)")
+            if hasattr(item, "author"):
+                author = item["author"]        
+        
+            changed_files = []
+            for changed_file in item.changed_paths:
+                copyfrom_rev = ""
+                if hasattr(changed_file.copyfrom_revision, "number"):
+                    copyfrom_rev = Revision(pysvn.opt_revision_kind.number, changed_file.copyfrom_revision.number)
+            
+                changed_files.append(rabbitvcs.vcs.log.LogChangedFile(
+                    changed_file.path,
+                    changed_file.action,
+                    changed_file.copy_from_path,
+                    copyfrom_rev                    
+                ))
+        
+            returner.append(rabbitvcs.vcs.log.Log(
+                date,
+                revision,
+                author,
+                item["message"],
+                changed_files,
+                None
+            ))
+        
+        return returner
 
     def export(self, src_url_or_path, dest_path, revision=Revision("head"),
             recurse=True, ignore_externals=False, force=False, native_eol=None):

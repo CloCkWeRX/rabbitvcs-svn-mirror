@@ -407,6 +407,17 @@ def launch_diff_tool(path1, path2=None):
         rhs
     )
     
+def launch_merge_tool(path):
+    diff = get_diff_tool()
+    
+    if diff["path"] == "":
+        return
+    
+    if not os.path.exists(diff["path"]):
+        return
+    
+    os.popen("%s %s" % (diff["path"], path))
+    
 def get_file_extension(path):
     """
     Wrapper that retrieves a file path's extension.

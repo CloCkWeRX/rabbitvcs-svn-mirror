@@ -25,6 +25,7 @@ Concrete VCS implementation for Git functionality.
 """
 
 import os.path
+from datetime import datetime
 
 from gittyup.client import GittyupClient
 import gittyup.objects
@@ -33,6 +34,7 @@ from rabbitvcs.util.helper import abspaths
 
 import rabbitvcs.vcs
 import rabbitvcs.vcs.status
+import rabbitvcs.vcs.log
 from rabbitvcs.util.log import Log
 
 log = Log("rabbitvcs.vcs.git")
@@ -58,6 +60,12 @@ class Revision:
     def __unicode__(self):
         if self.value:
             return unicode(self.value)
+        else:
+            return self.kind
+            
+    def short(self):
+        if self.value:
+            return unicode(self.value)[0:7]
         else:
             return self.kind
 
@@ -657,7 +665,44 @@ class Git:
         
         """
         
-        return self.client.log(path, skip, limit)
+        log = self.client.log(path, skip, limit)
+        
+        returner = []
+        for item in log:
+            revision = self.revision(item["commit"])
+            date = datetime.strptime(item["commit_date"][0:-6], "%a %b %d %H:%M:%S %Y")
+            
+            author = _("(no author)")
+            if "committer" in item:
+                author = item["committer"]
+                pos = author.find("<")
+                if pos != -1:
+                    author = author[0:pos-1]
+            
+            changed_paths = []
+            for changed_path in item["changed_paths"]:
+                action = "+%s/-%s" % (changed_path["additions"], changed_path["removals"])
+            
+                changed_paths.append(rabbitvcs.vcs.log.LogChangedPath(
+                    changed_path["path"],
+                    action,
+                    "", ""
+                ))
+            
+            parents = []
+            for parent in item["parents"]:
+                parents.append(self.revision(parent))
+            
+            returner.append(rabbitvcs.vcs.log.Log(
+                date,
+                revision,
+                author,
+                item["message"],
+                changed_paths,
+                parents
+            ))
+            
+        return returner
     
     def annotate(self, path, revision_obj=Revision("head")):
         """

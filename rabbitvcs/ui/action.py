@@ -679,7 +679,9 @@ class GitAction(VCSAction):
 
     def notify(self, data):
         if self.has_notifier:
-            self.notification.append(["", data, ""])
+            if data:
+                self.conflict_filter(data)
+                self.notification.append(["", data, ""])
 
     def get_user(self):
         gtk.gdk.threads_enter()
@@ -688,6 +690,12 @@ class GitAction(VCSAction):
         gtk.gdk.threads_leave()
 
         return result
+
+    def conflict_filter(self, data):
+        print "conflict_filter",data
+        if str(data).startswith("ERROR: content conflict in "):
+            path = data[27:]
+            rabbitvcs.util.helper.launch_merge_tool(path)
 
 def vcs_action_factory(client, register_gtk_quit=False, notification=True,
         run_in_thread=True):
