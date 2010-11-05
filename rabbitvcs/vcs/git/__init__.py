@@ -129,7 +129,7 @@ class Git:
         self.config = self.client.config
 
     def get_repository(self):
-        return self.client.get_repository(path)
+        return self.client.get_repository()
 
     def find_repository_path(self, path):
         return self.client.find_repository_path(path)

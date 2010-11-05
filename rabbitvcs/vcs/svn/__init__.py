@@ -27,12 +27,14 @@ import subprocess
 import re
 import os.path
 from os.path import isdir, isfile, dirname, islink, realpath
+from datetime import datetime
 
 import pysvn
 
 import rabbitvcs.vcs
 import rabbitvcs.vcs.status
 import rabbitvcs.vcs.log
+from rabbitvcs.util.helper import DATETIME_FORMAT
 from rabbitvcs.util.log import Log
 
 log = Log("rabbitvcs.vcs.svn")
@@ -152,7 +154,7 @@ class Revision:
     }
 
     def __init__(self, kind, value=None):
-        self.kind = kind.lower()
+        self.kind = unicode(kind).lower()
         self.value = value
         self.is_revision_object = True
 
@@ -164,6 +166,7 @@ class Revision:
             else:
                 self.__revision = pysvn.Revision(self.__revision_kind)
         except Exception, e:
+            print "error"
             log.exception(e)
 
     def __unicode__(self):
@@ -1165,23 +1168,27 @@ class SVN:
         returner = []
         for item in log:
             revision = Revision(pysvn.opt_revision_kind.number, item.revision.number)
-            date = datetime.fromtimestamp(item.date).strftime(DATETIME_FORMAT)
+            date = datetime.fromtimestamp(item.date)
             
             author = _("(no author)")
             if hasattr(item, "author"):
                 author = item["author"]        
         
-            changed_files = []
-            for changed_file in item.changed_paths:
-                copyfrom_rev = ""
-                if hasattr(changed_file.copyfrom_revision, "number"):
-                    copyfrom_rev = Revision(pysvn.opt_revision_kind.number, changed_file.copyfrom_revision.number)
+            changed_paths = []
+            for changed_path in item.changed_paths:
+                copy_from_rev = ""
+                if hasattr(changed_path.copyfrom_revision, "number"):
+                    copy_from_rev = self.revision("number", changed_path.copyfrom_revision.number)
             
-                changed_files.append(rabbitvcs.vcs.log.LogChangedFile(
-                    changed_file.path,
-                    changed_file.action,
-                    changed_file.copy_from_path,
-                    copyfrom_rev                    
+                copy_from_path = ""
+                if hasattr(changed_path, "copy_from_path"):
+                    copy_from_path = changed_path.copy_from_path
+                    
+                changed_paths.append(rabbitvcs.vcs.log.LogChangedPath(
+                    changed_path.path,
+                    changed_path.action,
+                    copy_from_path,
+                    copy_from_rev                    
                 ))
         
             returner.append(rabbitvcs.vcs.log.Log(
@@ -1189,7 +1196,7 @@ class SVN:
                 revision,
                 author,
                 item["message"],
-                changed_files,
+                changed_paths,
                 None
             ))
         
