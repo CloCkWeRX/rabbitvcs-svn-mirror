@@ -171,7 +171,7 @@ class Revision:
 
     def __unicode__(self):
         if self.value:
-            return "r" + unicode(self.value)
+            return unicode(self.value)
         else:
             return self.kind
 
