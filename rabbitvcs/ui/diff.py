@@ -153,7 +153,7 @@ class SVNDiff(Diff):
             )
             action.stop_loader()
     
-        if os.path.exists(self.path2) and self.revision2.kind != "base":
+        if os.path.exists(self.path2) and self.path2 != self.path1 and self.revision2.kind != "base":
             dest2 = self.path2
         else:
             dest2 = self._build_export_path(2, self.revision2, self.path2)
