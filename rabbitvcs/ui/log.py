@@ -204,6 +204,34 @@ class Log(InterfaceView):
         if data is not None and data.button == 3:
             self.show_paths_table_popup_menu(treeview, data)
     
+    def show_paths_table_popup_menu(self, treeview, data):
+        revisions = []
+        for row in self.revisions_table.get_selected_rows():
+            line = {
+                "revision": self.revision_items[row].revision,
+                "author": self.revision_items[row].author,
+                "message": self.revision_items[row].message
+            }
+            try:
+                line["next_revision"] = self.revision_items[row+1].revision
+            except IndexError,e:
+                pass
+
+            try:
+                line["previous_revision"] = self.revision_items[row-1].revision
+            except IndexError,e:
+                pass          
+                      
+            revisions.append(line)
+        
+        revisions.reverse()
+        
+        paths = []
+        for row in self.paths_table.get_selected_rows():
+            paths.append(self.paths_table.get_row(row)[1])
+        
+        LogBottomContextMenu(self, data, paths, revisions).show()
+    
     #
     # Helper methods
     #
@@ -281,7 +309,7 @@ class Log(InterfaceView):
         
         if sidebyside:
             options += ["-s"]
-        print options
+
         rabbitvcs.util.helper.launch_ui_window("diff", options)
 
 class SVNLog(Log):
@@ -645,9 +673,6 @@ class GitLog(Log):
                 subitem[0],
                 subitem[1]
             ])
-
-    def show_paths_table_popup_menu(self, treeview, data):
-        return
 
     def on_previous_clicked(self, widget):
         self.start_point -= self.limit
