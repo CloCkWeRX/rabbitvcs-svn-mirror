@@ -175,7 +175,7 @@ class SVNCheckout(Checkout):
         self.action.append(rabbitvcs.util.helper.save_repository_path, url)
         self.action.append(
             self.svn.checkout,
-            rabbitvcs.lib.helper.quote_url(url),
+            rabbitvcs.util.helper.quote_url(url),
             path,
             recurse=recursive,
             revision=revision,
@@ -222,7 +222,10 @@ def checkout_factory(vcs, path=None, url=None, revision=None):
     if not vcs:
         guess = rabbitvcs.vcs.guess(path)
         vcs = guess["vcs"]
-        
+    
+    if vcs == rabbitvcs.vcs.VCS_DUMMY:
+        return SVNCheckout(path, url, revision)
+    
     return classes_map[vcs](path, url, revision)
 
 if __name__ == "__main__":
