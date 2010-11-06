@@ -63,6 +63,7 @@ class FunctionQueue:
         self.queue = []
         self.cancel = False
         self._exception = None
+        self.position = 0
     
     def cancel_queue(self):
         self.cancel = True
@@ -83,6 +84,23 @@ class FunctionQueue:
         """
         
         self.queue.append(Function(func, *args, **kwargs))
+    
+    def insert(self, position, func, *args, **kwargs):
+        """
+        Insert a Function object into the FunctionQueue
+        
+        @type   func: def
+        @param  func: A method call
+        
+        @type   *args: list
+        @param  *args: A list of arguments
+        
+        @type   **kwargs: list
+        @param  **kwargs: A list of keyword arguments
+        
+        """
+        
+        self.queue.insert(position, Function(func, *args, **kwargs))
     
     def set_exception_callback(self, func):
         self._exception = Function(func)
@@ -105,6 +123,11 @@ class FunctionQueue:
                     self._exception.set_args(e)
                     self._exception.call()
                 break
+            
+            self.position += 1
+    
+    def get_position(self):
+        return self.position
     
     def get_result(self, index):
         """

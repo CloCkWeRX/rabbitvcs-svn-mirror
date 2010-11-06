@@ -23,6 +23,9 @@
 from __future__ import division
 import threading
 
+from os.path import basename
+
+import shutil
 import pygtk
 import gobject
 import gtk
@@ -638,6 +641,8 @@ class SVNAction(VCSAction):
         """
 
         if self.has_notifier:
+            self.conflict_filter(data)
+        
             if self.pbar_ticks is not None:
                 self.pbar_ticks_current += 1
                 frac = self.pbar_ticks_current / self.pbar_ticks
@@ -663,6 +668,22 @@ class SVNAction(VCSAction):
                     data["path"],
                     data["mime_type"]
                 ])
+
+    def conflict_filter(self, data):
+        if "content_state" in data and str(data["content_state"]) == "conflicted":
+            position = self.queue.get_position()
+            self.queue.insert(position+1, self.resolve_conflict, data)
+
+    def resolve_conflict(self, data):
+        filename = basename(data["path"])
+        tmppath = "/tmp/%s.head" % filename
+        self.client.export(data["path"], tmppath)
+        
+        mine = "%s.mine" % data["path"]
+        shutil.copyfile(mine, data["path"])
+        
+        rabbitvcs.util.helper.launch_merge_tool(data["path"], tmppath)
+        self.client.resolve(data["path"])
 
 class GitAction(VCSAction):
     def __init__(self, client, register_gtk_quit=False, notification=True,
