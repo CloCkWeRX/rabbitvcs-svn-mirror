@@ -460,3 +460,32 @@ class NameEmailPrompt(InterfaceView):
             return (name, email)
         else:
             return (None, None)
+            
+class ConflictDecision(InterfaceView):
+    """
+    Provides a dialog to make conflict decisions with.  User can accept mine, 
+    accept theirs, or merge manually.
+    
+    """
+    
+    def __init__(self, filename=""):
+            
+        InterfaceView.__init__(self, GLADE, "ConflictDecision")
+        self.get_widget("filename").set_text(filename)
+        
+    def run(self):
+        """
+        Returns three possible values:
+        
+            - -1  Cancel
+            - 0   Accept Mine
+            - 1   Accept Theirs
+            - 2   Merge Manually
+            
+        """
+        
+        self.dialog = self.get_widget("ConflictDecision")
+        result = self.dialog.run()
+        self.dialog.destroy()
+        return result
+
