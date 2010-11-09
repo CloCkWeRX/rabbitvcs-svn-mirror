@@ -644,7 +644,7 @@ class Git:
         return self.client.tag_list()
 
 
-    def log(self, path=None, skip=0, limit=None):
+    def log(self, path=None, skip=0, limit=None, refspec=""):
         """
         Returns a revision history list
         
@@ -661,11 +661,14 @@ class Git:
         @type   limit   int
         @param  limit   If given, returns a limited number of commits
         
+        @type   refspec string
+        @param  refspec Return commits in this refspec only
+        
         @returns    A list of commits
         
         """
         
-        log = self.client.log(path, skip, limit)
+        log = self.client.log(path, skip, limit, refspec)
         
         returner = []
         for item in log:

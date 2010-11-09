@@ -6,6 +6,7 @@
     <property name="visible">True</property>
     <property name="title" translatable="yes">Push</property>
     <property name="window_position">center-always</property>
+    <property name="icon_name">rabbitvcs</property>
     <signal name="destroy" handler="on_destroy"/>
     <child>
       <widget class="GtkVBox" id="vbox1">

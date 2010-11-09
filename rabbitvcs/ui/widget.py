@@ -1034,7 +1034,7 @@ class GitRepositorySelector:
 
         tmp_repos = []
         for item in self.git.remote_list():
-            tmp_repos.append(item["remote"])
+            tmp_repos.append(item["name"])
         self.repository_opt = ComboBox(gtk.ComboBox(), tmp_repos)
         self.repository_opt.set_active(0)
         self.repository_opt.cb.connect("changed", self.__repository_changed)
