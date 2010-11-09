@@ -80,7 +80,7 @@ class GitPush(Push):
             }
         )
         
-        self.local_log = self.git.log("HEAD", limit=10)        
+        self.local_log = self.git.log(refspec="HEAD", limit=10)        
         self.load_log()
 
     def on_ok_clicked(self, widget, data=None):
@@ -104,18 +104,21 @@ class GitPush(Push):
         repository = self.repository_selector.repository_opt.get_active_text()
         branch = self.repository_selector.branch_opt.get_active_text()
         
+        if not repository or not branch:
+            self.get_widget("ok").set_sensitive(False)
+            return
+            
         refspec = "refs/remotes/%s/%s" % (repository, branch)
-        remote_log = self.git.log(refspec, limit=10)
+        remote_log = self.git.log(refspec=refspec, limit=10)
         
         has_commits = False
         
         for item in self.local_log:
             try:
                 remote_log_item = remote_log[0]
-
-                if remote_log_item.sha != item.sha:
+                if unicode(remote_log_item.revision) != unicode(item.revision):
                     self.log_table.append([
-                        rabbitvcs.util.helper.format_datetime(datetime.fromtimestamp(item.commit_time)),
+                        rabbitvcs.util.helper.format_datetime(item.date),
                         rabbitvcs.util.helper.format_long_text(item.message.rstrip("\n"))
                     ])
                     has_commits = True
