@@ -373,7 +373,7 @@ class Git:
         
         return self.client.branch_list()
         
-    def checkout(self, paths=[], revision="HEAD"):
+    def checkout(self, paths=[], revision=Revision("HEAD")):
         """
         Checkout a series of paths from a tree or commit.  If no tree or commit
         information is given, it will check out the files from head.  If no
@@ -382,8 +382,8 @@ class Git:
         @type   paths: list
         @param  paths: A list of files to checkout
         
-        @type   revision: string
-        @param  revision: The sha or branch to checkout
+        @type   revision: git.Revision
+        @param  revision: The revision object or branch to checkout
 
         """
         

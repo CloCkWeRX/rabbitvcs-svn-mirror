@@ -127,8 +127,22 @@ class GitUpdateToRevision(UpdateToRevision):
             revision_changed_callback=self.on_revision_changed
         )
 
+        self.branch_selector = rabbitvcs.ui.widget.GitBranchSelector(
+            self.get_widget("branch_container"),
+            self.git,
+            changed_callback=self.on_branch_changed
+        )
+    
+    def on_branch_changed(self, data):
+        pass
+
     def on_ok_clicked(self, widget):
         revision = self.revision_selector.get_revision_object()
+        branch = self.git.revision(self.branch_selector.get_branch())
+
+        ref = revision
+        if branch:
+            ref = branch
 
         self.action = rabbitvcs.ui.action.GitAction(
             self.git,
@@ -140,7 +154,7 @@ class GitUpdateToRevision(UpdateToRevision):
         self.action.append(
             self.git.checkout,
             [self.path],
-            revision
+            ref
         )
         self.action.append(self.action.set_status, _("Completed Checkout"))
         self.action.append(self.action.finish)

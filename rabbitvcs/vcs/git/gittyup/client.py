@@ -590,7 +590,11 @@ class GittyupClient:
 
         """
 
+        if len(paths) == 1 and paths[0] == self.repo.path:
+            paths = []
+
         cmd = ["git", "checkout", revision] + paths
+
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
         except GittyupCommandError, e:
