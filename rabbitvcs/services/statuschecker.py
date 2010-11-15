@@ -23,6 +23,8 @@ to work, or you need to prototype things.
 import rabbitvcs.vcs
 import rabbitvcs.vcs.status
 
+import simplejson
+
 from rabbitvcs import gettext
 _ = gettext.gettext
 
@@ -39,12 +41,19 @@ class StatusChecker:
     def __init__(self):
         """ Initialises status checker. Obviously. """
         self.vcs_client = rabbitvcs.vcs.create_vcs_instance()
+        self.conditions_dict_cache = {}
 
     def check_status(self, path, recurse, summary, *args, **kwargs):
         """ Performs a status check, blocking until the check is done.
         """
         path_status = self.vcs_client.status(path, summary)
         return path_status
+    
+    def generate_menu_conditions(self, paths, invalidate=False):
+        from rabbitvcs.util.contextmenu import MainContextMenuConditions
+        
+        conditions = MainContextMenuConditions(self.vcs_client, paths)
+        return conditions.path_dict
     
     def extra_info(self):
         return None

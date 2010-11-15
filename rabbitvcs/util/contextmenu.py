@@ -1129,7 +1129,6 @@ class MainContextMenuConditions(ContextMenuConditions):
 
         self.vcs_client = vcs_client
         self.paths = paths
-        self.status_checker = StatusChecker()
         self.statuses = {}
         
         self.generate_statuses(paths)
@@ -1140,7 +1139,7 @@ class MainContextMenuConditions(ContextMenuConditions):
         self.statuses = {}
         for path in paths:
             # FIXME: possibly this should be a checker, not a cache?
-            status = self.status_checker.check_status(path, recurse=True)
+            status = self.vcs_client.status(path)
             self.statuses.update({status.path: status})
 
         self.text_statuses = [self.statuses[key].content for key in self.statuses.keys()]

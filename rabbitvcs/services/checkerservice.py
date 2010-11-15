@@ -184,6 +184,15 @@ class StatusCheckerService(dbus.service.Object):
         
         return self.encoder.encode(status)
 
+    @dbus.service.method(INTERFACE, in_signature='as', out_signature='s')
+    def GenerateMenuConditions(self, paths):
+        upaths = []
+        for path in paths:
+            upaths.append(unicode(path))
+    
+        path_dict = self.status_checker.generate_menu_conditions(upaths)
+        return simplejson.dumps(path_dict)
+
     @dbus.service.method(INTERFACE)
     def Quit(self):
         """ Quits the service, performing any necessary cleanup operations.
@@ -316,6 +325,39 @@ class StatusCheckerStub:
         else:
             return self.check_status_now(path, recurse, invalidate, summary)
 
+    def generate_menu_conditions(self, provider, base_dir, paths, callback):
+    
+        def real_reply_handler(json):
+            # Note that this a closure referring to the outer functions callback
+            # parameter
+            path_dict = simplejson.loads(json)
+            callback(provider, base_dir, paths, path_dict)
+        
+        def reply_handler(*args, **kwargs):
+            # The callback should be performed as a low priority task, so we
+            # keep Nautilus as responsive as possible.
+            idle_add(real_reply_handler, *args, **kwargs)
+        
+        def error_handler(dbus_ex):
+            log.exception(dbus_ex)
+            self._connect_to_checker()
+            callback(provider, base_dir, paths, {})
+        
+        try:
+            self.status_checker.GenerateMenuConditions(paths,
+                                            dbus_interface=INTERFACE,
+                                            timeout=TIMEOUT,
+                                            reply_handler=reply_handler,
+                                            error_handler=error_handler)
+        except dbus.DBusException, ex:
+            log.exception(ex)
+            callback(provider, base_dir, paths, {})
+            # Try to reconnect
+            self._connect_to_checker()
+
+    def generate_menu_conditions_async(self, provider, base_dir, paths, callback):
+        idle_add(self.generate_menu_conditions, provider, base_dir, paths, callback)
+        return {}
 
 def start():
     """ Starts the checker service, via the utility method in "service.py". """
