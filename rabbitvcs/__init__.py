@@ -19,10 +19,16 @@
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
-
+    
 import os
 import gettext as _gettext
 from locale import getdefaultlocale
+
+try:
+    import mercurial.demandimport
+    mercurial.demandimport.disable()
+except Exception, e:
+    pass
 
 version = "0.13"
 APP_NAME = "RabbitVCS"
@@ -44,7 +50,6 @@ _gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
 _gettext.textdomain(APP_NAME)
 
 gettext = _gettext.translation(APP_NAME, LOCALE_DIR, languages=langs, fallback=True)
-
 
 def package_name():
     """
