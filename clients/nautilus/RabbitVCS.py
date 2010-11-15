@@ -118,7 +118,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
     statuses_from_callback = []
 
     def __init__(self):
-        
+        print "Init rabbitvcs"
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = VCS()
 
@@ -319,7 +319,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
 
         if len(paths) == 0: return []
         
-        log.debug("get_file_items() called")
+        log.debug("get_file_items_full() called")
 
         paths_str = "-".join(paths)
         
@@ -341,6 +341,20 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         print "Cache miss",paths_str
             
         return ()
+
+    def get_file_items(self, window, items):
+        paths = []
+        for item in items:
+            if self.valid_uri(item.get_uri()):
+                path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+                paths.append(path)
+                self.nautilusVFSFile_table[path] = item
+
+        if len(paths) == 0: return []
+        
+        log.debug("get_file_items() called")
+        
+        return NautilusMainContextMenu(self, window.get_data("base_dir"), paths).get_menu()
 
     def update_file_items(self, provider, base_dir, paths, conditions_dict):
         print "update_file_items"
@@ -388,7 +402,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
         self.nautilusVFSFile_table[path] = item
 
-        log.debug("get_background_items() called")
+        log.debug("get_background_items_full() called")
 
         conditions_dict = None
         if path in self.items_cache:
@@ -409,6 +423,17 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
                     
         print "Cache miss",path
         return ()
+
+    def get_background_items(self, window, item):
+        if not self.valid_uri(item.get_uri()): return
+        path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+        self.nautilusVFSFile_table[path] = item
+
+        log.debug("get_background_items() called")
+        
+        window.set_data("base_dir", path)
+        
+        return NautilusMainContextMenu(self, path, [path]).get_menu()
 
     def update_background_items(self, provider, base_dir, paths, conditions_dict):
         print "update_background_items"
