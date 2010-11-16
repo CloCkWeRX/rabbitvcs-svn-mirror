@@ -1095,29 +1095,31 @@ class GitBranchSelector:
         self.git = git
         self.changed_callback = changed_callback
         
-        vbox = gtk.VBox(False, 4)
-        
-        # Set up the Branch line
-        label = gtk.Label(_("Branch:"))
-        label.set_size_request(90, -1)
-        label.set_justify(gtk.JUSTIFY_LEFT)
+        self.vbox = gtk.VBox(False, 4)
 
-        tmp_branches = [""]        
+        tmp_branches = []
+        active = 0
+        index = 0
         for item in self.git.branch_list():
             tmp_branches.append(item.name)
+            if self.git.is_tracking(item.name):
+                active = index
+            index += 1
 
         self.branch_opt = ComboBox(gtk.ComboBox(), tmp_branches)
-        self.branch_opt.set_active(0)
+        self.branch_opt.set_active(active)
         self.branch_opt.cb.connect("changed", self.__branch_changed)
         self.branch_opt.cb.set_size_request(175, -1)
 
         hbox = gtk.HBox(False, 0)
-        hbox.pack_start(label, False, False, 0)
         hbox.pack_start(self.branch_opt.cb, False, False, 0)
-        vbox.pack_start(hbox, False, False, 0)
+        self.vbox.pack_start(hbox, False, False, 0)
         
-        vbox.show_all()
+        self.vbox.show_all()
         container.add(vbox)
+
+    def append(self, widget):
+        self.vbox.pack_start(widget, False, False, 0)
 
     def get_branch(self):
         return self.branch_opt.get_active_text()
