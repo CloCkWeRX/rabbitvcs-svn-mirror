@@ -1116,7 +1116,7 @@ class GitBranchSelector:
         self.vbox.pack_start(hbox, False, False, 0)
         
         self.vbox.show_all()
-        container.add(vbox)
+        container.add(self.vbox)
 
     def append(self, widget):
         self.vbox.pack_start(widget, False, False, 0)
