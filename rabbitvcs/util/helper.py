@@ -833,3 +833,97 @@ def urlize(path):
     if path.startswith("/"):
         return "file://%s" % path
     return path
+    
+def parse_patch_output(patch_file, base_dir, strip=0):
+    """ Runs the GNU 'patch' utility, parsing the output. This is actually a
+    generator which yields values as each section of the patch is applied.
+
+    @param patch_file: the location of the patch file
+    @type patch_file: string
+
+    @param base_dir: the directory in which to apply the patch
+    @type base_dir: string
+
+    @return: a generator yielding tuples (filename, success, reject_file).
+             "filename" is never None, and should always exist. "success" is
+             True iff the patch executed without any error messages.
+             "reject_file" may be None, but if it exists is the location of
+             rejected "hunks". It's like a bad reality TV dating show.
+    """
+
+    PATCHING_RE = re.compile(r"patching file (.*)")
+    REJECT_RE = re.compile(r".*saving rejects to file (.*)")
+
+    # PATCH flags...
+    # -N: always assume forward diff
+    # -t: batch mode:
+    #    skip patches whose headers do not contain file
+    #    names (the same as -f); skip patches for which
+    #    the file has the wrong version for the Prereq:
+    #    line in the patch; and assume that patches are
+    #    reversed if they look like they are.
+    env = os.environ.copy().update({"LC_ALL" : "C"})
+    p = "-p%s" % strip
+    patch_proc = subprocess.Popen(["patch", "-N", "-t", p, "-i", str(patch_file), "--directory", base_dir],
+                                      stdout = subprocess.PIPE,
+                                      stderr = subprocess.PIPE,
+                                      env = env)
+
+    # Intialise things...
+    line = patch_proc.stdout.readline()
+    patch_match = PATCHING_RE.match(line)
+
+    current_file = None
+    if patch_match:
+        current_file = patch_match.group(1)
+    elif line: # and not patch_match
+        # There was output, but unexpected. Almost certainly an error of some
+        # sort.
+        patch_proc.wait()
+        output = line + patch_proc.stdout.read()
+        raise rabbitvcs.vcs.ExternalUtilError("patch", output)
+        # Note the excluded case: empty line. This falls through, skips the loop
+        # and returns.
+
+    any_errors = False
+    reject_file = None
+
+    while current_file:
+
+        line = patch_proc.stdout.readline()
+        while not line and patch_proc.poll() is None:
+            line = patch_proc.stdout.readline()
+
+        # Does patch tell us we're starting a new file?
+        patch_match = PATCHING_RE.match(line)
+
+        # Starting a new file => that's it for the last one, so return the value
+        # No line => End of patch output => ditto
+        if patch_match or not line:
+
+            yield (current_file, not any_errors, reject_file)
+
+            if not line:
+                # That's it from patch, so end the generator
+                break
+
+            # Starting a new file...
+            current_file = patch_match.group(1)
+            any_errors = False
+            reject_file = None
+
+        else:
+            # Doesn't matter why we're here, anything else means ERROR
+
+            any_errors = True
+
+            reject_match = REJECT_RE.match(line)
+
+            if reject_match:
+                # Have current file, getting reject file info
+                reject_file = reject_match.group(1)
+            # else: we have an unknown error
+
+    patch_proc.wait() # Don't leave process running...
+    return
+

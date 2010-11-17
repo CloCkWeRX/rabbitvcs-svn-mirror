@@ -30,7 +30,7 @@ from datetime import datetime
 from gittyup.client import GittyupClient
 import gittyup.objects
 
-from rabbitvcs.util.helper import abspaths
+import rabbitvcs.util.helper
 
 import rabbitvcs.vcs
 import rabbitvcs.vcs.status
@@ -755,7 +755,49 @@ class Git:
 
         return self.client.diff(path1, revision_obj1.primitive(), path2,
             revision_obj2.primitive())
-        
+
+    def apply_patch(self, patch_file, base_dir):
+        """
+        Applies a patch created for this WC.
+
+        @type patch_file: string
+        @param patch_file: the path to the patch file
+
+        @type base_dir: string
+        @param base_dir: the base directory from which to interpret the paths in
+                         the patch file
+        """
+
+        any_failures = False
+
+        for file, success, rej_file in rabbitvcs.util.helper.parse_patch_output(patch_file, base_dir, 1):
+
+            fullpath = os.path.join(base_dir, file)
+
+            event_dict = dict()
+
+            event_dict["path"] = file
+            event_dict["mime_type"] = "" # meh
+
+            if success:
+                event_dict["action"] = _("Patched") # not in pysvn, but
+                                                    # we have a fallback
+            else:
+                any_failures = True
+                event_dict["action"] = _("Patch Failed") # better wording needed?
+
+            if rej_file:
+                rej_info = {
+                    "path" : rej_file,
+                    "action" : _("Rejected Patch"),
+                    "mime_type" : None
+                            }
+
+            if self.client.callback_notify:
+                self.client.callback_notify(event_dict)
+                if rej_file:
+                    self.client.callback_notify(rej_info)
+
     def set_callback_notify(self, func):
         self.client.set_callback_notify(func)
     

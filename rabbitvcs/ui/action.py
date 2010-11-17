@@ -642,7 +642,7 @@ class SVNAction(VCSAction):
 
         if self.has_notifier:
             self.conflict_filter(data)
-        
+
             if self.pbar_ticks is not None:
                 self.pbar_ticks_current += 1
                 frac = self.pbar_ticks_current / self.pbar_ticks
@@ -655,13 +655,13 @@ class SVNAction(VCSAction):
             else:
                 action = data["action"]
 
-            #FIXME: this is crap
-            if data["revision"].number != -1 and rabbitvcs.util.helper.in_rich_compare(
-                    data["action"],
-                    self.client.NOTIFY_ACTIONS_COMPLETE):
-                self.notification.append(
-                    ["", "Revision %s" % data["revision"].number, ""]
-                )
+            if "revision" in data:
+                if data["revision"].number != -1 and rabbitvcs.util.helper.in_rich_compare(
+                        data["action"],
+                        self.client.NOTIFY_ACTIONS_COMPLETE):
+                    self.notification.append(
+                        ["", "Revision %s" % data["revision"].number, ""]
+                    )
             else:
                 self.notification.append([
                     action,
@@ -726,7 +726,14 @@ class GitAction(VCSAction):
         if self.has_notifier:
             if data:
                 self.conflict_filter(data)
-                self.notification.append(["", data, ""])
+                if isinstance(data, dict):
+                    self.notification.append([
+                        data["action"],
+                        data["path"],
+                        data["mime_type"]
+                    ])
+                else:
+                    self.notification.append(["", data, ""])
 
     def get_user(self):
         gtk.gdk.threads_enter()

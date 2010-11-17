@@ -117,8 +117,39 @@ class SVNApplyPatch(ApplyPatch):
         self.action.append(self.action.finish)
         self.action.start()
 
+class GitApplyPatch(ApplyPatch):
+    def __init__(self, paths):
+        ApplyPatch.__init__(self, paths)
+        
+        self.git = self.vcs.git(paths[0])
+
+    def start(self):
+    
+        path = self.choose_patch_path()
+        # If empty path, means we've cancelled
+        if not path:
+            return
+        
+        base_dir = self.choose_patch_dir()
+        if not base_dir:
+            return        
+        
+        ticks = 2
+        self.action = rabbitvcs.ui.action.GitAction(
+            self.git,
+            register_gtk_quit=self.gtk_quit_is_set()
+        )
+        self.action.set_pbar_ticks(ticks)
+        self.action.append(self.action.set_header, _("Apply Patch"))
+        self.action.append(self.action.set_status, _("Applying Patch File..."))
+        self.action.append(self.git.apply_patch, path, base_dir)
+        self.action.append(self.action.set_status, _("Patch File Applied"))
+        self.action.append(self.action.finish)
+        self.action.start()
+
 classes_map = {
-    rabbitvcs.vcs.VCS_SVN: SVNApplyPatch
+    rabbitvcs.vcs.VCS_SVN: SVNApplyPatch,
+    rabbitvcs.vcs.VCS_GIT: GitApplyPatch
 }
 
 def applypatch_factory(paths):

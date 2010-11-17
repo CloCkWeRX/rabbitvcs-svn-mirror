@@ -1271,6 +1271,9 @@ class MainContextMenu:
                 (MenuSeparator, None),
                 (MenuAnnotate, None),
                 (MenuSeparator, None),
+                (MenuCreatePatch, None),
+                (MenuApplyPatch, None),
+                (MenuSeparator, None),
                 (MenuSettings, None),
                 (MenuAbout, None)
             ])

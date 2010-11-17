@@ -56,6 +56,10 @@ class Commit(InterfaceView, GtkContextMenuCaller):
     TOGGLE_ALL = False
     SHOW_UNVERSIONED = True
 
+    # This keeps track of any changes that the user has made to the row
+    # selections
+    changes = {}
+
     def __init__(self, paths, base_dir=None, message=None):
         """
         
@@ -72,10 +76,6 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         for path in paths:
             if self.vcs.is_in_a_or_a_working_copy(path):
                 self.paths.append(path)
-        
-        # This keeps track of any changes that the user has made to the row
-        # selections
-        self.changes = {}
 
         
     #
@@ -248,7 +248,7 @@ class SVNCommit(Commit):
                 checked = self.changes[item.path]
             else:
                 checked = self.should_item_be_activated(item)
-            
+
             self.files_table.append([
                 checked,
                 item.path, 
