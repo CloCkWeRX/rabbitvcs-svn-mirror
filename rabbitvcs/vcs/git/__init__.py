@@ -798,6 +798,23 @@ class Git:
                 if rej_file:
                     self.client.callback_notify(rej_info)
 
+    def export(self, path, dest_path, revision):
+        """
+        Exports a file or directory from a given revision
+        
+        @type   path: string
+        @param  path: The source file/folder to export
+        
+        @type   dest_path: string
+        @param  dest_path: The path to put the exported file(s)
+        
+        @type   revision: git.Revision
+        @param  revision: The revision/tree/commit of the source file being exported
+
+        """
+
+        return self.client.export(path, dest_path, revision.primitive())
+
     def set_callback_notify(self, func):
         self.client.set_callback_notify(func)
     

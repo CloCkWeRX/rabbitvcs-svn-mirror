@@ -28,8 +28,9 @@ import gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.checkout import SVNCheckout
+from rabbitvcs.ui.clone import GitClone
 from rabbitvcs.ui.dialog import MessageBox
-from rabbitvcs.ui.action import SVNAction
+from rabbitvcs.ui.action import SVNAction, GitAction
 import rabbitvcs.util.helper
 
 from rabbitvcs import gettext
@@ -103,7 +104,94 @@ class SVNExport(SVNCheckout):
         self.action.append(self.action.set_status, _("Completed Export"))
         self.action.append(self.action.finish)
         self.action.start()
+
+class GitExport(GitClone):
+    def __init__(self, path=None, revision=None):
+        GitClone.__init__(self, rabbitvcs.util.helper.get_user_path(), path)
+                
+        self.git = self.vcs.git(path)
         
+        self.get_widget("Checkout").set_title(_("Export - %s") % path)
+
+        self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("revision_container"),
+            self.git,
+            revision=revision,
+            url_combobox=self.repositories,
+            expand=True
+        )
+
+        self.get_widget("revision_selector_box").show()
+
+    def on_ok_clicked(self, widget):
+        url = self.repositories.get_active_text()
+        path = self._get_path()
+
+        if not url or not path:
+            MessageBox(_("The repository URL and destination path are both required fields."))
+            return
+        
+        if url.startswith("file://"):
+            url = self._parse_path(url)
+        
+        # Cannot do:
+        # url = os.path.normpath(url)
+        # ...in general, since it might be eg. an http URL. Doesn't seem to
+        # affect pySvn though.
+        
+        path = os.path.normpath(path)        
+        revision = self.revision_selector.get_revision_object()
+
+        self.hide()
+        self.action = GitAction(
+            self.git,
+            register_gtk_quit=self.gtk_quit_is_set()
+        )
+        
+        self.action.append(self.action.set_header, _("Export"))
+        self.action.append(self.action.set_status, _("Running Export Command..."))
+        self.action.append(rabbitvcs.util.helper.save_repository_path, url)
+        self.action.append(
+            self.git.export,
+            url,
+            path,
+            revision=revision
+        )
+        self.action.append(self.action.set_status, _("Completed Export"))
+        self.action.append(self.action.finish)
+        self.action.start()
+
+    def on_repositories_changed(self, widget, data=None):
+        # Do not use quoting for this bit
+        url = self.repositories.get_active_text()
+        tmp = url.replace("//", "/").split("/")[1:]
+        append = ""
+        prev = ""
+        while len(tmp):
+            prev = append
+            append = tmp.pop()
+            if append not in ("trunk", "branches", "tags"):
+                break
+                
+            if append in ("http:", "https:", "file:", "svn:", "svn+ssh:"):
+                append = ""
+                break
+        
+        self.get_widget("destination").set_text(
+            os.path.join(self.destination, append)
+        )
+        
+        self.check_form()
+
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNExport,
+    rabbitvcs.vcs.VCS_GIT: GitExport
+}
+
+def export_factory(path, revision=None):
+    guess = rabbitvcs.vcs.guess(path)
+    return classes_map[guess["vcs"]](path, revision)
+
 if __name__ == "__main__":
     from rabbitvcs.ui import main, REVISION_OPT
     (options, paths) = main(
@@ -111,6 +199,6 @@ if __name__ == "__main__":
         usage="Usage: rabbitvcs export [url_or_path]"
     )
             
-    window = SVNExport(paths[0], revision=options.revision)
+    window = export_factory(paths[0], revision=options.revision)
     window.register_gtk_quit()
     gtk.main()

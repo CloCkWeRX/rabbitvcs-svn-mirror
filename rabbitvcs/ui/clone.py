@@ -45,6 +45,7 @@ class GitClone(Checkout):
         self.git = self.vcs.git()
         
         self.get_widget("Checkout").set_title(_("Clone"))
+        self.get_widget("repo_chooser").hide()
 
         self.check_form()
 

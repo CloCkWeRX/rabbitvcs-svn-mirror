@@ -1326,6 +1326,37 @@ class GittyupClient:
         
         return stdout
 
+    def export(self, path, dest_path, revision):
+        """
+        Exports a file or directory from a given revision
+        
+        @type   path: string
+        @param  path: The source file/folder to export
+        
+        @type   dest_path: string
+        @param  dest_path: The path to put the exported file(s)
+        
+        @type   revision: string
+        @param  revision: The revision/tree/commit of the source file being exported
+
+        """
+        
+        cmd1 = ["git", "archive", "--format", "tar", "-o", "/tmp/rabbitvcs-git-export.tar", revision, path]
+        cmd2 = ["tar", "-xf", "/tmp/rabbitvcs-git-export.tar", "-C", dest_path]
+        
+        if not os.path.isdir(dest_path):
+            os.mkdir(dest_path)
+
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd1, cwd=self.repo.path, notify=self.callback_notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd2, cwd=self.repo.path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
+            stdout = ""
+            
+        self.notify("%s at %s exported to %s" % (path, revision, dest_path))
+        return stdout
+
     def set_callback_notify(self, func):
         self.callback_notify = func
 
