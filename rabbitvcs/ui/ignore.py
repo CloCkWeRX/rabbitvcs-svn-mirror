@@ -21,13 +21,15 @@
 #
 
 from os import getcwd
+import os.path
 
 import pygtk
 import gobject
 import gtk
 
-from rabbitvcs.ui import InterfaceNonView
-from rabbitvcs.ui.action import SVNAction
+from rabbitvcs.ui import InterfaceNonView, InterfaceView
+from rabbitvcs.ui.action import SVNAction, GitAction
+
 import rabbitvcs.vcs
 
 from rabbitvcs import gettext
@@ -59,12 +61,61 @@ class SVNIgnore(InterfaceNonView):
         self.vcs = rabbitvcs.vcs.VCS()
         self.svn = self.vcs.svn()
 
-    def start(self):
         prop = self.svn.PROPERTIES["ignore"]
-        return self.svn.propset(self.path, prop, self.pattern, recurse=self.glob)
+
+        self.svn.propset(self.path, prop, self.pattern, recurse=self.glob)
+        
+        raise SystemExit()
+
+class GitIgnore(InterfaceView):
+    def __init__(self, path, pattern=""):
+        InterfaceView.__init__(self, "ignore", "Ignore")
+        
+        self.path = path
+        self.pattern = pattern
+
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.git = self.vcs.git(path)
+
+        ignore_files = self.git.get_ignore_files(path)
+        ignore_file_labels = []
+        
+        path_dir = os.path.abspath(self.path)
+        if os.path.isfile(path_dir):
+            path_dir = os.path.dirname(path_dir)
+
+        for ignore_file in ignore_files:
+            label = path
+            if ignore_file.startswith(path_dir):
+               label = ignore_file[len(path_dir)+1:]
+            
+            ignore_file_labels.append(label)
+        
+        text = ""
+        if pattern != path:
+            text = pattern
+        
+        self.file_editor = rabbitvcs.ui.widget.MultiFileTextEditor(
+            self.get_widget("fileeditor_container"),
+            _("Ignore file:"),
+            ignore_file_labels,
+            ignore_files,
+            text
+        )
+        
+    def on_destroy(self, widget):
+        self.destroy()
+        
+    def on_cancel_clicked(self, widget, data=None):
+        self.close() 
+    
+    def on_ok_clicked(self, widget, data=None):
+        self.file_editor.save()
+        self.close()       
 
 classes_map = {
-    rabbitvcs.vcs.VCS_SVN: SVNIgnore
+    rabbitvcs.vcs.VCS_SVN: SVNIgnore,
+    rabbitvcs.vcs.VCS_GIT: GitIgnore
 }
 
 def ignore_factory(path, pattern):
@@ -83,8 +134,8 @@ if __name__ == "__main__":
         else:
             if args[0] != ".":
                 path = args[0]
-            if "1" in args:
-                pattern = args[1]
+            pattern = args[1]
 
     window = ignore_factory(path, pattern)
-    window.start()
+    window.register_gtk_quit()
+    gtk.main()

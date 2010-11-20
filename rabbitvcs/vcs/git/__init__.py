@@ -815,6 +815,13 @@ class Git:
 
         return self.client.export(path, dest_path, revision.primitive())
 
+    def get_ignore_files(self, path):
+        paths = []
+        paths.append(self.client.get_local_ignore_file(path))
+        paths += self.client.get_global_ignore_files()
+        
+        return paths
+
     def set_callback_notify(self, func):
         self.client.set_callback_notify(func)
     

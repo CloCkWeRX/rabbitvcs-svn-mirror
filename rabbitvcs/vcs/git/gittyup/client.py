@@ -138,25 +138,47 @@ class GittyupClient:
         """
         
         patterns = []
-        try:
-            git_dir = os.environ["GIT_DIR"]
-        except KeyError:
-            git_dir = self.repo.path
-
-        excludefile = os.path.join(git_dir, "info", "exclude")
-        if os.path.isfile(excludefile):
-            patterns += self._get_ignore_patterns_from_file(excludefile)
-
-        try:
-            core_excludesfile = self.config.get("core", "excludesfile")
-            if core_excludesfile:
-                patterns += self._get_ignore_patterns_from_file(core_excludesfile)
-        except KeyError:
-            pass
+        
+        files = self.get_global_ignore_fles()
+        for path in files:
+            patterns += self.get_ignore_patterns_from_file(path)
 
         return patterns
     
-    def _get_ignore_patterns_from_file(self, path):
+    def get_global_ignore_files(self):
+        """
+        Returns a list of ignore files possible for this repository
+        """
+    
+        try:
+            git_dir = os.environ["GIT_DIR"]
+        except KeyError:
+            git_dir = os.path.join(self.repo.path, ".git")
+
+        files = []
+
+        excludefile = os.path.join(git_dir, "info", "exclude")
+        files.append(excludefile)
+        
+        try:
+            core_excludesfile = self.config.get("core", "excludesfile")
+            if core_excludesfile:
+                files.append(core_excludesfile)
+        except KeyError:
+            pass
+
+        return files
+    
+    def get_local_ignore_file(self, path):
+        if not os.path.exists(path):
+            return []
+        
+        if os.path.isfile(path):
+            path = os.path.basename(path)
+    
+        return os.path.join(path, ".gitignore")
+    
+    def get_ignore_patterns_from_file(self, path):
         """
         Read in an ignore patterns file (i.e. .gitignore, $GIT_DIR/info/exclude)
         and return a list of patterns
@@ -203,10 +225,10 @@ class GittyupClient:
 
                 path_to_check = root
                 while path_to_check != self.repo.path:
-                    patterns += self._get_ignore_patterns_from_file(os.path.join(path_to_check, ".gitignore"))
+                    patterns += self.get_ignore_patterns_from_file(self.get_local_ignore_file(path_to_check))
                     path_to_check = os.path.split(path_to_check)[0]
                 
-                patterns += self._get_ignore_patterns_from_file(os.path.join(root, ".gitignore"))
+                patterns += self.get_ignore_patterns_from_file(self.get_local_ignore_file(root))
 
             # Find the relative root path of this folder
             if root == self.repo.path:
@@ -1355,8 +1377,8 @@ class GittyupClient:
             stdout = ""
             
         self.notify("%s at %s exported to %s" % (path, revision, dest_path))
-        return stdout
-
+        return stdout        
+    
     def set_callback_notify(self, func):
         self.callback_notify = func
 

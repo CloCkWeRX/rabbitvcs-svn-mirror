@@ -444,24 +444,15 @@ class ContextMenuCallbacks:
         self.caller.reload_settings(proc)
 
     def ignore_by_filename(self, widget, data1=None, data2=None):
-        for path in self.paths:
-            prop_name = self.vcs_client.PROPERTIES["ignore"]
-            prop_value = os.path.basename(path)
-            self.vcs_client.propset(
-                self.base_dir,
-                prop_name,
-                prop_value
-            )
+        path = self.paths[0]
+        proc = rabbitvcs.util.helper.launch_ui_window("ignore", [self.base_dir, os.path.basename(path)])
+        self.caller.execute_after_process_exit(proc)
 
     def ignore_by_file_extension(self, widget, data1=None, data2=None):
-        prop_name = self.vcs_client.PROPERTIES["ignore"]
-        prop_value = "*%s" % rabbitvcs.util.helper.get_file_extension(self.paths[0])            
-        self.vcs_client.propset(
-            self.base_dir,
-            prop_name,
-            prop_value,
-            recurse=True
-        )
+        path = self.paths[0]
+        pattern = "*%s" % rabbitvcs.util.helper.get_file_extension(path)
+        proc = rabbitvcs.util.helper.launch_ui_window("ignore", [self.base_dir, pattern])
+        self.caller.execute_after_process_exit(proc)
 
     def get_lock(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("lock", self.paths)
@@ -937,32 +928,7 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
             Delete(self.paths).start()
             sleep(1) # sleep so the items can be fully deleted before init
             self.caller.reload_treeview()
-
-    def ignore_by_filename(self, widget, data1=None, data2=None):
-        for path in self.paths:
-            prop_name = self.vcs_client.PROPERTIES["ignore"]
-            prop_value = os.path.basename(path)
-            self.vcs_client.propset(
-                self.base_dir,
-                prop_name,
-                prop_value
-            )
-        
-        self.caller.reload_treeview()
-
-    def ignore_by_file_extension(self, widget, data1=None, data2=None):
-        for path in self.paths:
-            prop_name = self.vcs_client.PROPERTIES["ignore"]
-            prop_value = "*%s" % rabbitvcs.util.helper.get_file_extension(path)            
-            self.vcs_client.propset(
-                self.base_dir,
-                prop_name,
-                prop_value,
-                recurse=True
-            )
-
-        self.caller.reload_treeview()
-   
+  
     def update(self, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("update", self.paths)
         self.caller.execute_after_process_exit(proc)
@@ -1268,6 +1234,8 @@ class MainContextMenu:
                 (MenuBranches, None),
                 (MenuTags, None),
                 (MenuRemotes, None),
+                (MenuSeparator, None),
+                (MenuExport, None),
                 (MenuSeparator, None),
                 (MenuAnnotate, None),
                 (MenuSeparator, None),

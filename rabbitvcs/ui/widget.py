@@ -1126,3 +1126,115 @@ class GitBranchSelector:
 
     def __branch_changed(self, branch_opt):
         pass
+        
+class MultiFileTextEditor:
+    """
+    Edit a set of text/config/ignore files
+    """
+    
+    def __init__(self, container, label, combobox_labels, combobox_paths, pattern=""):
+        self.container = container
+        self.label = label
+        self.combobox_labels = combobox_labels
+        self.combobox_paths = combobox_paths
+        
+        self.cache = {}
+        
+        self.last_path = None
+                
+        self.combobox = ComboBox(gtk.ComboBox(), self.combobox_labels)
+        self.combobox.cb.connect("changed", self.__combobox_changed)
+        self.combobox.cb.set_size_request(175, -1)
+        
+        self.textview = TextView(gtk.TextView())
+
+        scrolled_window = gtk.ScrolledWindow()
+        scrolled_window.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        scrolled_window.add(self.textview.view)
+        scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrolled_window.set_size_request(320, 150)
+        
+        vbox = gtk.VBox(False, 6)
+        
+        hbox = gtk.HBox(False, 3)
+        combo_label = gtk.Label(label)
+        combo_label.set_alignment(0, 0.5)
+        combo_label.set_size_request(130, -1)
+        hbox.pack_start(combo_label, False, False, 0)
+        hbox.pack_start(self.combobox.cb, True, True, 0)
+        vbox.pack_start(hbox, False, False, 0)
+        
+        hbox = gtk.HBox(False, 3)
+        add_label = gtk.Label(_("Add line:"))
+        add_label.set_alignment(0, 0.5)
+        add_label.set_size_request(130, -1)
+        self.add_entry = gtk.Entry()
+        self.add_entry.set_text(pattern)
+        add_button = gtk.Button(_("Add"))
+        add_button.connect("clicked", self.__add_button_clicked)
+        hbox.pack_start(add_label, False, False, 0)
+        hbox.pack_start(self.add_entry, True, True, 0)
+        hbox.pack_start(add_button, False, False, 0)
+        vbox.pack_start(hbox, False, False, 0)
+        
+        vbox.pack_start(scrolled_window, True, True, 0)
+        vbox.show_all()
+
+        self.combobox.set_active(0)
+
+        container.add(vbox)
+        
+    def __combobox_changed(self, widget):
+        index = self.combobox.get_active()
+        path = self.combobox_paths[index]
+
+        if not self.last_path:
+            self.last_path = path
+        
+        self.cache[self.last_path] = self.textview.get_text()
+        self.last_path = path
+        
+        self.load_file(path)
+    
+    def __add_button_clicked(self, widget):
+        text = self.add_entry.get_text()
+        self.add_line(text)
+        self.add_entry.set_text("")
+    
+    def add_line(self, text):
+        current_text = self.textview.get_text()
+        if current_text:
+            current_text += "\n" + text
+        else:
+            current_text = text
+        
+        self.textview.set_text(current_text)
+    
+    def load_file(self, path):
+        if os.path.exists(path):
+            fh = open(path, "r")
+            self.textview.set_text(fh.read())
+            fh.close()
+        else:
+            self.textview.set_text("")
+
+    def save(self, path=None):
+        if path:
+            paths = [path]
+        else:
+            paths = self.combobox_paths
+
+        index = self.combobox.get_active()
+        current_path = self.combobox_paths[index]
+        self.cache[current_path] = self.textview.get_text()
+        
+        for tmppath in paths:
+            if tmppath in self.cache:
+                if not os.path.exists(tmppath):
+                    os.mkdir(os.path.dirname(tmppath))
+            
+                if os.access(tmppath, os.W_OK):
+                    fh = open(tmppath, "w")
+                    fh.write(self.cache[tmppath])
+                    fh.close()
+                
