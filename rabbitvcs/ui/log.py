@@ -384,7 +384,7 @@ class SVNLog(Log):
         # Get the starting/ending point from the actual returned revisions
         self.rev_start = unicode(self.revision_items[0].revision)
         self.rev_end = unicode(self.revision_items[-1].revision)
-        
+
         if not self.rev_first:
             self.rev_first = self.rev_start
         
@@ -542,6 +542,8 @@ class GitLog(Log):
         
         self.git = self.vcs.git(path)
         self.limit = 500
+        
+        self.get_widget("stop_on_copy").hide()
         
         self.revision_number_column = 1
 
@@ -824,6 +826,9 @@ class MenuEditRevisionProperties(MenuItem):
     label = _("Edit revision properties...")
     icon = gtk.STOCK_EDIT
 
+class MenuSeparatorLast(MenuSeparator):
+    identifier = "RabbitVCS::Separator_Last"
+
 class LogTopContextMenuConditions:
     def __init__(self, vcs, path, revisions):
         self.vcs = vcs
@@ -862,13 +867,16 @@ class LogTopContextMenuConditions:
         return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)
 
     def checkout(self, data=None):
-        return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)
+        return (len(self.revisions) == 1)
+
+    def branches(self, data=None):
+        return (len(self.revisions) == 1)
 
     def branch_tag(self, data=None):
         return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)
 
     def export(self, data=None):
-        return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)
+        return (len(self.revisions) == 1)
 
     def edit_author(self, data=None):
         return self.guess["vcs"] == "svn"
@@ -880,13 +888,17 @@ class LogTopContextMenuConditions:
         return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)
 
     def separator(self, data=None):
-        return self.guess["vcs"] == "svn"
+        return True
+
+    def separator_last(self, data=None):
+        return (self.guess["vcs"] == "svn")
 
 class LogTopContextMenuCallbacks:
     def __init__(self, caller, vcs, path, revisions):
         self.caller = caller
         self.vcs = vcs
         self.svn = self.vcs.svn()
+        self.guess = self.vcs.guess(path)["vcs"]
         self.path = path
         self.revisions = revisions
         
@@ -901,8 +913,8 @@ class LogTopContextMenuCallbacks:
 
     def view_diff_revisions(self, widget, data=None):
         path_older = self.path
-        if self.vcs.guess(self.path) == rabbitvcs.vcs.VCS_SVN:
-            path_older = self.vcs.svn.get_repo_url(self.path)
+        if self.guess == rabbitvcs.vcs.VCS_SVN:
+            path_older = self.vcs.svn().get_repo_url(self.path)
     
         rabbitvcs.util.helper.launch_ui_window("diff", [
             "%s@%s" % (path_older, self.revisions[1]["revision"].value),
@@ -911,8 +923,8 @@ class LogTopContextMenuCallbacks:
 
     def compare_working_copy(self, widget, data=None):
         path_older = self.path
-        if self.vcs.guess(self.path) == rabbitvcs.vcs.VCS_SVN:
-            path_older = self.vcs.svn.get_repo_url(self.path)
+        if self.guess == rabbitvcs.vcs.VCS_SVN:
+            path_older = self.vcs.svn().get_repo_url(self.path)
     
         rabbitvcs.util.helper.launch_ui_window("diff", [
             "-s",
@@ -929,9 +941,9 @@ class LogTopContextMenuCallbacks:
 
     def compare_revisions(self, widget, data=None):
         path_older = self.path
-        if self.vcs.guess(self.path) == rabbitvcs.vcs.VCS_SVN:
-            path_older = self.vcs.svn.get_repo_url(self.path)
-    
+        if self.guess == rabbitvcs.vcs.VCS_SVN:
+            path_older = self.vcs.svn().get_repo_url(self.path)
+
         rabbitvcs.util.helper.launch_ui_window("diff", [
             "-s",
             "%s@%s" % (path_older, self.revisions[1]["revision"].value),
@@ -987,17 +999,21 @@ class LogTopContextMenuCallbacks:
         action.start()
         
     def checkout(self, widget, data=None):
-        from rabbitvcs.ui.checkout import Checkout
-        url = self.svn.get_repo_url(self.path)
-        Checkout(url=url, revision=unicode(self.revisions[0]["revision"])).show()
+        url = ""
+        if self.guess == rabbitvcs.vcs.VCS_SVN:
+            url = self.vcs.svn().get_repo_url(self.path)
+
+        rabbitvcs.util.helper.launch_ui_window("checkout", [self.path, url, "-r", unicode(self.revisions[0]["revision"])])
 
     def branch_tag(self, widget, data=None):
         from rabbitvcs.ui.branch import Branch
         Branch(self.path, revision=unicode(self.revisions[0]["revision"])).show()
 
+    def branches(self, widget, data=None):
+        rabbitvcs.util.helper.launch_ui_window("branches", [self.path, "-r", unicode(self.revisions[0]["revision"])])
+
     def export(self, widget, data=None):
-        from rabbitvcs.ui.export import Export
-        Export(self.path, revision=unicode(self.revisions[0]["revision"])).show()
+        rabbitvcs.util.helper.launch_ui_window("export", [self.path, "-r", unicode(self.revisions[0]["revision"])])
 
     def edit_author(self, widget, data=None):
         message = ""
@@ -1082,9 +1098,10 @@ class LogTopContextMenu:
             (MenuSeparator, None),
             (MenuUpdateToThisRevision, None),
             (MenuCheckout, None),
+            (MenuBranches, None),
             (MenuBranchTag, None),
             (MenuExport, None),
-            (MenuSeparator, None),
+            (MenuSeparatorLast, None),
             (MenuEditAuthor, None),
             (MenuEditLogMessage, None),
             (MenuEditRevisionProperties, None)
@@ -1145,14 +1162,16 @@ class LogBottomContextMenuCallbacks:
         self.caller = caller
         self.vcs = vcs
         self.svn = self.vcs.svn()
+        self.guess = self.vcs.guess(paths[0])["vcs"]
         self.paths = paths
         self.revisions = revisions
 
     def view_diff_previous_revision(self, widget, data=None):
         rev = unicode(self.revisions[0]["revision"])
+        next_rev = unicode(self.revisions[0]["next_revision"])
         path_item = self.paths[0]
         url = self.caller.root_url + path_item
-        self.caller.view_diff_for_path(url, rev)
+        self.caller.view_diff_for_path(url, rev, next_rev)
 
     def view_diff_revisions(self, widget, data=None):
         rev_first = unicode(self.revisions[0]["revision"])
@@ -1164,9 +1183,10 @@ class LogBottomContextMenuCallbacks:
 
     def compare_previous_revision(self, widget, data=None):
         rev = unicode(self.revisions[0]["revision"])
+        next_rev = unicode(self.revisions[0]["next_revision"])
         path_item = self.paths[0]
         url = self.caller.root_url + path_item
-        self.caller.view_diff_for_path(url, rev, sidebyside=True)
+        self.caller.view_diff_for_path(url, rev, next_rev, sidebyside=True)
     
     def compare_revisions(self, widget, data=None):
         earliest_rev = unicode(self.revisions[0]["revision"])
@@ -1207,34 +1227,15 @@ class LogBottomContextMenuCallbacks:
         )
 
     def _open(self, widget, data=None):
-        self.action = SVNAction(
-            self.svn,
-            notification=False
-        )
-
-        # This allows us to open multiple files at once
-        dests = []
         for path in self.paths:
-            url = self.caller.root_url + path
-            dest = "/tmp/rabbitvcs-" + str(unicode(self.revisions[0]["revision"])) + "-" + os.path.basename(path)
-            self.action.append(
-                self.svn.export,
-                url,
-                dest,
-                revision=self.revisions[0]["revision"]
-            )
-            dests.append(dest)
-        
-        for dest in dests:
-            self.action.append(rabbitvcs.util.helper.open_item, dest)
-            
-        self.action.start()
+            rabbitvcs.util.helper.launch_ui_window("open", [path, "-r", unicode(self.revisions[0]["revision"])])
 
     def annotate(self, widget, data=None):
-        url = self.caller.root_url + self.paths[0]
+        url = self.paths[0]
+        if self.guess == rabbitvcs.vcs.VCS_SVN:
+            url = self.caller.root_url + self.paths[0]
 
-        from rabbitvcs.ui.annotate import Annotate
-        Annotate(url, unicode(self.revisions[0]["revision"]))
+        rabbitvcs.util.helper.launch_ui_window("annotate", [url, "-r", unicode(self.revisions[0]["revision"])])
 
 class LogBottomContextMenu:
     """

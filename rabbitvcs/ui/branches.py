@@ -52,10 +52,11 @@ class GitBranchManager(InterfaceView):
     
     state = STATE_ADD
     
-    def __init__(self, path):
+    def __init__(self, path, revision=None):
         InterfaceView.__init__(self, "manager", "Manager")
 
         self.path = path
+        self.revision = revision
         
         self.get_widget("right_side").show()
         self.get_widget("Manager").set_size_request(695, -1)
@@ -280,11 +281,15 @@ class GitBranchManager(InterfaceView):
 
     def show_add(self):
         self.state = STATE_ADD
+        
+        revision = "HEAD"
+        if self.revision:
+            revision = self.revision
 
         self.items_treeview.unselect_all()
         self.branch_entry.set_text("")
         self.save_button.set_label(_("Add"))
-        self.start_point_entry.set_text("HEAD")
+        self.start_point_entry.set_text(revision)
         self.track_checkbox.set_active(True)
         self.checkout_checkbox.set_sensitive(True)
         self.checkout_checkbox.set_active(False)
@@ -328,9 +333,12 @@ class GitBranchManager(InterfaceView):
             self.start_point_entry.set_text(data)
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
-    (options, paths) = main(usage="Usage: rabbitvcs branch-manager path")
+    from rabbitvcs.ui import main, REVISION_OPT
+    (options, paths) = main(
+        [REVISION_OPT], 
+        usage="Usage: rabbitvcs branch-manager path [-r revision]"
+    )
     
-    window = GitBranchManager(paths[0])
+    window = GitBranchManager(paths[0], revision=options.revision)
     window.register_gtk_quit()
     gtk.main()

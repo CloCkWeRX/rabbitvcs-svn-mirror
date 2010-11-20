@@ -261,7 +261,7 @@ class GitAnnotate(Annotate):
         for item in blamedict:
             self.table.append([
                 item["number"],
-                item["revision"],
+                item["revision"][:7],
                 item["author"],
                 rabbitvcs.util.helper.format_datetime(item["date"]),
                 item["line"]
@@ -274,7 +274,7 @@ class GitAnnotate(Annotate):
         for item in blamedict:
             text += "%s\t%s\t%s\t%s\t%s\n" % (
                 item["number"],
-                item["revision"],
+                item["revision"][:7],
                 item["author"],
                 rabbitvcs.util.helper.format_datetime(item["date"]),
                 item["line"]
@@ -292,11 +292,12 @@ def annotate_factory(path, revision=None):
     return classes_map[guess["vcs"]](path, revision)
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
-    (options, args) = main(usage="Usage: rabbitvcs annotate [url@rev]")
-    
-    pathrev = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
+    from rabbitvcs.ui import main, REVISION_OPT
+    (options, paths) = main(
+        [REVISION_OPT], 
+        usage="Usage: rabbitvcs annotate url [-r REVISION]"
+    )
 
-    window = annotate_factory(pathrev[0], pathrev[1])
+    window = annotate_factory(paths[0], options.revision)
     window.register_gtk_quit()
     gtk.main()
