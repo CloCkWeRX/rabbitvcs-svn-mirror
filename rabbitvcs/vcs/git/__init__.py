@@ -848,6 +848,11 @@ class Git:
         paths += self.client.get_global_ignore_files()
         
         return paths
+    
+    def get_config_files(self, path):
+        paths = [self.client.get_local_config_file()]
+        
+        return paths
 
     def set_callback_notify(self, func):
         self.client.set_callback_notify(func)

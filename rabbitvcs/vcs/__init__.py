@@ -114,6 +114,8 @@ class VCS:
                 self.clients[VCS_GIT] = git
                 return self.clients[VCS_GIT]
             except Exception, e:
+                import traceback
+                traceback.print_exc()
                 log.debug("Unable to load Git module: %s" % e)
                 self.clients[VCS_GIT] = self.dummy()
                 return self.clients[VCS_GIT]

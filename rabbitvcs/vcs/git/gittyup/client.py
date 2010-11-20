@@ -198,6 +198,14 @@ class GittyupClient:
         
         return patterns
 
+    def get_local_config_file(self):
+        try:
+            git_dir = os.environ["GIT_DIR"]
+        except KeyError:
+            git_dir = os.path.join(self.repo.path, ".git")
+            
+        return git_dir + "/config"
+
     def _ignore_file(self, patterns, filename):
         """
         Determine whether the given file should be ignored

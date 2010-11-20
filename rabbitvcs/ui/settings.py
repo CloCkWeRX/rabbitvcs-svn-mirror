@@ -45,7 +45,7 @@ CHECKER_SERVICE_ERROR = _(
 "There was an error communicating with the status checker service.")
 
 class Settings(InterfaceView):
-    def __init__(self):
+    def __init__(self, base_dir=None):
         """
         Provides an interface to the settings library.
         """
@@ -103,7 +103,28 @@ class Settings(InterfaceView):
         if not val:
             val = "Debug"
         self.logging_level.set_active_from_value(val)
+        
+        # Git Configuration Editor
+        show_git = False
+        self.file_editor = None
+        if base_dir:
+            vcs = rabbitvcs.vcs.VCS()
+            git_config_files = []
+            if vcs.is_in_a_or_a_working_copy(base_dir) and vcs.guess(base_dir)["vcs"] == rabbitvcs.vcs.VCS_GIT:
+                git = vcs.git(base_dir)
+                git_config_files = git.get_config_files(base_dir)
+        
+                self.file_editor = rabbitvcs.ui.widget.MultiFileTextEditor(
+                    self.get_widget("git_config_container"),
+                    _("Config file:"),
+                    git_config_files,
+                    git_config_files,
+                    show_add_line=False
+                )
+                show_git = True
 
+        self.get_widget("pages").get_nth_page(5).set_visible(show_git)
+            
         self._populate_checker_tab()
 
     def _get_checker_service(self, report_failure=True):
@@ -264,6 +285,9 @@ class Settings(InterfaceView):
             self.logging_level.get_active_text()
         )
         self.settings.write()
+        
+        if self.file_editor:
+            self.file_editor.save()
 
     def on_external_diff_tool_browse_clicked(self, widget):
         chooser = rabbitvcs.ui.dialog.FileChooser(
@@ -319,6 +343,12 @@ class Settings(InterfaceView):
                 
 
 if __name__ == "__main__":
-    window = Settings()
+    from rabbitvcs.ui import main, BASEDIR_OPT
+    (options, paths) = main(
+        [BASEDIR_OPT],
+        usage="Usage: rabbitvcs settings"
+    )
+
+    window = Settings(options.base_dir)
     window.register_gtk_quit()
     gtk.main()

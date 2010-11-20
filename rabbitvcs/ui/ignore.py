@@ -100,7 +100,8 @@ class GitIgnore(InterfaceView):
             _("Ignore file:"),
             ignore_file_labels,
             ignore_files,
-            text
+            show_add_line=True,
+            line_content=text
         )
         
     def on_destroy(self, widget):

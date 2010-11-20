@@ -1132,7 +1132,7 @@ class MultiFileTextEditor:
     Edit a set of text/config/ignore files
     """
     
-    def __init__(self, container, label, combobox_labels, combobox_paths, pattern=""):
+    def __init__(self, container, label, combobox_labels, combobox_paths, show_add_line=True, line_content=""):
         self.container = container
         self.label = label
         self.combobox_labels = combobox_labels
@@ -1164,18 +1164,19 @@ class MultiFileTextEditor:
         hbox.pack_start(self.combobox.cb, True, True, 0)
         vbox.pack_start(hbox, False, False, 0)
         
-        hbox = gtk.HBox(False, 3)
-        add_label = gtk.Label(_("Add line:"))
-        add_label.set_alignment(0, 0.5)
-        add_label.set_size_request(130, -1)
-        self.add_entry = gtk.Entry()
-        self.add_entry.set_text(pattern)
-        add_button = gtk.Button(_("Add"))
-        add_button.connect("clicked", self.__add_button_clicked)
-        hbox.pack_start(add_label, False, False, 0)
-        hbox.pack_start(self.add_entry, True, True, 0)
-        hbox.pack_start(add_button, False, False, 0)
-        vbox.pack_start(hbox, False, False, 0)
+        if show_add_line:
+            hbox = gtk.HBox(False, 3)
+            add_label = gtk.Label(_("Add line:"))
+            add_label.set_alignment(0, 0.5)
+            add_label.set_size_request(130, -1)
+            self.add_entry = gtk.Entry()
+            self.add_entry.set_text(line_content)
+            add_button = gtk.Button(_("Add"))
+            add_button.connect("clicked", self.__add_button_clicked)
+            hbox.pack_start(add_label, False, False, 0)
+            hbox.pack_start(self.add_entry, True, True, 0)
+            hbox.pack_start(add_button, False, False, 0)
+            vbox.pack_start(hbox, False, False, 0)
         
         vbox.pack_start(scrolled_window, True, True, 0)
         vbox.show_all()
@@ -1237,4 +1238,3 @@ class MultiFileTextEditor:
                     fh = open(tmppath, "w")
                     fh.write(self.cache[tmppath])
                     fh.close()
-                

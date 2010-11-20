@@ -440,7 +440,8 @@ class ContextMenuCallbacks:
         rabbitvcs.util.helper.launch_ui_window("about")
         
     def settings(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window("settings")
+        print self.base_dir
+        proc = rabbitvcs.util.helper.launch_ui_window("settings", [self.base_dir])
         self.caller.reload_settings(proc)
 
     def ignore_by_filename(self, widget, data1=None, data2=None):
