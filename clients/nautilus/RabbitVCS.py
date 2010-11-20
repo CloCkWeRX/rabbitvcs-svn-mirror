@@ -319,7 +319,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
 
         if len(paths) == 0: return []
         
-        log.debug("get_file_items_full() called")
+        # log.debug("get_file_items_full() called")
 
         paths_str = "-".join(paths)
         
@@ -327,7 +327,6 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         if paths_str in self.items_cache:
             conditions_dict = self.items_cache[paths_str]
             if conditions_dict and conditions_dict != "in-progress":
-                print "Cache hit",paths_str
                 conditions = NautilusMenuConditions(conditions_dict)
                 menu = NautilusMainContextMenu(self, window.get_data("base_dir"), paths, conditions).get_menu()
                 return menu
@@ -335,10 +334,6 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         if conditions_dict != "in-progress":
             self.status_checker.generate_menu_conditions_async(provider, window.get_data("base_dir"), paths, self.update_file_items)        
             self.items_cache[path] = "in-progress"
-        else:
-            print "menu generator in progress"
-
-        print "Cache miss",paths_str
             
         return ()
 
@@ -352,7 +347,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
 
         if len(paths) == 0: return []
         
-        log.debug("get_file_items() called")
+        # log.debug("get_file_items() called")
         
         return NautilusMainContextMenu(self, window.get_data("base_dir"), paths).get_menu()
 
@@ -402,13 +397,12 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
         self.nautilusVFSFile_table[path] = item
 
-        log.debug("get_background_items_full() called")
+        # log.debug("get_background_items_full() called")
 
         conditions_dict = None
         if path in self.items_cache:
             conditions_dict = self.items_cache[path]
             if conditions_dict and conditions_dict != "in-progress":
-                print "Cache hit",path
                 conditions = NautilusMenuConditions(conditions_dict)
                 menu = NautilusMainContextMenu(self, path, [path], conditions).get_menu()                
                 return menu
@@ -418,10 +412,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         if conditions_dict != "in-progress":
             self.status_checker.generate_menu_conditions_async(provider, path, [path], self.update_background_items)
             self.items_cache[path] = "in-progress"
-        else:
-            print "menu generator in progress"
                     
-        print "Cache miss",path
         return ()
 
     def get_background_items(self, window, item):
@@ -429,14 +420,13 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
         self.nautilusVFSFile_table[path] = item
 
-        log.debug("get_background_items() called")
+        # log.debug("get_background_items() called")
         
         window.set_data("base_dir", path)
         
         return NautilusMainContextMenu(self, path, [path]).get_menu()
 
     def update_background_items(self, provider, base_dir, paths, conditions_dict):
-        print "update_background_items"
         paths_str = "-".join(paths)
         conditions = NautilusMenuConditions(conditions_dict)
         self.items_cache[paths_str] =  conditions_dict
