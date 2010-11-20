@@ -108,7 +108,12 @@ class GitOpen(InterfaceNonView):
             revision=revision_obj
         )
         
-        dest_path = "%s/%s" % (dest_dir, os.path.basename(path))
+        repo_path = self.git.find_repository_path(path)
+        relative_path = path
+        if path.startswith(repo_path):
+            relative_path = path[len(repo_path)+1:]
+        
+        dest_path = "%s/%s" % (dest_dir, relative_path)
         
         rabbitvcs.util.helper.open_item(dest_path)
 

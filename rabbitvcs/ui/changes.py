@@ -35,7 +35,7 @@ from rabbitvcs.ui.dialog import MessageBox
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class SVNChanges(InterfaceView):
+class Changes(InterfaceView):
     """
     Show how files and folders are different between revisions.
     
@@ -54,7 +54,6 @@ class SVNChanges(InterfaceView):
         InterfaceView.__init__(self, "changes", "Changes")
         
         self.vcs = rabbitvcs.vcs.VCS()
-        self.svn = self.vcs.svn()
 
         self.MORE_ACTIONS_CALLBACKS = [
             None,
@@ -79,41 +78,7 @@ class SVNChanges(InterfaceView):
             repo_paths
         )
         self.second_urls_browse = self.get_widget("second_urls_browse")
-
-        self.first_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
-            self.get_widget("first_revision_container"),
-            self.svn,
-            revision=revision1,
-            url_combobox=self.first_urls
-        )
-
-        self.second_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
-            self.get_widget("second_revision_container"),
-            self.svn,
-            revision=revision2,
-            url_combobox=self.second_urls
-        )
-
-        if path1 is not None:
-            self.first_urls.set_child_text(self.svn.get_repo_url(path1))
-            
-        if path2 is not None:
-            self.second_urls.set_child_text(self.svn.get_repo_url(path2))
-        elif path1 is not None:
-            self.second_urls.set_child_text(self.svn.get_repo_url(path1))
-
-        self.changes_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("changes_table"),
-            [rabbitvcs.ui.widget.TYPE_PATH, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING], 
-            [_("Path"), _("Change"), _("Property Change")]
-        )
         
-        self.check_ui()
-        
-        if path1 and revision1 and path2 and revision2:
-            self.load()
-
     #
     # UI Signal Callback Methods
     #
@@ -238,6 +203,91 @@ class SVNChanges(InterfaceView):
         can_browse_urls = self.can_second_browse_urls()
         self.second_urls_browse.set_sensitive(can_browse_urls)
 
+
+    def enable_more_actions(self):
+        self.more_actions.set_sensitive(True)
+
+    def disable_more_actions(self):
+        self.more_actions.set_sensitive(False)
+    
+    def view_selected_diff(self, sidebyside=False):
+        url1 = self.changes_table.get_row(self.selected_rows[0])[0]
+        url2 = url1
+        if url1 == ".":
+            url1 = ""
+            url2 = ""
+
+        url1 = rabbitvcs.util.helper.url_join(self.first_urls.get_active_text(), url1)
+        url2 = rabbitvcs.util.helper.url_join(self.second_urls.get_active_text(), url2)
+        rev1 = self.get_first_revision()
+        rev2 = self.get_second_revision()
+        
+        rabbitvcs.util.helper.launch_ui_window("diff", [
+            "%s@%s" % (url2, unicode(rev2)),
+            "%s@%s" % (url1, unicode(rev1)),
+            "%s" % (sidebyside and "-s" or "")
+        ])
+        
+        
+    #
+    # More Actions callbacks
+    #
+
+    def on_more_actions_view_unified_diff(self):
+        url1 = self.first_urls.get_active_text()
+        rev1 = self.get_first_revision()
+        rev2 = self.get_second_revision()        
+        url2 = self.second_urls.get_active_text()
+
+        rabbitvcs.util.helper.launch_ui_window("diff", [
+            "%s@%s" % (url2, unicode(rev2)),
+            "%s@%s" % (url1, unicode(rev1))
+        ])
+
+class SVNChanges(Changes):
+    def __init__(self, path1=None, revision1=None, path2=None, revision2=None):
+        Changes.__init__(self, path1, revision1, path2, revision2)
+
+        self.svn = self.vcs.svn()
+        
+        self.first_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("first_revision_container"),
+            self.svn,
+            revision=revision1,
+            url_combobox=self.first_urls
+        )
+
+        self.second_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("second_revision_container"),
+            self.svn,
+            revision=revision2,
+            url_combobox=self.second_urls
+        )
+
+        if path1 is not None:
+            self.first_urls.set_child_text(self.svn.get_repo_url(path1))
+            
+        if path2 is not None:
+            self.second_urls.set_child_text(self.svn.get_repo_url(path2))
+        elif path1 is not None:
+            self.second_urls.set_child_text(self.svn.get_repo_url(path1))
+
+        self.changes_table = rabbitvcs.ui.widget.Table(
+            self.get_widget("changes_table"),
+            [gobject.TYPE_STRING, gobject.TYPE_STRING, 
+                gobject.TYPE_STRING], 
+            [_("Path"), _("Change"), _("Property Change")],
+            flags={
+                "sortable": True, 
+                "sort_on": 1
+            }
+        )
+
+        self.check_ui()
+        
+        if path1 and revision1 and path2 and revision2:
+            self.load()
+
     def load(self):
         first_url = self.first_urls.get_active_text()
         first_rev = self.get_first_revision()
@@ -280,78 +330,79 @@ class SVNChanges(InterfaceView):
                 prop_changed
             ])
 
-    def enable_more_actions(self):
-        self.more_actions.set_sensitive(True)
+class GitChanges(Changes):
+    def __init__(self, path1=None, revision1=None, path2=None, revision2=None):
+        Changes.__init__(self, path1, revision1, path2, revision2)
 
-    def disable_more_actions(self):
-        self.more_actions.set_sensitive(False)
-
-    def open_item_from_revision(self, url, revision, dest):
-        self.action = rabbitvcs.ui.action.SVNAction(
-            self.svn,
-            notification=False
-        )
-        self.action.append(
-            self.svn.export,
-            url,
-            dest,
-            revision=revision
-        )
-        self.action.append(rabbitvcs.util.helper.open_item, dest)
-        self.action.start()
-    
-    def view_selected_diff(self, sidebyside=False):
-        from rabbitvcs.ui.diff import SVNDiff
-        url1 = self.changes_table.get_row(self.selected_rows[0])[0]
-        url2 = url1
-        if url1 == ".":
-            url1 = ""
-            url2 = ""
-
-        url1 = rabbitvcs.util.helper.url_join(self.first_urls.get_active_text(), url1)
-        url2 = rabbitvcs.util.helper.url_join(self.second_urls.get_active_text(), url2)
-        rev1 = self.get_first_revision()
-        rev2 = self.get_second_revision()
-
-        self.action = rabbitvcs.ui.action.SVNAction(
-            self.svn,
-            notification=False
-        )
-        self.action.append(
-            SVNDiff,
-            url1, 
-            (rev1.value and rev1.value or "HEAD"), 
-            url2, 
-            (rev2.value and rev2.value or "HEAD"),
-            sidebyside=sidebyside
-        )
-        self.action.start()
+        self.git = self.vcs.git(path1)
         
-    #
-    # More Actions callbacks
-    #
+        self.first_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("first_revision_container"),
+            self.git,
+            revision=revision1,
+            url_combobox=self.first_urls
+        )
 
-    def on_more_actions_view_unified_diff(self):
-        from rabbitvcs.ui.diff import SVNDiff
+        self.second_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("second_revision_container"),
+            self.git,
+            revision=revision2,
+            url_combobox=self.second_urls
+        )
+
+        if path1 is not None:
+            self.first_urls.set_child_text(path1)
+            
+        if path2 is not None:
+            self.second_urls.set_child_text(path2)
+        elif path1 is not None:
+            self.second_urls.set_child_text(path1)
+
+        self.changes_table = rabbitvcs.ui.widget.Table(
+            self.get_widget("changes_table"),
+            [gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [_("Path"), _("Change")]
+        )
+
+        self.check_ui()
         
+        if path1 and revision1 and path2 and revision2:
+            self.load()
+
+    def load(self):
         first_url = self.first_urls.get_active_text()
         first_rev = self.get_first_revision()
         second_rev = self.get_second_revision()        
         second_url = self.second_urls.get_active_text()
 
-        self.action = rabbitvcs.ui.action.SVNAction(
-            self.svn,
+        self.action = rabbitvcs.ui.action.GitAction(
+            self.git,
             notification=False
         )
+        self.action.append(self.disable_more_actions)
         self.action.append(
-            SVNDiff,
-            first_url, 
-            (first_rev.value and first_rev.value or "HEAD"), 
-            second_url, 
-            (second_rev.value and second_rev.value or "HEAD")
+            self.git.diff_summarize,
+            first_url,
+            first_rev,
+            second_url,
+            second_rev
         )
+        self.action.append(rabbitvcs.util.helper.save_repository_path, first_url)
+        self.action.append(rabbitvcs.util.helper.save_repository_path, second_url)
+        self.action.append(self.populate_table)
+        self.action.append(self.enable_more_actions)
         self.action.start()
 
+    def populate_table(self):
+        # returns a list of dicts(path, summarize_kind, node_kind, prop_changed)
+        summary = self.action.get_result(1)
+
+        self.changes_table.clear()
+        for item in summary:
+            self.changes_table.append([
+                item.path,
+                item.action
+            ])
 
 
 class MenuOpenFirst(MenuItem):
@@ -415,18 +466,16 @@ class ChangesContextMenuCallbacks:
 
         url = rabbitvcs.util.helper.url_join(self.caller.first_urls.get_active_text(), path)
         rev = self.caller.get_first_revision()
-        dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(url)
-        self.caller.open_item_from_revision(url, rev, dest)
+        rabbitvcs.util.helper.launch_ui_window("open", [url, "-r", unicode(rev)])        
 
     def open_second(self, widget, data=None):
         path = self.caller.changes_table.get_row(self.caller.selected_rows[0])[0]
         if path == ".":
             path = ""
-        
+
         url = rabbitvcs.util.helper.url_join(self.caller.second_urls.get_active_text(), path)
         rev = self.caller.get_second_revision()
-        dest = "/tmp/rabbitvcs-" + str(rev) + "-" + os.path.basename(url)
-        self.caller.open_item_from_revision(url, rev, dest)
+        rabbitvcs.util.helper.launch_ui_window("open", [url, "-r", unicode(rev)])
 
     def view_diff(self, widget, data=None):
         self.caller.view_selected_diff()
@@ -443,20 +492,11 @@ class ChangesContextMenuCallbacks:
         rev1 = self.caller.get_first_revision()
         rev2 = self.caller.get_second_revision()
         
-        from rabbitvcs.ui.diff import SVNDiff
-        self.action = rabbitvcs.ui.action.SVNAction(
-            self.svn,
-            notification=False
-        )
-        self.action.append(
-            SVNDiff,
-            url2,
-            rev2,
-            url1,
-            rev1,
-            sidebyside=True
-        )
-        self.action.start()
+        rabbitvcs.util.helper.launch_ui_window("diff", [
+            "%s@%s" % (url2, unicode(rev2)), 
+            "%s@%s" % (url1, unicode(rev1)), 
+            "-s"
+        ])
 
 class ChangesContextMenu:
     """
@@ -502,7 +542,8 @@ class ChangesContextMenu:
         context_menu.show(self.event)
 
 classes_map = {
-    rabbitvcs.vcs.VCS_SVN: SVNChanges
+    rabbitvcs.vcs.VCS_SVN: SVNChanges,
+    rabbitvcs.vcs.VCS_GIT: GitChanges
 }
 
 def changes_factory(path1=None, revision1=None, path2=None, revision2=None):

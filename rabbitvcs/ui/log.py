@@ -858,10 +858,10 @@ class LogTopContextMenuConditions:
 
     def show_changes_previous_revision(self, data=None):
         item = self.revisions[0]["revision"]
-        return (self.guess["vcs"] == "svn" and "previous_revision" in self.revisions[0] and len(self.revisions) == 1)
+        return ("previous_revision" in self.revisions[0] and len(self.revisions) == 1)
 
     def show_changes_revisions(self, data=None):
-        return (self.guess["vcs"] == "svn" and len(self.revisions) > 1)
+        return (len(self.revisions) > 1)
 
     def update_to_this_revision(self, data=None):
         return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)
@@ -951,52 +951,36 @@ class LogTopContextMenuCallbacks:
         ])
 
     def show_changes_previous_revision(self, widget, data=None):
-        from rabbitvcs.ui.changes import Changes
         rev_first = unicode(self.revisions[0]["revision"])
-        rev_last = rev_first - 1
-        path = self.svn.get_repo_url(self.path)
+        rev_last = unicode(self.revisions[0]["next_revision"])
+        
+        path = self.path
+        if self.guess == rabbitvcs.vcs.VCS_SVN:
+            path = self.svn.get_repo_url(self.path)
 
-        # FIXME: why does this have the opposite sense to the callback from the
-        # paths list?
-        Changes(
-            path, 
-            rev_last, 
-            path, 
-            rev_first
-        )
+        rabbitvcs.util.helper.launch_ui_window("changes", [
+            "%s@%s" % (path, unicode(rev_first)),
+            "%s@%s" % (path, unicode(rev_last))
+        ])
 
     def show_changes_revisions(self, widget, data=None):
-        from rabbitvcs.ui.changes import Changes
         rev_first = unicode(self.revisions[0]["revision"])
-        rev_last = self.revisions[-1]["revision"].value
-        path = self.svn.get_repo_url(self.path)
+        rev_last = unicode(self.revisions[0]["next_revision"])
 
-        # FIXME: why does this have the opposite sense to the callback from the
-        # paths list?
-        Changes(
-            path, 
-            rev_last, 
-            path, 
-            rev_first
-        )
+        path = self.path
+        if self.guess == rabbitvcs.vcs.VCS_SVN:
+            path = self.svn.get_repo_url(self.path)
 
-    def update_to_this_revision(self, widget, data=None):
-        action = SVNAction(
-            self.svn
-        )
+        rabbitvcs.util.helper.launch_ui_window("changes", [
+            "%s@%s" % (path, unicode(rev_first)),
+            "%s@%s" % (path, unicode(rev_last))
+        ])
 
-        action.append(action.set_header, _("Update To Revision"))
-        action.append(action.set_status, _("Updating..."))
-        action.append(
-            self.svn.update, 
+    def update_to_this_revision(self, widget, data=None):        
+        rabbitvcs.util.helper.launch_ui_window("updateto", [
             self.path,
-            revision=self.svn.revision("number", unicode(self.revisions[0]["revision"])),
-            recurse=True,
-            ignore_externals=False
-        )
-        action.append(action.set_status, _("Completed Update"))
-        action.append(action.finish)
-        action.start()
+            "-r", unicode(self.revisions[0]["revision"])
+        ])
         
     def checkout(self, widget, data=None):
         url = ""
@@ -1163,6 +1147,12 @@ class LogBottomContextMenuCallbacks:
         self.vcs = vcs
         self.svn = self.vcs.svn()
         self.guess = self.vcs.guess(paths[0])["vcs"]
+        
+        # SVN will return invalid paths so re-guess with the correct url
+        if self.guess == rabbitvcs.vcs.VCS_DUMMY:
+            path = self.caller.root_url + paths[0]
+            self.guess = self.vcs.guess(path)["vcs"]
+            
         self.paths = paths
         self.revisions = revisions
 
@@ -1199,32 +1189,31 @@ class LogBottomContextMenuCallbacks:
                                         earliest_revision_number=earliest_rev)
 
     def show_changes_previous_revision(self, widget, data=None):
-        rev_first = unicode(self.revisions[0]["revision"]) - 1
-        rev_last = rev_first - 1
-        path_item = self.paths[0]
-        url = self.caller.root_url + path_item
+        rev_first = unicode(self.revisions[0]["revision"])
+        rev_last = unicode(self.revisions[0]["next_revision"])
 
-        from rabbitvcs.ui.changes import Changes
-        Changes(
-            url, 
-            rev_first, 
-            url, 
-            rev_last
-        )
+        url = self.paths[0]
+        if self.guess == rabbitvcs.vcs.VCS_SVN:
+            url = self.caller.root_url + self.paths[0]
+
+        rabbitvcs.util.helper.launch_ui_window("changes", [
+            "%s@%s" % (url, rev_first),
+            "%s@%s" % (url, rev_last)
+        ])
     
     def show_changes_revisions(self, widget, data=None):
-        rev_first = unicode(self.revisions[0]["revision"]) - 1
-        rev_last = self.revisions[-1]["revision"].value
-        path_item = self.paths[0]
-        url = self.caller.root_url + path_item
+        rev_first = unicode(self.revisions[0]["revision"])
+        rev_last = unicode(self.revisions[-1]["revision"])
 
-        from rabbitvcs.ui.changes import Changes
-        Changes(
-            url, 
-            rev_first, 
-            url, 
-            rev_last
-        )
+        url = self.paths[0]
+        if self.guess == rabbitvcs.vcs.VCS_SVN:
+            url = self.caller.root_url + self.paths[0]
+        
+        rabbitvcs.util.helper.launch_ui_window("changes", [
+            "%s@%s" % (url, rev_first),
+            "%s@%s" % (url, rev_last)
+        ])
+        
 
     def _open(self, widget, data=None):
         for path in self.paths:
@@ -1320,7 +1309,8 @@ def log_dialog_factory(path, ok_callback=None, multiple=False):
 if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main(usage="Usage: rabbitvcs log [url_or_path]")
-            
-    window = log_factory(paths[0])
+    
+    path = os.path.abspath(paths[0])
+    window = log_factory(path)
     window.register_gtk_quit()
     gtk.main()

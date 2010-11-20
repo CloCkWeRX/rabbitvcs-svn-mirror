@@ -1179,7 +1179,7 @@ class GittyupClient:
         if path == self.repo.path:
             path = ""        
         if path:
-            cmd.append("-- %s" % path)
+            cmd += ["--", path]
 
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
@@ -1306,7 +1306,7 @@ class GittyupClient:
 
         return stdout
 
-    def diff(self, path1, revision_obj1, path2=None, revision_obj2=None):
+    def diff(self, path1, revision_obj1, path2=None, revision_obj2=None, summarize=False):
         """
         Returns the diff between the path(s)/revision(s)
         
@@ -1339,7 +1339,10 @@ class GittyupClient:
             cmd += [relative_path1]
         if relative_path2 and relative_path2 != relative_path1:
             cmd += [relative_path2]
-        
+
+        if summarize:
+            cmd.append("--name-status")
+            
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
         except GittyupCommandError, e:
@@ -1347,6 +1350,21 @@ class GittyupClient:
             stdout = ""
         
         return stdout
+
+    def diff_summarize(self, path1, revision_obj1, path2=None, revision_obj2=None):
+        results = self.diff(path1, revision_obj1, path2, revision_obj2, True)
+        summary = []
+        for line in results.split("\n"):
+            if not line:
+                continue
+                
+            (action, path) = line.split("\t")
+            summary.append({
+                "action": action,
+                "path": path
+            })
+        
+        return summary
 
     def export(self, path, dest_path, revision):
         """

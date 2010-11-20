@@ -706,6 +706,33 @@ class Git:
             ))
             
         return returner
+
+    def diff_summarize(self, path1, revision_obj1, path2=None, revision_obj2=None):
+        """
+        Returns a diff summary between the path(s)/revision(s)
+        
+        @type   path1: string
+        @param  path1: The absolute path to a file
+
+        @type   revision_obj1: git.Revision()
+        @param  revision_obj1: The revision object for path1
+
+        @type   path2: string
+        @param  path2: The absolute path to a file
+
+        @type   revision_obj2: git.Revision()
+        @param  revision_obj2: The revision object for path2
+               
+        """
+        
+        summary_raw = self.client.diff_summarize(path1, revision_obj1.primitive(),
+            path2, revision_obj2.primitive())
+        
+        summary = []
+        for item in summary_raw:
+            summary.append(rabbitvcs.vcs.log.LogChangedPath(item["path"], item["action"], "", ""))
+        
+        return summary
     
     def annotate(self, path, revision_obj=Revision("head")):
         """
