@@ -139,7 +139,7 @@ class GittyupClient:
         
         patterns = []
         
-        files = self.get_global_ignore_fles()
+        files = self.get_global_ignore_files()
         for path in files:
             patterns += self.get_ignore_patterns_from_file(path)
 
