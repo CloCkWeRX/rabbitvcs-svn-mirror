@@ -339,7 +339,7 @@ class ContextMenuCallbacks:
     # End debugging callbacks
 
     def checkout(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window("checkout", ["--vcs", "svn"] + self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("checkout", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
     
     def update(self, widget, data1=None, data2=None):
@@ -440,7 +440,6 @@ class ContextMenuCallbacks:
         rabbitvcs.util.helper.launch_ui_window("about")
         
     def settings(self, widget, data1=None, data2=None):
-        print self.base_dir
         proc = rabbitvcs.util.helper.launch_ui_window("settings", [self.base_dir])
         self.caller.reload_settings(proc)
 
@@ -609,10 +608,16 @@ class ContextMenuConditions:
                     self.path_dict[key] = False
 
     def checkout(self, data=None):
-        return (self.path_dict["length"] == 1 and
-                self.path_dict["is_dir"] and
-                not self.path_dict["is_working_copy"])
-                
+        if self.path_dict["length"] == 1:
+            if self.path_dict["is_svn"]:
+                return (self.path_dict["is_dir"] and
+                    not self.path_dict["is_working_copy"])
+            elif self.path_dict["is_git"]:
+                return (self.path_dict["is_in_a_or_a_working_copy"] and
+                    self.path_dict["is_versioned"])
+    
+        return False
+    
     def update(self, data=None):
         return (self.path_dict["is_in_a_or_a_working_copy"] and
                 self.path_dict["is_versioned"] and
@@ -1229,13 +1234,18 @@ class MainContextMenu:
                     (MenuCompareToolMultiple, None),
                     (MenuShowChanges, None),
                 ]),
+                (MenuShowLog, None),
                 (MenuRevert, None),
                 (MenuAddToIgnoreList, ignore_items),
+                (MenuSeparator, None),
+                (MenuRename, None),
+                (MenuDelete, None),
                 (MenuSeparator, None),
                 (MenuBranches, None),
                 (MenuTags, None),
                 (MenuRemotes, None),
                 (MenuSeparator, None),
+                (MenuCheckout, None),
                 (MenuExport, None),
                 (MenuSeparator, None),
                 (MenuAnnotate, None),
