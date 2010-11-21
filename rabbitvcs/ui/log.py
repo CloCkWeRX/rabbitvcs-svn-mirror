@@ -130,7 +130,7 @@ class Log(InterfaceView):
         self.previous_starts = []
         self.initialize_revision_labels()
         self.revision_number_column = 0
-         
+        self.head_row = 0
         self.get_widget("limit").set_text(str(self.limit))
 
         self.message = rabbitvcs.ui.widget.TextView(
@@ -613,6 +613,7 @@ class GitLog(Log):
         cell = graph_column.get_cell_renderers()[0]
         self.revisions_table.set_column_width(0, 16*max_columns)
 
+        index = 0
         for (item, node, in_lines, out_lines) in grapher:
             revision = unicode(item.revision)
             msg = cgi.escape(rabbitvcs.util.helper.format_long_text(item.message, 80))
@@ -620,6 +621,7 @@ class GitLog(Log):
             date = rabbitvcs.util.helper.format_datetime(item.date)
             
             if item.head:
+                self.head_row = index
                 msg = "<b>%s</b>" % msg
                 author = "<b>%s</b>" % author
                 date = "<b>%s</b>" % date            
@@ -631,6 +633,8 @@ class GitLog(Log):
                 date,
                 msg
             ])
+
+            index += 1
 
         self.check_previous_sensitive()
         self.check_next_sensitive()
@@ -1014,7 +1018,19 @@ class LogTopContextMenuCallbacks:
         rabbitvcs.util.helper.launch_ui_window("export", [self.path, "-r", unicode(self.revisions[0]["revision"])])
 
     def merge(self, widget, data=None):
-        rabbitvcs.util.helper.launch_ui_window("merge", [self.path])
+        extra = []
+        if self.guess == rabbitvcs.vcs.VCS_GIT:
+            extra.append(unicode(self.revisions[0]["revision"]))
+            try:
+                print "Attempting to get second selected row..."
+                fromrev = unicode(self.revisions[1]["revision"])
+                print "Found",fromrev
+                extra.append(fromrev)
+            except IndexError, e:
+                pass
+        
+        print extra
+        rabbitvcs.util.helper.launch_ui_window("merge", [self.path] + extra)
 
     def edit_author(self, widget, data=None):
         message = ""

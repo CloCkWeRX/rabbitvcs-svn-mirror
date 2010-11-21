@@ -387,7 +387,7 @@ class GitMerge(BranchMerge):
         self.from_branches = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("from_branch_container"),
             self.git,
-            revision=None,
+            revision=self.branch1,
             url=path,
             expand=True,
             revision_changed_callback=self.__revision_changed
@@ -395,7 +395,7 @@ class GitMerge(BranchMerge):
         self.to_branches = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("to_branch_container"),
             self.git,
-            revision=None,
+            revision=self.branch2,
             url=path,
             expand=True,
             revision_changed_callback=self.__revision_changed
@@ -565,14 +565,31 @@ classes_map = {
     rabbitvcs.vcs.VCS_GIT: GitMerge
 }
 
-def merge_factory(path):
+def merge_factory(path, revision1, revision2):
     guess = rabbitvcs.vcs.guess(path)
-    return classes_map[guess["vcs"]](path)
+    return classes_map[guess["vcs"]](path, revision1, revision2)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
-    (options, paths) = main(usage="Usage: rabbitvcs merge [path]")
+    (options, args) = main(usage="Usage: rabbitvcs merge path [revision... (for git)]")
 
-    window = merge_factory(paths[0])
-    window.register_gtk_quit()
-    gtk.main()
+    path = args[0]
+
+    guess = rabbitvcs.vcs.guess(path)
+    window = None
+    if guess["vcs"] == rabbitvcs.vcs.VCS_SVN:
+        window = SVNMerge(path)
+        window.register_gtk_quit()
+        gtk.main()
+    elif guess["vcs"] == rabbitvcs.vcs.VCS_GIT:
+        revision1 = None
+        revision2 = None
+        if len(args) == 2:
+            revision1 = args[1]
+        elif len(args) == 3:
+            revision1 = args[1]
+            revision2 = args[2]
+
+        window = GitMerge(path, revision1, revision2)
+        window.register_gtk_quit()
+        gtk.main()
