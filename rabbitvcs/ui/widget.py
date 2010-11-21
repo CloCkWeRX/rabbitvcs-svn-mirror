@@ -1231,10 +1231,9 @@ class MultiFileTextEditor:
         
         for tmppath in paths:
             if tmppath in self.cache:
-                if not os.path.exists(tmppath):
+                if not os.path.exists(os.path.dirname(tmppath)):
                     os.mkdir(os.path.dirname(tmppath))
-            
-                if os.access(tmppath, os.W_OK):
-                    fh = open(tmppath, "w")
-                    fh.write(self.cache[tmppath])
-                    fh.close()
+
+                fh = open(tmppath, "w")
+                fh.write(self.cache[tmppath])
+                fh.close()
