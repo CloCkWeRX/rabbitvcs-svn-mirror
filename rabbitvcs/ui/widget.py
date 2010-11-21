@@ -161,7 +161,10 @@ def git_revision_filter(row, column, user_data=None):
     
     text = row[column]
     if text:
-        text = text[0:7]
+        if text.startswith("<b>"):
+            text = text[3:10]
+        else:
+            text = text[0:7]
 
     return text
 
@@ -344,8 +347,7 @@ class TableBase:
                 if i in flags["editable"]:
                     cell.set_property('editable', True)
                     cell.connect("edited", self.__cell_edited, i)
-                col = gtk.TreeViewColumn(name, cell)
-                col.set_attributes(cell, text=i)
+                col = gtk.TreeViewColumn(name, cell, markup=i)
 
             if flags["sortable"]:
                 col.set_sort_column_id(i)
@@ -842,7 +844,8 @@ class RevisionSelector:
         if client.vcs == rabbitvcs.vcs.VCS_GIT:
             self.OPTIONS = [
                 _("HEAD"),
-                _("Revision")
+                _("Revision"),
+                _("Branch")
             ]
         elif client.vcs == rabbitvcs.vcs.VCS_SVN:
             self.OPTIONS = [
@@ -913,19 +916,25 @@ class RevisionSelector:
 
     def determine_widget_sensitivity(self):
         index = self.revision_kind_opt.get_active()
-
+        
+        allow_revision_browse = True
+        
         # Only allow number entry if "Number" is selected
         if index == 1:
             self.revision_entry.set_sensitive(True)
+        elif index == 2:
+            if self.client.vcs == rabbitvcs.vcs.VCS_GIT:
+                self.revision_entry.set_sensitive(True)
+                allow_revision_browse = False
         else:
             self.revision_entry.set_text("")
             self.revision_entry.set_sensitive(False)
 
         # Only allow browsing if a URL is provided
-        if self.get_url() == "":
-            self.revision_browse.set_sensitive(False)
-        else:
+        if self.get_url() and allow_revision_browse:
             self.revision_browse.set_sensitive(True)
+        else:
+            self.revision_browse.set_sensitive(False)
     
     def get_url(self):
         if self.url_combobox:
@@ -953,10 +962,13 @@ class RevisionSelector:
         elif index == 1:
             if self.client.vcs == rabbitvcs.vcs.VCS_SVN:
                 return self.client.revision("number", self.revision_entry.get_text())
-            if self.client.vcs == rabbitvcs.vcs.VCS_GIT:
+            elif self.client.vcs == rabbitvcs.vcs.VCS_GIT:
                 return self.client.revision(self.revision_entry.get_text())
         elif index == 2:
-            return self.client.revision("working")
+            if self.client.vcs == rabbitvcs.vcs.VCS_SVN:
+                return self.client.revision("working")
+            elif self.client.vcs == rabbitvcs.vcs.VCS_GIT:
+                return self.client.revision(self.revision_entry.get_text())
 
     def set_kind_head(self):
         self.revision_kind_opt.set_active(0)

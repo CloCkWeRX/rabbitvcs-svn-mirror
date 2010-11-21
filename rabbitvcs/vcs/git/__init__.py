@@ -35,6 +35,7 @@ import rabbitvcs.util.helper
 import rabbitvcs.vcs
 import rabbitvcs.vcs.status
 import rabbitvcs.vcs.log
+from rabbitvcs.vcs.branch import BranchEntry
 from rabbitvcs.util.log import Log
 
 log = Log("rabbitvcs.vcs.git")
@@ -365,13 +366,27 @@ class Git:
 
         return self.client.branch_rename(old_name, new_name)
         
-    def branch_list(self):
+    def branch_list(self, revision=None):
         """
         List all branches
         
         """
         
-        return self.client.branch_list()
+        revision_str = None
+        if revision:
+            revision_str = revision.primitive()
+        
+        results = self.client.branch_list(revision_str)
+        branches = []
+        for result in results:
+            branches.append(BranchEntry(
+                result["name"],
+                result["tracking"],
+                result["revision"],
+                result["message"]
+            ))
+        
+        return branches
         
     def checkout(self, paths=[], revision=Revision("HEAD")):
         """
@@ -696,13 +711,18 @@ class Git:
             for parent in item["parents"]:
                 parents.append(self.revision(parent))
             
+            head = False
+            if item["commit"] == self.client.head():
+                head = True
+            
             returner.append(rabbitvcs.vcs.log.Log(
                 date,
                 revision,
                 author,
                 item["message"],
                 changed_paths,
-                parents
+                parents,
+                head
             ))
             
         return returner

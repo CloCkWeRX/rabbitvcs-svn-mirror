@@ -28,6 +28,7 @@ import os.path
 import pygtk
 import gobject
 import gtk
+import cgi
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import SVNAction, GitAction, vcs_action_factory
@@ -399,7 +400,7 @@ class SVNLog(Log):
         self.set_end_revision(self.rev_end)
 
         for item in self.revision_items:
-            msg = rabbitvcs.util.helper.format_long_text(item.message, 80)
+            msg = cgi.escape(rabbitvcs.util.helper.format_long_text(item.message, 80))
 
             self.revisions_table.append([
                 unicode(item.revision),
@@ -612,12 +613,21 @@ class GitLog(Log):
         self.revisions_table.set_column_width(0, 16*max_columns)
 
         for (item, node, in_lines, out_lines) in grapher:
-            msg = rabbitvcs.util.helper.format_long_text(item.message, 80)
+            revision = unicode(item.revision)
+            msg = cgi.escape(rabbitvcs.util.helper.format_long_text(item.message, 80))
+            author = item.author
+            date = rabbitvcs.util.helper.format_datetime(item.date)
+            
+            if item.head:
+                msg = "<b>%s</b>" % msg
+                author = "<b>%s</b>" % author
+                date = "<b>%s</b>" % date            
+            
             self.revisions_table.append([
                 (node, in_lines, out_lines),
-                unicode(item.revision),
-                item.author,
-                rabbitvcs.util.helper.format_datetime(item.date),
+                revision,
+                author,
+                date,
                 msg
             ])
 
@@ -870,7 +880,7 @@ class LogTopContextMenuConditions:
         return (len(self.revisions) == 1)
 
     def branches(self, data=None):
-        return (len(self.revisions) == 1)
+        return (len(self.revisions) == 1 and self.guess["vcs"] == "git")
 
     def branch_tag(self, data=None):
         return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)

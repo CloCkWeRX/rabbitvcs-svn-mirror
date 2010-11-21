@@ -369,6 +369,9 @@ class GittyupClient:
     def tracking(self):
         return self.repo.refs.read_ref("HEAD")[5:]
     
+    def head(self):
+        return self.repo.refs["HEAD"]
+    
     def get_sha1_from_refspec(self, refspec):
         if refspec in self.repo.refs:
             return self.repo.refs[refspec]
@@ -540,17 +543,18 @@ class GittyupClient:
         
         """
 
-        if commit_sha:
-            try:
-                commit = self.repo[commit_sha]
-            except AssertionError:
-                raise NotCommitError(commit_sha)
-        else:
-            commit = self.repo[self.repo.head()]
+        cmd = ["git", "branch"]
+        if track:
+            cmd.append("-t")
+        
+        cmd += [name, commit_sha]
 
-        self.repo.refs["refs/heads/%s" % name] = commit.id
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
 
-        return commit.id
+        return stdout
 
     def branch_delete(self, name):
         """
@@ -591,18 +595,52 @@ class GittyupClient:
             
             del self.repo.refs[old_ref_name]
 
-    def branch_list(self):
+    def branch_list(self, commit_sha=None):
         """
         List all branches
         
         """
-        
+        """
         refs = self.repo.get_refs()
         branches = []
         for ref,branch_sha in refs.items():
             if ref.startswith("refs/heads"):
                 branch = Branch(ref[11:], branch_sha, self.repo[branch_sha])
                 branches.append(branch)
+        
+        return branches
+        """
+        cmd = ["git", "branch", "-lv", "--no-abbrev"]
+        if commit_sha:
+            cmd += ["--contains", commit_sha]
+
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
+
+        branches = []
+        for line in stdout.split("\n"):
+            if not line:
+                continue
+            
+            components = line.split()
+            if components[0] != "*":
+                components.insert(0, "")
+            tracking = components.pop(0) == "*" and True or False
+            if components[0] == "(no":
+                name = components.pop(0) + " " + components.pop(0)
+            else:
+               name = components.pop(0)
+            revision = components.pop(0)
+            message = " ".join(components)
+            
+            branches.append({
+                "tracking": tracking,
+                "name": name,
+                "revision": revision,
+                "message": message
+            })
         
         return branches
 
@@ -1176,7 +1214,7 @@ class GittyupClient:
     def log(self, path="", skip=0, limit=None, refspec=""):
         
         cmd = ["git", "--no-pager", "log", "--numstat", "--parents", "--pretty=fuller", 
-            "--date-order"]            
+            "--date-order", "--all"]            
         if limit:
             cmd.append("-%s" % limit)
         if skip:
