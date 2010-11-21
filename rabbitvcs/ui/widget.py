@@ -56,6 +56,7 @@ TYPE_PATH = 'TYPE_PATH'
 TYPE_STATUS = 'TYPE_STATUS'
 TYPE_ELLIPSIZED = 'TYPE_ELLIPSIZED'
 TYPE_GRAPH = 'TYPE_GRAPH'
+TYPE_MARKUP = 'TYPE_MARKUP'
 
 ELLIPSIZE_COLUMN_CHARS = 20
 
@@ -347,7 +348,13 @@ class TableBase:
                 if i in flags["editable"]:
                     cell.set_property('editable', True)
                     cell.connect("edited", self.__cell_edited, i)
-                col = gtk.TreeViewColumn(name, cell, markup=i)
+                
+                if coltypes[i] == TYPE_MARKUP:
+                    col = gtk.TreeViewColumn(name, cell, markup=i)
+                else:
+                    col = gtk.TreeViewColumn(name, cell, text=i)
+
+                coltypes[i] = gobject.TYPE_STRING
 
             if flags["sortable"]:
                 col.set_sort_column_id(i)
@@ -860,7 +867,7 @@ class RevisionSelector:
         self.url_entry = url_entry
         self.url = url
         self.revision_changed_callback = revision_changed_callback
-    
+        self.revision_change_inprogress = False
         hbox = gtk.HBox(0, 4)
         
         self.revision_kind_opt = ComboBox(gtk.ComboBox(), self.OPTIONS)
@@ -908,11 +915,17 @@ class RevisionSelector:
         self.determine_widget_sensitivity()
         
         if self.revision_changed_callback:
-            self.revision_changed_callback(self)
+            self.revision_change_inprogress = True
+            gobject.timeout_add(400, self.__revision_changed_callback, self)
 
     def __revision_entry_changed(self, widget):
-        if self.revision_changed_callback:
-            self.revision_changed_callback(self)
+        if self.revision_changed_callback and not self.revision_change_inprogress:
+            self.revision_change_inprogress = True
+            gobject.timeout_add(400, self.__revision_changed_callback, self)
+
+    def __revision_changed_callback(self, *args, **kwargs):
+        self.revision_change_inprogress = False
+        self.revision_changed_callback(*args, **kwargs)
 
     def determine_widget_sensitivity(self):
         index = self.revision_kind_opt.get_active()

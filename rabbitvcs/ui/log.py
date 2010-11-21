@@ -550,8 +550,9 @@ class GitLog(Log):
 
         self.revisions_table = rabbitvcs.ui.widget.Table(
             self.get_widget("revisions_table"),
-            [rabbitvcs.ui.widget.TYPE_GRAPH, gobject.TYPE_STRING, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [rabbitvcs.ui.widget.TYPE_GRAPH, gobject.TYPE_STRING, 
+                rabbitvcs.ui.widget.TYPE_MARKUP, 
+                rabbitvcs.ui.widget.TYPE_MARKUP, rabbitvcs.ui.widget.TYPE_MARKUP], 
             [_("Graph"), _("Revision"), _("Author"), 
                 _("Date"), _("Message")],
             filters=[{
@@ -902,6 +903,9 @@ class LogTopContextMenuConditions:
 
     def separator_last(self, data=None):
         return (self.guess["vcs"] == "svn")
+        
+    def merge(self, data=None):
+        return (self.guess["vcs"] == "git")
 
 class LogTopContextMenuCallbacks:
     def __init__(self, caller, vcs, path, revisions):
@@ -1009,6 +1013,9 @@ class LogTopContextMenuCallbacks:
     def export(self, widget, data=None):
         rabbitvcs.util.helper.launch_ui_window("export", [self.path, "-r", unicode(self.revisions[0]["revision"])])
 
+    def merge(self, widget, data=None):
+        rabbitvcs.util.helper.launch_ui_window("merge", [self.path])
+
     def edit_author(self, widget, data=None):
         message = ""
         if len(self.revisions) == 1:
@@ -1095,6 +1102,7 @@ class LogTopContextMenu:
             (MenuBranches, None),
             (MenuBranchTag, None),
             (MenuExport, None),
+            (MenuMerge, None),
             (MenuSeparatorLast, None),
             (MenuEditAuthor, None),
             (MenuEditLogMessage, None),

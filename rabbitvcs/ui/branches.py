@@ -69,7 +69,7 @@ class GitBranchManager(InterfaceView):
         self.selected_branch = None
         self.items_treeview = rabbitvcs.ui.widget.Table(
             self.get_widget("items_treeview"),
-            [gobject.TYPE_STRING], 
+            [rabbitvcs.ui.widget.TYPE_MARKUP], 
             [_("Branch")],
             callbacks={
                 "mouse-event":   self.on_treeview_mouse_event,

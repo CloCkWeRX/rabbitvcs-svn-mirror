@@ -744,7 +744,7 @@ class GitAction(VCSAction):
         return result
 
     def conflict_filter(self, data):
-        if str(data).startswith("ERROR: content conflict in "):
+        if str(data).startswith("ERROR:"):
             path = data[27:]
             rabbitvcs.util.helper.launch_merge_tool(path)
 

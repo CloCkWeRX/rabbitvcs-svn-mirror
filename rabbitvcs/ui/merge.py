@@ -384,19 +384,22 @@ class GitMerge(BranchMerge):
 
         self.init_branch_widgets()
 
-        self.from_branches = rabbitvcs.ui.widget.ComboBox(self.get_widget("from_branches"))
-        self.to_branches = rabbitvcs.ui.widget.ComboBox(self.get_widget("to_branches"))
-        
-        self.branch_list = self.git.branch_list()
-        for item in self.branch_list:
-            self.from_branches.append(item.name)
-            if self.git.is_tracking(item.name):
-                self.from_branches.set_active_from_value(item.name)
-
-        for item in self.branch_list:
-            self.to_branches.append(item.name)
-            
-        self.to_branches.set_active_from_value("master")
+        self.from_branches = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("from_branch_container"),
+            self.git,
+            revision=None,
+            url=path,
+            expand=True,
+            revision_changed_callback=self.__revision_changed
+        )
+        self.to_branches = rabbitvcs.ui.widget.RevisionSelector(
+            self.get_widget("to_branch_container"),
+            self.git,
+            revision=None,
+            url=path,
+            expand=True,
+            revision_changed_callback=self.__revision_changed
+        )
         
         self.update_branch_info()
 
@@ -509,21 +512,26 @@ class GitMerge(BranchMerge):
         to_container.show_all()
 
     def update_branch_info(self):
-        from_branch = self.from_branches.get_active_text()
-        to_branch = self.to_branches.get_active_text()
-        
-        from_info = self.git.log(self.path, limit=1, refspec=from_branch)[0]
-        to_info = self.git.log(self.path, limit=1, refspec=to_branch)[0]
+        from_branch = self.from_branches.get_revision_object()
+        to_branch = self.to_branches.get_revision_object()
 
-        self.info['from']['author'].set_text(from_info.author)
-        self.info['from']['date'].set_text(rabbitvcs.util.helper.format_datetime(from_info.date))
-        self.info['from']['revision'].set_text(unicode(from_info.revision)[0:7])
-        self.info['from']['message'].set_text(from_info.message)
+        if from_branch.value:
+            log = self.git.log(self.path, limit=1, revision=from_branch, showtype="branch")
+            if log:
+                from_info = log[0]
+                self.info['from']['author'].set_text(from_info.author)
+                self.info['from']['date'].set_text(rabbitvcs.util.helper.format_datetime(from_info.date))
+                self.info['from']['revision'].set_text(unicode(from_info.revision)[0:7])
+                self.info['from']['message'].set_text(from_info.message)
 
-        self.info['to']['author'].set_text(to_info.author)
-        self.info['to']['date'].set_text(rabbitvcs.util.helper.format_datetime(to_info.date))
-        self.info['to']['revision'].set_text(unicode(to_info.revision)[0:7])
-        self.info['to']['message'].set_text(to_info.message)
+        if to_branch.value:
+            log = self.git.log(self.path, limit=1, revision=to_branch, showtype="branch")
+            if log:
+                to_info = log[0]
+                self.info['to']['author'].set_text(to_info.author)
+                self.info['to']['date'].set_text(rabbitvcs.util.helper.format_datetime(to_info.date))
+                self.info['to']['revision'].set_text(unicode(to_info.revision)[0:7])
+                self.info['to']['message'].set_text(to_info.message)
 
     def on_from_branches_changed(self, widget):
         self.update_branch_info()
@@ -532,8 +540,8 @@ class GitMerge(BranchMerge):
         self.update_branch_info()
 
     def on_ok_clicked(self, widget, data=None):
-        from_branch = self.from_branches.get_active_text()
-        to_branch = self.to_branches.get_active_text()
+        from_branch = self.from_branches.get_revision_object()
+        to_branch = self.to_branches.get_revision_object()
         
         self.action = rabbitvcs.ui.action.GitAction(
             self.git,
@@ -548,6 +556,9 @@ class GitMerge(BranchMerge):
         
         self.action.append(self.action.finish)
         self.action.start()
+
+    def __revision_changed(self, widget):
+        self.update_branch_info()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNMerge, 

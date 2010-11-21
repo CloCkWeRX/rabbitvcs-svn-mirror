@@ -539,8 +539,8 @@ class Git:
         
         return self.client.fetch(host)
         
-    def merge(self, branch1, branch2="master"):
-        return self.client.merge(branch1, branch2)
+    def merge(self, branch1, branch2):
+        return self.client.merge(branch1.primitive(), branch2.primitive())
 
     def remote_add(self, name, host):
         """
@@ -659,7 +659,7 @@ class Git:
         return self.client.tag_list()
 
 
-    def log(self, path=None, skip=0, limit=None, refspec=""):
+    def log(self, path=None, skip=0, limit=None, revision=Revision("HEAD"), showtype="all"):
         """
         Returns a revision history list
         
@@ -667,8 +667,8 @@ class Git:
         @param  path    If a path is specified, return commits that contain
                         changes to the specified path only
         
-        @type   refspec string
-        @param  refspec Determines which branch to find commits for
+        @type   revision git.Revision
+        @param  revision Determines which branch to find commits for
         
         @type   start_point sha1 hash string
         @param  start_point Start at a given revision
@@ -679,11 +679,15 @@ class Git:
         @type   refspec string
         @param  refspec Return commits in this refspec only
         
+        @type   showtype string
+        @type   showtype Determines which revisions to show.  "all" shows all revisions,
+            "branch" shows just the branch given in refspec
+        
         @returns    A list of commits
         
         """
         
-        log = self.client.log(path, skip, limit, refspec)
+        log = self.client.log(path, skip, limit, revision.primitive(), showtype)
         
         returner = []
         for item in log:
@@ -698,18 +702,20 @@ class Git:
                     author = author[0:pos-1]
             
             changed_paths = []
-            for changed_path in item["changed_paths"]:
-                action = "+%s/-%s" % (changed_path["additions"], changed_path["removals"])
-            
-                changed_paths.append(rabbitvcs.vcs.log.LogChangedPath(
-                    changed_path["path"],
-                    action,
-                    "", ""
-                ))
+            if "changed_paths" in item:
+                for changed_path in item["changed_paths"]:
+                    action = "+%s/-%s" % (changed_path["additions"], changed_path["removals"])
+                
+                    changed_paths.append(rabbitvcs.vcs.log.LogChangedPath(
+                        changed_path["path"],
+                        action,
+                        "", ""
+                    ))
             
             parents = []
-            for parent in item["parents"]:
-                parents.append(self.revision(parent))
+            if "parents" in item:
+                for parent in item["parents"]:
+                    parents.append(self.revision(parent))
             
             head = False
             if item["commit"] == self.client.head():

@@ -45,35 +45,13 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
                         <child>
-                          <widget class="GtkHBox" id="hbox2">
+                          <widget class="GtkHBox" id="from_branch_container">
                             <property name="visible">True</property>
-                            <property name="spacing">3</property>
                             <child>
-                              <widget class="GtkLabel" id="label1">
-                                <property name="width_request">90</property>
-                                <property name="visible">True</property>
-                                <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Branch:</property>
-                              </widget>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkComboBox" id="from_branches">
-                                <property name="visible">True</property>
-                                <signal name="changed" handler="on_from_branches_changed"/>
-                              </widget>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
+                              <placeholder/>
                             </child>
                           </widget>
                           <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
@@ -130,35 +108,13 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
                         <child>
-                          <widget class="GtkHBox" id="hbox3">
+                          <widget class="GtkHBox" id="to_branch_container">
                             <property name="visible">True</property>
-                            <property name="spacing">3</property>
                             <child>
-                              <widget class="GtkLabel" id="label2">
-                                <property name="width_request">90</property>
-                                <property name="visible">True</property>
-                                <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Branch:</property>
-                              </widget>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <widget class="GtkComboBox" id="to_branches">
-                                <property name="visible">True</property>
-                                <signal name="changed" handler="on_to_branches_changed"/>
-                              </widget>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
+                              <placeholder/>
                             </child>
                           </widget>
                           <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
                             <property name="position">0</property>
                           </packing>
                         </child>

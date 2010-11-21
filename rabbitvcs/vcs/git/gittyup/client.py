@@ -1211,10 +1211,14 @@ class GittyupClient:
 
         return final_statuses  
 
-    def log(self, path="", skip=0, limit=None, refspec=""):
+    def log(self, path="", skip=0, limit=None, refspec="", showtype="all"):
         
         cmd = ["git", "--no-pager", "log", "--numstat", "--parents", "--pretty=fuller", 
-            "--date-order", "--all"]            
+            "--date-order"]
+
+        if showtype == "all":
+            cmd.append("--all")
+
         if limit:
             cmd.append("-%s" % limit)
         if skip:
@@ -1231,6 +1235,7 @@ class GittyupClient:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
+            return []
 
         lines = stdout.split("\n")
         revisions = []
