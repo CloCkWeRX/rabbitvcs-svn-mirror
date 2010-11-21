@@ -261,7 +261,7 @@
     </child>
   </widget>
   <widget class="GtkDialog" id="OneLineTextChange">
-    <property name="width_request">400</property>
+    <property name="width_request">500</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Text Change</property>
     <property name="icon_name">rabbitvcs-small</property>
@@ -2273,7 +2273,7 @@
               <widget class="GtkVBox" id="vbox2">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
-                <property name="spacing">6</property>
+                <property name="spacing">18</property>
                 <child>
                   <widget class="GtkLabel" id="label1">
                     <property name="visible">True</property>
@@ -2283,6 +2283,8 @@
                     <property name="use_markup">True</property>
                   </widget>
                   <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -2293,6 +2295,8 @@
                     <property name="yalign">0</property>
                   </widget>
                   <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -2304,11 +2308,15 @@
                     <property name="label" translatable="yes">How do you want to handle this?</property>
                   </widget>
                   <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
                     <property name="position">2</property>
                   </packing>
                 </child>
               </widget>
               <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>

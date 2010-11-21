@@ -49,19 +49,17 @@ class Rename(InterfaceNonView):
             self.close()
             return
         
-        (self.dir, self.filename) = os.path.split(self.path)
-        
-        dialog = OneLineTextChange(_("Rename"), _("New Name:"), self.filename)
-        (result, new_filename) = dialog.run()
+        dialog = OneLineTextChange(_("Rename"), _("New Name:"), self.path)
+        (result, new_path) = dialog.run()
 
         if result != gtk.RESPONSE_OK:
             self.close()
             return
        
-        if not new_filename:
+        if not new_path:
             MessageBox(_("The new name field is required"))
         
-        self.new_path = os.path.join(self.dir, new_filename)
+        self.new_path = new_path
         self.DO_RENAME = True
 
 class SVNRename(Rename):
@@ -77,7 +75,12 @@ class SVNRename(Rename):
             self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
-        
+
+        dirname = os.path.dirname(self.new_path)
+        if not os.path.exists(dirname):
+            os.mkdir(dirname)
+            self.svn.add(dirname)
+
         self.action.append(self.action.set_header, _("Rename"))
         self.action.append(self.action.set_status, _("Running Rename Command..."))
         self.action.append(
@@ -102,6 +105,10 @@ class GitRename(Rename):
             self.git,
             register_gtk_quit=self.gtk_quit_is_set()
         )
+
+        dirname = os.path.dirname(self.new_path)
+        if not os.path.exists(dirname):
+            os.mkdir(dirname)
         
         self.action.append(self.action.set_header, _("Rename"))
         self.action.append(self.action.set_status, _("Running Rename Command..."))
