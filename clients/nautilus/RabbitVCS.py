@@ -118,7 +118,6 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
     statuses_from_callback = []
 
     def __init__(self):
-        print "Init rabbitvcs"
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = VCS()
 
@@ -352,7 +351,6 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         return NautilusMainContextMenu(self, window.get_data("base_dir"), paths).get_menu()
 
     def update_file_items(self, provider, base_dir, paths, conditions_dict):
-        print "update_file_items"
         paths_str = "-".join(paths)
         self.items_cache[paths_str] =  conditions_dict
         self.emit_items_updated_signal(provider)
