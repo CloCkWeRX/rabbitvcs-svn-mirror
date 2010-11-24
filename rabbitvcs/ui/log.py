@@ -887,6 +887,9 @@ class LogTopContextMenuConditions:
     def branches(self, data=None):
         return (len(self.revisions) == 1 and self.guess["vcs"] == "git")
 
+    def tags(self, data=None):
+        return (len(self.revisions) == 1 and self.guess["vcs"] == "git")
+
     def branch_tag(self, data=None):
         return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)
 
@@ -1014,6 +1017,9 @@ class LogTopContextMenuCallbacks:
     def branches(self, widget, data=None):
         rabbitvcs.util.helper.launch_ui_window("branches", [self.path, "-r", unicode(self.revisions[0]["revision"])])
 
+    def tags(self, widget, data=None):
+        rabbitvcs.util.helper.launch_ui_window("tags", [self.path, "-r", unicode(self.revisions[0]["revision"])])
+        
     def export(self, widget, data=None):
         rabbitvcs.util.helper.launch_ui_window("export", [self.path, "-r", unicode(self.revisions[0]["revision"])])
 
@@ -1116,6 +1122,7 @@ class LogTopContextMenu:
             (MenuUpdateToThisRevision, None),
             (MenuCheckout, None),
             (MenuBranches, None),
+            (MenuTags, None),
             (MenuBranchTag, None),
             (MenuExport, None),
             (MenuMerge, None),

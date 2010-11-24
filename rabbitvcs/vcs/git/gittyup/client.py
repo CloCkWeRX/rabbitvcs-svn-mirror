@@ -316,20 +316,17 @@ class GittyupClient:
         if not os.path.isdir(real_path):
             os.mkdir(real_path)
 
+        cmd = ["git", "init"]
+        
         if bare:
-            self.repo = dulwich.repo.Repo.init_bare(real_path)
-        else:
-            self.repo = dulwich.repo.Repo.init(real_path)
-            
-        self._load_config()
-        self.global_ignore_patterns = self._get_global_ignore_patterns()
+            cmd.append("--bare")
+        
+        cmd.append(real_path)
 
-        self.config.set_section("core", {
-            "logallrefupdates": "true",
-            "filemode": "true",
-            "base": "false",
-            "logallrefupdates": "true"
-        })
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=real_path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
 
     def set_repository(self, path):
         try:
@@ -1021,8 +1018,7 @@ class GittyupClient:
                     
         return returner
     
-    def tag(self, name, message, tagger=None, tag_time=None, tag_timezone=None,
-            tag_object=None, track=False):
+    def tag(self, name, message, revision="HEAD"):
         """
         Create a tag object
         
@@ -1031,53 +1027,21 @@ class GittyupClient:
         
         @type   message: string
         @param  message: A log message
-        
-        @type   tagger: string
-        @param  tagger: The person tagging.  Defaults to 
-            "user.name <user.email>"
-        
-        @type   tag_time: int
-        @param  tag_time: The tag time.  Defaults to time.time()
-        
-        @type   tag_timezone: int
-        @param  tag_timezone: The tag timezone.  
-            Defaults to (-1 * time.timezone)
-        
-        @type   tag_object: string
-        @param  tag_object: The object to tag.  Defaults to HEAD
-        
-        @type   track: boolean
-        @param  track: Whether or not to track the tag
+                
+        @type   revision: string
+        @param  revision: The revision to tag.  Defaults to HEAD
         
         """
         
-        if not tagger:
-            tagger = self._get_config_user()
-        
-        if not tagger:
-            raise GittyupCommandError("A tagger was not specified")
+        self._get_config_user()
 
-        tag = dulwich.objects.Tag()
+        cmd = ["git", "tag", "-m", message, name, revision]
 
-        tag.name = name
-        tag.message = message
-        tag.tagger = (tagger and tagger or self._get_config_user())
-        tag.tag_time = (tag_time and tag_time or int(time.time()))
-        tag.tag_timezone = (tag_timezone and tag_timezone or TZ)
-        
-        if tag_object is None:
-            tag_object = (dulwich.objects.Commit, self.repo.head())
-
-        tag.object = tag_object
-
-        self.repo.object_store.add_object(tag)
-        
-        self.repo.refs["refs/tags/%s" % name] = tag.id
-        
-        if track:
-            self.track("refs/tags/%s" % name)
-        
-        return tag.id
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.callback_notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
+            return         
     
     def tag_delete(self, name):
         """

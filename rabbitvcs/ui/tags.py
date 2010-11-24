@@ -34,6 +34,7 @@ from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import GitAction
 import rabbitvcs.ui.widget
 from rabbitvcs.ui.dialog import DeleteConfirmation
+from rabbitvcs.ui.log import log_dialog_factory
 import rabbitvcs.util.helper
 import rabbitvcs.vcs
 
@@ -51,8 +52,10 @@ class GitTagManager(InterfaceView):
     
     state = STATE_ADD
     
-    def __init__(self, path):
+    def __init__(self, path, revision=None):
         InterfaceView.__init__(self, "manager", "Manager")
+        
+        self.path = path
         
         self.get_widget("right_side").show()        
         self.get_widget("Manager").set_size_request(695, -1)
@@ -61,6 +64,8 @@ class GitTagManager(InterfaceView):
                 
         self.vcs = rabbitvcs.vcs.VCS()
         self.git = self.vcs.git(path)
+
+        self.revision_obj = self.git.revision(revision)
         
         self.selected_tag = None
         self.items_treeview = rabbitvcs.ui.widget.Table(
@@ -99,6 +104,25 @@ class GitTagManager(InterfaceView):
         self.tag_name_container.pack_start(label, False, False, 0)
         self.tag_name_container.pack_start(self.tag_entry, False, False, 0)
         vbox.pack_start(self.tag_name_container, False, False, 0)
+
+        # Set up the Commit-sha line
+        label = gtk.Label(_("Revision:"))
+        label.set_size_request(90, -1)
+        label.set_properties(xalign=0,yalign=.5)
+        self.start_point_entry = gtk.Entry()
+        self.start_point_entry.set_size_request(300, -1)
+        self.start_point_container = gtk.HBox(False, 0)
+        if self.revision_obj.value:
+            self.start_point_entry.set_text(unicode(self.revision_obj))
+        self.log_dialog_button = gtk.Button()
+        self.log_dialog_button.connect("clicked", self.on_log_dialog_button_clicked)
+        image = gtk.Image()
+        image.set_from_icon_name("rabbitvcs-show_log", 2)
+        self.log_dialog_button.set_image(image)
+        self.start_point_container.pack_start(label, False, False, 0)
+        self.start_point_container.pack_start(self.start_point_entry, False, False, 0)
+        self.start_point_container.pack_start(self.log_dialog_button, False, False, 0)
+        vbox.pack_start(self.start_point_container, False, False, 0)
 
         # Set up the Log Message Entry line
         label = gtk.Label(_("Message:"))
@@ -174,14 +198,14 @@ class GitTagManager(InterfaceView):
         vbox.pack_start(self.message_container, False, False, 0)
         
         self.add_containers = [self.tag_name_container, self.message_entry_container,
-            self.save_container]
+            self.start_point_container, self.save_container]
             
         self.view_containers = [self.tag_name_container, self.tagger_container,
             self.date_container, self.revision_container, self.message_container]
 
         self.all_containers = [self.tag_name_container,  self.tagger_container, 
             self.date_container, self.revision_container, self.message_container, 
-            self.message_entry_container, self.save_container]
+            self.message_entry_container, self.save_container, self.start_point_container]
 
         vbox.show()
         self.detail_container.add(vbox)
@@ -215,8 +239,9 @@ class GitTagManager(InterfaceView):
     def on_save_clicked(self, widget):
         tag_name = self.tag_entry.get_text()
         tag_message = self.message_entry.get_text()
+        tag_revision = self.git.revision(self.start_point_entry.get_text())
 
-        self.git.tag(tag_name, tag_message)
+        self.git.tag(tag_name, tag_message, tag_revision)
         self.load(self.show_detail, tag_name)
 
     def on_treeview_key_event(self, treeview, data=None):
@@ -267,10 +292,24 @@ class GitTagManager(InterfaceView):
             self.show_containers(self.view_containers)
             self.get_widget("detail_label").set_markup(_("<b>Tag Detail</b>"))
 
-if __name__ == "__main__":
-    from rabbitvcs.ui import main
-    (options, paths) = main(usage="Usage: rabbitvcs tag-manager path")
+
+    def on_log_dialog_button_clicked(self, widget):
+        log_dialog_factory(
+            self.path,
+            ok_callback=self.on_log_dialog_closed
+        )
     
-    window = GitTagManager(paths[0])
+    def on_log_dialog_closed(self, data):
+        if data:
+            self.start_point_entry.set_text(data)
+
+if __name__ == "__main__":
+    from rabbitvcs.ui import main, REVISION_OPT
+    (options, paths) = main(
+        [REVISION_OPT],
+        usage="Usage: rabbitvcs tag-manager path"
+    )
+    
+    window = GitTagManager(paths[0], options.revision)
     window.register_gtk_quit()
     gtk.main()

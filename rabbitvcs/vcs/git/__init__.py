@@ -606,8 +606,7 @@ class Git:
         
         return self.client.remote_list()
         
-    def tag(self, name, message, tagger=None, tag_time=None, tag_timezone=None,
-            tag_object=None, track=False):
+    def tag(self, name, message, revision):
         """
         Create a tag object
         
@@ -617,27 +616,12 @@ class Git:
         @type   message: string
         @param  message: A log message
         
-        @type   tagger: string
-        @param  tagger: The person tagging.  Defaults to 
-            "user.name <user.email>"
-        
-        @type   tag_time: int
-        @param  tag_time: The tag time.  Defaults to time.time()
-        
-        @type   tag_timezone: int
-        @param  tag_timezone: The tag timezone.  
-            Defaults to (-1 * time.timezone)
-        
-        @type   tag_object: string
-        @param  tag_object: The object to tag.  Defaults to HEAD
-        
-        @type   track: boolean
-        @param  track: Whether or not to track the tag
+        @type   revision: git.Revision
+        @param  revision: The revision to tag.  Defaults to HEAD
         
         """
         
-        return self.client.tag(name, message, tagger, tag_time, tag_timezone,
-                tag_object, track)
+        return self.client.tag(name, message, revision.primitive())
 
     def tag_delete(self, name):
         """
