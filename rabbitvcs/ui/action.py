@@ -655,14 +655,15 @@ class SVNAction(VCSAction):
             else:
                 action = data["action"]
 
-            if ("revision" in data and data["revision"].number != -1 
-                and rabbitvcs.util.helper.in_rich_compare(
+            if (rabbitvcs.util.helper.in_rich_compare(
                         data["action"],
-                        self.client.NOTIFY_ACTIONS_COMPLETE)):
+                        self.client.NOTIFY_ACTIONS_COMPLETE) 
+                    and "revision" in data 
+                    and data["revision"]):
                 self.notification.append(
                     ["", "Revision %s" % data["revision"].number, ""]
                 )
-            else:
+            elif "path" in data:
                 self.notification.append([
                     action,
                     data["path"],
