@@ -233,7 +233,8 @@ class SVNCommit(Commit):
         )
 
         self.items = None
-        self.initialize_items()
+        if len(self.paths):
+            self.initialize_items()
 
     def populate_files_table(self):
         """
@@ -338,7 +339,8 @@ class GitCommit(Commit):
         )
 
         self.items = None
-        self.initialize_items()
+        if len(self.paths):
+            self.initialize_items()
 
     def populate_files_table(self):
         """
