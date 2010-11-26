@@ -5,14 +5,24 @@
 # 2. Extracts gettext strings from py files
 # 3. Deletes the glade .h files
 
-cd ../rabbitvcs
+cd ..
 
 for i in `find . | grep '\.glade' | grep -v '\.svn'`;
 do
 	intltool-extract --type=gettext/glade $i
 done
 
-xgettext -L Python --keyword=_ --keyword=N_ -o po/RabbitVCS.pot -f po/POTFILES.in
+cd rabbitvcs
+
+echo "util/helper.py" > POTFILES.in
+find . -type f | grep ui | grep \.py | grep -v \.svn | grep -v \.pyc >> POTFILES.in 
+find . -type f | grep \.glade | grep -v \.svn | grep -v \.h >> POTFILES.in
+sed -i 's|\.glade|.glade.h|g' POTFILES.in
+sed -i 's|\.\/||g' POTFILES.in
+
+mv POTFILES.in ../po/POTFILES.in
+
+xgettext -L Python --keyword=_ --keyword=N_ -o ../po/RabbitVCS.pot -f ../po/POTFILES.in
 
 for i in `find . | grep '\.glade\.h' | grep -v '\.svn'`;
 do
