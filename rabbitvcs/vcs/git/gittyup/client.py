@@ -1175,7 +1175,7 @@ class GittyupClient:
 
         return final_statuses  
 
-    def log(self, path="", skip=0, limit=None, refspec="", showtype="all"):
+    def log(self, path="", skip=0, limit=None, revision="", showtype="all"):
         
         cmd = ["git", "--no-pager", "log", "--numstat", "--parents", "--pretty=fuller", 
             "--date-order"]
@@ -1187,8 +1187,8 @@ class GittyupClient:
             cmd.append("-%s" % limit)
         if skip:
             cmd.append("--skip=%s" % skip)
-        if refspec:
-            cmd.append(refspec)
+        if revision:
+            cmd.append(revision)
 
         if path == self.repo.path:
             path = ""        

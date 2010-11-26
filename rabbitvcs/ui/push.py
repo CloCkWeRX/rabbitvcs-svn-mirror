@@ -80,7 +80,7 @@ class GitPush(Push):
             }
         )
         
-        self.local_log = self.git.log(refspec="HEAD", limit=10)        
+        self.local_log = self.git.log(limit=10, showtype="branch")
         self.load_log()
 
     def on_ok_clicked(self, widget, data=None):
@@ -109,7 +109,7 @@ class GitPush(Push):
             return
             
         refspec = "refs/remotes/%s/%s" % (repository, branch)
-        remote_log = self.git.log(refspec=refspec, limit=10)
+        remote_log = self.git.log(revision=self.git.revision(refspec), limit=10)
         
         has_commits = False
         
