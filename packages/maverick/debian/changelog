@@ -1,3 +1,9 @@
+rabbitvcs (0.14~beta1-1~maverick) maverick; urgency=low
+
+  * New upstream beta release.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Sun, 28 Nov 2010 01:38:30 +0800
+
 rabbitvcs (0.13.3-1~maverick) maverick; urgency=low
 
   * New point release.

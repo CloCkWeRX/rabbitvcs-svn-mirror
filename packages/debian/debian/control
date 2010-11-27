@@ -1,6 +1,5 @@
 Source: rabbitvcs
-Maintainer: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
-Uploaders: W. Martin Borgert <debacle@debian.org>
+Maintainer: Jason Heeris <jason.heeris@gmail.com>
 Section: devel
 Priority: optional
 Build-Depends: debhelper (>= 7),
