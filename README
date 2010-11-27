@@ -14,9 +14,15 @@ python module as a back-end.
 Requires:
     pygtk >= 2.12
     python-gobject >= 2.14
-    python-svn >= 1.5.2
     python-configobj >= 4.4.0
+
+For subversion:
+    python-svn >= 1.5.2
     subversion >= 1.4.6
+
+For git:
+    dulwich >= 0.6
+    git
 
 Recommends:
     meld (graphical diff tool)
