@@ -351,7 +351,10 @@ class GitCommit(Commit):
         
         self.files_table.clear()
         for item in self.items:
-            checked = self.should_item_be_activated(item)
+            if item.path in self.changes:
+                checked = self.changes[item.path]
+            else:
+                checked = self.should_item_be_activated(item)
             
             self.files_table.append([
                 checked,
