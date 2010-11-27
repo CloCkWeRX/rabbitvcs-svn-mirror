@@ -1044,6 +1044,7 @@ class GtkFilesContextMenu:
             (MenuDelete, None),
             (MenuRevert, None),
             (MenuRestore, None),
+            (MenuCreatePatch, None),
             (MenuAdd, None),
             (MenuAddToIgnoreList, ignore_items)
         ]
