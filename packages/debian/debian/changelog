@@ -1,0 +1,31 @@
+rabbitvcs (0.13.3-1) UNRELEASED; urgency=low
+
+  * New upstream release
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Fri, 18 Jun 2010 18:52:59 +0800
+
+rabbitvcs (0.13.2.1-1) unstable; urgency=low
+
+  * New upstream version released.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Mon, 07 Jun 2010 15:52:47 +0800
+
+rabbitvcs (0.13.1-3) UNRELEASED; urgency=low
+
+  * watch file fixed.
+
+ -- Sameer Rahmani <lxsameer@gmail.com>  Sat, 22 May 2010 20:49:34 +0430
+
+rabbitvcs (0.13.1-2) unstable; urgency=low
+
+  * Package description now states Subversion only. Closes: #580716.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Sat, 08 May 2010 11:12:45 +0800
+
+rabbitvcs (0.13.1-1) unstable; urgency=low
+
+  * Replaced multiple tarballs with single tarball plus split-out binary
+    packages.
+  * Again closes: #469181.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Fri, 02 Apr 2010 17:03:15 +0800

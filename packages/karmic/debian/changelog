@@ -1,0 +1,30 @@
+rabbitvcs (0.13.3-1~karmic) karmic; urgency=low
+
+  * New upstream release.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Wed, 16 Jun 2010 21:31:35 +0800
+
+rabbitvcs (0.13.2.1-1~karmic) karmic; urgency=low
+
+  * Point-point bugfix release.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Sat, 05 Jun 2010 15:37:09 +0800
+
+rabbitvcs (0.13.2+a-1~karmic) karmic; urgency=low
+
+  * Sigh.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Mon, 31 May 2010 23:20:43 +0800
+
+rabbitvcs (0.13.2-1~karmic) karmic; urgency=low
+
+  * New upstream release.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Sun, 30 May 2010 23:51:27 +0800
+
+rabbitvcs (0.13.1-1~karmic) karmic; urgency=low
+
+  * Replaced multiple tarballs with single tarball plus split-out binary
+    packages.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Fri, 02 Apr 2010 17:03:15 +0800
