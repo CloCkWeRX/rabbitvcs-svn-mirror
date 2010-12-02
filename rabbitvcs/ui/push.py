@@ -109,7 +109,7 @@ class GitPush(Push):
             return
             
         refspec = "refs/remotes/%s/%s" % (repository, branch)
-        remote_log = self.git.log(revision=self.git.revision(refspec), limit=10)
+        remote_log = self.git.log(revision=self.git.revision(refspec), limit=10, showtype="branch")
         
         has_commits = False
         
