@@ -25,7 +25,7 @@ class GittyupCommand:
     def callback_stack(self, val):
         lines = val.rstrip("\n").split("\n")
         for line in lines:
-            self.notify(line)
+            self.notify(line.rstrip("\x1b[K\n"))
     
     def execute(self):
         proc = subprocess.Popen(self.command, 
@@ -37,8 +37,9 @@ class GittyupCommand:
         try:
             stdout_value = proc.stdout.read()
             stderr_value = proc.stderr.read()
+            
             self.callback_stack(stderr_value)
-            self.callback_stack(stdout_value)
+            #self.callback_stack(stdout_value)
             status = proc.wait()
         finally:
             proc.stdout.close()
