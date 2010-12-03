@@ -1238,7 +1238,7 @@ class GittyupClient:
                     revision["message"] += "\n"
                     
                 revision["message"] = revision["message"] + message
-            elif line[0].isdigit():
+            elif line[0].isdigit() or line[0] in "-":
                 file_line = line.split("\t")
                 if not changed_file:
                     revision["changed_paths"] = []
