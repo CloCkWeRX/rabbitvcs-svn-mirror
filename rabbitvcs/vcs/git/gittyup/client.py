@@ -1234,7 +1234,9 @@ class GittyupClient:
                 message = line[4:]
                 if "message" not in revision:
                     revision["message"] = ""
-
+                else:
+                    revision["message"] += "\n"
+                    
                 revision["message"] = revision["message"] + message
             elif line[0].isdigit():
                 file_line = line.split("\t")
