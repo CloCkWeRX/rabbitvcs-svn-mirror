@@ -85,8 +85,8 @@ class GitUpdate(InterfaceView):
 
     def on_ok_clicked(self, widget, data=None):
         self.hide()
-        merge = self.get_widget("merge").get_sensitive()
-        
+        merge = self.get_widget("merge").get_active()
+
         repository = self.repository_selector.repository_opt.get_active_text()
         branch = self.repository_selector.branch_opt.get_active_text()
     
