@@ -640,6 +640,10 @@ class MenuRemotes(MenuItem):
     label = _("Remotes")
     icon = "rabbitvcs-checkmods"
 
+class MenuClean(MenuCleanup):
+    identifier = "RabbitVCS::Clean"
+    label = _("Clean")
+
 def get_ignore_list_items(paths):
     """
     Build up a list of items to ignore based on the selected paths
