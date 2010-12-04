@@ -999,11 +999,10 @@ class GittyupClient:
         returner = []
         lines = stdout.split("\n")
         for line in lines:
-            components = re.match("^(.*?)\t(.*?)\s\((.*?)\)$", line)
-
+            components = line.split()
             if components:
-                name = components.group(1)
-                host = components.group(2)
+                name = components[0]
+                host = components[1]
                 
                 add = True
                 for item in returner:
