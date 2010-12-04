@@ -852,6 +852,12 @@ class Git:
 
         return self.client.export(path, dest_path, revision.primitive())
 
+    def clean(self, path, remove_dir=True, remove_ignored_too=False, 
+            remove_only_ignored=False, dry_run=False, force=True):
+        
+        return self.client.clean(path, remove_dir, remove_ignored_too,
+            remove_only_ignored, dry_run, force)
+
     def get_ignore_files(self, path):
         paths = []
         paths.append(self.client.get_local_ignore_file(path))

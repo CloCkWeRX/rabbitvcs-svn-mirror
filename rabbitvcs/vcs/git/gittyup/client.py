@@ -1413,6 +1413,36 @@ class GittyupClient:
         self.notify("%s at %s exported to %s" % (path, revision, dest_path))
         return stdout        
     
+    def clean(self, path, remove_dir=True, remove_ignored_too=False, 
+            remove_only_ignored=False, dry_run=False, force=True):
+        
+        cmd = ["git", "clean"]
+        if remove_dir:
+            cmd.append("-d")
+        
+        if remove_ignored_too:
+            cmd.append("-x")
+        
+        if remove_only_ignored:
+            cmd.append("-X")
+        
+        if dry_run:
+            cmd.append("-n")
+        
+        if force:
+            cmd.append("-f")
+    
+        relative_path = self.get_relative_path(path)
+        cmd.append(relative_path)
+        
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
+            stdout = ""
+        
+        return stdout
+    
     def set_callback_notify(self, func):
         self.callback_notify = func
 
