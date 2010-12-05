@@ -38,9 +38,9 @@ SVN:
     resolve, revert, settings, switch, unlock, update, updateto
 
 Git:
-    about, add, annotate, applybranch, branches, changes, checkout, clone, 
-    commit, createpatch, create, delete, diff, export, ignore, log, merge, 
-    open, push, rename, remotes, revert, settings, tags, update
+    about, add, annotate, applybranch, branches, changes, checkout, clean, 
+    clone, commit, createpatch, create, delete, diff, export, ignore, log, 
+    merge, open, push, rename, remotes, reset, revert, settings, tags, update
 
 For module specific help type: rabbitvcs <module> -h
 """
