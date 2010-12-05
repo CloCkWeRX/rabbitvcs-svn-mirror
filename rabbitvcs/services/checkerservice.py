@@ -77,6 +77,8 @@ import rabbitvcs.vcs.status
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.services.checkerservice")
 
+from rabbitvcs import version as SERVICE_VERSION
+
 INTERFACE = "org.google.code.rabbitvcs.StatusChecker"
 OBJECT_PATH = "/org/google/code/rabbitvcs/StatusChecker"
 SERVICE = "org.google.code.rabbitvcs.RabbitVCS.Checker"
@@ -194,6 +196,30 @@ class StatusCheckerService(dbus.service.Object):
         return simplejson.dumps(path_dict)
 
     @dbus.service.method(INTERFACE)
+    def CheckVersionOrDie(self, version):
+        """
+        If the version passed does not match the version of RabbitVCS available
+        when this service started, the service will exit. The return value is
+        None if the versions match, else it's the PID of the service (useful for
+        waiting for the process to exit).
+        """
+        if not self.CheckVersion(version):
+            log.warning("Version mismatch, quitting checker service " \
+                        "(service: %s, extension: %s)" \
+                        % (SERVICE_VERSION, version))
+            return self.Quit()
+
+        return None
+
+    @dbus.service.method(INTERFACE)
+    def CheckVersion(self, version):
+        """
+        Return True iff the version of RabbitVCS imported by this service is the
+        same as that passed in (ie. used by extension code).
+        """
+        return version == SERVICE_VERSION
+
+    @dbus.service.method(INTERFACE)
     def Quit(self):
         """ Quits the service, performing any necessary cleanup operations.
 
@@ -248,6 +274,38 @@ class StatusCheckerStub:
         except dbus.DBusException, ex:
             # There is not much we should do about this...
             log.exception(ex)
+
+    def assert_version(self, version):
+        """
+        This will use the CheckVersionOrDie method to ensure that either the
+        checker service currently running has the correct version, or that it
+        is quit and restarted.
+        
+        Note that if the version of the newly started checker still doesn't
+        match, nothing is done. 
+        """
+        try:
+            pid = self.status_checker.CheckVersionOrDie(version)
+        except dbus.DBusException, ex:
+            log.exception(ex)
+            self._connect_to_checker()
+        else:
+            if pid is not None:
+                try:
+                    os.waitpid(pid, 0)
+                except OSError:
+                    # Process already gone...
+                    pass
+                start()
+                self._connect_to_checker()
+                
+                try:
+                    if not self.status_checker.CheckVersion(version):
+                        log.warning("Version mismatch even after restart!")
+                except dbus.DBusException, ex:
+                    log.exception(ex)
+                    self._connect_to_checker()
+                    
 
     def check_status_now(self, path, recurse=False, invalidate=False,
                        summary=False):

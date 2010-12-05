@@ -80,6 +80,8 @@ log = Log("rabbitvcs.util.extensions.nautilus.RabbitVCS")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
+from rabbitvcs import version as EXT_VERSION
+
 from rabbitvcs.util.settings import SettingsManager
 settings = SettingsManager()
 
@@ -122,6 +124,9 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         self.vcs_client = VCS()
 
         self.status_checker = StatusChecker()
+        
+        self.status_checker.assert_version(EXT_VERSION)
+        
         self.items_cache = {}
         
     def get_columns(self):
