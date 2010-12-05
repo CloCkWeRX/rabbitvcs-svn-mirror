@@ -858,6 +858,22 @@ class Git:
         return self.client.clean(path, remove_dir, remove_ignored_too,
             remove_only_ignored, dry_run, force)
 
+    def reset(self, path, revision, type=None):
+        """
+        Reset repository to a specified state
+        
+        @type   path: string
+        @param  path: The repository file/folder
+        
+        @type   revision: git.Revision
+        @param  revision: The revision/tree/commit to reset to
+        
+        @type   type: string
+        @param  type: The type of reset to do.  Can be mixed, soft, hard, merge
+        """
+    
+        return self.client.reset(path, revision.primitive(), type)
+
     def get_ignore_files(self, path):
         paths = []
         paths.append(self.client.get_local_ignore_file(path))

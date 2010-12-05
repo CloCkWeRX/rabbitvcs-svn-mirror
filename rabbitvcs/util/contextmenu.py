@@ -552,6 +552,10 @@ class ContextMenuCallbacks:
         proc = rabbitvcs.util.helper.launch_ui_window("clean", [self.paths[0]])
         self.caller.execute_after_process_exit(proc)
 
+    def reset(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("reset", [self.paths[0]])
+        self.caller.execute_after_process_exit(proc)
+
 class ContextMenuConditions:
     """
     Provides a standard interface to checking conditions for menu items.
@@ -896,6 +900,9 @@ class ContextMenuConditions:
         return (self.path_dict["is_git"])
 
     def clean(self, data=None):
+        return (self.path_dict["is_git"])
+
+    def reset(self, data=None):
         return (self.path_dict["is_git"])
 
 class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
@@ -1249,12 +1256,13 @@ class MainContextMenu:
                 (MenuRename, None),
                 (MenuDelete, None),
                 (MenuClean, None),
+                (MenuReset, None),
+                (MenuCheckout, None),
                 (MenuSeparator, None),
                 (MenuBranches, None),
                 (MenuTags, None),
                 (MenuRemotes, None),
                 (MenuSeparator, None),
-                (MenuCheckout, None),
                 (MenuExport, None),
                 (MenuSeparator, None),
                 (MenuAnnotate, None),

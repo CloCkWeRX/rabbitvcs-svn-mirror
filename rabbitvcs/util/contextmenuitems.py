@@ -644,6 +644,11 @@ class MenuClean(MenuCleanup):
     identifier = "RabbitVCS::Clean"
     label = _("Clean")
 
+class MenuReset(MenuItem):
+    identifier = "RabbitVCS::Reset"
+    label = _("Reset")
+    icon = "rabbitvcs-reset"
+
 def get_ignore_list_items(paths):
     """
     Build up a list of items to ignore based on the selected paths
