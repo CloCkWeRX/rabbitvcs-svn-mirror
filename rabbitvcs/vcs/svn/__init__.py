@@ -252,7 +252,7 @@ class SVN:
             path = realpath(path)
         return self.client.info(path)
 
-    def status(self, path, summarize=True):
+    def status(self, path, summarize=True, invalidate=False):
 
         all_statuses = self.statuses(path, recurse=summarize)
 

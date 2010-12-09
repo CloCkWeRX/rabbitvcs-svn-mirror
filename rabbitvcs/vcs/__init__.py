@@ -148,9 +148,9 @@ class VCS:
         client = self.client(path)
         return client.statuses(path, recurse)
     
-    def status(self, path, summarize=True):
+    def status(self, path, summarize=True, invalidate=False):
         client = self.client(path)
-        return client.status(path, summarize)
+        return client.status(path, summarize, invalidate)
 
     def is_working_copy(self, path):
         client = self.client(path)

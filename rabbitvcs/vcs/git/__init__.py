@@ -125,6 +125,8 @@ class Git:
         else:
             self.client = GittyupClient()
 
+        self.cache = {}
+
     def set_repository(self, path):
         self.client.set_repository(path)
         self.config = self.client.config
@@ -149,6 +151,9 @@ class Git:
         
         """
 
+        if path in self.cache:
+            return [self.cache[path]]
+
         gittyup_statuses = self.client.status(path)
 
         if not len(gittyup_statuses):
@@ -159,10 +164,23 @@ class Git:
                 # gittyup returns status paths relative to the repository root
                 # so we need to convert the path to an absolute path
                 st.path = self.client.get_absolute_path(st.path)
-                statuses.append(rabbitvcs.vcs.status.GitStatus(st))
+
+                rabbitvcs_status = rabbitvcs.vcs.status.GitStatus(st)
+                self.cache[st.path] = rabbitvcs_status
+                
+                statuses.append(rabbitvcs_status)
             return statuses
     
-    def status(self, path, summarize=True):
+    def status(self, path, summarize=True, invalidate=False):
+        if path in self.cache:
+            if invalidate:
+                del self.cache[path]
+            else:
+                st = self.cache[path]
+                if summarize:
+                    st.summary = st.single
+                return st
+    
         all_statuses = self.statuses(path)
         
         if summarize:
@@ -172,7 +190,10 @@ class Git:
                     path_status = st
                     break
 
-            path_status.summary = path_status.single
+            if path_status:
+                path_status.summary = path_status.single
+            else:
+                path_status = rabbitvcs.vcs.status.Status.status_unknown(path)
         else:
             path_status = all_statuses[0]
 
@@ -226,13 +247,14 @@ class Git:
             return []
 
         items = []
-        st = self.statuses(paths)
-        for st_item in st:
-            if st_item.content == "modified" and os.path.isdir(st_item.path):
-                continue
-        
-            if st_item.content in statuses or len(statuses) == 0:
-                items.append(st_item)
+        for path in paths:
+            st = self.statuses(path)
+            for st_item in st:
+                if st_item.content == "modified" and os.path.isdir(st_item.path):
+                    continue
+            
+                if st_item.content in statuses or len(statuses) == 0:
+                    items.append(st_item)
 
         return items
 

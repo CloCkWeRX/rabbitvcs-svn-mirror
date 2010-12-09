@@ -43,10 +43,10 @@ class StatusChecker:
         self.vcs_client = rabbitvcs.vcs.create_vcs_instance()
         self.conditions_dict_cache = {}
 
-    def check_status(self, path, recurse, summary, *args, **kwargs):
+    def check_status(self, path, recurse, summary, invalidate):
         """ Performs a status check, blocking until the check is done.
         """
-        path_status = self.vcs_client.status(path, summary)
+        path_status = self.vcs_client.status(path, summary, invalidate)
         return path_status
     
     def generate_menu_conditions(self, paths, invalidate=False):

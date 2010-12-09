@@ -198,6 +198,10 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
 
         # log.debug("update_file_info() called for %s" % path)
 
+        invalidate = False
+        if path in self.nautilusVFSFile_table:
+            invalidate = True
+
         # Always replace the item in the table with the one we receive, because
         # for example if an item is deleted and recreated the NautilusVFSFile
         # we had before will be invalid (think pointers and such).
@@ -235,7 +239,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
                                                  recurse=True,
                                                  summary=True,
                                                  callback=self.cb_status,
-                                                 invalidate=self.always_invalidate)
+                                                 invalidate=invalidate)
 
         # FIXME: when did this get disabled?
         # if enable_attrs: self.update_columns(item, path, status)
@@ -540,7 +544,6 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
             #   (with ourselves, we'd still have some with other extensions).
             #
             # After invalidating C{update_file_info} applies the correct emblem.
-
             # Since invalidation triggers an "update_file_info" call, we can
             # tell it NOT to invalidate the status checker path.
             self.statuses_from_callback.append(status)
