@@ -9,7 +9,7 @@ then
     exit 1
 fi
 
-mkdir -p ../rabbitvcs/locale/$LOCALE/LC_MESSAGES
-msgfmt --output-file=../rabbitvcs/locale/$LOCALE/LC_MESSAGES/RabbitVCS.mo $POFILE
+mkdir -p ../locale/$LOCALE/LC_MESSAGES
+msgfmt --output-file=../locale/$LOCALE/LC_MESSAGES/RabbitVCS.mo $POFILE
 
-echo "Translations installed to ../rabbitvcs/locale/$LOCALE/LC_MESSAGES/RabbitVCS.mo"
+echo "Translations installed to ../locale/$LOCALE/LC_MESSAGES/RabbitVCS.mo"
