@@ -1084,7 +1084,7 @@ class GittyupClient:
         if os.path.isdir(path):
             (files, directories) = self._read_directory_tree(path)
         else:
-            files = [path]
+            files = [self.get_relative_path(path)]
             directories = []
         
         statuses = []
