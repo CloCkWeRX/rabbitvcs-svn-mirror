@@ -243,7 +243,7 @@ class GittyupClient:
                 rel_root = ""
             else:
                 rel_root = self.get_relative_path(root)
-                
+
             for filename in filenames:
                 if not self._ignore_file(patterns, filename):
                     files.append(os.path.join(rel_root, filename))
@@ -251,8 +251,9 @@ class GittyupClient:
             for _d in dirs:
                 if not self._ignore_file(patterns, _d):
                     directories.append(os.path.join(rel_root, _d))
+
+            directories.append(rel_root)
         
-        directories.append("")
         return (sorted(files), directories)
 
     def _get_blob_from_file(self, path):
@@ -1075,7 +1076,72 @@ class GittyupClient:
         
         return tags
     
-    def status(self, paths_to_return=[]):
+    def status(self, path):
+        tree = self._get_tree_at_head()
+        tree_index = self._get_tree_index(tree)
+        index = self._get_index()
+        
+        if os.path.isdir(path):
+            (files, directories) = self._read_directory_tree(path)
+        else:
+            files = [path]
+            directories = []
+        
+        statuses = []
+        
+        modified_files = []
+        for name in tree_index:
+            inIndex = (name in index)
+            
+            if not inIndex:
+                modified_files.append(name)
+                statuses.append(RemovedStatus(name))
+                continue
+            
+            absolute_path = self.get_absolute_path(name)
+            if not os.path.exists(absolute_path):
+                modified_files.append(name)
+                statuses.append(MissingStatus(name))
+                continue
+        
+        for name in files:
+            inTreeIndex = (name in tree_index)
+            inIndex = (name in index)
+            
+            if inIndex and not inTreeIndex:
+                modified_files.append(name)
+                statuses.append(AddedStatus(name))
+                continue
+            
+            if inTreeIndex:
+                absolute_path = self.get_absolute_path(name)
+                if os.path.exists(absolute_path):
+                    # Cached, determine if modified or not                        
+                    blob = self._get_blob_from_file(absolute_path)
+                    if blob.id == tree_index[name][1]:
+                        statuses.append(NormalStatus(name))
+                    else:
+                        modified_files.append(name)
+                        statuses.append(ModifiedStatus(name))
+                continue
+
+            # Untracked
+            statuses.append(UntrackedStatus(name))
+
+        # Determine status of folders based on child contents
+
+        for d in directories:
+            d_status = NormalStatus(d)
+            
+            for file in modified_files:
+                if os.path.join(d, os.path.basename(file)) == file:
+                    d_status = ModifiedStatus(d)
+            
+            statuses.append(d_status)
+
+        return statuses
+    
+    def status2(self, paths_to_return=[]):
         """
         Generates a list of GittyupStatus objects for all files in the 
             repository.
