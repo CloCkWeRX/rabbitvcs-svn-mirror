@@ -214,6 +214,7 @@ class SVN:
         self.client = pysvn.Client()
         self.interface = "pysvn"
         self.vcs = rabbitvcs.vcs.VCS_SVN
+        self.cache = {}
 
     def statuses(self, path, recurse=True, update=False):
         """
@@ -237,8 +238,12 @@ class SVN:
                 # returns an empty list if the file goes missing...
                 return [on_error]
             else:
-                statuslist = [rabbitvcs.vcs.status.SVNStatus(st)
-                              for st in pysvn_statuses]
+                statuslist = []
+                for st in pysvn_statuses:
+                    rabbitvcs_status = rabbitvcs.vcs.status.SVNStatus(st)
+                    self.cache[st.path] = rabbitvcs_status
+                    statuslist.append(rabbitvcs_status)
+                    
                 return statuslist
         except pysvn.ClientError, ex:
             # TODO: uncommenting these might not be a good idea
@@ -253,6 +258,14 @@ class SVN:
         return self.client.info(path)
 
     def status(self, path, summarize=True, invalidate=False):
+        if path in self.cache:
+            if invalidate:
+                del self.cache[path]
+            else:
+                st = self.cache[path]
+                if summarize:
+                    st.summary = st.single
+                return st
 
         all_statuses = self.statuses(path, recurse=summarize)
 
