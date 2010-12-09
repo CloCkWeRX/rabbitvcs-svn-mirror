@@ -149,7 +149,7 @@ class RabbitVCS(thunarx.MenuProvider, thunarx.PropertyPageProvider):
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = SVN()
         
-        self.status_checker = StatusChecker(None)
+        self.status_checker = StatusChecker()
     
     def get_local_path(self, item):
         return item.get_uri().replace("file://", "")
