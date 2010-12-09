@@ -1125,9 +1125,12 @@ class MainContextMenuConditions(ContextMenuConditions):
     def generate_statuses(self, paths):
         self.statuses = {}
         for path in paths:
-            # FIXME: possibly this should be a checker, not a cache?
-            status = self.vcs_client.status(path)
-            self.statuses.update({status.path: status})
+            if not path:
+                continue
+                
+            statuses_tmp = self.vcs_client.statuses(path)
+            for status in statuses_tmp:
+                self.statuses[status.path] = status
 
         self.text_statuses = [self.statuses[key].content for key in self.statuses.keys()]
         self.prop_statuses = [self.statuses[key].metadata for key in self.statuses.keys()]
