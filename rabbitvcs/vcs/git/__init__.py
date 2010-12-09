@@ -114,7 +114,8 @@ class Git:
         "missing",
         "renamed",
         "modified",
-        "added"
+        "added",
+        "removed"
     ]
 
     def __init__(self, repo=None):
