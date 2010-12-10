@@ -4,7 +4,7 @@
 # 
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
-# Copyright (C) 2008-2008 by Adam Plumb <adamplumb@gmail.com>
+# Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
 # 
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
