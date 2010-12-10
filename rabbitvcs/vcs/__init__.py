@@ -37,21 +37,23 @@ def guess(path):
     # Determine the VCS instance based on the path
     if path:
         path_to_check = os.path.realpath(path)
+        folders = {
+            ".svn": VCS_SVN,
+            ".git": VCS_GIT,
+            ".hg": VCS_DUMMY,
+            ".bzr": VCS_DUMMY,
+            ".CVS": VCS_DUMMY
+        }
+        
         while path_to_check != "/" and path_to_check != "":
-            if os.path.isdir(os.path.join(path_to_check, ".svn")):
-                cache = {
-                    "vcs": VCS_SVN,
-                    "repo_path": path_to_check
-                }
-                return cache
-
-            elif os.path.isdir(os.path.join(path_to_check, ".git")):
-                cache = {
-                    "vcs": VCS_GIT,
-                    "repo_path": path_to_check
-                }
-                return cache
-                
+            for folder, client in folders.items():
+                if os.path.isdir(os.path.join(path_to_check, folder)):
+                    cache = {
+                        "vcs": client,
+                        "repo_path": path_to_check
+                    }
+                    logger.debug("%s is %s" % (path_to_check, client))
+                    return cache                
             path_to_check = os.path.split(path_to_check)[0]
             
     return {
