@@ -150,6 +150,7 @@ class MessageCallbackNotifier(VCSNotifier):
 
         self.finished = True
         self.get_widget("ok").set_sensitive(sensitive)
+        self.get_widget("saveas").set_sensitive(sensitive)
 
         if not self.client_in_same_thread:
             gtk.gdk.threads_leave()
@@ -194,6 +195,27 @@ class MessageCallbackNotifier(VCSNotifier):
 
     def exception_callback(self, e):
         self.append(["", str(e), ""])
+
+    def on_saveas_clicked(self, widget):
+        self.saveas()
+
+    @gtk_unsafe
+    def enable_saveas(self):
+        self.get_widget("saveas").set_sensitive(True)
+
+    def disable_saveas(self):
+        self.get_widget("saveas").set_sensitive(False)
+
+    def saveas(self, path=None):
+        if path is None:
+            from rabbitvcs.ui.dialog import FileSaveAs
+            dialog = FileSaveAs()
+            path = dialog.run()
+
+        if path is not None:
+            fh = open(path, "w")
+            fh.write(self.table.generate_string_from_data())
+            fh.close()
 
 class LoadingNotifier(VCSNotifier):
 

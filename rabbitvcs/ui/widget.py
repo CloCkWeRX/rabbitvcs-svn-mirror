@@ -532,6 +532,16 @@ class TableBase:
     def get_selected_rows(self):
         return self.selected_rows
         
+    def generate_string_from_data(self):
+        lines = []
+        for row in self.data:
+            line = []
+            for cell in row:
+                line.append(unicode(cell))
+            lines.append("\t".join(line))
+        
+        return "\n".join(lines)
+        
     def unselect_all(self):
         self.treeview.get_selection().unselect_all()
 
