@@ -1,4 +1,4 @@
-# Dutch translation for rabbitvcs
+# Chinese (Simplified) translation for rabbitvcs
 # Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the rabbitvcs package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
@@ -8,140 +8,132 @@ msgstr ""
 "Project-Id-Version: rabbitvcs\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-11-26 09:51-0500\n"
-"PO-Revision-Date: 2010-12-09 15:20+0000\n"
-"Last-Translator: Reinout van Schouwen <reinouts@gnome.org>\n"
-"Language-Team: Dutch <vertaling@vrijschrift.org>\n"
+"PO-Revision-Date: 2010-08-14 14:07+0000\n"
+"Last-Translator: Jiehan Zheng <zheng@jiehan.org>\n"
+"Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Launchpad-Export-Date: 2010-12-09 23:36+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
-"X-Poedit-Language: Dutch\n"
 
 #: util/helper.py:109
 msgid "just now"
-msgstr "nu net"
+msgstr ""
 
 #: util/helper.py:111
 #, python-format
 msgid "%d minute(s) ago"
-msgstr "%d minu(u)t(en) geleden"
+msgstr ""
 
 #: util/helper.py:631
 #, python-format
 msgid "%i second"
 msgid_plural "%i seconds"
-msgstr[0] "%i seconde"
-msgstr[1] "%i seconden"
+msgstr[0] "%i 秒"
 
 #: util/helper.py:634
 #, python-format
 msgid "%i minute"
 msgid_plural "%i minutes"
-msgstr[0] "%i minuut"
-msgstr[1] "%i minuten"
+msgstr[0] "%i 分钟"
 
 #: util/helper.py:637
 #, python-format
 msgid "%i hour"
 msgid_plural "%i hours"
-msgstr[0] "%i uur"
-msgstr[1] "%i uur"
+msgstr[0] "%i 小时"
 
 #: util/helper.py:640
 #, python-format
 msgid "%i day"
 msgid_plural "%i days"
-msgstr[0] "%i dag"
-msgstr[1] "%i dagen"
+msgstr[0] "%i 天"
 
 #: util/helper.py:643
 #, python-format
 msgid "%i week"
 msgid_plural "%i weeks"
-msgstr[0] "%i week"
-msgstr[1] "%i weken"
+msgstr[0] "%i 周"
 
 #: util/helper.py:646
 #, python-format
 msgid "%i month"
 msgid_plural "%i months"
-msgstr[0] "%i maand"
-msgstr[1] "%i maanden"
+msgstr[0] "%i 月"
 
 #: util/helper.py:649
 #, python-format
 msgid "%i year"
 msgid_plural "%i years"
-msgstr[0] "%i jaar"
-msgstr[1] "%i jaar"
+msgstr[0] "%i 年"
 
 #: util/contextmenuitems.py:270
 msgid "Debug"
-msgstr "Debuggen"
+msgstr "调试"
 
 #: util/contextmenuitems.py:275
 msgid "Bugs"
-msgstr "Fouten"
+msgstr "Bugs"
 
 #: util/contextmenuitems.py:280
 msgid "Open Shell"
-msgstr "Shell openen"
+msgstr "打开 Shell"
 
 #: util/contextmenuitems.py:286
 msgid "Refresh Status"
-msgstr "Verversingsstatus"
+msgstr "刷新状态"
 
 #: util/contextmenuitems.py:291
 msgid "Debug Revert"
-msgstr "Debug-terugdraaien"
+msgstr "调试还原"
 
 #: util/contextmenuitems.py:292
 msgid "Reverts everything it sees"
-msgstr "Alles in zicht terugdraaien"
+msgstr "还原看到的每个文件"
 
 #: util/contextmenuitems.py:298
 msgid "Invalidate"
-msgstr "Ongeldig maken"
+msgstr "使无效"
 
 #: util/contextmenuitems.py:299
 msgid "Force an invalidate_extension_info() call"
-msgstr "Aanroep van invalidate_extension_info() afdwingen"
+msgstr "强行调用 invalidate_extension_info()"
 
 #: util/contextmenuitems.py:305
 msgid "Add Emblem"
-msgstr "Embleem toevoegen"
+msgstr "添加徽章"
 
 #: util/contextmenuitems.py:306
 msgid "Add an emblem"
-msgstr "Een embleem toevoegen…"
+msgstr "添加一个徽章"
 
 #: util/contextmenuitems.py:312
 msgid "Checkout..."
-msgstr "Uitchecken…"
+msgstr "检出(Checkout)..."
 
 #: util/contextmenuitems.py:313
 msgid "Check out a working copy"
-msgstr "Een werkversie uitchecken"
+msgstr "检出工作版本"
 
 #: util/contextmenuitems.py:318 ui/update.py:53 ui/update.py:97
 #: ui/glade/update.glade.h:6
 msgid "Update"
-msgstr "Updaten"
+msgstr "更新"
 
 #: util/contextmenuitems.py:319
 msgid "Update a working copy"
-msgstr "Een werkversie updaten"
+msgstr "更新工作版本"
 
 #: util/contextmenuitems.py:324 ui/commit.py:288 ui/commit.py:384
 #: ui/glade/commit.glade.h:4
 msgid "Commit"
-msgstr "Commit"
+msgstr "提交"
 
 #: util/contextmenuitems.py:325
 msgid "Commit modifications to the repository"
-msgstr "Aanpassingen committen in het repository"
+msgstr "提交修改至源码库"
 
 #: util/contextmenuitems.py:330 ui/glade/property_page.glade.h:4
 msgid "RabbitVCS"
@@ -149,383 +141,377 @@ msgstr "RabbitVCS"
 
 #: util/contextmenuitems.py:335
 msgid "RabbitVCS SVN"
-msgstr "RabbitVCS SVN"
+msgstr ""
 
 #: util/contextmenuitems.py:340
 msgid "RabbitVCS Git"
-msgstr "RabbitVCS Git"
+msgstr ""
 
 #: util/contextmenuitems.py:345 ui/glade/browser.glade.h:2
 msgid "Repository Browser"
-msgstr "Bladeren door repository"
+msgstr "版本库浏览器"
 
 #: util/contextmenuitems.py:346
 msgid "Browse a repository tree"
-msgstr "Een repository-boom doorbladeren"
+msgstr "浏览源码库源码树"
 
 #: util/contextmenuitems.py:351
 msgid "Check for Modifications..."
-msgstr "Controleren op aanpassingen…"
+msgstr "检查修改..."
 
 #: util/contextmenuitems.py:352
 msgid "Check for modifications made to the repository"
-msgstr "Controleren op wijzigingen die aan het repository zijn gemaakt"
+msgstr "检查至源码库的修改"
 
 #: util/contextmenuitems.py:357
 msgid "Diff Menu..."
-msgstr "Diff-menu…"
+msgstr "比较菜单..."
 
 #: util/contextmenuitems.py:358
 msgid "List of comparison options"
-msgstr "Lijst van vergelijkingsopties"
+msgstr "比较选项列表"
 
 #: util/contextmenuitems.py:363
 msgid "View diff against base"
-msgstr "Diff ten opzichte van basis bekijken"
+msgstr "查看相对于 Base 的差异"
 
 #: util/contextmenuitems.py:364
 msgid "View the modifications made to a file"
-msgstr "De wijzigingen aan een bestand bekijken"
+msgstr "查看对文件的修改"
 
 #: util/contextmenuitems.py:369
 msgid "View diff between files/folders"
-msgstr "Diff tussen bestanden/mappen bekijken"
+msgstr "查看文件/文件夹之间的差异"
 
 #: util/contextmenuitems.py:370
 msgid "View the differences between two files"
-msgstr "De verschillen tussen twee bestanden bekijken"
+msgstr "查看两个文件之间的差异"
 
 #: util/contextmenuitems.py:375 ui/log.py:786
 msgid "View diff against previous revision"
-msgstr "Diff ten opzichte van eerdere revisie bekijken"
+msgstr "查看相对于前一个版本的差异"
 
 #: util/contextmenuitems.py:376
 msgid "View the modifications made to a file since its last change"
-msgstr "De aanpassingen aan een bestand sinds de laatste wijziging bekijken"
+msgstr "查看自从上一次修改后对文件的改动"
 
 #: util/contextmenuitems.py:381
 msgid "Compare with base"
-msgstr "Vergelijken met basis"
+msgstr "与 Base 进行比较"
 
 #: util/contextmenuitems.py:382
 msgid "Compare with base using side-by-side comparison tool"
-msgstr ""
-"Met basisversie vergelijken met behulp van naast-elkaar-vergelijkprogramma"
+msgstr "使用并排比较工具与 Base 进行比较"
 
 #: util/contextmenuitems.py:387
 msgid "Compare files/folders"
-msgstr "Bestanden/mappen vergelijken"
+msgstr "比较文件/文件夹"
 
 #: util/contextmenuitems.py:388
 msgid "Compare the differences between two items"
-msgstr "De verschillen tussen twee items vergelijken"
+msgstr "比较两个项目间的差异"
 
 #: util/contextmenuitems.py:393 ui/log.py:801
 msgid "Compare with previous revision"
-msgstr "Vergelijken met eerdere revisie"
+msgstr "与前一个版本进行比较"
 
 #: util/contextmenuitems.py:394
 msgid "Compare with previous revision using side-by-side comparison tool"
-msgstr ""
-"Vergelijken met eerdere revisie met behulp van naast-elkaar-"
-"vergelijkprogramma"
+msgstr "使用并排比较工具与前一个版本进行比较"
 
 #: util/contextmenuitems.py:399
 msgid "Show Changes..."
-msgstr "Wijzigingen weergeven…"
+msgstr "显示修改..."
 
 #: util/contextmenuitems.py:400
 msgid "Show changes between paths and revisions"
-msgstr "Wijzigingen tussen paden en revisies tonen"
+msgstr "显示路径与版本间的改动"
 
 #: util/contextmenuitems.py:405
 msgid "Show Log"
-msgstr "Logboek tonen"
+msgstr "显示日志"
 
 #: util/contextmenuitems.py:406
 msgid "Show a file's log information"
-msgstr "De logboekinformatie over een bestand tonen"
+msgstr "显示文件日志信息"
 
 #: util/contextmenuitems.py:411 ui/add.py:156 ui/tags.py:273
 #: ui/branches.py:274 ui/widget.py:1199 ui/glade/add.glade.h:1
 msgid "Add"
-msgstr "Toevoegen"
+msgstr "添加"
 
 #: util/contextmenuitems.py:412
 msgid "Schedule items to be added to the repository"
-msgstr "Items klaarzetten om toegevoegd te worden aan het repository"
+msgstr "计划要添加至仓库的项"
 
 #: util/contextmenuitems.py:417
 msgid "Add to ignore list"
-msgstr "Voeg toe aan negeer lijst"
+msgstr "添加至忽略列表"
 
 #: util/contextmenuitems.py:422
 msgid "Update to revision..."
-msgstr "Updaten naar revisie…"
+msgstr "更新到版本..."
 
 #: util/contextmenuitems.py:423
 msgid "Update a file to a specific revision"
-msgstr "Updaten naar een specifieke revisie"
+msgstr "更新文件至指定版本"
 
 #: util/contextmenuitems.py:428
 msgid "Rename..."
-msgstr "Hernoemen…"
+msgstr "重命名..."
 
 #: util/contextmenuitems.py:429
 msgid "Schedule an item to be renamed on the repository"
-msgstr "Een item klaarzetten om hernoemd te worden in het repository"
+msgstr "计划一个项目在源码库被重命名"
 
 #: util/contextmenuitems.py:434 ui/glade/properties.glade.h:3
 msgid "Delete"
-msgstr "Verwijderen"
+msgstr "删除"
 
 #: util/contextmenuitems.py:435
 msgid "Schedule an item to be deleted from the repository"
-msgstr "Een item klaarzetten om verwijderd te worden uit het repository"
+msgstr "计划一个项目在源码库被删除"
 
 #: util/contextmenuitems.py:440 ui/revert.py:50 ui/revert.py:103
 #: ui/revert.py:115 ui/revert.py:168
 msgid "Revert"
-msgstr "Terugdraaien"
+msgstr "恢复"
 
 #: util/contextmenuitems.py:441
 msgid "Revert an item to its unmodified state"
-msgstr "Een item terugzetten naar zijn ongemodificeerde staat"
+msgstr "还原项目到其未修改的状态"
 
 #: util/contextmenuitems.py:446 ui/resolve.py:48 ui/resolve.py:102
 msgid "Resolve"
-msgstr "Oplossen"
+msgstr "解决"
 
 #: util/contextmenuitems.py:447
 msgid "Mark a conflicted item as resolved"
-msgstr "Een item in conflict markeren als opgelost"
+msgstr "标记冲突条目为已解决"
 
 #: util/contextmenuitems.py:452
 msgid "Restore"
-msgstr "Terugzetten"
+msgstr "恢复"
 
 #: util/contextmenuitems.py:453
 msgid "Restore a missing item"
-msgstr "Een ontbrekend item herstellen"
+msgstr "恢复丢失项目"
 
 #: util/contextmenuitems.py:457
 msgid "Relocate..."
-msgstr "Verhuizen…"
+msgstr "重定位..."
 
 #: util/contextmenuitems.py:458
 msgid "Relocate your working copy"
-msgstr "Uw werkversie verhuizen"
+msgstr "重定位您的工作副本"
 
 #: util/contextmenuitems.py:463
 msgid "Get Lock..."
-msgstr "Blokkering verkrijgen…"
+msgstr "获得锁..."
 
 #: util/contextmenuitems.py:464
 msgid "Locally lock items"
-msgstr "Items lokaal blokkeren"
+msgstr "本地锁定项目"
 
 #: util/contextmenuitems.py:469
 msgid "Release Lock..."
-msgstr "Blokkering vrijgeven…"
+msgstr "释放锁..."
 
 #: util/contextmenuitems.py:470
 msgid "Release lock on an item"
-msgstr "Blokkering op een item vrijgeven"
+msgstr "释放项目的锁"
 
 #: util/contextmenuitems.py:475 ui/cleanup.py:55
 msgid "Cleanup"
-msgstr "Opruimen"
+msgstr "清理"
 
 #: util/contextmenuitems.py:476
 msgid "Clean up working copy"
-msgstr "Werkversie opschonen"
+msgstr "清理工作副本"
 
 #: util/contextmenuitems.py:481
 msgid "Export..."
-msgstr "Exporteren…"
+msgstr "导出..."
 
 #: util/contextmenuitems.py:482
 msgid "Export a working copy or repository with no versioning information"
-msgstr ""
-"Een werkversie of repository exporteren zonder versiebeheer-informatie"
+msgstr "导出工作副本或源码库，而不包含任何版本信息"
 
 #: util/contextmenuitems.py:487
 msgid "Create Repository here"
-msgstr "Hier een repository aanmaken"
+msgstr "在这里创建源码库"
 
 #: util/contextmenuitems.py:488
 msgid "Create a repository in a folder"
-msgstr "Repository in een map aanmaken"
+msgstr "在文件夹中创建一个源码库"
 
 #: util/contextmenuitems.py:493 ui/import.py:80 ui/glade/import.glade.h:3
 msgid "Import"
-msgstr "Importeren"
+msgstr "导入"
 
 #: util/contextmenuitems.py:494
 msgid "Import an item into a repository"
-msgstr "Item importeren in een repository"
+msgstr "导入一个项目至源码库"
 
 #: util/contextmenuitems.py:503
 msgid "Branch/tag..."
-msgstr "Branch/tag…"
+msgstr "分支/标签..."
 
 #: util/contextmenuitems.py:504
 msgid "Copy an item to another location in the repository"
-msgstr "Een item kopiëren naar een andere locatie in het repository"
+msgstr "复制一个项目到源码库中其它位置"
 
 #: util/contextmenuitems.py:509
 msgid "Switch..."
-msgstr "Wisselen…"
+msgstr "切换..."
 
 #: util/contextmenuitems.py:510
 msgid "Change the repository location of a working copy"
-msgstr "De repository-locatie van een werkversie wijzigen"
+msgstr "改变工作副本源码库的位置"
 
 #: util/contextmenuitems.py:515
 msgid "Merge..."
-msgstr "Samenvoegen…"
+msgstr "合并..."
 
 #: util/contextmenuitems.py:516
 msgid "A wizard with steps for merging"
-msgstr "Een wizard met samenvoegstappen"
+msgstr "一个由几个步骤组成的合并向导"
 
 #: util/contextmenuitems.py:521
 msgid "Annotate..."
-msgstr "Annoteren…"
+msgstr "批注..."
 
 #: util/contextmenuitems.py:522
 msgid "Annotate a file"
-msgstr "Een bestand annoteren"
+msgstr "批注一个文件"
 
 #: util/contextmenuitems.py:527
 msgid "Create Patch..."
-msgstr "Patch aanmaken…"
+msgstr "生成补丁..."
 
 #: util/contextmenuitems.py:528
 msgid "Creates a unified diff file with all changes you made"
-msgstr ""
-"Maakt een geünificeerd diff-bestand met al de wijzigingen die u gemaakt heeft"
+msgstr "对您所有的修改创建一个 unified diff 文件"
 
 #: util/contextmenuitems.py:533
 msgid "Apply Patch..."
-msgstr "Patch toepassen…"
+msgstr "应用补丁..."
 
 #: util/contextmenuitems.py:534
 msgid "Applies a unified diff file to the working copy"
-msgstr "Past een geünificeerd diff-bestand toe op de werkversie"
+msgstr "应用 unified diff 至工作副本"
 
 #: util/contextmenuitems.py:539 ui/glade/properties.glade.h:7
 msgid "Properties"
-msgstr "Eigenschappen"
+msgstr "属性"
 
 #: util/contextmenuitems.py:540
 msgid "View the properties of an item"
-msgstr "De eigenschappen van een item bekijken"
+msgstr "查看一个项目的属性"
 
 #: util/contextmenuitems.py:545
 msgid "Help"
-msgstr "Hulp"
+msgstr "帮助"
 
 #: util/contextmenuitems.py:546
 msgid "View help"
-msgstr "Hulp weergeven"
+msgstr "查看帮助"
 
 #: util/contextmenuitems.py:551 ui/glade/settings.glade.h:28
 msgid "Settings"
-msgstr "Instellingen"
+msgstr "设置"
 
 #: util/contextmenuitems.py:552
 msgid "View or change RabbitVCS settings"
-msgstr "RabbitVCS-instellingen bekijken of wijzigen"
+msgstr "查看或更改 RabbitVCS 设置"
 
 #: util/contextmenuitems.py:557 ui/glade/about.glade.h:4
 msgid "About"
-msgstr "Over"
+msgstr "关于"
 
 #: util/contextmenuitems.py:558
 msgid "About RabbitVCS"
-msgstr "Info over RabbitVCS"
+msgstr "关于 RabbitVCS"
 
 #: util/contextmenuitems.py:563
 msgid "Open"
-msgstr "Open"
+msgstr "打开"
 
 #: util/contextmenuitems.py:564
 msgid "Open a file"
-msgstr "Bestand openen"
+msgstr "打开一个文件"
 
 #: util/contextmenuitems.py:572
 msgid "Browse to"
-msgstr "Bladeren naar"
+msgstr "浏览至"
 
 #: util/contextmenuitems.py:573
 msgid "Browse to a file or folder"
-msgstr "Naar een bestand of map navigeren"
+msgstr "浏览至一个文件或文件夹"
 
 #: util/contextmenuitems.py:578
 msgid "Revert property"
-msgstr "Eigenschap terugdraaien"
+msgstr "还原属性"
 
 #: util/contextmenuitems.py:580
 msgid "Revert this property to its original state"
-msgstr "Deze eigenschap terugdraaien naar haar oorspronkelijke staat"
+msgstr "还原该属性至其原状态"
 
 #: util/contextmenuitems.py:584
 msgid "Revert property (recursive)"
-msgstr "Eigenschap terugdraaien (recursief)"
+msgstr "还原属性 (递归的)"
 
 #: util/contextmenuitems.py:586
 msgid "Revert this property to its original state (recursive)"
-msgstr ""
-"Deze eigenschap terugdraaien naar haar oorspronkelijke staat (recursief)"
+msgstr "还原该属性至其原状态 (递归的)"
 
 #: util/contextmenuitems.py:591
 msgid "Delete property"
-msgstr "Eigenschap verwijderen"
+msgstr "删除属性"
 
 #: util/contextmenuitems.py:593
 msgid "Delete this property"
-msgstr "Deze eigenschap verwijderen"
+msgstr "删除该属性"
 
 #: util/contextmenuitems.py:597
 msgid "Delete property (recursive)"
-msgstr "Eigenschap verwijderen (recursief)"
+msgstr ""
 
 #: util/contextmenuitems.py:599
 msgid "Delete this property (recursive)"
-msgstr "Deze eigenschap verwijderen (recursief)"
+msgstr "删除该属性 (递归的)"
 
 #: util/contextmenuitems.py:604
 msgid "Edit details"
-msgstr "Details bewerken"
+msgstr ""
 
 #: util/contextmenuitems.py:606
 msgid "Show and edit property details"
-msgstr "Eigenschapdetails tonen en bewerken"
+msgstr ""
 
 #: util/contextmenuitems.py:610
 msgid "Initialize Repository"
-msgstr "Repository initialiseren"
+msgstr ""
 
 #: util/contextmenuitems.py:615 ui/clone.py:47 ui/clone.py:65
 msgid "Clone"
-msgstr "Klonen"
+msgstr ""
 
 #: util/contextmenuitems.py:620
 msgid "Fetch/Pull"
-msgstr "Fetch/Pull"
+msgstr ""
 
 #: util/contextmenuitems.py:625 ui/push.py:96
 msgid "Push"
-msgstr "Push"
+msgstr ""
 
 #: util/contextmenuitems.py:630
 msgid "Branches"
-msgstr "Branches"
+msgstr ""
 
 #: util/contextmenuitems.py:635
 msgid "Tags"
-msgstr "Tags"
+msgstr ""
 
 #: util/contextmenuitems.py:640
 msgid "Remotes"
@@ -533,48 +519,48 @@ msgstr ""
 
 #: util/contextmenuitems.py:666
 msgid "Ignore item by filename"
-msgstr "Item negeren per bestandsnaam"
+msgstr "按文件名忽略项目"
 
 #: util/contextmenuitems.py:685
 msgid "Ignore item by file extension"
-msgstr "Item negeren per extensie"
+msgstr "按扩展名忽略项目"
 
 #: ui/update.py:54 ui/update.py:98 ui/updateto.py:94
 msgid "Updating..."
-msgstr "Updaten..."
+msgstr "更新..."
 
 #: ui/update.py:56 ui/update.py:103 ui/updateto.py:102
 msgid "Completed Update"
-msgstr "Update is voltooid"
+msgstr "完成的更新"
 
 #: ui/updateto.py:82
 msgid "Rollback To Revision"
-msgstr "Terugdraaien naar revisie"
+msgstr ""
 
 #: ui/updateto.py:83
 msgid "Rolling Back..."
-msgstr "Terugdraaien…"
+msgstr ""
 
 #: ui/updateto.py:91
 msgid "Completed Rollback"
-msgstr "Terugdraaien voltooid"
+msgstr ""
 
 #: ui/updateto.py:93
 msgid "Update To Revision"
-msgstr "Updaten naar revisie"
+msgstr "更新到修订版"
 
 #: ui/updateto.py:138 ui/checkout.py:173
 msgid "Checkout"
-msgstr "Uitchecken"
+msgstr "检出"
 
 #: ui/updateto.py:139
 #, python-format
 msgid "Checking out %s..."
-msgstr "Uitchecken van %s…"
+msgstr ""
 
 #: ui/updateto.py:145 ui/checkout.py:184
 msgid "Completed Checkout"
-msgstr "Uitchecken voltooid"
+msgstr "完成签出"
 
 #: ui/add.py:72 ui/commit.py:205 ui/commit.py:313 ui/revert.py:62
 #: ui/revert.py:128 ui/checkmods.py:67 ui/resolve.py:61 ui/changes.py:279
@@ -582,266 +568,266 @@ msgstr "Uitchecken voltooid"
 #: ui/createpatch.py:119 ui/createpatch.py:215 ui/action.py:118
 #: ui/unlock.py:61 ui/browser.py:89
 msgid "Path"
-msgstr "Pad"
+msgstr "路径"
 
 #: ui/add.py:72 ui/commit.py:205 ui/commit.py:313 ui/revert.py:62
 #: ui/revert.py:128 ui/checkmods.py:67 ui/resolve.py:61 ui/lock.py:72
 #: ui/createpatch.py:119 ui/createpatch.py:215 ui/unlock.py:61
 msgid "Extension"
-msgstr "Extensie"
+msgstr "扩展"
 
 #: ui/add.py:95 ui/commit.py:93 ui/lock.py:115 ui/unlock.py:85
 #: ui/glade/dialogs.glade.h:33
 msgid "Loading..."
-msgstr "Laden..."
+msgstr "加载中..."
 
 #: ui/add.py:98 ui/commit.py:100 ui/lock.py:118 ui/unlock.py:107
 #, python-format
 msgid "Found %d item(s)"
-msgstr "%d item(s) gevonden"
+msgstr "已找到 %d 项"
 
 #: ui/add.py:157
 msgid "Running Add Command..."
-msgstr "Wordt toegevoegd..."
+msgstr "正执行 Add 命令"
 
 #: ui/add.py:159
 msgid "Completed Add"
-msgstr "Toevoegen klaar"
+msgstr "Add 完成"
 
 #: ui/ignore.py:100
 msgid "Ignore file:"
-msgstr "Bestand negeren:"
+msgstr ""
 
 #: ui/tags.py:62
 msgid "Tag Manager"
-msgstr "Tagbeheer"
+msgstr ""
 
 #: ui/tags.py:63
 msgid "<b>Tags</b>"
-msgstr "<b>Tags</b>"
+msgstr ""
 
 #: ui/tags.py:74
 msgid "Tag"
-msgstr "Tag"
+msgstr ""
 
 #: ui/tags.py:99 ui/branches.py:100 ui/glade/dialogs.glade.h:38
 #: ui/glade/property_page.glade.h:2
 msgid "Name:"
-msgstr "Name:"
+msgstr ""
 
 #: ui/tags.py:109 ui/tags.py:176 ui/branches.py:155 ui/merge.py:438
 #: ui/merge.py:488 ui/glade/browser.glade.h:3
 msgid "Revision:"
-msgstr "Revisie:"
+msgstr "版本："
 
 #: ui/tags.py:128 ui/tags.py:188 ui/branches.py:167 ui/merge.py:450
 #: ui/merge.py:500
 msgid "Message:"
-msgstr "Message:"
+msgstr ""
 
 #: ui/tags.py:145 ui/tags.py:284 ui/branches.py:147 ui/branches.py:291
 msgid "Save"
-msgstr "Opslaan"
+msgstr ""
 
 #: ui/tags.py:153
 msgid "Tagger:"
-msgstr "Tagger:"
+msgstr ""
 
 #: ui/tags.py:165 ui/merge.py:427 ui/merge.py:477
 msgid "Date:"
-msgstr "Datum:"
+msgstr ""
 
 #: ui/tags.py:230 ui/branches.py:209 ui/remotes.py:128
 #, python-format
 msgid "Are you sure you want to delete %s?"
-msgstr "Wilt u %s echt verwijderen?"
+msgstr ""
 
 #: ui/tags.py:275
 msgid "<b>Add Tag</b>"
-msgstr "<b>Tag toevoegen</b>"
+msgstr ""
 
 #: ui/tags.py:293
 msgid "<b>Tag Detail</b>"
-msgstr "<b>Tagdetail</b>"
+msgstr ""
 
 #: ui/export.py:45 ui/export.py:114
 #, python-format
 msgid "Export - %s"
-msgstr "Exporteren — %s"
+msgstr "导出 - %s"
 
 #: ui/export.py:72 ui/export.py:131 ui/clone.py:57 ui/checkout.py:163
 msgid "The repository URL and destination path are both required fields."
-msgstr "De repository URL en doel pad velden zijn beide verplicht."
+msgstr "“仓库 URL”和“目的地路径”均必填。"
 
 #: ui/export.py:92 ui/export.py:151
 msgid "Export"
-msgstr "Exporteren"
+msgstr "导出"
 
 #: ui/export.py:93 ui/export.py:152
 msgid "Running Export Command..."
-msgstr "Wordt geëxporteerd..."
+msgstr "正运行 Export 命令"
 
 #: ui/export.py:104 ui/export.py:160
 msgid "Completed Export"
-msgstr "Export is klaar"
+msgstr "Export 完成"
 
 #: ui/applypatch.py:57 ui/applypatch.py:113 ui/applypatch.py:143
 msgid "Apply Patch"
-msgstr "Patch toepassen"
+msgstr "应用补丁"
 
 #: ui/applypatch.py:74
 msgid "Apply Patch To Directory..."
-msgstr "Patch op map toepassen..."
+msgstr "对目录应用补丁..."
 
 #: ui/applypatch.py:114 ui/applypatch.py:144
 msgid "Applying Patch File..."
-msgstr "Patchbestand toepassen..."
+msgstr "从文件应用补丁..."
 
 #: ui/applypatch.py:116 ui/applypatch.py:146
 msgid "Patch File Applied"
-msgstr "Patchbestand toegepast"
+msgstr "已应用补丁文件"
 
 #: ui/branches.py:62
 msgid "Branch Manager"
-msgstr "Branchbeheer"
+msgstr ""
 
 #: ui/branches.py:63
 msgid "<b>Branches</b>"
-msgstr "<b>Branches</b>"
+msgstr ""
 
 #: ui/branches.py:73 ui/widget.py:855
 msgid "Branch"
-msgstr "Branch"
+msgstr ""
 
 #: ui/branches.py:110
 msgid "Start Point:"
-msgstr "Startpunt:"
+msgstr ""
 
 #: ui/branches.py:129
 msgid "Keep old branch's history"
-msgstr "Geschiedenis van oude branch behouden"
+msgstr ""
 
 #: ui/branches.py:138
 msgid "Set as active branch"
-msgstr "Als actieve branch instellen"
+msgstr ""
 
 #: ui/branches.py:280
 msgid "<b>Add Branch</b>"
-msgstr "<b>Branch toevoegen</b>"
+msgstr ""
 
 #: ui/branches.py:304
 msgid "<b>Branch Detail</b>"
-msgstr "<b>Branchdetail</b>"
+msgstr ""
 
 #: ui/push.py:76 ui/dialog.py:54 ui/annotate.py:128 ui/annotate.py:229
 #: ui/log.py:327 ui/log.py:557 ui/browser.py:89
 msgid "Date"
-msgstr "Datum"
+msgstr "日期"
 
 #: ui/push.py:76 ui/dialog.py:54 ui/log.py:327 ui/log.py:557
 #: ui/glade/dialogs.glade.h:36
 msgid "Message"
-msgstr "Boodschap"
+msgstr "消息"
 
 #: ui/push.py:97
 msgid "Running Push Command..."
-msgstr "Uitvoeren Push-opdracht…"
+msgstr ""
 
 #: ui/push.py:99
 msgid "Completed Push"
-msgstr "Push voltooid"
+msgstr ""
 
 #: ui/import.py:40
 #, python-format
 msgid "Import - %s"
-msgstr "Importeren — %s"
+msgstr "导入 - %s"
 
 #: ui/import.py:68
 msgid "The repository URL field is required."
-msgstr "Het repository URL veld is verplicht."
+msgstr "“仓库 URL”必填。"
 
 #: ui/import.py:81
 msgid "Running Import Command..."
-msgstr "Wordt geïmporteerd..."
+msgstr "正运行 Import 命令"
 
 #: ui/import.py:89
 msgid "Completed Import"
-msgstr "Importeren klaar"
+msgstr "Import 完成"
 
 #: ui/rename.py:48
 msgid "The requested file or folder does not exist."
-msgstr "Het bestand of de map die werd gevraagd bestaat niet."
+msgstr ""
 
 #: ui/rename.py:52 ui/rename.py:84 ui/rename.py:113 ui/browser.py:470
 msgid "Rename"
-msgstr "Hernoemen"
+msgstr "重命名"
 
 #: ui/rename.py:52 ui/browser.py:470 ui/glade/dialogs.glade.h:39
 msgid "New Name:"
-msgstr "Nieuwe naam:"
+msgstr "新名字:"
 
 #: ui/rename.py:60
 msgid "The new name field is required"
-msgstr "Het veld 'nieuwe naam' is verplicht."
+msgstr "新名称一栏必填"
 
 #: ui/rename.py:85 ui/rename.py:114
 msgid "Running Rename Command..."
-msgstr "Uitvoeren rename-opdracht…"
+msgstr "正运行重命名命令"
 
 #: ui/rename.py:91 ui/rename.py:120
 msgid "Completed Rename"
-msgstr "Hernoemen voltooid"
+msgstr "重命名完成"
 
 #: ui/commit.py:206 ui/revert.py:63 ui/checkmods.py:68 ui/resolve.py:62
 #: ui/createpatch.py:120
 msgid "Text Status"
-msgstr "Tekst-status"
+msgstr "文本状态"
 
 #: ui/commit.py:206 ui/revert.py:63 ui/checkmods.py:68 ui/resolve.py:62
 #: ui/createpatch.py:120
 msgid "Property Status"
-msgstr "Eigenschapsstatus"
+msgstr "属性状态"
 
 #: ui/commit.py:289 ui/commit.py:385
 msgid "Running Commit Command..."
-msgstr "Commit-opdracht uitvoeren…"
+msgstr "正在运行提交命令..."
 
 #: ui/commit.py:295 ui/commit.py:394
 msgid "Completed Commit"
-msgstr "Commit voltooid"
+msgstr "提交完成"
 
 #: ui/commit.py:314 ui/revert.py:129 ui/createpatch.py:216
 #: ui/property_editor.py:112
 msgid "Status"
-msgstr "Status"
+msgstr "状态"
 
 #: ui/diff.py:284
 msgid "View diff as side-by-side comparison"
-msgstr "Diff als naast-elkaar-vergelijking bekijken"
+msgstr "并排比较查看差异"
 
 #: ui/merge.py:87
 msgid "Running Merge Test"
-msgstr "Samenvoegtest draaien"
+msgstr "运行合并测试"
 
 #: ui/merge.py:88
 msgid "Completed Merge Test"
-msgstr "Samenvoegtest voltooid"
+msgstr "完成合并测试"
 
 #: ui/merge.py:90
 msgid "Running Merge Command"
-msgstr "Bezig met uitvoeren van merge-opdracht"
+msgstr "正在运行合并命令"
 
 #: ui/merge.py:91
 msgid "Completed Merge"
-msgstr "Samenvoegen voltooid"
+msgstr "合并完成"
 
 #: ui/merge.py:102
 msgid "Merge"
-msgstr "Samenvoegen"
+msgstr "合并"
 
 #: ui/merge.py:415 ui/merge.py:465
 msgid "Author:"
-msgstr "Auteur:"
+msgstr ""
 
 #: ui/dialog.py:38
 #, python-format
@@ -849,319 +835,316 @@ msgid ""
 "An error has occurred in the RabbitVCS Nautilus extension. Please contact "
 "the <a href=\"%s\">RabbitVCS team</a> with the error details listed below:"
 msgstr ""
-"Er is een fout opgetreden in de RabbitVCS Nautilus-extensie. Neem contact op "
-"met het <a href=\"%s\">RabbitVCS-team</a> met de hieronder vermelde "
-"foutdetails:"
+"RabbitVCS Nautilus 扩展发生了一个错误。请联系<a href=\"%s\">RabbitVCS 团队</a>并提供下列错误细节："
 
 #: ui/dialog.py:108
 msgid "Select a Folder"
-msgstr "Selecteer een map"
+msgstr "选择一个文件夹"
 
 #: ui/dialog.py:138 ui/glade/log.glade.h:11
 msgid "to"
-msgstr "naar"
+msgstr "到"
 
 #: ui/dialog.py:261
 msgid "Select a File"
-msgstr "Selecteer een bestand"
+msgstr "选择一个文件"
 
 #: ui/dialog.py:280
 msgid "Save As..."
-msgstr "Opslaan als…"
+msgstr "另存为…"
 
 #: ui/dialog.py:299 ui/glade/dialogs.glade.h:19
 msgid "Are you sure you want to continue?"
-msgstr "Weet je zeker dat je wil verdergaan?"
+msgstr "您确定要继续吗？"
 
 #: ui/dialog.py:327
 msgid "the selected item(s)"
-msgstr "de geselecteerde item(s)"
+msgstr "已选择的项"
 
 #: ui/dialog.py:398
 msgid "Added a folder to the repository"
-msgstr "Map toegevoegd aan het repository"
+msgstr "添加一个文件夹到版本库"
 
 #: ui/revert.py:104 ui/revert.py:169
 msgid "Running Revert Command..."
-msgstr "Bezig met uitvoeren revert-opdracht…"
+msgstr "运行还原命令..."
 
 #: ui/revert.py:106 ui/revert.py:171
 msgid "Completed Revert"
-msgstr "Terugdraaien voltooid"
+msgstr "完成还原"
 
 #: ui/clone.py:66
 msgid "Running Clone Command..."
-msgstr "Uitvoeren van kloon-opdracht…"
+msgstr ""
 
 #: ui/clone.py:73
 msgid "Completed Clone"
-msgstr "Klonen voltooid"
+msgstr ""
 
 #: ui/relocate.py:77
 msgid "The from and to url fields are both required."
-msgstr "De 'vanaf' en 'tot' url velden zijn beide verplicht."
+msgstr "来自和到 URL 栏均为必填"
 
 #: ui/relocate.py:87 ui/glade/relocate.glade.h:3
 msgid "Relocate"
-msgstr "Verhuizen"
+msgstr "重新分配"
 
 #: ui/relocate.py:88
 msgid "Running Relocate Command..."
-msgstr "Uitvoeren relocate-opdracht…"
+msgstr "正运行重分配命令"
 
 #: ui/relocate.py:95
 msgid "Completed Relocate"
-msgstr "Verhuizen voltooid"
+msgstr "重分配完毕"
 
 #: ui/checkmods.py:69 ui/annotate.py:127 ui/annotate.py:228 ui/log.py:48
 #: ui/log.py:326 ui/log.py:556 ui/widget.py:854 ui/browser.py:89
 #: ui/glade/merge.glade.h:17
 msgid "Revision"
-msgstr "Revisie"
+msgstr "修订版"
 
 #: ui/checkmods.py:69 ui/annotate.py:127 ui/annotate.py:228 ui/log.py:326
 #: ui/log.py:556 ui/browser.py:89
 msgid "Author"
-msgstr "Auteur"
+msgstr "作者"
 
 #: ui/checkmods.py:160 ui/changes.py:50 ui/changes.py:420
 msgid "View unified diff"
-msgstr "Geünificeerde diff bekijken"
+msgstr "查看统一差异"
 
 #: ui/checkmods.py:165 ui/changes.py:425
 msgid "Compare side by side"
-msgstr "Naast elkaar vergelijken"
+msgstr "并排比较"
 
 #: ui/resolve.py:103
 msgid "Running Resolve Command..."
-msgstr "Bezig met uitvoeren resolve-opdracht…"
+msgstr "正运行 Resolve 命令"
 
 #: ui/resolve.py:106
 msgid "Completed Resolve"
-msgstr "Oplossen voltooid"
+msgstr "Resolve 完成"
 
 #: ui/changes.py:49
 msgid "More Actions..."
-msgstr "Meer acties..."
+msgstr "更多操作..."
 
 #: ui/changes.py:279 ui/changes.py:364
 msgid "Change"
-msgstr "Verandering"
+msgstr "更改"
 
 #: ui/changes.py:279
 msgid "Property Change"
-msgstr "Eigenschap-wijziging"
+msgstr "属性改变"
 
 #: ui/changes.py:321 ui/lock.py:126
 msgid "Yes"
-msgstr "Ja"
+msgstr "确定"
 
 #: ui/changes.py:321
 msgid "No"
-msgstr "Nee"
+msgstr "否"
 
 #: ui/changes.py:410
 msgid "Open from first revision"
-msgstr "Openen vanaf eerste revisie"
+msgstr "从第一个版本打开"
 
 #: ui/changes.py:415
 msgid "Open from second revision"
-msgstr "Openen vanaf tweede revisie"
+msgstr "从第二个版本打开"
 
 #: ui/annotate.py:57
 msgid "Cannot annotate a directory"
-msgstr "Kan een map niet annoteren"
+msgstr "不能给目录加注释"
 
 #: ui/annotate.py:63
 #, python-format
 msgid "Annotate - %s"
-msgstr "Annoteren — %s"
+msgstr "注释 - %s"
 
 #: ui/annotate.py:127 ui/annotate.py:228
 msgid "Line"
-msgstr "Regel"
+msgstr "明细"
 
 #: ui/annotate.py:128 ui/annotate.py:229
 msgid "Text"
-msgstr "Tekst"
+msgstr "文本"
 
 #: ui/annotate.py:143
 msgid "The from revision field must be an integer"
-msgstr "De 'vanaf' revisie moet een integer zijn."
+msgstr "来自修订版一栏必须为整数"
 
 #: ui/log.py:120
 #, python-format
 msgid "Log - %s"
-msgstr "Logboek — %s"
+msgstr "日志 - %s"
 
 #: ui/log.py:270 ui/log.py:271 ui/glade/log.glade.h:7
 msgid "N/A"
-msgstr "N.v.t."
+msgstr "不可用"
 
 #: ui/log.py:337 ui/log.py:572 ui/action.py:118
 msgid "Action"
-msgstr "Actie"
+msgstr "操作"
 
 #: ui/log.py:338
 msgid "Copy From Path"
-msgstr "Kopiëren van pad"
+msgstr "复制自路径"
 
 #: ui/log.py:338
 msgid "Copy From Revision"
-msgstr "Kopiëren van revisie"
+msgstr "复制自版本"
 
 #: ui/log.py:556
 msgid "Graph"
-msgstr "Grafiek"
+msgstr ""
 
 #: ui/log.py:781
 msgid "View diff against working copy"
-msgstr "Diff ten opzichte van werkversie bekijken"
+msgstr "查看相对于工作版本的差异"
 
 #: ui/log.py:791
 msgid "View diff between revisions"
-msgstr "Diff tussen revisies tonen"
+msgstr "查看版本间差异"
 
 #: ui/log.py:796
 msgid "Compare with working copy"
-msgstr "Vergelijken met werkversie"
+msgstr "与工作版本进行比较"
 
 #: ui/log.py:806
 msgid "Compare revisions"
-msgstr "Revisies vergelijken"
+msgstr "比较版本"
 
 #: ui/log.py:812
 msgid "Show changes against previous revision"
-msgstr "Wijzigingen tonen ten opzichte van vorige revisie"
+msgstr ""
 
 #: ui/log.py:818
 msgid "Show changes between revisions"
-msgstr "Wijzigingen tussen revisies tonen"
+msgstr "显示版本之间的更改"
 
 #: ui/log.py:823
 msgid "Update to this revision"
-msgstr "Updaten naar deze revisie"
+msgstr ""
 
 #: ui/log.py:824
 msgid "Update the selected path to this revision"
-msgstr "Het geselecteerde pad updaten naar deze revisie"
+msgstr ""
 
 #: ui/log.py:829 ui/log.py:833
 msgid "Edit author..."
-msgstr "Auteur bewerken…"
+msgstr "编辑作者..."
 
 #: ui/log.py:837
 msgid "Edit log message..."
-msgstr "Logboekmelding bewerken…"
+msgstr "编辑日志消息..."
 
 #: ui/log.py:841
 msgid "Edit revision properties..."
-msgstr "Revisie-eigenschappen bewerken…"
+msgstr "编辑版本属性..."
 
 #: ui/log.py:1047
 msgid "Edit author"
-msgstr "Auteur bewerken"
+msgstr "编辑作者"
 
 #: ui/log.py:1059
 msgid "Edit log message"
-msgstr "Logboekmelding bewerken"
+msgstr "编辑日志消息"
 
 #: ui/settings.py:43 ui/glade/settings.glade.h:35
 msgid "Unknown"
-msgstr "Onbekend"
+msgstr "未知"
 
 #: ui/settings.py:45
 msgid "There was an error communicating with the status checker service."
 msgstr ""
-"Er is een fout opgetreden bij het communiceren met de statuscontroledienst."
 
 #: ui/settings.py:59
 msgid "English"
-msgstr "Engels"
+msgstr "英语"
 
 #: ui/settings.py:119
 msgid "Config file:"
-msgstr "Configuratiebestand:"
+msgstr ""
 
 #: ui/settings.py:294
 msgid "Select a program"
-msgstr "Selecteer een programma"
+msgstr "选择一个程序"
 
 #: ui/settings.py:303
 msgid "Are you sure you want to clear your repository paths?"
-msgstr "Weet u zeker dat u uw repositorypaden wilt wissen?"
+msgstr "您确定要清空您的仓库路径？"
 
 #: ui/settings.py:310
 msgid "Repository paths cleared"
-msgstr "Repository paden gewist"
+msgstr "仓库路径已清空"
 
 #: ui/settings.py:314
 msgid "Are you sure you want to clear your previous messages?"
-msgstr "Weet u zeker dat u uw vorige berichten wilt wissen?"
+msgstr "您确定要清空您之前的消息？"
 
 #: ui/settings.py:321
 msgid "Previous messages cleared"
-msgstr "Vorige berichten gewist"
+msgstr "以往消息已清空"
 
 #: ui/settings.py:325
 msgid "Are you sure you want to clear your authentication information?"
-msgstr "Weet u zeker dat u uw authenticatie-informatie wilt wissen?"
+msgstr "您确定要清空您的认证信息？"
 
 #: ui/settings.py:342
 msgid "Authentication information cleared"
-msgstr "Authenticatie-informatie gewist"
+msgstr "认证信息已清空"
 
 #: ui/revprops.py:65 ui/properties.py:158 ui/property_editor.py:155
 msgid "Unable to retrieve properties list"
-msgstr "Niet in staat eigenschappenlijst op te halen"
+msgstr "无法获取属性列表"
 
 #: ui/branch.py:99
 msgid "You must supply a destination path."
-msgstr "Een doel pad is verplicht."
+msgstr "必须提供目标路径。"
 
 #: ui/branch.py:115
 msgid "Branch/tag"
-msgstr "Branch/tag"
+msgstr "分支/tag"
 
 #: ui/branch.py:116
 msgid "Running Branch/tag Command..."
-msgstr "Branch/tag wordt uitgevoerd..."
+msgstr "正运行 Branch/tag 命令..."
 
 #: ui/branch.py:118
 msgid "Completed Branch/tag"
-msgstr "Branch/tag is klaar"
+msgstr "完成的 分支/tag"
 
 #: ui/lock.py:73
 msgid "Locked"
-msgstr "Vergrendeld"
+msgstr "已锁定"
 
 #: ui/lock.py:167
 msgid "Get Lock"
-msgstr "Vergrendelen"
+msgstr "获得 Lock"
 
 #: ui/lock.py:168
 msgid "Running Lock Command..."
-msgstr "Wordt vergrendeld..."
+msgstr "正运行 Lock 命令"
 
 #: ui/lock.py:177
 msgid "Completed Lock"
-msgstr "Vergrendelen is klaar"
+msgstr "Lock 完成"
 
 #: ui/switch.py:70
 msgid "The repository location is a required field."
-msgstr "De repository-locatie is een vereist veld."
+msgstr "仓库地址栏必填。"
 
 #: ui/switch.py:80
 msgid "Switch"
-msgstr "Wisselen"
+msgstr "切换"
 
 #: ui/switch.py:81
 msgid "Running Switch Command..."
-msgstr "Bezig met uitvoeren switch-opdracht…"
+msgstr "正在运行切换命令..."
 
 #: ui/switch.py:89
 msgid "Completed Switch"
-msgstr "Wisselen voltooid"
+msgstr "切换完成"
 
 #: ui/widget.py:853 ui/widget.py:859 ui/glade/merge.glade.h:10
 msgid "HEAD"
@@ -1169,447 +1152,437 @@ msgstr "HEAD"
 
 #: ui/widget.py:860
 msgid "Number"
-msgstr "Nummer"
+msgstr ""
 
 #: ui/widget.py:861
 msgid "Working Copy"
-msgstr "Werkversie"
+msgstr "工作副本"
 
 #: ui/widget.py:1056
 msgid "Repository:"
-msgstr "Repository:"
+msgstr ""
 
 #: ui/widget.py:1075
 msgid "Branch:"
-msgstr "Branch:"
+msgstr ""
 
 #: ui/widget.py:1093 ui/glade/dialogs.glade.h:30
 msgid "Host:"
-msgstr "Hostcomputer:"
+msgstr "主机："
 
 #: ui/widget.py:1194
 msgid "Add line:"
-msgstr "Regel toevoegen:"
+msgstr ""
 
 #: ui/checkout.py:139 ui/checkout.py:213
 #, python-format
 msgid "Checkout - %s"
-msgstr "Uitchecken — %s"
+msgstr "签出 - %s"
 
 #: ui/checkout.py:174
 msgid "Running Checkout Command..."
-msgstr "Uitvoeren checkout-opdracht…"
+msgstr "正在运行签出命令"
 
 #: ui/remotes.py:59
 msgid "Remote Repository Manager"
-msgstr "Afstandrepository-beheer"
+msgstr ""
 
 #: ui/remotes.py:60
 msgid "<b>Remote Repositories</b>"
-msgstr "<b>Repository's op afstand</b>"
+msgstr ""
 
 #: ui/remotes.py:66 ui/properties.py:63 ui/property_editor.py:112
 msgid "Name"
-msgstr "Naam"
+msgstr "名称"
 
 #: ui/remotes.py:66
 msgid "Host"
-msgstr "Host"
+msgstr ""
 
 #: ui/property_page.py:126
 msgid "Repository URL"
-msgstr "Repository-URL"
+msgstr ""
 
 #: ui/createpatch.py:68 ui/createpatch.py:86 ui/createpatch.py:162
 #: ui/createpatch.py:262
 msgid "Create Patch"
-msgstr "Patch aanmaken"
+msgstr "生成补丁"
 
 #: ui/createpatch.py:112 ui/createpatch.py:208
 msgid "The given path is not a working copy"
-msgstr "Het gegeven pad is geen werk kopie"
+msgstr "指定路径不是工作副本"
 
 #: ui/createpatch.py:163 ui/createpatch.py:263
 msgid "Creating Patch File..."
-msgstr "Bezig met maken van patch-bestand…"
+msgstr "正在生成补丁文件..."
 
 #: ui/createpatch.py:193 ui/createpatch.py:292
 msgid "Patch File Created"
-msgstr "Patch-bestand aangemaakt"
+msgstr "已生成补丁文件"
 
 #: ui/properties.py:55
 #, python-format
 msgid "Properties - %s"
-msgstr "Eigenschappen — %s"
+msgstr "属性 - %s"
 
 #: ui/properties.py:63 ui/property_editor.py:112
 msgid "Value"
-msgstr "Waarde"
+msgstr "值"
 
 #: ui/properties.py:179
 msgid "There was a problem saving your properties."
-msgstr "Er trad een probleem op bij het opslaan van uw eigenschappen."
+msgstr "保存属性时出现了一个问题。"
 
 #: ui/property_editor.py:56
 msgid ""
 "<b>Note:</b> changes to properties are applied instantly. You may review and "
 "undo changes using the context menu for each item.\n"
-msgstr ""
-"<b>Merk op:</b> veranderingen aan eigenschappen worden direct doorgevoerd. U "
-"kunt veranderingen herzien en ongedaan maken met behulp van het contextmenu "
-"voor elk item.\n"
+msgstr "<b>注意：</b> 属性修改会立即被应用。您可以使用每项的上下文菜单来回顾或撤销修改。\n"
 
 #: ui/property_editor.py:61
 msgid ""
 "Do you want to delete the selected properties from all files and "
 "subdirectories\n"
 "beneath this directory?"
-msgstr ""
-"Wilt u de geselecteerde eigenschappen van alle bestanden en submappen\n"
-"onder deze map verwijderen?"
+msgstr "您想从该目录下所有文件和子目录中删除选中的属性么？"
 
 #: ui/property_editor.py:102
 msgid "File is not under version control."
-msgstr "Bestand is niet onder versiebeheer"
+msgstr "文件不受版本控制"
 
 #: ui/property_editor.py:112
 msgid "Reserved"
-msgstr "Gereserveerd"
+msgstr "保留的"
 
 #: ui/property_editor.py:189
 msgid "Unable to set new value for property."
-msgstr "Niet in staat nieuwe waarde voor eigenschap in te stellen."
+msgstr "不能为属性设置新值"
 
 #: ui/__init__.py:50
 msgid ""
 "You must specify a version control system using the --vcs [svn|git] option"
 msgstr ""
-"U dient een versiecontrolesysteem op te geven met de optie --vcs [svn|git]"
 
 #: ui/action.py:118
 msgid "Mime Type"
-msgstr "Mime type"
+msgstr "MIME 类型"
 
 #: ui/action.py:338
 msgid "Finished"
-msgstr "Klaar"
+msgstr "已完成"
 
 #: ui/action.py:342
 #, python-format
 msgid "%s - Finished"
-msgstr "%s - klaar"
+msgstr "%s - 完成"
 
 #: ui/action.py:365
 msgid "Log Message"
-msgstr "Logboekmelding"
+msgstr "日志信息"
 
 #: ui/unlock.py:48 ui/unlock.py:125
 msgid "Unlock"
-msgstr "Ontgrendelen"
+msgstr "解锁"
 
 #: ui/unlock.py:126
 msgid "Running Unlock Command..."
-msgstr "Bezig met uitvoeren unlock-opdracht…"
+msgstr "正在运行解锁命令..."
 
 #: ui/unlock.py:129
 msgid "Completed Unlock"
-msgstr "Unlock voltooid"
+msgstr "解锁完成"
 
 #: ui/browser.py:89
 msgid "Size"
-msgstr "Grootte"
+msgstr "文件大小"
 
 #: ui/browser.py:326
 msgid "Select"
-msgstr "Selecteren"
+msgstr ""
 
 #: ui/browser.py:348
 msgid "Create folder..."
-msgstr "Map maken..."
+msgstr "创建目录..."
 
 #: ui/browser.py:353
 msgid "Copy to..."
-msgstr "Kopiëren naar..."
+msgstr "复制到 ..."
 
 #: ui/browser.py:358
 msgid "Copy URL to clipboard"
-msgstr "Locatie naar het klembord kopiëren"
+msgstr "复制URL到剪切板"
 
 #: ui/browser.py:363
 msgid "Move to..."
-msgstr "Verplaatsen naar..."
+msgstr "移动到..."
 
 #: ui/browser.py:531
 msgid "Where do you want to copy the selection?"
-msgstr "Waarheen wilt u de selectie kopiëren?"
+msgstr "将选区复制到哪？"
 
 #: ui/browser.py:532 ui/browser.py:561
 msgid "New Location:"
-msgstr "Nieuwe locatie:"
+msgstr "新位置："
 
 #: ui/browser.py:560
 msgid "Where do you want to move the selection?"
-msgstr "Waarheen wilt u de selectie verplaatsen?"
+msgstr "将选区移动到哪？"
 
 #: ui/cleanup.py:56 ui/glade/cleanup.glade.h:1
 msgid "Cleaning Up..."
-msgstr "Wordt opgeruimd..."
+msgstr "正清理"
 
 #: ui/cleanup.py:58
 msgid "Completed Cleanup"
-msgstr "Opruimen voltooid"
+msgstr "清理完成"
 
 #: ui/create.py:46
 msgid "Repository successfully created"
-msgstr "Repository succesvol aangemaakt"
+msgstr "版本仓库创建成功"
 
 #: ui/create.py:48
 msgid ""
 "There was an error creating the repository.  Make sure the given folder is "
 "empty."
-msgstr ""
-"Er is een fout opgetreden bij het aanmaken van het repository. Zorg ervoor "
-"dat de opgegeven map leeg is."
+msgstr "版本库创建过程中出现错误。请确认所指定目录是空的。"
 
 #: ui/glade/properties.glade.h:1
 msgid "<b>Properties for:</b>"
-msgstr "<b>Eigenschappen voor:</b>"
+msgstr "<b>属性属于：<b>"
 
 #: ui/glade/properties.glade.h:2
 msgid "<i>Selected properties will be applied recursively.</i>"
-msgstr "<i>Geselecteerde eigenschappen worden recursief toegepast.</i>"
+msgstr "<i>选中的属性将会被递归应用。</i>"
 
 #: ui/glade/properties.glade.h:4
 msgid "Delete properties recursively"
-msgstr "Eigenschappen recursief verwijderen"
+msgstr "递归删除属性"
 
 #: ui/glade/properties.glade.h:5
 msgid "Edit..."
-msgstr "Bewerken..."
+msgstr "编辑..."
 
 #: ui/glade/properties.glade.h:6
 msgid "New..."
-msgstr "Nieuw…"
+msgstr "新建..."
 
 #: ui/glade/properties.glade.h:8
 msgid "URL/Path:"
-msgstr "URL/Pad:"
+msgstr "URL/路径："
 
 #: ui/glade/browser.glade.h:1
 msgid "Load/Refresh"
-msgstr "Laden/verversen"
+msgstr "加载/刷新"
 
 #: ui/glade/browser.glade.h:4
 msgid "URL:"
-msgstr "URL:"
+msgstr "URL："
 
 #: ui/glade/dialogs.glade.h:1
 msgid "<b>A conflict was found in the following file:</b>"
-msgstr "<b>Er is een conflict gevonden in het volgende bestand:</b>"
+msgstr ""
 
 #: ui/glade/dialogs.glade.h:2 ui/glade/commit.glade.h:1
 msgid "<b>Add Message</b>"
-msgstr "<b>Boodschap Toevoegen</b>"
+msgstr "<b>添加消息</b>"
 
 #: ui/glade/dialogs.glade.h:3
 msgid "<b>Certificate Details</b>"
-msgstr "<b>Certificaatdetails</b>"
+msgstr "<b>认证细节</b>"
 
 #: ui/glade/dialogs.glade.h:4
 msgid "<b>Edit Property Details</b>"
-msgstr "<b>Eigenschapdetails bewerken</b>"
+msgstr "<b>编辑属性细节</b>"
 
 #: ui/glade/dialogs.glade.h:5
 msgid "<b>Enter Name and Email Details</b>"
-msgstr "<b>Voer naam- en e-maildetails in</b>"
+msgstr ""
 
 #: ui/glade/dialogs.glade.h:6
 msgid "<b>Folder Name</b>"
-msgstr "<b>Mapnaam</b>"
+msgstr "<b>文件夹名称</b>"
 
 #: ui/glade/dialogs.glade.h:7 ui/glade/log.glade.h:3
 msgid "<b>Message</b>"
-msgstr "<b>Bericht</b>"
+msgstr "<b>消息</b>"
 
 #: ui/glade/dialogs.glade.h:8
 msgid "<b>Please add your authentication details</b>"
-msgstr "<b>Gelieve uw authenticatiedetails toe te voegen</b>"
+msgstr "<b>请添加您的认证细节</b>"
 
 #: ui/glade/dialogs.glade.h:9
 msgid "<b>Please provide your ssl certification file</b>"
-msgstr "<b>Geef alstublieft uw ssl certification-bestand</b>"
+msgstr "<b>请提供您的 SSL 证书文件</b>"
 
 #: ui/glade/dialogs.glade.h:10
 msgid "<b>Previous Messages</b>"
-msgstr "<b>Eerdere berichten</b>"
+msgstr "<b>前一个消息</b>"
 
 #: ui/glade/dialogs.glade.h:12
 msgid ""
 "<span size=\"large\"><b>Are you sure you want to delete %item%?</b></span>"
-msgstr ""
-"<span size=\"large\"><b>Weet u zeker dat u %item% wilt "
-"verwijderen?</b></span>"
+msgstr "<span size=\"large\"><b>您确实要删除 %item% 吗？</b></span>"
 
 #: ui/glade/dialogs.glade.h:13
 msgid "<span weight=\"bold\" size=\"xx-large\">RabbitVCS Error</span>"
-msgstr "<span weight=\"bold\" size=\"xx-large\">RabbitVCS-fout</span>"
+msgstr "<span weight=\"bold\" size=\"xx-large\">RabbitVCS 错误</span>"
 
 #: ui/glade/dialogs.glade.h:14
 msgid "Accept Forever"
-msgstr "Voor altijd accepteren"
+msgstr "总是接受"
 
 #: ui/glade/dialogs.glade.h:15
 msgid "Accept Mine"
-msgstr "Van mij accepteren"
+msgstr ""
 
 #: ui/glade/dialogs.glade.h:16
 msgid "Accept Once"
-msgstr "Eenmalig accpeteren"
+msgstr "接受一次"
 
 #: ui/glade/dialogs.glade.h:17
 msgid "Accept Theirs"
-msgstr "Van hen accepteren"
+msgstr ""
 
 #: ui/glade/dialogs.glade.h:18
 msgid "Apply property recursively"
-msgstr "Eigenschap recursief toepassen"
+msgstr "递归应用属性"
 
 #: ui/glade/dialogs.glade.h:20
 msgid "Authentication"
-msgstr "Authenticatie"
+msgstr "认证"
 
 #: ui/glade/dialogs.glade.h:21
 msgid "Cancel"
-msgstr "Annuleren"
+msgstr ""
 
 #: ui/glade/dialogs.glade.h:22
 msgid "Check Certificate"
-msgstr "Certificaat controleren"
+msgstr "检查证书"
 
 #: ui/glade/dialogs.glade.h:23
 msgid "Confirmation"
-msgstr "Bevestiging"
+msgstr "确认"
 
 #: ui/glade/dialogs.glade.h:24
 msgid "Conflict Resolution Decision"
-msgstr "Beslissing op conflictoplossing"
+msgstr ""
 
 #: ui/glade/dialogs.glade.h:25
 msgid "Create Folder..."
-msgstr "Map aanmaken…"
+msgstr "创建文件夹..."
 
 #: ui/glade/dialogs.glade.h:26
 msgid "Delete Confirmation"
-msgstr "Verwijderen bevestigen"
+msgstr "删除确认"
 
 #: ui/glade/dialogs.glade.h:27
 msgid "Deny"
-msgstr "Weigeren"
+msgstr "拒绝"
 
 #: ui/glade/dialogs.glade.h:28
 msgid "Email:"
-msgstr "E-mail:"
+msgstr ""
 
 #: ui/glade/dialogs.glade.h:29
 msgid "Fingerprint:"
-msgstr "Vingerafdruk:"
+msgstr "指纹："
 
 #: ui/glade/dialogs.glade.h:31
 msgid "How do you want to handle this?"
-msgstr "Hoe wilt u dit afhandelen?"
+msgstr ""
 
 #: ui/glade/dialogs.glade.h:32
 msgid "Issuer:"
-msgstr "Uitgever:"
+msgstr "颁发者："
 
 #: ui/glade/dialogs.glade.h:34
 msgid "Login:"
-msgstr "Aanmeldnaam:"
+msgstr "登录："
 
 #: ui/glade/dialogs.glade.h:35
 msgid "Merge Manually"
-msgstr "Handmatig samenvoegen"
+msgstr ""
 
 #: ui/glade/dialogs.glade.h:37
 msgid "Name and Email"
-msgstr "Naam en e-mail"
+msgstr ""
 
 #: ui/glade/dialogs.glade.h:40
 msgid "Password:"
-msgstr "Wachtwoord:"
+msgstr "密码："
 
 #: ui/glade/dialogs.glade.h:41
 msgid "Path:"
-msgstr "Pad:"
+msgstr "路径:"
 
 #: ui/glade/dialogs.glade.h:42 ui/glade/lock.glade.h:4
 #: ui/glade/commit.glade.h:5 ui/glade/import.glade.h:5
 msgid "Previous Messages"
-msgstr "Vorige boodschappen"
+msgstr "前一个消息"
 
 #: ui/glade/dialogs.glade.h:43
 msgid "Property"
-msgstr "Eigenschap"
+msgstr "属性"
 
 #: ui/glade/dialogs.glade.h:44
 msgid "Property:"
-msgstr "Eigenschap:"
+msgstr "属性："
 
 #: ui/glade/dialogs.glade.h:45
 msgid "RabbitVCS Error"
-msgstr "RabbitVCS-fout"
+msgstr "RabbitVCS 错误"
 
 #: ui/glade/dialogs.glade.h:46
 msgid "Realm:"
-msgstr "Omgeving:"
+msgstr "域："
 
 #: ui/glade/dialogs.glade.h:47
 msgid "SSL Client Certification"
-msgstr "SSL-gebruikerscertificaat"
+msgstr "SSL 客户端证书"
 
 #: ui/glade/dialogs.glade.h:48
 msgid "Save Authentication"
-msgstr "Authenticatie opslaan"
+msgstr "保存认证"
 
 #: ui/glade/dialogs.glade.h:49
 msgid "Text Change"
-msgstr "Tekstwijziging"
+msgstr "文本更改"
 
 #: ui/glade/dialogs.glade.h:50
 msgid "The item(s) will be sent to the trash can."
-msgstr "De item(s) worden in de prullenbak gegooid."
+msgstr "这些会被发送到回收站"
 
 #: ui/glade/dialogs.glade.h:51
 msgid "Valid:"
-msgstr "Geldig:"
+msgstr "有效："
 
 #: ui/glade/dialogs.glade.h:52
 msgid "Value:"
-msgstr "Waarde:"
+msgstr "值："
 
 #: ui/glade/pull.glade.h:1
 msgid "<b>Pull Information</b>"
-msgstr "<b>Informatie over pull</b>"
+msgstr ""
 
 #: ui/glade/pull.glade.h:2 ui/glade/git-update.glade.h:2
 msgid "Merge changes into local branch"
-msgstr "Wijzigingen samenvoegen in lokale branch"
+msgstr ""
 
 #: ui/glade/pull.glade.h:3
 msgid "Pull"
-msgstr "Pull"
+msgstr ""
 
 #: ui/glade/manager.glade.h:1
 msgid "label"
-msgstr "label"
+msgstr ""
 
 #: ui/glade/about.glade.h:1
 msgid "<b>Links</b>"
-msgstr "<b>Koppelingen</b>"
+msgstr "<b>链接</b>"
 
 #: ui/glade/about.glade.h:2
 msgid "<b>Version Information</b>"
-msgstr "<b>Versie Informatie</b>"
+msgstr "<b>版本信息</b>"
 
 #: ui/glade/about.glade.h:3
 msgid "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
@@ -1617,23 +1590,23 @@ msgstr "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
 
 #: ui/glade/about.glade.h:5
 msgid "Authors:"
-msgstr "Auteurs:"
+msgstr "作者："
 
 #: ui/glade/about.glade.h:6
 msgid "Thanks:"
-msgstr "Met dank aan:"
+msgstr "感谢："
 
 #: ui/glade/property_page.glade.h:1
 msgid "Content status:"
-msgstr "Inhoudstatus:"
+msgstr ""
 
 #: ui/glade/property_page.glade.h:3
 msgid "Property status:"
-msgstr "Eigenschapsstatus:"
+msgstr ""
 
 #: ui/glade/property_page.glade.h:5
 msgid "VCS:"
-msgstr "VCS:"
+msgstr ""
 
 #: ui/glade/log.glade.h:1
 msgid "100"
@@ -1641,32 +1614,31 @@ msgstr "100"
 
 #: ui/glade/log.glade.h:2
 msgid "<b>Affected File(s)</b> (double-click to compare with base)"
-msgstr ""
-"<b>Betrokken bestand(en)</b> (dubbelklik om te vergelijken met basis)"
+msgstr "<b>受影响的文件</b> (双击会比较 Base)"
 
 #: ui/glade/log.glade.h:4
 msgid "<b>Revisions Table</b>"
-msgstr "<b>Revisietabel</b>"
+msgstr "<b>版本表</b>"
 
 #: ui/glade/log.glade.h:5
 msgid "Limit:"
-msgstr "Limiet:"
+msgstr "限制："
 
 #: ui/glade/log.glade.h:6
 msgid "Log"
-msgstr "Logboek"
+msgstr "日志"
 
 #: ui/glade/log.glade.h:8
 msgid "Refresh"
-msgstr "Verversen"
+msgstr "刷新"
 
 #: ui/glade/log.glade.h:9
 msgid "Showing Revisions:"
-msgstr "Getoonde revisies:"
+msgstr "正在显示版本："
 
 #: ui/glade/log.glade.h:10
 msgid "Stop on copy"
-msgstr "Op kopie stoppen"
+msgstr "终止于复制"
 
 #: ui/glade/cleanup.glade.h:2
 msgid ""
@@ -1674,45 +1646,45 @@ msgid ""
 "\n"
 "Begin working copy cleanup?"
 msgstr ""
-"Opschonen aangevraagd…\n"
+"清理请求....\n"
 "\n"
-"Beginnen met opschonen van werkversie?"
+"开始工作副本清理么？"
 
 #: ui/glade/settings.glade.h:1
 msgid "<b>Authentication</b>"
-msgstr "<b>Authenticatie</b>"
+msgstr "<b>身份验证</b>"
 
 #: ui/glade/settings.glade.h:2
 msgid "<b>Checker type:</b>"
-msgstr "<b>Checkertype:</b>"
+msgstr ""
 
 #: ui/glade/settings.glade.h:3
 msgid "<b>Configuration Editor</b>"
-msgstr "<b>Configuratie-editor</b>"
+msgstr ""
 
 #: ui/glade/settings.glade.h:4
 msgid "<b>Log Messages</b>"
-msgstr "<b>Logboekberichten</b>"
+msgstr "<b>日志信息</b>"
 
 #: ui/glade/settings.glade.h:5
 msgid "<b>Logging Options</b>"
-msgstr "<b>Logboek-opties</b>"
+msgstr "<b>日志选项</b>"
 
 #: ui/glade/settings.glade.h:6
 msgid "<b>Memory usage:</b> "
-msgstr "<b>Geheugengebruik:</b> "
+msgstr ""
 
 #: ui/glade/settings.glade.h:7
 msgid "<b>Other Information</b>"
-msgstr "<b>Andere informatie</b>"
+msgstr ""
 
 #: ui/glade/settings.glade.h:8
 msgid "<b>Process ID:</b>"
-msgstr "<b>Proces-ID:</b>"
+msgstr ""
 
 #: ui/glade/settings.glade.h:9
 msgid "<b>Program used to compare files</b>"
-msgstr "<b>Programma voor bestandsvergelijking</b>"
+msgstr "<b>用于比较文件的程序</b>"
 
 #: ui/glade/settings.glade.h:10
 msgid "<b>RabbitVCS</b>"
@@ -1720,293 +1692,288 @@ msgstr "<b>RabbitVCS</b>"
 
 #: ui/glade/settings.glade.h:11
 msgid "<b>URL History</b>"
-msgstr "<b>URL-geschiedenis</b>"
+msgstr "<b>URL 历史</b>"
 
 #: ui/glade/settings.glade.h:12
 msgid "Browse..."
-msgstr "Bladeren…"
+msgstr "浏览..."
 
 #: ui/glade/settings.glade.h:13
 msgid "Clear your authentication information"
-msgstr "Uw authenticatie-informatie wissen"
+msgstr "清除你的认证信息"
 
 #: ui/glade/settings.glade.h:14
 msgid "Enable emblems"
-msgstr "Emblemen inschakelen…"
+msgstr "启用徽章"
 
 #: ui/glade/settings.glade.h:15
 msgid "Enable file attributes"
-msgstr "Bestandskenmerken inschakelen"
+msgstr "启用文件属性"
 
 #: ui/glade/settings.glade.h:16
 msgid "Enable recursive status checks"
-msgstr "Recursieve statuscontroles inschakelen"
+msgstr "启用递归状态检查"
 
 #: ui/glade/settings.glade.h:17
 msgid "External Programs"
-msgstr "Externe programma's"
+msgstr "外部程序"
 
 #: ui/glade/settings.glade.h:18
 msgid "General"
-msgstr "Algemeen"
+msgstr "常规"
 
 #: ui/glade/settings.glade.h:19
 msgid "Git"
-msgstr "Git"
+msgstr ""
 
 #: ui/glade/settings.glade.h:20
 msgid "Language:"
-msgstr "Taal:"
+msgstr "语言："
 
 #: ui/glade/settings.glade.h:21
 msgid "Logging"
-msgstr "Logboek"
+msgstr "日志"
 
 #: ui/glade/settings.glade.h:22
 msgid "Minimum level to log"
-msgstr "Minimumniveau voor loggen"
+msgstr "最小日志级别"
 
 #: ui/glade/settings.glade.h:23
 msgid "Number of URLs to remember"
-msgstr "Het aantal te onthouden URLs"
+msgstr "记住的 URL 数目"
 
 #: ui/glade/settings.glade.h:24
 msgid "Number of messages to remember"
-msgstr "Het aantal te onthouden berichten"
+msgstr "记住的信息数量"
 
 #: ui/glade/settings.glade.h:25
 msgid "Refresh Information"
-msgstr "Informatie verversen"
+msgstr ""
 
 #: ui/glade/settings.glade.h:26
 msgid "Restart Checker"
-msgstr "Checker herstarten"
+msgstr ""
 
 #: ui/glade/settings.glade.h:27
 msgid "Saved Data"
-msgstr "Opgeslagen data"
+msgstr "已保存的数据"
 
 #: ui/glade/settings.glade.h:29
 msgid "Show RabbitVCS debugging tools"
-msgstr "RabbitVCS-debughulpprogramma's tonen"
+msgstr "显示 RabbitVCS 调试工具"
 
 #: ui/glade/settings.glade.h:30
 msgid "Show new version on the left side"
-msgstr "Nieuwe versie tonen aan de linkerkant"
+msgstr ""
 
 #: ui/glade/settings.glade.h:31
 msgid "Status Checker"
-msgstr "Statuschecker"
+msgstr ""
 
 #: ui/glade/settings.glade.h:32
 msgid "Stop Checker"
-msgstr "Stopchecker"
+msgstr ""
 
 #: ui/glade/settings.glade.h:33
 msgid "The debug menu is used to diagnose problems with RabbitVCS itself"
-msgstr ""
-"Het debugmenu is bedoeld om problemen met RabbitVCS zelf te diagnosticeren"
+msgstr "调试菜单用于诊断 RabbitVCS 自身的问题"
 
 #: ui/glade/settings.glade.h:34
 msgid "Type:"
-msgstr "Type:"
+msgstr "类型："
 
 #: ui/glade/lock.glade.h:1
 msgid "<b>Files to lock</b>"
-msgstr "<b>Te vergrendelen bestanden</b>"
+msgstr "<b>要锁定的文件</b>"
 
 #: ui/glade/lock.glade.h:2
 msgid "<b>Please describe why you are locking these files</b>"
-msgstr "<b>Beschrijf waarom u deze bestanden vergrendelt</b>"
+msgstr "<b>请描述您锁定这些文件的原因</b>"
 
 #: ui/glade/lock.glade.h:3
 msgid "Lock Files"
-msgstr "Bestanden vergrendelen"
+msgstr "锁定文件"
 
 #: ui/glade/lock.glade.h:5 ui/glade/add.glade.h:2 ui/glade/commit.glade.h:6
 msgid "Select / Deselect all"
-msgstr "Alles (de)selecteren"
+msgstr "选择 / 取消选择 全部"
 
 #: ui/glade/lock.glade.h:6
 msgid "Steal the locks"
-msgstr "De blokkeringen stelen"
+msgstr "偷锁"
 
 #: ui/glade/annotate.glade.h:1
 msgid "<b>From Revision</b>"
-msgstr "<b>Van Revisie</b>"
+msgstr "<b>从版本</b>"
 
 #: ui/glade/annotate.glade.h:2
 msgid "<b>To Revision</b>"
-msgstr "<b>Naar Revisie</b>"
+msgstr "<b>至版本</b>"
 
 #: ui/glade/annotate.glade.h:3
 msgid "Annotate"
-msgstr "Annoteren"
+msgstr "注释"
 
 #: ui/glade/ignore.glade.h:1
 msgid "<b>Ignore and exclude files from being tracked</b>"
-msgstr "<b>Bestanden negeren en uitsluiten van gevolgd worden</b>"
+msgstr ""
 
 #: ui/glade/ignore.glade.h:2
 msgid "Ignore"
-msgstr "Negeren"
+msgstr ""
 
 #: ui/glade/commit.glade.h:2
 msgid "<b>Changed Files</b> (double-click to compare with base)"
-msgstr "<b>Gewijzigde bestanden</b> (dubbelklik om met basis te vergelijken)"
+msgstr "<b>更改的文件</b> (双击会比较 Base)"
 
 #: ui/glade/commit.glade.h:3
 msgid "<b>Commit to:</b>"
-msgstr "<b>Committen naar:</b>"
+msgstr "<b>提交给：</b>"
 
 #: ui/glade/commit.glade.h:7
 msgid "Show unversioned files"
-msgstr "Bestanden buiten versiebeheer tonen"
+msgstr "显示非版本控制的文件"
 
 #: ui/glade/notification.glade.h:1
 msgid "Notification Messages"
-msgstr "Meldingen"
+msgstr "通知信息"
 
 #: ui/glade/property_editor.glade.h:1
 msgid "<b>Remote URI:</b>"
-msgstr "<b>URI op afstand:</b>"
+msgstr "<b>远程 URI：</b>"
 
 #: ui/glade/property_editor.glade.h:2
 msgid "<b>Working Copy:</b>"
-msgstr "<b>Werkversie:</b>"
+msgstr "<b>工作副本：</b>"
 
 #: ui/glade/property_editor.glade.h:3
 msgid "Add a new property."
-msgstr "Nieuwe eigenschap toevoegen."
+msgstr "添加一个新的属性。"
 
 #: ui/glade/property_editor.glade.h:4
 msgid "Close this dialog."
-msgstr "Dit dialoogvenster sluiten."
+msgstr "关闭这个对话框。"
 
 #: ui/glade/property_editor.glade.h:5
 msgid "Property Editor"
-msgstr "Eigenschappen-editor"
+msgstr "属性编辑器"
 
 #: ui/glade/property_editor.glade.h:6
 msgid "Refresh the list of properties."
-msgstr "De eigenschappenlijst verversen"
+msgstr "刷新属性列表"
 
 #: ui/glade/relocate.glade.h:1
 msgid "<b>Change the repository of your working copy</b>"
-msgstr "<b>Het repository van uw werkversie veranderen</b>"
+msgstr "<b>改变您工作副本的属性</b>"
 
 #: ui/glade/relocate.glade.h:2
 msgid "From:"
-msgstr "Van:"
+msgstr "从："
 
 #: ui/glade/relocate.glade.h:4
 msgid "To:"
-msgstr "Naar:"
+msgstr "至："
 
 #: ui/glade/git-update.glade.h:1 ui/glade/update.glade.h:1
 #: ui/glade/merge.glade.h:3
 msgid "<b>Options</b>"
-msgstr "<b>Opties</b>"
+msgstr "<b>选项</b>"
 
 #: ui/glade/git-update.glade.h:3
 msgid "Update Local Repository"
-msgstr "Lokale repository updaten"
+msgstr ""
 
 #: ui/glade/update.glade.h:2
 msgid "<b>Revision</b>"
-msgstr "<b>Revisie</b>"
+msgstr "<b>版本</b>"
 
 #: ui/glade/update.glade.h:3
 msgid "Omit Externals"
-msgstr "Externen overslaan"
+msgstr "省略外部"
 
 #: ui/glade/update.glade.h:4 ui/glade/merge.glade.h:16
 msgid "Recursive"
-msgstr "Recursief"
+msgstr "递归"
 
 #: ui/glade/update.glade.h:5
 msgid "Rollback to specified revision number"
-msgstr "Terugdraaien naar opgegeven revisienummer"
+msgstr ""
 
 #: ui/glade/import.glade.h:1
 msgid "<b>Import Message</b>"
-msgstr "<b>Bericht importeren</b>"
+msgstr "<b>导入消息</b>"
 
 #: ui/glade/import.glade.h:2
 msgid "<b>Repository</b>"
-msgstr "<b>Repository</b>"
+msgstr "<b>版本库</b>"
 
 #: ui/glade/import.glade.h:4
 msgid "Include ignored files"
-msgstr "Genegeerde bestanden meenemen"
+msgstr "包括已忽略的文件"
 
 #: ui/glade/merge.glade.h:1
 msgid "<b>From URL</b>"
-msgstr "<b>Van URL</b>"
+msgstr "<b>来自URL</b>"
 
 #: ui/glade/merge.glade.h:2
 msgid "<b>From: (URL and revision to merge)</b>"
-msgstr "<b>Van: (Samen te voegen URL en revisie)</b>"
+msgstr "<b>来自：(URL 和要合并的版本)</b>"
 
 #: ui/glade/merge.glade.h:4
 msgid "<b>Revision Range</b>"
-msgstr "<b>Revisiebereik</b>"
+msgstr "<b>版本范围</b>"
 
 #: ui/glade/merge.glade.h:5
 msgid "<b>To: (URL and revision to merge)</b>"
-msgstr "<b>Naar: (samen te voegen URL en revisie)</b>"
+msgstr "<b>至：(URL 和要合并的版本)</b>"
 
 #: ui/glade/merge.glade.h:6
 msgid "<b>URL to merge from</b>"
-msgstr "<b>URL waarvandaan samen te voegen</b>"
+msgstr "<b>要合并自 URL</b>"
 
 #: ui/glade/merge.glade.h:7
 msgid "<b>Working Copy</b>"
-msgstr "<b>Werkversie</b>"
+msgstr "<b>工作副本</b>"
 
 #: ui/glade/merge.glade.h:8
 msgid ""
 "Choose this method if you have made some changes to a branch and wish to "
 "merge your changes with another branch."
-msgstr ""
-"Gebruik deze methode als u wijzigingen hebt gemaakt aan een branch en uw "
-"wijzigingen wilt samenvoegen met een andere branch."
+msgstr "如果您对某个分支进行了修改，并且想将这些修改与另一分支合并，选择这种方法。"
 
 #: ui/glade/merge.glade.h:9
 msgid ""
 "Choose this method if you wish to merge two different branches into your "
 "working copy."
-msgstr ""
-"Gebruik deze methode als u twee verschillende branches wilt samenvoegen naar "
-"uw werkversie."
+msgstr "如果您想合并两个不同的分支到您的工作副本的话，请选择这个方法。"
 
 #: ui/glade/merge.glade.h:11
 msgid "Ignore ancestry"
-msgstr "Voorgeschiedenis negeren"
+msgstr "忽略早期的"
 
 #: ui/glade/merge.glade.h:12
 msgid "Merge Assistant"
-msgstr "Samenvoeg-assistent"
+msgstr "合并助手"
 
 #: ui/glade/merge.glade.h:13
 msgid "Merge a range of revisions"
-msgstr "Een reeks revisies samenvoegen"
+msgstr "合并一个范围的版本"
 
 #: ui/glade/merge.glade.h:14
 msgid "Merge two different trees"
-msgstr "Twee verschillende bomen samenvoegen"
+msgstr "合并两个不同的源码树"
 
 #: ui/glade/merge.glade.h:15
 msgid "Only record the merge"
-msgstr "Alleen het samvoegen opnemen"
+msgstr "仅记录合并"
 
 #: ui/glade/merge.glade.h:18
 msgid "Show log"
-msgstr "Toon log"
+msgstr "显示日志"
 
 #: ui/glade/merge.glade.h:19
 msgid "Test Merge"
-msgstr "Test-samenvoegen"
+msgstr "测试合并"
 
 #: ui/glade/merge.glade.h:20
 msgid ""
@@ -2018,9 +1985,8 @@ msgid ""
 "\n"
 "To merge all revisions, leave the box empty."
 msgstr ""
-
-#~ msgid "Completed"
-#~ msgstr "Klaar"
-
-#~ msgid "(no author)"
-#~ msgstr "(geen auteur)"
+"使用日志对话框来选择您想合并的版本。或者手动指定版本，用逗号分割。您可以通过减号\"-\"来指定一个版本范围。\n"
+"\n"
+"例如：4-7,9,11,15-HEAD\n"
+"\n"
+"要合并所有分支请保持空白。"

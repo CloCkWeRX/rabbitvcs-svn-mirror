@@ -1,237 +1,750 @@
-# Swedish translations for rabbitvcs package
-# Svenska översättningar för paket rabbitvcs.
-# Copyright (C) 2009 THE rabbitvcs'S COPYRIGHT HOLDER
+# Swedish translation for rabbitvcs
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the rabbitvcs package.
-#  <niso@kth.se>, 2009.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: rabbitvcs 0.12\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-04 14:35-0500\n"
-"PO-Revision-Date: 2009-08-22 14:54+0000\n"
-"Last-Translator: Martin Lindhe <Unknown>\n"
-"Language-Team: Swedish\n"
+"Project-Id-Version: rabbitvcs\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-11-26 09:51-0500\n"
+"PO-Revision-Date: 2010-04-13 19:52+0000\n"
+"Last-Translator: Andreas Dahlberg <andreasdahlberg@live.se>\n"
+"Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-09-24 13:44+0000\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2010-12-09 23:36+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: ui/branch.py:71
-msgid ""
-"There have been modifications to your working copy.  If you copy from the "
-"HEAD revision you will lose your changes."
+#: util/helper.py:109
+msgid "just now"
 msgstr ""
-"Det har skett ändringar i din arbetskopia. Om du kopierar från HEAD-"
-"versionen kommer du att förlora dina ändringar."
 
-#: ui/branch.py:89
-msgid "You must supply a destination path."
-msgstr "Du måste ange en destinationssökväg."
-
-#: ui/branch.py:99
-msgid "The from revision field is required."
-msgstr "Från versions fältet krävs,"
-
-#: ui/branch.py:108
-msgid "Invalid revision information"
-msgstr "Ogiltig versionsinformation"
-
-#: ui/branch.py:123 ui/glade/branch.glade.h:4
-msgid "Branch/tag"
-msgstr "Gren/tagg"
-
-#: ui/branch.py:124
-msgid "Running Branch/tag Command..."
-msgstr "Kör Gren/tagg kommando..."
-
-#: ui/branch.py:126
-msgid "Completed Branch/tag"
-msgstr "Färdig Gren/tagg..."
-
-#: ui/updateto.py:70
-msgid "Update To Revision"
-msgstr "Uppdatera till revision"
-
-#: ui/updateto.py:71 ui/update.py:54
-msgid "Updating..."
-msgstr "Uppdaterar..."
-
-#: ui/updateto.py:79 ui/update.py:57
-msgid "Completed Update"
-msgstr "Uppdatering färdig"
-
-#: ui/rename.py:59
-msgid "The new name field is required"
-msgstr "Det nya namnet är ett obligatoriskt fält"
-
-#: ui/rename.py:70 ui/glade/rename.glade.h:2
-msgid "Rename"
-msgstr "Byt namn"
-
-#: ui/rename.py:71
-msgid "Running Rename Command..."
-msgstr "Kör Byt namn..."
-
-#: ui/rename.py:78
-msgid "Completed Rename"
-msgstr "Namnbyte genomfört"
-
-#: ui/annotate.py:51
-msgid "Cannot annotate a directory"
-msgstr "Det går inte att kommentera en katalog"
-
-#: ui/annotate.py:58
+#: util/helper.py:111
 #, python-format
-msgid "Annotate - %s"
-msgstr "Kommentar - %s"
+msgid "%d minute(s) ago"
+msgstr ""
 
-#: ui/annotate.py:71
-msgid "Line"
-msgstr "Rad"
+#: util/helper.py:631
+#, python-format
+msgid "%i second"
+msgid_plural "%i seconds"
+msgstr[0] "%i sekund"
+msgstr[1] "%i sekunder"
 
-#: ui/annotate.py:71 ui/log.py:80 ui/glade/switch.glade.h:5
-#: ui/glade/merge.glade.h:17 ui/glade/checkout.glade.h:10
+#: util/helper.py:634
+#, python-format
+msgid "%i minute"
+msgid_plural "%i minutes"
+msgstr[0] "%i minut"
+msgstr[1] "%i minuter"
+
+#: util/helper.py:637
+#, python-format
+msgid "%i hour"
+msgid_plural "%i hours"
+msgstr[0] "%i timme"
+msgstr[1] "%i timmar"
+
+#: util/helper.py:640
+#, python-format
+msgid "%i day"
+msgid_plural "%i days"
+msgstr[0] "%i dag"
+msgstr[1] "%i dagar"
+
+#: util/helper.py:643
+#, python-format
+msgid "%i week"
+msgid_plural "%i weeks"
+msgstr[0] "%i vecka"
+msgstr[1] "%i veckor"
+
+#: util/helper.py:646
+#, python-format
+msgid "%i month"
+msgid_plural "%i months"
+msgstr[0] "%i månad"
+msgstr[1] "%i månader"
+
+#: util/helper.py:649
+#, python-format
+msgid "%i year"
+msgid_plural "%i years"
+msgstr[0] "%i år"
+msgstr[1] "%i år"
+
+#: util/contextmenuitems.py:270
+msgid "Debug"
+msgstr "Felsök"
+
+#: util/contextmenuitems.py:275
+msgid "Bugs"
+msgstr "Buggar"
+
+#: util/contextmenuitems.py:280
+msgid "Open Shell"
+msgstr "Öppna Skal"
+
+#: util/contextmenuitems.py:286
+msgid "Refresh Status"
+msgstr "Uppdatera Status"
+
+#: util/contextmenuitems.py:291
+msgid "Debug Revert"
+msgstr "Debug återställ"
+
+#: util/contextmenuitems.py:292
+msgid "Reverts everything it sees"
+msgstr "Återställer allt den ser"
+
+#: util/contextmenuitems.py:298
+msgid "Invalidate"
+msgstr "Ogiltigförklara"
+
+#: util/contextmenuitems.py:299
+msgid "Force an invalidate_extension_info() call"
+msgstr "Tvinga fram ett invalidate_extension_info() anrop"
+
+#: util/contextmenuitems.py:305
+msgid "Add Emblem"
+msgstr "Lägg till emblem"
+
+#: util/contextmenuitems.py:306
+msgid "Add an emblem"
+msgstr "Lägg till ett emblem"
+
+#: util/contextmenuitems.py:312
+msgid "Checkout..."
+msgstr ""
+
+#: util/contextmenuitems.py:313
+msgid "Check out a working copy"
+msgstr "Hämta en arbetskopia"
+
+#: util/contextmenuitems.py:318 ui/update.py:53 ui/update.py:97
 #: ui/glade/update.glade.h:6
-msgid "Revision"
-msgstr "Revision"
+msgid "Update"
+msgstr "Uppdatera"
 
-#: ui/annotate.py:71 ui/log.py:80
-msgid "Author"
-msgstr "Författare"
+#: util/contextmenuitems.py:319
+msgid "Update a working copy"
+msgstr "Uppdatera en arbetskopia"
 
-#: ui/annotate.py:72 ui/dialog.py:47 ui/log.py:81
-msgid "Date"
-msgstr "Datum"
+#: util/contextmenuitems.py:324 ui/commit.py:288 ui/commit.py:384
+#: ui/glade/commit.glade.h:4
+msgid "Commit"
+msgstr "Skicka"
 
-#: ui/annotate.py:72
-msgid "Text"
-msgstr "Text"
+#: util/contextmenuitems.py:325
+msgid "Commit modifications to the repository"
+msgstr "Skicka ändringar till arkivet"
 
-#: ui/annotate.py:112
-msgid "The from revision field must be an integer"
-msgstr "Från version fältet måste vara ett heltal"
+#: util/contextmenuitems.py:330 ui/glade/property_page.glade.h:4
+msgid "RabbitVCS"
+msgstr "RabbitVCS"
 
-#: ui/annotate.py:122
-msgid "Generating Annotation..."
-msgstr "Genererar kommentar..."
+#: util/contextmenuitems.py:335
+msgid "RabbitVCS SVN"
+msgstr ""
 
-#: ui/annotate.py:138 lib/vcs/svn/__init__.py:122 lib/vcs/svn/__init__.py:124
-msgid "Completed"
-msgstr "Färdig"
+#: util/contextmenuitems.py:340
+msgid "RabbitVCS Git"
+msgstr ""
 
-#: ui/settings.py:50
-msgid "English"
-msgstr "Engelska"
+#: util/contextmenuitems.py:345 ui/glade/browser.glade.h:2
+msgid "Repository Browser"
+msgstr ""
 
-#: ui/settings.py:156 ui/settings.py:165
-msgid "Select a program"
-msgstr "Välj ett program"
+#: util/contextmenuitems.py:346
+msgid "Browse a repository tree"
+msgstr ""
 
-#: ui/settings.py:174
-msgid "Are you sure you want to clear your repository paths?"
-msgstr "Är du säker på att du vill rensa dina arkivs sökvägar?"
+#: util/contextmenuitems.py:351
+msgid "Check for Modifications..."
+msgstr ""
 
-#: ui/settings.py:181
-msgid "Repository paths cleared"
-msgstr "Arkivets sökvägar rensade"
+#: util/contextmenuitems.py:352
+msgid "Check for modifications made to the repository"
+msgstr ""
 
-#: ui/settings.py:185
-msgid "Are you sure you want to clear your previous messages?"
-msgstr "Är du säker på att du vill rensa dina tidigare meddelanden?"
+#: util/contextmenuitems.py:357
+msgid "Diff Menu..."
+msgstr "Skillnadsmeny..."
 
-#: ui/settings.py:192
-msgid "Previous messages cleared"
-msgstr "Tidigare meddelanden rensade"
+#: util/contextmenuitems.py:358
+msgid "List of comparison options"
+msgstr ""
 
-#: ui/settings.py:196
-msgid "Are you sure you want to clear your authentication information?"
-msgstr "Är du säker på att du vill rensa din autentiseringsinformation?"
+#: util/contextmenuitems.py:363
+msgid "View diff against base"
+msgstr "Se skillanden mot grunden"
 
-#: ui/settings.py:213
-msgid "Authentication information cleared"
-msgstr "Autentiseringsinformation rensad"
+#: util/contextmenuitems.py:364
+msgid "View the modifications made to a file"
+msgstr "Visa ändringar som gjorts i en fil"
 
-#: ui/cleanup.py:54 lib/extensions/nautilus/RabbitVCS.py:831
+#: util/contextmenuitems.py:369
+msgid "View diff between files/folders"
+msgstr "Se skillnaden mellan filer/mappar"
+
+#: util/contextmenuitems.py:370
+msgid "View the differences between two files"
+msgstr "Se skillnaden mellan två filer"
+
+#: util/contextmenuitems.py:375 ui/log.py:786
+msgid "View diff against previous revision"
+msgstr "Visa skillnaden mot tidigare revision"
+
+#: util/contextmenuitems.py:376
+msgid "View the modifications made to a file since its last change"
+msgstr "Se filändringar sedan senaste ändring"
+
+#: util/contextmenuitems.py:381
+msgid "Compare with base"
+msgstr "Jämför med grunden"
+
+#: util/contextmenuitems.py:382
+msgid "Compare with base using side-by-side comparison tool"
+msgstr ""
+
+#: util/contextmenuitems.py:387
+msgid "Compare files/folders"
+msgstr "Jämför filer/mappar"
+
+#: util/contextmenuitems.py:388
+msgid "Compare the differences between two items"
+msgstr "Jämför skillnaden mellan två objekt"
+
+#: util/contextmenuitems.py:393 ui/log.py:801
+msgid "Compare with previous revision"
+msgstr "Jämför med föregående revision"
+
+#: util/contextmenuitems.py:394
+msgid "Compare with previous revision using side-by-side comparison tool"
+msgstr ""
+
+#: util/contextmenuitems.py:399
+msgid "Show Changes..."
+msgstr "Visa ändringar..."
+
+#: util/contextmenuitems.py:400
+msgid "Show changes between paths and revisions"
+msgstr ""
+
+#: util/contextmenuitems.py:405
+msgid "Show Log"
+msgstr "Visa Logg"
+
+#: util/contextmenuitems.py:406
+msgid "Show a file's log information"
+msgstr "Visa en fils logginformation"
+
+#: util/contextmenuitems.py:411 ui/add.py:156 ui/tags.py:273
+#: ui/branches.py:274 ui/widget.py:1199 ui/glade/add.glade.h:1
+msgid "Add"
+msgstr "Lägg till"
+
+#: util/contextmenuitems.py:412
+msgid "Schedule items to be added to the repository"
+msgstr ""
+
+#: util/contextmenuitems.py:417
+msgid "Add to ignore list"
+msgstr "Lägg till ignoreringslista"
+
+#: util/contextmenuitems.py:422
+msgid "Update to revision..."
+msgstr "Uppdatera till revision..."
+
+#: util/contextmenuitems.py:423
+msgid "Update a file to a specific revision"
+msgstr "Uppdatera till angiven version"
+
+#: util/contextmenuitems.py:428
+msgid "Rename..."
+msgstr "Byt namn..."
+
+#: util/contextmenuitems.py:429
+msgid "Schedule an item to be renamed on the repository"
+msgstr "Schemalägg ett objekt som ska byta namn i arkivet"
+
+#: util/contextmenuitems.py:434 ui/glade/properties.glade.h:3
+msgid "Delete"
+msgstr "Ta bort"
+
+#: util/contextmenuitems.py:435
+msgid "Schedule an item to be deleted from the repository"
+msgstr "Schemalägg ett objekt som ska tas bort från arkivet"
+
+#: util/contextmenuitems.py:440 ui/revert.py:50 ui/revert.py:103
+#: ui/revert.py:115 ui/revert.py:168
+msgid "Revert"
+msgstr "Återställ"
+
+#: util/contextmenuitems.py:441
+msgid "Revert an item to its unmodified state"
+msgstr "Återställ ett objekt till dess omodifierade form"
+
+#: util/contextmenuitems.py:446 ui/resolve.py:48 ui/resolve.py:102
+msgid "Resolve"
+msgstr "Lös"
+
+#: util/contextmenuitems.py:447
+msgid "Mark a conflicted item as resolved"
+msgstr "Markera ett tvistande objektet som löst"
+
+#: util/contextmenuitems.py:452
+msgid "Restore"
+msgstr "Återställ"
+
+#: util/contextmenuitems.py:453
+msgid "Restore a missing item"
+msgstr "Återställ ett saknat objekt"
+
+#: util/contextmenuitems.py:457
+msgid "Relocate..."
+msgstr "Flytta..."
+
+#: util/contextmenuitems.py:458
+msgid "Relocate your working copy"
+msgstr "Flytta din arbetskopia"
+
+#: util/contextmenuitems.py:463
+msgid "Get Lock..."
+msgstr "Hämta Lås..."
+
+#: util/contextmenuitems.py:464
+msgid "Locally lock items"
+msgstr "Lås objekt lokalt"
+
+#: util/contextmenuitems.py:469
+msgid "Release Lock..."
+msgstr "Släpp lås..."
+
+#: util/contextmenuitems.py:470
+msgid "Release lock on an item"
+msgstr "Släpp lås på ett objekt"
+
+#: util/contextmenuitems.py:475 ui/cleanup.py:55
 msgid "Cleanup"
 msgstr "Rensa"
 
-#: ui/cleanup.py:55 ui/glade/cleanup.glade.h:1
-msgid "Cleaning Up..."
-msgstr "Rensar upp..."
+#: util/contextmenuitems.py:476
+msgid "Clean up working copy"
+msgstr "Rensa upp arbetskopia"
 
-#: ui/cleanup.py:57
-msgid "Completed Cleanup"
-msgstr "Rensning färdig"
+#: util/contextmenuitems.py:481
+msgid "Export..."
+msgstr "Exportera..."
 
-#: ui/relocate.py:76
-msgid "The from and to url fields are both required."
-msgstr "Både från och till url-fälten krävs."
+#: util/contextmenuitems.py:482
+msgid "Export a working copy or repository with no versioning information"
+msgstr "Exportera en fungerande kopia eller arkiv utan versionsinformation"
 
-#: ui/relocate.py:86 ui/glade/relocate.glade.h:3
-msgid "Relocate"
-msgstr "Omlokalisera"
+#: util/contextmenuitems.py:487
+msgid "Create Repository here"
+msgstr "Skapa arkiv här"
 
-#: ui/relocate.py:87
-msgid "Running Relocate Command..."
-msgstr "Kör omlokalisering..."
+#: util/contextmenuitems.py:488
+msgid "Create a repository in a folder"
+msgstr "Skapa ett arkiv i en mapp"
 
-#: ui/relocate.py:94
-msgid "Completed Relocate"
-msgstr "Omlokalisering färdig"
+#: util/contextmenuitems.py:493 ui/import.py:80 ui/glade/import.glade.h:3
+msgid "Import"
+msgstr "Importera"
 
-#: ui/add.py:64 ui/lock.py:66 ui/resolve.py:55 ui/action.py:66 ui/commit.py:73
-#: ui/unlock.py:55 ui/log.py:89 ui/revert.py:55
+#: util/contextmenuitems.py:494
+msgid "Import an item into a repository"
+msgstr "Importera ett objekt till ett arkiv"
+
+#: util/contextmenuitems.py:503
+msgid "Branch/tag..."
+msgstr "Gren/tagg..."
+
+#: util/contextmenuitems.py:504
+msgid "Copy an item to another location in the repository"
+msgstr "Kopiera et objekt till en annan plats i arkivet"
+
+#: util/contextmenuitems.py:509
+msgid "Switch..."
+msgstr "Växla..."
+
+#: util/contextmenuitems.py:510
+msgid "Change the repository location of a working copy"
+msgstr "Ändra arkivets plats för en arbets kopia"
+
+#: util/contextmenuitems.py:515
+msgid "Merge..."
+msgstr "Sammanfoga..."
+
+#: util/contextmenuitems.py:516
+msgid "A wizard with steps for merging"
+msgstr "En guide med åtgärder för sammanfogning"
+
+#: util/contextmenuitems.py:521
+msgid "Annotate..."
+msgstr "Kommentera..."
+
+#: util/contextmenuitems.py:522
+msgid "Annotate a file"
+msgstr "Kommentera en fil"
+
+#: util/contextmenuitems.py:527
+msgid "Create Patch..."
+msgstr ""
+
+#: util/contextmenuitems.py:528
+msgid "Creates a unified diff file with all changes you made"
+msgstr ""
+
+#: util/contextmenuitems.py:533
+msgid "Apply Patch..."
+msgstr ""
+
+#: util/contextmenuitems.py:534
+msgid "Applies a unified diff file to the working copy"
+msgstr ""
+
+#: util/contextmenuitems.py:539 ui/glade/properties.glade.h:7
+msgid "Properties"
+msgstr "Egenskaper"
+
+#: util/contextmenuitems.py:540
+msgid "View the properties of an item"
+msgstr "Visa egenskaperna för ett objekt"
+
+#: util/contextmenuitems.py:545
+msgid "Help"
+msgstr "Hjälp"
+
+#: util/contextmenuitems.py:546
+msgid "View help"
+msgstr "Visa Hjälp"
+
+#: util/contextmenuitems.py:551 ui/glade/settings.glade.h:28
+msgid "Settings"
+msgstr "Inställningar"
+
+#: util/contextmenuitems.py:552
+msgid "View or change RabbitVCS settings"
+msgstr "Visa eller ändra RabbitVCS inställningar"
+
+#: util/contextmenuitems.py:557 ui/glade/about.glade.h:4
+msgid "About"
+msgstr "Om"
+
+#: util/contextmenuitems.py:558
+msgid "About RabbitVCS"
+msgstr "Om RabbitVCS"
+
+#: util/contextmenuitems.py:563
+msgid "Open"
+msgstr "Öppna"
+
+#: util/contextmenuitems.py:564
+msgid "Open a file"
+msgstr ""
+
+#: util/contextmenuitems.py:572
+msgid "Browse to"
+msgstr "Bläddra till"
+
+#: util/contextmenuitems.py:573
+msgid "Browse to a file or folder"
+msgstr ""
+
+#: util/contextmenuitems.py:578
+msgid "Revert property"
+msgstr ""
+
+#: util/contextmenuitems.py:580
+msgid "Revert this property to its original state"
+msgstr ""
+
+#: util/contextmenuitems.py:584
+msgid "Revert property (recursive)"
+msgstr ""
+
+#: util/contextmenuitems.py:586
+msgid "Revert this property to its original state (recursive)"
+msgstr ""
+
+#: util/contextmenuitems.py:591
+msgid "Delete property"
+msgstr ""
+
+#: util/contextmenuitems.py:593
+msgid "Delete this property"
+msgstr ""
+
+#: util/contextmenuitems.py:597
+msgid "Delete property (recursive)"
+msgstr ""
+
+#: util/contextmenuitems.py:599
+msgid "Delete this property (recursive)"
+msgstr ""
+
+#: util/contextmenuitems.py:604
+msgid "Edit details"
+msgstr ""
+
+#: util/contextmenuitems.py:606
+msgid "Show and edit property details"
+msgstr ""
+
+#: util/contextmenuitems.py:610
+msgid "Initialize Repository"
+msgstr ""
+
+#: util/contextmenuitems.py:615 ui/clone.py:47 ui/clone.py:65
+msgid "Clone"
+msgstr ""
+
+#: util/contextmenuitems.py:620
+msgid "Fetch/Pull"
+msgstr ""
+
+#: util/contextmenuitems.py:625 ui/push.py:96
+msgid "Push"
+msgstr ""
+
+#: util/contextmenuitems.py:630
+msgid "Branches"
+msgstr ""
+
+#: util/contextmenuitems.py:635
+msgid "Tags"
+msgstr ""
+
+#: util/contextmenuitems.py:640
+msgid "Remotes"
+msgstr ""
+
+#: util/contextmenuitems.py:666
+msgid "Ignore item by filename"
+msgstr ""
+
+#: util/contextmenuitems.py:685
+msgid "Ignore item by file extension"
+msgstr ""
+
+#: ui/update.py:54 ui/update.py:98 ui/updateto.py:94
+msgid "Updating..."
+msgstr "Uppdaterar..."
+
+#: ui/update.py:56 ui/update.py:103 ui/updateto.py:102
+msgid "Completed Update"
+msgstr "Uppdatering färdig"
+
+#: ui/updateto.py:82
+msgid "Rollback To Revision"
+msgstr ""
+
+#: ui/updateto.py:83
+msgid "Rolling Back..."
+msgstr ""
+
+#: ui/updateto.py:91
+msgid "Completed Rollback"
+msgstr ""
+
+#: ui/updateto.py:93
+msgid "Update To Revision"
+msgstr "Uppdatera till revision"
+
+#: ui/updateto.py:138 ui/checkout.py:173
+msgid "Checkout"
+msgstr "Hämta"
+
+#: ui/updateto.py:139
+#, python-format
+msgid "Checking out %s..."
+msgstr ""
+
+#: ui/updateto.py:145 ui/checkout.py:184
+msgid "Completed Checkout"
+msgstr "Färdig Hämta"
+
+#: ui/add.py:72 ui/commit.py:205 ui/commit.py:313 ui/revert.py:62
+#: ui/revert.py:128 ui/checkmods.py:67 ui/resolve.py:61 ui/changes.py:279
+#: ui/changes.py:364 ui/log.py:337 ui/log.py:572 ui/lock.py:72
+#: ui/createpatch.py:119 ui/createpatch.py:215 ui/action.py:118
+#: ui/unlock.py:61 ui/browser.py:89
 msgid "Path"
 msgstr "Sökväg"
 
-#: ui/add.py:64 ui/lock.py:66 ui/resolve.py:55 ui/commit.py:73 ui/unlock.py:55
-#: ui/revert.py:55
+#: ui/add.py:72 ui/commit.py:205 ui/commit.py:313 ui/revert.py:62
+#: ui/revert.py:128 ui/checkmods.py:67 ui/resolve.py:61 ui/lock.py:72
+#: ui/createpatch.py:119 ui/createpatch.py:215 ui/unlock.py:61
 msgid "Extension"
 msgstr "Tillägg"
 
-#: ui/add.py:78 ui/lock.py:96 ui/commit.py:97 ui/unlock.py:70 ui/log.py:253
-#: ui/glade/log.glade.h:6
+#: ui/add.py:95 ui/commit.py:93 ui/lock.py:115 ui/unlock.py:85
+#: ui/glade/dialogs.glade.h:33
 msgid "Loading..."
 msgstr "Laddar..."
 
-#: ui/add.py:81 ui/lock.py:99 ui/commit.py:100 ui/unlock.py:91
+#: ui/add.py:98 ui/commit.py:100 ui/lock.py:118 ui/unlock.py:107
 #, python-format
 msgid "Found %d item(s)"
 msgstr "Hittade %d objekt"
 
-#: ui/add.py:115 ui/commit.py:269 ui/glade/add.glade.h:1
-#: lib/extensions/nautilus/RabbitVCS.py:638
-msgid "Add"
-msgstr "Lägg till"
-
-#: ui/add.py:116
+#: ui/add.py:157
 msgid "Running Add Command..."
 msgstr "Kör Lägg till..."
 
-#: ui/add.py:118
+#: ui/add.py:159
 msgid "Completed Add"
 msgstr "Färdig Lägga till"
 
-#: ui/add.py:141 ui/lock.py:206 ui/commit.py:239
-msgid "Open"
-msgstr "Öppna"
+#: ui/ignore.py:100
+msgid "Ignore file:"
+msgstr ""
 
-#: ui/add.py:150 ui/lock.py:216 ui/commit.py:249
-msgid "Browse to"
-msgstr "Bläddra till"
+#: ui/tags.py:62
+msgid "Tag Manager"
+msgstr ""
 
-#: ui/add.py:159 ui/commit.py:259 ui/glade/properties.glade.h:2
-#: lib/extensions/nautilus/RabbitVCS.py:735
-msgid "Delete"
-msgstr "Ta bort"
+#: ui/tags.py:63
+msgid "<b>Tags</b>"
+msgstr ""
 
-#: ui/add.py:168 ui/commit.py:299 lib/extensions/nautilus/RabbitVCS.py:654
-msgid "Add to ignore list"
-msgstr "Lägg till ignoreringslista"
+#: ui/tags.py:74
+msgid "Tag"
+msgstr ""
 
-#: ui/import.py:41
+#: ui/tags.py:99 ui/branches.py:100 ui/glade/dialogs.glade.h:38
+#: ui/glade/property_page.glade.h:2
+msgid "Name:"
+msgstr ""
+
+#: ui/tags.py:109 ui/tags.py:176 ui/branches.py:155 ui/merge.py:438
+#: ui/merge.py:488 ui/glade/browser.glade.h:3
+msgid "Revision:"
+msgstr "Revision:"
+
+#: ui/tags.py:128 ui/tags.py:188 ui/branches.py:167 ui/merge.py:450
+#: ui/merge.py:500
+msgid "Message:"
+msgstr ""
+
+#: ui/tags.py:145 ui/tags.py:284 ui/branches.py:147 ui/branches.py:291
+msgid "Save"
+msgstr ""
+
+#: ui/tags.py:153
+msgid "Tagger:"
+msgstr ""
+
+#: ui/tags.py:165 ui/merge.py:427 ui/merge.py:477
+msgid "Date:"
+msgstr ""
+
+#: ui/tags.py:230 ui/branches.py:209 ui/remotes.py:128
+#, python-format
+msgid "Are you sure you want to delete %s?"
+msgstr ""
+
+#: ui/tags.py:275
+msgid "<b>Add Tag</b>"
+msgstr ""
+
+#: ui/tags.py:293
+msgid "<b>Tag Detail</b>"
+msgstr ""
+
+#: ui/export.py:45 ui/export.py:114
+#, python-format
+msgid "Export - %s"
+msgstr "Exportera - %s"
+
+#: ui/export.py:72 ui/export.py:131 ui/clone.py:57 ui/checkout.py:163
+msgid "The repository URL and destination path are both required fields."
+msgstr "Arkivets URL och destination sökvägen är obligatoriska fält."
+
+#: ui/export.py:92 ui/export.py:151
+msgid "Export"
+msgstr "Exportera"
+
+#: ui/export.py:93 ui/export.py:152
+msgid "Running Export Command..."
+msgstr "Kör Exportera..."
+
+#: ui/export.py:104 ui/export.py:160
+msgid "Completed Export"
+msgstr "Färdig Exportera"
+
+#: ui/applypatch.py:57 ui/applypatch.py:113 ui/applypatch.py:143
+msgid "Apply Patch"
+msgstr ""
+
+#: ui/applypatch.py:74
+msgid "Apply Patch To Directory..."
+msgstr ""
+
+#: ui/applypatch.py:114 ui/applypatch.py:144
+msgid "Applying Patch File..."
+msgstr ""
+
+#: ui/applypatch.py:116 ui/applypatch.py:146
+msgid "Patch File Applied"
+msgstr ""
+
+#: ui/branches.py:62
+msgid "Branch Manager"
+msgstr ""
+
+#: ui/branches.py:63
+msgid "<b>Branches</b>"
+msgstr ""
+
+#: ui/branches.py:73 ui/widget.py:855
+msgid "Branch"
+msgstr ""
+
+#: ui/branches.py:110
+msgid "Start Point:"
+msgstr ""
+
+#: ui/branches.py:129
+msgid "Keep old branch's history"
+msgstr ""
+
+#: ui/branches.py:138
+msgid "Set as active branch"
+msgstr ""
+
+#: ui/branches.py:280
+msgid "<b>Add Branch</b>"
+msgstr ""
+
+#: ui/branches.py:304
+msgid "<b>Branch Detail</b>"
+msgstr ""
+
+#: ui/push.py:76 ui/dialog.py:54 ui/annotate.py:128 ui/annotate.py:229
+#: ui/log.py:327 ui/log.py:557 ui/browser.py:89
+msgid "Date"
+msgstr "Datum"
+
+#: ui/push.py:76 ui/dialog.py:54 ui/log.py:327 ui/log.py:557
+#: ui/glade/dialogs.glade.h:36
+msgid "Message"
+msgstr "Meddelande"
+
+#: ui/push.py:97
+msgid "Running Push Command..."
+msgstr ""
+
+#: ui/push.py:99
+msgid "Completed Push"
+msgstr ""
+
+#: ui/import.py:40
 #, python-format
 msgid "Import - %s"
 msgstr "Importera - %s"
@@ -239,11 +752,6 @@ msgstr "Importera - %s"
 #: ui/import.py:68
 msgid "The repository URL field is required."
 msgstr "Arkivets URL fält krävs."
-
-#: ui/import.py:80 ui/glade/import.glade.h:3
-#: lib/extensions/nautilus/RabbitVCS.py:888
-msgid "Import"
-msgstr "Importera"
 
 #: ui/import.py:81
 msgid "Running Import Command..."
@@ -253,279 +761,592 @@ msgstr "Kör Importera..."
 msgid "Completed Import"
 msgstr "Färdig Importera"
 
-#: ui/lock.py:67 lib/vcs/svn/__init__.py:132
-msgid "Locked"
-msgstr "Låst"
+#: ui/rename.py:48
+msgid "The requested file or folder does not exist."
+msgstr ""
 
-#: ui/lock.py:90 ui/lock.py:107
-msgid "Yes"
-msgstr "Ja"
+#: ui/rename.py:52 ui/rename.py:84 ui/rename.py:113 ui/browser.py:470
+msgid "Rename"
+msgstr "Byt namn"
 
-#: ui/lock.py:144
-msgid "Get Lock"
-msgstr "Hämta lås"
+#: ui/rename.py:52 ui/browser.py:470 ui/glade/dialogs.glade.h:39
+msgid "New Name:"
+msgstr "Nytt namn:"
 
-#: ui/lock.py:145
-msgid "Running Lock Command..."
-msgstr "Kör Hämta lås..."
+#: ui/rename.py:60
+msgid "The new name field is required"
+msgstr "Det nya namnet är ett obligatoriskt fält"
 
-#: ui/lock.py:154
-msgid "Completed Lock"
-msgstr "Färdig Hämta lås"
+#: ui/rename.py:85 ui/rename.py:114
+msgid "Running Rename Command..."
+msgstr "Kör Byt namn..."
 
-#: ui/lock.py:176
-msgid "Remove Lock"
-msgstr "Ta bort lås"
+#: ui/rename.py:91 ui/rename.py:120
+msgid "Completed Rename"
+msgstr "Namnbyte genomfört"
 
-#: ui/lock.py:186 ui/commit.py:229 lib/extensions/nautilus/RabbitVCS.py:597
-msgid "View Diff"
-msgstr "Visa Diff"
-
-#: ui/lock.py:196 ui/glade/switch.glade.h:6 ui/glade/branch.glade.h:10
-#: ui/glade/merge.glade.h:18 ui/glade/checkout.glade.h:11
-#: ui/glade/update.glade.h:7
-msgid "Show log"
-msgstr "Visa logg"
-
-#: ui/export.py:40
-#, python-format
-msgid "Export - %s"
-msgstr "Exportera - %s"
-
-#: ui/export.py:58 ui/checkout.py:82
-msgid "The repository URL and destination path are both required fields."
-msgstr "Arkivets URL och destination sökvägen är obligatoriska fält."
-
-#: ui/export.py:79 lib/extensions/nautilus/RabbitVCS.py:856
-msgid "Export"
-msgstr "Exportera"
-
-#: ui/export.py:80
-msgid "Running Export Command..."
-msgstr "Kör Exportera..."
-
-#: ui/export.py:91
-msgid "Completed Export"
-msgstr "Färdig Exportera"
-
-#: ui/resolve.py:45 ui/resolve.py:76
-#: lib/extensions/nautilus/RabbitVCS.py:767
-msgid "Resolve"
-msgstr "Lös"
-
-#: ui/resolve.py:77
-msgid "Running Resolve Command..."
-msgstr "Kör Lös..."
-
-#: ui/resolve.py:80
-msgid "Completed Resolve"
-msgstr "Färdig Lös"
-
-#: ui/action.py:66 ui/log.py:89
-msgid "Action"
-msgstr "Åtgärd"
-
-#: ui/action.py:66
-msgid "Mime Type"
-msgstr "Mime-typ"
-
-#: ui/action.py:135
-msgid "Empty Message"
-msgstr "Tomt Meddelande"
-
-#: ui/action.py:249 ui/log.py:309
-msgid "Finished"
-msgstr "Färdig"
-
-#: ui/action.py:253
-#, python-format
-msgid "%s - Finished"
-msgstr "%s - Färdigt"
-
-#: ui/commit.py:66
-msgid "The given path is not a working copy"
-msgstr "Den angivna sökvägen är inte en arbetskopia"
-
-#: ui/commit.py:74
+#: ui/commit.py:206 ui/revert.py:63 ui/checkmods.py:68 ui/resolve.py:62
+#: ui/createpatch.py:120
 msgid "Text Status"
 msgstr "Textstatus"
 
-#: ui/commit.py:74
+#: ui/commit.py:206 ui/revert.py:63 ui/checkmods.py:68 ui/resolve.py:62
+#: ui/createpatch.py:120
 msgid "Property Status"
 msgstr "Egenskap status"
 
-#: ui/commit.py:188 ui/glade/commit.glade.h:4
-#: lib/extensions/nautilus/RabbitVCS.py:568
-msgid "Commit"
-msgstr "Skicka"
-
-#: ui/commit.py:189
+#: ui/commit.py:289 ui/commit.py:385
 msgid "Running Commit Command..."
 msgstr "Kör Skicka..."
 
-#: ui/commit.py:195
+#: ui/commit.py:295 ui/commit.py:394
 msgid "Completed Commit"
 msgstr "Färdig Skicka"
 
-#: ui/commit.py:279 ui/revert.py:45 ui/revert.py:75
-#: lib/extensions/nautilus/RabbitVCS.py:751
-msgid "Revert"
-msgstr "Återställ"
+#: ui/commit.py:314 ui/revert.py:129 ui/createpatch.py:216
+#: ui/property_editor.py:112
+msgid "Status"
+msgstr "Status"
 
-#: ui/commit.py:289
-msgid "Restore"
-msgstr "Återställ"
+#: ui/diff.py:284
+msgid "View diff as side-by-side comparison"
+msgstr ""
 
-#: ui/dialog.py:47 ui/log.py:81 ui/glade/dialogs.glade.h:20
-msgid "Message"
-msgstr "Meddelande"
-
-#: ui/dialog.py:88
-msgid "Select a Folder"
-msgstr "Välj en mapp"
-
-#: ui/dialog.py:117 ui/glade/log.glade.h:12
-msgid "to"
-msgstr "till"
-
-#: ui/dialog.py:210
-msgid "Select a File"
-msgstr "Välj en fil"
-
-#: ui/dialog.py:229 ui/glade/dialogs.glade.h:10
-msgid "Are you sure you want to continue?"
-msgstr "Är du säker på att du vill fortsätta?"
-
-#: ui/dialog.py:257
-msgid "the selected item(s)"
-msgstr "de markerade objekten"
-
-#: ui/switch.py:65
-msgid "The repository location is a required field."
-msgstr "Arkivets plats är ett obligatoriskt fält."
-
-#: ui/switch.py:81 ui/glade/switch.glade.h:7
-msgid "Switch"
-msgstr "Växla"
-
-#: ui/switch.py:82
-msgid "Running Switch Command..."
-msgstr "Kör Växla..."
-
-#: ui/switch.py:90
-msgid "Completed Switch"
-msgstr "Färdig Växla"
-
-#: ui/unlock.py:45 ui/unlock.py:109
-msgid "Unlock"
-msgstr "Lås upp"
-
-#: ui/unlock.py:110
-msgid "Running Unlock Command..."
-msgstr "Kör Lås upp..."
-
-#: ui/unlock.py:113
-msgid "Completed Unlock"
-msgstr "Färdig Lås upp"
-
-#: ui/merge.py:81
+#: ui/merge.py:87
 msgid "Running Merge Test"
 msgstr "Kör Sammanfogningstest..."
 
-#: ui/merge.py:82
+#: ui/merge.py:88
 msgid "Completed Merge Test"
 msgstr "Färdig Sammanfogningstest"
 
-#: ui/merge.py:84
+#: ui/merge.py:90
 msgid "Running Merge Command"
 msgstr "Kör Sammanfoga..."
 
-#: ui/merge.py:85
+#: ui/merge.py:91
 msgid "Completed Merge"
 msgstr "Färdig Sammanfoga"
 
-#: ui/merge.py:93
+#: ui/merge.py:102
 msgid "Merge"
 msgstr "Sammanfoga"
 
-#: ui/checkout.py:52
+#: ui/merge.py:415 ui/merge.py:465
+msgid "Author:"
+msgstr ""
+
+#: ui/dialog.py:38
 #, python-format
-msgid "Checkout - %s"
-msgstr "Hämta - %s"
+msgid ""
+"An error has occurred in the RabbitVCS Nautilus extension. Please contact "
+"the <a href=\"%s\">RabbitVCS team</a> with the error details listed below:"
+msgstr ""
 
-#: ui/checkout.py:100 ui/glade/checkout.glade.h:5
-#: lib/extensions/nautilus/RabbitVCS.py:536
-msgid "Checkout"
-msgstr "Hämta"
+#: ui/dialog.py:108
+msgid "Select a Folder"
+msgstr "Välj en mapp"
 
-#: ui/checkout.py:101
-msgid "Running Checkout Command..."
-msgstr "Kör Hämta..."
+#: ui/dialog.py:138 ui/glade/log.glade.h:11
+msgid "to"
+msgstr "till"
 
-#: ui/checkout.py:111
-msgid "Completed Checkout"
-msgstr "Färdig Hämta"
+#: ui/dialog.py:261
+msgid "Select a File"
+msgstr "Välj en fil"
 
-#: ui/log.py:63
+#: ui/dialog.py:280
+msgid "Save As..."
+msgstr "Spara som..."
+
+#: ui/dialog.py:299 ui/glade/dialogs.glade.h:19
+msgid "Are you sure you want to continue?"
+msgstr "Är du säker på att du vill fortsätta?"
+
+#: ui/dialog.py:327
+msgid "the selected item(s)"
+msgstr "de markerade objekten"
+
+#: ui/dialog.py:398
+msgid "Added a folder to the repository"
+msgstr ""
+
+#: ui/revert.py:104 ui/revert.py:169
+msgid "Running Revert Command..."
+msgstr "Kör Återställ..."
+
+#: ui/revert.py:106 ui/revert.py:171
+msgid "Completed Revert"
+msgstr "Färdig Återställ"
+
+#: ui/clone.py:66
+msgid "Running Clone Command..."
+msgstr ""
+
+#: ui/clone.py:73
+msgid "Completed Clone"
+msgstr ""
+
+#: ui/relocate.py:77
+msgid "The from and to url fields are both required."
+msgstr "Både från och till url-fälten krävs."
+
+#: ui/relocate.py:87 ui/glade/relocate.glade.h:3
+msgid "Relocate"
+msgstr "Omlokalisera"
+
+#: ui/relocate.py:88
+msgid "Running Relocate Command..."
+msgstr "Kör omlokalisering..."
+
+#: ui/relocate.py:95
+msgid "Completed Relocate"
+msgstr "Omlokalisering färdig"
+
+#: ui/checkmods.py:69 ui/annotate.py:127 ui/annotate.py:228 ui/log.py:48
+#: ui/log.py:326 ui/log.py:556 ui/widget.py:854 ui/browser.py:89
+#: ui/glade/merge.glade.h:17
+msgid "Revision"
+msgstr "Revision"
+
+#: ui/checkmods.py:69 ui/annotate.py:127 ui/annotate.py:228 ui/log.py:326
+#: ui/log.py:556 ui/browser.py:89
+msgid "Author"
+msgstr "Författare"
+
+#: ui/checkmods.py:160 ui/changes.py:50 ui/changes.py:420
+msgid "View unified diff"
+msgstr ""
+
+#: ui/checkmods.py:165 ui/changes.py:425
+msgid "Compare side by side"
+msgstr "Jämför sida vid sida"
+
+#: ui/resolve.py:103
+msgid "Running Resolve Command..."
+msgstr "Kör Lös..."
+
+#: ui/resolve.py:106
+msgid "Completed Resolve"
+msgstr "Färdig Lös"
+
+#: ui/changes.py:49
+msgid "More Actions..."
+msgstr "Mer åtgärder..."
+
+#: ui/changes.py:279 ui/changes.py:364
+msgid "Change"
+msgstr ""
+
+#: ui/changes.py:279
+msgid "Property Change"
+msgstr "Egenskapsändring"
+
+#: ui/changes.py:321 ui/lock.py:126
+msgid "Yes"
+msgstr "Ja"
+
+#: ui/changes.py:321
+msgid "No"
+msgstr "Nej"
+
+#: ui/changes.py:410
+msgid "Open from first revision"
+msgstr ""
+
+#: ui/changes.py:415
+msgid "Open from second revision"
+msgstr ""
+
+#: ui/annotate.py:57
+msgid "Cannot annotate a directory"
+msgstr "Det går inte att kommentera en katalog"
+
+#: ui/annotate.py:63
+#, python-format
+msgid "Annotate - %s"
+msgstr "Kommentar - %s"
+
+#: ui/annotate.py:127 ui/annotate.py:228
+msgid "Line"
+msgstr "Rad"
+
+#: ui/annotate.py:128 ui/annotate.py:229
+msgid "Text"
+msgstr "Text"
+
+#: ui/annotate.py:143
+msgid "The from revision field must be an integer"
+msgstr "Från version fältet måste vara ett heltal"
+
+#: ui/log.py:120
 #, python-format
 msgid "Log - %s"
 msgstr "Logg - %s"
 
-#: ui/log.py:90
-msgid "Copy From Path"
-msgstr "Kopiera från sökväg"
-
-#: ui/log.py:90
-msgid "Copy From Revision"
-msgstr "Kopiera från version"
-
-#: ui/log.py:112
-msgid "Cancelled"
-msgstr "Avbruten"
-
-#: ui/log.py:236 ui/log.py:237 ui/glade/log.glade.h:8
+#: ui/log.py:270 ui/log.py:271 ui/glade/log.glade.h:7
 msgid "N/A"
 msgstr "Ej tillgänglig"
 
-#: ui/log.py:284
-msgid "(no author)"
-msgstr "(ingen författare)"
+#: ui/log.py:337 ui/log.py:572 ui/action.py:118
+msgid "Action"
+msgstr "Åtgärd"
 
-#: ui/log.py:313
-msgid "Retrieving Log Information..."
-msgstr "Hämtar logginformation..."
+#: ui/log.py:338
+msgid "Copy From Path"
+msgstr "Kopiera från sökväg"
 
-#: ui/properties.py:53
+#: ui/log.py:338
+msgid "Copy From Revision"
+msgstr "Kopiera från version"
+
+#: ui/log.py:556
+msgid "Graph"
+msgstr ""
+
+#: ui/log.py:781
+msgid "View diff against working copy"
+msgstr "Visa skillnaden mot arbetskopian"
+
+#: ui/log.py:791
+msgid "View diff between revisions"
+msgstr "Se skillnaden mellan revisioner"
+
+#: ui/log.py:796
+msgid "Compare with working copy"
+msgstr "Jämför med arbetskopia"
+
+#: ui/log.py:806
+msgid "Compare revisions"
+msgstr "Jämför revisioner"
+
+#: ui/log.py:812
+msgid "Show changes against previous revision"
+msgstr ""
+
+#: ui/log.py:818
+msgid "Show changes between revisions"
+msgstr "Visa ändringar mellan revisioner"
+
+#: ui/log.py:823
+msgid "Update to this revision"
+msgstr ""
+
+#: ui/log.py:824
+msgid "Update the selected path to this revision"
+msgstr ""
+
+#: ui/log.py:829 ui/log.py:833
+msgid "Edit author..."
+msgstr "Ändra skapare..."
+
+#: ui/log.py:837
+msgid "Edit log message..."
+msgstr "Redigera loggmeddelande..."
+
+#: ui/log.py:841
+msgid "Edit revision properties..."
+msgstr "Redigera revisionsinställningar..."
+
+#: ui/log.py:1047
+msgid "Edit author"
+msgstr "Ändra skapare"
+
+#: ui/log.py:1059
+msgid "Edit log message"
+msgstr "Redigera loggmeddelande"
+
+#: ui/settings.py:43 ui/glade/settings.glade.h:35
+msgid "Unknown"
+msgstr "Okänd"
+
+#: ui/settings.py:45
+msgid "There was an error communicating with the status checker service."
+msgstr ""
+
+#: ui/settings.py:59
+msgid "English"
+msgstr "Engelska"
+
+#: ui/settings.py:119
+msgid "Config file:"
+msgstr ""
+
+#: ui/settings.py:294
+msgid "Select a program"
+msgstr "Välj ett program"
+
+#: ui/settings.py:303
+msgid "Are you sure you want to clear your repository paths?"
+msgstr "Är du säker på att du vill rensa dina arkivs sökvägar?"
+
+#: ui/settings.py:310
+msgid "Repository paths cleared"
+msgstr "Arkivets sökvägar rensade"
+
+#: ui/settings.py:314
+msgid "Are you sure you want to clear your previous messages?"
+msgstr "Är du säker på att du vill rensa dina tidigare meddelanden?"
+
+#: ui/settings.py:321
+msgid "Previous messages cleared"
+msgstr "Tidigare meddelanden rensade"
+
+#: ui/settings.py:325
+msgid "Are you sure you want to clear your authentication information?"
+msgstr "Är du säker på att du vill rensa din autentiseringsinformation?"
+
+#: ui/settings.py:342
+msgid "Authentication information cleared"
+msgstr "Autentiseringsinformation rensad"
+
+#: ui/revprops.py:65 ui/properties.py:158 ui/property_editor.py:155
+msgid "Unable to retrieve properties list"
+msgstr ""
+
+#: ui/branch.py:99
+msgid "You must supply a destination path."
+msgstr "Du måste ange en destinationssökväg."
+
+#: ui/branch.py:115
+msgid "Branch/tag"
+msgstr "Gren/tagg"
+
+#: ui/branch.py:116
+msgid "Running Branch/tag Command..."
+msgstr "Kör Gren/tagg kommando..."
+
+#: ui/branch.py:118
+msgid "Completed Branch/tag"
+msgstr "Färdig Gren/tagg..."
+
+#: ui/lock.py:73
+msgid "Locked"
+msgstr "Låst"
+
+#: ui/lock.py:167
+msgid "Get Lock"
+msgstr "Hämta lås"
+
+#: ui/lock.py:168
+msgid "Running Lock Command..."
+msgstr "Kör Hämta lås..."
+
+#: ui/lock.py:177
+msgid "Completed Lock"
+msgstr "Färdig Hämta lås"
+
+#: ui/switch.py:70
+msgid "The repository location is a required field."
+msgstr "Arkivets plats är ett obligatoriskt fält."
+
+#: ui/switch.py:80
+msgid "Switch"
+msgstr "Växla"
+
+#: ui/switch.py:81
+msgid "Running Switch Command..."
+msgstr "Kör Växla..."
+
+#: ui/switch.py:89
+msgid "Completed Switch"
+msgstr "Färdig Växla"
+
+#: ui/widget.py:853 ui/widget.py:859 ui/glade/merge.glade.h:10
+msgid "HEAD"
+msgstr "HEAD"
+
+#: ui/widget.py:860
+msgid "Number"
+msgstr "Nummer"
+
+#: ui/widget.py:861
+msgid "Working Copy"
+msgstr "Arbetskopia"
+
+#: ui/widget.py:1056
+msgid "Repository:"
+msgstr ""
+
+#: ui/widget.py:1075
+msgid "Branch:"
+msgstr ""
+
+#: ui/widget.py:1093 ui/glade/dialogs.glade.h:30
+msgid "Host:"
+msgstr "Värd:"
+
+#: ui/widget.py:1194
+msgid "Add line:"
+msgstr ""
+
+#: ui/checkout.py:139 ui/checkout.py:213
+#, python-format
+msgid "Checkout - %s"
+msgstr "Hämta - %s"
+
+#: ui/checkout.py:174
+msgid "Running Checkout Command..."
+msgstr "Kör Hämta..."
+
+#: ui/remotes.py:59
+msgid "Remote Repository Manager"
+msgstr ""
+
+#: ui/remotes.py:60
+msgid "<b>Remote Repositories</b>"
+msgstr ""
+
+#: ui/remotes.py:66 ui/properties.py:63 ui/property_editor.py:112
+msgid "Name"
+msgstr "Namn"
+
+#: ui/remotes.py:66
+msgid "Host"
+msgstr ""
+
+#: ui/property_page.py:126
+msgid "Repository URL"
+msgstr ""
+
+#: ui/createpatch.py:68 ui/createpatch.py:86 ui/createpatch.py:162
+#: ui/createpatch.py:262
+msgid "Create Patch"
+msgstr ""
+
+#: ui/createpatch.py:112 ui/createpatch.py:208
+msgid "The given path is not a working copy"
+msgstr "Den angivna sökvägen är inte en arbetskopia"
+
+#: ui/createpatch.py:163 ui/createpatch.py:263
+msgid "Creating Patch File..."
+msgstr ""
+
+#: ui/createpatch.py:193 ui/createpatch.py:292
+msgid "Patch File Created"
+msgstr ""
+
+#: ui/properties.py:55
 #, python-format
 msgid "Properties - %s"
 msgstr "Egenskaper - %s"
 
-#: ui/properties.py:61
-msgid "Name"
-msgstr "Namn"
-
-#: ui/properties.py:61
+#: ui/properties.py:63 ui/property_editor.py:112
 msgid "Value"
 msgstr "Värde"
 
-#: ui/revert.py:76
-msgid "Running Revert Command..."
-msgstr "Kör Återställ..."
+#: ui/properties.py:179
+msgid "There was a problem saving your properties."
+msgstr "Ett problem uppstod när dina inställningar skulle sparas."
 
-#: ui/revert.py:78
-msgid "Completed Revert"
-msgstr "Färdig Återställ"
+#: ui/property_editor.py:56
+msgid ""
+"<b>Note:</b> changes to properties are applied instantly. You may review and "
+"undo changes using the context menu for each item.\n"
+msgstr ""
 
-#: ui/update.py:53 ui/glade/update.glade.h:8
-#: lib/extensions/nautilus/RabbitVCS.py:552
-msgid "Update"
-msgstr "Uppdatera"
+#: ui/property_editor.py:61
+msgid ""
+"Do you want to delete the selected properties from all files and "
+"subdirectories\n"
+"beneath this directory?"
+msgstr ""
 
-#: ui/create.py:49
+#: ui/property_editor.py:102
+msgid "File is not under version control."
+msgstr "Filen är inte versionskontrollerad"
+
+#: ui/property_editor.py:112
+msgid "Reserved"
+msgstr "Reserverad"
+
+#: ui/property_editor.py:189
+msgid "Unable to set new value for property."
+msgstr ""
+
+#: ui/__init__.py:50
+msgid ""
+"You must specify a version control system using the --vcs [svn|git] option"
+msgstr ""
+
+#: ui/action.py:118
+msgid "Mime Type"
+msgstr "Mime-typ"
+
+#: ui/action.py:338
+msgid "Finished"
+msgstr "Färdig"
+
+#: ui/action.py:342
+#, python-format
+msgid "%s - Finished"
+msgstr "%s - Färdigt"
+
+#: ui/action.py:365
+msgid "Log Message"
+msgstr "Loggmeddelande"
+
+#: ui/unlock.py:48 ui/unlock.py:125
+msgid "Unlock"
+msgstr "Lås upp"
+
+#: ui/unlock.py:126
+msgid "Running Unlock Command..."
+msgstr "Kör Lås upp..."
+
+#: ui/unlock.py:129
+msgid "Completed Unlock"
+msgstr "Färdig Lås upp"
+
+#: ui/browser.py:89
+msgid "Size"
+msgstr "Storlek"
+
+#: ui/browser.py:326
+msgid "Select"
+msgstr ""
+
+#: ui/browser.py:348
+msgid "Create folder..."
+msgstr "Skapa mapp..."
+
+#: ui/browser.py:353
+msgid "Copy to..."
+msgstr "Kopiera till..."
+
+#: ui/browser.py:358
+msgid "Copy URL to clipboard"
+msgstr "Kopiera URL till urklipp"
+
+#: ui/browser.py:363
+msgid "Move to..."
+msgstr "Flytta till..."
+
+#: ui/browser.py:531
+msgid "Where do you want to copy the selection?"
+msgstr ""
+
+#: ui/browser.py:532 ui/browser.py:561
+msgid "New Location:"
+msgstr "Ny plats:"
+
+#: ui/browser.py:560
+msgid "Where do you want to move the selection?"
+msgstr ""
+
+#: ui/cleanup.py:56 ui/glade/cleanup.glade.h:1
+msgid "Cleaning Up..."
+msgstr "Rensar upp..."
+
+#: ui/cleanup.py:58
+msgid "Completed Cleanup"
+msgstr "Rensning färdig"
+
+#: ui/create.py:46
 msgid "Repository successfully created"
 msgstr "Arkivet skapades"
 
-#: ui/create.py:51
+#: ui/create.py:48
 msgid ""
 "There was an error creating the repository.  Make sure the given folder is "
 "empty."
@@ -533,106 +1354,236 @@ msgstr ""
 "Det blev fel när arkivet skulle skapas. Kontrollera att den angivna mappen "
 "är tom."
 
-#: ui/glade/switch.glade.h:1 ui/glade/checkout.glade.h:3
-#: ui/glade/update.glade.h:1
-msgid "<b>Revision</b>"
-msgstr "<b>Revision</b>"
-
-#: ui/glade/switch.glade.h:2
-msgid "<b>Switch Details</b>"
-msgstr "<b>Växlings detaljer</b>"
-
-#: ui/glade/switch.glade.h:3 ui/glade/branch.glade.h:8
-#: ui/glade/relocate.glade.h:2
-msgid "From:"
-msgstr "Från:"
-
-#: ui/glade/switch.glade.h:4 ui/glade/merge.glade.h:10
-#: ui/glade/checkout.glade.h:7 ui/glade/update.glade.h:3
-msgid "HEAD"
-msgstr "HEAD"
-
-#: ui/glade/switch.glade.h:8 ui/glade/branch.glade.h:11
-#: ui/glade/relocate.glade.h:4
-msgid "To:"
-msgstr "Till:"
-
-#: ui/glade/notification.glade.h:1
-msgid "Notification Messages"
-msgstr "Notifieringsmeddelanden"
-
-#: ui/glade/commit.glade.h:1 ui/glade/branch.glade.h:1
-msgid "<b>Add Message</b>"
-msgstr "Lägg till Meddelande"
-
-#: ui/glade/commit.glade.h:2
-msgid "<b>Changed Files</b> (double-click to see diff)"
-msgstr "<b>Ändrade filer</b> (dubbelklicka för att se diff)"
-
-#: ui/glade/commit.glade.h:3
-msgid "<b>Commit to:</b>"
-msgstr "<b>Skicka till:</b>"
-
-#: ui/glade/commit.glade.h:5 ui/glade/lock.glade.h:4 ui/glade/branch.glade.h:9
-#: ui/glade/dialogs.glade.h:22 ui/glade/import.glade.h:5
-msgid "Previous Messages"
-msgstr "Föregående meddelande"
-
-#: ui/glade/commit.glade.h:6 ui/glade/lock.glade.h:5 ui/glade/add.glade.h:2
-msgid "Select / Deselect all"
-msgstr "Markera / Avmarkera alla"
-
-#: ui/glade/commit.glade.h:7
-msgid "Show unversioned files"
-msgstr "Visa oversionerade filer"
-
-#: ui/glade/lock.glade.h:1
-msgid "<b>Files to lock</b>"
-msgstr "<b>Filer att låsa</b>"
-
-#: ui/glade/lock.glade.h:2
-msgid "<b>Please describe why you are locking these files</b>"
-msgstr "<b>Beskriv varför du låser dessa filer</b>"
-
-#: ui/glade/lock.glade.h:3
-msgid "Lock Files"
-msgstr "Lås filer"
-
-#: ui/glade/lock.glade.h:6
-msgid "Steal the locks"
-msgstr "Stjäl låsen"
-
 #: ui/glade/properties.glade.h:1
 msgid "<b>Properties for:</b>"
 msgstr "<b>Egenskaper för:</b>"
 
-#: ui/glade/properties.glade.h:3
+#: ui/glade/properties.glade.h:2
+msgid "<i>Selected properties will be applied recursively.</i>"
+msgstr ""
+
+#: ui/glade/properties.glade.h:4
+msgid "Delete properties recursively"
+msgstr "Radera inställningar rekursivt"
+
+#: ui/glade/properties.glade.h:5
 msgid "Edit..."
 msgstr "Redigera..."
 
-#: ui/glade/properties.glade.h:4
+#: ui/glade/properties.glade.h:6
 msgid "New..."
 msgstr "Ny..."
 
-#: ui/glade/properties.glade.h:5 lib/extensions/nautilus/RabbitVCS.py:995
-msgid "Properties"
-msgstr "Egenskaper"
-
-#: ui/glade/properties.glade.h:6
+#: ui/glade/properties.glade.h:8
 msgid "URL/Path:"
 msgstr "URL/Sökväg:"
 
-#: ui/glade/annotate.glade.h:1
-msgid "<b>From Revision</b>"
-msgstr "<b>Från revision</b>"
+#: ui/glade/browser.glade.h:1
+msgid "Load/Refresh"
+msgstr "Ladda/Uppdatera"
 
-#: ui/glade/annotate.glade.h:2
-msgid "<b>To Revision</b>"
-msgstr "<b>Till revision</b>"
+#: ui/glade/browser.glade.h:4
+msgid "URL:"
+msgstr "URL:"
 
-#: ui/glade/annotate.glade.h:3
-msgid "Annotate"
-msgstr "Kommentar"
+#: ui/glade/dialogs.glade.h:1
+msgid "<b>A conflict was found in the following file:</b>"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:2 ui/glade/commit.glade.h:1
+msgid "<b>Add Message</b>"
+msgstr "Lägg till Meddelande"
+
+#: ui/glade/dialogs.glade.h:3
+msgid "<b>Certificate Details</b>"
+msgstr "<b>Certifikatdetaljer</b>"
+
+#: ui/glade/dialogs.glade.h:4
+msgid "<b>Edit Property Details</b>"
+msgstr "<b>Redigera egenskapsdetaljer</b>"
+
+#: ui/glade/dialogs.glade.h:5
+msgid "<b>Enter Name and Email Details</b>"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:6
+msgid "<b>Folder Name</b>"
+msgstr "<b>Mappnamn</b>"
+
+#: ui/glade/dialogs.glade.h:7 ui/glade/log.glade.h:3
+msgid "<b>Message</b>"
+msgstr "<b>Meddelande</b>"
+
+#: ui/glade/dialogs.glade.h:8
+msgid "<b>Please add your authentication details</b>"
+msgstr "<b>Lägg till autentiseringsdetaljer</b>"
+
+#: ui/glade/dialogs.glade.h:9
+msgid "<b>Please provide your ssl certification file</b>"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:10
+msgid "<b>Previous Messages</b>"
+msgstr "<b>Föregående Meddelanden</b>"
+
+#: ui/glade/dialogs.glade.h:12
+msgid ""
+"<span size=\"large\"><b>Are you sure you want to delete %item%?</b></span>"
+msgstr ""
+"<span size=\"large\"><b>Är du säker på att du vill ta bort %item%?</b></span>"
+
+#: ui/glade/dialogs.glade.h:13
+msgid "<span weight=\"bold\" size=\"xx-large\">RabbitVCS Error</span>"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:14
+msgid "Accept Forever"
+msgstr "Acceptera för alltid"
+
+#: ui/glade/dialogs.glade.h:15
+msgid "Accept Mine"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:16
+msgid "Accept Once"
+msgstr "Acceptera en gång"
+
+#: ui/glade/dialogs.glade.h:17
+msgid "Accept Theirs"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:18
+msgid "Apply property recursively"
+msgstr "Verkställ inställningar rekursivt"
+
+#: ui/glade/dialogs.glade.h:20
+msgid "Authentication"
+msgstr "Autentisering"
+
+#: ui/glade/dialogs.glade.h:21
+msgid "Cancel"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:22
+msgid "Check Certificate"
+msgstr "Kontrollera certifikat"
+
+#: ui/glade/dialogs.glade.h:23
+msgid "Confirmation"
+msgstr "Bekräftelse"
+
+#: ui/glade/dialogs.glade.h:24
+msgid "Conflict Resolution Decision"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:25
+msgid "Create Folder..."
+msgstr "Skapa mapp..."
+
+#: ui/glade/dialogs.glade.h:26
+msgid "Delete Confirmation"
+msgstr "Radera Bekräftelse"
+
+#: ui/glade/dialogs.glade.h:27
+msgid "Deny"
+msgstr "Neka"
+
+#: ui/glade/dialogs.glade.h:28
+msgid "Email:"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:29
+msgid "Fingerprint:"
+msgstr "Fingeravtryck:"
+
+#: ui/glade/dialogs.glade.h:31
+msgid "How do you want to handle this?"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:32
+msgid "Issuer:"
+msgstr "Utgivare:"
+
+#: ui/glade/dialogs.glade.h:34
+msgid "Login:"
+msgstr "Användarnamn:"
+
+#: ui/glade/dialogs.glade.h:35
+msgid "Merge Manually"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:37
+msgid "Name and Email"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:40
+msgid "Password:"
+msgstr "Lösenord:"
+
+#: ui/glade/dialogs.glade.h:41
+msgid "Path:"
+msgstr "Sökväg:"
+
+#: ui/glade/dialogs.glade.h:42 ui/glade/lock.glade.h:4
+#: ui/glade/commit.glade.h:5 ui/glade/import.glade.h:5
+msgid "Previous Messages"
+msgstr "Föregående meddelande"
+
+#: ui/glade/dialogs.glade.h:43
+msgid "Property"
+msgstr "Egenskap"
+
+#: ui/glade/dialogs.glade.h:44
+msgid "Property:"
+msgstr "Egenskap:"
+
+#: ui/glade/dialogs.glade.h:45
+msgid "RabbitVCS Error"
+msgstr "RabbitVCS Fel"
+
+#: ui/glade/dialogs.glade.h:46
+msgid "Realm:"
+msgstr "Rike:"
+
+#: ui/glade/dialogs.glade.h:47
+msgid "SSL Client Certification"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:48
+msgid "Save Authentication"
+msgstr "Spara autentisering"
+
+#: ui/glade/dialogs.glade.h:49
+msgid "Text Change"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:50
+msgid "The item(s) will be sent to the trash can."
+msgstr "Dessa objekt kommer att skickas till papperskorgen."
+
+#: ui/glade/dialogs.glade.h:51
+msgid "Valid:"
+msgstr "Giltig:"
+
+#: ui/glade/dialogs.glade.h:52
+msgid "Value:"
+msgstr "Värde:"
+
+#: ui/glade/pull.glade.h:1
+msgid "<b>Pull Information</b>"
+msgstr ""
+
+#: ui/glade/pull.glade.h:2 ui/glade/git-update.glade.h:2
+msgid "Merge changes into local branch"
+msgstr ""
+
+#: ui/glade/pull.glade.h:3
+msgid "Pull"
+msgstr ""
+
+#: ui/glade/manager.glade.h:1
+msgid "label"
+msgstr ""
 
 #: ui/glade/about.glade.h:1
 msgid "<b>Links</b>"
@@ -646,10 +1597,6 @@ msgstr "<b>Versionsinformation</b>"
 msgid "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
 msgstr "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
 
-#: ui/glade/about.glade.h:4 lib/extensions/nautilus/RabbitVCS.py:1059
-msgid "About"
-msgstr "Om"
-
 #: ui/glade/about.glade.h:5
 msgid "Authors:"
 msgstr "Upphovsmän:"
@@ -658,42 +1605,25 @@ msgstr "Upphovsmän:"
 msgid "Thanks:"
 msgstr "Tack:"
 
-#: ui/glade/rename.glade.h:1
-msgid "New Name:"
-msgstr "Nytt namn:"
+#: ui/glade/property_page.glade.h:1
+msgid "Content status:"
+msgstr ""
 
-#: ui/glade/branch.glade.h:2
-msgid "<b>Create copy from</b>"
-msgstr "<b>Skapa kopia från</b>"
+#: ui/glade/property_page.glade.h:3
+msgid "Property status:"
+msgstr ""
 
-#: ui/glade/branch.glade.h:3 ui/glade/checkout.glade.h:2
-#: ui/glade/import.glade.h:2
-msgid "<b>Repository</b>"
-msgstr "<b>Arkiv</b>"
-
-#: ui/glade/branch.glade.h:5
-msgid "Copy from HEAD"
-msgstr "Kopiera från HEAD"
-
-#: ui/glade/branch.glade.h:6
-msgid "Copy from revision"
-msgstr "Kopiera från revision"
-
-#: ui/glade/branch.glade.h:7
-msgid "Copy from working copy"
-msgstr "Kopiera från arbetskopia"
+#: ui/glade/property_page.glade.h:5
+msgid "VCS:"
+msgstr ""
 
 #: ui/glade/log.glade.h:1
 msgid "100"
 msgstr "100"
 
 #: ui/glade/log.glade.h:2
-msgid "<b>Affected File(s)</b>"
-msgstr "<b>Påverkade fil(er)</b>"
-
-#: ui/glade/log.glade.h:3 ui/glade/dialogs.glade.h:3
-msgid "<b>Message</b>"
-msgstr "<b>Meddelande</b>"
+msgid "<b>Affected File(s)</b> (double-click to compare with base)"
+msgstr "<b>Påverkade filer</b> (dubbelklicka för att jämföra med grunden)"
 
 #: ui/glade/log.glade.h:4
 msgid "<b>Revisions Table</b>"
@@ -703,21 +1633,292 @@ msgstr "<b>Revisionstabell</b>"
 msgid "Limit:"
 msgstr "Gräns:"
 
-#: ui/glade/log.glade.h:7
+#: ui/glade/log.glade.h:6
 msgid "Log"
 msgstr "Logg"
 
-#: ui/glade/log.glade.h:9
+#: ui/glade/log.glade.h:8
 msgid "Refresh"
 msgstr "Uppdatera"
 
-#: ui/glade/log.glade.h:10
+#: ui/glade/log.glade.h:9
 msgid "Showing Revisions:"
 msgstr "Visar revisioner:"
 
-#: ui/glade/log.glade.h:11
+#: ui/glade/log.glade.h:10
 msgid "Stop on copy"
 msgstr "Stopp vid kopia"
+
+#: ui/glade/cleanup.glade.h:2
+msgid ""
+"Cleanup Requested....\n"
+"\n"
+"Begin working copy cleanup?"
+msgstr ""
+"Rensning begärd ....\n"
+"\n"
+"Börja rensa i arbets kopian?"
+
+#: ui/glade/settings.glade.h:1
+msgid "<b>Authentication</b>"
+msgstr "<b>Autentisering</b>"
+
+#: ui/glade/settings.glade.h:2
+msgid "<b>Checker type:</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:3
+msgid "<b>Configuration Editor</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:4
+msgid "<b>Log Messages</b>"
+msgstr "<b>Loggmeddelanden</b>"
+
+#: ui/glade/settings.glade.h:5
+msgid "<b>Logging Options</b>"
+msgstr "<b>Logg alternativ</b>"
+
+#: ui/glade/settings.glade.h:6
+msgid "<b>Memory usage:</b> "
+msgstr ""
+
+#: ui/glade/settings.glade.h:7
+msgid "<b>Other Information</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:8
+msgid "<b>Process ID:</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:9
+msgid "<b>Program used to compare files</b>"
+msgstr "<b>Program som används för att jämföra filer</b>"
+
+#: ui/glade/settings.glade.h:10
+msgid "<b>RabbitVCS</b>"
+msgstr "<b>RabbitVCS</b>"
+
+#: ui/glade/settings.glade.h:11
+msgid "<b>URL History</b>"
+msgstr "<b>URL Historik</b>"
+
+#: ui/glade/settings.glade.h:12
+msgid "Browse..."
+msgstr "Bläddra..."
+
+#: ui/glade/settings.glade.h:13
+msgid "Clear your authentication information"
+msgstr "Rensa autentiseringsinformation"
+
+#: ui/glade/settings.glade.h:14
+msgid "Enable emblems"
+msgstr "Aktivera emblem"
+
+#: ui/glade/settings.glade.h:15
+msgid "Enable file attributes"
+msgstr "Aktivera filattribut"
+
+#: ui/glade/settings.glade.h:16
+msgid "Enable recursive status checks"
+msgstr "Aktivera rekursiva statuskontroller"
+
+#: ui/glade/settings.glade.h:17
+msgid "External Programs"
+msgstr "Externa program"
+
+#: ui/glade/settings.glade.h:18
+msgid "General"
+msgstr "Allmänt"
+
+#: ui/glade/settings.glade.h:19
+msgid "Git"
+msgstr ""
+
+#: ui/glade/settings.glade.h:20
+msgid "Language:"
+msgstr "Språk:"
+
+#: ui/glade/settings.glade.h:21
+msgid "Logging"
+msgstr "Loggning"
+
+#: ui/glade/settings.glade.h:22
+msgid "Minimum level to log"
+msgstr "Lägsta nivå att logga"
+
+#: ui/glade/settings.glade.h:23
+msgid "Number of URLs to remember"
+msgstr "Antal URLer att minnas"
+
+#: ui/glade/settings.glade.h:24
+msgid "Number of messages to remember"
+msgstr "Antal meddelande att minnas"
+
+#: ui/glade/settings.glade.h:25
+msgid "Refresh Information"
+msgstr ""
+
+#: ui/glade/settings.glade.h:26
+msgid "Restart Checker"
+msgstr ""
+
+#: ui/glade/settings.glade.h:27
+msgid "Saved Data"
+msgstr "Sparad data"
+
+#: ui/glade/settings.glade.h:29
+msgid "Show RabbitVCS debugging tools"
+msgstr "Visa RabbitsVCS felsökningsverktyg"
+
+#: ui/glade/settings.glade.h:30
+msgid "Show new version on the left side"
+msgstr ""
+
+#: ui/glade/settings.glade.h:31
+msgid "Status Checker"
+msgstr ""
+
+#: ui/glade/settings.glade.h:32
+msgid "Stop Checker"
+msgstr ""
+
+#: ui/glade/settings.glade.h:33
+msgid "The debug menu is used to diagnose problems with RabbitVCS itself"
+msgstr ""
+
+#: ui/glade/settings.glade.h:34
+msgid "Type:"
+msgstr "Typ:"
+
+#: ui/glade/lock.glade.h:1
+msgid "<b>Files to lock</b>"
+msgstr "<b>Filer att låsa</b>"
+
+#: ui/glade/lock.glade.h:2
+msgid "<b>Please describe why you are locking these files</b>"
+msgstr "<b>Beskriv varför du låser dessa filer</b>"
+
+#: ui/glade/lock.glade.h:3
+msgid "Lock Files"
+msgstr "Lås filer"
+
+#: ui/glade/lock.glade.h:5 ui/glade/add.glade.h:2 ui/glade/commit.glade.h:6
+msgid "Select / Deselect all"
+msgstr "Markera / Avmarkera alla"
+
+#: ui/glade/lock.glade.h:6
+msgid "Steal the locks"
+msgstr "Stjäl låsen"
+
+#: ui/glade/annotate.glade.h:1
+msgid "<b>From Revision</b>"
+msgstr "<b>Från revision</b>"
+
+#: ui/glade/annotate.glade.h:2
+msgid "<b>To Revision</b>"
+msgstr "<b>Till revision</b>"
+
+#: ui/glade/annotate.glade.h:3
+msgid "Annotate"
+msgstr "Kommentar"
+
+#: ui/glade/ignore.glade.h:1
+msgid "<b>Ignore and exclude files from being tracked</b>"
+msgstr ""
+
+#: ui/glade/ignore.glade.h:2
+msgid "Ignore"
+msgstr ""
+
+#: ui/glade/commit.glade.h:2
+msgid "<b>Changed Files</b> (double-click to compare with base)"
+msgstr "<b>Ändrade filer</b>"
+
+#: ui/glade/commit.glade.h:3
+msgid "<b>Commit to:</b>"
+msgstr "<b>Skicka till:</b>"
+
+#: ui/glade/commit.glade.h:7
+msgid "Show unversioned files"
+msgstr "Visa oversionerade filer"
+
+#: ui/glade/notification.glade.h:1
+msgid "Notification Messages"
+msgstr "Notifieringsmeddelanden"
+
+#: ui/glade/property_editor.glade.h:1
+msgid "<b>Remote URI:</b>"
+msgstr ""
+
+#: ui/glade/property_editor.glade.h:2
+msgid "<b>Working Copy:</b>"
+msgstr "<b>Arbetskopia:</b>"
+
+#: ui/glade/property_editor.glade.h:3
+msgid "Add a new property."
+msgstr ""
+
+#: ui/glade/property_editor.glade.h:4
+msgid "Close this dialog."
+msgstr ""
+
+#: ui/glade/property_editor.glade.h:5
+msgid "Property Editor"
+msgstr "Egenskapseditor"
+
+#: ui/glade/property_editor.glade.h:6
+msgid "Refresh the list of properties."
+msgstr ""
+
+#: ui/glade/relocate.glade.h:1
+msgid "<b>Change the repository of your working copy</b>"
+msgstr "<b>Ändra arkiv till din arbetskopia</b>"
+
+#: ui/glade/relocate.glade.h:2
+msgid "From:"
+msgstr "Från:"
+
+#: ui/glade/relocate.glade.h:4
+msgid "To:"
+msgstr "Till:"
+
+#: ui/glade/git-update.glade.h:1 ui/glade/update.glade.h:1
+#: ui/glade/merge.glade.h:3
+msgid "<b>Options</b>"
+msgstr "<b>Alternativ</b>"
+
+#: ui/glade/git-update.glade.h:3
+msgid "Update Local Repository"
+msgstr ""
+
+#: ui/glade/update.glade.h:2
+msgid "<b>Revision</b>"
+msgstr "<b>Revision</b>"
+
+#: ui/glade/update.glade.h:3
+msgid "Omit Externals"
+msgstr "Uteslut externa"
+
+#: ui/glade/update.glade.h:4 ui/glade/merge.glade.h:16
+msgid "Recursive"
+msgstr "Rekursiv"
+
+#: ui/glade/update.glade.h:5
+msgid "Rollback to specified revision number"
+msgstr ""
+
+#: ui/glade/import.glade.h:1
+msgid "<b>Import Message</b>"
+msgstr "<b>Importera meddelande</b>"
+
+#: ui/glade/import.glade.h:2
+msgid "<b>Repository</b>"
+msgstr "<b>Arkiv</b>"
+
+#: ui/glade/import.glade.h:4
+msgid "Include ignored files"
+msgstr "Inkludera ignorerade filer"
 
 #: ui/glade/merge.glade.h:1
 msgid "<b>From URL</b>"
@@ -726,10 +1927,6 @@ msgstr "<b>Från URL</b>"
 #: ui/glade/merge.glade.h:2
 msgid "<b>From: (URL and revision to merge)</b>"
 msgstr "<b>Från: (URL och revision sammanfogning)</b>"
-
-#: ui/glade/merge.glade.h:3 ui/glade/checkout.glade.h:1
-msgid "<b>Options</b>"
-msgstr "<b>Alternativ</b>"
 
 #: ui/glade/merge.glade.h:4
 msgid "<b>Revision Range</b>"
@@ -783,10 +1980,9 @@ msgstr "Sammanfoga två olika träd"
 msgid "Only record the merge"
 msgstr "Registrera endast sammanfogningen"
 
-#: ui/glade/merge.glade.h:16 ui/glade/checkout.glade.h:9
-#: ui/glade/update.glade.h:5
-msgid "Recursive"
-msgstr "Rekursiv"
+#: ui/glade/merge.glade.h:18
+msgid "Show log"
+msgstr "Visa logg"
 
 #: ui/glade/merge.glade.h:19
 msgid "Test Merge"
@@ -810,547 +2006,95 @@ msgstr ""
 "\n"
 "För att sammanfoga alla revisioner, lämna rutan tom."
 
-#: ui/glade/settings.glade.h:1
-msgid "<b>Authentication</b>"
-msgstr "<b>Autentisering</b>"
+#~ msgid "(no author)"
+#~ msgstr "(ingen författare)"
 
-#: ui/glade/settings.glade.h:2
-msgid "<b>Log Messages</b>"
-msgstr "<b>Loggmeddelanden</b>"
+#~ msgid "<b>Create copy from</b>"
+#~ msgstr "<b>Skapa kopia från</b>"
 
-#: ui/glade/settings.glade.h:3
-msgid "<b>Logging Options</b>"
-msgstr "<b>Logg alternativ</b>"
+#~ msgid "Completed"
+#~ msgstr "Färdig"
 
-#: ui/glade/settings.glade.h:4
-msgid "<b>RabbitVCS</b>"
-msgstr "<b>RabbitVCS</b>"
+#~ msgid "<b>Switch Details</b>"
+#~ msgstr "<b>Växlings detaljer</b>"
 
-#: ui/glade/settings.glade.h:5
-msgid "<b>Program used to browse repositories</b>"
-msgstr "<b>Program som används för att bläddra i arkiv</b>"
+#~ msgid "<b>Program used to browse repositories</b>"
+#~ msgstr "<b>Program som används för att bläddra i arkiv</b>"
 
-#: ui/glade/settings.glade.h:6
-msgid "<b>Program used to compare files</b>"
-msgstr "<b>Program som används för att jämföra filer</b>"
+#~ msgid "Show new version on the right side"
+#~ msgstr "Visa nya versionen på höger sida"
 
-#: ui/glade/settings.glade.h:7
-msgid "<b>URL History</b>"
-msgstr "<b>URL Historik</b>"
+#~ msgid "Added"
+#~ msgstr "Tillagd"
 
-#: ui/glade/settings.glade.h:8 ui/glade/checkout.glade.h:4
-msgid "Browse..."
-msgstr "Bläddra..."
+#~ msgid "Copied"
+#~ msgstr "Kopierad"
 
-#: ui/glade/settings.glade.h:9
-msgid "Clear your authentication information"
-msgstr "Rensa autentiseringsinformation"
+#~ msgid "Deleted"
+#~ msgstr "Borttagen"
 
-#: ui/glade/settings.glade.h:10
-msgid "Enable emblems"
-msgstr "Aktivera emblem"
+#~ msgid "Restored"
+#~ msgstr "Återställd"
 
-#: ui/glade/settings.glade.h:11
-msgid "Enable file attributes"
-msgstr "Aktivera filattribut"
+#~ msgid "Resolved"
+#~ msgstr "Löst"
 
-#: ui/glade/settings.glade.h:12
-msgid "Enable recursive status checks"
-msgstr "Aktivera rekursiva statuskontroller"
+#~ msgid "External"
+#~ msgstr "Extern"
 
-#: ui/glade/settings.glade.h:13
-msgid "External Programs"
-msgstr "Externa program"
+#~ msgid "Modified"
+#~ msgstr "Modifierad"
 
-#: ui/glade/settings.glade.h:14
-msgid "General"
-msgstr "Allmänt"
+#~ msgid "Replaced"
+#~ msgstr "Ersatt"
 
-#: ui/glade/settings.glade.h:15
-msgid "Language:"
-msgstr "Språk:"
+#~ msgid "Changed"
+#~ msgstr "Ändrad"
 
-#: ui/glade/settings.glade.h:16
-msgid "Logging"
-msgstr "Loggning"
+#~ msgid "Annotated"
+#~ msgstr "Kommenterad"
 
-#: ui/glade/settings.glade.h:17
-msgid "Minimum level to log"
-msgstr "Lägsta nivå att logga"
+#~ msgid "Unlocked"
+#~ msgstr "Upplåst"
 
-#: ui/glade/settings.glade.h:18
-msgid "Number of URLs to remember"
-msgstr "Antal URLer att minnas"
+#~ msgid "Failed Lock"
+#~ msgstr "Misslyckades låsa"
 
-#: ui/glade/settings.glade.h:19
-msgid "Number of messages to remember"
-msgstr "Antal meddelande att minnas"
+#~ msgid "Failed Unlock"
+#~ msgstr "Misslyckades låsa upp"
 
-#: ui/glade/settings.glade.h:20
-msgid "Saved Data"
-msgstr "Sparad data"
+#~ msgid "Inapplicable"
+#~ msgstr "Oapplicerbart"
 
-#: ui/glade/settings.glade.h:21 lib/extensions/nautilus/RabbitVCS.py:1043
-msgid "Settings"
-msgstr "Inställningar"
+#~ msgid "Unchanged"
+#~ msgstr "Oförändrad"
 
-#: ui/glade/settings.glade.h:22
-msgid "Show new version on the right side"
-msgstr "Visa nya versionen på höger sida"
+#~ msgid "Missing"
+#~ msgstr "Saknas"
 
-#: ui/glade/settings.glade.h:23
-msgid "Type:"
-msgstr "Typ:"
+#~ msgid "Obstructed"
+#~ msgstr "Blockerad"
 
-#: ui/glade/cleanup.glade.h:2
-msgid ""
-"Cleanup Requested....\n"
-"\n"
-"Begin working copy cleanup?"
-msgstr ""
-"Rensning begärd ....\n"
-"\n"
-"Börja rensa i arbets kopian?"
+#~ msgid "Merged"
+#~ msgstr "Sammanfogad"
 
-#: ui/glade/dialogs.glade.h:1
-msgid "<b>Certificate Details</b>"
-msgstr "<b>Certifikatdetaljer</b>"
+#~ msgid "Conflicted"
+#~ msgstr "Tvistande"
 
-#: ui/glade/dialogs.glade.h:2
-msgid "<b>Edit Property Details</b>"
-msgstr "<b>Redigera egenskapsdetaljer</b>"
+#~ msgid "<b>Update Depth</b>"
+#~ msgstr "<b>Uppdateringsdjup</b>"
 
-#: ui/glade/dialogs.glade.h:4
-msgid "<b>Please add your authentication details</b>"
-msgstr "<b>Lägg till autentiseringsdetaljer</b>"
+#~ msgid "Destination:"
+#~ msgstr "Mål:"
 
-#: ui/glade/dialogs.glade.h:5
-msgid "<b>Previous Messages</b>"
-msgstr "<b>Föregående Meddelanden</b>"
+#~ msgid "Reverted"
+#~ msgstr "Backad"
 
-#: ui/glade/dialogs.glade.h:7
-msgid ""
-"<span size=\"large\"><b>Are you sure you want to delete %item%?</b></span>"
-msgstr ""
-"<span size=\"large\"><b>Är du säker på att du vill ta bort %item%?</b></span>"
+#~ msgid "Failed Revert"
+#~ msgstr "Misslyckad backning"
 
-#: ui/glade/dialogs.glade.h:8
-msgid "Accept Forever"
-msgstr "Acceptera för alltid"
+#~ msgid "Skipped"
+#~ msgstr "Överhoppad"
 
-#: ui/glade/dialogs.glade.h:9
-msgid "Accept Once"
-msgstr "Acceptera en gång"
-
-#: ui/glade/dialogs.glade.h:11
-msgid "Authentication"
-msgstr "Autentisering"
-
-#: ui/glade/dialogs.glade.h:12
-msgid "Check Certificate"
-msgstr "Kontrollera certifikat"
-
-#: ui/glade/dialogs.glade.h:13
-msgid "Confirmation"
-msgstr "Bekräftelse"
-
-#: ui/glade/dialogs.glade.h:14
-msgid "Delete Confirmation"
-msgstr "Radera Bekräftelse"
-
-#: ui/glade/dialogs.glade.h:15
-msgid "Deny"
-msgstr "Neka"
-
-#: ui/glade/dialogs.glade.h:16
-msgid "Fingerprint:"
-msgstr "Fingeravtryck:"
-
-#: ui/glade/dialogs.glade.h:17
-msgid "Host:"
-msgstr "Värd:"
-
-#: ui/glade/dialogs.glade.h:18
-msgid "Issuer:"
-msgstr "Utgivare:"
-
-#: ui/glade/dialogs.glade.h:19
-msgid "Login:"
-msgstr "Användarnamn:"
-
-#: ui/glade/dialogs.glade.h:21
-msgid "Password:"
-msgstr "Lösenord:"
-
-#: ui/glade/dialogs.glade.h:23
-msgid "Property"
-msgstr "Egenskap"
-
-#: ui/glade/dialogs.glade.h:24
-msgid "Property:"
-msgstr "Egenskap:"
-
-#: ui/glade/dialogs.glade.h:25
-msgid "Realm:"
-msgstr "Rike:"
-
-#: ui/glade/dialogs.glade.h:26
-msgid "Save Authentication"
-msgstr "Spara autentisering"
-
-#: ui/glade/dialogs.glade.h:27
-msgid "The item(s) will be sent to the trash can."
-msgstr "Dessa objekt kommer att skickas till papperskorgen."
-
-#: ui/glade/dialogs.glade.h:28
-msgid "Valid:"
-msgstr "Giltig:"
-
-#: ui/glade/dialogs.glade.h:29
-msgid "Value:"
-msgstr "Värde:"
-
-#: ui/glade/checkout.glade.h:6
-msgid "Destination:"
-msgstr "Mål:"
-
-#: ui/glade/checkout.glade.h:8 ui/glade/update.glade.h:4
-msgid "Omit Externals"
-msgstr "Uteslut externa"
-
-#: ui/glade/checkout.glade.h:12
-msgid "URL:"
-msgstr "URL:"
-
-#: ui/glade/import.glade.h:1
-msgid "<b>Import Message</b>"
-msgstr "<b>Importera meddelande</b>"
-
-#: ui/glade/import.glade.h:4
-msgid "Include ignored files"
-msgstr "Inkludera ignorerade filer"
-
-#: ui/glade/update.glade.h:2
-msgid "<b>Update Depth</b>"
-msgstr "<b>Uppdateringsdjup</b>"
-
-#: ui/glade/relocate.glade.h:1
-msgid "<b>Change the repository of your working copy</b>"
-msgstr "<b>Ändra arkiv till din arbetskopia</b>"
-
-#: lib/extensions/nautilus/RabbitVCS.py:362
-msgid "Debug"
-msgstr "Felsök"
-
-#: lib/extensions/nautilus/RabbitVCS.py:375
-msgid "DBus"
-msgstr "DBus"
-
-#: lib/extensions/nautilus/RabbitVCS.py:388
-msgid "Start/Restart Service"
-msgstr "Starta/Starta om tjänsten"
-
-#: lib/extensions/nautilus/RabbitVCS.py:404
-msgid "Exit Service"
-msgstr "Avsluta tjänsten"
-
-#: lib/extensions/nautilus/RabbitVCS.py:422
-msgid "Bugs"
-msgstr "Buggar"
-
-#: lib/extensions/nautilus/RabbitVCS.py:435
-msgid "Test Asynchronicity"
-msgstr "Testa Asynchronicity"
-
-#: lib/extensions/nautilus/RabbitVCS.py:453
-msgid "Open Shell"
-msgstr "Öppna Skal"
-
-#: lib/extensions/nautilus/RabbitVCS.py:469
-msgid "Refresh Status"
-msgstr "Uppdatera Status"
-
-#: lib/extensions/nautilus/RabbitVCS.py:486
-msgid "Debug Revert"
-msgstr "Debug återställ"
-
-#: lib/extensions/nautilus/RabbitVCS.py:487
-msgid "Reverts everything it sees"
-msgstr "Återställer allt den ser"
-
-#: lib/extensions/nautilus/RabbitVCS.py:502
-msgid "Invalidate"
-msgstr "Ogiltigförklara"
-
-#: lib/extensions/nautilus/RabbitVCS.py:503
-msgid "Force an invalidate_extension_info() call"
-msgstr "Tvinga fram ett invalidate_extension_info() anrop"
-
-#: lib/extensions/nautilus/RabbitVCS.py:518
-msgid "Add Emblem"
-msgstr "Lägg till emblem"
-
-#: lib/extensions/nautilus/RabbitVCS.py:519
-msgid "Add an emblem"
-msgstr "Lägg till ett emblem"
-
-#: lib/extensions/nautilus/RabbitVCS.py:537
-msgid "Check out a working copy"
-msgstr "Hämta en arbetskopia"
-
-#: lib/extensions/nautilus/RabbitVCS.py:553
-msgid "Update a working copy"
-msgstr "Uppdatera en arbetskopia"
-
-#: lib/extensions/nautilus/RabbitVCS.py:569
-msgid "Commit modifications to the repository"
-msgstr "Skicka ändringar till arkivet"
-
-#: lib/extensions/nautilus/RabbitVCS.py:584
-msgid "RabbitVCS"
-msgstr "RabbitVCS"
-
-#: lib/extensions/nautilus/RabbitVCS.py:598
-msgid "View the modifications made to a file"
-msgstr "Visa ändringar som gjorts i en fil"
-
-#: lib/extensions/nautilus/RabbitVCS.py:613
-msgid "Show Log"
-msgstr "Visa Logg"
-
-#: lib/extensions/nautilus/RabbitVCS.py:614
-msgid "Show a file's log information"
-msgstr "Visa en fils logginformation"
-
-#: lib/extensions/nautilus/RabbitVCS.py:639
-msgid "Schedule an item to be added to the repository"
-msgstr "Schemalägg ett objekt som ska läggas till i arkivet"
-
-#: lib/extensions/nautilus/RabbitVCS.py:663
-msgid "Ignore an item"
-msgstr "Ignorera ett objekt"
-
-#: lib/extensions/nautilus/RabbitVCS.py:678
-msgid "Ignore all files with this extension"
-msgstr "Ignorera alla filer med denna filändelse"
-
-#: lib/extensions/nautilus/RabbitVCS.py:703
-msgid "Update to revision..."
-msgstr "Uppdatera till revision..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:704
-msgid "Update a file to a specific revision"
-msgstr "Uppdatera till angiven version"
-
-#: lib/extensions/nautilus/RabbitVCS.py:719
-msgid "Rename..."
-msgstr "Byt namn..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:720
-msgid "Schedule an item to be renamed on the repository"
-msgstr "Schemalägg ett objekt som ska byta namn i arkivet"
-
-#: lib/extensions/nautilus/RabbitVCS.py:736
-msgid "Schedule an item to be deleted from the repository"
-msgstr "Schemalägg ett objekt som ska tas bort från arkivet"
-
-#: lib/extensions/nautilus/RabbitVCS.py:752
-msgid "Revert an item to its unmodified state"
-msgstr "Återställ ett objekt till dess omodifierade form"
-
-#: lib/extensions/nautilus/RabbitVCS.py:768
-msgid "Mark a conflicted item as resolved"
-msgstr "Markera ett tvistande objektet som löst"
-
-#: lib/extensions/nautilus/RabbitVCS.py:783
-msgid "Relocate..."
-msgstr "Flytta..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:784
-msgid "Relocate your working copy"
-msgstr "Flytta din arbetskopia"
-
-#: lib/extensions/nautilus/RabbitVCS.py:799
-msgid "Get Lock..."
-msgstr "Hämta Lås..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:800
-msgid "Locally lock items"
-msgstr "Lås objekt lokalt"
-
-#: lib/extensions/nautilus/RabbitVCS.py:815
-msgid "Release Lock..."
-msgstr "Släpp lås..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:816
-msgid "Release lock on an item"
-msgstr "Släpp lås på ett objekt"
-
-#: lib/extensions/nautilus/RabbitVCS.py:832
-msgid "Clean up working copy"
-msgstr "Rensa upp arbetskopia"
-
-#: lib/extensions/nautilus/RabbitVCS.py:857
-msgid "Export a working copy or repository with no versioning information"
-msgstr "Exportera en fungerande kopia eller arkiv utan versionsinformation"
-
-#: lib/extensions/nautilus/RabbitVCS.py:872
-msgid "Create Repository here"
-msgstr "Skapa arkiv här"
-
-#: lib/extensions/nautilus/RabbitVCS.py:873
-msgid "Create a repository in a folder"
-msgstr "Skapa ett arkiv i en mapp"
-
-#: lib/extensions/nautilus/RabbitVCS.py:889
-msgid "Import an item into a repository"
-msgstr "Importera ett objekt till ett arkiv"
-
-#: lib/extensions/nautilus/RabbitVCS.py:913
-msgid "Branch/tag..."
-msgstr "Gren/tagg..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:914
-msgid "Copy an item to another location in the repository"
-msgstr "Kopiera et objekt till en annan plats i arkivet"
-
-#: lib/extensions/nautilus/RabbitVCS.py:929
-msgid "Switch..."
-msgstr "Växla..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:930
-msgid "Change the repository location of a working copy"
-msgstr "Ändra arkivets plats för en arbets kopia"
-
-#: lib/extensions/nautilus/RabbitVCS.py:945
-msgid "Merge..."
-msgstr "Sammanfoga..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:946
-msgid "A wizard with steps for merging"
-msgstr "En guide med åtgärder för sammanfogning"
-
-#: lib/extensions/nautilus/RabbitVCS.py:970
-msgid "Annotate..."
-msgstr "Kommentera..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:971
-msgid "Annotate a file"
-msgstr "Kommentera en fil"
-
-#: lib/extensions/nautilus/RabbitVCS.py:996
-msgid "View the properties of an item"
-msgstr "Visa egenskaperna för ett objekt"
-
-#: lib/extensions/nautilus/RabbitVCS.py:1027
-msgid "Help"
-msgstr "Hjälp"
-
-#: lib/extensions/nautilus/RabbitVCS.py:1028
-msgid "View help"
-msgstr "Visa Hjälp"
-
-#: lib/extensions/nautilus/RabbitVCS.py:1044
-msgid "View or change RabbitVCS settings"
-msgstr "Visa eller ändra RabbitVCS inställningar"
-
-#: lib/extensions/nautilus/RabbitVCS.py:1060
-msgid "About RabbitVCS"
-msgstr "Om RabbitVCS"
-
-#: lib/vcs/svn/__init__.py:111 lib/vcs/svn/__init__.py:120
-#: lib/vcs/svn/__init__.py:127
-msgid "Added"
-msgstr "Tillagd"
-
-#: lib/vcs/svn/__init__.py:112 lib/vcs/svn/__init__.py:128
-msgid "Copied"
-msgstr "Kopierad"
-
-#: lib/vcs/svn/__init__.py:113 lib/vcs/svn/__init__.py:119
-msgid "Deleted"
-msgstr "Borttagen"
-
-#: lib/vcs/svn/__init__.py:114
-msgid "Restored"
-msgstr "Återställd"
-
-#: lib/vcs/svn/__init__.py:115
-msgid "Reverted"
-msgstr "Backad"
-
-#: lib/vcs/svn/__init__.py:116
-msgid "Failed Revert"
-msgstr "Misslyckad backning"
-
-#: lib/vcs/svn/__init__.py:117
-msgid "Resolved"
-msgstr "Löst"
-
-#: lib/vcs/svn/__init__.py:118
-msgid "Skipped"
-msgstr "Överhoppad"
-
-#: lib/vcs/svn/__init__.py:121
-msgid "Updated"
-msgstr "Uppdaterad"
-
-#: lib/vcs/svn/__init__.py:123 lib/vcs/svn/__init__.py:125
-msgid "External"
-msgstr "Extern"
-
-#: lib/vcs/svn/__init__.py:126
-msgid "Modified"
-msgstr "Modifierad"
-
-#: lib/vcs/svn/__init__.py:129
-msgid "Replaced"
-msgstr "Ersatt"
-
-#: lib/vcs/svn/__init__.py:130 lib/vcs/svn/__init__.py:149
-msgid "Changed"
-msgstr "Ändrad"
-
-#: lib/vcs/svn/__init__.py:131
-msgid "Annotated"
-msgstr "Kommenterad"
-
-#: lib/vcs/svn/__init__.py:133
-msgid "Unlocked"
-msgstr "Upplåst"
-
-#: lib/vcs/svn/__init__.py:134
-msgid "Failed Lock"
-msgstr "Misslyckades låsa"
-
-#: lib/vcs/svn/__init__.py:135
-msgid "Failed Unlock"
-msgstr "Misslyckades låsa upp"
-
-#: lib/vcs/svn/__init__.py:144
-msgid "Inapplicable"
-msgstr "Oapplicerbart"
-
-#: lib/vcs/svn/__init__.py:145
-msgid "Unknown"
-msgstr "Okänd"
-
-#: lib/vcs/svn/__init__.py:146
-msgid "Unchanged"
-msgstr "Oförändrad"
-
-#: lib/vcs/svn/__init__.py:147
-msgid "Missing"
-msgstr "Saknas"
-
-#: lib/vcs/svn/__init__.py:148
-msgid "Obstructed"
-msgstr "Blockerad"
-
-#: lib/vcs/svn/__init__.py:150
-msgid "Merged"
-msgstr "Sammanfogad"
-
-#: lib/vcs/svn/__init__.py:151
-msgid "Conflicted"
-msgstr "Tvistande"
+#~ msgid "Updated"
+#~ msgstr "Uppdaterad"

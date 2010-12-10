@@ -1,531 +1,1362 @@
 # Italian translation for rabbitvcs
-# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the rabbitvcs package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: rabbitvcs\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-03-04 14:35-0500\n"
-"PO-Revision-Date: 2009-03-25 13:57+0000\n"
-"Last-Translator: BrainHell <Unknown>\n"
+"POT-Creation-Date: 2010-11-26 09:51-0500\n"
+"PO-Revision-Date: 2010-10-26 11:05+0000\n"
+"Last-Translator: timendum <Unknown>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-09-24 13:44+0000\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2010-12-09 23:36+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: ui/branch.py:71
-msgid ""
-"There have been modifications to your working copy.  If you copy from the "
-"HEAD revision you will lose your changes."
+#: util/helper.py:109
+msgid "just now"
 msgstr ""
-"Ci sono state modifiche nella tua copia locale. Se copi dalla revisione HEAD "
-"perderai le modifiche."
 
-#: ui/branch.py:89
-msgid "You must supply a destination path."
-msgstr "Devi specificare un percorso di destinazione"
+#: util/helper.py:111
+#, python-format
+msgid "%d minute(s) ago"
+msgstr ""
 
-#: ui/branch.py:99
-msgid "The from revision field is required."
-msgstr "Il campo da revisione è richiesto."
+#: util/helper.py:631
+#, python-format
+msgid "%i second"
+msgid_plural "%i seconds"
+msgstr[0] "%i secondo"
+msgstr[1] "%i secondi"
 
-#: ui/branch.py:108
-msgid "Invalid revision information"
-msgstr "Informazioni della revisione non valide"
+#: util/helper.py:634
+#, python-format
+msgid "%i minute"
+msgid_plural "%i minutes"
+msgstr[0] "%i minuto"
+msgstr[1] "%i minuti"
 
-#: ui/branch.py:123 ui/glade/branch.glade.h:4
-msgid "Branch/tag"
-msgstr "Branch/tag"
+#: util/helper.py:637
+#, python-format
+msgid "%i hour"
+msgid_plural "%i hours"
+msgstr[0] "%i ora"
+msgstr[1] "%i ore"
 
-#: ui/branch.py:124
-msgid "Running Branch/tag Command..."
-msgstr "Esecuzione del comando Branch/tag..."
+#: util/helper.py:640
+#, python-format
+msgid "%i day"
+msgid_plural "%i days"
+msgstr[0] "%i giorno"
+msgstr[1] "%i giorni"
 
-#: ui/branch.py:126
-msgid "Completed Branch/tag"
-msgstr "Branch/tag completato"
+#: util/helper.py:643
+#, python-format
+msgid "%i week"
+msgid_plural "%i weeks"
+msgstr[0] "%i settimana"
+msgstr[1] "%i settimane"
 
-#: ui/updateto.py:70
-msgid "Update To Revision"
-msgstr "Aggiorna alla Revisione"
+#: util/helper.py:646
+#, python-format
+msgid "%i month"
+msgid_plural "%i months"
+msgstr[0] "%i mese"
+msgstr[1] "%i mesi"
 
-#: ui/updateto.py:71 ui/update.py:54
+#: util/helper.py:649
+#, python-format
+msgid "%i year"
+msgid_plural "%i years"
+msgstr[0] "%i anno"
+msgstr[1] "%i anni"
+
+#: util/contextmenuitems.py:270
+msgid "Debug"
+msgstr "Debug"
+
+#: util/contextmenuitems.py:275
+msgid "Bugs"
+msgstr "Bugs"
+
+#: util/contextmenuitems.py:280
+msgid "Open Shell"
+msgstr "Apri Shell"
+
+#: util/contextmenuitems.py:286
+msgid "Refresh Status"
+msgstr "Aggiorna Stato"
+
+#: util/contextmenuitems.py:291
+msgid "Debug Revert"
+msgstr "Debug Ripristino"
+
+#: util/contextmenuitems.py:292
+msgid "Reverts everything it sees"
+msgstr "Ripristina tutto ciò che vedi"
+
+#: util/contextmenuitems.py:298
+msgid "Invalidate"
+msgstr "Invalida"
+
+#: util/contextmenuitems.py:299
+msgid "Force an invalidate_extension_info() call"
+msgstr "Forza una chiamata a invalidate_extension_info()"
+
+#: util/contextmenuitems.py:305
+msgid "Add Emblem"
+msgstr "Aggiungi icona"
+
+#: util/contextmenuitems.py:306
+msgid "Add an emblem"
+msgstr "Aggiungi un'icona"
+
+#: util/contextmenuitems.py:312
+msgid "Checkout..."
+msgstr "Checkout..."
+
+#: util/contextmenuitems.py:313
+msgid "Check out a working copy"
+msgstr "Preleva una Copia di Lavoro"
+
+#: util/contextmenuitems.py:318 ui/update.py:53 ui/update.py:97
+#: ui/glade/update.glade.h:6
+msgid "Update"
+msgstr "Aggiorna"
+
+#: util/contextmenuitems.py:319
+msgid "Update a working copy"
+msgstr "Aggiorna la Copia di Lavoro"
+
+#: util/contextmenuitems.py:324 ui/commit.py:288 ui/commit.py:384
+#: ui/glade/commit.glade.h:4
+msgid "Commit"
+msgstr "Commit"
+
+#: util/contextmenuitems.py:325
+msgid "Commit modifications to the repository"
+msgstr "Invia le modifiche al Repository"
+
+#: util/contextmenuitems.py:330 ui/glade/property_page.glade.h:4
+msgid "RabbitVCS"
+msgstr "RabbitVCS"
+
+#: util/contextmenuitems.py:335
+msgid "RabbitVCS SVN"
+msgstr ""
+
+#: util/contextmenuitems.py:340
+msgid "RabbitVCS Git"
+msgstr ""
+
+#: util/contextmenuitems.py:345 ui/glade/browser.glade.h:2
+msgid "Repository Browser"
+msgstr "Sfoglia Repository"
+
+#: util/contextmenuitems.py:346
+msgid "Browse a repository tree"
+msgstr "Sfoglia l'albero del repository"
+
+#: util/contextmenuitems.py:351
+msgid "Check for Modifications..."
+msgstr "Controlla modifiche..."
+
+#: util/contextmenuitems.py:352
+msgid "Check for modifications made to the repository"
+msgstr "Controlla modifiche fatte nel repository"
+
+#: util/contextmenuitems.py:357
+msgid "Diff Menu..."
+msgstr "Menu Differenze..."
+
+#: util/contextmenuitems.py:358
+msgid "List of comparison options"
+msgstr "Visualizza opzioni di confronto"
+
+#: util/contextmenuitems.py:363
+msgid "View diff against base"
+msgstr "Visualizza differenze con la base"
+
+#: util/contextmenuitems.py:364
+msgid "View the modifications made to a file"
+msgstr "Visualizza le modifiche fatte al file"
+
+#: util/contextmenuitems.py:369
+msgid "View diff between files/folders"
+msgstr "Visualizza differenze tra file/cartelle"
+
+#: util/contextmenuitems.py:370
+msgid "View the differences between two files"
+msgstr "Visualizza differenze tra due file"
+
+#: util/contextmenuitems.py:375 ui/log.py:786
+msgid "View diff against previous revision"
+msgstr "Visualizza le differenze con la revisione precedente"
+
+#: util/contextmenuitems.py:376
+msgid "View the modifications made to a file since its last change"
+msgstr "Visualizza le modifiche fatte al file dall'ultimo cambiamento"
+
+#: util/contextmenuitems.py:381
+msgid "Compare with base"
+msgstr "Confronta con la base"
+
+#: util/contextmenuitems.py:382
+msgid "Compare with base using side-by-side comparison tool"
+msgstr "Confronta con la base affiancando le finestre"
+
+#: util/contextmenuitems.py:387
+msgid "Compare files/folders"
+msgstr "Confronta file/cartelle"
+
+#: util/contextmenuitems.py:388
+msgid "Compare the differences between two items"
+msgstr "Confronta le differenze tra due oggetti"
+
+#: util/contextmenuitems.py:393 ui/log.py:801
+msgid "Compare with previous revision"
+msgstr "Compara con la versione precedente"
+
+#: util/contextmenuitems.py:394
+msgid "Compare with previous revision using side-by-side comparison tool"
+msgstr "Confronta con la revisione precedente affiancando le finestre"
+
+#: util/contextmenuitems.py:399
+msgid "Show Changes..."
+msgstr "Visualizza modifiche..."
+
+#: util/contextmenuitems.py:400
+msgid "Show changes between paths and revisions"
+msgstr "Visualizza modifiche tra percorsi e revisioni"
+
+#: util/contextmenuitems.py:405
+msgid "Show Log"
+msgstr "Visualizza Log"
+
+#: util/contextmenuitems.py:406
+msgid "Show a file's log information"
+msgstr "Visualizza il file log"
+
+#: util/contextmenuitems.py:411 ui/add.py:156 ui/tags.py:273
+#: ui/branches.py:274 ui/widget.py:1199 ui/glade/add.glade.h:1
+msgid "Add"
+msgstr "Aggiungi"
+
+#: util/contextmenuitems.py:412
+msgid "Schedule items to be added to the repository"
+msgstr "Schedula oggetti da aggiungere al repository"
+
+#: util/contextmenuitems.py:417
+msgid "Add to ignore list"
+msgstr "Aggiungi in ignora"
+
+#: util/contextmenuitems.py:422
+msgid "Update to revision..."
+msgstr "Aggiorna alla revisione..."
+
+#: util/contextmenuitems.py:423
+msgid "Update a file to a specific revision"
+msgstr "Aggiorna il file alla specifica revisione"
+
+#: util/contextmenuitems.py:428
+msgid "Rename..."
+msgstr "Rinonima..."
+
+#: util/contextmenuitems.py:429
+msgid "Schedule an item to be renamed on the repository"
+msgstr "Schedula un oggetto da essere rinonimato nel repository"
+
+#: util/contextmenuitems.py:434 ui/glade/properties.glade.h:3
+msgid "Delete"
+msgstr "Cancella"
+
+#: util/contextmenuitems.py:435
+msgid "Schedule an item to be deleted from the repository"
+msgstr "Schedula un oggetto da essere cancellato dal repository"
+
+#: util/contextmenuitems.py:440 ui/revert.py:50 ui/revert.py:103
+#: ui/revert.py:115 ui/revert.py:168
+msgid "Revert"
+msgstr "Ripristina"
+
+#: util/contextmenuitems.py:441
+msgid "Revert an item to its unmodified state"
+msgstr "Ripristina gli oggetti nel loro stato non modificato"
+
+#: util/contextmenuitems.py:446 ui/resolve.py:48 ui/resolve.py:102
+msgid "Resolve"
+msgstr "Risolvi"
+
+#: util/contextmenuitems.py:447
+msgid "Mark a conflicted item as resolved"
+msgstr "Segna un oggetto in conflitto come risolto"
+
+#: util/contextmenuitems.py:452
+msgid "Restore"
+msgstr "Ripristina"
+
+#: util/contextmenuitems.py:453
+msgid "Restore a missing item"
+msgstr "Ripristina oggetto mancante"
+
+#: util/contextmenuitems.py:457
+msgid "Relocate..."
+msgstr "Ricolloca..."
+
+#: util/contextmenuitems.py:458
+msgid "Relocate your working copy"
+msgstr "Ricolloca la tua copia di lavoro"
+
+#: util/contextmenuitems.py:463
+msgid "Get Lock..."
+msgstr "Blocca..."
+
+#: util/contextmenuitems.py:464
+msgid "Locally lock items"
+msgstr "Blocca gli oggetti localmente"
+
+#: util/contextmenuitems.py:469
+msgid "Release Lock..."
+msgstr "Sblocca..."
+
+#: util/contextmenuitems.py:470
+msgid "Release lock on an item"
+msgstr "Sblocca l'oggetto"
+
+#: util/contextmenuitems.py:475 ui/cleanup.py:55
+msgid "Cleanup"
+msgstr "Pulisci"
+
+#: util/contextmenuitems.py:476
+msgid "Clean up working copy"
+msgstr "Pulisci la copia di lavoro"
+
+#: util/contextmenuitems.py:481
+msgid "Export..."
+msgstr "Esporta..."
+
+#: util/contextmenuitems.py:482
+msgid "Export a working copy or repository with no versioning information"
+msgstr ""
+"Esporta la copia di lavoro o repository senza le informazioni di versione"
+
+#: util/contextmenuitems.py:487
+msgid "Create Repository here"
+msgstr "Crea un Repository qua"
+
+#: util/contextmenuitems.py:488
+msgid "Create a repository in a folder"
+msgstr "Crea un Repositori in una cartella"
+
+#: util/contextmenuitems.py:493 ui/import.py:80 ui/glade/import.glade.h:3
+msgid "Import"
+msgstr "Importa"
+
+#: util/contextmenuitems.py:494
+msgid "Import an item into a repository"
+msgstr "Importa un oggetto in un repository"
+
+#: util/contextmenuitems.py:503
+msgid "Branch/tag..."
+msgstr "Branch/tag..."
+
+#: util/contextmenuitems.py:504
+msgid "Copy an item to another location in the repository"
+msgstr "Copia un oggetto in un altra parte del repository"
+
+#: util/contextmenuitems.py:509
+msgid "Switch..."
+msgstr "Scambia..."
+
+#: util/contextmenuitems.py:510
+msgid "Change the repository location of a working copy"
+msgstr "Cambia la locazione del repository della copia di lavoro"
+
+#: util/contextmenuitems.py:515
+msgid "Merge..."
+msgstr "Merge..."
+
+#: util/contextmenuitems.py:516
+msgid "A wizard with steps for merging"
+msgstr "Procedura guidata per il merge"
+
+#: util/contextmenuitems.py:521
+msgid "Annotate..."
+msgstr "Annota..."
+
+#: util/contextmenuitems.py:522
+msgid "Annotate a file"
+msgstr "Annota un file"
+
+#: util/contextmenuitems.py:527
+msgid "Create Patch..."
+msgstr "Crea Patch..."
+
+#: util/contextmenuitems.py:528
+msgid "Creates a unified diff file with all changes you made"
+msgstr "Crea un file unico con le differenza di tutte le modifiche fatte"
+
+#: util/contextmenuitems.py:533
+msgid "Apply Patch..."
+msgstr "Applica Patch..."
+
+#: util/contextmenuitems.py:534
+msgid "Applies a unified diff file to the working copy"
+msgstr "Applica il file unico con le differenza alla copia di lavoro"
+
+#: util/contextmenuitems.py:539 ui/glade/properties.glade.h:7
+msgid "Properties"
+msgstr "Proprieta"
+
+#: util/contextmenuitems.py:540
+msgid "View the properties of an item"
+msgstr "Visualizza le proprieta di un oggetto"
+
+#: util/contextmenuitems.py:545
+msgid "Help"
+msgstr "Aiuto"
+
+#: util/contextmenuitems.py:546
+msgid "View help"
+msgstr "Visualizza aiuto"
+
+#: util/contextmenuitems.py:551 ui/glade/settings.glade.h:28
+msgid "Settings"
+msgstr "Opzioni"
+
+#: util/contextmenuitems.py:552
+msgid "View or change RabbitVCS settings"
+msgstr "Visualizza o cambia le opzioni di RabbitVCS"
+
+#: util/contextmenuitems.py:557 ui/glade/about.glade.h:4
+msgid "About"
+msgstr "Informazioni su"
+
+#: util/contextmenuitems.py:558
+msgid "About RabbitVCS"
+msgstr "Informazioni su RabbitVCS"
+
+#: util/contextmenuitems.py:563
+msgid "Open"
+msgstr "Apri"
+
+#: util/contextmenuitems.py:564
+msgid "Open a file"
+msgstr "Apri un file"
+
+#: util/contextmenuitems.py:572
+msgid "Browse to"
+msgstr "Sfoglia"
+
+#: util/contextmenuitems.py:573
+msgid "Browse to a file or folder"
+msgstr "Sfoglia file o cartella"
+
+#: util/contextmenuitems.py:578
+msgid "Revert property"
+msgstr "Ripristina proprietà"
+
+#: util/contextmenuitems.py:580
+msgid "Revert this property to its original state"
+msgstr "Ripristina questa proprietà con il suo stato originale"
+
+#: util/contextmenuitems.py:584
+msgid "Revert property (recursive)"
+msgstr "Ripristina proprietà (ricorsivo)"
+
+#: util/contextmenuitems.py:586
+msgid "Revert this property to its original state (recursive)"
+msgstr "Ripristina questa proprietà con il suo stato originale (ricorsivo)"
+
+#: util/contextmenuitems.py:591
+msgid "Delete property"
+msgstr "Cancella proprietà"
+
+#: util/contextmenuitems.py:593
+msgid "Delete this property"
+msgstr "Cancella questa proprietà"
+
+#: util/contextmenuitems.py:597
+msgid "Delete property (recursive)"
+msgstr ""
+
+#: util/contextmenuitems.py:599
+msgid "Delete this property (recursive)"
+msgstr "Cancella questa proprietà (ricorsivo)"
+
+#: util/contextmenuitems.py:604
+msgid "Edit details"
+msgstr ""
+
+#: util/contextmenuitems.py:606
+msgid "Show and edit property details"
+msgstr ""
+
+#: util/contextmenuitems.py:610
+msgid "Initialize Repository"
+msgstr ""
+
+#: util/contextmenuitems.py:615 ui/clone.py:47 ui/clone.py:65
+msgid "Clone"
+msgstr ""
+
+#: util/contextmenuitems.py:620
+msgid "Fetch/Pull"
+msgstr ""
+
+#: util/contextmenuitems.py:625 ui/push.py:96
+msgid "Push"
+msgstr ""
+
+#: util/contextmenuitems.py:630
+msgid "Branches"
+msgstr ""
+
+#: util/contextmenuitems.py:635
+msgid "Tags"
+msgstr ""
+
+#: util/contextmenuitems.py:640
+msgid "Remotes"
+msgstr ""
+
+#: util/contextmenuitems.py:666
+msgid "Ignore item by filename"
+msgstr "Ignora oggetto dal nome file"
+
+#: util/contextmenuitems.py:685
+msgid "Ignore item by file extension"
+msgstr "Ignora oggetto dall'estensione"
+
+#: ui/update.py:54 ui/update.py:98 ui/updateto.py:94
 msgid "Updating..."
-msgstr "Aggiornamento..."
+msgstr "Aggiornamento in corso..."
 
-#: ui/updateto.py:79 ui/update.py:57
+#: ui/update.py:56 ui/update.py:103 ui/updateto.py:102
 msgid "Completed Update"
 msgstr "Aggiornamento completato"
 
-#: ui/rename.py:59
-msgid "The new name field is required"
-msgstr "Il campo nuovo nome è richiesto."
+#: ui/updateto.py:82
+msgid "Rollback To Revision"
+msgstr ""
 
-#: ui/rename.py:70 ui/glade/rename.glade.h:2
-msgid "Rename"
-msgstr "Rinonima"
+#: ui/updateto.py:83
+msgid "Rolling Back..."
+msgstr ""
 
-#: ui/rename.py:71
-msgid "Running Rename Command..."
-msgstr "Esecuzione del comando Rinonima..."
+#: ui/updateto.py:91
+msgid "Completed Rollback"
+msgstr ""
 
-#: ui/rename.py:78
-msgid "Completed Rename"
-msgstr "Rinonima Completato"
+#: ui/updateto.py:93
+msgid "Update To Revision"
+msgstr "Aggiorna alla Revisione"
 
-#: ui/annotate.py:51
-msgid "Cannot annotate a directory"
-msgstr "Non posso annotare una cartella"
+#: ui/updateto.py:138 ui/checkout.py:173
+msgid "Checkout"
+msgstr "Checkout"
 
-#: ui/annotate.py:58
+#: ui/updateto.py:139
 #, python-format
-msgid "Annotate - %s"
-msgstr "Annota - %s"
+msgid "Checking out %s..."
+msgstr ""
 
-#: ui/annotate.py:71
-msgid "Line"
-msgstr "Linea"
+#: ui/updateto.py:145 ui/checkout.py:184
+msgid "Completed Checkout"
+msgstr "Checkout completato"
 
-#: ui/annotate.py:71 ui/log.py:80 ui/glade/switch.glade.h:5
-#: ui/glade/merge.glade.h:17 ui/glade/checkout.glade.h:10
-#: ui/glade/update.glade.h:6
-msgid "Revision"
-msgstr "Revisione"
-
-#: ui/annotate.py:71 ui/log.py:80
-msgid "Author"
-msgstr "Autore"
-
-#: ui/annotate.py:72 ui/dialog.py:47 ui/log.py:81
-msgid "Date"
-msgstr "Data"
-
-#: ui/annotate.py:72
-msgid "Text"
-msgstr "Testo"
-
-#: ui/annotate.py:112
-msgid "The from revision field must be an integer"
-msgstr "Il campo da revisione deve essere un intero"
-
-#: ui/annotate.py:122
-msgid "Generating Annotation..."
-msgstr "Generazione annotazione..."
-
-#: ui/annotate.py:138 lib/vcs/svn/__init__.py:122 lib/vcs/svn/__init__.py:124
-msgid "Completed"
-msgstr "Completato"
-
-#: ui/settings.py:50
-msgid "English"
-msgstr "Inglese"
-
-#: ui/settings.py:156 ui/settings.py:165
-msgid "Select a program"
-msgstr "Seleziona un programma"
-
-#: ui/settings.py:174
-msgid "Are you sure you want to clear your repository paths?"
-msgstr "Sei sicuro di voler pulire il tuo percorso del repository ?"
-
-#: ui/settings.py:181
-msgid "Repository paths cleared"
-msgstr "Percorso del Repository Pulito"
-
-#: ui/settings.py:185
-msgid "Are you sure you want to clear your previous messages?"
-msgstr "Sei sicuro di voler pulire il tuo precedente messaggio ?"
-
-#: ui/settings.py:192
-msgid "Previous messages cleared"
-msgstr "Messaggio precedente cancellato"
-
-#: ui/settings.py:196
-msgid "Are you sure you want to clear your authentication information?"
-msgstr "Sei sicuro di voler pulire le tue informazioni di autenticazione?"
-
-#: ui/settings.py:213
-msgid "Authentication information cleared"
-msgstr "Informazioi di Autenticazione Pulite"
-
-#: ui/cleanup.py:54 lib/extensions/nautilus/RabbitVCS.py:831
-msgid "Cleanup"
-msgstr "Pulizia"
-
-#: ui/cleanup.py:55 ui/glade/cleanup.glade.h:1
-msgid "Cleaning Up..."
-msgstr "Pulizia in corso..."
-
-#: ui/cleanup.py:57
-msgid "Completed Cleanup"
-msgstr "Pulizia Completata"
-
-#: ui/relocate.py:76
-msgid "The from and to url fields are both required."
-msgstr "I  campi da e url sono richiesti"
-
-#: ui/relocate.py:86 ui/glade/relocate.glade.h:3
-msgid "Relocate"
-msgstr "Rialloca"
-
-#: ui/relocate.py:87
-msgid "Running Relocate Command..."
-msgstr "Esecuzione del comando Riallocamento..."
-
-#: ui/relocate.py:94
-msgid "Completed Relocate"
-msgstr "Riallocamento completato"
-
-#: ui/add.py:64 ui/lock.py:66 ui/resolve.py:55 ui/action.py:66 ui/commit.py:73
-#: ui/unlock.py:55 ui/log.py:89 ui/revert.py:55
+#: ui/add.py:72 ui/commit.py:205 ui/commit.py:313 ui/revert.py:62
+#: ui/revert.py:128 ui/checkmods.py:67 ui/resolve.py:61 ui/changes.py:279
+#: ui/changes.py:364 ui/log.py:337 ui/log.py:572 ui/lock.py:72
+#: ui/createpatch.py:119 ui/createpatch.py:215 ui/action.py:118
+#: ui/unlock.py:61 ui/browser.py:89
 msgid "Path"
 msgstr "Percorso"
 
-#: ui/add.py:64 ui/lock.py:66 ui/resolve.py:55 ui/commit.py:73 ui/unlock.py:55
-#: ui/revert.py:55
+#: ui/add.py:72 ui/commit.py:205 ui/commit.py:313 ui/revert.py:62
+#: ui/revert.py:128 ui/checkmods.py:67 ui/resolve.py:61 ui/lock.py:72
+#: ui/createpatch.py:119 ui/createpatch.py:215 ui/unlock.py:61
 msgid "Extension"
 msgstr "Estensione"
 
-#: ui/add.py:78 ui/lock.py:96 ui/commit.py:97 ui/unlock.py:70 ui/log.py:253
-#: ui/glade/log.glade.h:6
+#: ui/add.py:95 ui/commit.py:93 ui/lock.py:115 ui/unlock.py:85
+#: ui/glade/dialogs.glade.h:33
 msgid "Loading..."
 msgstr "Caricamento..."
 
-#: ui/add.py:81 ui/lock.py:99 ui/commit.py:100 ui/unlock.py:91
+#: ui/add.py:98 ui/commit.py:100 ui/lock.py:118 ui/unlock.py:107
 #, python-format
 msgid "Found %d item(s)"
 msgstr "Trovati %d oggetti"
 
-#: ui/add.py:115 ui/commit.py:269 ui/glade/add.glade.h:1
-#: lib/extensions/nautilus/RabbitVCS.py:638
-msgid "Add"
-msgstr "Aggiungi"
-
-#: ui/add.py:116
+#: ui/add.py:157
 msgid "Running Add Command..."
 msgstr "Esecuzione del comando Aggiungi..."
 
-#: ui/add.py:118
+#: ui/add.py:159
 msgid "Completed Add"
 msgstr "Aggiunta completata"
 
-#: ui/add.py:141 ui/lock.py:206 ui/commit.py:239
-msgid "Open"
-msgstr "Apri"
+#: ui/ignore.py:100
+msgid "Ignore file:"
+msgstr ""
 
-#: ui/add.py:150 ui/lock.py:216 ui/commit.py:249
-msgid "Browse to"
-msgstr "Sfoglia"
+#: ui/tags.py:62
+msgid "Tag Manager"
+msgstr ""
 
-#: ui/add.py:159 ui/commit.py:259 ui/glade/properties.glade.h:2
-#: lib/extensions/nautilus/RabbitVCS.py:735
-msgid "Delete"
-msgstr "Cancella"
+#: ui/tags.py:63
+msgid "<b>Tags</b>"
+msgstr ""
 
-#: ui/add.py:168 ui/commit.py:299 lib/extensions/nautilus/RabbitVCS.py:654
-msgid "Add to ignore list"
-msgstr "Aggiungi in ignora"
+#: ui/tags.py:74
+msgid "Tag"
+msgstr ""
 
-#: ui/import.py:41
+#: ui/tags.py:99 ui/branches.py:100 ui/glade/dialogs.glade.h:38
+#: ui/glade/property_page.glade.h:2
+msgid "Name:"
+msgstr ""
+
+#: ui/tags.py:109 ui/tags.py:176 ui/branches.py:155 ui/merge.py:438
+#: ui/merge.py:488 ui/glade/browser.glade.h:3
+msgid "Revision:"
+msgstr "Revisione:"
+
+#: ui/tags.py:128 ui/tags.py:188 ui/branches.py:167 ui/merge.py:450
+#: ui/merge.py:500
+msgid "Message:"
+msgstr ""
+
+#: ui/tags.py:145 ui/tags.py:284 ui/branches.py:147 ui/branches.py:291
+msgid "Save"
+msgstr ""
+
+#: ui/tags.py:153
+msgid "Tagger:"
+msgstr ""
+
+#: ui/tags.py:165 ui/merge.py:427 ui/merge.py:477
+msgid "Date:"
+msgstr ""
+
+#: ui/tags.py:230 ui/branches.py:209 ui/remotes.py:128
+#, python-format
+msgid "Are you sure you want to delete %s?"
+msgstr ""
+
+#: ui/tags.py:275
+msgid "<b>Add Tag</b>"
+msgstr ""
+
+#: ui/tags.py:293
+msgid "<b>Tag Detail</b>"
+msgstr ""
+
+#: ui/export.py:45 ui/export.py:114
+#, python-format
+msgid "Export - %s"
+msgstr "Esporta - %s"
+
+#: ui/export.py:72 ui/export.py:131 ui/clone.py:57 ui/checkout.py:163
+msgid "The repository URL and destination path are both required fields."
+msgstr ""
+"I campi URL e percorso di destinazione del repository sono entrambi "
+"obbligatori."
+
+#: ui/export.py:92 ui/export.py:151
+msgid "Export"
+msgstr "Esporta"
+
+#: ui/export.py:93 ui/export.py:152
+msgid "Running Export Command..."
+msgstr "Esecuzione del comando di Esportazione..."
+
+#: ui/export.py:104 ui/export.py:160
+msgid "Completed Export"
+msgstr "Esportazione Completata"
+
+#: ui/applypatch.py:57 ui/applypatch.py:113 ui/applypatch.py:143
+msgid "Apply Patch"
+msgstr "Applica Patch"
+
+#: ui/applypatch.py:74
+msgid "Apply Patch To Directory..."
+msgstr "Applica Path Alla Cartella"
+
+#: ui/applypatch.py:114 ui/applypatch.py:144
+msgid "Applying Patch File..."
+msgstr "Applica Patch al File..."
+
+#: ui/applypatch.py:116 ui/applypatch.py:146
+msgid "Patch File Applied"
+msgstr "Patch al File Applicata"
+
+#: ui/branches.py:62
+msgid "Branch Manager"
+msgstr ""
+
+#: ui/branches.py:63
+msgid "<b>Branches</b>"
+msgstr ""
+
+#: ui/branches.py:73 ui/widget.py:855
+msgid "Branch"
+msgstr ""
+
+#: ui/branches.py:110
+msgid "Start Point:"
+msgstr ""
+
+#: ui/branches.py:129
+msgid "Keep old branch's history"
+msgstr ""
+
+#: ui/branches.py:138
+msgid "Set as active branch"
+msgstr ""
+
+#: ui/branches.py:280
+msgid "<b>Add Branch</b>"
+msgstr ""
+
+#: ui/branches.py:304
+msgid "<b>Branch Detail</b>"
+msgstr ""
+
+#: ui/push.py:76 ui/dialog.py:54 ui/annotate.py:128 ui/annotate.py:229
+#: ui/log.py:327 ui/log.py:557 ui/browser.py:89
+msgid "Date"
+msgstr "Data"
+
+#: ui/push.py:76 ui/dialog.py:54 ui/log.py:327 ui/log.py:557
+#: ui/glade/dialogs.glade.h:36
+msgid "Message"
+msgstr "Messaggio"
+
+#: ui/push.py:97
+msgid "Running Push Command..."
+msgstr ""
+
+#: ui/push.py:99
+msgid "Completed Push"
+msgstr ""
+
+#: ui/import.py:40
 #, python-format
 msgid "Import - %s"
 msgstr "Importa - %s"
 
 #: ui/import.py:68
 msgid "The repository URL field is required."
-msgstr "Il campo Url Repository è richiesto."
-
-#: ui/import.py:80 ui/glade/import.glade.h:3
-#: lib/extensions/nautilus/RabbitVCS.py:888
-msgid "Import"
-msgstr "Importa"
+msgstr "Il campo URL del repository è obbligatorio."
 
 #: ui/import.py:81
 msgid "Running Import Command..."
-msgstr "Esecuzione del comando Importazione..."
+msgstr "Esecuzione del comando di Importazione..."
 
 #: ui/import.py:89
 msgid "Completed Import"
 msgstr "Importazione completata"
 
-#: ui/lock.py:67 lib/vcs/svn/__init__.py:132
-msgid "Locked"
-msgstr "Bloccato"
-
-#: ui/lock.py:90 ui/lock.py:107
-msgid "Yes"
-msgstr "Si"
-
-#: ui/lock.py:144
-msgid "Get Lock"
-msgstr "Blocca"
-
-#: ui/lock.py:145
-msgid "Running Lock Command..."
-msgstr "Esecuzione del comando Blocca..."
-
-#: ui/lock.py:154
-msgid "Completed Lock"
-msgstr "Blocca Completato"
-
-#: ui/lock.py:176
-msgid "Remove Lock"
-msgstr "Rimuovi Blocco"
-
-#: ui/lock.py:186 ui/commit.py:229 lib/extensions/nautilus/RabbitVCS.py:597
-msgid "View Diff"
-msgstr "Mostra Differenze"
-
-#: ui/lock.py:196 ui/glade/switch.glade.h:6 ui/glade/branch.glade.h:10
-#: ui/glade/merge.glade.h:18 ui/glade/checkout.glade.h:11
-#: ui/glade/update.glade.h:7
-msgid "Show log"
-msgstr "Visualizza Log"
-
-#: ui/export.py:40
-#, python-format
-msgid "Export - %s"
-msgstr "Esporta - %s"
-
-#: ui/export.py:58 ui/checkout.py:82
-msgid "The repository URL and destination path are both required fields."
+#: ui/rename.py:48
+msgid "The requested file or folder does not exist."
 msgstr ""
-"I Caampi repository URL e Percorso di destinazione sono entrambi richiesti."
 
-#: ui/export.py:79 lib/extensions/nautilus/RabbitVCS.py:856
-msgid "Export"
-msgstr "Esporta"
+#: ui/rename.py:52 ui/rename.py:84 ui/rename.py:113 ui/browser.py:470
+msgid "Rename"
+msgstr "Rinomina"
 
-#: ui/export.py:80
-msgid "Running Export Command..."
-msgstr "Esecuzione del comando Esportazione..."
+#: ui/rename.py:52 ui/browser.py:470 ui/glade/dialogs.glade.h:39
+msgid "New Name:"
+msgstr "Nuiovo Nome:"
 
-#: ui/export.py:91
-msgid "Completed Export"
-msgstr "Esportazione Completata"
+#: ui/rename.py:60
+msgid "The new name field is required"
+msgstr "Il campo nuovo nome è obbligatorio."
 
-#: ui/resolve.py:45 ui/resolve.py:76
-#: lib/extensions/nautilus/RabbitVCS.py:767
-msgid "Resolve"
-msgstr "Risolvi"
+#: ui/rename.py:85 ui/rename.py:114
+msgid "Running Rename Command..."
+msgstr "Esecuzione del comando Rinomina..."
 
-#: ui/resolve.py:77
-msgid "Running Resolve Command..."
-msgstr "Esecuzione del comando Risolvi..."
+#: ui/rename.py:91 ui/rename.py:120
+msgid "Completed Rename"
+msgstr "Rinomina Completata"
 
-#: ui/resolve.py:80
-msgid "Completed Resolve"
-msgstr "Risolvi Copletato"
-
-#: ui/action.py:66 ui/log.py:89
-msgid "Action"
-msgstr "Azione"
-
-#: ui/action.py:66
-msgid "Mime Type"
-msgstr "Mime Type"
-
-#: ui/action.py:135
-msgid "Empty Message"
-msgstr "Messaggio Vuoto"
-
-#: ui/action.py:249 ui/log.py:309
-msgid "Finished"
-msgstr "Finito"
-
-#: ui/action.py:253
-#, python-format
-msgid "%s - Finished"
-msgstr "%s - Finiti"
-
-#: ui/commit.py:66
-msgid "The given path is not a working copy"
-msgstr "Il percorso non è la copia di lavoro"
-
-#: ui/commit.py:74
+#: ui/commit.py:206 ui/revert.py:63 ui/checkmods.py:68 ui/resolve.py:62
+#: ui/createpatch.py:120
 msgid "Text Status"
 msgstr "Stato Testo"
 
-#: ui/commit.py:74
+#: ui/commit.py:206 ui/revert.py:63 ui/checkmods.py:68 ui/resolve.py:62
+#: ui/createpatch.py:120
 msgid "Property Status"
 msgstr "Stato Proprieta"
 
-#: ui/commit.py:188 ui/glade/commit.glade.h:4
-#: lib/extensions/nautilus/RabbitVCS.py:568
-msgid "Commit"
-msgstr "Commit"
-
-#: ui/commit.py:189
+#: ui/commit.py:289 ui/commit.py:385
 msgid "Running Commit Command..."
 msgstr "Esecuzione del comando Commit..."
 
-#: ui/commit.py:195
+#: ui/commit.py:295 ui/commit.py:394
 msgid "Completed Commit"
 msgstr "Commit Completato"
 
-#: ui/commit.py:279 ui/revert.py:45 ui/revert.py:75
-#: lib/extensions/nautilus/RabbitVCS.py:751
-msgid "Revert"
-msgstr "Ripristina"
+#: ui/commit.py:314 ui/revert.py:129 ui/createpatch.py:216
+#: ui/property_editor.py:112
+msgid "Status"
+msgstr "Status"
 
-#: ui/commit.py:289
-msgid "Restore"
-msgstr "Ripristina"
+#: ui/diff.py:284
+msgid "View diff as side-by-side comparison"
+msgstr "Visualizza le differenze affiancate"
 
-#: ui/dialog.py:47 ui/log.py:81 ui/glade/dialogs.glade.h:20
-msgid "Message"
-msgstr "Messaggio"
-
-#: ui/dialog.py:88
-msgid "Select a Folder"
-msgstr "Seleziona una Cartella"
-
-#: ui/dialog.py:117 ui/glade/log.glade.h:12
-msgid "to"
-msgstr "a"
-
-#: ui/dialog.py:210
-msgid "Select a File"
-msgstr "Seleziona un File"
-
-#: ui/dialog.py:229 ui/glade/dialogs.glade.h:10
-msgid "Are you sure you want to continue?"
-msgstr "Sei sicuro di voler continuare ?"
-
-#: ui/dialog.py:257
-msgid "the selected item(s)"
-msgstr "oggetti selezionati"
-
-#: ui/switch.py:65
-msgid "The repository location is a required field."
-msgstr "La locazione del repository è un campo obbligato"
-
-#: ui/switch.py:81 ui/glade/switch.glade.h:7
-msgid "Switch"
-msgstr "Scambia"
-
-#: ui/switch.py:82
-msgid "Running Switch Command..."
-msgstr "Esecuzione del comando Scambio..."
-
-#: ui/switch.py:90
-msgid "Completed Switch"
-msgstr "Scambio completato"
-
-#: ui/unlock.py:45 ui/unlock.py:109
-msgid "Unlock"
-msgstr "Blocca"
-
-#: ui/unlock.py:110
-msgid "Running Unlock Command..."
-msgstr "Esecuzione del comando Sblocca..."
-
-#: ui/unlock.py:113
-msgid "Completed Unlock"
-msgstr "Sblocco completato"
-
-#: ui/merge.py:81
+#: ui/merge.py:87
 msgid "Running Merge Test"
 msgstr "Esecuzione del Merge Test..."
 
-#: ui/merge.py:82
+#: ui/merge.py:88
 msgid "Completed Merge Test"
-msgstr "Test del Merge Copletato"
+msgstr "Test del Merge Completato"
 
-#: ui/merge.py:84
+#: ui/merge.py:90
 msgid "Running Merge Command"
 msgstr "Esecuzione del comando Merge..."
 
-#: ui/merge.py:85
+#: ui/merge.py:91
 msgid "Completed Merge"
 msgstr "Merge Completato"
 
-#: ui/merge.py:93
+#: ui/merge.py:102
 msgid "Merge"
 msgstr "Merge"
 
-#: ui/checkout.py:52
+#: ui/merge.py:415 ui/merge.py:465
+msgid "Author:"
+msgstr ""
+
+#: ui/dialog.py:38
 #, python-format
-msgid "Checkout - %s"
-msgstr "Checkout - %s"
+msgid ""
+"An error has occurred in the RabbitVCS Nautilus extension. Please contact "
+"the <a href=\"%s\">RabbitVCS team</a> with the error details listed below:"
+msgstr ""
+"Si è verificato un errore nell'estensione RabbitVCS Nautilus. Contatta il <a "
+"href=\"%s\">RabbitVCS team</a> con i dettagli dell'errore specificati sotto:"
 
-#: ui/checkout.py:100 ui/glade/checkout.glade.h:5
-#: lib/extensions/nautilus/RabbitVCS.py:536
-msgid "Checkout"
-msgstr "Checkout"
+#: ui/dialog.py:108
+msgid "Select a Folder"
+msgstr "Seleziona una Cartella"
 
-#: ui/checkout.py:101
-msgid "Running Checkout Command..."
-msgstr "Esecuzione del comando Checkout..."
+#: ui/dialog.py:138 ui/glade/log.glade.h:11
+msgid "to"
+msgstr "a"
 
-#: ui/checkout.py:111
-msgid "Completed Checkout"
-msgstr "Checkout completato"
+#: ui/dialog.py:261
+msgid "Select a File"
+msgstr "Seleziona un File"
 
-#: ui/log.py:63
+#: ui/dialog.py:280
+msgid "Save As..."
+msgstr "Salva con nome..."
+
+#: ui/dialog.py:299 ui/glade/dialogs.glade.h:19
+msgid "Are you sure you want to continue?"
+msgstr "Sei sicuro di voler continuare ?"
+
+#: ui/dialog.py:327
+msgid "the selected item(s)"
+msgstr "oggetti selezionati"
+
+#: ui/dialog.py:398
+msgid "Added a folder to the repository"
+msgstr "Aggiungi una cartella al repository"
+
+#: ui/revert.py:104 ui/revert.py:169
+msgid "Running Revert Command..."
+msgstr "Esecuzione del comando di Ripristino..."
+
+#: ui/revert.py:106 ui/revert.py:171
+msgid "Completed Revert"
+msgstr "Ripristino completato"
+
+#: ui/clone.py:66
+msgid "Running Clone Command..."
+msgstr ""
+
+#: ui/clone.py:73
+msgid "Completed Clone"
+msgstr ""
+
+#: ui/relocate.py:77
+msgid "The from and to url fields are both required."
+msgstr "I campi da e url sono entrambi obbligatori"
+
+#: ui/relocate.py:87 ui/glade/relocate.glade.h:3
+msgid "Relocate"
+msgstr "Ricolloca"
+
+#: ui/relocate.py:88
+msgid "Running Relocate Command..."
+msgstr "Esecuzione del comando di Ricollocamento"
+
+#: ui/relocate.py:95
+msgid "Completed Relocate"
+msgstr "Ricollocamento Completato"
+
+#: ui/checkmods.py:69 ui/annotate.py:127 ui/annotate.py:228 ui/log.py:48
+#: ui/log.py:326 ui/log.py:556 ui/widget.py:854 ui/browser.py:89
+#: ui/glade/merge.glade.h:17
+msgid "Revision"
+msgstr "Revisione"
+
+#: ui/checkmods.py:69 ui/annotate.py:127 ui/annotate.py:228 ui/log.py:326
+#: ui/log.py:556 ui/browser.py:89
+msgid "Author"
+msgstr "Autore"
+
+#: ui/checkmods.py:160 ui/changes.py:50 ui/changes.py:420
+msgid "View unified diff"
+msgstr "Visualizza differenze unite"
+
+#: ui/checkmods.py:165 ui/changes.py:425
+msgid "Compare side by side"
+msgstr "Confronta affiancato"
+
+#: ui/resolve.py:103
+msgid "Running Resolve Command..."
+msgstr "Esecuzione del comando Risolvi..."
+
+#: ui/resolve.py:106
+msgid "Completed Resolve"
+msgstr "Risoluzione Completata"
+
+#: ui/changes.py:49
+msgid "More Actions..."
+msgstr "Altre azioni..."
+
+#: ui/changes.py:279 ui/changes.py:364
+msgid "Change"
+msgstr "Modifica"
+
+#: ui/changes.py:279
+msgid "Property Change"
+msgstr "Cambia Proprietà"
+
+#: ui/changes.py:321 ui/lock.py:126
+msgid "Yes"
+msgstr "Si"
+
+#: ui/changes.py:321
+msgid "No"
+msgstr "No"
+
+#: ui/changes.py:410
+msgid "Open from first revision"
+msgstr "Apri dalla prima revisione"
+
+#: ui/changes.py:415
+msgid "Open from second revision"
+msgstr "Apri dalla seconda revisione"
+
+#: ui/annotate.py:57
+msgid "Cannot annotate a directory"
+msgstr "Non posso annotare una cartella"
+
+#: ui/annotate.py:63
+#, python-format
+msgid "Annotate - %s"
+msgstr "Annota - %s"
+
+#: ui/annotate.py:127 ui/annotate.py:228
+msgid "Line"
+msgstr "Linea"
+
+#: ui/annotate.py:128 ui/annotate.py:229
+msgid "Text"
+msgstr "Testo"
+
+#: ui/annotate.py:143
+msgid "The from revision field must be an integer"
+msgstr "Il campo da revisione deve essere un intero"
+
+#: ui/log.py:120
 #, python-format
 msgid "Log - %s"
 msgstr "Log - %s"
 
-#: ui/log.py:90
-msgid "Copy From Path"
-msgstr "Copia dal Percorso"
-
-#: ui/log.py:90
-msgid "Copy From Revision"
-msgstr "Copia dalla Revisione"
-
-#: ui/log.py:112
-msgid "Cancelled"
-msgstr "Cancellato"
-
-#: ui/log.py:236 ui/log.py:237 ui/glade/log.glade.h:8
+#: ui/log.py:270 ui/log.py:271 ui/glade/log.glade.h:7
 msgid "N/A"
 msgstr "N/A"
 
-#: ui/log.py:284
-msgid "(no author)"
-msgstr "(nessun autore)"
+#: ui/log.py:337 ui/log.py:572 ui/action.py:118
+msgid "Action"
+msgstr "Azione"
 
-#: ui/log.py:313
-msgid "Retrieving Log Information..."
-msgstr "Ricezione informazioni Log..."
+#: ui/log.py:338
+msgid "Copy From Path"
+msgstr "Copia dal Percorso"
 
-#: ui/properties.py:53
+#: ui/log.py:338
+msgid "Copy From Revision"
+msgstr "Copia dalla Revisione"
+
+#: ui/log.py:556
+msgid "Graph"
+msgstr ""
+
+#: ui/log.py:781
+msgid "View diff against working copy"
+msgstr "Visualizza le differenze con la copia di lavoro"
+
+#: ui/log.py:791
+msgid "View diff between revisions"
+msgstr "Guarda differenze tra le versioni"
+
+#: ui/log.py:796
+msgid "Compare with working copy"
+msgstr "Compara con la copia locale"
+
+#: ui/log.py:806
+msgid "Compare revisions"
+msgstr "Confronta le revisioni"
+
+#: ui/log.py:812
+msgid "Show changes against previous revision"
+msgstr ""
+
+#: ui/log.py:818
+msgid "Show changes between revisions"
+msgstr "Visualizza le modifiche tra le revisioni"
+
+#: ui/log.py:823
+msgid "Update to this revision"
+msgstr ""
+
+#: ui/log.py:824
+msgid "Update the selected path to this revision"
+msgstr ""
+
+#: ui/log.py:829 ui/log.py:833
+msgid "Edit author..."
+msgstr "Modifica autore..."
+
+#: ui/log.py:837
+msgid "Edit log message..."
+msgstr "Modifica messaggio di log..."
+
+#: ui/log.py:841
+msgid "Edit revision properties..."
+msgstr "Modifica le proprietà della revisione..."
+
+#: ui/log.py:1047
+msgid "Edit author"
+msgstr "Modifica autore"
+
+#: ui/log.py:1059
+msgid "Edit log message"
+msgstr "Modifica messaggio di log"
+
+#: ui/settings.py:43 ui/glade/settings.glade.h:35
+msgid "Unknown"
+msgstr "Sconosciuto"
+
+#: ui/settings.py:45
+msgid "There was an error communicating with the status checker service."
+msgstr ""
+
+#: ui/settings.py:59
+msgid "English"
+msgstr "Inglese"
+
+#: ui/settings.py:119
+msgid "Config file:"
+msgstr ""
+
+#: ui/settings.py:294
+msgid "Select a program"
+msgstr "Seleziona un programma"
+
+#: ui/settings.py:303
+msgid "Are you sure you want to clear your repository paths?"
+msgstr "Sei sicuro di voler pulire i percorsi del tuo repository?"
+
+#: ui/settings.py:310
+msgid "Repository paths cleared"
+msgstr "Percorsi del repository puliti"
+
+#: ui/settings.py:314
+msgid "Are you sure you want to clear your previous messages?"
+msgstr "Sei sicuro di voler cancellare i tuoi messaggi precedenti?"
+
+#: ui/settings.py:321
+msgid "Previous messages cleared"
+msgstr "Messaggi precedenti cancellati"
+
+#: ui/settings.py:325
+msgid "Are you sure you want to clear your authentication information?"
+msgstr ""
+"Sei sicuro di voler cancellare le tue informazioni di autenticazione?"
+
+#: ui/settings.py:342
+msgid "Authentication information cleared"
+msgstr "Informazioni di autenticazione cancellate"
+
+#: ui/revprops.py:65 ui/properties.py:158 ui/property_editor.py:155
+msgid "Unable to retrieve properties list"
+msgstr "Impossibile caricare le proprietà"
+
+#: ui/branch.py:99
+msgid "You must supply a destination path."
+msgstr "Devi specificare un percorso di destinazione"
+
+#: ui/branch.py:115
+msgid "Branch/tag"
+msgstr "Branch/tag"
+
+#: ui/branch.py:116
+msgid "Running Branch/tag Command..."
+msgstr "Esecuzione del comando Branch/tag..."
+
+#: ui/branch.py:118
+msgid "Completed Branch/tag"
+msgstr "Branch/tag completato"
+
+#: ui/lock.py:73
+msgid "Locked"
+msgstr "Bloccato"
+
+#: ui/lock.py:167
+msgid "Get Lock"
+msgstr "Blocca"
+
+#: ui/lock.py:168
+msgid "Running Lock Command..."
+msgstr "Esecuzione del comando Blocca..."
+
+#: ui/lock.py:177
+msgid "Completed Lock"
+msgstr "Blocco Completato"
+
+#: ui/switch.py:70
+msgid "The repository location is a required field."
+msgstr "La locazione del repository è un campo obbligatorio"
+
+#: ui/switch.py:80
+msgid "Switch"
+msgstr "Scambia"
+
+#: ui/switch.py:81
+msgid "Running Switch Command..."
+msgstr "Esecuzione del comando di Scambio..."
+
+#: ui/switch.py:89
+msgid "Completed Switch"
+msgstr "Scambio completato"
+
+#: ui/widget.py:853 ui/widget.py:859 ui/glade/merge.glade.h:10
+msgid "HEAD"
+msgstr "HEAD"
+
+#: ui/widget.py:860
+msgid "Number"
+msgstr "Numero"
+
+#: ui/widget.py:861
+msgid "Working Copy"
+msgstr "Copia lavoro"
+
+#: ui/widget.py:1056
+msgid "Repository:"
+msgstr ""
+
+#: ui/widget.py:1075
+msgid "Branch:"
+msgstr ""
+
+#: ui/widget.py:1093 ui/glade/dialogs.glade.h:30
+msgid "Host:"
+msgstr "Host:"
+
+#: ui/widget.py:1194
+msgid "Add line:"
+msgstr ""
+
+#: ui/checkout.py:139 ui/checkout.py:213
+#, python-format
+msgid "Checkout - %s"
+msgstr "Checkout - %s"
+
+#: ui/checkout.py:174
+msgid "Running Checkout Command..."
+msgstr "Esecuzione del comando Checkout..."
+
+#: ui/remotes.py:59
+msgid "Remote Repository Manager"
+msgstr ""
+
+#: ui/remotes.py:60
+msgid "<b>Remote Repositories</b>"
+msgstr ""
+
+#: ui/remotes.py:66 ui/properties.py:63 ui/property_editor.py:112
+msgid "Name"
+msgstr "Nome"
+
+#: ui/remotes.py:66
+msgid "Host"
+msgstr ""
+
+#: ui/property_page.py:126
+msgid "Repository URL"
+msgstr ""
+
+#: ui/createpatch.py:68 ui/createpatch.py:86 ui/createpatch.py:162
+#: ui/createpatch.py:262
+msgid "Create Patch"
+msgstr "Crea Patch"
+
+#: ui/createpatch.py:112 ui/createpatch.py:208
+msgid "The given path is not a working copy"
+msgstr "Il percorso non è la copia di lavoro"
+
+#: ui/createpatch.py:163 ui/createpatch.py:263
+msgid "Creating Patch File..."
+msgstr "Crea Patch File..."
+
+#: ui/createpatch.py:193 ui/createpatch.py:292
+msgid "Patch File Created"
+msgstr "Patch File Creato"
+
+#: ui/properties.py:55
 #, python-format
 msgid "Properties - %s"
 msgstr "Proprieta - %s"
 
-#: ui/properties.py:61
-msgid "Name"
-msgstr "Nome"
-
-#: ui/properties.py:61
+#: ui/properties.py:63 ui/property_editor.py:112
 msgid "Value"
 msgstr "Valore"
 
-#: ui/revert.py:76
-msgid "Running Revert Command..."
-msgstr "Esecuzione del comando Ripristino..."
+#: ui/properties.py:179
+msgid "There was a problem saving your properties."
+msgstr "Errore nel salvataggio delle proprietà"
 
-#: ui/revert.py:78
-msgid "Completed Revert"
-msgstr "Ripristino completato"
+#: ui/property_editor.py:56
+msgid ""
+"<b>Note:</b> changes to properties are applied instantly. You may review and "
+"undo changes using the context menu for each item.\n"
+msgstr ""
+"<b>Note:</b> le modifiche alle proprietà sono applicate subito. Puoi "
+"rivedere o tornare indietro usando il menu contestuale per ogni elemento.\n"
 
-#: ui/update.py:53 ui/glade/update.glade.h:8
-#: lib/extensions/nautilus/RabbitVCS.py:552
-msgid "Update"
-msgstr "Aggiorna"
+#: ui/property_editor.py:61
+msgid ""
+"Do you want to delete the selected properties from all files and "
+"subdirectories\n"
+"beneath this directory?"
+msgstr ""
+"Vuoi cancellare la proprietà selezionata da tutti i file e sotto-cartelle\n"
+"sotto questa cartella?"
 
-#: ui/create.py:49
+#: ui/property_editor.py:102
+msgid "File is not under version control."
+msgstr "File senza controllo versione"
+
+#: ui/property_editor.py:112
+msgid "Reserved"
+msgstr "Riservato"
+
+#: ui/property_editor.py:189
+msgid "Unable to set new value for property."
+msgstr "Impossibile inserire valore della proprietà"
+
+#: ui/__init__.py:50
+msgid ""
+"You must specify a version control system using the --vcs [svn|git] option"
+msgstr ""
+
+#: ui/action.py:118
+msgid "Mime Type"
+msgstr "Tipo Mime"
+
+#: ui/action.py:338
+msgid "Finished"
+msgstr "Finito"
+
+#: ui/action.py:342
+#, python-format
+msgid "%s - Finished"
+msgstr "%s - Finiti"
+
+#: ui/action.py:365
+msgid "Log Message"
+msgstr "Messaggio di log"
+
+#: ui/unlock.py:48 ui/unlock.py:125
+msgid "Unlock"
+msgstr "Sblocca"
+
+#: ui/unlock.py:126
+msgid "Running Unlock Command..."
+msgstr "Esecuzione del comando Sblocca..."
+
+#: ui/unlock.py:129
+msgid "Completed Unlock"
+msgstr "Sblocco completato"
+
+#: ui/browser.py:89
+msgid "Size"
+msgstr "Dimensione"
+
+#: ui/browser.py:326
+msgid "Select"
+msgstr ""
+
+#: ui/browser.py:348
+msgid "Create folder..."
+msgstr "Crea cartella"
+
+#: ui/browser.py:353
+msgid "Copy to..."
+msgstr "Copia in..."
+
+#: ui/browser.py:358
+msgid "Copy URL to clipboard"
+msgstr "Copia l'URL nella clipboard"
+
+#: ui/browser.py:363
+msgid "Move to..."
+msgstr "Sposta in..."
+
+#: ui/browser.py:531
+msgid "Where do you want to copy the selection?"
+msgstr "Dove vuoi copiare la selezione?"
+
+#: ui/browser.py:532 ui/browser.py:561
+msgid "New Location:"
+msgstr "Nuova Destinazione:"
+
+#: ui/browser.py:560
+msgid "Where do you want to move the selection?"
+msgstr "Dove vuoi muovere la selezione?"
+
+#: ui/cleanup.py:56 ui/glade/cleanup.glade.h:1
+msgid "Cleaning Up..."
+msgstr "Pulizia in corso..."
+
+#: ui/cleanup.py:58
+msgid "Completed Cleanup"
+msgstr "Pulizia Completata"
+
+#: ui/create.py:46
 msgid "Repository successfully created"
 msgstr "Repository creato con successo"
 
-#: ui/create.py:51
+#: ui/create.py:48
 msgid ""
 "There was an error creating the repository.  Make sure the given folder is "
 "empty."
@@ -533,106 +1364,237 @@ msgstr ""
 "C'è stato un errore nella creazione del repository. Verifica che la cartella "
 "sia vuota."
 
-#: ui/glade/switch.glade.h:1 ui/glade/checkout.glade.h:3
-#: ui/glade/update.glade.h:1
-msgid "<b>Revision</b>"
-msgstr "<b>Revisione</b>"
-
-#: ui/glade/switch.glade.h:2
-msgid "<b>Switch Details</b>"
-msgstr "<b>Dettagli Scambio</b>"
-
-#: ui/glade/switch.glade.h:3 ui/glade/branch.glade.h:8
-#: ui/glade/relocate.glade.h:2
-msgid "From:"
-msgstr "Da:"
-
-#: ui/glade/switch.glade.h:4 ui/glade/merge.glade.h:10
-#: ui/glade/checkout.glade.h:7 ui/glade/update.glade.h:3
-msgid "HEAD"
-msgstr "HEAD"
-
-#: ui/glade/switch.glade.h:8 ui/glade/branch.glade.h:11
-#: ui/glade/relocate.glade.h:4
-msgid "To:"
-msgstr "A:"
-
-#: ui/glade/notification.glade.h:1
-msgid "Notification Messages"
-msgstr "Messaggi di Notifica"
-
-#: ui/glade/commit.glade.h:1 ui/glade/branch.glade.h:1
-msgid "<b>Add Message</b>"
-msgstr "<b>Aggiungi Messaggio</b>"
-
-#: ui/glade/commit.glade.h:2
-msgid "<b>Changed Files</b> (double-click to see diff)"
-msgstr "<b>File cambiati</b> (double-click to see diff)"
-
-#: ui/glade/commit.glade.h:3
-msgid "<b>Commit to:</b>"
-msgstr "<b>Commit a:</b>"
-
-#: ui/glade/commit.glade.h:5 ui/glade/lock.glade.h:4 ui/glade/branch.glade.h:9
-#: ui/glade/dialogs.glade.h:22 ui/glade/import.glade.h:5
-msgid "Previous Messages"
-msgstr "Messaggi Precedenti"
-
-#: ui/glade/commit.glade.h:6 ui/glade/lock.glade.h:5 ui/glade/add.glade.h:2
-msgid "Select / Deselect all"
-msgstr "Selezione / Deseleziona tutti"
-
-#: ui/glade/commit.glade.h:7
-msgid "Show unversioned files"
-msgstr "Visualizza i file non versionati"
-
-#: ui/glade/lock.glade.h:1
-msgid "<b>Files to lock</b>"
-msgstr "<b>File da bloccare</b>"
-
-#: ui/glade/lock.glade.h:2
-msgid "<b>Please describe why you are locking these files</b>"
-msgstr "<b>Descrivi perchè vuoi bloccare questi files</b>"
-
-#: ui/glade/lock.glade.h:3
-msgid "Lock Files"
-msgstr "File Bloccati"
-
-#: ui/glade/lock.glade.h:6
-msgid "Steal the locks"
-msgstr "Ruba il bloccaggio"
-
 #: ui/glade/properties.glade.h:1
 msgid "<b>Properties for:</b>"
 msgstr "<b>Proprieta per:</b>"
 
-#: ui/glade/properties.glade.h:3
+#: ui/glade/properties.glade.h:2
+msgid "<i>Selected properties will be applied recursively.</i>"
+msgstr ""
+"<i>Le proprietà selezionate non possono essere applicate ricorsivamente.</i>"
+
+#: ui/glade/properties.glade.h:4
+msgid "Delete properties recursively"
+msgstr "Cancella le proprietà ricorsivamente"
+
+#: ui/glade/properties.glade.h:5
 msgid "Edit..."
 msgstr "Modifica..."
 
-#: ui/glade/properties.glade.h:4
+#: ui/glade/properties.glade.h:6
 msgid "New..."
 msgstr "Nuovo..."
 
-#: ui/glade/properties.glade.h:5 lib/extensions/nautilus/RabbitVCS.py:995
-msgid "Properties"
-msgstr "Proprieta"
-
-#: ui/glade/properties.glade.h:6
+#: ui/glade/properties.glade.h:8
 msgid "URL/Path:"
 msgstr "URL/Path"
 
-#: ui/glade/annotate.glade.h:1
-msgid "<b>From Revision</b>"
-msgstr "<b>Dalla Revisione</b>"
+#: ui/glade/browser.glade.h:1
+msgid "Load/Refresh"
+msgstr "Carica/Aggiorna"
 
-#: ui/glade/annotate.glade.h:2
-msgid "<b>To Revision</b>"
-msgstr "<b>Alla Revisione</b>"
+#: ui/glade/browser.glade.h:4
+msgid "URL:"
+msgstr "URL:"
 
-#: ui/glade/annotate.glade.h:3
-msgid "Annotate"
-msgstr "Annota"
+#: ui/glade/dialogs.glade.h:1
+msgid "<b>A conflict was found in the following file:</b>"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:2 ui/glade/commit.glade.h:1
+msgid "<b>Add Message</b>"
+msgstr "<b>Aggiungi Messaggio</b>"
+
+#: ui/glade/dialogs.glade.h:3
+msgid "<b>Certificate Details</b>"
+msgstr "<b>Dettagli del Certificato</b>"
+
+#: ui/glade/dialogs.glade.h:4
+msgid "<b>Edit Property Details</b>"
+msgstr "<b>Modifica Proprieta Dettagli</b>"
+
+#: ui/glade/dialogs.glade.h:5
+msgid "<b>Enter Name and Email Details</b>"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:6
+msgid "<b>Folder Name</b>"
+msgstr "<b>Nome Cartella</b>"
+
+#: ui/glade/dialogs.glade.h:7 ui/glade/log.glade.h:3
+msgid "<b>Message</b>"
+msgstr "<b>Messggio</b>"
+
+#: ui/glade/dialogs.glade.h:8
+msgid "<b>Please add your authentication details</b>"
+msgstr "<b>Aggiungi i tuoi dettagli di autenticazione</b>"
+
+#: ui/glade/dialogs.glade.h:9
+msgid "<b>Please provide your ssl certification file</b>"
+msgstr "<b>File SSL di certificazione necessario</b>"
+
+#: ui/glade/dialogs.glade.h:10
+msgid "<b>Previous Messages</b>"
+msgstr "<b>Messaggi Precedenti</b>"
+
+#: ui/glade/dialogs.glade.h:12
+msgid ""
+"<span size=\"large\"><b>Are you sure you want to delete %item%?</b></span>"
+msgstr ""
+"<span size=\"large\"><b>Sei sicuro di voler cancellare %item%?</b></span>"
+
+#: ui/glade/dialogs.glade.h:13
+msgid "<span weight=\"bold\" size=\"xx-large\">RabbitVCS Error</span>"
+msgstr "<span weight=\"bold\" size=\"xx-large\">Errore RabbitVCS</span>"
+
+#: ui/glade/dialogs.glade.h:14
+msgid "Accept Forever"
+msgstr "Accetta Sempre"
+
+#: ui/glade/dialogs.glade.h:15
+msgid "Accept Mine"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:16
+msgid "Accept Once"
+msgstr "Accetta una Volta"
+
+#: ui/glade/dialogs.glade.h:17
+msgid "Accept Theirs"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:18
+msgid "Apply property recursively"
+msgstr "Applica le proprietà ricorsivamente"
+
+#: ui/glade/dialogs.glade.h:20
+msgid "Authentication"
+msgstr "Autenticazione"
+
+#: ui/glade/dialogs.glade.h:21
+msgid "Cancel"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:22
+msgid "Check Certificate"
+msgstr "Controlla Certificato"
+
+#: ui/glade/dialogs.glade.h:23
+msgid "Confirmation"
+msgstr "Conferma"
+
+#: ui/glade/dialogs.glade.h:24
+msgid "Conflict Resolution Decision"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:25
+msgid "Create Folder..."
+msgstr "Crea cartella..."
+
+#: ui/glade/dialogs.glade.h:26
+msgid "Delete Confirmation"
+msgstr "Cancella Conferma"
+
+#: ui/glade/dialogs.glade.h:27
+msgid "Deny"
+msgstr "Nega"
+
+#: ui/glade/dialogs.glade.h:28
+msgid "Email:"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:29
+msgid "Fingerprint:"
+msgstr "Fingerprint:"
+
+#: ui/glade/dialogs.glade.h:31
+msgid "How do you want to handle this?"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:32
+msgid "Issuer:"
+msgstr "Emittente"
+
+#: ui/glade/dialogs.glade.h:34
+msgid "Login:"
+msgstr "Login:"
+
+#: ui/glade/dialogs.glade.h:35
+msgid "Merge Manually"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:37
+msgid "Name and Email"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:40
+msgid "Password:"
+msgstr "Password:"
+
+#: ui/glade/dialogs.glade.h:41
+msgid "Path:"
+msgstr "Percorso:"
+
+#: ui/glade/dialogs.glade.h:42 ui/glade/lock.glade.h:4
+#: ui/glade/commit.glade.h:5 ui/glade/import.glade.h:5
+msgid "Previous Messages"
+msgstr "Messaggi Precedenti"
+
+#: ui/glade/dialogs.glade.h:43
+msgid "Property"
+msgstr "Proprieta"
+
+#: ui/glade/dialogs.glade.h:44
+msgid "Property:"
+msgstr "Proprieta:"
+
+#: ui/glade/dialogs.glade.h:45
+msgid "RabbitVCS Error"
+msgstr "Errore RabbitVCS"
+
+#: ui/glade/dialogs.glade.h:46
+msgid "Realm:"
+msgstr "Dominio:"
+
+#: ui/glade/dialogs.glade.h:47
+msgid "SSL Client Certification"
+msgstr "SSL Client Certificatione"
+
+#: ui/glade/dialogs.glade.h:48
+msgid "Save Authentication"
+msgstr "Salva Autenticazione"
+
+#: ui/glade/dialogs.glade.h:49
+msgid "Text Change"
+msgstr "Testo Modificato"
+
+#: ui/glade/dialogs.glade.h:50
+msgid "The item(s) will be sent to the trash can."
+msgstr "Gli oggetti verranno inviati al cestino."
+
+#: ui/glade/dialogs.glade.h:51
+msgid "Valid:"
+msgstr "Valido:"
+
+#: ui/glade/dialogs.glade.h:52
+msgid "Value:"
+msgstr "Valore:"
+
+#: ui/glade/pull.glade.h:1
+msgid "<b>Pull Information</b>"
+msgstr ""
+
+#: ui/glade/pull.glade.h:2 ui/glade/git-update.glade.h:2
+msgid "Merge changes into local branch"
+msgstr ""
+
+#: ui/glade/pull.glade.h:3
+msgid "Pull"
+msgstr ""
+
+#: ui/glade/manager.glade.h:1
+msgid "label"
+msgstr ""
 
 #: ui/glade/about.glade.h:1
 msgid "<b>Links</b>"
@@ -646,10 +1608,6 @@ msgstr "<b>Informazioni della Versione</b>"
 msgid "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
 msgstr "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
 
-#: ui/glade/about.glade.h:4 lib/extensions/nautilus/RabbitVCS.py:1059
-msgid "About"
-msgstr "Informazioni su"
-
 #: ui/glade/about.glade.h:5
 msgid "Authors:"
 msgstr "Autori:"
@@ -658,42 +1616,25 @@ msgstr "Autori:"
 msgid "Thanks:"
 msgstr "Grazie:"
 
-#: ui/glade/rename.glade.h:1
-msgid "New Name:"
-msgstr "Nuiovo Nome:"
+#: ui/glade/property_page.glade.h:1
+msgid "Content status:"
+msgstr ""
 
-#: ui/glade/branch.glade.h:2
-msgid "<b>Create copy from</b>"
-msgstr "<b>Crea copia da</b>"
+#: ui/glade/property_page.glade.h:3
+msgid "Property status:"
+msgstr ""
 
-#: ui/glade/branch.glade.h:3 ui/glade/checkout.glade.h:2
-#: ui/glade/import.glade.h:2
-msgid "<b>Repository</b>"
-msgstr "<b>Repository</b>"
-
-#: ui/glade/branch.glade.h:5
-msgid "Copy from HEAD"
-msgstr "Copia da HEAD"
-
-#: ui/glade/branch.glade.h:6
-msgid "Copy from revision"
-msgstr "Copia dalla revisione"
-
-#: ui/glade/branch.glade.h:7
-msgid "Copy from working copy"
-msgstr "Copia dalla copia di lavoro"
+#: ui/glade/property_page.glade.h:5
+msgid "VCS:"
+msgstr ""
 
 #: ui/glade/log.glade.h:1
 msgid "100"
 msgstr "100"
 
 #: ui/glade/log.glade.h:2
-msgid "<b>Affected File(s)</b>"
-msgstr "<b>File influenzati</b>"
-
-#: ui/glade/log.glade.h:3 ui/glade/dialogs.glade.h:3
-msgid "<b>Message</b>"
-msgstr "<b>Messggio</b>"
+msgid "<b>Affected File(s)</b> (double-click to compare with base)"
+msgstr "<b>File Modificati</b> (doppio click per confrontarli con la base)"
 
 #: ui/glade/log.glade.h:4
 msgid "<b>Revisions Table</b>"
@@ -703,21 +1644,292 @@ msgstr "<b>Tabella Revisioni</b>"
 msgid "Limit:"
 msgstr "Limiti:"
 
-#: ui/glade/log.glade.h:7
+#: ui/glade/log.glade.h:6
 msgid "Log"
 msgstr "Log"
 
-#: ui/glade/log.glade.h:9
+#: ui/glade/log.glade.h:8
 msgid "Refresh"
 msgstr "Aggiorna"
 
-#: ui/glade/log.glade.h:10
+#: ui/glade/log.glade.h:9
 msgid "Showing Revisions:"
 msgstr "Revisioni:"
 
-#: ui/glade/log.glade.h:11
+#: ui/glade/log.glade.h:10
 msgid "Stop on copy"
 msgstr "Ferma su copia"
+
+#: ui/glade/cleanup.glade.h:2
+msgid ""
+"Cleanup Requested....\n"
+"\n"
+"Begin working copy cleanup?"
+msgstr ""
+"Richiesta di pulizia....\n"
+"\n"
+"Iniziare una pulizia nella copia di lavoro?"
+
+#: ui/glade/settings.glade.h:1
+msgid "<b>Authentication</b>"
+msgstr "<b>Autenticazione</b>"
+
+#: ui/glade/settings.glade.h:2
+msgid "<b>Checker type:</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:3
+msgid "<b>Configuration Editor</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:4
+msgid "<b>Log Messages</b>"
+msgstr "<b>Messaggi del log</b>"
+
+#: ui/glade/settings.glade.h:5
+msgid "<b>Logging Options</b>"
+msgstr "<b>Opzioni di Log</b>"
+
+#: ui/glade/settings.glade.h:6
+msgid "<b>Memory usage:</b> "
+msgstr ""
+
+#: ui/glade/settings.glade.h:7
+msgid "<b>Other Information</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:8
+msgid "<b>Process ID:</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:9
+msgid "<b>Program used to compare files</b>"
+msgstr "<b>Programma usato per confrontare i file</b>"
+
+#: ui/glade/settings.glade.h:10
+msgid "<b>RabbitVCS</b>"
+msgstr "<b>RabbitVCS</b>"
+
+#: ui/glade/settings.glade.h:11
+msgid "<b>URL History</b>"
+msgstr "<b>Cronologia URL</b>"
+
+#: ui/glade/settings.glade.h:12
+msgid "Browse..."
+msgstr "Sfoglia..."
+
+#: ui/glade/settings.glade.h:13
+msgid "Clear your authentication information"
+msgstr "Elimina i dati di autenticazione"
+
+#: ui/glade/settings.glade.h:14
+msgid "Enable emblems"
+msgstr "Abilita icone"
+
+#: ui/glade/settings.glade.h:15
+msgid "Enable file attributes"
+msgstr "Abilita gli attributi dei file"
+
+#: ui/glade/settings.glade.h:16
+msgid "Enable recursive status checks"
+msgstr "Abilita il controllo ricorsivo degli stati"
+
+#: ui/glade/settings.glade.h:17
+msgid "External Programs"
+msgstr "Programmi esterni"
+
+#: ui/glade/settings.glade.h:18
+msgid "General"
+msgstr "Generale"
+
+#: ui/glade/settings.glade.h:19
+msgid "Git"
+msgstr ""
+
+#: ui/glade/settings.glade.h:20
+msgid "Language:"
+msgstr "Lingua:"
+
+#: ui/glade/settings.glade.h:21
+msgid "Logging"
+msgstr "Logging"
+
+#: ui/glade/settings.glade.h:22
+msgid "Minimum level to log"
+msgstr "Livello minimo per log"
+
+#: ui/glade/settings.glade.h:23
+msgid "Number of URLs to remember"
+msgstr "Numero di URL da ricordare"
+
+#: ui/glade/settings.glade.h:24
+msgid "Number of messages to remember"
+msgstr "Numero di messaggi da ricordare"
+
+#: ui/glade/settings.glade.h:25
+msgid "Refresh Information"
+msgstr ""
+
+#: ui/glade/settings.glade.h:26
+msgid "Restart Checker"
+msgstr ""
+
+#: ui/glade/settings.glade.h:27
+msgid "Saved Data"
+msgstr "Dati salvati"
+
+#: ui/glade/settings.glade.h:29
+msgid "Show RabbitVCS debugging tools"
+msgstr "Mostra gli strumenti di debugging di RabbitVCS"
+
+#: ui/glade/settings.glade.h:30
+msgid "Show new version on the left side"
+msgstr ""
+
+#: ui/glade/settings.glade.h:31
+msgid "Status Checker"
+msgstr ""
+
+#: ui/glade/settings.glade.h:32
+msgid "Stop Checker"
+msgstr ""
+
+#: ui/glade/settings.glade.h:33
+msgid "The debug menu is used to diagnose problems with RabbitVCS itself"
+msgstr "Il menu di debug è usato per diagnosticare problemi con RabbitVCS"
+
+#: ui/glade/settings.glade.h:34
+msgid "Type:"
+msgstr "Tipo:"
+
+#: ui/glade/lock.glade.h:1
+msgid "<b>Files to lock</b>"
+msgstr "<b>File da bloccare</b>"
+
+#: ui/glade/lock.glade.h:2
+msgid "<b>Please describe why you are locking these files</b>"
+msgstr "<b>Descrivi perchè vuoi bloccare questi files</b>"
+
+#: ui/glade/lock.glade.h:3
+msgid "Lock Files"
+msgstr "File Bloccati"
+
+#: ui/glade/lock.glade.h:5 ui/glade/add.glade.h:2 ui/glade/commit.glade.h:6
+msgid "Select / Deselect all"
+msgstr "Selezione / Deseleziona tutti"
+
+#: ui/glade/lock.glade.h:6
+msgid "Steal the locks"
+msgstr "Ruba il bloccaggio"
+
+#: ui/glade/annotate.glade.h:1
+msgid "<b>From Revision</b>"
+msgstr "<b>Dalla Revisione</b>"
+
+#: ui/glade/annotate.glade.h:2
+msgid "<b>To Revision</b>"
+msgstr "<b>Alla Revisione</b>"
+
+#: ui/glade/annotate.glade.h:3
+msgid "Annotate"
+msgstr "Annota"
+
+#: ui/glade/ignore.glade.h:1
+msgid "<b>Ignore and exclude files from being tracked</b>"
+msgstr ""
+
+#: ui/glade/ignore.glade.h:2
+msgid "Ignore"
+msgstr ""
+
+#: ui/glade/commit.glade.h:2
+msgid "<b>Changed Files</b> (double-click to compare with base)"
+msgstr "<b>File Modificati</b> (doppio click per confrontarli con la base)"
+
+#: ui/glade/commit.glade.h:3
+msgid "<b>Commit to:</b>"
+msgstr "<b>Commit a:</b>"
+
+#: ui/glade/commit.glade.h:7
+msgid "Show unversioned files"
+msgstr "Visualizza i file non versionati"
+
+#: ui/glade/notification.glade.h:1
+msgid "Notification Messages"
+msgstr "Messaggi di Notifica"
+
+#: ui/glade/property_editor.glade.h:1
+msgid "<b>Remote URI:</b>"
+msgstr "<b>URI remota:</b>"
+
+#: ui/glade/property_editor.glade.h:2
+msgid "<b>Working Copy:</b>"
+msgstr "<b>Copia di Lavoro:</b>"
+
+#: ui/glade/property_editor.glade.h:3
+msgid "Add a new property."
+msgstr "Aggiungi una nuova proprietà."
+
+#: ui/glade/property_editor.glade.h:4
+msgid "Close this dialog."
+msgstr "Chiudi la finestra."
+
+#: ui/glade/property_editor.glade.h:5
+msgid "Property Editor"
+msgstr "Modifica delle proprietà"
+
+#: ui/glade/property_editor.glade.h:6
+msgid "Refresh the list of properties."
+msgstr "Aggiorna la lista delle proprietà."
+
+#: ui/glade/relocate.glade.h:1
+msgid "<b>Change the repository of your working copy</b>"
+msgstr "<b>Cambia il repository della tua copia di lavoro</b>"
+
+#: ui/glade/relocate.glade.h:2
+msgid "From:"
+msgstr "Da:"
+
+#: ui/glade/relocate.glade.h:4
+msgid "To:"
+msgstr "A:"
+
+#: ui/glade/git-update.glade.h:1 ui/glade/update.glade.h:1
+#: ui/glade/merge.glade.h:3
+msgid "<b>Options</b>"
+msgstr "Opzioni"
+
+#: ui/glade/git-update.glade.h:3
+msgid "Update Local Repository"
+msgstr ""
+
+#: ui/glade/update.glade.h:2
+msgid "<b>Revision</b>"
+msgstr "<b>Revisione</b>"
+
+#: ui/glade/update.glade.h:3
+msgid "Omit Externals"
+msgstr "Ometti esterni"
+
+#: ui/glade/update.glade.h:4 ui/glade/merge.glade.h:16
+msgid "Recursive"
+msgstr "Ricorsivo"
+
+#: ui/glade/update.glade.h:5
+msgid "Rollback to specified revision number"
+msgstr ""
+
+#: ui/glade/import.glade.h:1
+msgid "<b>Import Message</b>"
+msgstr "<b>Importa Messaggio</b>"
+
+#: ui/glade/import.glade.h:2
+msgid "<b>Repository</b>"
+msgstr "<b>Repository</b>"
+
+#: ui/glade/import.glade.h:4
+msgid "Include ignored files"
+msgstr "Includi file ignorati"
 
 #: ui/glade/merge.glade.h:1
 msgid "<b>From URL</b>"
@@ -726,10 +1938,6 @@ msgstr "<b>Da URL</b>"
 #: ui/glade/merge.glade.h:2
 msgid "<b>From: (URL and revision to merge)</b>"
 msgstr "<b>Da: (URL e revisione a merge)</b>"
-
-#: ui/glade/merge.glade.h:3 ui/glade/checkout.glade.h:1
-msgid "<b>Options</b>"
-msgstr "Opzioni"
 
 #: ui/glade/merge.glade.h:4
 msgid "<b>Revision Range</b>"
@@ -783,10 +1991,9 @@ msgstr "Effettua un merge di due differenti alberi"
 msgid "Only record the merge"
 msgstr "Registra solo il merge"
 
-#: ui/glade/merge.glade.h:16 ui/glade/checkout.glade.h:9
-#: ui/glade/update.glade.h:5
-msgid "Recursive"
-msgstr "Ricorsivo"
+#: ui/glade/merge.glade.h:18
+msgid "Show log"
+msgstr "Visualizza Log"
 
 #: ui/glade/merge.glade.h:19
 msgid "Test Merge"
@@ -811,548 +2018,95 @@ msgstr ""
 "\n"
 "Per eseguire il merge di tutte le revisioni, lascia il box vuoto."
 
-#: ui/glade/settings.glade.h:1
-msgid "<b>Authentication</b>"
-msgstr "<b>Autenticazione</b>"
+#~ msgid "Completed"
+#~ msgstr "Completato"
 
-#: ui/glade/settings.glade.h:2
-msgid "<b>Log Messages</b>"
-msgstr "<b>Messaggi del Log</b>"
+#~ msgid "<b>Create copy from</b>"
+#~ msgstr "<b>Crea copia da</b>"
 
-#: ui/glade/settings.glade.h:3
-msgid "<b>Logging Options</b>"
-msgstr "<b>Opzioni di Log</b>"
+#~ msgid "<b>Program used to browse repositories</b>"
+#~ msgstr "<b>Programma usato per sfogliare i repository</b>"
 
-#: ui/glade/settings.glade.h:4
-msgid "<b>RabbitVCS</b>"
-msgstr "<b>RabbitVCS</b>"
+#~ msgid "Destination:"
+#~ msgstr "Destinazione:"
 
-#: ui/glade/settings.glade.h:5
-msgid "<b>Program used to browse repositories</b>"
-msgstr "<b>Programma usato per sfogliare i repository</b>"
+#~ msgid "Deleted"
+#~ msgstr "Cancellato"
 
-#: ui/glade/settings.glade.h:6
-msgid "<b>Program used to compare files</b>"
-msgstr "<b>Programma usato per confrontare i file</b>"
+#~ msgid "Copied"
+#~ msgstr "Copiato"
 
-#: ui/glade/settings.glade.h:7
-msgid "<b>URL History</b>"
-msgstr "<b>Cronologia URL</b>"
+#~ msgid "Added"
+#~ msgstr "Aggiunto"
 
-#: ui/glade/settings.glade.h:8 ui/glade/checkout.glade.h:4
-msgid "Browse..."
-msgstr "Sfoglia..."
+#~ msgid "Restored"
+#~ msgstr "Ripristinato"
 
-#: ui/glade/settings.glade.h:9
-msgid "Clear your authentication information"
-msgstr "Pulisci i tuoi dati di autenticazione"
+#~ msgid "Resolved"
+#~ msgstr "Risolto"
 
-#: ui/glade/settings.glade.h:10
-msgid "Enable emblems"
-msgstr "Abilita Marchi"
+#~ msgid "Updated"
+#~ msgstr "Aggiornato"
 
-#: ui/glade/settings.glade.h:11
-msgid "Enable file attributes"
-msgstr "Abilita gli attributi dei file"
+#~ msgid "External"
+#~ msgstr "Esterno"
 
-#: ui/glade/settings.glade.h:12
-msgid "Enable recursive status checks"
-msgstr "Abilita il controllo ricorsivo degli stati"
+#~ msgid "Modified"
+#~ msgstr "Modificato"
 
-#: ui/glade/settings.glade.h:13
-msgid "External Programs"
-msgstr "Programmi Esterni"
+#~ msgid "Replaced"
+#~ msgstr "Sostituito"
 
-#: ui/glade/settings.glade.h:14
-msgid "General"
-msgstr "Generale"
+#~ msgid "Changed"
+#~ msgstr "Cambiato"
 
-#: ui/glade/settings.glade.h:15
-msgid "Language:"
-msgstr "Lingua:"
+#~ msgid "Skipped"
+#~ msgstr "Saltato"
 
-#: ui/glade/settings.glade.h:16
-msgid "Logging"
-msgstr "Logging"
+#~ msgid "Conflicted"
+#~ msgstr "Conflitto"
 
-#: ui/glade/settings.glade.h:17
-msgid "Minimum level to log"
-msgstr "Livello minimo per log"
+#~ msgid "Unchanged"
+#~ msgstr "Invariato"
 
-#: ui/glade/settings.glade.h:18
-msgid "Number of URLs to remember"
-msgstr "Numero di URL da ricordare"
+#~ msgid "Missing"
+#~ msgstr "Mancante"
 
-#: ui/glade/settings.glade.h:19
-msgid "Number of messages to remember"
-msgstr "Numero di messaggi da ricordare"
+#~ msgid "(no author)"
+#~ msgstr "(nessun autore)"
 
-#: ui/glade/settings.glade.h:20
-msgid "Saved Data"
-msgstr "Dati Salvati"
+#~ msgid "Show new version on the right side"
+#~ msgstr "Visualizza la nuova versione nel lato destro"
 
-#: ui/glade/settings.glade.h:21 lib/extensions/nautilus/RabbitVCS.py:1043
-msgid "Settings"
-msgstr "Opzioni"
+#~ msgid "<b>Update Depth</b>"
+#~ msgstr "<b>Aggiorna Profondita</b>"
 
-#: ui/glade/settings.glade.h:22
-msgid "Show new version on the right side"
-msgstr "Visualizza la nuova versione nel lato destro"
+#~ msgid "Failed Unlock"
+#~ msgstr "Sblocco fallito"
 
-#: ui/glade/settings.glade.h:23
-msgid "Type:"
-msgstr "Tipo:"
+#~ msgid "Failed Lock"
+#~ msgstr "Blocco fallito"
 
-#: ui/glade/cleanup.glade.h:2
-msgid ""
-"Cleanup Requested....\n"
-"\n"
-"Begin working copy cleanup?"
-msgstr ""
-"Richiesta di pulizia....\n"
-"\n"
-"Iniziare una pulizia nella copia di lavoro?"
+#~ msgid "Inapplicable"
+#~ msgstr "Inapplicabile"
 
-#: ui/glade/dialogs.glade.h:1
-msgid "<b>Certificate Details</b>"
-msgstr "<b>Dettagli del Certificato</b>"
+#~ msgid "Annotated"
+#~ msgstr "Appuntato"
 
-#: ui/glade/dialogs.glade.h:2
-msgid "<b>Edit Property Details</b>"
-msgstr "<b>Modifica Proprieta Dettagli</b>"
+#~ msgid "Unlocked"
+#~ msgstr "Sbloccato"
 
-#: ui/glade/dialogs.glade.h:4
-msgid "<b>Please add your authentication details</b>"
-msgstr "<b>Aggiungi i tuoi dettagli di autenticazione</b>"
+#~ msgid "<b>Switch Details</b>"
+#~ msgstr "<b>Dettagli Scambio</b>"
 
-#: ui/glade/dialogs.glade.h:5
-msgid "<b>Previous Messages</b>"
-msgstr "<b>Messaggi Precedenti</b>"
+#~ msgid "Reverted"
+#~ msgstr "Ripristina..."
 
-#: ui/glade/dialogs.glade.h:7
-msgid ""
-"<span size=\"large\"><b>Are you sure you want to delete %item%?</b></span>"
-msgstr ""
-"<span size=\"large\"><b>Sei sicuro di voler cancellare %item%?</b></span>"
+#~ msgid "Failed Revert"
+#~ msgstr "Ripristino fallito"
 
-#: ui/glade/dialogs.glade.h:8
-msgid "Accept Forever"
-msgstr "Accetta Sempre"
+#~ msgid "Merged"
+#~ msgstr "Merged"
 
-#: ui/glade/dialogs.glade.h:9
-msgid "Accept Once"
-msgstr "Accetta una Volta"
-
-#: ui/glade/dialogs.glade.h:11
-msgid "Authentication"
-msgstr "Autenticazione"
-
-#: ui/glade/dialogs.glade.h:12
-msgid "Check Certificate"
-msgstr "Controlla Certificato"
-
-#: ui/glade/dialogs.glade.h:13
-msgid "Confirmation"
-msgstr "Conferma"
-
-#: ui/glade/dialogs.glade.h:14
-msgid "Delete Confirmation"
-msgstr "Cancella Conferma"
-
-#: ui/glade/dialogs.glade.h:15
-msgid "Deny"
-msgstr "Nega"
-
-#: ui/glade/dialogs.glade.h:16
-msgid "Fingerprint:"
-msgstr "Fingerprint:"
-
-#: ui/glade/dialogs.glade.h:17
-msgid "Host:"
-msgstr "Host:"
-
-#: ui/glade/dialogs.glade.h:18
-msgid "Issuer:"
-msgstr "Emittente"
-
-#: ui/glade/dialogs.glade.h:19
-msgid "Login:"
-msgstr "Login:"
-
-#: ui/glade/dialogs.glade.h:21
-msgid "Password:"
-msgstr "Password:"
-
-#: ui/glade/dialogs.glade.h:23
-msgid "Property"
-msgstr "Proprieta"
-
-#: ui/glade/dialogs.glade.h:24
-msgid "Property:"
-msgstr "Proprieta:"
-
-#: ui/glade/dialogs.glade.h:25
-msgid "Realm:"
-msgstr "Dominio:"
-
-#: ui/glade/dialogs.glade.h:26
-msgid "Save Authentication"
-msgstr "Salva Autenticazione"
-
-#: ui/glade/dialogs.glade.h:27
-msgid "The item(s) will be sent to the trash can."
-msgstr "Gli oggetti verranno inviati al cestino."
-
-#: ui/glade/dialogs.glade.h:28
-msgid "Valid:"
-msgstr "Valido:"
-
-#: ui/glade/dialogs.glade.h:29
-msgid "Value:"
-msgstr "Valore:"
-
-#: ui/glade/checkout.glade.h:6
-msgid "Destination:"
-msgstr "Destinazione:"
-
-#: ui/glade/checkout.glade.h:8 ui/glade/update.glade.h:4
-msgid "Omit Externals"
-msgstr "Ometti Esterni"
-
-#: ui/glade/checkout.glade.h:12
-msgid "URL:"
-msgstr "URL:"
-
-#: ui/glade/import.glade.h:1
-msgid "<b>Import Message</b>"
-msgstr "<b>Importa Messaggio</b>"
-
-#: ui/glade/import.glade.h:4
-msgid "Include ignored files"
-msgstr "Includi file ignorati"
-
-#: ui/glade/update.glade.h:2
-msgid "<b>Update Depth</b>"
-msgstr "<b>Aggiorna Profondita</b>"
-
-#: ui/glade/relocate.glade.h:1
-msgid "<b>Change the repository of your working copy</b>"
-msgstr "<b>Cambia il repository della tua copia di lavoro</b>"
-
-#: lib/extensions/nautilus/RabbitVCS.py:362
-msgid "Debug"
-msgstr "Debug"
-
-#: lib/extensions/nautilus/RabbitVCS.py:375
-msgid "DBus"
-msgstr "DBus"
-
-#: lib/extensions/nautilus/RabbitVCS.py:388
-msgid "Start/Restart Service"
-msgstr "Avvia/Riavvia Servizio"
-
-#: lib/extensions/nautilus/RabbitVCS.py:404
-msgid "Exit Service"
-msgstr "Termina Servizio"
-
-#: lib/extensions/nautilus/RabbitVCS.py:422
-msgid "Bugs"
-msgstr "Bugs"
-
-#: lib/extensions/nautilus/RabbitVCS.py:435
-msgid "Test Asynchronicity"
-msgstr "Testa Asincronicità"
-
-#: lib/extensions/nautilus/RabbitVCS.py:453
-msgid "Open Shell"
-msgstr "Apri Shell"
-
-#: lib/extensions/nautilus/RabbitVCS.py:469
-msgid "Refresh Status"
-msgstr "Aggiorna Stato"
-
-#: lib/extensions/nautilus/RabbitVCS.py:486
-msgid "Debug Revert"
-msgstr "Debug Ripristino"
-
-#: lib/extensions/nautilus/RabbitVCS.py:487
-msgid "Reverts everything it sees"
-msgstr "Ripristina tutto ciò che vedi"
-
-#: lib/extensions/nautilus/RabbitVCS.py:502
-msgid "Invalidate"
-msgstr "Invalida"
-
-#: lib/extensions/nautilus/RabbitVCS.py:503
-msgid "Force an invalidate_extension_info() call"
-msgstr "Forza una chiamata a invalidate_extension_info()"
-
-#: lib/extensions/nautilus/RabbitVCS.py:518
-msgid "Add Emblem"
-msgstr "Aggiungi Marchio"
-
-#: lib/extensions/nautilus/RabbitVCS.py:519
-msgid "Add an emblem"
-msgstr "Aggiungi un marchio"
-
-#: lib/extensions/nautilus/RabbitVCS.py:537
-msgid "Check out a working copy"
-msgstr "Preleva una Copia di Lavoro"
-
-#: lib/extensions/nautilus/RabbitVCS.py:553
-msgid "Update a working copy"
-msgstr "Aggiorna la Copia di Lavoro"
-
-#: lib/extensions/nautilus/RabbitVCS.py:569
-msgid "Commit modifications to the repository"
-msgstr "Invia le modifiche al Repository"
-
-#: lib/extensions/nautilus/RabbitVCS.py:584
-msgid "RabbitVCS"
-msgstr "RabbitVCS"
-
-#: lib/extensions/nautilus/RabbitVCS.py:598
-msgid "View the modifications made to a file"
-msgstr "Visualizza le modifiche fatte al file"
-
-#: lib/extensions/nautilus/RabbitVCS.py:613
-msgid "Show Log"
-msgstr "Visualizza Log"
-
-#: lib/extensions/nautilus/RabbitVCS.py:614
-msgid "Show a file's log information"
-msgstr "Visualizza il file log"
-
-#: lib/extensions/nautilus/RabbitVCS.py:639
-msgid "Schedule an item to be added to the repository"
-msgstr "Schedula un oggetto da essere aggiunto al repository"
-
-#: lib/extensions/nautilus/RabbitVCS.py:663
-msgid "Ignore an item"
-msgstr "Ignora un oggetto"
-
-#: lib/extensions/nautilus/RabbitVCS.py:678
-msgid "Ignore all files with this extension"
-msgstr "Ignora tutti i file con questa estensione"
-
-#: lib/extensions/nautilus/RabbitVCS.py:703
-msgid "Update to revision..."
-msgstr "Aggiorna alla revisione..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:704
-msgid "Update a file to a specific revision"
-msgstr "Aggiorna il file alla specifica revisione"
-
-#: lib/extensions/nautilus/RabbitVCS.py:719
-msgid "Rename..."
-msgstr "Rinonima..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:720
-msgid "Schedule an item to be renamed on the repository"
-msgstr "Schedula un oggetto da essere rinonimato nel repository"
-
-#: lib/extensions/nautilus/RabbitVCS.py:736
-msgid "Schedule an item to be deleted from the repository"
-msgstr "Schedula un oggetto da essere cancellato dal repository"
-
-#: lib/extensions/nautilus/RabbitVCS.py:752
-msgid "Revert an item to its unmodified state"
-msgstr "Ripristina gli oggetti nel loro stato non modificato"
-
-#: lib/extensions/nautilus/RabbitVCS.py:768
-msgid "Mark a conflicted item as resolved"
-msgstr "Segna un oggetto in conflitto come risolto"
-
-#: lib/extensions/nautilus/RabbitVCS.py:783
-msgid "Relocate..."
-msgstr "Ricolloca..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:784
-msgid "Relocate your working copy"
-msgstr "Ricolloca la tua copia di lavoro"
-
-#: lib/extensions/nautilus/RabbitVCS.py:799
-msgid "Get Lock..."
-msgstr "Blocca..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:800
-msgid "Locally lock items"
-msgstr "Blocca gli oggetti localmente"
-
-#: lib/extensions/nautilus/RabbitVCS.py:815
-msgid "Release Lock..."
-msgstr "Sblocca..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:816
-msgid "Release lock on an item"
-msgstr "Sblocca l'oggetto"
-
-#: lib/extensions/nautilus/RabbitVCS.py:832
-msgid "Clean up working copy"
-msgstr "Pulisci la copia di lavoro"
-
-#: lib/extensions/nautilus/RabbitVCS.py:857
-msgid "Export a working copy or repository with no versioning information"
-msgstr ""
-"Esporta la copia di lavoro o repository senza le informazioni di versione"
-
-#: lib/extensions/nautilus/RabbitVCS.py:872
-msgid "Create Repository here"
-msgstr "Crea un Repository qua"
-
-#: lib/extensions/nautilus/RabbitVCS.py:873
-msgid "Create a repository in a folder"
-msgstr "Crea un Repositori in una cartella"
-
-#: lib/extensions/nautilus/RabbitVCS.py:889
-msgid "Import an item into a repository"
-msgstr "Importa un oggetto in un repository"
-
-#: lib/extensions/nautilus/RabbitVCS.py:913
-msgid "Branch/tag..."
-msgstr "Branch/tag..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:914
-msgid "Copy an item to another location in the repository"
-msgstr "Copia un oggetto in un altra parte del repository"
-
-#: lib/extensions/nautilus/RabbitVCS.py:929
-msgid "Switch..."
-msgstr "Scambia..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:930
-msgid "Change the repository location of a working copy"
-msgstr "Cambia la locazione del repository della copia di lavoro"
-
-#: lib/extensions/nautilus/RabbitVCS.py:945
-msgid "Merge..."
-msgstr "Merge..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:946
-msgid "A wizard with steps for merging"
-msgstr "Procedura guidata per il merge"
-
-#: lib/extensions/nautilus/RabbitVCS.py:970
-msgid "Annotate..."
-msgstr "Annota..."
-
-#: lib/extensions/nautilus/RabbitVCS.py:971
-msgid "Annotate a file"
-msgstr "Annota un file"
-
-#: lib/extensions/nautilus/RabbitVCS.py:996
-msgid "View the properties of an item"
-msgstr "Visualizza le proprieta di un oggetto"
-
-#: lib/extensions/nautilus/RabbitVCS.py:1027
-msgid "Help"
-msgstr "Aiuto"
-
-#: lib/extensions/nautilus/RabbitVCS.py:1028
-msgid "View help"
-msgstr "Visualizza aiuto"
-
-#: lib/extensions/nautilus/RabbitVCS.py:1044
-msgid "View or change RabbitVCS settings"
-msgstr "Visualizza o cambia le opzioni di RabbitVCS"
-
-#: lib/extensions/nautilus/RabbitVCS.py:1060
-msgid "About RabbitVCS"
-msgstr "Informazioni su RabbitVCS"
-
-#: lib/vcs/svn/__init__.py:111 lib/vcs/svn/__init__.py:120
-#: lib/vcs/svn/__init__.py:127
-msgid "Added"
-msgstr "Aggiunto"
-
-#: lib/vcs/svn/__init__.py:112 lib/vcs/svn/__init__.py:128
-msgid "Copied"
-msgstr "Copiato"
-
-#: lib/vcs/svn/__init__.py:113 lib/vcs/svn/__init__.py:119
-msgid "Deleted"
-msgstr "Cancellato"
-
-#: lib/vcs/svn/__init__.py:114
-msgid "Restored"
-msgstr "Ripristinato"
-
-#: lib/vcs/svn/__init__.py:115
-msgid "Reverted"
-msgstr "Ripristina..."
-
-#: lib/vcs/svn/__init__.py:116
-msgid "Failed Revert"
-msgstr "Ripristino fallito"
-
-#: lib/vcs/svn/__init__.py:117
-msgid "Resolved"
-msgstr "Risolto"
-
-#: lib/vcs/svn/__init__.py:118
-msgid "Skipped"
-msgstr "Saltato"
-
-#: lib/vcs/svn/__init__.py:121
-msgid "Updated"
-msgstr "Aggiornato"
-
-#: lib/vcs/svn/__init__.py:123 lib/vcs/svn/__init__.py:125
-msgid "External"
-msgstr "Esterno"
-
-#: lib/vcs/svn/__init__.py:126
-msgid "Modified"
-msgstr "Modificato"
-
-#: lib/vcs/svn/__init__.py:129
-msgid "Replaced"
-msgstr "Sostituito"
-
-#: lib/vcs/svn/__init__.py:130 lib/vcs/svn/__init__.py:149
-msgid "Changed"
-msgstr "Cambiato"
-
-#: lib/vcs/svn/__init__.py:131
-msgid "Annotated"
-msgstr "Appuntato"
-
-#: lib/vcs/svn/__init__.py:133
-msgid "Unlocked"
-msgstr "Sbloccato"
-
-#: lib/vcs/svn/__init__.py:134
-msgid "Failed Lock"
-msgstr "Blocco fallito"
-
-#: lib/vcs/svn/__init__.py:135
-msgid "Failed Unlock"
-msgstr "Sblocco fallito"
-
-#: lib/vcs/svn/__init__.py:144
-msgid "Inapplicable"
-msgstr "Inapplicabile"
-
-#: lib/vcs/svn/__init__.py:145
-msgid "Unknown"
-msgstr "Sconosciuto"
-
-#: lib/vcs/svn/__init__.py:146
-msgid "Unchanged"
-msgstr "Invariato"
-
-#: lib/vcs/svn/__init__.py:147
-msgid "Missing"
-msgstr "Mancante"
-
-#: lib/vcs/svn/__init__.py:148
-msgid "Obstructed"
-msgstr "Bloccato"
-
-#: lib/vcs/svn/__init__.py:150
-msgid "Merged"
-msgstr "Merged"
-
-#: lib/vcs/svn/__init__.py:151
-msgid "Conflicted"
-msgstr "Conflitto"
+#~ msgid "Obstructed"
+#~ msgstr "Bloccato"
