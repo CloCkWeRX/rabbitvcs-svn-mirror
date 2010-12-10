@@ -336,6 +336,9 @@ class GitChanges(Changes):
 
         self.git = self.vcs.git(path1)
         
+        self.first_urls_browse.hide()
+        self.second_urls_browse.hide()
+        
         self.first_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("first_revision_container"),
             self.git,
