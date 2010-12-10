@@ -52,7 +52,6 @@ def guess(path):
                         "vcs": client,
                         "repo_path": path_to_check
                     }
-                    logger.debug("%s is %s" % (path_to_check, client))
                     return cache                
             path_to_check = os.path.split(path_to_check)[0]
             
