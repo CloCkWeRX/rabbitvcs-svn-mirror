@@ -68,6 +68,9 @@ class ApplyPatch(InterfaceNonView):
         return path
     
     def choose_patch_dir(self):
+        if len(self.paths) == 1 and os.path.isdir(self.paths[0]):
+            return self.paths[0]
+        
         dir = None
         
         dialog = gtk.FileChooserDialog(
