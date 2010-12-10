@@ -524,8 +524,8 @@ class ContextMenuCallbacks:
     
         proc = rabbitvcs.util.helper.launch_ui_window("browser", [url])
 
-    def iniitalize_repository(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window("update", ["--vcs", "git", self.paths[0]])
+    def initialize_repository(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("create", ["--vcs", "git", self.paths[0]])
         self.caller.execute_after_process_exit(proc)
 
     def clone(self, widget, data1=None, data2=None):

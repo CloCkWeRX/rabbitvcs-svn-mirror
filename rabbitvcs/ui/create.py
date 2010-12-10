@@ -23,7 +23,12 @@
 import os
 import subprocess
 
+import pygtk
+import gobject
+import gtk
+
 import rabbitvcs.ui.dialog
+from rabbitvcs.ui.action import GitAction
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -52,10 +57,19 @@ class GitCreate:
     def __init__(self, path):
         self.vcs = rabbitvcs.vcs.VCS()
         self.git = self.vcs.git()
-        try:
-            self.git.initialize_repository(path)
-        except Exception, e:
-            rabbitvcs.ui.dialog.MessageBox(str(e))
+        self.path = path
+        
+        self.action = GitAction(
+            self.git,
+            register_gtk_quit=True
+        )
+        
+        self.action.append(self.action.set_header, _("Initialize Repository"))
+        self.action.append(self.action.set_status, _("Setting up repository..."))
+        self.action.append(self.git.initialize_repository, self.path)
+        self.action.append(self.action.set_status, _("Completed repository setup"))
+        self.action.append(self.action.finish)
+        self.action.start()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNCreate,
@@ -66,6 +80,7 @@ if __name__ == "__main__":
     from rabbitvcs.ui import main, VCS_OPT, VCS_OPT_ERROR
     (options, paths) = main([VCS_OPT], usage="Usage: rabbitvcs create --vcs [svn|git] path")
     if options.vcs:
-        classes_map[options.vcs](paths[0])
+        window = classes_map[options.vcs](paths[0])
+        gtk.main()
     else:
         rabbitvcs.ui.dialog.MessageBox(VCS_OPT_ERROR)
