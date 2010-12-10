@@ -216,12 +216,19 @@ class SVN:
         self.vcs = rabbitvcs.vcs.VCS_SVN
         self.cache = {}
 
-    def statuses(self, path, recurse=True, update=False):
+    def statuses(self, path, recurse=True, update=False, invalidate=False):
         """
 
         Look up the status for path.
 
         """
+        
+        if path in self.cache:
+            if invalidate:
+                del self.cache[path]
+            else:
+                return [self.cache[path]]
+        
         on_error = rabbitvcs.vcs.status.Status.status_unknown(path)
 
         if not self.is_in_a_or_a_working_copy(path):
@@ -360,12 +367,12 @@ class SVN:
         @return:            A list of statuses
 
         """
-
+        
         items = []
 
         for path in paths:
 
-            sts = self.statuses(path)
+            sts = self.statuses(path, invalidate=True)
             for st in sts:
                 if (not statuses) or (st.content in statuses or st.metadata in statuses):
                     items.append(st)

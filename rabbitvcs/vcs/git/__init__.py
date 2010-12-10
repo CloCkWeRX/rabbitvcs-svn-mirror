@@ -142,7 +142,7 @@ class Git:
     # Status Methods
     #
     
-    def statuses(self, path, recurse=False):
+    def statuses(self, path, recurse=False, invalidate=False):
         """
         Generates a list of GittyupStatus objects for the specified file.
         
@@ -153,7 +153,10 @@ class Git:
         """
 
         if path in self.cache:
-            return [self.cache[path]]
+            if invalidate:
+                del self.cache[path]
+            else:
+                return [self.cache[path]]
 
         gittyup_statuses = self.client.status(path)
 
@@ -246,14 +249,14 @@ class Git:
 
         if paths is None:
             return []
-
+        
         items = []
         for path in paths:
-            st = self.statuses(path)
+            st = self.statuses(path, invalidate=True)
             for st_item in st:
                 if st_item.content == "modified" and os.path.isdir(st_item.path):
                     continue
-            
+
                 if st_item.content in statuses or len(statuses) == 0:
                     items.append(st_item)
 
