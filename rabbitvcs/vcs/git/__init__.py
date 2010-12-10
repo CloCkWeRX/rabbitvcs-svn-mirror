@@ -117,6 +117,14 @@ class Git:
         "added",
         "removed"
     ]
+    
+    STATUSES_FOR_STAGE = [
+        "untracked"
+    ]
+
+    STATUSES_FOR_UNSTAGE = [
+        "added"
+    ]
 
     def __init__(self, repo=None):
         self.vcs = rabbitvcs.vcs.VCS_GIT

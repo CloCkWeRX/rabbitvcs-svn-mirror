@@ -649,6 +649,16 @@ class MenuReset(MenuItem):
     label = _("Reset")
     icon = "rabbitvcs-reset"
 
+class MenuStage(MenuItem):
+    identifier = "RabbitVCS::Stage"
+    label = _("Stage")
+    icon = "rabbitvcs-add"
+    
+class MenuUnstage(MenuItem):
+    identifier = "RabbitVCS::Unstage"
+    label = _("Unstage")
+    icon = "rabbitvcs-unstage"
+
 def get_ignore_list_items(paths):
     """
     Build up a list of items to ignore based on the selected paths

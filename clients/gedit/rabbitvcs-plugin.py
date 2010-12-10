@@ -28,7 +28,7 @@ import rabbitvcs.util.helper
 from rabbitvcs.vcs import create_vcs_instance
 from rabbitvcs.util.contextmenu import GtkFilesContextMenuConditions, \
     GtkFilesContextMenuCallbacks, MainContextMenu, MainContextMenuCallbacks, \
-    MenuBuilder
+    MenuBuilder, GtkContextMenuCaller
 from rabbitvcs.util.contextmenuitems import *
 
 # Menu item example, insert a new item in the Tools menu
@@ -91,7 +91,6 @@ ui_str = """<ui>
             <menuitem name="RabbitVCS::Clone" action="RabbitVCS::Clone" />
             <menuitem name="RabbitVCS::Initialize_Repository" action="RabbitVCS::Initialize_Repository" />
             <separator />
-            <menuitem name="RabbitVCS::Checkout" action="RabbitVCS::Checkout" />
             <menu name="RabbitVCS::Diff_Menu" action="RabbitVCS::Diff_Menu">
                 <menuitem name="RabbitVCS::Diff" action="RabbitVCS::Diff" />
                 <menuitem name="RabbitVCS::Diff_Previous_Revision" action="RabbitVCS::Diff_Previous_Revision" />
@@ -102,8 +101,9 @@ ui_str = """<ui>
                 <menuitem name="RabbitVCS::Show_Changes" action="RabbitVCS::Show_Changes" />
             </menu>
             <menuitem name="RabbitVCS::Show_Log" action="RabbitVCS::Show_Log" />
-            <menuitem name="RabbitVCS::Revert" action="RabbitVCS::Revert" />
             <separator />
+            <menuitem name="RabbitVCS::Stage" action="RabbitVCS::Stage" />
+            <menuitem name="RabbitVCS::Unstage" action="RabbitVCS::Unstage" />
             <menu name="RabbitVCS::Add_To_Ignore_List" action="RabbitVCS::Add_To_Ignore_List">
                 <menuitem name="RabbitVCS::Ignore_By_Filename" action="RabbitVCS::Ignore_By_Filename" />
                 <menuitem name="RabbitVCS::Ignore_By_File_Extension" action="RabbitVCS::Ignore_By_File_Extension" />
@@ -111,6 +111,7 @@ ui_str = """<ui>
             <separator />
             <menuitem name="RabbitVCS::Rename" action="RabbitVCS::Rename" />
             <menuitem name="RabbitVCS::Delete" action="RabbitVCS::Delete" />
+            <menuitem name="RabbitVCS::Revert" action="RabbitVCS::Revert" />
             <menuitem name="RabbitVCS::Clean" action="RabbitVCS::Clean" />
             <menuitem name="RabbitVCS::Reset" action="RabbitVCS::Reset" />
             <menuitem name="RabbitVCS::Checkout" action="RabbitVCS::Checkout" />
@@ -135,7 +136,7 @@ ui_str = """<ui>
   </menubar>
 </ui>
 """
-class RabbitVCSWindowHelper:
+class RabbitVCSWindowHelper(GtkContextMenuCaller):
 
     _menu_paths = [
 #        "/MenuBar/RabbitVCSMenu",
@@ -191,6 +192,8 @@ class RabbitVCSWindowHelper:
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Git/RabbitVCS::Diff_Menu/RabbitVCS::Compare_Tool_Multiple",
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Git/RabbitVCS::Diff_Menu/RabbitVCS::Show_Changes",
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Git/RabbitVCS::Show_Log",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Git/RabbitVCS::Stage",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Git/RabbitVCS::Unstage",
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Git/RabbitVCS::Add_To_Ignore_List",
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Git/RabbitVCS::Add_To_Ignore_List/RabbitVCS::Ignore_By_Filename",
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Git/RabbitVCS::Add_To_Ignore_List/RabbitVCS::Ignore_By_File_Extension",
@@ -322,12 +325,6 @@ class RabbitVCSWindowHelper:
 
     # Menu activate handlers
     def reload_settings(self, proc):
-        self.update_ui()
-
-    def rescan_after_process_exit(self, proc, paths):
-        self.update_ui()
-
-    def execute_after_process_exit(self, proc):
         self.update_ui()
 
     def reload_treeview(self):
@@ -524,6 +521,8 @@ class GeditMenu:
             MenuRepoBrowser,
             MenuCheckForModifications,
             MenuAdd,
+            MenuStage,
+            MenuUnstage,
             MenuAddToIgnoreList, 
             MenuUpdateToRevision,
             MenuRename,
@@ -701,6 +700,8 @@ class GeditMainContextMenu(MainContextMenu):
                     (MenuShowChanges, None),
                 ]),
                 (MenuShowLog, None),
+                (MenuStage, None),
+                (MenuUnstage, None),
                 (MenuAddToIgnoreList, ignore_items),
                 (MenuSeparator, None),
                 (MenuRename, None),

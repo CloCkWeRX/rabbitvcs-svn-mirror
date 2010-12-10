@@ -146,9 +146,9 @@ class VCS:
     
     # Methods that call client methods
 
-    def statuses(self, path, recurse=True):
+    def statuses(self, path, recurse=True, invalidate=False):
         client = self.client(path)
-        return client.statuses(path, recurse)
+        return client.statuses(path, recurse, invalidate)
     
     def status(self, path, summarize=True, invalidate=False):
         client = self.client(path)

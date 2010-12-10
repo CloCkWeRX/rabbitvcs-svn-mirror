@@ -9,6 +9,7 @@ import fnmatch
 import time
 from string import ascii_letters, digits
 from datetime import datetime
+from mimetypes import guess_type
 
 import dulwich.errors
 import dulwich.repo
@@ -406,6 +407,12 @@ class GittyupClient:
             index[relative_path] = (ctime, mtime, dev, ino, mode, uid, gid, size, blob.id, flags)
             index.write()
 
+            self.notify({
+                "action": "Staged",
+                "path": absolute_path,
+                "mime_type": guess_type(absolute_path)[0]
+            })
+
             self.repo.object_store.add_object(blob)
     
     def stage_all(self):
@@ -467,6 +474,11 @@ class GittyupClient:
                 if relative_path in tree:
                     index[relative_path] = (0, 0, 0, 0, tree[relative_path][0], 0, 0, 0, tree[relative_path][1], 0)
 
+        self.notify({
+            "action": "Unstaged",
+            "path": path,
+            "mime_type": guess_type(path)[0]
+        })
         index.write()
             
     def unstage_all(self):

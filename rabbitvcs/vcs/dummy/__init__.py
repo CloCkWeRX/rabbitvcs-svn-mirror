@@ -31,7 +31,7 @@ class Dummy:
     def __init__(self):
         pass
     
-    def status(self, path, summarize=True):
+    def status(self, path, summarize=True, invalidate=False):
         return rabbitvcs.vcs.status.Status.status_unknown(path)
     
     def is_working_copy(self, path):
@@ -49,7 +49,7 @@ class Dummy:
     def is_locked(self, path):
         return False
     
-    def statuses(self, path, recurse=True):
+    def statuses(self, path, recurse=True, invalidate=False):
         return []
         
     def revision(self, kind, number=None):

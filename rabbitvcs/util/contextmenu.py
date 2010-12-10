@@ -41,9 +41,6 @@ _ = gettext.gettext
 
 settings = SettingsManager()
 
-import rabbitvcs.services
-from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
-
 class MenuBuilder(object):
     """
     Generalised menu builder class. Subclasses must provide:
@@ -226,9 +223,9 @@ class GtkContextMenuCaller:
         pass
 
     def rescan_after_process_exit(self, proc, paths=None):
-        self.rescan_after_process_exit(proc, self.reload_treeview)
+        self.execute_after_process_exit(proc, self.reload_treeview)
         
-    def rescan_after_process_exit(self, proc, callback=None):
+    def execute_after_process_exit(self, proc, callback=None):
         if callback is None:
             callback = self.reload_treeview
 
@@ -554,6 +551,14 @@ class ContextMenuCallbacks:
 
     def reset(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("reset", [self.paths[0]])
+        self.caller.rescan_after_process_exit(proc, self.paths)
+
+    def stage(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("stage", [self.paths[0]])
+        self.caller.rescan_after_process_exit(proc, self.paths)
+
+    def unstage(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("unstage", [self.paths[0]])
         self.caller.rescan_after_process_exit(proc, self.paths)
 
 class ContextMenuConditions:
@@ -905,6 +910,28 @@ class ContextMenuConditions:
     def reset(self, data=None):
         return (self.path_dict["is_git"])
 
+    def stage(self, data=None):
+        if self.path_dict["is_git"]:
+            if (self.path_dict["is_dir"] and
+                    self.path_dict["is_in_a_or_a_working_copy"]):
+                return True
+            elif (not self.path_dict["is_dir"] and
+                    self.path_dict["is_in_a_or_a_working_copy"] and
+                    not self.path_dict["is_versioned"]):
+                return True
+        return False
+
+    def unstage(self, data=None):
+        if self.path_dict["is_git"]:
+            if (self.path_dict["is_dir"] and
+                    self.path_dict["is_in_a_or_a_working_copy"]):
+                return True
+            elif (not self.path_dict["is_dir"] and
+                    self.path_dict["is_in_a_or_a_working_copy"] and
+                    self.path_dict["is_added"]):
+                return True
+        return False
+
 class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
     """
     A callback class created for GtkFilesContextMenus.  This class inherits from
@@ -964,6 +991,14 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
         from rabbitvcs.ui.log import LogDialog
         LogDialog(self.vcs_client.get_repo_url(self.paths[0]))
 
+    def stage(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("stage", ["-q"] + self.paths)
+        self.caller.rescan_after_process_exit(proc, self.paths)
+
+    def unstage(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("unstage", ["-q"] + self.paths)
+        self.caller.rescan_after_process_exit(proc, self.paths)
+
 class GtkFilesContextMenuConditions(ContextMenuConditions):
     """
     Sub-class for ContextMenuConditions for our dialogs.  Allows us to override 
@@ -993,7 +1028,7 @@ class GtkFilesContextMenuConditions(ContextMenuConditions):
             if not path:
                 continue
                 
-            statuses_tmp = self.vcs_client.statuses(path)
+            statuses_tmp = self.vcs_client.statuses(path, invalidate=True)
             for status in statuses_tmp:
                 self.statuses[status.path] = status
 
@@ -1060,6 +1095,8 @@ class GtkFilesContextMenu:
             (MenuRestore, None),
             (MenuCreatePatch, None),
             (MenuAdd, None),
+            (MenuStage, None),
+            (MenuUnstage, None),
             (MenuAddToIgnoreList, ignore_items)
         ]
         
@@ -1253,6 +1290,8 @@ class MainContextMenu:
                     (MenuShowChanges, None),
                 ]),
                 (MenuShowLog, None),
+                (MenuStage, None),
+                (MenuUnstage, None),
                 (MenuAddToIgnoreList, ignore_items),
                 (MenuSeparator, None),
                 (MenuRename, None),
