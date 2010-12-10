@@ -134,7 +134,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
         revision = self.revision_selector.get_revision_object()
         self.action.append(
                         self.svn.list,
-                        rabbitvcs.lib.helper.quote_url(self.url), 
+                        rabbitvcs.util.helper.quote_url(self.url), 
                         revision=revision, recurse=False)
         self.action.append(self.init_repo_root_url)
         self.action.append(self.populate_table, 0)
@@ -234,7 +234,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
         """
 
         if self.file_column_callback(row[0]) == "file":
-            return rabbitvcs.util.helper.pretty_filesize(row[column])
+            return rabbitvcs.util.helper.pretty_filesize(int(row[column]))
 
         return ""
 
@@ -257,8 +257,8 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
             return ""
         
         if row[column]:
-            change_time = datetime.fromtimestamp(row[column])
-            return change_time.strftime("%Y-%m-%d %H:%M:%S")
+            change_time = datetime.fromtimestamp(float(row[column]))
+            return rabbitvcs.util.helper.format_datetime(change_time)
         
         return str(row[column])
 
@@ -323,10 +323,11 @@ class SVNBrowserDialog(SVNBrowser):
         can get some desired data.
         """
         
+        self.callback = callback
+
         gtk.stock_add([(gtk.STOCK_CLOSE, _("Select"), 0, 0, "")])
         
         SVNBrowser.__init__(self, path)
-        self.callback = callback
         
     def on_destroy(self, widget):
         pass
