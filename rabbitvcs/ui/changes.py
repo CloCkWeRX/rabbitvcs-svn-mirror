@@ -103,9 +103,7 @@ class Changes(InterfaceView):
         self.check_refresh_button()
 
     def on_first_urls_browse_clicked(self, widget, data=None):
-        from rabbitvcs.ui.browser import BrowserDialog
-        BrowserDialog(self.first_urls.get_active_text(), 
-            callback=self.on_first_repo_chooser_closed)
+        pass
 
     def on_first_repo_chooser_closed(self, new_url):
         self.first_urls.set_child_text(new_url)
@@ -114,9 +112,7 @@ class Changes(InterfaceView):
         self.check_refresh_button()
 
     def on_second_urls_browse_clicked(self, widget, data=None):
-        from rabbitvcs.ui.browser import BrowserDialog
-        BrowserDialog(self.second_urls.get_active_text(), 
-            callback=self.on_second_repo_chooser_closed)
+        pass
 
     def on_second_repo_chooser_closed(self, new_url):
         self.second_urls.set_child_text(new_url)
@@ -329,6 +325,16 @@ class SVNChanges(Changes):
                 item["summarize_kind"],
                 prop_changed
             ])
+
+    def on_first_urls_browse_clicked(self, widget, data=None):
+        from rabbitvcs.ui.browser import SVNBrowserDialog
+        SVNBrowserDialog(self.first_urls.get_active_text(), 
+            callback=self.on_first_repo_chooser_closed)
+
+    def on_second_urls_browse_clicked(self, widget, data=None):
+        from rabbitvcs.ui.browser import SVNBrowserDialog
+        SVNBrowserDialog(self.second_urls.get_active_text(), 
+            callback=self.on_second_repo_chooser_closed)
 
 class GitChanges(Changes):
     def __init__(self, path1=None, revision1=None, path2=None, revision2=None):
