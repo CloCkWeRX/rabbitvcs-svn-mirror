@@ -226,9 +226,9 @@ class GtkContextMenuCaller:
         pass
 
     def rescan_after_process_exit(self, proc, paths=None):
-        self.execute_after_process_exit(proc, self.reload_treeview)
+        self.rescan_after_process_exit(proc, self.reload_treeview)
         
-    def execute_after_process_exit(self, proc, callback=None):
+    def rescan_after_process_exit(self, proc, callback=None):
         if callback is None:
             callback = self.reload_treeview
 
@@ -352,7 +352,7 @@ class ContextMenuCallbacks:
 
     def add(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("add", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def check_for_modifications(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("checkmods", self.paths)
@@ -418,15 +418,15 @@ class ContextMenuCallbacks:
     
     def show_log(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("log", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def rename(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("rename", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def create_patch(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("createpatch", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
     
     def apply_patch(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("applypatch", self.paths)
@@ -434,7 +434,7 @@ class ContextMenuCallbacks:
     
     def properties(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("property_editor", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def about(self, widget, data1=None, data2=None):
         rabbitvcs.util.helper.launch_ui_window("about")
@@ -446,69 +446,69 @@ class ContextMenuCallbacks:
     def ignore_by_filename(self, widget, data1=None, data2=None):
         path = self.paths[0]
         proc = rabbitvcs.util.helper.launch_ui_window("ignore", [self.base_dir, os.path.basename(path)])
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def ignore_by_file_extension(self, widget, data1=None, data2=None):
         path = self.paths[0]
         pattern = "*%s" % rabbitvcs.util.helper.get_file_extension(path)
         proc = rabbitvcs.util.helper.launch_ui_window("ignore", [self.base_dir, pattern])
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def get_lock(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("lock", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def branch_tag(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("branch", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def switch(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("switch", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def merge(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("merge", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def _import(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("import", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def export(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("export", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def update_to_revision(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("updateto", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
     
     def resolve(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("resolve", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
         
     def annotate(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("annotate", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def unlock(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("unlock", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
         
     def create_repository(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("create", ["--vcs", "svn", self.paths[0]])
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
     
     def relocate(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("relocate", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def cleanup(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("cleanup", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def restore(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("update", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def _open(self, widget, data1=None, data2=None):
         pass
@@ -526,35 +526,35 @@ class ContextMenuCallbacks:
 
     def initialize_repository(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("create", ["--vcs", "git", self.paths[0]])
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def clone(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("clone", [self.paths[0]])
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def push(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("push", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def branches(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("branches", [self.paths[0]])
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def tags(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("tags", [self.paths[0]])
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def remotes(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("remotes", [self.paths[0]])
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def clean(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("clean", [self.paths[0]])
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def reset(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("reset", [self.paths[0]])
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
 class ContextMenuConditions:
     """
@@ -933,11 +933,11 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
 
     def add(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("add", ["-q"] + self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def revert(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("revert", ["-q"] + self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
     
     def browse_to(self, widget, data1=None, data2=None):
         rabbitvcs.util.helper.browse_to_item(self.paths[0])
@@ -951,7 +951,7 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
   
     def update(self, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("update", self.paths)
-        self.caller.execute_after_process_exit(proc)
+        self.caller.rescan_after_process_exit(proc, self.paths)
     
     def unlock(self, data1=None, data2=None):
         from rabbitvcs.ui.unlock import UnlockQuick

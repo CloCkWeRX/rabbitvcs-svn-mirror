@@ -184,8 +184,8 @@ class Git:
                 if summarize:
                     st.summary = st.single
                 return st
-    
-        all_statuses = self.statuses(path)
+
+        all_statuses = self.statuses(path, invalidate=invalidate)
         
         if summarize:
             path_status = None

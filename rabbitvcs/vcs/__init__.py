@@ -25,7 +25,7 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 from rabbitvcs.util.log import Log
-log = Log("rabbitvcs.vcs")
+logger = Log("rabbitvcs.vcs")
 
 EXT_UTIL_ERROR = _("The output from '%s' was not able to be processed.\n%s")
 
@@ -83,7 +83,7 @@ class VCS:
                 self.clients[VCS_SVN] = SVN()
                 return self.clients[VCS_SVN]
             except Exception, e:
-                log.debug("Unable to load SVN module: %s" % e)
+                logger.debug("Unable to load SVN module: %s" % e)
                 self.clients[VCS_SVN] = self.dummy()
                 return self.clients[VCS_SVN]
 
@@ -116,7 +116,7 @@ class VCS:
             except Exception, e:
                 import traceback
                 traceback.print_exc()
-                log.debug("Unable to load Git module: %s" % e)
+                logger.debug("Unable to load Git module: %s" % e)
                 self.clients[VCS_GIT] = self.dummy()
                 return self.clients[VCS_GIT]
 
@@ -131,11 +131,13 @@ class VCS:
         guess = self.guess(path)
         if guess["vcs"] == VCS_GIT:
             return self.git(guess["repo_path"], is_repo_path=False)
-        else:
+        elif guess["vcs"] == VCS_SVN:
             return self.svn()
+        else:
+            return self.dummy()
     
     def guess(self, path):
-        if path and path in self.path_vcs_map:
+        if path and path in self.path_vcs_map and self.path_vcs_map[path]["vcs"] != VCS_DUMMY:
             return self.path_vcs_map[path]
 
         choice = guess(path)
