@@ -914,6 +914,9 @@ class LogTopContextMenuConditions:
     def merge(self, data=None):
         return (self.guess["vcs"] == "git")
 
+    def reset(self, data=None):
+        return (self.guess["vcs"] == "git")
+
 class LogTopContextMenuCallbacks:
     def __init__(self, caller, vcs, path, revisions):
         self.caller = caller
@@ -1028,15 +1031,15 @@ class LogTopContextMenuCallbacks:
         if self.guess == rabbitvcs.vcs.VCS_GIT:
             extra.append(unicode(self.revisions[0]["revision"]))
             try:
-                print "Attempting to get second selected row..."
                 fromrev = unicode(self.revisions[1]["revision"])
-                print "Found",fromrev
                 extra.append(fromrev)
             except IndexError, e:
                 pass
         
-        print extra
         rabbitvcs.util.helper.launch_ui_window("merge", [self.path] + extra)
+
+    def reset(self, widget, data=None):
+        rabbitvcs.util.helper.launch_ui_window("reset", [self.path, "-r", unicode(self.revisions[0]["revision"])])
 
     def edit_author(self, widget, data=None):
         message = ""
@@ -1126,6 +1129,7 @@ class LogTopContextMenu:
             (MenuBranchTag, None),
             (MenuExport, None),
             (MenuMerge, None),
+            (MenuReset, None),
             (MenuSeparatorLast, None),
             (MenuEditAuthor, None),
             (MenuEditLogMessage, None),

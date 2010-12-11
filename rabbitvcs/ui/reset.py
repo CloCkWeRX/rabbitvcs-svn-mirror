@@ -45,17 +45,21 @@ class GitReset(InterfaceView):
     
     """
     
-    def __init__(self, path):
+    def __init__(self, path, revision=None):
         InterfaceView.__init__(self, "reset", "Reset")
         self.vcs = rabbitvcs.vcs.VCS()
         self.git = self.vcs.git(path)
         self.path = path
+        self.revision_obj = None
+        if revision:
+            self.revision_obj = self.git.revision(revision)
 
         self.get_widget("path").set_text(path)
 
         self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("revision_container"),
             self.git,
+            revision=self.revision_obj,
             url=self.path,
             expand=True
         )
@@ -132,6 +136,6 @@ if __name__ == "__main__":
         usage="Usage: rabbitvcs reset [-r REVISION] path"
     )
     
-    window = GitReset(paths[0])
+    window = GitReset(paths[0], options.revision)
     window.register_gtk_quit()
     gtk.main()
