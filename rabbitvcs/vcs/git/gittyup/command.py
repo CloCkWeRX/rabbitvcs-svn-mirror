@@ -3,7 +3,9 @@
 #
 
 import subprocess
-from os import getcwd
+import fcntl
+import select
+import os
 
 from exceptions import GittyupCommandError
 
@@ -20,7 +22,7 @@ class GittyupCommand:
 
         self.cwd = cwd
         if not self.cwd:
-            self.cwd = getcwd()
+            self.cwd = os.getcwd()
     
     def callback_stack(self, val):
         lines = val.rstrip("\n").split("\n")
@@ -32,22 +34,23 @@ class GittyupCommand:
                                 cwd=self.cwd,
                                 stdin=None,
                                 stderr=subprocess.PIPE,
-                                stdout=subprocess.PIPE)
+                                stdout=subprocess.PIPE,
+                                close_fds=True)
         
-        try:
-            stdout_value = proc.stdout.read()
-            stderr_value = proc.stderr.read()
-            
-            self.callback_stack(stderr_value)
-            #self.callback_stack(stdout_value)
-            status = proc.wait()
-        finally:
-            proc.stdout.close()
-            proc.stderr.close()
+        fcntl.fcntl(
+            proc.stdout.fileno(),
+            fcntl.F_SETFL,
+            fcntl.fcntl(proc.stdout.fileno(), fcntl.F_GETFL) | os.O_NONBLOCK,
+        )
         
-        stderr_value = stderr_value.rstrip()
+        stdout = []
+        while True:
+            readx = select.select([proc.stdout.fileno()], [], [])[0]
+            if readx:
+                chunk = proc.stdout.read()
+                if chunk == '':
+                    break
+                stdout.append(chunk)
+                self.callback_stack(chunk)
         
-        if status != 0:
-            raise GittyupCommandError(self.command, status, stderr_value)
-        
-        return (status, stdout_value, stderr_value)
+        return (0, stdout, None)

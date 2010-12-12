@@ -564,8 +564,6 @@ class GittyupClient:
         except GittyupCommandError, e:
             self.callback_notify(e)
 
-        return stdout
-
     def branch_delete(self, name):
         """
         Delete a branch
@@ -630,7 +628,7 @@ class GittyupClient:
             self.callback_notify(e)
 
         branches = []
-        for line in stdout.split("\n"):
+        for line in stdout:
             if not line:
                 continue
             
@@ -1007,11 +1005,10 @@ class GittyupClient:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
-            stdout = ""
+            stdout = []
             
         returner = []
-        lines = stdout.split("\n")
-        for line in lines:
+        for line in stdout:
             components = line.split()
             if components:
                 name = components[0]
@@ -1179,11 +1176,10 @@ class GittyupClient:
             self.callback_notify(e)
             return []
 
-        lines = stdout.split("\n")
         revisions = []
         revision = {}
         changed_file = {}
-        for line in lines:
+        for line in stdout:
             if line == "":
                 continue
             
@@ -1254,11 +1250,10 @@ class GittyupClient:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
-            stdout = ""
+            stdout = []
 
         returner = []
-        lines = stdout.split("\n")
-        for line in lines:
+        for line in stdout:
             components = re.split("\t", line)
             if len(components) < 4:
                 continue
@@ -1297,9 +1292,9 @@ class GittyupClient:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
-            stdout = ""
+            stdout = []
 
-        return stdout
+        return "\n".join(stdout)
 
     def diff(self, path1, revision_obj1, path2=None, revision_obj2=None, summarize=False):
         """
@@ -1342,9 +1337,9 @@ class GittyupClient:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
-            stdout = ""
+            stdout = []
         
-        return stdout
+        return "\n".join(stdout)
 
     def diff_summarize(self, path1, revision_obj1, path2=None, revision_obj2=None):
         results = self.diff(path1, revision_obj1, path2, revision_obj2, True)
@@ -1387,10 +1382,10 @@ class GittyupClient:
             (status, stdout, stderr) = GittyupCommand(cmd2, cwd=self.repo.path, notify=self.notify).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
-            stdout = ""
+            stdout = []
             
         self.notify("%s at %s exported to %s" % (path, revision, dest_path))
-        return stdout        
+        return "\n".join(stdout)      
     
     def clean(self, path, remove_dir=True, remove_ignored_too=False, 
             remove_only_ignored=False, dry_run=False, force=True):
@@ -1418,9 +1413,7 @@ class GittyupClient:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
-            stdout = ""
-        
-        return stdout
+            return
 
     def reset(self, path, revision, type=None):        
         relative_path = self.get_relative_path(path)
@@ -1437,9 +1430,7 @@ class GittyupClient:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
-            stdout = ""
-        
-        return stdout
+            return
 
     def set_callback_notify(self, func):
         self.callback_notify = func
