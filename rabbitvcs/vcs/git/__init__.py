@@ -165,7 +165,7 @@ class Git:
                 del self.cache[path]
             else:
                 return [self.cache[path]]
-
+        
         gittyup_statuses = self.client.status(path)
 
         if not len(gittyup_statuses):
@@ -192,7 +192,7 @@ class Git:
                 if summarize:
                     st.summary = st.single
                 return st
-
+        
         all_statuses = self.statuses(path, invalidate=invalidate)
         
         if summarize:
@@ -226,8 +226,8 @@ class Git:
     def is_versioned(self, path):
         if self.is_working_copy(path):
             return True
-
-        st = self.client.status(path)
+       
+        st = self.status(path)
         try:
             if (st[0].path == self.client.get_relative_path(path) and
                     st[0].identifier != "untracked"):
