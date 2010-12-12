@@ -107,41 +107,12 @@ class GittyupClient:
                 tree_index[item[0]] = (item[1], item[2])
         return tree_index
 
-    def _get_tree_diff(self, tree1, tree2):
-        index1 = self._get_tree_index(tree1)
-        index2 = self._get_tree_index(tree2)
-        
-        diff = []
-        index2_paths = set(index2)
-        for name1, data1 in index1.iteritems():
-            (mode1, sha11) = data1
-            
-            try:
-                data2 = index2[name1]
-
-                (mode2, sha12) = data2
-                if sha11 != sha12:
-                    diff.append(ModifiedStatus(name1))
-            except KeyError:
-                diff.append(RemovedStatus(name1))
-            
-            try:
-                index2_paths.remove(name1)
-            except KeyError:
-                pass
-                
-        for name in index2_paths:
-            diff.append(AddedStatus(name))
-        
-        return diff    
-
     def _get_global_ignore_patterns(self):
         """
         Get ignore patterns from $GIT_DIR/info/exclude then from
         core.excludesfile in gitconfig.
         
         """
-        
         patterns = []
         
         files = self.get_global_ignore_files()
@@ -228,20 +199,9 @@ class GittyupClient:
         for root, dirs, filenames in os.walk(path, topdown=True):
             try:
                 dirs.remove(".git")
+                removed_git_dir = True
             except ValueError:
                 pass
-
-            # Generate a list of appropriate ignore patterns
-            patterns = []
-            if not show_ignored_files:
-                patterns = self.global_ignore_patterns
-
-                path_to_check = root
-                while path_to_check != self.repo.path:
-                    patterns += self.get_ignore_patterns_from_file(self.get_local_ignore_file(path_to_check))
-                    path_to_check = os.path.split(path_to_check)[0]
-                
-                patterns += self.get_ignore_patterns_from_file(self.get_local_ignore_file(root))
 
             # Find the relative root path of this folder
             if root == self.repo.path:
@@ -250,12 +210,10 @@ class GittyupClient:
                 rel_root = self.get_relative_path(root)
 
             for filename in filenames:
-                if not self._ignore_file(patterns, filename):
-                    files.append(os.path.join(rel_root, filename))
+                files.append(os.path.join(rel_root, filename))
         
             for _d in dirs:
-                if not self._ignore_file(patterns, _d):
-                    directories.append(os.path.join(rel_root, _d))
+                directories.append(os.path.join(rel_root, _d))
 
             directories.append(rel_root)
         
@@ -1090,8 +1048,7 @@ class GittyupClient:
         return tags
     
     def status(self, path):
-        tree = self._get_tree_at_head()
-        tree_index = self._get_tree_index(tree)
+        tree = self._get_tree_index()        
         index = self._get_index()
         
         if os.path.isdir(path):
@@ -1099,56 +1056,81 @@ class GittyupClient:
         else:
             files = [self.get_relative_path(path)]
             directories = []
+
+        files_hash = {}
+        for file in files:
+            files_hash[file] = True
         
         statuses = []
-        
+        # Calculate statuses for files in the current HEAD
         modified_files = []
-        for name in tree_index:
-            inIndex = (name in index)
-            
-            if not inIndex:
+        for name in tree:
+            try:
+                if index[name]:
+                    inIndex = True
+            except Exception as e:
+                inIndex = False
+
+            if inIndex:
+                absolute_path = self.get_absolute_path(name)
+                if os.path.isfile(absolute_path):
+                    # Cached, determine if modified or not
+                    blob = self._get_blob_from_file(absolute_path)
+                    if blob.id == tree[name][1]:
+                        statuses.append(NormalStatus(name))
+                    else:
+                        modified_files.append(name)
+                        statuses.append(ModifiedStatus(name))
+                else:
+                    modified_files.append(name)
+                    statuses.append(MissingStatus(name))
+            else:
                 modified_files.append(name)
                 statuses.append(RemovedStatus(name))
-                continue
+
+            try:
+                del files_hash[name]
+            except Exception as e:
+                pass
+
+        # Calculate statuses for untracked files
+        for name,data in files_hash.items():
+            try:
+                inTreeIndex = tree[name]
+            except Exception as e:
+                inTreeIndex = False
             
-            absolute_path = self.get_absolute_path(name)
-            if not os.path.exists(absolute_path):
-                modified_files.append(name)
-                statuses.append(MissingStatus(name))
-                continue
-        
-        for name in files:
-            inTreeIndex = (name in tree_index)
-            inIndex = (name in index)
+            try:
+                inIndex = index[name]
+            except Exception as e:
+                inIndex = False
             
             if inIndex and not inTreeIndex:
                 modified_files.append(name)
                 statuses.append(AddedStatus(name))
                 continue
-            
-            if inTreeIndex:
-                absolute_path = self.get_absolute_path(name)
-                if os.path.exists(absolute_path):
-                    # Cached, determine if modified or not                        
-                    blob = self._get_blob_from_file(absolute_path)
-                    if blob.id == tree_index[name][1]:
-                        statuses.append(NormalStatus(name))
-                    else:
-                        modified_files.append(name)
-                        statuses.append(ModifiedStatus(name))
-                continue
 
-            # Untracked
-            statuses.append(UntrackedStatus(name))
+            # Generate a list of appropriate ignore patterns
+            patterns = []
+            path_to_check = os.path.dirname(self.get_absolute_path(name))
+            while path_to_check != self.repo.path:
+                patterns += self.get_ignore_patterns_from_file(self.get_local_ignore_file(path_to_check))
+                path_to_check = os.path.split(path_to_check)[0]
+
+            patterns += self.get_ignore_patterns_from_file(self.get_local_ignore_file(self.repo.path))
+            patterns += self.global_ignore_patterns
+            
+            if not self._ignore_file(patterns, os.path.basename(name)):
+                statuses.append(UntrackedStatus(name))
 
         # Determine status of folders based on child contents
-
         for d in directories:
             d_status = NormalStatus(d)
             
             for file in modified_files:
                 if os.path.join(d, os.path.basename(file)) == file:
                     d_status = ModifiedStatus(d)
+                    break
             
             statuses.append(d_status)
 
