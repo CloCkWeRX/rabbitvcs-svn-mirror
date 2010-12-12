@@ -12,13 +12,20 @@ from exceptions import GittyupCommandError
 def notify_func(data):
     pass
 
+def cancel_func():
+    return False
+
 class GittyupCommand:
-    def __init__(self, command, cwd=None, notify=None):
+    def __init__(self, command, cwd=None, notify=None, cancel=None):
         self.command = command
         
         self.notify = notify_func
         if notify:
             self.notify = notify
+
+        self.get_cancel = cancel_func
+        if cancel:
+            self.get_cancel = cancel
 
         self.cwd = cwd
         if not self.cwd:
@@ -52,5 +59,8 @@ class GittyupCommand:
                     break
                 stdout.append(chunk)
                 self.callback_stack(chunk)
+                
+            if self.get_cancel():
+                proc.kill()
         
         return (0, stdout, None)

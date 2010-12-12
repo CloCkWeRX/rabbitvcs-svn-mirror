@@ -741,6 +741,7 @@ class GitAction(VCSAction):
         self.client = client
         self.client.set_callback_notify(self.notify)
         self.client.set_callback_get_user(self.get_user)
+        self.client.set_callback_get_cancel(self.cancel)
 
         VCSAction.__init__(self, client, register_gtk_quit, notification,
             run_in_thread)

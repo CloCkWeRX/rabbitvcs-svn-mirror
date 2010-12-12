@@ -39,10 +39,14 @@ def callback_get_user():
     
     return (fullname, "%s@%s" % (user, host))
 
+def callback_get_cancel():
+    return False
+
 class GittyupClient:
     def __init__(self, path=None, create=False):
         self.callback_notify = callback_notify_null
         self.callback_get_user = callback_get_user
+        self.callback_get_cancel = callback_get_cancel
 
         self.global_ignore_patterns = []
         
@@ -326,7 +330,7 @@ class GittyupClient:
         cmd.append(real_path)
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=real_path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=real_path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
 
@@ -560,7 +564,7 @@ class GittyupClient:
         cmd += [name, commit_sha]
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
 
@@ -623,7 +627,7 @@ class GittyupClient:
             cmd += ["--contains", commit_sha]
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
 
@@ -672,7 +676,7 @@ class GittyupClient:
         cmd = ["git", "checkout", "-m", revision] + paths
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
         
@@ -703,7 +707,7 @@ class GittyupClient:
     
         cmd = ["git", "clone", host, path] + more
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
     
@@ -870,7 +874,7 @@ class GittyupClient:
         
         cmd = ["git", "pull", repository, refspec]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
     
@@ -889,7 +893,7 @@ class GittyupClient:
 
         cmd = ["git", "push", repository, refspec]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
 
@@ -917,7 +921,7 @@ class GittyupClient:
     def merge(self, branch1, branch2="master"):
         cmd = ["git", "merge", branch1, branch2]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
     
@@ -935,7 +939,7 @@ class GittyupClient:
         
         cmd = ["git", "remote", "add", name, host]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
     
@@ -953,7 +957,7 @@ class GittyupClient:
         
         cmd = ["git", "remote", "rename", current_name, new_name]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
     
@@ -971,7 +975,7 @@ class GittyupClient:
         
         cmd = ["git", "remote", "set-url", name, url]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
     
@@ -986,7 +990,7 @@ class GittyupClient:
         
         cmd = ["git", "remote", "rm", name]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
     
@@ -1002,7 +1006,7 @@ class GittyupClient:
         cmd = ["git", "remote", "-v"]
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
             stdout = []
@@ -1047,7 +1051,7 @@ class GittyupClient:
         cmd = ["git", "tag", "-m", message, name, revision]
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
             return         
@@ -1171,7 +1175,7 @@ class GittyupClient:
             cmd += ["--", path]
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
             return []
@@ -1247,7 +1251,7 @@ class GittyupClient:
         cmd = ["git", "annotate", "-l", revision_obj, relative_path]
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
             stdout = []
@@ -1289,7 +1293,7 @@ class GittyupClient:
 
         cmd = ["git", "show", "%s:%s" % (revision_obj, relative_path)]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
             stdout = []
@@ -1334,7 +1338,7 @@ class GittyupClient:
             cmd.append("--name-status")
             
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
             stdout = []
@@ -1378,8 +1382,8 @@ class GittyupClient:
             os.mkdir(dest_path)
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd1, cwd=self.repo.path, notify=self.notify).execute()
-            (status, stdout, stderr) = GittyupCommand(cmd2, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd1, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd2, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
             stdout = []
@@ -1410,7 +1414,7 @@ class GittyupClient:
         cmd.append(relative_path)
         
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
             return
@@ -1427,7 +1431,7 @@ class GittyupClient:
             cmd.append(relative_path)
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
             return
@@ -1438,5 +1442,11 @@ class GittyupClient:
     def set_callback_get_user(self, func):
         self.callback_get_user = func
     
+    def set_callback_get_cancel(self, func):
+        self.callback_get_cancel = func
+    
     def notify(self, data):
         self.callback_notify(data)
+    
+    def get_cancel(self):
+        return self.callback_get_cancel()

@@ -925,3 +925,6 @@ class Git:
     
     def set_callback_get_user(self, func):
         self.client.set_callback_get_user(func)
+        
+    def set_callback_get_cancel(self, func):
+        self.client.set_callback_get_cancel(func)
