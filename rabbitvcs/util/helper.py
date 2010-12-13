@@ -468,12 +468,17 @@ def delete_item(path):
     """
     
     abspath = os.path.abspath(path)
-
+    permanent_delete = False
     try:
         # If the gvfs-trash program is not found, an OSError exception will 
         # be thrown, and rm will be used instead
-        subprocess.Popen(["gvfs-trash", abspath]).pid
+        retcode = subprocess.call(["gvfs-trash", abspath])
+        if retcode:
+            permanent_delete = True
     except OSError:
+        permanent_delete = True
+    
+    if permanent_delete:
         if os.path.isdir(abspath):
             shutil.rmtree(abspath, True)
         else:
