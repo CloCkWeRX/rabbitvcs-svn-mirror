@@ -186,13 +186,15 @@ class MenuItem(object):
         a string that will be appended and separated from the actual identifier.
         """
         identifier = self.make_magic_id(id_magic)
-        return gtk.Action(identifier, self.label, None, None)
+        
+        return gtk.Action(identifier, self.make_label(), None, None)
 
     def make_thunar_action(self, id_magic = None):
         identifier = self.make_magic_id(id_magic)
+
         action = RabbitVCSAction(
             identifier,
-            self.label,
+            self.make_label(),
             self.tooltip,
             self.icon 
         )
@@ -219,15 +221,21 @@ class MenuItem(object):
         # I'm happy to let the exception propagate the rest of the time, since
         # this method shouldn't be called outside of nautilus.
         identifier = self.make_magic_id(id_magic)
+
         import nautilus
         menuitem = nautilus.MenuItem(
             identifier,
-            self.label,
+            self.make_label(),
             self.tooltip,
             self.icon
         )
         
         return menuitem
+
+    def make_label(self):
+        label = self.label.replace('_', '__')
+        
+        return label
 
 class MenuSeparator(MenuItem):
     identifier = "RabbitVCS::Separator"
