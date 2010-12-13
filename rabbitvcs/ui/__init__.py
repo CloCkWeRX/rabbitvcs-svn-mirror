@@ -63,7 +63,8 @@ STATUS_EMBLEMS = {
     rabbitvcs.vcs.status.status_replaced : "rabbitvcs-modified",
     rabbitvcs.vcs.status.status_complicated : "rabbitvcs-complicated",
     rabbitvcs.vcs.status.status_calculating : "rabbitvcs-calculating",
-    rabbitvcs.vcs.status.status_error : "rabbitvcs-error"
+    rabbitvcs.vcs.status.status_error : "rabbitvcs-error",
+    rabbitvcs.vcs.status.status_unversioned : "rabbitvcs-unversioned"
 }
 
 class GladeWidgetWrapper:
