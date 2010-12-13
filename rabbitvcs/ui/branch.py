@@ -65,10 +65,9 @@ class SVNBranch(InterfaceView):
             rabbitvcs.util.helper.get_repository_paths()
         )
         
-        if self.svn.is_path_repository_url(path):
-            self.from_urls.set_child_text(path)
-        else:
-            self.to_urls.set_child_text(path)
+        repository_url = self.svn.get_repo_url(path)
+        self.from_urls.set_child_text(repository_url)
+        self.to_urls.set_child_text(repository_url)
                 
         self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message")
