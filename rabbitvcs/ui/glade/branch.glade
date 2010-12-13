@@ -77,6 +77,7 @@
                               <widget class="GtkImage" id="image1">
                                 <property name="visible">True</property>
                                 <property name="stock">gtk-find</property>
+                                <property name="icon-size">1</property>
                               </widget>
                             </child>
                           </widget>
