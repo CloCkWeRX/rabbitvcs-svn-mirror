@@ -114,6 +114,9 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
                 "file-column-callback": self.file_column_callback,
                 "row-activated": self.on_row_activated,
                 "mouse-event":   self.on_list_table_mouse_event
+            },
+            flags={
+                "sortable": True
             }
         )
         
