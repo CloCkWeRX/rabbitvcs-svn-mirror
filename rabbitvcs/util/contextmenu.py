@@ -514,12 +514,7 @@ class ContextMenuCallbacks:
         pass
 
     def repo_browser(self, widget, data1=None, data2=None):
-        path = self.paths[0]
-        url = ""
-        if self.vcs_client.is_versioned(path):
-            url = self.vcs_client.get_repo_url(path)        
-    
-        proc = rabbitvcs.util.helper.launch_ui_window("browser", [url])
+        proc = rabbitvcs.util.helper.launch_ui_window("browser", [self.paths[0]])
 
     def initialize_repository(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("create", ["--vcs", "git", self.paths[0]])
