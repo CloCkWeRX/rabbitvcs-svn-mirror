@@ -107,10 +107,19 @@ class SVNExport(SVNCheckout):
 
 class GitExport(GitClone):
     def __init__(self, path=None, revision=None):
-        GitClone.__init__(self, rabbitvcs.util.helper.get_user_path(), path)
-                
-        self.git = self.vcs.git(path)
-        
+    
+        self.git = None
+        guess = rabbitvcs.vcs.guess(path)
+        if guess["vcs"] == rabbitvcs.vcs.VCS_GIT:
+            self.git = self.vcs.git(path)
+            export_to = ""
+            export_from = path
+        else:
+            export_to = path
+            export_from = ""
+
+        GitClone.__init__(self, export_to, export_from)
+
         self.get_widget("Checkout").set_title(_("Export - %s") % path)
 
         self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
@@ -188,17 +197,23 @@ classes_map = {
     rabbitvcs.vcs.VCS_GIT: GitExport
 }
 
-def export_factory(path, revision=None):
-    guess = rabbitvcs.vcs.guess(path)
-    return classes_map[guess["vcs"]](path, revision)
+def export_factory(vcs, path, revision=None):
+    if not vcs:
+        guess = rabbitvcs.vcs.guess(path)
+        vcs = guess["vcs"]
+    
+    if vcs == rabbitvcs.vcs.VCS_DUMMY:
+        vcs = VCS_SVN
+        
+    return classes_map[vcs](path, revision)
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main, REVISION_OPT
+    from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT
     (options, paths) = main(
-        [REVISION_OPT],
-        usage="Usage: rabbitvcs export [url_or_path]"
+        [REVISION_OPT, VCS_OPT],
+        usage="Usage: rabbitvcs export --vcs=[git|svn] [url_or_path]"
     )
             
-    window = export_factory(paths[0], revision=options.revision)
+    window = export_factory(options.vcs, paths[0], revision=options.revision)
     window.register_gtk_quit()
     gtk.main()
