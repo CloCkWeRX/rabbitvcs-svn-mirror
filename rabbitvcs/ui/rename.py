@@ -39,6 +39,7 @@ class Rename(InterfaceNonView):
     
     def __init__(self, path):
         InterfaceNonView.__init__(self)
+        self.register_gtk_quit()
 
         self.vcs = rabbitvcs.vcs.VCS()
 
@@ -46,14 +47,14 @@ class Rename(InterfaceNonView):
         
         if not os.path.exists(self.path):
             MessageBox(_("The requested file or folder does not exist."))
-            self.close()
+            raise SystemExit()
             return
         
         dialog = OneLineTextChange(_("Rename"), _("New Name:"), self.path)
         (result, new_path) = dialog.run()
 
         if result != gtk.RESPONSE_OK:
-            self.close()
+            raise SystemExit()
             return
        
         if not new_path:
@@ -90,6 +91,7 @@ class SVNRename(Rename):
         )
         self.action.append(self.action.set_status, _("Completed Rename"))
         self.action.append(self.action.finish)
+        self.action.append(self.close)
         self.action.start()
 
 class GitRename(Rename):
@@ -100,16 +102,15 @@ class GitRename(Rename):
             return
         
         self.git = self.vcs.git(path)
-        
+
         self.action = rabbitvcs.ui.action.GitAction(
             self.git,
             register_gtk_quit=self.gtk_quit_is_set()
         )
-
-        dirname = os.path.dirname(self.new_path)
+        dirname = os.path.dirname(os.path.realpath(self.new_path))
         if not os.path.exists(dirname):
             os.mkdir(dirname)
-        
+
         self.action.append(self.action.set_header, _("Rename"))
         self.action.append(self.action.set_status, _("Running Rename Command..."))
         self.action.append(
@@ -119,6 +120,7 @@ class GitRename(Rename):
         )
         self.action.append(self.action.set_status, _("Completed Rename"))
         self.action.append(self.action.finish)
+        self.action.append(self.close)
         self.action.start()
 
 classes_map = {
@@ -135,5 +137,4 @@ if __name__ == "__main__":
     (options, paths) = main(usage="Usage: rabbitvcs rename [path]")
             
     window = rename_factory(paths[0])
-    window.register_gtk_quit()
     gtk.main()
