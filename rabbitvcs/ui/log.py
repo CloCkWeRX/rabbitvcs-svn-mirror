@@ -646,7 +646,7 @@ class GitLog(Log):
         self.action = GitAction(
             self.git,
             notification=False,
-            run_in_thread=False
+            run_in_thread=True
         )        
 
         self.action.append(
@@ -656,7 +656,7 @@ class GitLog(Log):
             limit=self.limit+1
         )
         self.action.append(self.refresh)
-        self.action.run()
+        self.action.start()
 
     def update_revision_message(self):
         combined_paths = []
