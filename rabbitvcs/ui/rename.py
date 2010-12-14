@@ -47,14 +47,14 @@ class Rename(InterfaceNonView):
         
         if not os.path.exists(self.path):
             MessageBox(_("The requested file or folder does not exist."))
-            raise SystemExit()
+            self.close()
             return
         
         dialog = OneLineTextChange(_("Rename"), _("New Name:"), self.path)
         (result, new_path) = dialog.run()
 
         if result != gtk.RESPONSE_OK:
-            raise SystemExit()
+            self.close()
             return
        
         if not new_path:

@@ -158,8 +158,10 @@ class InterfaceNonView:
         self.do_gtk_quit = False
 
     def close(self):
-        if self.do_gtk_quit:
+        try:
             gtk.main_quit()
+        except RuntimeError:
+            raise SystemExit()
             
     def register_gtk_quit(self):
         self.do_gtk_quit = True
