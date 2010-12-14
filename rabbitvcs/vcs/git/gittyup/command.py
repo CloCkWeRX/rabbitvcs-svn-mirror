@@ -44,7 +44,7 @@ class GittyupCommand:
         proc = subprocess.Popen(self.command, 
                                 cwd=self.cwd,
                                 stdin=None,
-                                stderr=subprocess.PIPE,
+                                stderr=subprocess.STDOUT,
                                 stdout=subprocess.PIPE,
                                 close_fds=True)
         
@@ -57,6 +57,7 @@ class GittyupCommand:
         stdout = []
         while True:
             readx = select.select([proc.stdout.fileno()], [], [])[0]
+            
             if readx:
                 chunk = proc.stdout.read()
                 if chunk == '':
