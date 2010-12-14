@@ -1068,7 +1068,7 @@ class GittyupClient:
             try:
                 if index[name]:
                     inIndex = True
-            except Exception as e:
+            except Exception, e:
                 inIndex = False
 
             if inIndex:
@@ -1090,19 +1090,19 @@ class GittyupClient:
 
             try:
                 del files_hash[name]
-            except Exception as e:
+            except Exception, e:
                 pass
 
         # Calculate statuses for untracked files
         for name,data in files_hash.items():
             try:
                 inTreeIndex = tree[name]
-            except Exception as e:
+            except Exception, e:
                 inTreeIndex = False
             
             try:
                 inIndex = index[name]
-            except Exception as e:
+            except Exception, e:
                 inIndex = False
             
             if inIndex and not inTreeIndex:
