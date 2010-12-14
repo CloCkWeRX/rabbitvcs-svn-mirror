@@ -31,11 +31,15 @@ class GittyupCommand:
         if not self.cwd:
             self.cwd = os.getcwd()
     
-    def callback_stack(self, val):
+    def get_lines(self, val):
+        returner = []
+        
         lines = val.rstrip("\n").split("\n")
         for line in lines:
-            self.notify(line.rstrip("\x1b[K\n"))
-    
+            returner.append(line.rstrip("\x1b[K\n"))
+        
+        return returner 
+
     def execute(self):
         proc = subprocess.Popen(self.command, 
                                 cwd=self.cwd,
@@ -57,8 +61,11 @@ class GittyupCommand:
                 chunk = proc.stdout.read()
                 if chunk == '':
                     break
-                stdout.append(chunk)
-                self.callback_stack(chunk)
+
+                lines = self.get_lines(chunk)
+                for line in lines:
+                    self.notify(line)
+                    stdout.append(line)
                 
             if self.get_cancel():
                 proc.kill()
