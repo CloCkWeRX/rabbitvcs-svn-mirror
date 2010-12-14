@@ -617,12 +617,12 @@ class ContextMenuConditions:
 
     def checkout(self, data=None):
         if self.path_dict["length"] == 1:
-            if self.path_dict["is_svn"]:
-                return (self.path_dict["is_dir"] and
-                    not self.path_dict["is_working_copy"])
-            elif self.path_dict["is_git"]:
+            if self.path_dict["is_git"]:
                 return (self.path_dict["is_in_a_or_a_working_copy"] and
                     self.path_dict["is_versioned"])
+            else:
+                return (self.path_dict["is_dir"] and
+                        not self.path_dict["is_working_copy"])
     
         return False
     
