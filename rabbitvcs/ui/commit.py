@@ -112,7 +112,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         """
 
         if (item.path in self.paths
-                or self.vcs.is_versioned(item.path)):
+                or item.is_versioned()):
             return True
 
         return False
