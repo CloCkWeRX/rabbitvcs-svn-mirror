@@ -21,6 +21,7 @@
 #
 
 import os.path
+import thread
 
 import pygtk
 import gobject
@@ -38,6 +39,8 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 DATETIME_FORMAT = rabbitvcs.util.helper.DT_FORMAT_THISWEEK
+
+gtk.gdk.threads_init()
 
 class Push(InterfaceView):
     def __init__(self, path):
@@ -80,8 +83,7 @@ class GitPush(Push):
             }
         )
         
-        self.local_log = self.git.log(limit=10, showtype="branch")
-        self.load_log()
+        self.initialize_logs()
 
     def on_ok_clicked(self, widget, data=None):
         self.hide()
@@ -100,22 +102,52 @@ class GitPush(Push):
         self.action.append(self.action.finish)
         self.action.start()
 
-    def load_log(self):
+    def initialize_logs(self):
+        """
+        Initializes the git logs
+        """
+        
+        try:
+            thread.start_new_thread(self.load_logs, ())
+        except Exception, e:
+            log.exception(e)
+
+    def load_logs(self):
+        gtk.gdk.threads_enter()
+        self.get_widget("status").set_text(_("Loading..."))
+
+        gtk.gdk.threads_leave()
+
+        self.load_local_log()
+        self.load_remote_log()
+
+        gtk.gdk.threads_enter()
+        self.get_widget("status").set_text("")
+        self.update_widgets()
+        gtk.gdk.threads_leave()
+
+    def load_local_log(self):
+        self.local_log = self.git.log(limit=10, showtype="branch")
+        
+    def load_remote_log(self):
         repository = self.repository_selector.repository_opt.get_active_text()
         branch = self.repository_selector.branch_opt.get_active_text()
-        
+
+        refspec = "refs/remotes/%s/%s" % (repository, branch)
+        self.remote_log = self.git.log(revision=self.git.revision(refspec), limit=10, showtype="branch")
+
+    def update_widgets(self):
+        repository = self.repository_selector.repository_opt.get_active_text()
+        branch = self.repository_selector.branch_opt.get_active_text()
+
         if not repository or not branch:
             self.get_widget("ok").set_sensitive(False)
             return
-            
-        refspec = "refs/remotes/%s/%s" % (repository, branch)
-        remote_log = self.git.log(revision=self.git.revision(refspec), limit=10, showtype="branch")
-        
+
         has_commits = False
-        
         for item in self.local_log:
             try:
-                remote_log_item = remote_log[0]
+                remote_log_item = self.remote_log[0]
                 if unicode(remote_log_item.revision) != unicode(item.revision):
                     self.log_table.append([
                         rabbitvcs.util.helper.format_datetime(item.date),
@@ -130,6 +162,7 @@ class GitPush(Push):
 
         if not has_commits:
             self.get_widget("ok").set_sensitive(False)
+            self.get_widget("status").set_text(_("No commits found"))
 
 classes_map = {
     rabbitvcs.vcs.VCS_GIT: GitPush
