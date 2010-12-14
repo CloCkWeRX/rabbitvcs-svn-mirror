@@ -490,6 +490,14 @@ class MenuExport(MenuItem):
     tooltip = _("Export a working copy or repository with no versioning information")
     icon = "rabbitvcs-export"
 
+class MenuSVNExport(MenuExport):
+    identifier = "RabbitVCS::SVN_Export"
+    pass
+
+class MenuGitExport(MenuExport):
+    identifier = "RabbitVCS::Git_Export"
+    pass
+
 class MenuCreateRepository(MenuItem):
     identifier = "RabbitVCS::Create_Repository"
     label = _("Create Repository here")

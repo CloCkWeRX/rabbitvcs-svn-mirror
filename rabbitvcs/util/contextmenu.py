@@ -475,6 +475,14 @@ class ContextMenuCallbacks:
         proc = rabbitvcs.util.helper.launch_ui_window("export", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
 
+    def svn_export(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("export", ["--vcs=svn", self.paths[0]])
+        self.caller.rescan_after_process_exit(proc, self.paths)
+
+    def git_export(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("export", ["--vcs=git", self.paths[0]])
+        self.caller.rescan_after_process_exit(proc, self.paths)
+
     def update_to_revision(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("updateto", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
@@ -810,7 +818,13 @@ class ContextMenuConditions:
 
     def export(self, data=None):
         return (self.path_dict["length"] == 1)
-   
+
+    def svn_export(self, data=None):
+        return self.export(data)
+
+    def git_export(self, data=None):
+        return self.export(data)
+
     def update_to_revision(self, data=None):
         return (self.path_dict["length"] == 1 and
                 self.path_dict["is_versioned"] and 
@@ -1254,7 +1268,7 @@ class MainContextMenu:
                 (MenuUnlock, None),
                 (MenuCleanup, None),
                 (MenuSeparator, None),
-                (MenuExport, None),
+                (MenuSVNExport, None),
                 (MenuCreateRepository, None),
                 (MenuImport, None),
                 (MenuSeparator, None),
@@ -1300,7 +1314,7 @@ class MainContextMenu:
                 (MenuTags, None),
                 (MenuRemotes, None),
                 (MenuSeparator, None),
-                (MenuExport, None),
+                (MenuGitExport, None),
                 (MenuMerge, None),
                 (MenuSeparator, None),
                 (MenuAnnotate, None),
