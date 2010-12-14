@@ -203,7 +203,7 @@ def export_factory(vcs, path, revision=None):
         vcs = guess["vcs"]
     
     if vcs == rabbitvcs.vcs.VCS_DUMMY:
-        vcs = VCS_SVN
+        vcs = rabbitvcs.vcs.VCS_SVN
         
     return classes_map[vcs](path, revision)
 
