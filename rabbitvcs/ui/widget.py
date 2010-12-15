@@ -1070,7 +1070,7 @@ class GitRepositorySelector:
         tmp_repos = []
         for item in self.git.remote_list():
             tmp_repos.append(item["name"])
-        self.repository_opt = ComboBox(gtk.ComboBox(), tmp_repos)
+        self.repository_opt = ComboBox(gtk.ComboBoxEntry(), tmp_repos)
         self.repository_opt.set_active(0)
         self.repository_opt.cb.connect("changed", self.__repository_changed)
         self.repository_opt.cb.set_size_request(175, -1)
@@ -1089,7 +1089,7 @@ class GitRepositorySelector:
         tmp_branches = []
         for item in self.git.branch_list():
             tmp_branches.append(item.name)
-        self.branch_opt = ComboBox(gtk.ComboBox(), tmp_branches)
+        self.branch_opt = ComboBox(gtk.ComboBoxEntry(), tmp_branches)
         self.branch_opt.set_active(0)
         self.branch_opt.cb.connect("changed", self.__branch_changed)
         self.branch_opt.cb.set_size_request(175, -1)
