@@ -223,6 +223,8 @@ class RabbitVCSWindowHelper(GtkContextMenuCaller):
         self.base_dir = self._default_base_dir
         self._menubar_menu = None
         self._menu_action = None
+        
+        self.vcs_client = create_vcs_instance()
 
         # Insert menu items
         self._insert_menu()
@@ -241,9 +243,8 @@ class RabbitVCSWindowHelper(GtkContextMenuCaller):
         # Get the GtkUIManager
         manager = self._window.get_ui_manager()
 
-        self._menubar_menu = GeditMenu(self, self.base_dir, [self._get_document_path()])
+        self._menubar_menu = GeditMenu(self, self.vcs_client, self.base_dir, [self._get_document_path()])
         self._menu_action = gtk.Action( name="RabbitVCSMenu", label="RabbitVCS", tooltip="Excellent Version Control for Linux", stock_id=None )
-#        self._menu_action.connect( "activate", lambda a: self.update_ui() )
         
         self._action_group = gtk.ActionGroup("RabbitVCSActions")
         self._action_group = self._menubar_menu.get_action_group(self._action_group)
@@ -276,7 +277,6 @@ class RabbitVCSWindowHelper(GtkContextMenuCaller):
         if document != None:
             manager = self._window.get_ui_manager()
             manager.get_widget("/MenuBar/ExtraMenu_1/RabbitVCSMenu").set_sensitive(True)
-#            self._menu_action.set_sensitive(True)
             self._menubar_menu.set_paths([self._get_document_path()])
             self._determine_menu_sensitivity([self._get_document_path()])
 
@@ -289,7 +289,7 @@ class RabbitVCSWindowHelper(GtkContextMenuCaller):
         menu.append(separator)
         separator.show()
 
-        context_menu = GeditMainContextMenu(self, self.base_dir, [self._get_document_path()]).get_menu()
+        context_menu = GeditMainContextMenu(self, self.vcs_client, self.base_dir, [self._get_document_path()]).get_menu()
         for context_menu_item in context_menu:
             menu.append(context_menu_item)
 
@@ -467,10 +467,13 @@ class GeditMenuBuilder(object):
         return function
         
 class GeditMenu:
-    def __init__(self, caller, base_dir, paths):
+    def __init__(self, caller, vcs_client, base_dir, paths):
         """    
         @param  caller: The calling object
         @type   caller: RabbitVCS extension
+        
+        @param  vcs_client: The vcs client
+        @type   vcs_client: rabbitvcs.vcs
         
         @param  base_dir: The curent working directory
         @type   base_dir: string
@@ -488,7 +491,7 @@ class GeditMenu:
         self.caller = caller
         self.paths = paths
         self.base_dir = base_dir
-        self.vcs_client = create_vcs_instance()
+        self.vcs_client = vcs_client
         
         self.conditions = GtkFilesContextMenuConditions(self.vcs_client, self.paths)
 
@@ -595,11 +598,14 @@ class GeditContextMenu(MenuBuilder):
         return items
 
 class GeditMainContextMenu(MainContextMenu):
-    def __init__(self, caller, base_dir, paths=[], 
+    def __init__(self, caller, vcs_client, base_dir, paths=[], 
             conditions=None, callbacks=None):
         """    
         @param  caller: The calling object
         @type   caller: RabbitVCS extension
+        
+        @param  vcs_client: The vcs client
+        @type   vcs_client: rabbitvcs.vcs
         
         @param  base_dir: The curent working directory
         @type   base_dir: string
@@ -617,7 +623,7 @@ class GeditMainContextMenu(MainContextMenu):
         self.caller = caller
         self.paths = paths
         self.base_dir = base_dir
-        self.vcs_client = create_vcs_instance()
+        self.vcs_client = vcs_client
 
         self.conditions = conditions
         if self.conditions is None:
