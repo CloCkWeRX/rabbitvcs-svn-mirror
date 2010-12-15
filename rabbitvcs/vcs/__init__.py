@@ -149,7 +149,7 @@ class VCS:
 
     def statuses(self, path, recurse=True, invalidate=False):
         client = self.client(path)
-        return client.statuses(path, recurse, invalidate)
+        return client.statuses(path, recurse=recurse, invalidate=invalidate)
     
     def status(self, path, summarize=True, invalidate=False):
         client = self.client(path)
