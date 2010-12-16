@@ -748,7 +748,10 @@ class RabbitVCSAction(gtk.Action):
     def do_create_menu_item(self):
         menu_item = gtk.ImageMenuItem()
         if self.stock_id:
-            menu_item.set_image(gtk.image_new_from_icon_name(self.stock_id, gtk.ICON_SIZE_MENU))
+            try:
+                self.set_icon_name(self.stock_id)
+            except AttributeError, e:
+                menu_item.set_image(gtk.image_new_from_icon_name(self.stock_id, gtk.ICON_SIZE_MENU))
 
         if self.sub_actions is not None:
             menu = gtk.Menu()
