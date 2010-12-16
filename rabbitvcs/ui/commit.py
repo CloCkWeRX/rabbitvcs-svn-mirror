@@ -117,6 +117,15 @@ class Commit(InterfaceView, GtkContextMenuCaller):
 
         return False
 
+    def should_item_be_visible(self, item):
+        show_unversioned = self.SHOW_UNVERSIONED
+        
+        if not show_unversioned:
+            if not item.is_versioned():
+               return False
+       
+        return True
+
     def initialize_items(self):
         """
         Initializes the activated cache and loads the file items in a new thread
@@ -161,16 +170,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             
     def on_toggle_show_unversioned_toggled(self, widget, data=None):
         self.SHOW_UNVERSIONED = not self.SHOW_UNVERSIONED
-
-        if self.SHOW_UNVERSIONED:
-            self.populate_files_table()
-        else:
-            index = 0
-            for row in self.files_table.get_items():
-                if not self.vcs.is_versioned(row[1]):
-                    self.files_table.remove(index)
-                    index -= 1
-                index += 1
+        self.populate_files_table()
 
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
@@ -247,6 +247,9 @@ class SVNCommit(Commit):
                 checked = self.changes[item.path]
             else:
                 checked = self.should_item_be_activated(item)
+
+            if not self.should_item_be_visible(item):
+                continue
 
             self.files_table.append([
                 checked,
@@ -353,7 +356,10 @@ class GitCommit(Commit):
                 checked = self.changes[item.path]
             else:
                 checked = self.should_item_be_activated(item)
-            
+
+            if not self.should_item_be_visible(item):
+                continue
+
             self.files_table.append([
                 checked,
                 item.path, 
