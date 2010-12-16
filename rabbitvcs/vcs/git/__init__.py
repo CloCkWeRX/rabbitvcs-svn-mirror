@@ -229,10 +229,9 @@ class Git:
        
         st = self.status(path)
         try:
-            if (st[0].path == self.client.get_relative_path(path) and
-                    st[0].identifier != "untracked"):
-                return True
-        except Exception:
+            return st.is_versioned()
+        except Exception, e:
+            log.error(e)
             return False
 
         return False
