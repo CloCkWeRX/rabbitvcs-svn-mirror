@@ -732,7 +732,8 @@ class ContextMenuConditions:
                 self.path_dict["is_versioned"])
         
     def delete(self, data=None):
-        return self.path_dict["exists"] or self.path_dict["is_versioned"]
+        return (self.path_dict["exists"] or self.path_dict["is_versioned"]) and \
+            not self.path_dict["is_deleted"]
         
     def revert(self, data=None):
         if self.path_dict["is_in_a_or_a_working_copy"]:
@@ -980,10 +981,8 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
 
     def delete(self, widget, data1=None, data2=None):
         if len(self.paths) > 0:
-            from rabbitvcs.ui.delete import Delete
-            Delete(self.paths).start()
-            sleep(1) # sleep so the items can be fully deleted before init
-            self.caller.reload_treeview()
+            proc = rabbitvcs.util.helper.launch_ui_window("delete", self.paths)
+            self.caller.rescan_after_process_exit(proc, self.paths)
   
     def update(self, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("update", self.paths)
