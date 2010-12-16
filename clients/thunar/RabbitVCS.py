@@ -146,9 +146,6 @@ class RabbitVCS(thunarx.MenuProvider, thunarx.PropertyPageProvider):
     def __init__(self):
         threading.currentThread().setName("RabbitVCS extension thread")
         
-        # Create a global client we can use to do VCS related stuff
-        self.vcs_client = SVN()
-        
         self.status_checker = StatusChecker()
     
     def get_local_path(self, item):
@@ -261,7 +258,6 @@ class RabbitVCS(thunarx.MenuProvider, thunarx.PropertyPageProvider):
                 self.status_checker.check_status(path,
                                                  recurse=True,
                                                  invalidate=True,
-                                                 callback=True,
                                                  summary=True)
             
         self.execute_after_process_exit(proc, do_check)
