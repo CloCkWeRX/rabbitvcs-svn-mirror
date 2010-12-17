@@ -83,8 +83,8 @@ class SVNResolve(Add):
                 True, 
                 item.path, 
                 rabbitvcs.util.helper.get_file_extension(item.path),
-                item.content,
-                item.metadata
+                item.simple_content_status(),
+                item.simple_metadata_status()
             ])
                     
     def on_ok_clicked(self, widget):

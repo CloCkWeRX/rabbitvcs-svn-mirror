@@ -590,15 +590,15 @@ class ContextMenuConditions:
             "is_working_copy"               : self.vcs_client.is_working_copy,
             "is_in_a_or_a_working_copy"     : self.vcs_client.is_in_a_or_a_working_copy,
             "is_versioned"                  : self.vcs_client.is_versioned,
-            "is_normal"                     : lambda path: self.statuses[path].content == "unchanged" and self.statuses[path].metadata == "normal",
-            "is_added"                      : lambda path: self.statuses[path].content == "added",
-            "is_modified"                   : lambda path: self.statuses[path].content == "modified" or self.statuses[path].metadata == "modified",
-            "is_deleted"                    : lambda path: self.statuses[path].content == "deleted",
-            "is_ignored"                    : lambda path: self.statuses[path].content == "ignored",
-            "is_locked"                     : lambda path: self.statuses[path].content == "locked",
-            "is_missing"                    : lambda path: self.statuses[path].content == "missing",
-            "is_conflicted"                 : lambda path: self.statuses[path].content == "conflicted",
-            "is_obstructed"                 : lambda path: self.statuses[path].content == "obstructed",
+            "is_normal"                     : lambda path: self.statuses[path].simple_content_status() == "unchanged" and self.statuses[path].simple_metadata_status() == "normal",
+            "is_added"                      : lambda path: self.statuses[path].simple_content_status() == "added",
+            "is_modified"                   : lambda path: self.statuses[path].simple_content_status() == "modified" or self.statuses[path].simple_metadata_status() == "modified",
+            "is_deleted"                    : lambda path: self.statuses[path].simple_content_status() == "deleted",
+            "is_ignored"                    : lambda path: self.statuses[path].simple_content_status() == "ignored",
+            "is_locked"                     : lambda path: self.statuses[path].simple_content_status() == "locked",
+            "is_missing"                    : lambda path: self.statuses[path].simple_content_status() == "missing",
+            "is_conflicted"                 : lambda path: self.statuses[path].simple_content_status() == "conflicted",
+            "is_obstructed"                 : lambda path: self.statuses[path].simple_content_status() == "obstructed",
             "is_staged"                     : lambda path: self.statuses[path].is_staged == True,
             "has_unversioned"               : lambda path: "unversioned" in self.text_statuses,
             "has_added"                     : lambda path: "added" in self.text_statuses,
@@ -1040,8 +1040,8 @@ class GtkFilesContextMenuConditions(ContextMenuConditions):
             for status in statuses_tmp:
                 self.statuses[status.path] = status
 
-        self.text_statuses = [self.statuses[key].content for key in self.statuses.keys()]
-        self.prop_statuses = [self.statuses[key].metadata for key in self.statuses.keys()]
+        self.text_statuses = [self.statuses[key].simple_content_status() for key in self.statuses.keys()]
+        self.prop_statuses = [self.statuses[key].simple_metadata_status() for key in self.statuses.keys()]
         
 class GtkFilesContextMenu:
     """
@@ -1177,8 +1177,8 @@ class MainContextMenuConditions(ContextMenuConditions):
             for status in statuses_tmp:
                 self.statuses[status.path] = status
 
-        self.text_statuses = [self.statuses[key].content for key in self.statuses.keys()]
-        self.prop_statuses = [self.statuses[key].metadata for key in self.statuses.keys()]
+        self.text_statuses = [self.statuses[key].simple_content_status() for key in self.statuses.keys()]
+        self.prop_statuses = [self.statuses[key].simple_metadata_status() for key in self.statuses.keys()]
 
 class MainContextMenu:
     """

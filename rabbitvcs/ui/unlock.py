@@ -91,7 +91,7 @@ class SVNUnlock(Add):
         found = 0
         for item in self.items:
             # FIXME: ...
-            if item.content in (rabbitvcs.vcs.status.status_unversioned, rabbitvcs.vcs.status.status_ignored):
+            if item.simple_content_status() in (rabbitvcs.vcs.status.status_unversioned, rabbitvcs.vcs.status.status_ignored):
                 continue
                 
             if not self.svn.is_locked(item.path):

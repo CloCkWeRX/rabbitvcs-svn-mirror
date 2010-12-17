@@ -255,8 +255,8 @@ class SVNCommit(Commit):
                 checked,
                 item.path, 
                 rabbitvcs.util.helper.get_file_extension(item.path),
-                item.content,
-                item.metadata
+                item.simple_content_status(),
+                item.simple_metadata_status()
             ])
 
     def on_ok_clicked(self, widget, data=None):
@@ -270,7 +270,7 @@ class SVNCommit(Commit):
         added = 0
         recurse = False
         for item in items:
-            status = self.vcs.status(item, summarize=False).content
+            status = self.vcs.status(item, summarize=False).simple_content_status()
             try:
                 if status == rabbitvcs.vcs.status.status_unversioned:
                     self.vcs.svn().add(item)
@@ -364,7 +364,7 @@ class GitCommit(Commit):
                 checked,
                 item.path, 
                 rabbitvcs.util.helper.get_file_extension(item.path),
-                item.content
+                item.simple_content_status()
             ])
 
     def on_ok_clicked(self, widget, data=None):

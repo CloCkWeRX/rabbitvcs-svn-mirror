@@ -86,15 +86,15 @@ class FileInfoPane(rabbitvcs.ui.GladeWidgetWrapper):
 
         self.get_widget("vcs_type").set_text(self.status.vcs_type)
         
-        self.get_widget("content_status").set_text(unicode(self.status.content))
-        self.get_widget("prop_status").set_text(unicode(self.status.metadata))
+        self.get_widget("content_status").set_text(unicode(self.status.simple_content_status()))
+        self.get_widget("prop_status").set_text(unicode(self.status.simple_metadata_status()))
         
 
         self.set_icon_from_status(self.get_widget("content_status_icon"),
-                                                  self.status.content)
+                                                  self.status.simple_content_status())
 
         self.set_icon_from_status(self.get_widget("prop_status_icon"),
-                                                  self.status.metadata)
+                                                  self.status.simple_metadata_status())
 
         self.set_icon_from_status(self.get_widget("vcs_icon"),
                                   self.status.single, gtk.ICON_SIZE_DIALOG)
