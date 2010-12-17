@@ -134,7 +134,7 @@ class Git:
         else:
             self.client = GittyupClient()
 
-        self.cache = {}
+        self.cache = rabbitvcs.vcs.status.StatusCache()
 
     def set_repository(self, path):
         self.client.set_repository(path)

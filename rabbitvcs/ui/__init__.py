@@ -51,8 +51,8 @@ VCS_OPT_ERROR = _("You must specify a version control system using the --vcs [sv
 
 #: Maps statuses to emblems.
 STATUS_EMBLEMS = {
-    rabbitvcs.vcs.status.status_unchanged : "rabbitvcs-normal",
-    rabbitvcs.vcs.status.status_changed : "rabbitvcs-modified",
+    rabbitvcs.vcs.status.status_normal : "rabbitvcs-normal",
+    rabbitvcs.vcs.status.status_modified : "rabbitvcs-modified",
     rabbitvcs.vcs.status.status_added : "rabbitvcs-added",
     rabbitvcs.vcs.status.status_deleted : "rabbitvcs-deleted",
     rabbitvcs.vcs.status.status_ignored :"rabbitvcs-ignored",

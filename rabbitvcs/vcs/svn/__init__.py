@@ -214,7 +214,7 @@ class SVN:
         self.client = pysvn.Client()
         self.interface = "pysvn"
         self.vcs = rabbitvcs.vcs.VCS_SVN
-        self.cache = {}
+        self.cache = rabbitvcs.vcs.status.StatusCache()
 
     def statuses(self, path, recurse=True, update=False, invalidate=False):
         """

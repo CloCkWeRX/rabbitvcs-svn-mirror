@@ -25,12 +25,16 @@ import unittest
 
 import rabbitvcs.vcs
 
+from rabbitvcs.util.log import Log
+
+log = Log("rabbitvcs.vcs.status")
+
 from rabbitvcs import gettext
 _ = gettext.gettext
 
 # These are the statuses that we might represent with icons
-status_unchanged = 'unchanged'
-status_changed = 'changed'
+status_normal = 'normal'
+status_modified = 'modified'
 status_added = 'added'
 status_deleted = 'deleted'
 status_ignored = 'ignored'
@@ -47,12 +51,65 @@ status_calculating = 'calculating'
 status_error = 'error'
 
 MODIFIED_CHILD_STATUSES = [
-    status_changed,
+    status_modified,
     status_added,
     status_deleted,
     status_missing,
     status_replaced
 ]
+
+class StatusCache(object):
+    keys = [
+        None,
+        status_normal,
+        status_modified,
+        status_added,
+        status_deleted,
+        status_ignored,
+        status_read_only,
+        status_locked,
+        status_unknown,
+        status_unversioned,
+        status_missing,
+        status_replaced,
+        status_complicated,
+        status_calculating,
+        status_error
+    ]
+
+    def __init__(self):
+        self.cache = {}
+
+    def __setitem__(self, path, status):
+        try:
+            return
+            content = self.keys.index(status.simple_content_status())
+            metadata = self.keys.index(status.simple_metadata_status())
+            self.cache[path] = (
+                content,
+                metadata
+            )
+        except Exception, e:
+            log.debug(e)
+            
+    def __getitem__(self, path):
+        try:
+            status = self.cache[path]
+            content = self.keys[status[0]]
+            metadata = self.keys[status[1]]
+            return Status(path, content, metadata)
+        except Exception, e:
+            log.debug(e)
+
+    def __delitem__(self, path):
+        try:
+            del self.cache[path]
+        except KeyError, e:
+            log.debug(e)
+
+            
+    def __contains__(self, path):
+        return path in self.cache
 
 class Status(object):
 
@@ -124,7 +181,7 @@ class Status(object):
             # These take priority over child statuses
             self.summary = self.single        
         elif len(set(MODIFIED_CHILD_STATUSES) & status_set):
-            self.summary = status_changed
+            self.summary = status_modified
         else:
             self.summary = self.single
         
@@ -136,18 +193,18 @@ class Status(object):
     def is_modified(self):
         # This may need to be more sophisticated... eg. is read-only modified?
         # Unknown? etc... 
-        return self.single is not status_unchanged
+        return self.single is not status_normal
     
     def has_modified(self):
         # Includes self being modified!
-        return self.summary is not status_unchanged    
+        return self.summary is not status_normal    
     
     def __repr__(self):
         return "<%s %s (%s) %s/%s>" % (_("RabbitVCS status for"),
                                         self.path,
                                         self.vcs_type,
-                                        self.content,
-                                        self.metadata)
+                                        self.simple_content_status(),
+                                        self.simple_metadata_status())
 
     def __getstate__(self):
         attrs = self.__dict__.copy()
@@ -165,26 +222,26 @@ class SVNStatus(Status):
     vcs_type = rabbitvcs.vcs.VCS_SVN
     
     content_status_map = {
-        'normal': status_unchanged,
+        'normal': status_normal,
         'added': status_added,
         'missing': status_missing,
         'unversioned': status_unversioned,
         'deleted': status_deleted,
-        'replaced': status_changed,
-        'modified': status_changed,
-        'merged': status_changed,
+        'replaced': status_modified,
+        'modified': status_modified,
+        'merged': status_modified,
         'conflicted': status_complicated,
         'ignored': status_ignored,
         'obstructed': status_complicated,
         # FIXME: is this the best representation of 'externally populated'?
-        'external': status_unchanged,
+        'external': status_normal,
         'incomplete': status_complicated
     }
     
     metadata_status_map = {
-        'normal': status_unchanged,
-        'none': status_unchanged,
-        'modified': status_changed
+        'normal': status_normal,
+        'none': status_normal,
+        'modified': status_modified
         }
     
 #external - an unversioned path populated by an svn:external property
@@ -211,19 +268,19 @@ class GitStatus(Status):
     vcs_type = 'git'
     
     content_status_map = {
-        'normal': status_unchanged,
+        'normal': status_normal,
         'added': status_added,
         'missing': status_missing,
         'untracked': status_unversioned,
         'removed': status_deleted,
-        'modified': status_changed,
-        'renamed': status_changed,
+        'modified': status_modified,
+        'renamed': status_modified,
         'ignored': status_ignored
     }
     
     metadata_status_map = {
-        'normal': status_unchanged,
-        None: status_unchanged
+        'normal': status_normal,
+        None: status_normal
     }
     
     is_staged = False
@@ -251,48 +308,48 @@ class TestStatusObjects(unittest.TestCase):
                 ]
     
     def testsingle_clean(self):
-        status = Status(self.base, status_unchanged)
-        self.assertEqual(status.single, status_unchanged)
+        status = Status(self.base, status_normal)
+        self.assertEqual(status.single, status_normal)
         
     def testsingle_changed(self):
-        status = Status(self.base, status_changed)
-        self.assertEqual(status.single, status_changed)
+        status = Status(self.base, status_modified)
+        self.assertEqual(status.single, status_modified)
         
     def testsingle_propclean(self):
-        status = Status(self.base, status_unchanged, status_unchanged)
-        self.assertEqual(status.single, status_unchanged)
+        status = Status(self.base, status_normal, status_normal)
+        self.assertEqual(status.single, status_normal)
 
     def testsingle_propchanged(self):
-        status = Status(self.base, status_unchanged, status_changed)
-        self.assertEqual(status.single, status_changed)
+        status = Status(self.base, status_normal, status_modified)
+        self.assertEqual(status.single, status_modified)
         
     def testsummary_clean(self):
-        top_status = Status(self.base, status_unchanged)
-        child_sts = [Status(path, status_unchanged) for path in self.children]
+        top_status = Status(self.base, status_normal)
+        child_sts = [Status(path, status_normal) for path in self.children]
         top_status.make_summary(child_sts)
-        self.assertEqual(top_status.summary, status_unchanged)
+        self.assertEqual(top_status.summary, status_normal)
 
     def testsummary_changed(self):
-        top_status = Status(self.base, status_unchanged)
-        child_sts = [Status(path, status_unchanged) for path in self.children]
+        top_status = Status(self.base, status_normal)
+        child_sts = [Status(path, status_normal) for path in self.children]
         
-        child_sts[1] = Status(child_sts[1].path, status_changed)
+        child_sts[1] = Status(child_sts[1].path, status_modified)
         
         top_status.make_summary(child_sts)
-        self.assertEqual(top_status.summary, status_changed)
+        self.assertEqual(top_status.summary, status_modified)
 
     def testsummary_added(self):
-        top_status = Status(self.base, status_unchanged)
-        child_sts = [Status(path, status_unchanged) for path in self.children]
+        top_status = Status(self.base, status_normal)
+        child_sts = [Status(path, status_normal) for path in self.children]
         
         child_sts[1] = Status(child_sts[1].path, status_added)
         
         top_status.make_summary(child_sts)
-        self.assertEqual(top_status.summary, status_changed)
+        self.assertEqual(top_status.summary, status_modified)
 
     def testsummary_complicated(self):
-        top_status = Status(self.base, status_unchanged)
-        child_sts = [Status(path, status_unchanged) for path in self.children]
+        top_status = Status(self.base, status_normal)
+        child_sts = [Status(path, status_normal) for path in self.children]
         
         child_sts[1] = Status(child_sts[1].path, status_complicated)
         
@@ -300,35 +357,35 @@ class TestStatusObjects(unittest.TestCase):
         self.assertEqual(top_status.summary, status_complicated)
 
     def testsummary_propchange(self):
-        top_status = Status(self.base, status_unchanged)
-        child_sts = [Status(path, status_unchanged) for path in self.children]
+        top_status = Status(self.base, status_normal)
+        child_sts = [Status(path, status_normal) for path in self.children]
         
         child_sts[1] = Status(child_sts[1].path,
-                              status_unchanged,
-                              status_changed)
+                              status_normal,
+                              status_modified)
         
         top_status.make_summary(child_sts)
-        self.assertEqual(top_status.summary, status_changed)
+        self.assertEqual(top_status.summary, status_modified)
 
     def testsummary_bothchange(self):
-        top_status = Status(self.base, status_unchanged)
-        child_sts = [Status(path, status_unchanged) for path in self.children]
+        top_status = Status(self.base, status_normal)
+        child_sts = [Status(path, status_normal) for path in self.children]
         
         child_sts[1] = Status(child_sts[1].path,
                               status_complicated,
-                              status_changed)
+                              status_modified)
         
         top_status.make_summary(child_sts)
         self.assertEqual(top_status.summary, status_complicated)
 
     def testsummary_topadded(self):
         top_status = Status(self.base, status_added)
-        child_sts = [Status(path, status_unchanged) for path in self.children]
+        child_sts = [Status(path, status_normal) for path in self.children]
         
-        child_sts[1] = Status(child_sts[1].path, status_changed, status_changed)
+        child_sts[1] = Status(child_sts[1].path, status_modified, status_modified)
         
         top_status.make_summary(child_sts)
         self.assertEqual(top_status.summary, status_added)
-    
+
 if __name__ == "__main__":
     unittest.main()
