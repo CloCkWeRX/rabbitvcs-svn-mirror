@@ -23,7 +23,8 @@ Depends: ${misc:Depends},
          subversion (>= 1.4.6),
          meld (>=1.1.2), 
          ipython (>=0.7.1),
-         hicolor-icon-theme (>= 0.10-2)
+         hicolor-icon-theme (>= 0.10-2),
+         python-dulwich
 Conflicts: nautilussvn, rabbitvcs
 Replaces: nautilussvn
 Description: Easy version control
