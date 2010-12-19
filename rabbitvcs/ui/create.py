@@ -51,7 +51,7 @@ class SVNCreate:
             rabbitvcs.ui.dialog.MessageBox(_("Repository successfully created"))
         else:
             rabbitvcs.ui.dialog.MessageBox(_("There was an error creating the repository.  Make sure the given folder is empty."))
-
+        
 class GitCreate:
     # Also, might want to just launch a terminal window instead of this
     def __init__(self, path):
@@ -81,6 +81,7 @@ if __name__ == "__main__":
     (options, paths) = main([VCS_OPT], usage="Usage: rabbitvcs create --vcs [svn|git] path")
     if options.vcs:
         window = classes_map[options.vcs](paths[0])
-        gtk.main()
+        if options.vcs == rabbitvcs.vcs.VCS_GIT:
+            gtk.main()
     else:
         rabbitvcs.ui.dialog.MessageBox(VCS_OPT_ERROR)
