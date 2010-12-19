@@ -413,7 +413,7 @@ class SVNLog(Log):
             # so the user can look at the item that was copied
             if self.stop_on_copy:
                 for path in item.changed_paths:
-                    if path.copyfrom_path is not None:
+                    if path.copy_from_path or path.copy_from_revision:
                         return
             
         self.check_previous_sensitive()
