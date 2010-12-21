@@ -61,7 +61,9 @@ class SVNOpen(InterfaceNonView):
 
         revision_obj = self.svn.revision("number", number=revision)
 
-        url = self.svn.get_repo_root_url(path) + '/' + path
+        url = path
+        if not self.svn.is_path_repository_url(path):
+            url = self.svn.get_repo_root_url(path) + '/' + path
         dest = "/tmp/rabbitvcs-" + revision + "-" + os.path.basename(path)
         
         self.svn.export(
@@ -126,6 +128,7 @@ classes_map = {
 
 def open_factory(path, revision):
     guess = rabbitvcs.vcs.guess(path)
+    print path,revision,guess
     return classes_map[guess["vcs"]](path, revision)
 
 if __name__ == "__main__":

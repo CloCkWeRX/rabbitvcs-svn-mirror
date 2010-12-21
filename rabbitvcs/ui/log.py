@@ -1262,6 +1262,7 @@ class LogBottomContextMenuCallbacks:
 
     def _open(self, widget, data=None):
         for path in self.paths:
+            path = self.caller.root_url + path
             rabbitvcs.util.helper.launch_ui_window("open", [path, "-r", unicode(self.revisions[0]["revision"])])
 
     def annotate(self, widget, data=None):
