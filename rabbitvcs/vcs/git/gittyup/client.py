@@ -11,6 +11,8 @@ from string import ascii_letters, digits
 from datetime import datetime
 from mimetypes import guess_type
 
+import subprocess
+
 import dulwich.errors
 import dulwich.repo
 import dulwich.objects
@@ -49,6 +51,8 @@ class GittyupClient:
         self.callback_get_cancel = callback_get_cancel
 
         self.global_ignore_patterns = []
+        
+        self.git_version = None
         
         if path:
             try:
@@ -106,6 +110,62 @@ class GittyupClient:
             for item in self.repo.object_store.iter_tree_contents(tree.id):
                 tree_index[item[0]] = (item[1], item[2])
         return tree_index
+
+    def _get_git_version(self):
+        """
+        Gets the local git version
+        """
+        
+        if self.git_version:
+            return self.git_version
+        else:
+            try:
+                proc = subprocess.Popen(["git", "--version"], stdout=subprocess.PIPE)
+                response = proc.communicate()[0].split()
+                version = response[2].split(".")
+                self.git_version = version
+                return self.git_version
+            except Exception, e:
+                return None
+
+    def _version_greater_than(self, version1, version2):
+        len1 = len(version1)
+        len2 = len(version2)
+        
+        max = 5
+
+        # Pad the version lists so they are the same length
+        if max > len1:
+            version1 += [0] * (max-len1)
+        if max > len2:
+            version2 += [0] * (max-len2)
+
+        if version1[0] > version2[0]:
+            return True
+
+        if (version1[0] == version2[0]
+                and version1[1] > version2[1]):
+            return True
+
+        if (version1[0] == version2[0]
+                and version1[1] == version2[1]
+                and version1[2] > version2[2]):
+            return True
+
+        if (version1[0] == version2[0]
+                and version1[1] == version2[1]
+                and version1[2] == version2[2]
+                and version1[3] > version2[3]):
+            return True
+
+        if (version1[0] == version2[0]
+                and version1[1] == version2[1]
+                and version1[2] == version2[2]
+                and version1[3] == version2[3]
+                and version1[4] > version2[4]):
+            return True
+
+        return False
 
     def _get_global_ignore_patterns(self):
         """
@@ -356,7 +416,7 @@ class GittyupClient:
         for path in paths:
             relative_path = self.get_relative_path(path)
             absolute_path = self.get_absolute_path(path)
-            blob = self._get_blob_from_file(path)
+            blob = self._get_blob_from_file(absolute_path)
             
             if relative_path in index:
                 (ctime, mtime, dev, ino, mode, uid, gid, size, blob_id, flags) = index[relative_path]
@@ -1046,8 +1106,67 @@ class GittyupClient:
                 tags.append(tag)
         
         return tags
-    
-    def status(self, path):
+
+    def status_porcelain(self, path):
+        if os.path.isdir(path):
+            (files, directories) = self._read_directory_tree(path)
+        else:
+            files = [self.get_relative_path(path)]
+            directories = []
+
+        files_hash = {}
+        for file in files:
+            files_hash[file] = True
+
+        cmd = ["git", "status", "--porcelain", path]
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
+        
+        statuses = []
+        modified_files = []
+        for line in stdout:
+            components = re.match("^([\sA-Z]+)\s(.*?)$", line)
+            if components:
+                status = components.group(1)
+                strip_status = status.strip()
+                path = components.group(2)
+               
+                if status == " D":
+                    statuses.append(MissingStatus(path))
+                elif strip_status in ["M", "R", "U"]:
+                    statuses.append(ModifiedStatus(path))
+                elif strip_status in ["A", "C"]:
+                    statuses.append(AddedStatus(path))
+                elif strip_status == "D":
+                    statuses.append(RemovedStatus(path))
+                elif strip_status == "??":
+                    statuses.append(UntrackedStatus(path))
+                
+                modified_files.append(path)
+                try:
+                    del files_hash[path]
+                except Exception, e:
+                    pass
+
+        for file,data in files_hash.items():
+            statuses.append(NormalStatus(file))
+
+        # Determine status of folders based on child contents
+        for d in directories:
+            d_status = NormalStatus(d)
+            
+            for file in modified_files:
+                if os.path.join(d, os.path.basename(file)) == file:
+                    d_status = ModifiedStatus(d)
+                    break
+            
+            statuses.append(d_status)
+
+        return statuses
+
+    def status_dulwich(self, path):
         tree = self._get_tree_index()        
         index = self._get_index()
         
@@ -1135,6 +1254,13 @@ class GittyupClient:
             statuses.append(d_status)
 
         return statuses
+
+    def status(self, path):
+        version = self._get_git_version()
+        if version and self._version_greater_than(version, [1,7,-1]):
+            return self.status_porcelain(path)
+        else:
+            return self.status_dulwich(path)
 
     def log(self, path="", skip=0, limit=None, revision="", showtype="all"):
         
@@ -1240,19 +1366,23 @@ class GittyupClient:
 
         returner = []
         for line in stdout:
-            components = re.split("\t", line)
+            components = re.split("\t", line, 3)
             if len(components) < 4:
                 continue
 
             dt = datetime(*time.strptime(components[2][:-6],"%Y-%m-%d %H:%M:%S")[:-2])
 
-            message = re.match("^([0-9]+)\)(.*?)$", components[3])
+            message = components[3].split(")")
+            code = message[1]
+            if len(components) == 5:
+                code = components[4]
+                
             returner.append({
                 "revision": components[0],
                 "author": components[1][1:],
                 "date": dt,
-                "line": message.group(2),
-                "number": message.group(1)
+                "line": code,
+                "number": message[0]
             })
         
         return returner

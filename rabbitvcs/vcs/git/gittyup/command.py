@@ -33,7 +33,6 @@ class GittyupCommand:
     
     def get_lines(self, val):
         returner = []
-        
         lines = val.rstrip("\n").split("\n")
         for line in lines:
             returner.append(line.rstrip("\x1b[K\n"))
@@ -53,22 +52,37 @@ class GittyupCommand:
             fcntl.F_SETFL,
             fcntl.fcntl(proc.stdout.fileno(), fcntl.F_GETFL) | os.O_NONBLOCK,
         )
-        
+
         stdout = []
+        last_chunk = ""
         while True:
             readx = select.select([proc.stdout.fileno()], [], [])[0]
-            
             if readx:
-                chunk = proc.stdout.read()
+                chunk = last_chunk + proc.stdout.read()
                 if chunk == '':
                     break
-
+                    
+                if chunk[-1] != "\n":
+                    last_chunk = chunk
+                    continue
+                
                 lines = self.get_lines(chunk)
+                
                 for line in lines:
                     self.notify(line)
                     stdout.append(line)
                 
+                chunk = ""
+                last_chunk = ""
+
             if self.get_cancel():
                 proc.kill()
-        
+
+        if chunk:
+            lines = self.get_lines(chunk)
+            
+            for line in lines:
+                self.notify(line)
+                stdout.append(line)
+
         return (0, stdout, None)
