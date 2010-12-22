@@ -119,7 +119,7 @@ class Log(InterfaceView):
 
         self.get_widget("Log").set_title(_("Log - %s") % path)
         self.vcs = rabbitvcs.vcs.VCS()
-        
+
         self.path = path
         self.cache = LogCache()
 
@@ -1355,8 +1355,7 @@ def log_dialog_factory(path, ok_callback=None, multiple=False):
 if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main(usage="Usage: rabbitvcs log [url_or_path]")
-    
-    path = os.path.abspath(paths[0])
-    window = log_factory(path)
+    print paths
+    window = log_factory(paths[0])
     window.register_gtk_quit()
     gtk.main()
