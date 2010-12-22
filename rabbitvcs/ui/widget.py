@@ -910,11 +910,11 @@ class RevisionSelector:
         container.add(hbox)
     
     def __revision_browse_clicked(self, widget):
-        from rabbitvcs.ui.log import log_dialog_factory
-        log_dialog_factory(
-            self.get_url(), 
-            ok_callback=self.__log_closed
-        )
+        from rabbitvcs.ui.log import SVNLogDialog, GitLogDialog
+        if self.client.vcs == rabbitvcs.vcs.VCS_GIT:
+            GitLogDialog(self.get_url(), ok_callback=self.__log_closed)
+        elif self.client.vcs == rabbitvcs.vcs.VCS_SVN:
+            SVNLogDialog(self.get_url(), ok_callback=self.__log_closed)
     
     def __log_closed(self, data):
         if data is not None:
