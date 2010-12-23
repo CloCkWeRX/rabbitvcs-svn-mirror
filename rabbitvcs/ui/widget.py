@@ -858,6 +858,15 @@ class RevisionSelector:
 
         """
         
+        self.client = client
+        self.revision = revision
+        self.url_combobox = url_combobox
+        self.url_entry = url_entry
+        self.url = url
+        self.revision_changed_callback = revision_changed_callback
+        self.revision_change_inprogress = False
+        hbox = gtk.HBox(0, 4)
+
         if client.vcs == rabbitvcs.vcs.VCS_GIT:
             self.OPTIONS = [
                 _("HEAD"),
@@ -867,18 +876,10 @@ class RevisionSelector:
         elif client.vcs == rabbitvcs.vcs.VCS_SVN:
             self.OPTIONS = [
                 _("HEAD"),
-                _("Number"),
-                _("Working Copy")
+                _("Number")
             ]
-        
-        self.client = client
-        self.revision = revision
-        self.url_combobox = url_combobox
-        self.url_entry = url_entry
-        self.url = url
-        self.revision_changed_callback = revision_changed_callback
-        self.revision_change_inprogress = False
-        hbox = gtk.HBox(0, 4)
+            if not client.is_path_repository_url(self.get_url()):
+                self.OPTIONS.append(_("Working Copy"))
         
         self.revision_kind_opt = ComboBox(gtk.ComboBox(), self.OPTIONS)
         self.revision_kind_opt.set_active(0)
