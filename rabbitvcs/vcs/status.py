@@ -23,6 +23,8 @@
 import os.path
 import unittest
 
+from datetime import datetime
+
 import rabbitvcs.vcs
 
 from rabbitvcs.util.log import Log
@@ -76,28 +78,51 @@ class StatusCache(object):
         status_calculating,
         status_error
     ]
+    
+    authors = []
+    revisions = []
 
     def __init__(self):
         self.cache = {}
 
     def __setitem__(self, path, status):
         try:
-            return
-            content = self.keys.index(status.simple_content_status())
-            metadata = self.keys.index(status.simple_metadata_status())
+            content_index = self.keys.index(status.simple_content_status())
+            metadata_index = self.keys.index(status.simple_metadata_status())
+
+            try:
+                author_index = self.authors.index(status.author)
+            except ValueError, e:
+                self.authors.append(status.author)
+                author_index = len(self.authors) -1
+
+            try:
+                revision_index = self.revisions.index(status.revision)
+            except ValueError, e:
+                self.revisions.append(status.revision)
+                revision_index = len(self.revisions) -1
+            
             self.cache[path] = (
-                content,
-                metadata
+                content_index,
+                metadata_index,
+                revision_index,
+                author_index,
+                status.date
             )
         except Exception, e:
             log.debug(e)
             
     def __getitem__(self, path):
         try:
-            status = self.cache[path]
-            content = self.keys[status[0]]
-            metadata = self.keys[status[1]]
-            return Status(path, content, metadata)
+            (content_index, metadata_index, revision_index, author_index, date) = self.cache[path]
+            
+            content = self.keys[content_index]
+            metadata = self.keys[metadata_index]
+            revision = self.revisions[revision_index]
+            author = self.authors[author_index]
+
+            return Status(path, content, metadata, revision=revision, 
+                author=author, date=date)
         except Exception, e:
             log.debug(e)
 
@@ -132,13 +157,43 @@ class Status(object):
     content_status_map = None
     metadata_status_map = None
     
-    def __init__(self, path, content, metadata = None, summary = None):
+    def __init__(self, path, content, metadata=None, summary=None, 
+            revision=None, author=None, date=None):
+
+        """
+        The status objects accepts the following items
+        
+        @type   path: string
+        @param  path: The path to the item
+        
+        @type   content: string
+        @param  content: The content status
+        
+        @type   metadata: string
+        @param  metadata: The property status
+
+        @type   summary: string
+        @param  summary: The summary status
+        
+        @type   revision: string or int
+        @param  revision: The last commit revision of the item
+        
+        @type   author: string
+        @param  author: The commit author
+        
+        @type   date: int
+        @param  date: The timestamp of the commit time
+        
+        """
+
         self.path = path
         self.content = content
         self.metadata = metadata
         self.single = self._make_single_status()
         self.summary = summary
-        self.is_staged = False
+        self.revision = revision
+        self.author = author
+        self.date = date
  
     def _make_single_status(self):
         """
@@ -248,20 +303,30 @@ class SVNStatus(Status):
 #incomplete - a directory doesn't contain a complete entries list
     
     def __init__(self, pysvn_status):
+        revision = author = date = None
+        if pysvn_status.entry:
+            revision = int(pysvn_status.entry.commit_revision.number)
+            author = pysvn_status.entry.commit_author
+            date = int(pysvn_status.entry.commit_time)
+
         # There is a potential problem here: I'm pretty sure that PySVN statuses
         # do NOT have translatable representations, so this will always come out
         # to be 'normal', 'modified' etc
-        super(SVNStatus, self).__init__(
+        Status.__init__(
+            self,
             pysvn_status.path,
             content=str(pysvn_status.text_status),
-            metadata=str(pysvn_status.prop_status))
+            metadata=str(pysvn_status.prop_status),
+            revision=revision,
+            author=author,
+            date=date
+        )
 
         # self.remote_content = getattr(pysvn_status, "repos_text_status", None)
         # self.remote_metadata = getattr(pysvn_status, "repos_prop_status", None)
 
         self.remote_content = str(pysvn_status.repos_text_status)
         self.remote_metadata = str(pysvn_status.repos_prop_status)
-
 
 class GitStatus(Status):
 
@@ -282,16 +347,12 @@ class GitStatus(Status):
         'normal': status_normal,
         None: status_normal
     }
-    
-    is_staged = False
 
     def __init__(self, gittyup_status):
         super(GitStatus, self).__init__(
             gittyup_status.path,
             content=str(gittyup_status.identifier),
             metadata=None)
-        
-        self.is_staged = gittyup_status.is_staged
 
 STATUS_TYPES = [
     Status,

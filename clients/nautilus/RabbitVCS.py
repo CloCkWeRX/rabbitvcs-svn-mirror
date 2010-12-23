@@ -139,31 +139,25 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
             nautilus.Column(
                 "RabbitVCS::status_column",
                 "status",
-                _("Status"),
+                _("RVCS Status"),
                 ""
             ),
             nautilus.Column(
                 "RabbitVCS::revision_column",
                 "revision",
-                _("Revision"),
-                ""
-            ),
-            nautilus.Column(
-                "RabbitVCS::url_column",
-                "url",
-                _("URL"),
+                _("RVCS Revision"),
                 ""
             ),
             nautilus.Column(
                 "RabbitVCS::author_column",
                 "author",
-                _("Author"),
+                _("RVCS Author"),
                 ""
             ),
             nautilus.Column(
                 "RabbitVCS::age_column",
                 "age",
-                _("Age"),
+                _("RVCS Age"),
                 ""
             )
         )
@@ -242,7 +236,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
                                                  invalidate=invalidate)
 
         # FIXME: when did this get disabled?
-        # if enable_attrs: self.update_columns(item, path, status)
+        if enable_attrs: self.update_columns(item, path, status)
         if enable_emblems: self.update_status(item, path, status)
         
         return nautilus.OPERATION_COMPLETE
@@ -254,41 +248,31 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         server.
 
         """
-        # log.debug("update_colums called for %s" % path)
-        return
+
+        revision = ""
+        if status.revision:
+            revision = str(status.revision)
+
+        age = ""
+        if status.date:
+            age = pretty_timedelta(
+                datetime.datetime.fromtimestamp(status.date),
+                datetime.datetime.now()
+            )
+
+        author = ""
+        if status.author:
+            author = str(status.author)
+
         values = {
-            "status": "",
-            "revision": "",
-            "url": "",
-            "author": "",
-            "age": ""
+            "status": status.simple_content_status(),
+            "revision": revision,
+            "author": author,
+            "age": age
         }
-
-        try:
-            if client_info is None:
-                # It IS possible to reach here: ignored files satisfy the "is in
-                # WC" condition, but aren't themselves versioned!
-                values["status"] = rabbitvcs.vcs.status.status_unversioned
-            else:
-                info = client_info.data
-
-                values["status"] = status.summary
-
-                values["revision"] = str(info["commit_revision"].number)
-                values["url"] = str(info["url"])
-                values["author"] = str(info["commit_author"])
-                values["age"] = str(
-                    pretty_timedelta(
-                        datetime.datetime.fromtimestamp(info["commit_time"]),
-                        datetime.datetime.now()
-                    )
-                )
-        except:
-            log.exception()
 
         for key, value in values.items():
             item.add_string_attribute(key, value)
-
 
     def update_status(self, item, path, status):
         if status.summary in rabbitvcs.ui.STATUS_EMBLEMS:

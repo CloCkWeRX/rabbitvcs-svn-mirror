@@ -599,7 +599,6 @@ class ContextMenuConditions:
             "is_missing"                    : lambda path: self.statuses[path].simple_content_status() == "missing",
             "is_conflicted"                 : lambda path: self.statuses[path].simple_content_status() == "conflicted",
             "is_obstructed"                 : lambda path: self.statuses[path].simple_content_status() == "obstructed",
-            "is_staged"                     : lambda path: self.statuses[path].is_staged == True,
             "has_unversioned"               : lambda path: "unversioned" in self.text_statuses,
             "has_added"                     : lambda path: "added" in self.text_statuses,
             "has_modified"                  : lambda path: "modified" in self.text_statuses or "modified" in self.prop_statuses,
