@@ -845,11 +845,17 @@ class MenuSeparatorLast(MenuSeparator):
     identifier = "RabbitVCS::Separator_Last"
 
 class LogTopContextMenuConditions:
-    def __init__(self, vcs, path, revisions):
+    def __init__(self, caller, vcs, path, revisions):
+        self.caller = caller
         self.vcs = vcs
         self.path = path
         self.revisions = revisions
-        self.guess = self.vcs.guess(path)
+        
+        self.guess = None
+        if hasattr(self.caller, "svn"):
+            self.guess = rabbitvcs.vcs.VCS_SVN
+        elif hasattr(self.caller, "git"):
+            self.guess = rabbitvcs.vcs.VCS_GIT
         
     def view_diff_working_copy(self, data=None):
         return (len(self.revisions) == 1)
@@ -879,52 +885,56 @@ class LogTopContextMenuConditions:
         return (len(self.revisions) > 1)
 
     def update_to_this_revision(self, data=None):
-        return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)
+        return (self.guess == rabbitvcs.vcs.VCS_SVN and len(self.revisions) == 1)
 
     def checkout(self, data=None):
         return (len(self.revisions) == 1)
 
     def branches(self, data=None):
-        return (len(self.revisions) == 1 and self.guess["vcs"] == "git")
+        return (len(self.revisions) == 1 and self.guess == rabbitvcs.vcs.VCS_GIT)
 
     def tags(self, data=None):
-        return (len(self.revisions) == 1 and self.guess["vcs"] == "git")
+        return (len(self.revisions) == 1 and self.guess == rabbitvcs.vcs.VCS_GIT)
 
     def branch_tag(self, data=None):
-        return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)
+        return (self.guess == rabbitvcs.vcs.VCS_SVN and len(self.revisions) == 1)
 
     def export(self, data=None):
         return (len(self.revisions) == 1)
 
     def edit_author(self, data=None):
-        return self.guess["vcs"] == "svn"
+        return self.guess == rabbitvcs.vcs.VCS_SVN
 
     def edit_log_message(self, data=None):
-        return self.guess["vcs"] == "svn"
+        return self.guess == rabbitvcs.vcs.VCS_SVN
 
     def edit_revision_properties(self, data=None):
-        return (self.guess["vcs"] == "svn" and len(self.revisions) == 1)
+        return (self.guess == rabbitvcs.vcs.VCS_SVN and len(self.revisions) == 1)
 
     def separator(self, data=None):
         return True
 
     def separator_last(self, data=None):
-        return (self.guess["vcs"] == "svn")
+        return (self.guess == rabbitvcs.vcs.VCS_SVN)
         
     def merge(self, data=None):
-        return (self.guess["vcs"] == "git")
+        return (self.guess == rabbitvcs.vcs.VCS_GIT)
 
     def reset(self, data=None):
-        return (self.guess["vcs"] == "git")
+        return (self.guess == rabbitvcs.vcs.VCS_GIT)
 
 class LogTopContextMenuCallbacks:
     def __init__(self, caller, vcs, path, revisions):
         self.caller = caller
         self.vcs = vcs
-        self.svn = self.vcs.svn()
-        self.guess = self.vcs.guess(path)["vcs"]
         self.path = path
         self.revisions = revisions
+
+        self.guess = None
+        if hasattr(self.caller, "svn"):
+            self.guess = rabbitvcs.vcs.VCS_SVN
+        elif hasattr(self.caller, "git"):
+            self.guess = rabbitvcs.vcs.VCS_GIT
         
     def view_diff_working_copy(self, widget, data=None):
         rabbitvcs.util.helper.launch_ui_window("diff", ["%s@%s" % (self.path, unicode(self.revisions[0]["revision"]))])
@@ -1097,6 +1107,7 @@ class LogTopContextMenu:
         self.vcs = rabbitvcs.vcs.VCS()
 
         self.conditions = LogTopContextMenuConditions(
+            self.caller,
             self.vcs, 
             self.path, 
             self.revisions
@@ -1145,7 +1156,8 @@ class LogTopContextMenu:
 
 
 class LogBottomContextMenuConditions:
-    def __init__(self, vcs, paths, revisions):
+    def __init__(self, caller, vcs, paths, revisions):
+        self.caller = caller
         self.vcs = vcs
         self.paths = paths
         self.revisions = revisions
@@ -1300,6 +1312,7 @@ class LogBottomContextMenu:
         self.svn = self.vcs.svn()
 
         self.conditions = LogBottomContextMenuConditions(
+            self.caller,
             self.vcs, 
             self.paths, 
             self.revisions
@@ -1344,18 +1357,27 @@ dialogs_map = {
     rabbitvcs.vcs.VCS_GIT: GitLogDialog
 }
 
-def log_factory(path):
-    guess = rabbitvcs.vcs.guess(path)
-    return classes_map[guess["vcs"]](path)
+def log_factory(path, vcs):
+    if not vcs:
+        guess = rabbitvcs.vcs.guess(path)
+        vcs = guess["vcs"]
 
-def log_dialog_factory(path, ok_callback=None, multiple=False):
-    guess = rabbitvcs.vcs.guess(path)
-    return dialogs_map[guess["vcs"]](path, ok_callback, multiple)
+    return classes_map[vcs](path)
+
+def log_dialog_factory(path, ok_callback=None, multiple=False, vcs=None):
+    if not vcs:
+        guess = rabbitvcs.vcs.guess(path)
+        vcs = guess["vcs"]
+    
+    return dialogs_map[vcs](path, ok_callback, multiple)
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
-    (options, paths) = main(usage="Usage: rabbitvcs log [url_or_path]")
-    print paths
-    window = log_factory(paths[0])
+    from rabbitvcs.ui import main, VCS_OPT
+    (options, paths) = main(
+        [VCS_OPT],
+        usage="Usage: rabbitvcs log [--vcs=svn|git] [url_or_path]"
+    )
+
+    window = log_factory(paths[0], vcs=options.vcs)
     window.register_gtk_quit()
     gtk.main()

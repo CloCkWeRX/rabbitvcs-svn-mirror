@@ -421,6 +421,7 @@ class BrowserContextMenuCallbacks:
         self.base_dir = base_dir
         self.svn = vcs
         self.paths = paths
+        self.guess = rabbitvcs.vcs.VCS_SVN
 
     def __update_browser_url(self, url):
         # Make sure the Browser variables are updated with the new path
@@ -444,7 +445,7 @@ class BrowserContextMenuCallbacks:
         self.caller._open(self.paths)
     
     def show_log(self, data=None, user_data=None):
-        rabbitvcs.util.helper.launch_ui_window("log", [self.paths[0]])
+        rabbitvcs.util.helper.launch_ui_window("log", ["--vcs=%s" % self.guess, self.paths[0]])
     
     def annotate(self, data=None, user_data=None):
         urlrev = self.paths[0]
