@@ -44,7 +44,6 @@ _ = gettext.gettext
 # Extra "action" for "commit completed"
 commit_completed = "commit_completed"
 
-
 class Revision:
     """
     Implements a simple revision object as a wrapper around the pysvn revision
@@ -386,19 +385,17 @@ class SVN:
         items = []
         for path in paths:
             try:
-                sts = self.statuses(path, update=True)
+                sts = self.statuses(path, update=True, invalidate=True)
             except Exception, e:
                 log.exception(e)
                 continue
 
             for st in sts:
-                repo_text_st = st.remote_content
-                repo_prop_st = st.remote_metadata
-                
-                if repo_text_st is None and repo_prop_st is None:
+                        
+                if st.remote_content is None and st.remote_metadata is None:
                     continue
 
-                if repo_text_st == "none" and repo_prop_st == "none":
+                if st.remote_content == "none" and st.remote_metadata == "none":
                     continue
 
                 items.append(st)

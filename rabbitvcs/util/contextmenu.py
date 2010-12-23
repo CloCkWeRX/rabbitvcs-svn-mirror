@@ -1025,7 +1025,7 @@ class GtkFilesContextMenuConditions(ContextMenuConditions):
         self.vcs_client = vcs_client
         self.paths = paths
         self.statuses = {}
-        
+
         self.generate_statuses(self.paths)
         self.generate_path_dict(self.paths)
 

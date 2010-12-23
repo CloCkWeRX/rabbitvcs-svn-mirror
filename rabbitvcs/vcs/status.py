@@ -120,7 +120,7 @@ class StatusCache(object):
             metadata = self.keys[metadata_index]
             revision = self.revisions[revision_index]
             author = self.authors[author_index]
-
+            
             return Status(path, content, metadata, revision=revision, 
                 author=author, date=date)
         except Exception, e:
@@ -189,12 +189,14 @@ class Status(object):
         self.path = path
         self.content = content
         self.metadata = metadata
+        self.remote_content = None
+        self.remote_metadata = None
         self.single = self._make_single_status()
         self.summary = summary
         self.revision = revision
         self.author = author
         self.date = date
- 
+
     def _make_single_status(self):
         """
         Given our text_status and a prop_status, simplify to a single "simple"

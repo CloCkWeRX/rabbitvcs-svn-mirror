@@ -108,6 +108,7 @@ class SVNCheckForModifications(InterfaceView, GtkContextMenuCaller):
             self.svn,
             notification=False
         )
+
         self.action.append(self.svn.get_remote_updates, self.paths)
         self.action.append(self.populate_files_table)
         self.action.start()
@@ -117,18 +118,20 @@ class SVNCheckForModifications(InterfaceView, GtkContextMenuCaller):
         self.files_table.clear()
         self.items = self.action.get_result(0)
         for item in self.items:
-            revision_number = -1
+            revision = -1
             author = ""
-            if item.entry is not None:
-                revision_number = item.entry.revision.number
-                author = item.entry.commit_author
+
+            if item.revision:
+                revision = item.revision
+            if item.author:
+                author = item.author
 
             self.files_table.append([
                 item.path, 
                 rabbitvcs.util.helper.get_file_extension(item.path),
-                item.repos_text_status,
-                item.repos_prop_status,
-                str(revision_number),
+                item.remote_content,
+                item.remote_metadata,
+                str(revision),
                 author
             ])
 
