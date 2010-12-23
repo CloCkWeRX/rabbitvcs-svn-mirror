@@ -66,14 +66,14 @@ class Revision:
         self.value = value
         self.is_revision_object = True
 
-        if not self.value and self.kind in ("number", "date"):
+        if self.value is None and self.kind in ("number", "date"):
             self.kind = "head"
 
         self.__revision_kind = self.KINDS[self.kind]
         self.__revision = None
 
         try:
-            if value:
+            if value is not None:
                 self.__revision = pysvn.Revision(self.__revision_kind, value)
             else:
                 self.__revision = pysvn.Revision(self.__revision_kind)
