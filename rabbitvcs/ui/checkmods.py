@@ -158,7 +158,7 @@ class SVNCheckLocalModifications(GtkContextMenuCaller):
     def diff_local(self, path):
         rabbitvcs.util.helper.launch_diff_tool(path)
 
-    def reload_treeview(self):
+    def on_context_menu_command_finished(self):
         self.refresh()
 
 class SVNCheckRemoteModifications(GtkContextMenuCaller):
@@ -250,7 +250,7 @@ class SVNCheckRemoteModifications(GtkContextMenuCaller):
         )
         self.action.start()
 
-    def reload_treeview(self):
+    def on_context_menu_command_finished(self):
         self.refresh()
 
 class MenuViewDiff(MenuItem):

@@ -107,11 +107,9 @@ class Add(InterfaceView, GtkContextMenuCaller):
                 rabbitvcs.util.helper.get_file_extension(item.path)
             ])
 
-    def reload_treeview(self):
+    # Overrides the GtkContextMenuCaller method
+    def on_context_menu_command_finished(self):
         self.initialize_items()
-
-    def reload_treeview_threaded(self):
-        self.load()
 
     def initialize_items(self):
         """

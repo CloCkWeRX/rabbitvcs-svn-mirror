@@ -327,10 +327,7 @@ class RabbitVCSWindowHelper(GtkContextMenuCaller):
     def reload_settings(self, proc):
         self.update_ui()
 
-    def reload_treeview(self):
-        self.update_ui()
-    
-    def reload_treeview_threaded(self):
+    def on_context_menu_command_finished(self):
         self.update_ui()
 
 class RabbitVCSPlugin(gedit.Plugin):

@@ -216,18 +216,15 @@ class GtkContextMenuCaller:
     def __init__(self):
         pass
     
-    def reload_treeview(self):
-        pass
-
-    def reload_treeview_threaded(self): 
+    def on_context_menu_command_finished(self):
         pass
 
     def rescan_after_process_exit(self, proc, paths=None):
-        self.execute_after_process_exit(proc, self.reload_treeview)
+        self.execute_after_process_exit(proc, self.on_context_menu_command_finished)
         
     def execute_after_process_exit(self, proc, callback=None):
         if callback is None:
-            callback = self.reload_treeview
+            callback = self.on_context_menu_command_finished
 
         def is_process_still_alive():
             log.debug("is_process_still_alive() for pid: %i" % proc.pid)
@@ -992,7 +989,7 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
         unlock = UnlockQuick(self.paths)
         unlock.start()
         
-        self.caller.reload_treeview()
+        self.caller.on_context_menu_command_finished()
     
     def show_log(self, data1=None, data2=None):
         from rabbitvcs.ui.log import LogDialog

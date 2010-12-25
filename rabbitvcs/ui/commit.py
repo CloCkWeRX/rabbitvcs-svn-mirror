@@ -100,11 +100,9 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
         gtk.gdk.threads_leave()
 
-    def reload_treeview(self):
+    # Overrides the GtkContextMenuCaller method
+    def on_context_menu_command_finished(self):
         self.initialize_items()
-
-    def reload_treeview_threaded(self):
-        self.load()
 
     def should_item_be_activated(self, item):
         """

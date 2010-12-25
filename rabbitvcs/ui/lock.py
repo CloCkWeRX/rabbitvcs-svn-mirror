@@ -94,11 +94,9 @@ class SVNLock(InterfaceView, GtkContextMenuCaller):
     # Helper functions
     # 
     
-    def reload_treeview(self):
+    # Overrides the GtkContextMenuCaller method
+    def on_context_menu_command_finished(self):
         self.initialize_items()
-
-    def reload_treeview_threaded(self):
-        self.load()
 
     def initialize_items(self):
         """
