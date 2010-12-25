@@ -989,8 +989,8 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
         self.caller.rescan_after_process_exit(proc, self.paths)
             
     def show_log(self, data1=None, data2=None):
-        from rabbitvcs.ui.log import LogDialog
-        LogDialog(self.vcs_client.get_repo_url(self.paths[0]))
+        proc = rabbitvcs.util.helper.launch_ui_window("log", self.paths)
+        self.caller.rescan_after_process_exit(proc, [self.paths[0]])
 
     def stage(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("stage", ["-q"] + self.paths)
