@@ -333,7 +333,6 @@ class VCSAction(threading.Thread):
         method returns True.
 
         """
-        print "set_cancel",cancel
         self.cancel = cancel
         self.notification.set_canceled_by_user(True)
         self.queue.cancel_queue()
