@@ -150,6 +150,16 @@ class SVN:
             pysvn.wc_status_kind.conflicted
         ])
 
+    STATUSES_FOR_CHECK = map(str,
+        [
+            pysvn.wc_status_kind.added,
+            pysvn.wc_status_kind.deleted,
+            pysvn.wc_status_kind.replaced,
+            pysvn.wc_status_kind.modified,
+            pysvn.wc_status_kind.missing,
+            pysvn.wc_status_kind.conflicted,
+        ])
+
     PROPERTIES = {
         "executable":   "svn:executable",
         "mime-type":    "svn:mime-type",

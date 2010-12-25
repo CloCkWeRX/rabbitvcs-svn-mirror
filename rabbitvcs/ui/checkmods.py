@@ -21,15 +21,18 @@
 #
 
 import thread
+import threading
 
 import pygtk
 import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.util.contextmenu import GtkContextMenu, \
-    GtkContextMenuCaller, GtkFilesContextMenuConditions
-from rabbitvcs.util.contextmenuitems import MenuItem, MenuUpdate, MenuSeparator
+from rabbitvcs.util.contextmenu import GtkFilesContextMenu, \
+    GtkContextMenuCaller, GtkFilesContextMenuConditions, GtkContextMenu
+from rabbitvcs.util.contextmenuitems import MenuItem, MenuUpdate, \
+    MenuSeparator, MenuCommit, MenuRevert, MenuShowLog, MenuCreatePatch, \
+    MenuResolve
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
@@ -44,7 +47,7 @@ _ = gettext.gettext
 
 gtk.gdk.threads_init()
 
-class SVNCheckForModifications(InterfaceView, GtkContextMenuCaller):
+class SVNCheckForModifications(InterfaceView):
     """
     Provides a way for the user to see what files have been changed on the 
     repository.
@@ -58,9 +61,117 @@ class SVNCheckForModifications(InterfaceView, GtkContextMenuCaller):
         self.base_dir = base_dir
         self.vcs = rabbitvcs.vcs.VCS()
         self.svn = self.vcs.svn()
+        self.notebook = self.get_widget("notebook")
+
+        self.local_mods = SVNCheckLocalModifications(self, \
+                                                         self.vcs, \
+                                                         self.paths, \
+                                                         self.base_dir)
+        self.remote_mods = SVNCheckRemoteModifications(self, \
+                                                           self.vcs, \
+                                                           self.paths, \
+                                                           self.base_dir)
+
+        self.remote_refreshed = False
+
+        self.load()
+
+    def on_destroy(self, widget):
+        self.destroy()
+        
+    def on_close_clicked(self, widget):
+        self.close()
+
+    def on_refresh_clicked(self, widget):
+        if self.notebook.get_current_page() == 0:
+            self.local_mods.refresh()
+        else:
+            self.remote_mods.refresh()
+
+    def on_notebook_switch_page(self, page, data, page_num):
+        if page_num == 1 and self.remote_refreshed == False:
+            self.remote_mods.refresh()
+            self.remote_refreshed = True
+
+    #
+    # Helper methods
+    #
+    
+    def load(self):
+        self.local_mods.refresh()
+
+class SVNCheckLocalModifications(GtkContextMenuCaller):
+    def __init__(self, caller, vcs, paths, base_dir):
+        self.caller = caller
+        self.vcs = vcs
+        self.svn = vcs.svn()
         self.items = None
+        self.paths = paths
+        self.base_dir = base_dir
+
         self.files_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("files_table"), 
+            self.caller.get_widget("local_files_table"), 
+            [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [_("Path"), _("Status"), _("Extension")],
+            filters=[{
+                "callback": rabbitvcs.ui.widget.path_filter,
+                "user_data": {
+                    "base_dir": base_dir,
+                    "column": 0
+                }
+            }],
+            callbacks={
+                "row-activated":  self.on_files_table_row_activated,
+                "mouse-event":   self.on_files_table_mouse_event
+            }
+        )
+
+    def on_files_table_row_activated(self, treeview, event, col):
+        paths = self.files_table.get_selected_row_items(0)
+        self.diff_local(paths[0])
+
+    def on_files_table_mouse_event(self, treeview, data=None):
+        if data is not None and data.button == 3:
+            paths = self.files_table.get_selected_row_items(0)
+            GtkFilesContextMenu(self, data, self.base_dir, paths).show()
+
+    def refresh(self):
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
+            notification=False
+        )
+        self.action.append(self.svn.get_items, self.paths, self.svn.STATUSES_FOR_CHECK)
+        self.action.append(self.populate_files_table)
+        self.action.start()
+
+    @gtk_unsafe
+    def populate_files_table(self):
+        self.files_table.clear()
+        self.items = self.action.get_result(0)
+        for item in self.items:
+            self.files_table.append([
+                item.path, 
+                item.simple_content_status(),
+                rabbitvcs.util.helper.get_file_extension(item.path)
+            ])
+
+    def diff_local(self, path):
+        rabbitvcs.util.helper.launch_diff_tool(path)
+
+    def reload_treeview(self):
+        self.refresh()
+
+class SVNCheckRemoteModifications(GtkContextMenuCaller):
+    def __init__(self, caller, vcs, paths, base_dir):
+        self.caller = caller
+        self.vcs = vcs
+        self.svn = vcs.svn()
+        self.items = None
+        self.paths = paths
+        self.base_dir = base_dir
+
+        self.files_table = rabbitvcs.ui.widget.Table(
+            self.caller.get_widget("remote_files_table"), 
             [gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING, gobject.TYPE_STRING, 
                 gobject.TYPE_STRING, gobject.TYPE_STRING], 
@@ -80,35 +191,20 @@ class SVNCheckForModifications(InterfaceView, GtkContextMenuCaller):
             }
         )
 
-        self.load()
-
-    def on_destroy(self, widget):
-        self.destroy()
-        
-    def on_close_clicked(self, widget):
-        self.close()
-
-    def on_refresh_clicked(self, widget):
-        self.load()
-
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(0)
         self.diff_remote(paths[0])
 
     def on_files_table_mouse_event(self, treeview, data=None):
         if data is not None and data.button == 3:
-            self.show_files_table_popup_menu(treeview, data)
+            paths = self.files_table.get_selected_row_items(0)
+            CheckRemoteModsContextMenu(self, data, self.base_dir, self.vcs, paths).show()
 
-    #
-    # Helper methods
-    #
-    
-    def load(self):
+    def refresh(self):
         self.action = rabbitvcs.ui.action.SVNAction(
             self.svn,
             notification=False
         )
-
         self.action.append(self.svn.get_remote_updates, self.paths)
         self.action.append(self.populate_files_table)
         self.action.start()
@@ -121,9 +217,9 @@ class SVNCheckForModifications(InterfaceView, GtkContextMenuCaller):
             revision = -1
             author = ""
 
-            if item.revision:
+            if item.revision is not None:
                 revision = item.revision
-            if item.author:
+            if item.author is not None:
                 author = item.author
 
             self.files_table.append([
@@ -135,10 +231,6 @@ class SVNCheckForModifications(InterfaceView, GtkContextMenuCaller):
                 author
             ])
 
-    def show_files_table_popup_menu(self, treeview, data):
-        paths = self.files_table.get_selected_row_items(0)
-        CheckModsContextMenu(self, data, self.base_dir, self.vcs, paths).show()
-     
     def diff_remote(self, path):
         from rabbitvcs.ui.diff import SVNDiff
         
@@ -158,6 +250,9 @@ class SVNCheckForModifications(InterfaceView, GtkContextMenuCaller):
         )
         self.action.start()
 
+    def reload_treeview(self):
+        self.refresh()
+
 class MenuViewDiff(MenuItem):
     identifier = "RabbitVCS::View_Diff"
     label = _("View unified diff")
@@ -168,7 +263,7 @@ class MenuCompare(MenuItem):
     label = _("Compare side by side")
     icon = "rabbitvcs-compare"
 
-class CheckModsContextMenuConditions(GtkFilesContextMenuConditions):
+class CheckRemoteModsContextMenuConditions(GtkFilesContextMenuConditions):
     def __init__(self, vcs, paths=[]):
         GtkFilesContextMenuConditions.__init__(self, vcs, paths)
 
@@ -183,7 +278,7 @@ class CheckModsContextMenuConditions(GtkFilesContextMenuConditions):
         return (self.path_dict["exists"]
             and self.path_dict["length"] == 1)
 
-class CheckModsContextMenuCallbacks:
+class CheckRemoteModsContextMenuCallbacks:
     def __init__(self, caller, base_dir, vcs, paths=[]):
         self.caller = caller
         self.base_dir = base_dir
@@ -192,10 +287,11 @@ class CheckModsContextMenuCallbacks:
         self.paths = paths
 
     def update(self, data1=None, data2=None):
-        rabbitvcs.util.helper.launch_ui_window(
+        proc = rabbitvcs.util.helper.launch_ui_window(
             "update", 
             self.paths
         )
+        self.caller.rescan_after_process_exit(proc, self.paths)
 
     def view_diff(self, data1=None, data2=None):
         self.caller.diff_remote(self.paths[0])
@@ -220,7 +316,7 @@ class CheckModsContextMenuCallbacks:
         )
         self.action.start()
 
-class CheckModsContextMenu:
+class CheckRemoteModsContextMenu:
     def __init__(self, caller, event, base_dir, vcs, paths=[]):
         
         self.caller = caller
@@ -229,8 +325,8 @@ class CheckModsContextMenu:
         self.base_dir = base_dir
         self.vcs = vcs
         
-        self.conditions = CheckModsContextMenuConditions(self.vcs, paths)
-        self.callbacks = CheckModsContextMenuCallbacks(
+        self.conditions = CheckRemoteModsContextMenuConditions(self.vcs, paths)
+        self.callbacks = CheckRemoteModsContextMenuCallbacks(
             self.caller, 
             self.base_dir,
             self.vcs, 
