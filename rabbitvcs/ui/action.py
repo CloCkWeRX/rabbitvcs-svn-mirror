@@ -232,10 +232,6 @@ class LoadingNotifier(VCSNotifier):
         self.pbar.start_pulsate()
 
     def on_destroy(self, widget):
-        self.set_canceled_by_user(True)
-        if self.callback_cancel is not None:
-            self.callback_cancel()
-
         self.close()
 
     def on_loading_cancel_clicked(self, widget):
@@ -337,7 +333,7 @@ class VCSAction(threading.Thread):
         method returns True.
 
         """
-
+        print "set_cancel",cancel
         self.cancel = cancel
         self.notification.set_canceled_by_user(True)
         self.queue.cancel_queue()
