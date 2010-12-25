@@ -985,12 +985,9 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
         self.caller.rescan_after_process_exit(proc, self.paths)
     
     def unlock(self, data1=None, data2=None):
-        from rabbitvcs.ui.unlock import UnlockQuick
-        unlock = UnlockQuick(self.paths)
-        unlock.start()
-        
-        self.caller.on_context_menu_command_finished()
-    
+        proc = rabbitvcs.util.helper.launch_ui_window("unlock", ["-q"] + self.paths)
+        self.caller.rescan_after_process_exit(proc, self.paths)
+            
     def show_log(self, data1=None, data2=None):
         from rabbitvcs.ui.log import LogDialog
         LogDialog(self.vcs_client.get_repo_url(self.paths[0]))
