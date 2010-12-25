@@ -126,10 +126,8 @@ class Add(InterfaceView, GtkContextMenuCaller):
     def delete_items(self, widget, data=None):
         paths = self.files_table.get_selected_row_items(1)
         if len(paths) > 0:
-            from rabbitvcs.ui.delete import delete_factory
-            delete_factory(paths).start()
-            sleep(1) # sleep so the items can be fully deleted before init
-            self.initialize_items()
+            proc = rabbitvcs.util.helper.launch_ui_window("delete", paths)
+            self.rescan_after_process_exit(proc, paths)
 
     #
     # UI Signal Callbacks
