@@ -35,7 +35,7 @@ import rabbitvcs.ui.action
 import rabbitvcs.util.helper
 from rabbitvcs.util.log import Log
 
-log = Log("rabbitvcs.ui.resolve")
+log = Log("rabbitvcs.ui.mark-resolved")
 
 from rabbitvcs import gettext
 _ = gettext.gettext
