@@ -136,5 +136,5 @@ if __name__ == "__main__":
     from rabbitvcs.ui import main
     (options, paths) = main(usage="Usage: rabbitvcs rename [path]")
             
-    window = rename_factory(paths[0])
+    window = rename_factory(os.path.abspath(paths[0]))
     gtk.main()
