@@ -31,8 +31,7 @@ from rabbitvcs.ui import InterfaceView
 from rabbitvcs.util.contextmenu import GtkFilesContextMenu, \
     GtkContextMenuCaller, GtkFilesContextMenuConditions, GtkContextMenu
 from rabbitvcs.util.contextmenuitems import MenuItem, MenuUpdate, \
-    MenuSeparator, MenuCommit, MenuRevert, MenuShowLog, MenuCreatePatch, \
-    MenuResolve
+    MenuSeparator
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
