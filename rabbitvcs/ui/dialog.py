@@ -475,17 +475,22 @@ class ConflictDecision(InterfaceView):
         
     def run(self):
         """
-        Returns three possible values:
+        Returns a tuple with two elements.
+        
+        The first has three possible values about how to resolve the conflict.
         
             - -1  Cancel
             - 0   Accept Mine
             - 1   Accept Theirs
             - 2   Merge Manually
+
+        The second is whether to mark the conflict as resolved after the action
             
         """
         
         self.dialog = self.get_widget("ConflictDecision")
         result = self.dialog.run()
+        mark_resolved = self.get_widget("mark_resolved").get_active()
         self.dialog.destroy()
-        return result
+        return (result, mark_resolved)
 

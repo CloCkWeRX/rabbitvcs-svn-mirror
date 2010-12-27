@@ -690,42 +690,10 @@ class SVNAction(VCSAction):
     def conflict_filter(self, data):
         if "content_state" in data and str(data["content_state"]) == "conflicted":
             position = self.queue.get_position()
-            self.queue.insert(position+1, self.resolve_conflict, data)
+            self.queue.insert(position+1, self.edit_conflict, data)
 
-    def resolve_conflict(self, data):
-        filename = basename(data["path"])
-        
-        gtk.gdk.threads_enter()
-
-        dialog = rabbitvcs.ui.dialog.ConflictDecision(filename)
-        result = dialog.run()
-        gtk.gdk.threads_leave()
-
-        if result == -1:
-            #Cancel
-            return
-        elif result == 0:
-            #Accept Mine
-            mine = "%s.mine" % data["path"]
-            shutil.copyfile(mine, data["path"])
-            self.client.resolve(data["path"])
-        elif result == 1:
-            #Accept Theirs
-            tmppath = "/tmp/%s.head" % filename
-            self.client.export(data["path"], tmppath)
-            shutil.copyfile(tmppath, data["path"])
-            self.client.resolve(data["path"])
-        elif result == 2:
-            #Merge Manually
-
-            tmppath = "/tmp/%s.head" % filename
-            self.client.export(data["path"], tmppath)
-            
-            mine = "%s.mine" % data["path"]
-            shutil.copyfile(mine, data["path"])
-            
-            rabbitvcs.util.helper.launch_merge_tool(data["path"], tmppath)
-            self.client.resolve(data["path"])
+    def edit_conflict(self, data):
+        rabbitvcs.util.helper.launch_ui_window("editconflicts", [data["path"]], block=True)
 
 class GitAction(VCSAction):
     def __init__(self, client, register_gtk_quit=False, notification=True,
@@ -765,7 +733,7 @@ class GitAction(VCSAction):
     def conflict_filter(self, data):
         if str(data).startswith("ERROR:"):
             path = data[27:]
-            rabbitvcs.util.helper.launch_merge_tool(path)
+            rabbitvcs.util.helper.launch_ui_window("editconflicts", [path], block=True)
 
 def vcs_action_factory(client, register_gtk_quit=False, notification=True,
         run_in_thread=True):

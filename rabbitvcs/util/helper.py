@@ -551,7 +551,7 @@ def save_repository_path(path):
     f.write("\n".join(paths).encode("utf-8"))
     f.close()
     
-def launch_ui_window(filename, args=[]):
+def launch_ui_window(filename, args=[], block=False):
     """
     Launches a UI window in a new process, so that we don't have to worry about
     nautilus and threading.
@@ -581,6 +581,10 @@ def launch_ui_window(filename, args=[]):
 
     if os.path.exists(path): 
         proc = subprocess.Popen([sys.executable, path] + args)
+
+        if block:
+            proc.wait()
+
         return proc
     else:
         return None
