@@ -484,7 +484,7 @@ class ContextMenuCallbacks:
         proc = rabbitvcs.util.helper.launch_ui_window("updateto", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
     
-    def resolve(self, widget, data1=None, data2=None):
+    def mark_resolved(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("resolve", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
         
@@ -594,7 +594,7 @@ class ContextMenuConditions:
             "is_ignored"                    : lambda path: self.statuses[path].simple_content_status() == "ignored",
             "is_locked"                     : lambda path: self.statuses[path].simple_content_status() == "locked",
             "is_missing"                    : lambda path: self.statuses[path].simple_content_status() == "missing",
-            "is_conflicted"                 : lambda path: self.statuses[path].simple_content_status() == "conflicted",
+            "is_conflicted"                 : lambda path: self.statuses[path].simple_content_status() == "complicated",
             "is_obstructed"                 : lambda path: self.statuses[path].simple_content_status() == "obstructed",
             "has_unversioned"               : lambda path: "unversioned" in self.text_statuses,
             "has_added"                     : lambda path: "added" in self.text_statuses,
@@ -603,7 +603,7 @@ class ContextMenuConditions:
             "has_ignored"                   : lambda path: "ignored" in self.text_statuses,
             "has_locked"                    : lambda path: "locked" in self.text_statuses,
             "has_missing"                   : lambda path: "missing" in self.text_statuses,
-            "has_conflicted"                : lambda path: "conflicted" in self.text_statuses,
+            "has_conflicted"                : lambda path: "complicated" in self.text_statuses,
             "has_obstructed"                : lambda path: "obstructed" in self.text_statuses
         }
         
@@ -827,7 +827,7 @@ class ContextMenuConditions:
                 self.path_dict["is_versioned"] and 
                 self.path_dict["is_in_a_or_a_working_copy"])
     
-    def resolve(self, data=None):
+    def mark_resolved(self, data=None):
         return (self.path_dict["is_in_a_or_a_working_copy"] and
                 self.path_dict["is_versioned"] and
                 self.path_dict["is_conflicted"])
@@ -1094,6 +1094,7 @@ class GtkFilesContextMenu:
             (MenuDelete, None),
             (MenuRevert, None),
             (MenuRestore, None),
+            (MenuMarkResolved, None),
             (MenuCreatePatch, None),
             (MenuAdd, None),
             (MenuStage, None),
@@ -1254,7 +1255,7 @@ class MainContextMenu:
                 (MenuRename, None),
                 (MenuDelete, None),
                 (MenuRevert, None),
-                (MenuResolve, None),
+                (MenuMarkResolved, None),
                 (MenuRelocate, None),
                 (MenuGetLock, None),
                 (MenuUnlock, None),

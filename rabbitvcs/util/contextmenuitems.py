@@ -449,9 +449,9 @@ class MenuRevert(MenuItem):
     tooltip = _("Revert an item to its unmodified state")
     icon = "rabbitvcs-revert"
 
-class MenuResolve(MenuItem):
-    identifier = "RabbitVCS::Resolve"
-    label = _("Resolve")
+class MenuMarkResolved(MenuItem):
+    identifier = "RabbitVCS::Mark_Resolved"
+    label = _("Mark as Resolved")
     tooltip = _("Mark a conflicted item as resolved")
     icon = "rabbitvcs-resolve"
 
