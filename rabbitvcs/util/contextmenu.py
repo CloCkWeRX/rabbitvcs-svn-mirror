@@ -485,7 +485,7 @@ class ContextMenuCallbacks:
         self.caller.rescan_after_process_exit(proc, self.paths)
     
     def mark_resolved(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window("mark-resolved", self.paths)
+        proc = rabbitvcs.util.helper.launch_ui_window("markresolved", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
         
     def annotate(self, widget, data1=None, data2=None):

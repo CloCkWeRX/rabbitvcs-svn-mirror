@@ -35,7 +35,7 @@ import rabbitvcs.ui.action
 import rabbitvcs.util.helper
 from rabbitvcs.util.log import Log
 
-log = Log("rabbitvcs.ui.mark-resolved")
+log = Log("rabbitvcs.ui.markresolved")
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -119,7 +119,7 @@ if __name__ == "__main__":
     from rabbitvcs.ui import main, BASEDIR_OPT
     (options, paths) = main(
         [BASEDIR_OPT],
-        usage="Usage: rabbitvcs mark-resolved [path1] [path2] ..."
+        usage="Usage: rabbitvcs markresolved [path1] [path2] ..."
     )
 
     window = markresolved_factory(paths, options.base_dir)

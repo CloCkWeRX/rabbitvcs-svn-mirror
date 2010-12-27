@@ -33,14 +33,15 @@ Available Modules
 
 SVN:
     about, add, annotate, applypatch, branch, browser, changes, checkmods, 
-    checkout, cleanup, commit, createpatch, create, delete, diff, export, 
-    ignore, import, lock, log, merge, properties, open, relocate, rename, 
-    mark-resolved, revert, settings, switch, unlock, update, updateto
+    checkout, cleanup, commit, createpatch, create, delete, diff, editconflicts,
+    export, ignore, import, lock, log, merge, properties, open, relocate, rename, 
+    markresolved, revert, settings, switch, unlock, update, updateto
 
 Git:
     about, add, annotate, applybranch, branches, changes, checkout, clean, 
-    clone, commit, createpatch, create, delete, diff, export, ignore, log, 
-    merge, open, push, rename, remotes, reset, revert, settings, tags, update
+    clone, commit, createpatch, create, delete, diff, editconflicts, export, 
+    ignore, log, merge, open, push, rename, remotes, reset, revert, settings, 
+    tags, update
 
 For module specific help type: rabbitvcs <module> -h
 """
