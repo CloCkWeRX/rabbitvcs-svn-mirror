@@ -561,6 +561,10 @@ class ContextMenuCallbacks:
         proc = rabbitvcs.util.helper.launch_ui_window("unstage", [self.paths[0]])
         self.caller.rescan_after_process_exit(proc, self.paths)
 
+    def edit_conflicts(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("editconflicts", [self.paths[0]])
+        self.caller.rescan_after_process_exit(proc, [self.paths[0]])
+
 class ContextMenuConditions:
     """
     Provides a standard interface to checking conditions for menu items.
@@ -938,6 +942,11 @@ class ContextMenuConditions:
                 return True
         return False
 
+    def edit_conflicts(self, data=None):
+        return (self.path_dict["is_in_a_or_a_working_copy"] and
+                self.path_dict["is_versioned"] and
+                self.path_dict["is_conflicted"])
+
 class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
     """
     A callback class created for GtkFilesContextMenus.  This class inherits from
@@ -1094,6 +1103,7 @@ class GtkFilesContextMenu:
             (MenuDelete, None),
             (MenuRevert, None),
             (MenuRestore, None),
+            (MenuEditConflicts, None),
             (MenuMarkResolved, None),
             (MenuCreatePatch, None),
             (MenuAdd, None),
@@ -1255,6 +1265,7 @@ class MainContextMenu:
                 (MenuRename, None),
                 (MenuDelete, None),
                 (MenuRevert, None),
+                (MenuEditConflicts, None),
                 (MenuMarkResolved, None),
                 (MenuRelocate, None),
                 (MenuGetLock, None),

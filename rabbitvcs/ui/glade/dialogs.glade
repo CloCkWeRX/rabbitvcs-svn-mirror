@@ -2205,7 +2205,7 @@
   </widget>
   <widget class="GtkDialog" id="ConflictDecision">
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">Conflict Resolution Decision</property>
+    <property name="title" translatable="yes">Edit Conflicts</property>
     <property name="type_hint">normal</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">

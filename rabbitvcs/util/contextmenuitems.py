@@ -675,6 +675,11 @@ class MenuUnstage(MenuItem):
     label = _("Unstage")
     icon = "rabbitvcs-unstage"
 
+class MenuEditConflicts(MenuItem):
+    identifier = "RabbitVCS::Edit_Conflicts"
+    label = _("Edit conflicts")
+    icon = "rabbitvcs-editconflicts"
+
 def get_ignore_list_items(paths):
     """
     Build up a list of items to ignore based on the selected paths
