@@ -40,12 +40,12 @@ log = Log("rabbitvcs.ui.resolve")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class SVNResolve(Add):
+class SVNMarkResolved(Add):
     def __init__(self, paths, base_dir):
         InterfaceView.__init__(self, "add", "Add")
 
         self.window = self.get_widget("Add")
-        self.window.set_title(_("Resolve"))
+        self.window.set_title(_("Mark as Resolved"))
 
         self.paths = paths
         self.base_dir = base_dir
@@ -99,19 +99,19 @@ class SVNResolve(Add):
             register_gtk_quit=self.gtk_quit_is_set()
         )
         
-        self.action.append(self.action.set_header, _("Resolve"))
-        self.action.append(self.action.set_status, _("Running Resolve Command..."))
+        self.action.append(self.action.set_header, _("Mark as Resolved"))
+        self.action.append(self.action.set_status, _("Running Resolved Command..."))
         for item in items:
             self.action.append(self.svn.resolve, item, recurse=True)
-        self.action.append(self.action.set_status, _("Completed Resolve"))
+        self.action.append(self.action.set_status, _("Completed Mark as Resolved"))
         self.action.append(self.action.finish)
         self.action.start()
 
 classes_map = {
-    rabbitvcs.vcs.VCS_SVN: SVNResolve
+    rabbitvcs.vcs.VCS_SVN: SVNMarkResolved
 }
 
-def resolve_factory(paths, base_dir=None):
+def markresolved_factory(paths, base_dir=None):
     guess = rabbitvcs.vcs.guess(paths[0])
     return classes_map[guess["vcs"]](paths, base_dir)
         
@@ -119,9 +119,9 @@ if __name__ == "__main__":
     from rabbitvcs.ui import main, BASEDIR_OPT
     (options, paths) = main(
         [BASEDIR_OPT],
-        usage="Usage: rabbitvcs resolve [path1] [path2] ..."
+        usage="Usage: rabbitvcs mark-resolved [path1] [path2] ..."
     )
 
-    window = resolve_factory(paths, options.base_dir)
+    window = markresolved_factory(paths, options.base_dir)
     window.register_gtk_quit()
     gtk.main()

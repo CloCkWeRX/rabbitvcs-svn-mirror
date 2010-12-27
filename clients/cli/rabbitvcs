@@ -35,7 +35,7 @@ SVN:
     about, add, annotate, applypatch, branch, browser, changes, checkmods, 
     checkout, cleanup, commit, createpatch, create, delete, diff, export, 
     ignore, import, lock, log, merge, properties, open, relocate, rename, 
-    resolve, revert, settings, switch, unlock, update, updateto
+    mark-resolved, revert, settings, switch, unlock, update, updateto
 
 Git:
     about, add, annotate, applybranch, branches, changes, checkout, clean, 
