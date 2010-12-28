@@ -723,11 +723,11 @@ class SVN:
                 # These are the property names that are common to the WC and
                 # base. If their values have changed, list them as changed
                 if local_props[propname] == base_props[propname]:
-                    prop_details[propname] = {"status": rabbitvcs.vcs.status.status_unchanged,
+                    prop_details[propname] = {"status": rabbitvcs.vcs.status.status_normal,
                                               "value": local_props[propname]}
 
                 else:
-                    prop_details[propname] = {"status": rabbitvcs.vcs.status.status_changed,
+                    prop_details[propname] = {"status": rabbitvcs.vcs.status.status_modified,
                                               "value": local_props[propname]}
 
             elif propname in local_propnames:
