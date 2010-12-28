@@ -147,7 +147,7 @@ class SVNAnnotate(Annotate):
         
         to_rev = self.svn.revision("head")
         if to_rev_num.isdigit():
-            to_rev = self.vcs.revision("number", number=int(to_rev_num))
+            to_rev = self.svn.revision("number", number=int(to_rev_num))
         
         self.action = SVNAction(
             self.svn,
