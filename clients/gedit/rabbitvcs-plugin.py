@@ -288,6 +288,9 @@ class RabbitVCSWindowHelper(GtkContextMenuCaller):
         handler_id = view.connect("populate-popup", self.on_view_populate_popup)
         view.set_data(id_name, [handler_id])
 
+    def disconnect_view(self, view, id_name):
+        view.disconnect(view.get_data(id_name)[0])
+        
     def on_view_populate_popup(self, view, menu):
         separator = gtk.SeparatorMenuItem()
         menu.append(separator)
@@ -375,7 +378,8 @@ class RabbitVCSPlugin(gedit.Plugin):
             self._instances[window].connect_view(tab.get_view(), self.id_name)
     
     def on_window_tab_removed(self, window, tab):
-        pass
+        if window in self._instances:
+            self._instances[window].disconnect_view(tab.get_view(), self.id_name)
 
 class MenuIgnoreByFilename(MenuItem):
     identifier = "RabbitVCS::Ignore_By_Filename"
