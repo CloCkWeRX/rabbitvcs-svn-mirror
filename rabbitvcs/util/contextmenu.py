@@ -439,13 +439,15 @@ class ContextMenuCallbacks:
 
     def ignore_by_filename(self, widget, data1=None, data2=None):
         path = self.paths[0]
-        proc = rabbitvcs.util.helper.launch_ui_window("ignore", [self.base_dir, os.path.basename(path)])
+        base_dir = os.path.join(self.base_dir, os.path.dirname(path))
+        proc = rabbitvcs.util.helper.launch_ui_window("ignore", [base_dir, os.path.basename(path)])
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def ignore_by_file_extension(self, widget, data1=None, data2=None):
         path = self.paths[0]
         pattern = "*%s" % rabbitvcs.util.helper.get_file_extension(path)
-        proc = rabbitvcs.util.helper.launch_ui_window("ignore", [self.base_dir, pattern])
+        base_dir = os.path.join(self.base_dir, os.path.dirname(path))
+        proc = rabbitvcs.util.helper.launch_ui_window("ignore", [base_dir, pattern])
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def get_lock(self, widget, data1=None, data2=None):
