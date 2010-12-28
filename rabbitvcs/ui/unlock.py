@@ -88,6 +88,8 @@ class SVNUnlock(Add):
         gtk.gdk.threads_leave()
     
     def populate_files_table(self):
+        self.files_table.clear()
+
         found = 0
         for item in self.items:
             # FIXME: ...
@@ -130,21 +132,19 @@ class SVNUnlock(Add):
         self.action.append(self.action.finish)
         self.action.start()
 
-class SVNUnlockQuiet(InterfaceNonView):
+class SVNUnlockQuiet:
     """
     This class provides a handler to unlock functionality.
     
     """
 
-    def __init__(self, paths):
-        InterfaceNonView.__init__(self)
-        self.path = paths
+    def __init__(self, paths, base_dir=None):
+        self.paths = paths
         self.vcs = rabbitvcs.vcs.VCS()
         self.svn = self.vcs.svn()
 
-    def start(self):
         for path in self.paths:
-            self.svn.unlock(self.paths, force=True)
+            self.svn.unlock(path, force=True)
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNUnlock
