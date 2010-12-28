@@ -126,7 +126,7 @@ class SVNLock(InterfaceView, GtkContextMenuCaller):
                 continue
         
             self.files_table.append([
-                False, 
+                True, 
                 item.path, 
                 rabbitvcs.util.helper.get_file_extension(item.path),
                 locked
