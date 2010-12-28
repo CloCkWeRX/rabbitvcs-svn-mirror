@@ -136,6 +136,17 @@ class StatusCache(object):
     def __contains__(self, path):
         return path in self.cache
 
+    def find_path_statuses(self, path):
+        statuses = []
+        if os.path.isdir(path):
+            for key, value in self.cache.items():
+                if key.startswith(path):
+                    statuses.append(self.__getitem__(key))
+        else:
+            statuses.append(self.__getitem__(path))
+            
+        return statuses
+
 class Status(object):
 
     @staticmethod

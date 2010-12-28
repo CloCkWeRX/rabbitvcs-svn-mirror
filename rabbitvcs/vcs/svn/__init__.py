@@ -239,8 +239,8 @@ class SVN:
             if invalidate:
                 del self.cache[path]
             else:
-                return [self.cache[path]]
-        
+                return self.cache.find_path_statuses(path)
+
         on_error = rabbitvcs.vcs.status.Status.status_unknown(path)
 
         if not self.is_in_a_or_a_working_copy(path):

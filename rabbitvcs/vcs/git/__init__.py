@@ -164,7 +164,7 @@ class Git:
             if invalidate:
                 del self.cache[path]
             else:
-                return [self.cache[path]]
+                return self.cache.find_path_statuses(path)
         
         gittyup_statuses = self.client.status(path)
 
