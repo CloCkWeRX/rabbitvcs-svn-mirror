@@ -596,7 +596,7 @@ class ContextMenuConditions:
             "is_modified"                   : lambda path: self.statuses[path].simple_content_status() == "modified" or self.statuses[path].simple_metadata_status() == "modified",
             "is_deleted"                    : lambda path: self.statuses[path].simple_content_status() == "deleted",
             "is_ignored"                    : lambda path: self.statuses[path].simple_content_status() == "ignored",
-            "is_locked"                     : lambda path: self.statuses[path].simple_content_status() == "locked",
+            "is_locked"                     : self.vcs_client.is_locked,
             "is_missing"                    : lambda path: self.statuses[path].simple_content_status() == "missing",
             "is_conflicted"                 : lambda path: self.statuses[path].simple_content_status() == "complicated",
             "is_obstructed"                 : lambda path: self.statuses[path].simple_content_status() == "obstructed",
@@ -605,7 +605,6 @@ class ContextMenuConditions:
             "has_modified"                  : lambda path: "modified" in self.text_statuses or "modified" in self.prop_statuses,
             "has_deleted"                   : lambda path: "deleted" in self.text_statuses,
             "has_ignored"                   : lambda path: "ignored" in self.text_statuses,
-            "has_locked"                    : lambda path: "locked" in self.text_statuses,
             "has_missing"                   : lambda path: "missing" in self.text_statuses,
             "has_conflicted"                : lambda path: "complicated" in self.text_statuses,
             "has_obstructed"                : lambda path: "obstructed" in self.text_statuses
@@ -843,7 +842,7 @@ class ContextMenuConditions:
     def unlock(self, data=None):
         return (self.path_dict["is_in_a_or_a_working_copy"] and
                 self.path_dict["is_versioned"] and
-                self.path_dict["has_locked"])
+                (self.path_dict["is_dir"] or self.path_dict["is_locked"]))
 
     def cleanup(self, data=None):
         return self.path_dict["is_versioned"]
