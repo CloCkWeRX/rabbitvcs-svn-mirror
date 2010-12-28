@@ -63,7 +63,8 @@ ui_str = """<ui>
             <menuitem name="RabbitVCS::Rename" action="RabbitVCS::Rename" />
             <menuitem name="RabbitVCS::Delete" action="RabbitVCS::Delete" />
             <menuitem name="RabbitVCS::Revert" action="RabbitVCS::Revert" />
-            <menuitem name="RabbitVCS::Resolve" action="RabbitVCS::Resolve" />
+            <menuitem name="RabbitVCS::Edit_Conflicts" action="RabbitVCS::Edit_Conflicts" />
+            <menuitem name="RabbitVCS::Mark_Resolved" action="RabbitVCS::Mark_Resolved" />
             <menuitem name="RabbitVCS::Relocate" action="RabbitVCS::Relocate" />
             <menuitem name="RabbitVCS::Get_Lock" action="RabbitVCS::Get_Lock" />
             <menuitem name="RabbitVCS::Unlock" action="RabbitVCS::Unlock" />
@@ -112,6 +113,7 @@ ui_str = """<ui>
             <menuitem name="RabbitVCS::Rename" action="RabbitVCS::Rename" />
             <menuitem name="RabbitVCS::Delete" action="RabbitVCS::Delete" />
             <menuitem name="RabbitVCS::Revert" action="RabbitVCS::Revert" />
+            <menuitem name="RabbitVCS::Edit_Conflicts" action="RabbitVCS::Edit_Conflicts" />
             <menuitem name="RabbitVCS::Clean" action="RabbitVCS::Clean" />
             <menuitem name="RabbitVCS::Reset" action="RabbitVCS::Reset" />
             <menuitem name="RabbitVCS::Checkout" action="RabbitVCS::Checkout" />
@@ -163,7 +165,8 @@ class RabbitVCSWindowHelper(GtkContextMenuCaller):
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Svn/RabbitVCS::Rename",
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Svn/RabbitVCS::Delete",
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Svn/RabbitVCS::Revert",
-        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Svn/RabbitVCS::Resolve",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Svn/RabbitVCS::Edit_Conflicts",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Svn/RabbitVCS::Mark_Resolved",
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Svn/RabbitVCS::Get_Lock",
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Svn/RabbitVCS::Unlock",
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Svn/RabbitVCS::Cleanup",
@@ -200,6 +203,7 @@ class RabbitVCSWindowHelper(GtkContextMenuCaller):
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Git/RabbitVCS::Rename",
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Git/RabbitVCS::Delete",
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Git/RabbitVCS::Revert",
+        "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Git/RabbitVCS::Edit_Conflicts",
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Git/RabbitVCS::Clean",
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Git/RabbitVCS::Reset",
         "/MenuBar/ExtraMenu_1/RabbitVCSMenu/RabbitVCS::RabbitVCS_Git/RabbitVCS::Checkout",
@@ -528,7 +532,8 @@ class GeditMenu:
             MenuRename,
             MenuDelete,
             MenuRevert,
-            MenuResolve,
+            MenuEditConflicts,
+            MenuMarkResolved,
             MenuRelocate,
             MenuGetLock,
             MenuUnlock,
@@ -666,7 +671,8 @@ class GeditMainContextMenu(MainContextMenu):
                 (MenuRename, None),
                 (MenuDelete, None),
                 (MenuRevert, None),
-                (MenuResolve, None),
+                (MenuEditConflicts, None),
+                (MenuMarkResolved, None),
                 (MenuRelocate, None),
                 (MenuGetLock, None),
                 (MenuUnlock, None),
@@ -710,6 +716,7 @@ class GeditMainContextMenu(MainContextMenu):
                 (MenuRename, None),
                 (MenuDelete, None),
                 (MenuRevert, None),
+                (MenuEditConflicts, None),
                 (MenuClean, None),
                 (MenuReset, None),
                 (MenuCheckout, None),
