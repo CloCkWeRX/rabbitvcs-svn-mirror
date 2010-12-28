@@ -136,9 +136,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         self.table.allow_multiple()
         
         self.refresh()
-        
-        print "Property editor for %s" % path
-    
+
     def on_note_box_add(self, *args, **kwargs):
         print "Added!"
     
