@@ -49,8 +49,6 @@ class SVNLock(InterfaceView, GtkContextMenuCaller):
     
     """
 
-    TOGGLE_ALL = False
-
     def __init__(self, paths, base_dir):
         """
         @type:  paths: list
@@ -181,9 +179,8 @@ class SVNLock(InterfaceView, GtkContextMenuCaller):
             self.show_files_table_popup_menu(treeview, data)
     
     def on_select_all_toggled(self, widget, data=None):
-        self.TOGGLE_ALL = not self.TOGGLE_ALL
         for row in self.files_table.get_items():
-            row[0] = self.TOGGLE_ALL
+            row[0] = self.get_widget("select_all").get_active()
 
     def on_previous_messages_clicked(self, widget, data=None):
         dialog = rabbitvcs.ui.dialog.PreviousMessages()
