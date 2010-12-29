@@ -990,7 +990,7 @@ class LogTopContextMenuCallbacks:
         
         path = self.path
         if self.guess == rabbitvcs.vcs.VCS_SVN:
-            path = self.svn.get_repo_url(self.path)
+            path = self.vcs.svn().get_repo_url(self.path)
 
         rabbitvcs.util.helper.launch_ui_window("changes", [
             "%s@%s" % (path, unicode(rev_first)),
@@ -1003,7 +1003,7 @@ class LogTopContextMenuCallbacks:
 
         path = self.path
         if self.guess == rabbitvcs.vcs.VCS_SVN:
-            path = self.svn.get_repo_url(self.path)
+            path = self.vcs.svn().get_repo_url(self.path)
 
         rabbitvcs.util.helper.launch_ui_window("changes", [
             "%s@%s" % (path, unicode(rev_first)),
@@ -1077,7 +1077,7 @@ class LogTopContextMenuCallbacks:
 
     def edit_revision_properties(self, widget, data=None):
         from rabbitvcs.ui.revprops import SVNRevisionProperties
-        url = self.svn.get_repo_url(self.path)
+        url = self.vcs.svn().get_repo_url(self.path)
         SVNRevisionProperties(url, unicode(self.revisions[0]["revision"]))
 
 class LogTopContextMenu:
