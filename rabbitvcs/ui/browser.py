@@ -419,7 +419,8 @@ class BrowserContextMenuCallbacks:
     def __init__(self, caller, base_dir, vcs, paths=[]):
         self.caller = caller
         self.base_dir = base_dir
-        self.svn = vcs
+        self.vcs = vcs
+        self.svn = self.vcs.svn()
         self.paths = paths
         self.guess = rabbitvcs.vcs.VCS_SVN
 
