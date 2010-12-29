@@ -101,8 +101,8 @@ classes_map = {
 }
 
 def import_factory(path):
-    guess = rabbitvcs.vcs.guess(path)
-    return classes_map[guess["vcs"]](path)
+    vcs = rabbitvcs.vcs.VCS_SVN    
+    return classes_map[vcs](path)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
