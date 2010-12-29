@@ -1032,8 +1032,7 @@ class LogTopContextMenuCallbacks:
         rabbitvcs.util.helper.launch_ui_window("checkout", [self.path, url, "-r", unicode(self.revisions[0]["revision"])])
 
     def branch_tag(self, widget, data=None):
-        from rabbitvcs.ui.branch import Branch
-        Branch(self.path, revision=unicode(self.revisions[0]["revision"])).show()
+        rabbitvcs.util.helper.launch_ui_window("branch", [self.path, "-r", unicode(self.revisions[0]["revision"])])
 
     def branches(self, widget, data=None):
         rabbitvcs.util.helper.launch_ui_window("branches", [self.path, "-r", unicode(self.revisions[0]["revision"])])
