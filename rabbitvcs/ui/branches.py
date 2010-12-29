@@ -314,9 +314,9 @@ class GitBranchManager(InterfaceView):
             self.start_point_entry.set_text(data)
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main, REVISION_OPT
+    from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT
     (options, paths) = main(
-        [REVISION_OPT], 
+        [REVISION_OPT, VCS_OPT], 
         usage="Usage: rabbitvcs branch-manager path [-r revision]"
     )
     

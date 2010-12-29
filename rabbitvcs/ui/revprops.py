@@ -100,8 +100,11 @@ class SVNRevisionProperties(PropertiesBase):
         self.action.start()
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
-    (options, args) = main(usage="Usage: rabbitvcs revprops [url1@rev1]")
+    from rabbitvcs.ui import main, VCS_OPT
+    (options, args) = main(
+        [VCS_OPT],
+        usage="Usage: rabbitvcs revprops [url1@rev1]"
+    )
     
     pathrev = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
     window = SVNRevisionProperties(pathrev[0], pathrev[1])

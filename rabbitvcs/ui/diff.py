@@ -173,7 +173,7 @@ class GitDiff(Diff):
         Diff.__init__(self, path1, revision1, path2, revision2, sidebyside)
 
         self.git = self.vcs.git(path1)
-
+        print self.git,path1
         self.revision1 = self.get_revision_object(revision1, "HEAD")
         self.revision2 = self.get_revision_object(revision2, "WORKING")
 
@@ -295,5 +295,5 @@ if __name__ == "__main__":
     pathrev2 = (None, None)
     if len(args) > 0:
         pathrev2 = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
-
+    print "DIFF",options.vcs
     diff_factory(options.vcs, pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1], sidebyside=options.sidebyside)

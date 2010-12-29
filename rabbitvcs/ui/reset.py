@@ -130,9 +130,9 @@ class GitReset(InterfaceView):
             self.get_widget("none_opt").set_active(True)    
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main, REVISION_OPT
+    from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT
     (options, paths) = main(
-        [REVISION_OPT],
+        [REVISION_OPT, VCS_OPT],
         usage="Usage: rabbitvcs reset [-r REVISION] path"
     )
     

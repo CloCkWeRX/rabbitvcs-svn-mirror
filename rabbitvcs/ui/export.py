@@ -107,7 +107,8 @@ class SVNExport(SVNCheckout):
 
 class GitExport(GitClone):
     def __init__(self, path=None, revision=None):
-    
+
+        self.vcs = rabbitvcs.vcs.VCS()
         self.git = None
         guess = rabbitvcs.vcs.guess(path)
         if guess["vcs"] == rabbitvcs.vcs.VCS_GIT:

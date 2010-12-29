@@ -560,28 +560,25 @@ class GitMerge(BranchMerge):
     def __revision_changed(self, widget):
         self.update_branch_info()
 
-classes_map = {
-    rabbitvcs.vcs.VCS_SVN: SVNMerge, 
-    rabbitvcs.vcs.VCS_GIT: GitMerge
-}
-
-def merge_factory(path, revision1, revision2):
-    guess = rabbitvcs.vcs.guess(path)
-    return classes_map[guess["vcs"]](path, revision1, revision2)
-
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
-    (options, args) = main(usage="Usage: rabbitvcs merge path [revision... (for git)]")
+    from rabbitvcs.ui import main, VCS_OPT
+    (options, args) = main(
+        [VCS_OPT],
+        usage="Usage: rabbitvcs merge path [revision... (for git)]"
+    )
 
     path = args[0]
 
-    guess = rabbitvcs.vcs.guess(path)
+    vcs_name = options.vcs
+    if not vcs_name:
+        vcs_name = rabbitvcs.vcs.guess(path)["vcs"]    
+    
     window = None
-    if guess["vcs"] == rabbitvcs.vcs.VCS_SVN:
+    if vcs_name == rabbitvcs.vcs.VCS_SVN:
         window = SVNMerge(path)
         window.register_gtk_quit()
         gtk.main()
-    elif guess["vcs"] == rabbitvcs.vcs.VCS_GIT:
+    elif vcs_name == rabbitvcs.vcs.VCS_GIT:
         revision1 = None
         revision2 = None
         if len(args) == 2:

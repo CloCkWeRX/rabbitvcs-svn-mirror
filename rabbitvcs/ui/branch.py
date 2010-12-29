@@ -136,17 +136,20 @@ classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNBranch
 }
 
-def branch_factory(path, revision=None):
-    guess = rabbitvcs.vcs.guess(path)
-    return classes_map[guess["vcs"]](path, revision)
+def branch_factory(vcs, path, revision=None):
+    if not vcs:
+        guess = rabbitvcs.vcs.guess(path)
+        vcs = guess["vcs"]
+        
+    return classes_map[vcs](path, revision)
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main, REVISION_OPT
+    from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT
     (options, args) = main(
-        [REVISION_OPT],
+        [REVISION_OPT, VCS_OPT],
         usage="Usage: rabbitvcs branch [url_or_path]"
     )
 
-    window = branch_factory(args[0], options.revision)
+    window = branch_factory(options.vcs, args[0], options.revision)
     window.register_gtk_quit()
     gtk.main()
