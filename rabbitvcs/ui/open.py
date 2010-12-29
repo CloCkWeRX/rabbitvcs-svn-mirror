@@ -126,18 +126,20 @@ classes_map = {
     rabbitvcs.vcs.VCS_GIT: GitOpen
 }
 
-def open_factory(path, revision):
-    guess = rabbitvcs.vcs.guess(path)
-    print path,revision,guess
-    return classes_map[guess["vcs"]](path, revision)
+def open_factory(vcs, path, revision):
+    if not vcs:
+        guess = rabbitvcs.vcs.guess(path)
+        vcs = guess["vcs"]
+        
+    return classes_map[vcs](path, revision)
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main, REVISION_OPT
+    from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT
     (options, paths) = main(
-        [REVISION_OPT],
+        [REVISION_OPT, VCS_OPT],
         usage="Usage: rabbitvcs open path [-r REVISION]"
     )
     
-    window = open_factory(paths[0], options.revision)
+    window = open_factory(options.vcs, paths[0], options.revision)
     window.register_gtk_quit()
     gtk.main()

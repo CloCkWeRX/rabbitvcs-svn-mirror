@@ -287,17 +287,20 @@ classes_map = {
     rabbitvcs.vcs.VCS_GIT: GitAnnotate
 }
 
-def annotate_factory(path, revision=None):
-    guess = rabbitvcs.vcs.guess(path)
-    return classes_map[guess["vcs"]](path, revision)
+def annotate_factory(vcs, path, revision=None):
+    if not vcs:
+        guess = rabbitvcs.vcs.guess(path)
+        vcs = guess["vcs"]
+        
+    return classes_map[vcs](path, revision)
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main, REVISION_OPT
+    from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT
     (options, paths) = main(
-        [REVISION_OPT], 
+        [REVISION_OPT, VCS_OPT], 
         usage="Usage: rabbitvcs annotate url [-r REVISION]"
     )
 
-    window = annotate_factory(paths[0], options.revision)
+    window = annotate_factory(options.vcs, paths[0], options.revision)
     window.register_gtk_quit()
     gtk.main()

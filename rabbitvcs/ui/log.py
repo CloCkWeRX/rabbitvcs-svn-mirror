@@ -305,13 +305,23 @@ class Log(InterfaceView):
 
         options = [
             "%s@%s" % (url, revision2),
-            "%s@%s" % (url, revision1)
+            "%s@%s" % (url, revision1),
+            "--vcs=%s" % self.get_vcs_name()
         ]
         
         if sidebyside:
-            options += ["-s"]
+            options += ["-s"] 
 
         rabbitvcs.util.helper.launch_ui_window("diff", options)
+
+    def get_vcs_name(self):
+        vcs = rabbitvcs.vcs.VCS_DUMMY
+        if hasattr(self, "svn"):
+            vcs = rabbitvcs.vcs.VCS_SVN
+        elif hasattr(self, "git"):
+            vcs = rabbitvcs.vcs.VCS_GIT
+
+        return vcs
 
 class SVNLog(Log):
     def __init__(self, path):
@@ -851,11 +861,7 @@ class LogTopContextMenuConditions:
         self.path = path
         self.revisions = revisions
         
-        self.guess = None
-        if hasattr(self.caller, "svn"):
-            self.guess = rabbitvcs.vcs.VCS_SVN
-        elif hasattr(self.caller, "git"):
-            self.guess = rabbitvcs.vcs.VCS_GIT
+        self.guess = caller.get_vcs_name()
         
     def view_diff_working_copy(self, data=None):
         return (len(self.revisions) == 1)
@@ -941,8 +947,8 @@ class LogTopContextMenuCallbacks:
 
     def view_diff_previous_revision(self, widget, data=None):
         rabbitvcs.util.helper.launch_ui_window("diff", [
-            "%s@%s" % (self.path, unicode(self.revisions[0]["revision"])),
-            "%s@%s" % (self.path, unicode(self.revisions[0]["next_revision"]))
+            "%s@%s" % (self.path, unicode(self.revisions[0]["next_revision"])),
+            "%s@%s" % (self.path, unicode(self.revisions[0]["revision"]))
         ])
 
     def view_diff_revisions(self, widget, data=None):
@@ -994,7 +1000,8 @@ class LogTopContextMenuCallbacks:
 
         rabbitvcs.util.helper.launch_ui_window("changes", [
             "%s@%s" % (path, unicode(rev_first)),
-            "%s@%s" % (path, unicode(rev_last))
+            "%s@%s" % (path, unicode(rev_last)),
+            "--vcs=%s" % (self.caller.get_vcs_name())
         ])
 
     def show_changes_revisions(self, widget, data=None):
@@ -1007,7 +1014,8 @@ class LogTopContextMenuCallbacks:
 
         rabbitvcs.util.helper.launch_ui_window("changes", [
             "%s@%s" % (path, unicode(rev_first)),
-            "%s@%s" % (path, unicode(rev_last))
+            "%s@%s" % (path, unicode(rev_last)),
+            "--vcs=%s" % (self.caller.get_vcs_name())
         ])
 
     def update_to_this_revision(self, widget, data=None):        
@@ -1203,12 +1211,7 @@ class LogBottomContextMenuCallbacks:
         self.caller = caller
         self.vcs = vcs
         self.svn = self.vcs.svn()
-        self.guess = self.vcs.guess(paths[0])["vcs"]
-        
-        # SVN will return invalid paths so re-guess with the correct url
-        if self.guess == rabbitvcs.vcs.VCS_DUMMY:
-            path = self.caller.root_url + paths[0]
-            self.guess = self.vcs.guess(path)["vcs"]
+        self.vcs_name = self.caller.get_vcs_name()
             
         self.paths = paths
         self.revisions = revisions
@@ -1250,12 +1253,13 @@ class LogBottomContextMenuCallbacks:
         rev_last = unicode(self.revisions[0]["next_revision"])
 
         url = self.paths[0]
-        if self.guess == rabbitvcs.vcs.VCS_SVN:
+        if self.vcs_name == rabbitvcs.vcs.VCS_SVN:
             url = self.caller.root_url + self.paths[0]
 
         rabbitvcs.util.helper.launch_ui_window("changes", [
             "%s@%s" % (url, rev_first),
-            "%s@%s" % (url, rev_last)
+            "%s@%s" % (url, rev_last),
+            "--vcs=%s" % (self.caller.get_vcs_name())
         ])
     
     def show_changes_revisions(self, widget, data=None):
@@ -1263,26 +1267,27 @@ class LogBottomContextMenuCallbacks:
         rev_last = unicode(self.revisions[-1]["revision"])
 
         url = self.paths[0]
-        if self.guess == rabbitvcs.vcs.VCS_SVN:
+        if self.vcs_name == rabbitvcs.vcs.VCS_SVN:
             url = self.caller.root_url + self.paths[0]
         
         rabbitvcs.util.helper.launch_ui_window("changes", [
             "%s@%s" % (url, rev_first),
-            "%s@%s" % (url, rev_last)
+            "%s@%s" % (url, rev_last),
+            "--vcs=%s" % (self.caller.get_vcs_name())
         ])
         
 
     def _open(self, widget, data=None):
         for path in self.paths:
             path = self.caller.root_url + path
-            rabbitvcs.util.helper.launch_ui_window("open", [path, "-r", unicode(self.revisions[0]["revision"])])
+            rabbitvcs.util.helper.launch_ui_window("open", [path, "--vcs=%s" % self.vcs_name, "-r", unicode(self.revisions[0]["revision"])])
 
     def annotate(self, widget, data=None):
         url = self.paths[0]
-        if self.guess == rabbitvcs.vcs.VCS_SVN:
+        if self.vcs_name == rabbitvcs.vcs.VCS_SVN:
             url = self.caller.root_url + self.paths[0]
 
-        rabbitvcs.util.helper.launch_ui_window("annotate", [url, "-r", unicode(self.revisions[0]["revision"])])
+        rabbitvcs.util.helper.launch_ui_window("annotate", [url, "--vcs=%s" % self.vcs_name, "-r", unicode(self.revisions[0]["revision"])])
 
 class LogBottomContextMenu:
     """

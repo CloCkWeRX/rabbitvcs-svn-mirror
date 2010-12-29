@@ -273,18 +273,21 @@ classes_map = {
     rabbitvcs.vcs.VCS_GIT: GitDiff
 }
 
-def diff_factory(path1, revision_obj1, path2=None, revision_obj2=None, sidebyside=False):
-    guess = rabbitvcs.vcs.guess(path1)
-    return classes_map[guess["vcs"]](path1, revision_obj1, path2, revision_obj2, sidebyside)
+def diff_factory(vcs, path1, revision_obj1, path2=None, revision_obj2=None, sidebyside=False):
+    if not vcs:
+        guess = rabbitvcs.vcs.guess(path1)
+        vcs = guess["vcs"]
+
+    return classes_map[vcs](path1, revision_obj1, path2, revision_obj2, sidebyside)
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
+    from rabbitvcs.ui import main, VCS_OPT
     (options, args) = main([
         (["-s", "--sidebyside"], {
             "help":     _("View diff as side-by-side comparison"), 
             "action":   "store_true", 
             "default":  False
-        })],
+        }), VCS_OPT],
         usage="Usage: rabbitvcs diff [url1@rev1] [url2@rev2]"
     )
     
@@ -293,4 +296,4 @@ if __name__ == "__main__":
     if len(args) > 0:
         pathrev2 = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
 
-    diff_factory(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1], sidebyside=options.sidebyside)
+    diff_factory(options.vcs, pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1], sidebyside=options.sidebyside)

@@ -555,13 +555,17 @@ classes_map = {
     rabbitvcs.vcs.VCS_GIT: GitChanges
 }
 
-def changes_factory(path1=None, revision1=None, path2=None, revision2=None):
-    guess = rabbitvcs.vcs.guess(path1)
-    return classes_map[guess["vcs"]](path1, revision1, path2, revision2)
+def changes_factory(vcs, path1=None, revision1=None, path2=None, revision2=None):
+    if not vcs:
+        guess = rabbitvcs.vcs.guess(path1)
+        vcs = guess["vcs"]
+        
+    return classes_map[vcs](path1, revision1, path2, revision2)
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main
+    from rabbitvcs.ui import main, VCS_OPT
     (options, args) = main(
+        [VCS_OPT],
         usage="Usage: rabbitvcs changes [url1@rev1] [url2@rev2]"
     )
     
@@ -570,6 +574,6 @@ if __name__ == "__main__":
     if len(args) > 0:
         pathrev2 = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
 
-    window = changes_factory(pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])
+    window = changes_factory(options.vcs, pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])
     window.register_gtk_quit()
     gtk.main()
