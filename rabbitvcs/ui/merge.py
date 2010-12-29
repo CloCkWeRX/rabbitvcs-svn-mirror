@@ -20,6 +20,8 @@
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import cgi
+
 import pygtk
 import gobject
 import gtk
@@ -522,7 +524,7 @@ class GitMerge(BranchMerge):
                 self.info['from']['author'].set_text(from_info.author)
                 self.info['from']['date'].set_text(rabbitvcs.util.helper.format_datetime(from_info.date))
                 self.info['from']['revision'].set_text(unicode(from_info.revision)[0:7])
-                self.info['from']['message'].set_text(from_info.message)
+                self.info['from']['message'].set_text(cgi.escape(rabbitvcs.util.helper.format_long_text(from_info.message, 500)))
 
         if to_branch.value:
             log = self.git.log(self.path, limit=1, revision=to_branch, showtype="branch")
@@ -531,7 +533,7 @@ class GitMerge(BranchMerge):
                 self.info['to']['author'].set_text(to_info.author)
                 self.info['to']['date'].set_text(rabbitvcs.util.helper.format_datetime(to_info.date))
                 self.info['to']['revision'].set_text(unicode(to_info.revision)[0:7])
-                self.info['to']['message'].set_text(to_info.message)
+                self.info['to']['message'].set_text(cgi.escape(rabbitvcs.util.helper.format_long_text(to_info.message, 500)))
 
     def on_from_branches_changed(self, widget):
         self.update_branch_info()
