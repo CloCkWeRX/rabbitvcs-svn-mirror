@@ -52,7 +52,7 @@ class SVNEditConflicts(InterfaceNonView):
         
         status = self.svn.status(self.path)
         if status.simple_content_status() != rabbitvcs.vcs.status.status_complicated:
-            rabbitvcs.ui.dialog.MessageBox(_("The specified file is not conflicted.  There is nothing to do."))
+            log.debug("The specified file is not conflicted.  There is nothing to do.")
             self.close()
             return
         
