@@ -113,8 +113,8 @@ class Checkout(InterfaceView):
                 self.on_ok_clicked(widget)
 
     def on_repo_chooser_clicked(self, widget, data=None):
-        from rabbitvcs.ui.browser import BrowserDialog
-        BrowserDialog(self.repositories.get_active_text(), 
+        from rabbitvcs.ui.browser import SVNBrowserDialog
+        SVNBrowserDialog(self.repositories.get_active_text(), 
             callback=self.on_repo_chooser_closed)
 
     def on_repo_chooser_closed(self, new_url):
@@ -129,9 +129,6 @@ class Checkout(InterfaceView):
             self.complete = False
         
         self.get_widget("ok").set_sensitive(self.complete)
-        
-        if hasattr(self, "revision_selector"):
-            self.revision_selector.determine_widget_sensitivity()
 
 class SVNCheckout(Checkout):
     def __init__(self, path=None, url=None, revision=None):

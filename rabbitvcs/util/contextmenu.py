@@ -982,6 +982,10 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
         proc = rabbitvcs.util.helper.launch_ui_window("revert", ["-q"] + self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
     
+    def mark_resolved(self, widget, data1=None, data2=None):
+        proc = rabbitvcs.util.helper.launch_ui_window("markresolved", ["-q"] + self.paths)
+        self.caller.rescan_after_process_exit(proc, self.paths)
+    
     def browse_to(self, widget, data1=None, data2=None):
         rabbitvcs.util.helper.browse_to_item(self.paths[0])
 

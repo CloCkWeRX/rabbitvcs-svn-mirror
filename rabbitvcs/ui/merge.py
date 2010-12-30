@@ -46,6 +46,7 @@ class SVNMerge(InterfaceView):
         self.path = path
         
         self.page = self.assistant.get_nth_page(0)
+        self.last_page = None
         
         self.vcs = rabbitvcs.vcs.VCS()
         self.svn = self.vcs.svn()
@@ -53,8 +54,12 @@ class SVNMerge(InterfaceView):
         if not self.svn.has_merge2():
             self.get_widget("mergetype_range_opt").set_sensitive(False)
             self.get_widget("mergetype_tree_opt").set_active(True)
+            self.get_widget("mergetype_reintegrate_opt").set_active(False) 
             self.get_widget("mergeoptions_only_record").set_active(False)
-            
+
+        if not self.svn.has_merge_reintegrate():
+            self.get_widget("mergetype_reintegrate_opt").set_sensitive(False)
+
         self.assistant.set_page_complete(self.page, True)
         self.assistant.set_forward_page_func(self.on_forward_clicked)
         
@@ -158,6 +163,24 @@ class SVNMerge(InterfaceView):
             if record_only:
                 kwargs["record_only"] = record_only
 
+        elif self.type == "reintegrate":
+            url = self.merge_reintegrate_repos.get_active_text()
+            revision = self.merge_reintegrate_revision.get_revision_object()
+
+            action.append(rabbitvcs.util.helper.save_repository_path, url)
+            
+            # Build up args and kwargs because some args are not supported
+            # with older versions of pysvn/svn
+            args = (
+                self.svn.merge_reintegrate,
+                url,
+                revision,
+                self.path
+            )
+            kwargs = {
+                "dry_run":          test
+            }
+
         elif self.type == "tree":
             from_url = self.get_widget("mergetree_from_url").get_text()
             from_revision = self.svn.revision("head")
@@ -205,11 +228,13 @@ class SVNMerge(InterfaceView):
         if current == 1:
             self.on_mergerange_prepare()
         elif current == 2:
-            self.on_mergebranch_prepare()
+            self.on_merge_reintegrate_prepare()
         elif current == 3:
             self.on_mergetree_prepare()
         elif current == 4:
             self.on_mergeoptions_prepare()
+
+        self.last_page = current
 
     def on_forward_clicked(self, widget):
         current = self.assistant.get_current_page()
@@ -217,6 +242,9 @@ class SVNMerge(InterfaceView):
             if self.get_widget("mergetype_range_opt").get_active():
                 next = 1
                 self.type = "range"
+            elif self.get_widget("mergetype_reintegrate_opt").get_active():
+                next = 2
+                self.type = "reintegrate"
             elif self.get_widget("mergetype_tree_opt").get_active():
                 next = 3
                 self.type = "tree"
@@ -257,13 +285,13 @@ class SVNMerge(InterfaceView):
 
     def mergerange_check_ready(self):
         ready = True
-        if self.get_widget("mergerange_from_url").get_text() == "":
+        if self.get_widget("mergerange_from_urls").get_active_text() == "":
             ready = False
 
         self.assistant.set_page_complete(self.page, ready)
 
         allow_log = False
-        if self.get_widget("mergerange_from_url").get_text():
+        if self.get_widget("mergerange_from_urls").get_active_text():
             allow_log = True        
         self.get_widget("mergerange_show_log1").set_sensitive(allow_log)
 
@@ -271,26 +299,37 @@ class SVNMerge(InterfaceView):
     # Step 2b: Reintegrate a Branch
     #
 
-    def on_mergebranch_prepare(self):
-        if not hasattr(self, "mergebranch_repos"):
-            self.mergebranch_repos = rabbitvcs.ui.widget.ComboBox(
-                self.get_widget("mergebranch_from_urls"), 
+    def on_merge_reintegrate_prepare(self):
+        if not hasattr(self, "merge_reintegrate_repos"):
+            self.merge_reintegrate_repos = rabbitvcs.ui.widget.ComboBox(
+                self.get_widget("merge_reintegrate_repos"), 
                 self.repo_paths
             )
-            self.get_widget("mergebranch_working_copy").set_text(self.path)
+            self.merge_reintegrate_repos.cb.connect("changed", self.on_merge_reintegrate_repos_changed)
+            self.get_widget("merge_reintegrate_working_copy").set_text(self.path)
 
-    def on_mergebranch_show_log1_clicked(self, widget):
-        log_dialog_factory(self.path)
+        if not hasattr(self, "merge_reintegrate_revision"):
+            self.merge_reintegrate_revision = rabbitvcs.ui.widget.RevisionSelector(
+                self.get_widget("revision_container"),
+                self.svn,
+                url_combobox=self.merge_reintegrate_repos,
+                expand=True
+            )
 
-    def on_mergebranch_show_log2_clicked(self, widget):
-        log_dialog_factory(self.path)
+    def on_merge_reintegrate_browse_clicked(self, widget):
+        from rabbitvcs.ui.browser import SVNBrowserDialog
+        SVNBrowserDialog(self.path, callback=self.on_repo_chooser_closed)
+
+    def on_repo_chooser_closed(self, new_url):
+        self.merge_reintegrate_repos.set_child_text(new_url)
+        self.merge_reintegrate_check_ready()
         
-    def on_mergebranch_from_url_changed(self, widget):
-        self.mergebranch_check_ready()
+    def on_merge_reintegrate_repos_changed(self, widget):
+        self.merge_reintegrate_check_ready()
     
-    def mergebranch_check_ready(self):
+    def merge_reintegrate_check_ready(self):
         ready = True
-        if self.get_widget("mergebranch_from_url").get_text() == "":
+        if self.get_widget("merge_reintegrate_repos").get_active_text() == "":
             ready = False
 
         self.assistant.set_page_complete(self.page, ready)
@@ -362,6 +401,15 @@ class SVNMerge(InterfaceView):
     #
     
     def on_mergeoptions_prepare(self):
+        if self.last_page == 2:
+            self.get_widget("mergeoptions_recursive").hide()
+            self.get_widget("mergeoptions_ignore_ancestry").hide()
+            self.get_widget("mergeoptions_only_record").hide()
+        else:
+            self.get_widget("mergeoptions_recursive").show()
+            self.get_widget("mergeoptions_ignore_ancestry").show()
+            self.get_widget("mergeoptions_only_record").show()
+            
         self.assistant.set_page_complete(self.page, True)
 
 class BranchMerge(InterfaceView):

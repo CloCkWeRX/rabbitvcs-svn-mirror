@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Thu Feb 12 09:52:57 2009 -->
+<?xml version="1.0"?>
 <glade-interface>
+  <!-- interface-requires gtk+ 2.10 -->
+  <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkAssistant" id="Merge">
     <property name="width_request">550</property>
     <property name="visible">True</property>
@@ -9,34 +9,41 @@
     <property name="title" translatable="yes">Merge Assistant</property>
     <property name="window_position">center</property>
     <property name="icon_name">rabbitvcs-small</property>
-    <property name="gravity">GDK_GRAVITY_CENTER</property>
-    <signal name="close" handler="on_close_clicked"/>
+    <property name="gravity">center</property>
     <signal name="destroy" handler="on_destroy"/>
-    <signal name="cancel" handler="on_cancel_clicked"/>
     <signal name="apply" handler="on_apply_clicked"/>
+    <signal name="cancel" handler="on_cancel_clicked"/>
+    <signal name="close" handler="on_close_clicked"/>
     <signal name="prepare" handler="on_prepare"/>
     <child>
+      <placeholder/>
+    </child>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
       <widget class="GtkVBox" id="page1">
-<property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
           <widget class="GtkVBox" id="vbox3">
-<property name="orientation">vertical</property>
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <widget class="GtkRadioButton" id="mergetype_range_opt">
+                <property name="label" translatable="yes">Merge a range of revisions</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="label" translatable="yes">Merge a range of revisions</property>
-                <property name="response_id">0</property>
+                <property name="receives_default">False</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
               </widget>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -56,18 +63,19 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
           <widget class="GtkVBox" id="vbox5">
-<property name="orientation">vertical</property>
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <widget class="GtkRadioButton" id="mergetype_tree_opt">
+                <property name="label" translatable="yes">Merge two different trees</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="label" translatable="yes">Merge two different trees</property>
-                <property name="response_id">0</property>
+                <property name="receives_default">False</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
                 <property name="group">mergetype_range_opt</property>
@@ -75,6 +83,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -97,22 +106,61 @@
             <property name="position">1</property>
           </packing>
         </child>
+        <child>
+          <widget class="GtkVBox" id="vbox6">
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <widget class="GtkRadioButton" id="mergetype_reintegrate_opt">
+                <property name="label" translatable="yes">Reintegrate a branch</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="draw_indicator">True</property>
+                <property name="group">mergetype_range_opt</property>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="label2">
+                <property name="width_request">475</property>
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+                <property name="xpad">30</property>
+                <property name="label" translatable="yes">Choose this method if you wish to reintegrate a branch into the trunk.</property>
+                <property name="wrap">True</property>
+              </widget>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
       </widget>
       <packing>
-        <property name="page_type">GTK_ASSISTANT_PAGE_INTRO</property>
+        <property name="page_type">intro</property>
         <property name="title">Step 1: Merge Type</property>
       </packing>
     </child>
     <child>
       <widget class="GtkVBox" id="page2a">
-<property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
           <widget class="GtkVBox" id="vbox8">
-<property name="orientation">vertical</property>
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
               <widget class="GtkLabel" id="label3">
@@ -124,6 +172,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -133,13 +182,6 @@
                 <child>
                   <widget class="GtkComboBoxEntry" id="mergerange_from_urls">
                     <property name="visible">True</property>
-                    <child internal-child="entry">
-                      <widget class="GtkEntry" id="mergerange_from_url">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <signal name="changed" handler="on_mergerange_from_url_changed"/>
-                      </widget>
-                    </child>
                   </widget>
                 </child>
               </widget>
@@ -153,12 +195,13 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
           <widget class="GtkVBox" id="vbox9">
-<property name="orientation">vertical</property>
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
               <widget class="GtkLabel" id="label4">
@@ -170,6 +213,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -178,8 +222,8 @@
                 <property name="left_padding">12</property>
                 <child>
                   <widget class="GtkVBox" id="vbox34">
-<property name="orientation">vertical</property>
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
                       <widget class="GtkHBox" id="hbox18">
@@ -191,6 +235,9 @@
                             <property name="can_focus">True</property>
                             <signal name="changed" handler="on_mergerange_revisions_changed"/>
                           </widget>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
                         </child>
                         <child>
                           <widget class="GtkButton" id="mergerange_show_log1">
@@ -198,7 +245,6 @@
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
                             <property name="tooltip" translatable="yes">Show log</property>
-                            <property name="response_id">0</property>
                             <signal name="clicked" handler="on_mergerange_show_log1_clicked"/>
                             <child>
                               <widget class="GtkImage" id="image1">
@@ -218,6 +264,7 @@
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
@@ -257,8 +304,8 @@ To merge all revisions, leave the box empty.</property>
         </child>
         <child>
           <widget class="GtkVBox" id="vbox10">
-<property name="orientation">vertical</property>
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
               <widget class="GtkLabel" id="label5">
@@ -270,6 +317,7 @@ To merge all revisions, leave the box empty.</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -285,6 +333,9 @@ To merge all revisions, leave the box empty.</property>
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                       </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
                     </child>
                   </widget>
                 </child>
@@ -309,14 +360,14 @@ To merge all revisions, leave the box empty.</property>
     </child>
     <child>
       <widget class="GtkVBox" id="page2b">
-<property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
           <widget class="GtkVBox" id="vbox11">
-<property name="orientation">vertical</property>
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
               <widget class="GtkLabel" id="label6">
@@ -328,6 +379,7 @@ To merge all revisions, leave the box empty.</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -335,46 +387,64 @@ To merge all revisions, leave the box empty.</property>
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <widget class="GtkHBox" id="hbox1">
+                  <widget class="GtkVBox" id="vbox7">
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <widget class="GtkAlignment" id="alignment7">
+                      <widget class="GtkHBox" id="hbox1">
                         <property name="visible">True</property>
+                        <property name="spacing">6</property>
                         <child>
-                          <widget class="GtkComboBoxEntry" id="mergebranch_from_urls">
+                          <widget class="GtkAlignment" id="alignment7">
                             <property name="visible">True</property>
-                            <child internal-child="entry">
-                              <widget class="GtkEntry" id="comboboxentry-entry5">
+                            <child>
+                              <widget class="GtkComboBoxEntry" id="merge_reintegrate_repos">
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <signal name="changed" handler="on_mergebranch_from_url_changed"/>
+                                <signal name="changed" handler="on_merge_reintegrate_from_urls_changed"/>
                               </widget>
                             </child>
                           </widget>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
                         </child>
-                      </widget>
-                    </child>
-                    <child>
-                      <widget class="GtkButton" id="mergebranch_show_log1">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="tooltip" translatable="yes">Show log</property>
-                        <property name="response_id">0</property>
-                        <signal name="clicked" handler="on_mergebranch_show_log1_clicked"/>
                         <child>
-                          <widget class="GtkImage" id="image2">
+                          <widget class="GtkButton" id="merge_reintegrate_browse">
                             <property name="visible">True</property>
-                            <property name="pixel_size">24</property>
-                            <property name="icon_name">rabbitvcs-show_log</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <property name="has_tooltip">True</property>
+                            <property name="tooltip" translatable="yes">Show log</property>
+                            <signal name="clicked" handler="on_merge_reintegrate_browse_clicked"/>
+                            <child>
+                              <widget class="GtkImage" id="image2">
+                                <property name="visible">True</property>
+                                <property name="stock">gtk-harddisk</property>
+                                <property name="pixel_size">24</property>
+                              </widget>
+                            </child>
                           </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="pack_type">end</property>
+                            <property name="position">1</property>
+                          </packing>
                         </child>
                       </widget>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="pack_type">GTK_PACK_END</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <widget class="GtkAlignment" id="revision_container">
+                        <property name="visible">True</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                      </widget>
+                      <packing>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -391,12 +461,13 @@ To merge all revisions, leave the box empty.</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
           <widget class="GtkVBox" id="vbox12">
-<property name="orientation">vertical</property>
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <child>
               <widget class="GtkLabel" id="label7">
                 <property name="visible">True</property>
@@ -407,6 +478,7 @@ To merge all revisions, leave the box empty.</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -418,11 +490,14 @@ To merge all revisions, leave the box empty.</property>
                     <property name="visible">True</property>
                     <property name="spacing">12</property>
                     <child>
-                      <widget class="GtkLabel" id="mergebranch_working_copy">
+                      <widget class="GtkLabel" id="merge_reintegrate_working_copy">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="wrap">True</property>
                       </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
                     </child>
                   </widget>
                 </child>
@@ -442,19 +517,19 @@ To merge all revisions, leave the box empty.</property>
         </child>
       </widget>
       <packing>
-        <property name="title">Step 2: Reintegrate by Branch</property>
+        <property name="title">Step 2: Reintegrate a Branch</property>
       </packing>
     </child>
     <child>
       <widget class="GtkVBox" id="page2c">
-<property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
           <widget class="GtkVBox" id="vbox13">
-<property name="orientation">vertical</property>
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
               <widget class="GtkLabel" id="label8">
@@ -466,6 +541,7 @@ To merge all revisions, leave the box empty.</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -474,41 +550,36 @@ To merge all revisions, leave the box empty.</property>
                 <property name="left_padding">12</property>
                 <child>
                   <widget class="GtkVBox" id="vbox38">
-<property name="orientation">vertical</property>
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
                       <widget class="GtkComboBoxEntry" id="mergetree_from_urls">
                         <property name="visible">True</property>
-                        <child internal-child="entry">
-                          <widget class="GtkEntry" id="mergetree_from_url">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <signal name="changed" handler="on_mergetree_from_url_changed"/>
-                          </widget>
-                        </child>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
                       <widget class="GtkVBox" id="vbox2">
-<property name="orientation">vertical</property>
                         <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <widget class="GtkRadioButton" id="mergetree_from_revision_head_opt">
+                            <property name="label" translatable="yes">HEAD</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="label" translatable="yes">HEAD</property>
-                            <property name="response_id">0</property>
+                            <property name="receives_default">False</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
+                            <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
@@ -517,14 +588,17 @@ To merge all revisions, leave the box empty.</property>
                             <property name="spacing">6</property>
                             <child>
                               <widget class="GtkRadioButton" id="mergetree_from_revision_number_opt">
+                                <property name="label" translatable="yes">Revision</property>
                                 <property name="width_request">140</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="label" translatable="yes">Revision</property>
-                                <property name="response_id">0</property>
+                                <property name="receives_default">False</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">mergetree_from_revision_head_opt</property>
                               </widget>
+                              <packing>
+                                <property name="position">0</property>
+                              </packing>
                             </child>
                             <child>
                               <widget class="GtkEntry" id="mergetree_from_revision_number">
@@ -545,7 +619,6 @@ To merge all revisions, leave the box empty.</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip" translatable="yes">Show log</property>
-                                <property name="response_id">0</property>
                                 <signal name="clicked" handler="on_mergetree_from_show_log_clicked"/>
                                 <child>
                                   <widget class="GtkImage" id="image3">
@@ -588,12 +661,13 @@ To merge all revisions, leave the box empty.</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
           <widget class="GtkVBox" id="vbox14">
-<property name="orientation">vertical</property>
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
               <widget class="GtkLabel" id="label9">
@@ -605,6 +679,7 @@ To merge all revisions, leave the box empty.</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -613,41 +688,36 @@ To merge all revisions, leave the box empty.</property>
                 <property name="left_padding">12</property>
                 <child>
                   <widget class="GtkVBox" id="vbox39">
-<property name="orientation">vertical</property>
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
                       <widget class="GtkComboBoxEntry" id="mergetree_to_urls">
                         <property name="visible">True</property>
-                        <child internal-child="entry">
-                          <widget class="GtkEntry" id="mergetree_to_url">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <signal name="changed" handler="on_mergetree_to_url_changed"/>
-                          </widget>
-                        </child>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
                       <widget class="GtkVBox" id="vbox4">
-<property name="orientation">vertical</property>
                         <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <widget class="GtkRadioButton" id="mergetree_to_revision_head_opt">
+                            <property name="label" translatable="yes">HEAD</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="label" translatable="yes">HEAD</property>
-                            <property name="response_id">0</property>
+                            <property name="receives_default">False</property>
                             <property name="active">True</property>
                             <property name="draw_indicator">True</property>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
+                            <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
@@ -656,14 +726,17 @@ To merge all revisions, leave the box empty.</property>
                             <property name="spacing">6</property>
                             <child>
                               <widget class="GtkRadioButton" id="mergetree_to_revision_number_opt">
+                                <property name="label" translatable="yes">Revision</property>
                                 <property name="width_request">140</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="label" translatable="yes">Revision</property>
-                                <property name="response_id">0</property>
+                                <property name="receives_default">False</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">mergetree_to_revision_head_opt</property>
                               </widget>
+                              <packing>
+                                <property name="position">0</property>
+                              </packing>
                             </child>
                             <child>
                               <widget class="GtkEntry" id="mergetree_to_revision_number">
@@ -684,7 +757,6 @@ To merge all revisions, leave the box empty.</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip" translatable="yes">Show log</property>
-                                <property name="response_id">0</property>
                                 <signal name="clicked" handler="on_mergetree_to_show_log_clicked"/>
                                 <child>
                                   <widget class="GtkImage" id="image4">
@@ -732,8 +804,8 @@ To merge all revisions, leave the box empty.</property>
         </child>
         <child>
           <widget class="GtkVBox" id="vbox15">
-<property name="orientation">vertical</property>
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
               <widget class="GtkLabel" id="label10">
@@ -745,6 +817,7 @@ To merge all revisions, leave the box empty.</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -760,6 +833,9 @@ To merge all revisions, leave the box empty.</property>
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                       </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
                     </child>
                   </widget>
                 </child>
@@ -784,14 +860,14 @@ To merge all revisions, leave the box empty.</property>
     </child>
     <child>
       <widget class="GtkVBox" id="page3">
-<property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
           <widget class="GtkVBox" id="vbox1">
-<property name="orientation">vertical</property>
             <property name="visible">True</property>
+            <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
               <widget class="GtkLabel" id="label1">
@@ -803,6 +879,7 @@ To merge all revisions, leave the box empty.</property>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -811,24 +888,27 @@ To merge all revisions, leave the box empty.</property>
                 <property name="left_padding">12</property>
                 <child>
                   <widget class="GtkVBox" id="vbox41">
-<property name="orientation">vertical</property>
                     <property name="visible">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <widget class="GtkCheckButton" id="mergeoptions_recursive">
+                        <property name="label" translatable="yes">Recursive</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">Recursive</property>
-                        <property name="response_id">0</property>
+                        <property name="receives_default">False</property>
                         <property name="active">True</property>
                         <property name="draw_indicator">True</property>
                       </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
                     </child>
                     <child>
                       <widget class="GtkCheckButton" id="mergeoptions_ignore_ancestry">
+                        <property name="label" translatable="yes">Ignore ancestry</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">Ignore ancestry</property>
-                        <property name="response_id">0</property>
+                        <property name="receives_default">False</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
@@ -839,10 +919,10 @@ To merge all revisions, leave the box empty.</property>
                     </child>
                     <child>
                       <widget class="GtkCheckButton" id="mergeoptions_only_record">
+                        <property name="label" translatable="yes">Only record the merge</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">Only record the merge</property>
-                        <property name="response_id">0</property>
+                        <property name="receives_default">False</property>
                         <property name="draw_indicator">True</property>
                       </widget>
                       <packing>
@@ -862,18 +942,18 @@ To merge all revisions, leave the box empty.</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
           <widget class="GtkHButtonBox" id="hbuttonbox24">
             <property name="visible">True</property>
-            <property name="layout_style">GTK_BUTTONBOX_END</property>
+            <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="mergeoptions_test_merge">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="response_id">0</property>
                 <signal name="clicked" handler="on_test_clicked"/>
                 <child>
                   <widget class="GtkHBox" id="hbox2">
@@ -883,6 +963,9 @@ To merge all revisions, leave the box empty.</property>
                         <property name="visible">True</property>
                         <property name="stock">gtk-execute</property>
                       </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
                     </child>
                     <child>
                       <widget class="GtkLabel" id="label11">
@@ -896,6 +979,11 @@ To merge all revisions, leave the box empty.</property>
                   </widget>
                 </child>
               </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
             </child>
           </widget>
           <packing>
@@ -906,7 +994,7 @@ To merge all revisions, leave the box empty.</property>
         </child>
       </widget>
       <packing>
-        <property name="page_type">GTK_ASSISTANT_PAGE_CONFIRM</property>
+        <property name="page_type">confirm</property>
         <property name="title">Step 3: Final Options</property>
       </packing>
     </child>

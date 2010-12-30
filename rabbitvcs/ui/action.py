@@ -606,7 +606,7 @@ class VCSAction(threading.Thread):
         """
 
         if self.has_loader:
-            self.queue.append(self.notification.close)
+            self.queue.append(self.notification.close, threaded=True)
 
         self.queue.set_exception_callback(self.__queue_exception_callback)
         self.queue.start()

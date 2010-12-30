@@ -866,6 +866,9 @@ class RevisionSelector:
         self.revision_changed_callback = revision_changed_callback
         self.revision_change_inprogress = False
         hbox = gtk.HBox(0, 4)
+        
+        if self.url_combobox:
+            self.url_combobox.cb.connect("changed", self.__on_url_combobox_changed)
 
         if client.vcs == rabbitvcs.vcs.VCS_GIT:
             self.OPTIONS = [
@@ -937,6 +940,9 @@ class RevisionSelector:
     def __revision_changed_callback(self, *args, **kwargs):
         self.revision_change_inprogress = False
         self.revision_changed_callback(*args, **kwargs)
+
+    def __on_url_combobox_changed(self, widget):
+        self.determine_widget_sensitivity()
 
     def determine_widget_sensitivity(self):
         index = self.revision_kind_opt.get_active()

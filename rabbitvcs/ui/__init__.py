@@ -38,6 +38,8 @@ _ = gettext.gettext
 
 import rabbitvcs.vcs.status
 
+gtk.gdk.threads_init()
+
 REVISION_OPT = (["-r", "--revision"], {"help":"specify the revision number"})
 BASEDIR_OPT = (["-b", "--base-dir"], {})
 QUIET_OPT = (["-q", "--quiet"], {
@@ -120,18 +122,28 @@ class InterfaceView(GladeWidgetWrapper):
         
         
     def hide(self):
-        self.get_widget(self.glade_id).set_property('visible', False)
+        window = self.get_widget(self.glade_id)
+        if window:
+            window.set_property('visible', False)
         
     def show(self):
-        self.get_widget(self.glade_id).set_property('visible', True)
+        window = self.get_widget(self.glade_id)
+        if window:
+            window.set_property('visible', True)
     
     def destroy(self):
         self.close()
     
-    def close(self):
+    def close(self, threaded=False):
         window = self.get_widget(self.glade_id)
         if window is not None:
+            if threaded:
+                gtk.gdk.threads_enter()
+
             window.destroy()
+
+            if threaded:
+                gtk.gdk.threads_leave()
             
         if self.do_gtk_quit:
             gtk.main_quit()

@@ -1477,6 +1477,35 @@ class SVN:
             url_or_path2, revision2.primitive(), local_path, force, recurse,
             record_only)
 
+    def has_merge_reintegrate(self):
+        """
+        Tests whether the user has a later version of pysvn/svn installed
+        with more merge features
+        """
+        return hasattr(self.client, "merge_reintegrate")
+
+    def merge_reintegrate(self, url_or_path, revision, local_path, dry_run=False):
+        """
+        Merge a branch into trunk
+
+        @type   url_or_path: string
+        @param  url_or_path: From WC/URL location
+
+        @type   revision: Revision()
+        @param  revision: Indicates the revision of the URL/Path
+
+        @type   local_path: string
+        @param  local_path: Target working copy path
+
+        @type   dry_run: boolean
+        @param  dry_run: Do a test/dry run or not
+
+        """
+
+        return self.client.merge_reintegrate(url_or_path, revision.primitive(),
+            local_path, dry_run)
+
+
     def diff(self, tmp_path, url_or_path, revision1, url_or_path2, revision2,
             recurse=True, ignore_ancestry=False, diff_deleted=True,
             ignore_content_type=False):
