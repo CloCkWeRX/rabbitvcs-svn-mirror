@@ -68,36 +68,59 @@ class SVNEditConflicts(InterfaceNonView):
             
         elif action == 0:
             #Accept Mine
-            mine = "%s.mine" % path
-            shutil.copyfile(mine, path)
+            working = self.get_working_path(path)
+            shutil.copyfile(working, path)
 
             if mark_resolved:
                 self.svn.resolve(path)
                 
         elif action == 1:
             #Accept Theirs
-            tmppath = "/tmp/%s.head" % filename
-            self.svn.export(path, tmppath)
-            shutil.copyfile(tmppath, path)
+            head = self.get_head_path(path)
+            shutil.copyfile(head, path)
 
             if mark_resolved:
                 self.svn.resolve(path)
                 
         elif action == 2:
             #Merge Manually
-
-            tmppath = "/tmp/%s.head" % filename
-            self.svn.export(path, tmppath)
             
-            mine = "%s.mine" % path
-            shutil.copyfile(mine, path)
+            head = self.get_head_path(path)
+            working = self.get_working_path(path)
+            shutil.copyfile(working, path)
             
-            rabbitvcs.util.helper.launch_merge_tool(path, tmppath)
+            rabbitvcs.util.helper.launch_merge_tool(path, head)
 
             if mark_resolved:
                 self.svn.resolve(path)
 
         self.close()
+
+    def get_working_path(self, path):
+        paths = [
+            "%s.mine" % path,
+            "%s.working" % path
+        ]
+        
+        for working in paths:
+            if os.path.exists(working):
+                return working
+
+        return path
+
+    def get_head_path(self, path):
+        # There might be a merge-right file if merging from a different branch
+        paths = os.listdir(os.path.dirname(path))
+        for head in paths:
+            if head.find(os.path.basename(path)) != -1 and head.find("merge-right") != -1:
+                return head
+
+        # If no merge-right file exists, merging is coming from head
+        # so export the file from head
+        tmppath = "/tmp/%s.head" % os.path.basename(path)
+        self.svn.export(path, tmppath)
+
+        return tmppath
 
 class GitEditConflicts(InterfaceNonView):
     def __init__(self, path):
