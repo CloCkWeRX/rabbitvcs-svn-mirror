@@ -213,8 +213,8 @@ class Changes(InterfaceView):
         rev2 = self.get_second_revision()
         
         rabbitvcs.util.helper.launch_ui_window("diff", [
-            "%s@%s" % (url2, unicode(rev2)),
             "%s@%s" % (url1, unicode(rev1)),
+            "%s@%s" % (url2, unicode(rev2)),
             "%s" % (sidebyside and "-s" or "")
         ])
         
@@ -230,8 +230,8 @@ class Changes(InterfaceView):
         url2 = self.second_urls.get_active_text()
 
         rabbitvcs.util.helper.launch_ui_window("diff", [
-            "%s@%s" % (url2, unicode(rev2)),
-            "%s@%s" % (url1, unicode(rev1))
+            "%s@%s" % (url1, unicode(rev1)),
+            "%s@%s" % (url2, unicode(rev2))
         ])
 
 class SVNChanges(Changes):
@@ -496,8 +496,8 @@ class ChangesContextMenuCallbacks:
         rev2 = self.caller.get_second_revision()
         
         rabbitvcs.util.helper.launch_ui_window("diff", [
-            "%s@%s" % (url2, unicode(rev2)), 
             "%s@%s" % (url1, unicode(rev1)), 
+            "%s@%s" % (url2, unicode(rev2)), 
             "-s"
         ])
 
