@@ -494,3 +494,18 @@ class ConflictDecision(InterfaceView):
         self.dialog.destroy()
         return (result, mark_resolved)
 
+class Loading(InterfaceView):
+    def __init__(self):
+        InterfaceView.__init__(self, GLADE, "Loading")
+
+        self.pbar = rabbitvcs.ui.widget.ProgressBar(
+            self.get_widget("pbar")
+        )
+        self.pbar.start_pulsate()
+
+    def run(self):
+        self.dialog = self.get_widget("Loading")
+        self.dialog.run()
+    
+    def destroy(self):
+        self.dialog.destroy()

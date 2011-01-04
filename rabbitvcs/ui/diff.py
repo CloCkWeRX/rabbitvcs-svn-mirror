@@ -20,6 +20,8 @@
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import thread
+
 import pygtk
 import gobject
 import gtk
@@ -38,6 +40,8 @@ log = Log("rabbitvcs.ui.diff")
 
 from rabbitvcs import gettext
 _ = gettext.gettext
+
+gtk.gdk.threads_init()
 
 class Diff(InterfaceNonView):
     def __init__(self, path1, revision1=None, path2=None, revision2=None, 
@@ -61,6 +65,8 @@ class Diff(InterfaceNonView):
         else:
             self.launch_unified_diff()
 
+        self.stop_loading()
+
     def _build_export_path(self, index, revision, path):
         dest = "/tmp/rabbitvcs-%s-%s-%s" % (str(index), str(revision)[:5], os.path.basename(path))
         if os.path.exists(dest):
@@ -70,6 +76,13 @@ class Diff(InterfaceNonView):
                 os.remove(dest)
 
         return dest
+
+    def start_loading(self):
+        self.dialog = rabbitvcs.ui.dialog.Loading()
+        self.dialog.run()
+    
+    def stop_loading(self):
+        self.dialog.close()
 
 class SVNDiff(Diff):
     def __init__(self, path1, revision1=None, path2=None, revision2=None,
@@ -81,7 +94,12 @@ class SVNDiff(Diff):
         self.revision1 = self.get_revision_object(revision1, "base")
         self.revision2 = self.get_revision_object(revision2, "working")
 
-        self.launch()
+        try:
+            thread.start_new_thread(self.launch, ())
+        except Exception, e:
+            log.exception(e)
+        
+        self.start_loading()
 
     def get_revision_object(self, value, default):
         # If value is a rabbitvcs Revision object, return it
@@ -177,7 +195,12 @@ class GitDiff(Diff):
         self.revision1 = self.get_revision_object(revision1, "HEAD")
         self.revision2 = self.get_revision_object(revision2, "WORKING")
 
-        self.launch()
+        try:
+            thread.start_new_thread(self.launch, ())
+        except Exception, e:
+            log.exception(e)
+        
+        self.start_loading()
 
     def get_revision_object(self, value, default):
         # If value is a rabbitvcs Revision object, return it
