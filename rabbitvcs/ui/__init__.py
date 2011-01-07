@@ -38,8 +38,6 @@ _ = gettext.gettext
 
 import rabbitvcs.vcs.status
 
-gtk.gdk.threads_init()
-
 REVISION_OPT = (["-r", "--revision"], {"help":"specify the revision number"})
 BASEDIR_OPT = (["-b", "--base-dir"], {})
 QUIET_OPT = (["-q", "--quiet"], {
