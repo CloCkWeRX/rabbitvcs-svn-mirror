@@ -56,10 +56,10 @@ class SVNOpen(InterfaceNonView):
         self.vcs = rabbitvcs.vcs.VCS()
         self.svn = self.vcs.svn()
 
-        if not revision:
-            revision = "HEAD"
-
-        revision_obj = self.svn.revision("number", number=revision)
+        if revision and type(revision) in (str, unicode):
+            revision_obj = self.svn.revision("number", number=revision)
+        else:
+            revision_obj = self.svn.revision("HEAD")
 
         url = path
         if not self.svn.is_path_repository_url(path):
@@ -97,10 +97,10 @@ class GitOpen(InterfaceNonView):
         self.vcs = rabbitvcs.vcs.VCS()
         self.git = self.vcs.git(path)
 
-        if not revision:
-            revision = "HEAD"
-
-        revision_obj = self.git.revision(revision)
+        if revision:
+            revision_obj = self.git.revision(revision)
+        else:
+            revision_obj = self.git.revision("HEAD")
 
         dest_dir = "/tmp/rabbitvcs-" + unicode(revision)
         
