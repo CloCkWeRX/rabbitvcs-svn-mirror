@@ -31,7 +31,7 @@ try:
 except Exception, e:
     pass
 
-version = "0.14"
+version = "0.14.1"
 APP_NAME = "RabbitVCS"
 TEMP_DIR_PREFIX = "rabbitvcs-"
 LOCALE_DIR = "%s/locale" % os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
