@@ -215,7 +215,8 @@ class Changes(InterfaceView):
         rabbitvcs.util.helper.launch_ui_window("diff", [
             "%s@%s" % (url1, unicode(rev1)),
             "%s@%s" % (url2, unicode(rev2)),
-            "%s" % (sidebyside and "-s" or "")
+            "%s" % (sidebyside and "-s" or ""),
+            "--vcs=%s" % self.get_vcs_name()
         ])
         
         
@@ -231,8 +232,18 @@ class Changes(InterfaceView):
 
         rabbitvcs.util.helper.launch_ui_window("diff", [
             "%s@%s" % (url1, unicode(rev1)),
-            "%s@%s" % (url2, unicode(rev2))
+            "%s@%s" % (url2, unicode(rev2)),
+            "--vcs=%s" % self.get_vcs_name()
         ])
+
+    def get_vcs_name(self):
+        vcs = rabbitvcs.vcs.VCS_DUMMY
+        if hasattr(self, "svn"):
+            vcs = rabbitvcs.vcs.VCS_SVN
+        elif hasattr(self, "git"):
+            vcs = rabbitvcs.vcs.VCS_GIT
+
+        return vcs
 
 class SVNChanges(Changes):
     def __init__(self, path1=None, revision1=None, path2=None, revision2=None):
@@ -498,7 +509,8 @@ class ChangesContextMenuCallbacks:
         rabbitvcs.util.helper.launch_ui_window("diff", [
             "%s@%s" % (url1, unicode(rev1)), 
             "%s@%s" % (url2, unicode(rev2)), 
-            "-s"
+            "-s",
+            "--vcs=%s" % self.caller.get_vcs_name()
         ])
 
 class ChangesContextMenu:
