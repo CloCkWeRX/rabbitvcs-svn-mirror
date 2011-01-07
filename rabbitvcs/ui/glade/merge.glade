@@ -22,6 +22,9 @@
       <placeholder/>
     </child>
     <child>
+      <placeholder/>
+    </child>
+    <child>
       <widget class="GtkVBox" id="page1">
         <property name="visible">True</property>
         <property name="border_width">12</property>
@@ -182,6 +185,7 @@
                 <child>
                   <widget class="GtkComboBoxEntry" id="mergerange_from_urls">
                     <property name="visible">True</property>
+                    <signal name="changed" handler="on_mergerange_from_urls_changed"/>
                   </widget>
                 </child>
               </widget>
@@ -556,6 +560,7 @@ To merge all revisions, leave the box empty.</property>
                     <child>
                       <widget class="GtkComboBoxEntry" id="mergetree_from_urls">
                         <property name="visible">True</property>
+                        <signal name="changed" handler="on_mergetree_from_urls_changed"/>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -694,6 +699,7 @@ To merge all revisions, leave the box empty.</property>
                     <child>
                       <widget class="GtkComboBoxEntry" id="mergetree_to_urls">
                         <property name="visible">True</property>
+                        <signal name="changed" handler="on_mergetree_to_urls_changed"/>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
