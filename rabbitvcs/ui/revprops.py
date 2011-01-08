@@ -74,7 +74,8 @@ class SVNRevisionProperties(PropertiesBase):
         
         self.action = SVNAction(
             self.svn,
-            notification=False
+            notification=False,
+            run_in_thread=False
         )
         
         for row in self.delete_stack:
@@ -96,8 +97,9 @@ class SVNRevisionProperties(PropertiesBase):
                 force=True
             )
         
-        self.action.append(self.close)
-        self.action.start()
+        self.action.run()
+
+        self.close()
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main, VCS_OPT
