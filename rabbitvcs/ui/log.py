@@ -469,7 +469,7 @@ class SVNLog(Log):
                 prop_name,
                 prop_value,
                 url,
-                self.svn.revision("number", item.revision.number)
+                item.revision
             )
             
             callback(row, prop_value)
@@ -477,12 +477,12 @@ class SVNLog(Log):
         self.action.start()
 
     def on_log_message_edited(self, index, val):
-        self.revision_items[index]["message"] = val
+        self.revision_items[index].message = val
         self.revisions_table.set_row_item(index, 3, val)
         self.message.set_text(val)
 
     def on_author_edited(self, index, val):
-        self.revision_items[index]["author"] = val
+        self.revision_items[index].author = val
         self.revisions_table.set_row_item(index, 1, val)
 
     def update_revision_message(self):
