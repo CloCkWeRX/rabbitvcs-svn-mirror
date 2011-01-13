@@ -719,7 +719,7 @@ class Git:
                     author = author[0:pos-1]
 
             message = ""
-            if hasattr(item, "message"):
+            if "message" in item:
                 message = item["message"]
             
             changed_paths = []
