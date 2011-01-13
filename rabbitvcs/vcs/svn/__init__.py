@@ -1112,6 +1112,10 @@ class SVN:
             author = _("(no author)")
             if hasattr(item, "author"):
                 author = item["author"]        
+
+            message = ""
+            if hasattr(item, "message"):
+                message = item["message"]
         
             changed_paths = []
             for changed_path in item.changed_paths:
@@ -1134,7 +1138,7 @@ class SVN:
                 date,
                 revision,
                 author,
-                item["message"],
+                message,
                 changed_paths,
                 None
             ))

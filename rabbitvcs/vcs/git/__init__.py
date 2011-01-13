@@ -717,6 +717,10 @@ class Git:
                 pos = author.find("<")
                 if pos != -1:
                     author = author[0:pos-1]
+
+            message = ""
+            if hasattr(item, "message"):
+                message = item["message"]
             
             changed_paths = []
             if "changed_paths" in item:
@@ -742,7 +746,7 @@ class Git:
                 date,
                 revision,
                 author,
-                item["message"],
+                message,
                 changed_paths,
                 parents,
                 head
