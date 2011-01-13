@@ -1127,7 +1127,7 @@ class GittyupClient:
         statuses = []
         modified_files = []
         for line in stdout:
-            components = re.match("^([\sA-Z]+)\s(.*?)$", line)
+            components = re.match("^([\sA-Z\?]+)\s(.*?)$", line)
             if components:
                 status = components.group(1)
                 strip_status = status.strip()
