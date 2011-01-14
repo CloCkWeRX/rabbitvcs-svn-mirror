@@ -31,7 +31,6 @@ import os
 import pygtk
 import gobject
 import gtk
-import gtk.glade
 
 from rabbitvcs import APP_NAME, LOCALE_DIR, gettext
 _ = gettext.gettext
@@ -67,45 +66,45 @@ STATUS_EMBLEMS = {
     rabbitvcs.vcs.status.status_unversioned : "rabbitvcs-unversioned"
 }
 
-class GladeWidgetWrapper:
+class GtkBuilderWidgetWrapper:
         
-    def __init__(self, glade_filename = None,
-                 glade_id = None, claim_domain=True):
-        if glade_filename:
-            self.glade_filename = glade_filename
+    def __init__(self, gtkbuilder_filename = None,
+                 gtkbuilder_id = None, claim_domain=True):
+        if gtkbuilder_filename:
+            self.gtkbuilder_filename = gtkbuilder_filename
         
-        if glade_id:
-            self.glade_id = glade_id
+        if gtkbuilder_id:
+            self.gtkbuilder_id = gtkbuilder_id
         
         self.claim_domain = claim_domain
             
-        self.tree = self.get_glade_tree()
-        
-        self.tree.signal_autoconnect(self)
+        self.tree = self.get_tree()
+        self.tree.connect_signals(self)
  
-    def get_glade_tree(self):
-        if self.claim_domain:
-            gtk.glade.bindtextdomain(APP_NAME, LOCALE_DIR)
-            gtk.glade.textdomain(APP_NAME)
-
-        path = "%s/glade/%s.glade" % (
+    def get_tree(self):
+        path = "%s/xml/%s.xml" % (
             os.path.dirname(os.path.realpath(__file__)), 
-            self.glade_filename
+            self.gtkbuilder_filename
         )
-            
-        tree = gtk.glade.XML(path, self.glade_id, APP_NAME)
+        
+        tree = gtk.Builder()
+        tree.add_from_file(path)
+
+        if self.claim_domain:
+            tree.set_translation_domain(APP_NAME)
+        
         return tree
     
     def get_widget(self, id = None):
         if not id:
-            id = self.glade_id
+            id = self.gtkbuilder_id
         
-        return self.tree.get_widget(id)
+        return self.tree.get_object(id)
 
-class InterfaceView(GladeWidgetWrapper):
+class InterfaceView(GtkBuilderWidgetWrapper):
     """
     Every ui window should inherit this class and send it the "self"
-    variable, the glade filename (without the extension), and the id of the
+    variable, the gtkbuilder filename (without the extension), and the id of the
     main window widget.
     
     When calling from the __main__ area (i.e. a window is opened via CLI,
@@ -115,17 +114,17 @@ class InterfaceView(GladeWidgetWrapper):
     """
     
     def __init__(self, *args, **kwargs):
-        GladeWidgetWrapper.__init__(self, *args, **kwargs)
+        GtkBuilderWidgetWrapper.__init__(self, *args, **kwargs)
         self.do_gtk_quit = False
         
         
     def hide(self):
-        window = self.get_widget(self.glade_id)
+        window = self.get_widget(self.gtkbuilder_id)
         if window:
             window.set_property('visible', False)
         
     def show(self):
-        window = self.get_widget(self.glade_id)
+        window = self.get_widget(self.gtkbuilder_id)
         if window:
             window.set_property('visible', True)
     
@@ -133,7 +132,7 @@ class InterfaceView(GladeWidgetWrapper):
         self.close()
     
     def close(self, threaded=False):
-        window = self.get_widget(self.glade_id)
+        window = self.get_widget(self.gtkbuilder_id)
         if window is not None:
             if threaded:
                 gtk.gdk.threads_enter()
@@ -147,7 +146,7 @@ class InterfaceView(GladeWidgetWrapper):
             gtk.main_quit()
             
     def register_gtk_quit(self):
-        window = self.get_widget(self.glade_id)
+        window = self.get_widget(self.gtkbuilder_id)
         self.do_gtk_quit = True
         
         # This means we've already been closed

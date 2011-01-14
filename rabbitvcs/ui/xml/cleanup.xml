@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!--Generated with glade3 3.4.5 on Thu Jan 29 16:44:10 2009 -->
+<interface>
+  <object class="GtkWindow" id="Cleanup">
+    <property name="width_request">400</property>
+    <property name="visible">True</property>
+    <property name="title" translatable="yes">Cleaning Up...</property>
+    <property name="window_position">center</property>
+    <property name="icon_name">rabbitvcs-small</property>
+    <signal handler="on_destroy" name="destroy"/>
+    <child>
+      <object class="GtkVBox" id="vbox24">
+        <property name="orientation">vertical</property>
+        <property name="visible">True</property>
+        <property name="border_width">12</property>
+        <child>
+          <object class="GtkImage" id="icon">
+            <property name="visible">True</property>
+            <property name="xalign">0.10000000149011612</property>
+            <property name="ypad">5</property>
+            <property name="stock">gtk-directory</property>
+            <property name="icon_size">6</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label">
+            <property name="visible">True</property>
+            <property name="xalign">0.10000000149011612</property>
+            <property name="ypad">5</property>
+            <property name="label" translatable="yes">Cleanup Requested....
+
+Begin working copy cleanup?</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkHButtonBox" id="hbuttonbox15">
+            <property name="visible">True</property>
+            <property name="spacing">6</property>
+            <property name="layout_style">GTK_BUTTONBOX_END</property>
+            <child>
+              <object class="GtkButton" id="cancel">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label">gtk-cancel</property>
+                <property name="use_stock">True</property>
+                <signal handler="on_cancel_clicked" name="clicked"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="ok">
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label">gtk-ok</property>
+                <property name="use_stock">True</property>
+                <signal handler="on_ok_clicked" name="clicked"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

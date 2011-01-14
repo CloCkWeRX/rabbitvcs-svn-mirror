@@ -35,13 +35,13 @@ log = Log("rabbitvcs.ui.property_page")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class PropertyPage(rabbitvcs.ui.GladeWidgetWrapper):
+class PropertyPage(rabbitvcs.ui.GtkBuilderWidgetWrapper):
     
-    glade_filename = "property_page"
-    glade_id = "prop_page_scroller"
+    gtkbuilder_filename = "property_page"
+    gtkbuilder_id = "prop_page_scroller"
     
     def __init__(self, paths, vcs=None, claim_domain=True):
-        rabbitvcs.ui.GladeWidgetWrapper.__init__(self,
+        rabbitvcs.ui.GtkBuilderWidgetWrapper.__init__(self,
                                                  claim_domain=claim_domain)
         self.paths = paths
         self.vcs = vcs or rabbitvcs.vcs.VCS()
@@ -64,13 +64,13 @@ class PropertyPage(rabbitvcs.ui.GladeWidgetWrapper):
                 log.exception(ex)
                 raise
                    
-class FileInfoPane(rabbitvcs.ui.GladeWidgetWrapper):
+class FileInfoPane(rabbitvcs.ui.GtkBuilderWidgetWrapper):
 
-    glade_filename = "property_page"
-    glade_id = "file_info_table"
+    gtkbuilder_filename = "property_page"
+    gtkbuilder_id = "file_info_table"
     
     def __init__(self, path, vcs=None, claim_domain=True):
-        rabbitvcs.ui.GladeWidgetWrapper.__init__(self,
+        rabbitvcs.ui.GtkBuilderWidgetWrapper.__init__(self,
                                                  claim_domain=claim_domain)
         
         self.path = path
@@ -126,17 +126,17 @@ class FileInfoPane(rabbitvcs.ui.GladeWidgetWrapper):
             (_("Repository URL"), repo_url)]
         
 
-class FileInfoExpander(rabbitvcs.ui.GladeWidgetWrapper):
+class FileInfoExpander(rabbitvcs.ui.GtkBuilderWidgetWrapper):
 
-    glade_filename = "property_page"
-    glade_id = "file_info_expander"
+    gtkbuilder_filename = "property_page"
+    gtkbuilder_id = "file_info_expander"
 
     def __init__(self, path, vcs=None, claim_domain=True):
         
         # Might be None, but that's okay, only subclasses use it
         self.vcs = vcs
         
-        rabbitvcs.ui.GladeWidgetWrapper.__init__(self,
+        rabbitvcs.ui.GtkBuilderWidgetWrapper.__init__(self,
                                                  claim_domain=claim_domain)
         self.path = path
         self.get_widget("file_expander_path").set_label(path)
@@ -146,7 +146,7 @@ class FileInfoExpander(rabbitvcs.ui.GladeWidgetWrapper):
         
         self.expander = self.get_widget()
         
-        # There seems to be no easy way to connect to this in glade
+        # There seems to be no easy way to connect to this in gtkbuilder
         self.expander.connect("notify::expanded", self.on_expand)
 
     def on_expand(self, param_spec, user_data):
@@ -156,6 +156,6 @@ class FileInfoExpander(rabbitvcs.ui.GladeWidgetWrapper):
                                           ).get_widget()
             self.expander.add(self.file_info)
 
-class PropertyPageLabel(rabbitvcs.ui.GladeWidgetWrapper):
-    glade_filename = "property_page"
-    glade_id = "property_page_label"    
+class PropertyPageLabel(rabbitvcs.ui.GtkBuilderWidgetWrapper):
+    gtkbuilder_filename = "property_page"
+    gtkbuilder_id = "property_page_label"    

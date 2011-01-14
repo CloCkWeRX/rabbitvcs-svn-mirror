@@ -95,8 +95,8 @@ class MessageCallbackNotifier(VCSNotifier):
 
     """
 
-    glade_filename = "notification"
-    glade_id = "Notification"
+    gtkbuilder_filename = "notification"
+    gtkbuilder_id = "Notification"
 
     def __init__(self, callback_cancel=None, visible=True, client_in_same_thread=True):
         """
@@ -219,8 +219,8 @@ class MessageCallbackNotifier(VCSNotifier):
 
 class LoadingNotifier(VCSNotifier):
 
-    glade_filename = "dialogs"
-    glade_id = "Loading"
+    gtkbuilder_filename = "dialogs"
+    gtkbuilder_id = "Loading"
 
     def __init__(self, callback_cancel=None, visible=True):
 
