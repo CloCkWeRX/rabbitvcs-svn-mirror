@@ -704,10 +704,10 @@ class Git:
         
         """
         
-        log = self.client.log(path, skip, limit, revision.primitive(), showtype)
+        items = self.client.log(path, skip, limit, revision.primitive(), showtype)
         
         returner = []
-        for item in log:
+        for item in items:
             revision = self.revision(item["commit"])
             date = datetime.strptime(item["commit_date"][0:-6], "%a %b %d %H:%M:%S %Y")
             
