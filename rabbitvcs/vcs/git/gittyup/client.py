@@ -53,10 +53,10 @@ class GittyupClient:
         self.global_ignore_patterns = []
         
         self.git_version = None
-        
+
         if path:
             try:
-                self.repo = dulwich.repo.Repo(os.path.realpath(path))
+                self.repo = dulwich.repo.Repo(path)
                 self._load_config()
                 self.global_ignore_patterns = self._get_global_ignore_patterns()
             except dulwich.errors.NotGitRepository:
@@ -336,25 +336,24 @@ class GittyupClient:
     #
     
     def initialize_repository(self, path, bare=False):
-        real_path = os.path.realpath(path)
-        if not os.path.isdir(real_path):
-            os.mkdir(real_path)
+        if not os.path.isdir(path):
+            os.mkdir(path)
 
         cmd = ["git", "init"]
         
         if bare:
             cmd.append("--bare")
         
-        cmd.append(real_path)
+        cmd.append(path)
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=real_path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
 
     def set_repository(self, path):
         try:
-            self.repo = dulwich.repo.Repo(os.path.realpath(path))
+            self.repo = dulwich.repo.Repo(path)
             self._load_config()
         except dulwich.errors.NotGitRepository:
             raise NotRepositoryError()
@@ -363,7 +362,7 @@ class GittyupClient:
         return self.repo.path
 
     def find_repository_path(self, path):
-        path_to_check = os.path.realpath(path)
+        path_to_check = path
         while path_to_check != "/" and path_to_check != "":
             if os.path.isdir(os.path.join(path_to_check, ".git")):
                 return path_to_check
@@ -373,10 +372,10 @@ class GittyupClient:
         return None
 
     def get_relative_path(self, path):
-        if os.path.realpath(path) == self.repo.path:
+        if path == self.repo.path:
             return ""
 
-        return util.relativepath(os.path.realpath(self.repo.path), path)      
+        return util.relativepath(self.repo.path, path)
     
     def get_absolute_path(self, path):
         return os.path.join(self.repo.path, path).rstrip("/")

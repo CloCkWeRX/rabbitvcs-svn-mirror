@@ -36,7 +36,7 @@ VCS_DUMMY = 'unknown'
 def guess(path):
     # Determine the VCS instance based on the path
     if path:
-        path_to_check = os.path.realpath(path)
+        path_to_check = path
         folders = {
             ".svn": VCS_SVN,
             ".git": VCS_GIT,
