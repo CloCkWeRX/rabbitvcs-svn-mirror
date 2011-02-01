@@ -1371,7 +1371,7 @@ class GittyupClient:
 
             dt = datetime(*time.strptime(components[2][:-6],"%Y-%m-%d %H:%M:%S")[:-2])
 
-            message = components[3].split(")")
+            message = components[3].split(")", 1)
             code = message[1]
             if len(components) == 5:
                 code = components[4]
