@@ -43,6 +43,10 @@ class CellRendererGraph(gtk.GenericCellRenderer):
 
     def do_set_property(self, property, value):
         """Set properties from GObject properties."""
+
+        if not value:
+            return
+
         if property.name == "graph":
             (self.node, self.in_lines, self.out_lines) = value
         else:
