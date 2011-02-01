@@ -99,26 +99,29 @@ def format_long_text(text, cols=None):
 
 def format_datetime(dt, format=None):
     if format:
-        return dt.strftime(format)
+        return dt.strftime(format).decode(locale.getpreferredencoding(False))
 
     now = datetime.datetime.now()
     delta = now - dt
     
+    returner = ""
     if delta.days == 0:
         if delta.seconds < 60:
-            return _("just now")
+            returner = _("just now")
         elif delta.seconds >= 60 and delta.seconds < 600:
-            return _("%d minute(s) ago") % (delta.seconds/60)
+            returner = _("%d minute(s) ago") % (delta.seconds/60)
         elif delta.seconds >= 600 and delta.seconds < 43200:
-            return dt.strftime("%I:%M%P")
+            returner = dt.strftime("%I:%M%P")
         else:
-            return dt.strftime(DT_FORMAT_THISWEEK)
+            returner = dt.strftime(DT_FORMAT_THISWEEK)
     elif delta.days > 0 and delta.days < 7:
-        return dt.strftime(DT_FORMAT_THISWEEK)
+        returner = dt.strftime(DT_FORMAT_THISWEEK)
     elif delta.days >= 7 and delta.days < 365:
-        return dt.strftime(DT_FORMAT_THISYEAR)
+        returner = dt.strftime(DT_FORMAT_THISYEAR)
     else:
-        return dt.strftime(DT_FORMAT_ALL)
+        returner = dt.strftime(DT_FORMAT_ALL)
+
+    return returner.decode(locale.getpreferredencoding(False))
 
 def in_rich_compare(item, list):
     """ Tests whether the item is in the given list. This is mainly to work

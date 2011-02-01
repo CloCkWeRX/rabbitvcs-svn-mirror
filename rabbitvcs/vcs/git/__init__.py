@@ -704,8 +704,15 @@ class Git:
         
         """
         
+        # The strptime method relies on locales to work, and may not work with non en_US locales
+        # Temporarily change the locale to en_US so strptime can work consistently
+        # Then change it back at the end of the method
+        import locale
+        current_locale = locale.getlocale()
+        if current_locale[0] is not None:
+            locale.setlocale(locale.LC_ALL, "en_US")
+
         items = self.client.log(path, skip, limit, revision.primitive(), showtype)
-        
         returner = []
         for item in items:
             revision = self.revision(item["commit"])
@@ -751,6 +758,8 @@ class Git:
                 parents,
                 head
             ))
+            
+        locale.setlocale(locale.LC_ALL, current_locale)
             
         return returner
 
