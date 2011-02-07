@@ -977,8 +977,8 @@ class LogTopContextMenuCallbacks:
     def compare_previous_revision(self, widget, data=None):
         rabbitvcs.util.helper.launch_ui_window("diff", [
             "-s",
-            "%s@%s" % (self.path, unicode(self.revisions[0]["revision"])),
             "%s@%s" % (self.path, unicode(self.revisions[0]["next_revision"])),
+            "%s@%s" % (self.path, unicode(self.revisions[0]["revision"])),
             "--vcs=%s" % self.caller.get_vcs_name()
         ])
 
