@@ -159,7 +159,7 @@ class SVNDiff(Diff):
             run_in_thread=False
         )
 
-        if os.path.exists(self.path1) and self.revision1.kind != "base":
+        if self.revision1.kind == "working":
             dest1 = self.path1
         else:
             dest1 = self._build_export_path(1, self.revision1, self.path1)
@@ -171,7 +171,7 @@ class SVNDiff(Diff):
             )
             action.stop_loader()
     
-        if os.path.exists(self.path2) and self.path2 != self.path1 and self.revision2.kind != "base":
+        if self.revision2.kind == "working":
             dest2 = self.path2
         else:
             dest2 = self._build_export_path(2, self.revision2, self.path2)
