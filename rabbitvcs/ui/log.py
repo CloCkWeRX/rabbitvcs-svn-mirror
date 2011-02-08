@@ -391,6 +391,9 @@ class SVNLog(Log):
         else:
             # Make sure the int passed is the order the log call was made
             self.revision_items = self.action.get_result(0)
+
+        if not self.revision_items or len(self.revision_items) == 0:
+            return
         
         # Get the starting/ending point from the actual returned revisions
         self.rev_start = unicode(self.revision_items[0].revision)
@@ -609,6 +612,9 @@ class GitLog(Log):
         
         # Make sure the int passed is the order the log call was made
         self.revision_items = self.action.get_result(0)
+        
+        if not self.revision_items or len(self.revision_items) == 0:
+            return
         
         self.set_start_revision(self.revision_items[0].revision.short())
         self.set_end_revision(self.revision_items[-1].revision.short())
