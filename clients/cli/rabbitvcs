@@ -54,4 +54,11 @@ if len(args) < 2 or args[1] == "-h":
 args.pop(0) # remove this file's path
 module = args.pop(0)
 
+# If a filename/path is given, try to expand it to and absolute path
+i = 0
+for arg in args:
+    if os.path.exists(arg):
+        args[i] = os.path.abspath(arg)
+    i += 1
+
 launch_ui_window(module, args)
