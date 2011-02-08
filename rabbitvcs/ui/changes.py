@@ -250,7 +250,15 @@ class SVNChanges(Changes):
         Changes.__init__(self, path1, revision1, path2, revision2)
 
         self.svn = self.vcs.svn()
-        
+
+        if path1 is not None:
+            self.first_urls.set_child_text(self.svn.get_repo_url(path1))
+            
+        if path2 is not None:
+            self.second_urls.set_child_text(self.svn.get_repo_url(path2))
+        elif path1 is not None:
+            self.second_urls.set_child_text(self.svn.get_repo_url(path1))
+
         self.first_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("first_revision_container"),
             self.svn,
@@ -264,14 +272,6 @@ class SVNChanges(Changes):
             revision=revision2,
             url_combobox=self.second_urls
         )
-
-        if path1 is not None:
-            self.first_urls.set_child_text(self.svn.get_repo_url(path1))
-            
-        if path2 is not None:
-            self.second_urls.set_child_text(self.svn.get_repo_url(path2))
-        elif path1 is not None:
-            self.second_urls.set_child_text(self.svn.get_repo_url(path1))
 
         self.changes_table = rabbitvcs.ui.widget.Table(
             self.get_widget("changes_table"),
@@ -349,7 +349,15 @@ class GitChanges(Changes):
         
         self.first_urls_browse.hide()
         self.second_urls_browse.hide()
-        
+
+        if path1 is not None:
+            self.first_urls.set_child_text(path1)
+            
+        if path2 is not None:
+            self.second_urls.set_child_text(path2)
+        elif path1 is not None:
+            self.second_urls.set_child_text(path1)
+
         self.first_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("first_revision_container"),
             self.git,
@@ -363,14 +371,6 @@ class GitChanges(Changes):
             revision=revision2,
             url_combobox=self.second_urls
         )
-
-        if path1 is not None:
-            self.first_urls.set_child_text(path1)
-            
-        if path2 is not None:
-            self.second_urls.set_child_text(path2)
-        elif path1 is not None:
-            self.second_urls.set_child_text(path1)
 
         self.changes_table = rabbitvcs.ui.widget.Table(
             self.get_widget("changes_table"),
