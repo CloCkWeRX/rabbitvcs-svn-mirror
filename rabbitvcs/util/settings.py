@@ -33,6 +33,8 @@ import shutil
 import configobj
 import validate
 
+from rabbitvcs import package_prefix
+
 def get_home_folder():
     """ 
     Returns the location of the hidden folder we use in the home dir.
@@ -65,15 +67,18 @@ def get_home_folder():
 SETTINGS_FILE = "%s/settings.conf" % get_home_folder()
 
 def find_configspec():
-    # FIXME: this needs to be modified once configspec.ini is placed in the data folder
-    configspec = os.path.join(dirname(__file__), "configspec/configspec.ini")
-    if os.path.exists(configspec):
-        return configspec
-    elif os.path.exists("/usr/share/rabbitvcs/configspec.ini"):
-        return "/usr/share/rabbitvcs/configspec.ini"
-    else:
-        # FIXME: what if we can't find anything?
-        return None
+    # Search the following paths for a configspec file
+    configspec_paths = [
+        os.path.join(dirname(__file__), "configspec/configspec.ini"),
+        os.path.join(package_prefix(), "share/rabbitvcs/configspec.ini"),
+        "/usr/share/rabbitvcs/configspec.ini"
+    ]
+    
+    for path in configspec_paths:
+        if os.path.exists(path):
+            return path
+    
+    raise IOError("Cannot find a configspec.ini file")
 
 SETTINGS_SPEC = find_configspec()
 

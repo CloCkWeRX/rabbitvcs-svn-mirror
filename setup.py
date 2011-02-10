@@ -33,6 +33,13 @@ import subprocess
 from distutils.core import setup
 import distutils.sysconfig
 
+PREFIX = "/usr"
+
+# If the user passed --prefix=... then use the new prefix
+for c in sys.argv:
+    if c.startswith("--prefix"):
+        PREFIX = c.split("=")[1].lstrip().rstrip()
+
 #==============================================================================
 # Variables
 #==============================================================================
@@ -53,8 +60,8 @@ license             = "GNU General Public License version 2 or later"
 # Paths
 #==============================================================================
 
-icon_theme_directory = "/usr/share/icons/hicolor" # TODO: does this really need to be hardcoded?
-locale_directory = "/usr/share/locale"
+icon_theme_directory = PREFIX + "/share/icons/hicolor"
+locale_directory = PREFIX + "/locale"
 
 #==============================================================================
 # Helper functions
@@ -89,16 +96,23 @@ icons = include_by_pattern("data/icons/hicolor", icon_theme_directory, ".svg")
 
 # Config parsing specification
 config_spec = [(
-    # FIXME: hard coded prefix!
-    "/usr/share/rabbitvcs",
+    PREFIX + "/share/rabbitvcs",
     ["rabbitvcs/util/configspec/configspec.ini"]
 )]
 
 # Documentation
-documentation = [("/usr/share/doc/rabbitvcs", [
+documentation = [(PREFIX + "/share/doc/rabbitvcs", [
     "AUTHORS",
     "MAINTAINERS"
 ])]
+
+# Save build information so we can access the prefix later
+path = "rabbitvcs/buildinfo.py"
+buildinfo = '''rabbitvcs_prefix = "%s"
+''' % (PREFIX)
+fh = open(path, "w")
+fh.write(buildinfo)
+fh.close()
 
 #==============================================================================
 # Ready to install
@@ -129,8 +143,8 @@ dist = setup(
     include_package_data=True,
     package_data={
         "rabbitvcs": [
-            # Include our Glade UI files right into the package
-            "ui/glade/*.glade"
+            # Include our GtkBuilder UI files right into the package
+            "ui/xml/*.xml"
         ]
     },
     data_files=translations + icons + documentation + config_spec
@@ -142,9 +156,11 @@ dist = setup(
 
 # Make sure the icon cache is deleted and recreated
 if sys.argv[1] == "install":
-    print "Running gtk-update-icon-cache"
-    
-    subprocess.Popen(
-        ["gtk-update-icon-cache", icon_theme_directory], 
-        stdout=subprocess.PIPE
-    ).communicate()[0]
+
+    if os.uname()[0] != 'Darwin':
+        print "Running gtk-update-icon-cache"
+        
+        subprocess.Popen(
+            ["gtk-update-icon-cache", icon_theme_directory], 
+            stdout=subprocess.PIPE
+        ).communicate()[0]

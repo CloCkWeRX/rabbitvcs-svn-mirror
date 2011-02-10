@@ -78,3 +78,15 @@ def package_identifier():
 
     """
     return "%s-%s" % (package_name(), package_version())
+    
+def package_prefix():
+    """
+    Return the prefix of the local RabbitVCS installation
+    
+    """
+
+    try:
+        from rabbitvcs.buildinfo import rabbitvcs_prefix
+        return rabbitvcs_prefix
+    except ImportError, e:
+        return ""
