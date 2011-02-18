@@ -61,7 +61,7 @@ license             = "GNU General Public License version 2 or later"
 #==============================================================================
 
 icon_theme_directory = PREFIX + "/share/icons/hicolor"
-locale_directory = PREFIX + "/locale"
+locale_directory = PREFIX + "/share/locale"
 
 #==============================================================================
 # Helper functions
