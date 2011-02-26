@@ -219,7 +219,7 @@ class MessageCallbackNotifier(VCSNotifier):
 
 class LoadingNotifier(VCSNotifier):
 
-    gtkbuilder_filename = "dialogs"
+    gtkbuilder_filename = "dialogs/loading"
     gtkbuilder_id = "Loading"
 
     def __init__(self, callback_cancel=None, visible=True):
