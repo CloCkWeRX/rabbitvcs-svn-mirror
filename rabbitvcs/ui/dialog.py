@@ -33,8 +33,6 @@ import rabbitvcs.ui.widget
 import rabbitvcs.ui.wraplabel
 import rabbitvcs.util.helper
 
-GLADE = 'dialogs'
-
 ERROR_NOTICE = _("""\
 An error has occurred in the RabbitVCS Nautilus extension. Please contact the \
 <a href="%s">RabbitVCS team</a> with the error details listed below:"""
@@ -42,7 +40,7 @@ An error has occurred in the RabbitVCS Nautilus extension. Please contact the \
 
 class PreviousMessages(InterfaceView):
     def __init__(self):
-        InterfaceView.__init__(self, GLADE, "PreviousMessages")
+        InterfaceView.__init__(self, "dialogs/previous_messages", "PreviousMessages")
 
         self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("prevmes_message")
@@ -130,7 +128,7 @@ class Certificate(InterfaceView):
     def __init__(self, realm="", host="", 
             issuer="", valid_from="", valid_until="", fingerprint=""):
             
-        InterfaceView.__init__(self, GLADE, "Certificate")
+        InterfaceView.__init__(self, "dialogs/certificate", "Certificate")
         
         self.get_widget("cert_realm").set_label(realm)
         self.get_widget("cert_host").set_label(host)
@@ -158,7 +156,7 @@ class Certificate(InterfaceView):
         
 class Authentication(InterfaceView):
     def __init__(self, realm="", may_save=True):
-        InterfaceView.__init__(self, GLADE, "Authentication")
+        InterfaceView.__init__(self, "dialogs/authentication", "Authentication")
         
         self.get_widget("auth_realm").set_label(realm)
         self.get_widget("auth_save").set_sensitive(may_save)
@@ -180,7 +178,7 @@ class Authentication(InterfaceView):
 
 class CertAuthentication(InterfaceView):
     def __init__(self, realm="", may_save=True):
-        InterfaceView.__init__(self, GLADE, "CertAuthentication")
+        InterfaceView.__init__(self, "dialogs/cert_authentication", "CertAuthentication")
         
         self.get_widget("certauth_realm").set_label(realm)
         self.get_widget("certauth_save").set_sensitive(may_save)
@@ -200,7 +198,7 @@ class CertAuthentication(InterfaceView):
 
 class SSLClientCertPrompt(InterfaceView):
     def __init__(self, realm="", may_save=True):
-        InterfaceView.__init__(self, GLADE, "SSLClientCertPrompt")
+        InterfaceView.__init__(self, "dialogs/ssl_client_cert_prompt", "SSLClientCertPrompt")
         
         self.get_widget("sslclientcert_realm").set_label(realm)
         self.get_widget("sslclientcert_save").set_sensitive(may_save)
@@ -226,7 +224,7 @@ class SSLClientCertPrompt(InterfaceView):
 
 class Property(InterfaceView):
     def __init__(self, name="", value="", recurse=True):
-        InterfaceView.__init__(self, GLADE, "Property")
+        InterfaceView.__init__(self, "dialogs/property", "Property")
         
         self.save_name = name
         self.save_value = value
@@ -297,7 +295,7 @@ class FileSaveAs:
         
 class Confirmation(InterfaceView):
     def __init__(self, message=_("Are you sure you want to continue?")):
-        InterfaceView.__init__(self, GLADE, "Confirmation")
+        InterfaceView.__init__(self, "dialogs/confirmation", "Confirmation")
         self.get_widget("confirm_message").set_text(message)
         
     def run(self):
@@ -310,7 +308,7 @@ class Confirmation(InterfaceView):
         
 class MessageBox(InterfaceView):
     def __init__(self, message):
-        InterfaceView.__init__(self, GLADE, "MessageBox")
+        InterfaceView.__init__(self, "dialogs/messagebox", "MessageBox")
         self.get_widget("messagebox_message").set_text(message)
 
         dialog = self.get_widget("MessageBox")
@@ -319,7 +317,7 @@ class MessageBox(InterfaceView):
 
 class DeleteConfirmation(InterfaceView):
     def __init__(self, path=None):
-        InterfaceView.__init__(self, GLADE, "DeleteConfirmation")
+        InterfaceView.__init__(self, "dialogs/delete_confirmation", "DeleteConfirmation")
         
         if path:
             path = "\"%s\"" % os.path.basename(path)
@@ -339,7 +337,7 @@ class DeleteConfirmation(InterfaceView):
 
 class TextChange(InterfaceView):
     def __init__(self, title=None, message=""):
-        InterfaceView.__init__(self, GLADE, "TextChange")
+        InterfaceView.__init__(self, "dialogs/text_change", "TextChange")
         if title:
             self.get_widget("TextChange").set_title(title)
         
@@ -358,7 +356,7 @@ class TextChange(InterfaceView):
 
 class OneLineTextChange(InterfaceView):
     def __init__(self, title=None, label=None, current_text=None):
-        InterfaceView.__init__(self, GLADE, "OneLineTextChange")
+        InterfaceView.__init__(self, "dialogs/one_line_text_change", "OneLineTextChange")
         if title:
             self.get_widget("OneLineTextChange").set_title(title)
         
@@ -390,7 +388,7 @@ class OneLineTextChange(InterfaceView):
 
 class NewFolder(InterfaceView):
     def __init__(self):
-        InterfaceView.__init__(self, GLADE, "CreateFolder")
+        InterfaceView.__init__(self, "dialogs/new_folder", "CreateFolder")
 
         self.folder_name = self.get_widget("folder_name")
         self.textview = rabbitvcs.ui.widget.TextView(
@@ -417,7 +415,7 @@ class NewFolder(InterfaceView):
 class ErrorNotification(InterfaceView):
     
     def __init__(self, text):
-        InterfaceView.__init__(self, GLADE, "ErrorNotification")
+        InterfaceView.__init__(self, "dialogs/error_notification", "ErrorNotification")
         
         notice = rabbitvcs.ui.wraplabel.WrapLabel(ERROR_NOTICE)
         notice.set_use_markup(True)
@@ -439,7 +437,7 @@ class ErrorNotification(InterfaceView):
 
 class NameEmailPrompt(InterfaceView):
     def __init__(self):
-        InterfaceView.__init__(self, GLADE, "NameEmailPrompt")
+        InterfaceView.__init__(self, "dialogs/name_email_prompt", "NameEmailPrompt")
 
         self.dialog = self.get_widget("NameEmailPrompt")
     
@@ -470,7 +468,7 @@ class ConflictDecision(InterfaceView):
     
     def __init__(self, filename=""):
             
-        InterfaceView.__init__(self, GLADE, "ConflictDecision")
+        InterfaceView.__init__(self, "dialogs/conflict_decision", "ConflictDecision")
         self.get_widget("filename").set_text(filename)
         
     def run(self):
@@ -496,7 +494,7 @@ class ConflictDecision(InterfaceView):
 
 class Loading(InterfaceView):
     def __init__(self):
-        InterfaceView.__init__(self, GLADE, "Loading")
+        InterfaceView.__init__(self, "dialogs/loading", "Loading")
 
         self.pbar = rabbitvcs.ui.widget.ProgressBar(
             self.get_widget("pbar")
