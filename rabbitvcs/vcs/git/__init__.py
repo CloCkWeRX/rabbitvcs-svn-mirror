@@ -710,7 +710,7 @@ class Git:
         import locale
         current_locale = locale.getlocale()
         if current_locale[0] is not None:
-            locale.setlocale(locale.LC_ALL, "en_US")
+            locale.setlocale(locale.LC_ALL, "C")
 
         items = self.client.log(path, skip, limit, revision.primitive(), showtype)
         returner = []
