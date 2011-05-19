@@ -62,7 +62,6 @@ def guess(path):
 
 class VCS:
     clients = {}
-    path_vcs_map = {}
     
     def __init__(self):
         pass
@@ -138,12 +137,7 @@ class VCS:
             return self.dummy()
     
     def guess(self, path):
-        if path and path in self.path_vcs_map and self.path_vcs_map[path]["vcs"] != VCS_DUMMY:
-            return self.path_vcs_map[path]
-
-        choice = guess(path)
-        self.path_vcs_map[path] = choice
-        return choice
+        return guess(path)
     
     # Methods that call client methods
 
