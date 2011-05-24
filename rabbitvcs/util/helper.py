@@ -575,6 +575,10 @@ def launch_ui_window(filename, args=[], block=False):
                         os.path.dirname(
                             os.path.realpath(__file__)))
     
+    env = os.environ
+    if "NAUTILUS_PYTHON_REQUIRE_GTK3" in env:
+        del env["NAUTILUS_PYTHON_REQUIRE_GTK3"]
+    
     if not head == "util":
         log.warning("Helper module (%s) not in \"util\" dir" % __file__)
 
@@ -583,7 +587,7 @@ def launch_ui_window(filename, args=[], block=False):
     path = os.path.join(basedir, "ui", filename + ".py")
 
     if os.path.exists(path): 
-        proc = subprocess.Popen([sys.executable, path] + args)
+        proc = subprocess.Popen([sys.executable, path] + args, env=env)
 
         if block:
             proc.wait()

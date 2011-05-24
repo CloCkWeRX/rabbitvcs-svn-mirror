@@ -24,8 +24,13 @@ import os.path
 from time import sleep
 from collections import deque
 
-import gtk
 import gobject
+
+import os
+if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
+    from gi.repository import Gtk as gtk
+else:
+    import gtk
 
 from rabbitvcs.vcs import create_vcs_instance, VCS_SVN, VCS_GIT, VCS_DUMMY
 from rabbitvcs.util.log import Log

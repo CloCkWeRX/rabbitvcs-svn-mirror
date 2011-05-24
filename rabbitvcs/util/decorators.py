@@ -40,9 +40,6 @@ import threading
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.util.decorators")
 
-
-import gtk
-
 def update_func_meta(fake_func, real_func):
     """
     Set meta information (eg. __doc__) of fake function to that of the real 
@@ -120,6 +117,8 @@ def gtk_unsafe(func):
     gtk.gdk.threads_enter() and gtk.gdk.threads_leave().
     
     """
+    
+    import gtk
     
     def newfunc(*args, **kwargs):
         gtk.gdk.threads_enter()

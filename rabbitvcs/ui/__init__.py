@@ -28,9 +28,12 @@ UI layer.
 
 import os
 
-import pygtk
 import gobject
-import gtk
+
+if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
+    from gi.repository import Gtk as gtk
+else:
+    import gtk
 
 from rabbitvcs import APP_NAME, LOCALE_DIR, gettext
 _ = gettext.gettext

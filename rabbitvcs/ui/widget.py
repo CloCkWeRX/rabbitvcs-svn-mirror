@@ -20,13 +20,15 @@
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import pygtk
 import gobject
-import gtk
+
+import os
+if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
+    from gi.repository import Gtk as gtk
+else:
+    import gtk
+
 import pango
-
-from renderers.graphcell import CellRendererGraph
-
 import os.path
 
 try:
@@ -250,6 +252,8 @@ class TableBase:
             @param  editable: A list of which columns are editable
         
         """
+        
+        from renderers.graphcell import CellRendererGraph
 
         if not flags.has_key("sortable"):
             flags["sortable"] = False

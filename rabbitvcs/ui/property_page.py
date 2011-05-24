@@ -20,7 +20,13 @@
 
 import os.path
 
-import gtk
+import os
+if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
+    from gi.repository import Gtk as gtk
+    GTK3 = True
+else:
+    import gtk
+    GTK3 = False
 
 from collections import defaultdict
 import rabbitvcs.ui
@@ -34,6 +40,13 @@ log = Log("rabbitvcs.ui.property_page")
 
 from rabbitvcs import gettext
 _ = gettext.gettext
+
+if GTK3:
+    ICON_SIZE_BUTTON = gtk.IconSize.BUTTON
+    ICON_SIZE_DIALOG = gtk.IconSize.DIALOG
+else:
+    ICON_SIZE_BUTTON = gtk.ICON_SIZE_BUTTON
+    ICON_SIZE_DIALOG = gtk.ICON_SIZE_DIALOG
 
 class PropertyPage(rabbitvcs.ui.GtkBuilderWidgetWrapper):
     
@@ -96,8 +109,10 @@ class FileInfoPane(rabbitvcs.ui.GtkBuilderWidgetWrapper):
         self.set_icon_from_status(self.get_widget("prop_status_icon"),
                                                   self.status.simple_metadata_status())
 
+        
+
         self.set_icon_from_status(self.get_widget("vcs_icon"),
-                                  self.status.single, gtk.ICON_SIZE_DIALOG)
+                                  self.status.single, ICON_SIZE_DIALOG)
         
         additional_props_table = rabbitvcs.ui.widget.KeyValueTable(
                                     self.get_additional_info())
@@ -106,7 +121,7 @@ class FileInfoPane(rabbitvcs.ui.GtkBuilderWidgetWrapper):
 
         self.get_widget("file_info_table").pack_end(additional_props_table)
                         
-    def set_icon_from_status(self, icon, status, size=gtk.ICON_SIZE_BUTTON):
+    def set_icon_from_status(self, icon, status, size=ICON_SIZE_BUTTON):
         if status in rabbitvcs.ui.STATUS_EMBLEMS:
             icon.set_from_icon_name("emblem-" + STATUS_EMBLEMS[status], size)
 

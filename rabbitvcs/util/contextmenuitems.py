@@ -21,8 +21,12 @@
 
 import os.path
 
-import gtk
-
+import os
+if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
+    from gi.repository import Gtk as gtk
+else:
+    import gtk
+    
 import rabbitvcs.util.helper
 
 from rabbitvcs import gettext
@@ -222,14 +226,24 @@ class MenuItem(object):
         # this method shouldn't be called outside of nautilus.
         identifier = self.make_magic_id(id_magic)
 
-        import nautilus
-        menuitem = nautilus.MenuItem(
-            identifier,
-            self.make_label(),
-            self.tooltip,
-            self.icon
-        )
-        
+        try:
+            import nautilus
+            menuitem = nautilus.MenuItem(
+                identifier,
+                self.make_label(),
+                self.tooltip,
+                self.icon
+            )
+        except ImportError:
+            from gi.repository import Nautilus
+            menuitem = Nautilus.MenuItem(
+                name=identifier,
+                label=self.make_label(),
+                tip=self.tooltip,
+                icon=self.icon
+            )
+            
+                    
         return menuitem
 
     def make_label(self):
