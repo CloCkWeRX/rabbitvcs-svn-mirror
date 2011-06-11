@@ -667,8 +667,10 @@ class SVNAction(VCSAction):
                     frac = 1
                 self.notification.pbar.update(frac)
 
+            is_known_action = False
             if self.client.NOTIFY_ACTIONS.has_key(data["action"]):
                 action = self.client.NOTIFY_ACTIONS[data["action"]]
+                is_known_action = True
             else:
                 action = data["action"]
 
@@ -676,7 +678,8 @@ class SVNAction(VCSAction):
                         data["action"],
                         self.client.NOTIFY_ACTIONS_COMPLETE) 
                     and "revision" in data 
-                    and data["revision"]):
+                    and data["revision"]
+                    and is_known_action):
                 self.notification.append(
                     ["", "Revision %s" % data["revision"].number, ""]
                 )
