@@ -276,6 +276,9 @@ class SVNCommit(Commit):
                     added += 1
                 elif status == rabbitvcs.vcs.status.status_deleted:
                     recurse = True
+                elif status == rabbitvcs.vcs.status.status_missing:
+                    self.vcs.svn().update(item)
+                    self.vcs.svn().remove(item)
             except Exception, e:
                 log.exception(e)
 
@@ -377,8 +380,13 @@ class GitCommit(Commit):
         staged = 0
         for item in items:
             try:
-                self.git.stage(item)
-                staged += 1
+                status = self.vcs.status(item, summarize=False).simple_content_status()
+                if status == rabbitvcs.vcs.status.status_missing:
+                    self.git.checkout([item])
+                    self.git.remove(item)
+                else:
+                    self.git.stage(item)
+                    staged += 1
             except Exception, e:
                 log.exception(e)
 

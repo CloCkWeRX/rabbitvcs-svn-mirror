@@ -516,7 +516,12 @@ class ContextMenuCallbacks:
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def restore(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window("update", self.paths)
+        guess = self.vcs_client.guess(self.paths[0])
+        if guess["vcs"] == rabbitvcs.vcs.VCS_SVN:
+            proc = rabbitvcs.util.helper.launch_ui_window("update", self.paths)
+        elif guess["vcs"] == rabbitvcs.vcs.VCS_GIT:
+            proc = rabbitvcs.util.helper.launch_ui_window("checkout", ["-q", "--vcs", "git"] + self.paths)
+
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def _open(self, widget, data1=None, data2=None):

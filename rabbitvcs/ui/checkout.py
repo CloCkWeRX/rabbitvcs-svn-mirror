@@ -210,25 +210,42 @@ class GitCheckout(GitUpdateToRevision):
         self.get_widget("Update").set_title(_("Checkout - %s") % path)
         self.get_widget("options_box").hide()
 
+class GitCheckoutQuiet:
+    def __init__(self, path):
+        self.vcs = rabbitvcs.vcs.VCS()
+        self.git = self.vcs.git(path)
+        self.action = rabbitvcs.ui.action.GitAction(
+            self.git,
+            run_in_thread=False
+        )
+
+        self.action.append(self.git.checkout, [path])
+        self.action.run()
+
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNCheckout,
     rabbitvcs.vcs.VCS_GIT: GitCheckout
 }
 
-def checkout_factory(vcs, path=None, url=None, revision=None):
+def checkout_factory(vcs, path=None, url=None, revision=None, quiet=False):
     if not vcs:
         guess = rabbitvcs.vcs.guess(path)
         vcs = guess["vcs"]
-    
+
     if vcs == rabbitvcs.vcs.VCS_DUMMY:
         return SVNCheckout(path, url, revision)
+    elif vcs == rabbitvcs.vcs.VCS_GIT:
+        if quiet:
+            return GitCheckoutQuiet(path)
+        else:
+            return GitCheckout(path, url, revision)
     
     return classes_map[vcs](path, url, revision)
 
 if __name__ == "__main__":
-    from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT
+    from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT, QUIET_OPT
     (options, args) = main(
-        [REVISION_OPT, VCS_OPT],
+        [REVISION_OPT, VCS_OPT, QUIET_OPT],
         usage="Usage: rabbitvcs checkout --vcs=[git|svn] [url] [path]"
     )
     
@@ -248,6 +265,9 @@ if __name__ == "__main__":
         else:
             url = args[0]
 
-    window = checkout_factory(options.vcs, path=path, url=url, revision=options.revision)
-    window.register_gtk_quit()
-    gtk.main()
+    if options.quiet:
+        window = checkout_factory(options.vcs, path=path, url=url, revision=options.revision, quiet=options.quiet)
+    else:
+        window = checkout_factory(options.vcs, path=path, url=url, revision=options.revision, quiet=options.quiet)
+        window.register_gtk_quit()
+        gtk.main()
