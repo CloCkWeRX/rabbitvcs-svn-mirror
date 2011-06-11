@@ -110,7 +110,8 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         """
 
         if (item.path in self.paths
-                or item.is_versioned()):
+                or item.is_versioned()
+                and item.simple_content_status() != rabbitvcs.vcs.status.status_missing):
             return True
 
         return False
