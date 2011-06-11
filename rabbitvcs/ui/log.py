@@ -211,7 +211,8 @@ class Log(InterfaceView):
             line = {
                 "revision": self.revision_items[row].revision,
                 "author": self.revision_items[row].author,
-                "message": self.revision_items[row].message
+                "message": self.revision_items[row].message,
+                "parents": self.revision_items[row].parents
             }
             try:
                 line["next_revision"] = self.revision_items[row+1].revision
@@ -951,8 +952,13 @@ class LogTopContextMenuCallbacks:
         ])
 
     def view_diff_previous_revision(self, widget, data=None):
+        if len(self.revisions[0]["parents"]) > 0:
+            parent = unicode(self.revisions[0]["parents"][0])
+        else:
+            parent = unicode(self.revisions[0]["next_revision"])
+
         rabbitvcs.util.helper.launch_ui_window("diff", [
-            "%s@%s" % (self.path, unicode(self.revisions[0]["next_revision"])),
+            "%s@%s" % (self.path, parent),
             "%s@%s" % (self.path, unicode(self.revisions[0]["revision"])),
             "--vcs=%s" % self.caller.get_vcs_name()
         ])
@@ -981,9 +987,14 @@ class LogTopContextMenuCallbacks:
         ])
 
     def compare_previous_revision(self, widget, data=None):
+        if len(self.revisions[0]["parents"]) > 0:
+            parent = unicode(self.revisions[0]["parents"][0])
+        else:
+            parent = unicode(self.revisions[0]["next_revision"])
+
         rabbitvcs.util.helper.launch_ui_window("diff", [
             "-s",
-            "%s@%s" % (self.path, unicode(self.revisions[0]["next_revision"])),
+            "%s@%s" % (self.path, parent),
             "%s@%s" % (self.path, unicode(self.revisions[0]["revision"])),
             "--vcs=%s" % self.caller.get_vcs_name()
         ])
@@ -1002,14 +1013,17 @@ class LogTopContextMenuCallbacks:
 
     def show_changes_previous_revision(self, widget, data=None):
         rev_first = unicode(self.revisions[0]["revision"])
-        rev_last = unicode(self.revisions[0]["next_revision"])
+        if len(self.revisions[0]["parents"]) > 0:
+            parent = unicode(self.revisions[0]["parents"][0])
+        else:
+            parent = unicode(self.revisions[0]["next_revision"])
         
         path = self.path
         if self.vcs_name == rabbitvcs.vcs.VCS_SVN:
             path = self.vcs.svn().get_repo_url(self.path)
 
         rabbitvcs.util.helper.launch_ui_window("changes", [
-            "%s@%s" % (path, unicode(rev_first)),
+            "%s@%s" % (path, parent),
             "%s@%s" % (path, unicode(rev_last)),
             "--vcs=%s" % self.caller.get_vcs_name()
         ])
@@ -1258,10 +1272,15 @@ class LogBottomContextMenuCallbacks:
 
     def view_diff_previous_revision(self, widget, data=None):
         rev = unicode(self.revisions[0]["revision"])
-        next_rev = unicode(self.revisions[0]["next_revision"])
+
+        if len(self.revisions[0]["parents"]) > 0:
+            parent = unicode(self.revisions[0]["parents"][0])
+        else:
+            parent = unicode(self.revisions[0]["next_revision"])
+
         path_item = self.paths[0]
         url = self.caller.root_url + path_item
-        self.caller.view_diff_for_path(url, rev, next_rev)
+        self.caller.view_diff_for_path(url, rev, parent)
 
     def view_diff_revisions(self, widget, data=None):
         rev_first = unicode(self.revisions[0]["revision"])
@@ -1273,10 +1292,15 @@ class LogBottomContextMenuCallbacks:
 
     def compare_previous_revision(self, widget, data=None):
         rev = unicode(self.revisions[0]["revision"])
-        next_rev = unicode(self.revisions[0]["next_revision"])
+        
+        if len(self.revisions[0]["parents"]) > 0:
+            parent = unicode(self.revisions[0]["parents"][0])
+        else:
+            parent = unicode(self.revisions[0]["next_revision"])
+            
         path_item = self.paths[0]
         url = self.caller.root_url + path_item
-        self.caller.view_diff_for_path(url, rev, next_rev, sidebyside=True)
+        self.caller.view_diff_for_path(url, rev, parent, sidebyside=True)
     
     def compare_revisions(self, widget, data=None):
         earliest_rev = unicode(self.revisions[0]["revision"])
@@ -1290,14 +1314,18 @@ class LogBottomContextMenuCallbacks:
 
     def show_changes_previous_revision(self, widget, data=None):
         rev_first = unicode(self.revisions[0]["revision"])
-        rev_last = unicode(self.revisions[0]["next_revision"])
+        
+        if len(self.revisions[0]["parents"]) > 0:
+            parent = unicode(self.revisions[0]["parents"][0])
+        else:
+            parent = unicode(self.revisions[0]["next_revision"])
 
         url = self.paths[0]
         if self.vcs_name == rabbitvcs.vcs.VCS_SVN:
             url = self.caller.root_url + self.paths[0]
 
         rabbitvcs.util.helper.launch_ui_window("changes", [
-            "%s@%s" % (url, rev_first),
+            "%s@%s" % (url, parent),
             "%s@%s" % (url, rev_last),
             "--vcs=%s" % self.caller.get_vcs_name()
         ])
