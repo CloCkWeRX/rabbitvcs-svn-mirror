@@ -50,8 +50,8 @@ class GitClone(Checkout):
         self.check_form()
 
     def on_ok_clicked(self, widget):
-        url = self.repositories.get_active_text()
-        path = self._get_path()
+        url = self.repositories.get_active_text().strip()
+        path = self._get_path().strip()
         
         if not url or not path:
             rabbitvcs.ui.dialog.MessageBox(_("The repository URL and destination path are both required fields."))
