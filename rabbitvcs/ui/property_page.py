@@ -69,7 +69,7 @@ class PropertyPage(rabbitvcs.ui.GtkBuilderWidgetWrapper):
         elif len(paths) > 1:
             try:
                 for path in paths:
-                    expander = FileInfoExpander(path, self.vcs_client,
+                    expander = FileInfoExpander(path, self.vcs,
                                                 claim_domain=self.claim_domain)
                     self.info_pane.pack_start(expander.get_widget(),
                                               expand=False)
