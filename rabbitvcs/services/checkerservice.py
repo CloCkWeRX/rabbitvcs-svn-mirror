@@ -336,7 +336,7 @@ class StatusCheckerStub:
         def reply_handler(*args, **kwargs):
             # The callback should be performed as a low priority task, so we
             # keep Nautilus as responsive as possible.
-            glib.idle_add(real_reply_handler, *args, **kwargs)
+            gobject.idle_add(real_reply_handler, *args, **kwargs)
         
         def error_handler(dbus_ex):
             log.exception(dbus_ex)
@@ -367,7 +367,7 @@ class StatusCheckerStub:
         service (which is, in turn, a wrapper around the real status checker).
         """
         if callback:
-            glib.idle_add(self.check_status_later,
+            gobject.idle_add(self.check_status_later,
                      path, callback, recurse, invalidate, summary)
             return rabbitvcs.vcs.status.Status.status_calc(path)
         else:
@@ -384,7 +384,7 @@ class StatusCheckerStub:
         def reply_handler(*args, **kwargs):
             # The callback should be performed as a low priority task, so we
             # keep Nautilus as responsive as possible.
-            glib.idle_add(real_reply_handler, *args, **kwargs)
+            gobject.idle_add(real_reply_handler, *args, **kwargs)
         
         def error_handler(dbus_ex):
             log.exception(dbus_ex)
@@ -404,7 +404,7 @@ class StatusCheckerStub:
             self._connect_to_checker()
 
     def generate_menu_conditions_async(self, provider, base_dir, paths, callback):
-        glib.idle_add(self.generate_menu_conditions, provider, base_dir, paths, callback)
+        gobject.idle_add(self.generate_menu_conditions, provider, base_dir, paths, callback)
         return {}
 
 def start():
@@ -438,8 +438,8 @@ def Main():
 
     checker_service = StatusCheckerService(session_bus, mainloop)
 
-    glib.idle_add(sys.stdout.write, "Started status checker service\n")
-    glib.idle_add(sys.stdout.flush)
+    gobject.idle_add(sys.stdout.write, "Started status checker service\n")
+    gobject.idle_add(sys.stdout.flush)
 
     mainloop.run()
 
