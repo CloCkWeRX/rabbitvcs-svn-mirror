@@ -40,7 +40,10 @@ import shutil
 import urllib
 import urlparse
 
-import gobject
+try:
+    from gi.repository import GObject as gobject
+except ImportError:
+    import gobject
 
 import rabbitvcs.util.settings
 

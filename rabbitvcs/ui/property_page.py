@@ -31,6 +31,7 @@ else:
 from collections import defaultdict
 import rabbitvcs.ui
 import rabbitvcs.ui.widget
+
 import rabbitvcs.vcs
 from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 from rabbitvcs.ui import STATUS_EMBLEMS

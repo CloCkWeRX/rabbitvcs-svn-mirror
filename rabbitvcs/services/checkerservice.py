@@ -47,23 +47,19 @@ import os, os.path
 import sys
 import simplejson
 
-import gobject
 try:
-    # Older distributions will not have a glib module.  For them, they must
-    # still use the gobject module
-    import glib
-    HAS_GLIB = True
+    from gi.repository import GObject as gobject
 except ImportError:
-    HAS_GLIB = False
+    import gobject
+    
+try:
+    from gi.repository import GLib as glib
+except:
+    import glib
 
 import dbus
 import dbus.glib # FIXME: this might actually already set the default loop
-try:
-    import dbus.mainloop.glib
-except ImportError, e:
-    # Older distributions do not have this module
-    print e
-
+import dbus.mainloop.glib
 import dbus.service
 
 import rabbitvcs.util.decorators
@@ -83,12 +79,6 @@ INTERFACE = "org.google.code.rabbitvcs.StatusChecker"
 OBJECT_PATH = "/org/google/code/rabbitvcs/StatusChecker"
 SERVICE = "org.google.code.rabbitvcs.RabbitVCS.Checker"
 TIMEOUT = 60*15*100 # seconds
-
-def idle_add(callback, *args, **kwargs):
-    if HAS_GLIB:
-        glib.idle_add(callback, *args, **kwargs)
-    else:
-        gobject.idle_add(callback, *args, **kwargs)
 
 def find_class(module, name):
     """ Given a module name and a class name, return the actual type object.
@@ -346,7 +336,7 @@ class StatusCheckerStub:
         def reply_handler(*args, **kwargs):
             # The callback should be performed as a low priority task, so we
             # keep Nautilus as responsive as possible.
-            idle_add(real_reply_handler, *args, **kwargs)
+            glib.idle_add(real_reply_handler, *args, **kwargs)
         
         def error_handler(dbus_ex):
             log.exception(dbus_ex)
@@ -377,7 +367,7 @@ class StatusCheckerStub:
         service (which is, in turn, a wrapper around the real status checker).
         """
         if callback:
-            idle_add(self.check_status_later,
+            glib.idle_add(self.check_status_later,
                      path, callback, recurse, invalidate, summary)
             return rabbitvcs.vcs.status.Status.status_calc(path)
         else:
@@ -394,7 +384,7 @@ class StatusCheckerStub:
         def reply_handler(*args, **kwargs):
             # The callback should be performed as a low priority task, so we
             # keep Nautilus as responsive as possible.
-            idle_add(real_reply_handler, *args, **kwargs)
+            glib.idle_add(real_reply_handler, *args, **kwargs)
         
         def error_handler(dbus_ex):
             log.exception(dbus_ex)
@@ -414,7 +404,7 @@ class StatusCheckerStub:
             self._connect_to_checker()
 
     def generate_menu_conditions_async(self, provider, base_dir, paths, callback):
-        idle_add(self.generate_menu_conditions, provider, base_dir, paths, callback)
+        glib.idle_add(self.generate_menu_conditions, provider, base_dir, paths, callback)
         return {}
 
 def start():
@@ -448,8 +438,8 @@ def Main():
 
     checker_service = StatusCheckerService(session_bus, mainloop)
 
-    idle_add(sys.stdout.write, "Started status checker service\n")
-    idle_add(sys.stdout.flush)
+    glib.idle_add(sys.stdout.write, "Started status checker service\n")
+    glib.idle_add(sys.stdout.flush)
 
     mainloop.run()
 

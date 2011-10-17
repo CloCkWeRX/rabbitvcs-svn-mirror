@@ -60,12 +60,9 @@ import os.path
 from os.path import isdir, isfile, realpath, basename
 import datetime
 
-from gi.repository import Nautilus
+from gi.repository import Nautilus, GObject
 
-import gnomevfs
 import pysvn
-
-import gobject
 
 from rabbitvcs.vcs import VCS
 import rabbitvcs.vcs.status
@@ -95,8 +92,8 @@ settings = SettingsManager()
 import rabbitvcs.services.service
 from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 
-class RabbitVCS(gobject.GObject, Nautilus.InfoProvider, Nautilus.MenuProvider,
-                 Nautilus.ColumnProvider, Nautilus.PropertyPageProvider):
+class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
+                 Nautilus.ColumnProvider, Nautilus.PropertyPageProvider, GObject.GObject):
     """
     This is the main class that implements all of our awesome features.
 
@@ -125,6 +122,9 @@ class RabbitVCS(gobject.GObject, Nautilus.InfoProvider, Nautilus.MenuProvider,
     #: When we get the statuses from the callback, put them here for further
     #: use. This is of the form: [("path/to", {...status dict...}), ...]
     statuses_from_callback = []
+
+    def get_local_path(self, path):
+        return path.replace("file://", "")
 
     def __init__(self):
         # Create a global client we can use to do VCS related stuff
@@ -194,8 +194,8 @@ class RabbitVCS(gobject.GObject, Nautilus.InfoProvider, Nautilus.MenuProvider,
         if not (enable_emblems or enable_attrs): return Nautilus.OperationResult.COMPLETE
                 
         if not self.valid_uri(item.get_uri()): return Nautilus.OperationResult.FAILED
-        
-        path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+
+        path = unicode(self.get_local_path(item.get_uri()), "utf-8")
 
         # log.debug("update_file_info() called for %s" % path)
 
@@ -313,7 +313,7 @@ class RabbitVCS(gobject.GObject, Nautilus.InfoProvider, Nautilus.MenuProvider,
         paths = []
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+                path = unicode(self.get_local_path(item.get_uri()), "utf-8")
                 paths.append(path)
                 self.nautilusVFSFile_table[path] = item
 
@@ -341,7 +341,7 @@ class RabbitVCS(gobject.GObject, Nautilus.InfoProvider, Nautilus.MenuProvider,
         paths = []
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+                path = unicode(self.get_local_path(item.get_uri()), "utf-8")
                 paths.append(path)
                 self.nautilusVFSFile_table[path] = item
 
@@ -393,7 +393,7 @@ class RabbitVCS(gobject.GObject, Nautilus.InfoProvider, Nautilus.MenuProvider,
         """
 
         if not self.valid_uri(item.get_uri()): return
-        path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+        path = unicode(self.get_local_path(item.get_uri()), "utf-8")
         self.nautilusVFSFile_table[path] = item
 
         # log.debug("get_background_items_full() called")
@@ -416,7 +416,7 @@ class RabbitVCS(gobject.GObject, Nautilus.InfoProvider, Nautilus.MenuProvider,
 
     def get_background_items(self, window, item):
         if not self.valid_uri(item.get_uri()): return
-        path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+        path = unicode(self.get_local_path(item.get_uri()), "utf-8")
         self.nautilusVFSFile_table[path] = item
 
         # log.debug("get_background_items() called")
@@ -490,7 +490,7 @@ class RabbitVCS(gobject.GObject, Nautilus.InfoProvider, Nautilus.MenuProvider,
             return still_going
 
         # Add our callback function on a 1 second timeout
-        gobject.timeout_add_seconds(1, is_process_still_alive)
+        GObject.timeout_add_seconds(1, is_process_still_alive)
 
     #
     # Some other methods
@@ -552,7 +552,7 @@ class RabbitVCS(gobject.GObject, Nautilus.InfoProvider, Nautilus.MenuProvider,
 
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = unicode(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+                path = unicode(self.get_local_path(item.get_uri()), "utf-8")
                 
                 if self.vcs_client.is_in_a_or_a_working_copy(path):
                     paths.append(path)

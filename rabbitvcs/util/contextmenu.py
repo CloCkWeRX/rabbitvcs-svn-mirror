@@ -24,7 +24,10 @@ import os.path
 from time import sleep
 from collections import deque
 
-import gobject
+try:
+    from gi.repository import GObject as gobject
+except ImportError:
+    import gobject
 
 import os
 if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:

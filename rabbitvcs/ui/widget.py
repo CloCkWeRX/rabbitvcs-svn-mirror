@@ -20,7 +20,10 @@
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import gobject
+try:
+    from gi.repository import GObject as gobject
+except ImportError:
+    import gobject
 
 import os
 if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
@@ -28,7 +31,11 @@ if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_
 else:
     import gtk
 
-import pango
+try:
+    from gi.repository import Pango as pango
+except ImportError:
+    import pango
+
 import os.path
 
 try:

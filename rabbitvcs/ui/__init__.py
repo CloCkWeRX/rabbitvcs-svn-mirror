@@ -28,7 +28,10 @@ UI layer.
 
 import os
 
-import gobject
+try:
+    from gi.repository import GObject as gobject
+except ImportError:
+    import gobject
 
 if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
     from gi.repository import Gtk as gtk

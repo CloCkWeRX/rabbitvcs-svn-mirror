@@ -308,7 +308,7 @@ class Confirmation(InterfaceView):
         
 class MessageBox(InterfaceView):
     def __init__(self, message):
-        InterfaceView.__init__(self, "dialogs/messagebox", "MessageBox")
+        InterfaceView.__init__(self, "dialogs/message_box", "MessageBox")
         self.get_widget("messagebox_message").set_text(message)
 
         dialog = self.get_widget("MessageBox")
