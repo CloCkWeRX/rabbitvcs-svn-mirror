@@ -31,10 +31,17 @@ if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_
 else:
     import gtk
 
+# GI Pango is broken in some versions of pygobject 2.28.x, if that is the case
+# set HAS_PANGO to false and do without ellipsizing for now
+HAS_PANGO = True
 try:
     from gi.repository import Pango as pango
 except ImportError:
     import pango
+except AttributeError:
+    HAS_PANGO = False
+    pass
+
 
 import os.path
 
@@ -343,8 +350,9 @@ class TableBase:
                 cell = gtk.CellRendererText()
                 cell.set_property('yalign', 0)
                 cell.set_property('xalign', 0)
-                cell.set_property('ellipsize', pango.ELLIPSIZE_END)
-                cell.set_property('width-chars', ELLIPSIZE_COLUMN_CHARS)
+                if HAS_PANGO:
+                    cell.set_property('ellipsize', pango.ELLIPSIZE_END)
+                    cell.set_property('width-chars', ELLIPSIZE_COLUMN_CHARS)
                 col = gtk.TreeViewColumn(name, cell)
                 col.set_attributes(cell, text=i)
             elif coltypes[i] == TYPE_GRAPH:
@@ -1052,9 +1060,12 @@ class KeyValueTable(gtk.Table):
                 label_key.set_properties(xalign=0, use_markup=True)
                 
                 label_value = gtk.Label("%s" % value)
-                label_value.set_properties(xalign=0,
+                if HAS_PANGO:
+                    label_value.set_properties(xalign=0,                    \
                                            ellipsize=pango.ELLIPSIZE_MIDDLE)
-                                
+                else:
+                    label_value.set_properties(xalign=0)
+                    
                 self.attach(label_key,
                              0,1,
                              row, row+1,
