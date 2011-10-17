@@ -674,10 +674,15 @@ class SVNAction(VCSAction):
             else:
                 action = data["action"]
 
+            # Determine if this action denotes completedness
+            is_complete_action = False
+            for item in self.client.NOTIFY_ACTIONS_COMPLETE:
+                if str(data["action"]) == str(item):
+                    is_complete_action = True
+                    break
+
             if (is_known_action
-                    and rabbitvcs.util.helper.in_rich_compare(
-                        data["action"],
-                        self.client.NOTIFY_ACTIONS_COMPLETE) 
+                    and is_complete_action
                     and "revision" in data 
                     and data["revision"]):
                 self.notification.append(
