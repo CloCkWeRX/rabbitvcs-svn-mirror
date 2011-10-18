@@ -29,3 +29,7 @@ class BranchEntry:
         self.tracking = tracking
         self.revision = revision
         self.message = message
+    
+    def __str__(self):
+        tracking = self.tracking and " (tracking)" or ""
+        return "<BranchEntry %s:%s%s>" % (self.name, self.revision, tracking)
