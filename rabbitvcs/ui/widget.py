@@ -1116,10 +1116,18 @@ class GitRepositorySelector:
         label.set_justify(gtk.JUSTIFY_LEFT)
 
         tmp_branches = []
+        active_branch_index = 0
+        index = 0
         for item in self.git.branch_list():
             tmp_branches.append(item.name)
+            
+            if item.tracking:
+                active_branch_index = index
+            
+            index += 1
+            
         self.branch_opt = ComboBox(gtk.ComboBoxEntry(), tmp_branches)
-        self.branch_opt.set_active(0)
+        self.branch_opt.set_active(active_branch_index)
         self.branch_opt.cb.connect("changed", self.__branch_changed)
         self.branch_opt.cb.set_size_request(175, -1)
         
