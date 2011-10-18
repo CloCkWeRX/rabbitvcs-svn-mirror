@@ -239,7 +239,7 @@ class LoadingNotifier(VCSNotifier):
         if self.callback_cancel is not None:
             self.callback_cancel()
 
-        self.close();
+        self.close()
 
     def get_title(self):
         return self.get_widget("Loading").get_title()

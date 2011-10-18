@@ -495,11 +495,19 @@ class ConflictDecision(InterfaceView):
 class Loading(InterfaceView):
     def __init__(self):
         InterfaceView.__init__(self, "dialogs/loading", "Loading")
+    
+        self.get_widget("loading_cancel").set_sensitive(False)
 
         self.pbar = rabbitvcs.ui.widget.ProgressBar(
             self.get_widget("pbar")
         )
         self.pbar.start_pulsate()
+
+    def on_destroy(self, widget):
+        self.close()
+
+    def on_loading_cancel_clicked(self, widget):
+        self.close()
 
     def run(self):
         self.dialog = self.get_widget("Loading")
