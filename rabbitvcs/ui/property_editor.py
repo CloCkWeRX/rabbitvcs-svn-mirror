@@ -34,7 +34,6 @@ import os.path
 import pygtk
 import gobject
 import gtk
-import gnomevfs
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.util.contextmenu import GtkContextMenu, GtkContextMenuCaller
@@ -93,7 +92,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
                 
         self.path = path
         
-        self.get_widget("wc_text").set_text(gnomevfs.get_uri_from_local_path(os.path.realpath(path)))
+        self.get_widget("wc_text").set_text(self.get_local_path(os.path.realpath(path)))
                 
         self.vcs = rabbitvcs.vcs.VCS()
         self.svn = self.vcs.svn()
@@ -136,6 +135,9 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         self.table.allow_multiple()
         
         self.refresh()
+
+    def get_local_path(self, path):
+        return path.replace("file://", "")
 
     def on_note_box_add(self, *args, **kwargs):
         print "Added!"
