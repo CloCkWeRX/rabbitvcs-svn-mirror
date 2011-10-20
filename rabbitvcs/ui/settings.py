@@ -123,8 +123,11 @@ class Settings(InterfaceView):
                 )
                 show_git = True
 
-        self.get_widget("pages").get_nth_page(5).set_visible(show_git)
-            
+        if show_git:
+            self.get_widget("pages").get_nth_page(5).show()
+        else:
+            self.get_widget("pages").get_nth_page(5).hide()
+
         self._populate_checker_tab()
 
     def _get_checker_service(self, report_failure=True):
