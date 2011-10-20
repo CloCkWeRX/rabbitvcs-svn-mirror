@@ -24,10 +24,14 @@ import os
 if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
     from gi.repository import Gtk as gtk
     GTK3 = True
+    ICON_SIZE_BUTTON = gtk.IconSize.BUTTON
+    ICON_SIZE_DIALOG = gtk.IconSize.DIALOG
 else:
     import gtk
     GTK3 = False
-
+    ICON_SIZE_BUTTON = gtk.ICON_SIZE_BUTTON
+    ICON_SIZE_DIALOG = gtk.ICON_SIZE_DIALOG
+    
 from collections import defaultdict
 import rabbitvcs.ui
 import rabbitvcs.ui.widget
@@ -41,13 +45,6 @@ log = Log("rabbitvcs.ui.property_page")
 
 from rabbitvcs import gettext
 _ = gettext.gettext
-
-if GTK3:
-    ICON_SIZE_BUTTON = gtk.IconSize.BUTTON
-    ICON_SIZE_DIALOG = gtk.IconSize.DIALOG
-else:
-    ICON_SIZE_BUTTON = gtk.ICON_SIZE_BUTTON
-    ICON_SIZE_DIALOG = gtk.ICON_SIZE_DIALOG
 
 class PropertyPage(rabbitvcs.ui.GtkBuilderWidgetWrapper):
     
@@ -66,14 +63,18 @@ class PropertyPage(rabbitvcs.ui.GtkBuilderWidgetWrapper):
             file_info = FileInfoPane(paths[0], self.vcs,
                                      claim_domain=self.claim_domain)
             self.info_pane.pack_start(file_info.get_widget(),
-                                      expand=False)
+                                        expand=False,
+                                        fill=False,
+                                        padding=0)
         elif len(paths) > 1:
             try:
                 for path in paths:
                     expander = FileInfoExpander(path, self.vcs,
                                                 claim_domain=self.claim_domain)
                     self.info_pane.pack_start(expander.get_widget(),
-                                              expand=False)
+                                        expand=False,
+                                        fill=False,
+                                        padding=0)
             except Exception, ex:
                 log.exception(ex)
                 raise
@@ -120,7 +121,10 @@ class FileInfoPane(rabbitvcs.ui.GtkBuilderWidgetWrapper):
 
         additional_props_table.show()
 
-        self.get_widget("file_info_table").pack_end(additional_props_table)
+        self.get_widget("file_info_table").pack_start(additional_props_table,
+                                                        expand=False,
+                                                        fill=False,
+                                                        padding=0)
                         
     def set_icon_from_status(self, icon, status, size=ICON_SIZE_BUTTON):
         if status in rabbitvcs.ui.STATUS_EMBLEMS:

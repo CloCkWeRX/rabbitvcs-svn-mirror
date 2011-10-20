@@ -28,16 +28,24 @@ except ImportError:
 import os
 if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
     from gi.repository import Gtk as gtk
+    GTK_FILL = gtk.AttachOptions.FILL
+    GTK_EXPAND = gtk.AttachOptions.EXPAND
 else:
     import gtk
+    GTK_FILL = gtk.FILL
+    GTK_EXPAND = gtk.EXPAND
 
 # GI Pango is broken in some versions of pygobject 2.28.x, if that is the case
 # set HAS_PANGO to false and do without ellipsizing for now
 HAS_PANGO = True
 try:
     from gi.repository import Pango as pango
+    PANGO_ELLIPSIZE_MIDDLE = pango.EllipsizeMode.MIDDLE
+    PANGO_ELLIPSIZE_END = pango.EllipsizeMode.END
 except ImportError:
     import pango
+    PANGO_ELLIPSIZE_MIDDLE = pango.ELLIPSIZE_MIDDLE
+    PANGO_ELLIPSIZE_END = pango.ELLIPSIZE_END
 except AttributeError:
     HAS_PANGO = False
     pass
@@ -351,7 +359,7 @@ class TableBase:
                 cell.set_property('yalign', 0)
                 cell.set_property('xalign', 0)
                 if HAS_PANGO:
-                    cell.set_property('ellipsize', pango.ELLIPSIZE_END)
+                    cell.set_property('ellipsize', PANGO_ELLIPSIZE_END)
                     cell.set_property('width-chars', ELLIPSIZE_COLUMN_CHARS)
                 col = gtk.TreeViewColumn(name, cell)
                 col.set_attributes(cell, text=i)
@@ -1062,19 +1070,19 @@ class KeyValueTable(gtk.Table):
                 label_value = gtk.Label("%s" % value)
                 if HAS_PANGO:
                     label_value.set_properties(xalign=0,                    \
-                                           ellipsize=pango.ELLIPSIZE_MIDDLE)
+                                           ellipsize=PANGO_ELLIPSIZE_MIDDLE)
                 else:
                     label_value.set_properties(xalign=0)
                     
                 self.attach(label_key,
                              0,1,
                              row, row+1,
-                             xoptions=gtk.FILL)
+                             xoptions=GTK_FILL)
     
                 self.attach(label_value,
                              1,2,
                              row, row+1,
-                             xoptions=gtk.FILL|gtk.EXPAND)
+                             xoptions=GTK_FILL|GTK_EXPAND)
                         
                 label_key.show()
                 label_value.show()

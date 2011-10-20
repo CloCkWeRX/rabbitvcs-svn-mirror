@@ -562,9 +562,9 @@ class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
         label = rabbitvcs.ui.property_page.PropertyPageLabel(claim_domain=False).get_widget()
         page = rabbitvcs.ui.property_page.PropertyPage(paths, claim_domain=False).get_widget()
 
-        ppage = Nautilus.PropertyPage('RabbitVCS::PropertyPage',
-            label,
-            page)
+        ppage = Nautilus.PropertyPage(name='RabbitVCS::PropertyPage',
+            label=label,
+            page=page)
 
         return [ppage]
 
