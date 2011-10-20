@@ -388,7 +388,7 @@ class OneLineTextChange(InterfaceView):
 
 class NewFolder(InterfaceView):
     def __init__(self):
-        InterfaceView.__init__(self, "dialogs/new_folder", "CreateFolder")
+        InterfaceView.__init__(self, "dialogs/create_folder", "CreateFolder")
 
         self.folder_name = self.get_widget("folder_name")
         self.textview = rabbitvcs.ui.widget.TextView(
