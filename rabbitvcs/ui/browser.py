@@ -66,7 +66,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
             rabbitvcs.util.helper.get_repository_paths()
         )
         if self.url:
-            self.urls.set_child_text(self.url)
+            self.urls.set_child_text(rabbitvcs.util.helper.unquote_url(self.url))
 
         # We must set a signal handler for the gtk.Entry inside the combobox
         # Because glade will not retain that information
@@ -183,7 +183,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
             self.url = path
 
         if self.file_column_callback(self.url) == "dir" or self.url != path:
-            self.urls.set_child_text(self.url)
+            self.urls.set_child_text(rabbitvcs.util.helper.unquote_url(self.url))
             self.load()
         else:
             self._open([self.url])
