@@ -308,7 +308,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
         
         exported_paths = []
         for path in paths:
-            export_path = "/tmp/" + os.path.basename(paths[0])
+            export_path = rabbitvcs.util.helper.get_tmp_path(os.path.basename(paths[0]))
             exported_paths.append(export_path)
             self.action.append(self.svn.export, paths[0], 
                 export_path, revision=self.revision_selector.get_revision_object())

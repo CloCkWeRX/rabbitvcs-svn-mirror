@@ -64,7 +64,7 @@ class SVNOpen(InterfaceNonView):
         url = path
         if not self.svn.is_path_repository_url(path):
             url = self.svn.get_repo_root_url(path) + '/' + path
-        dest = "/tmp/rabbitvcs-" + revision + "-" + os.path.basename(path)
+        dest = rabbitvcs.util.helper.get_tmp_path("rabbitvcs-" + revision + "-" + os.path.basename(path))
         
         self.svn.export(
             url,
@@ -102,7 +102,7 @@ class GitOpen(InterfaceNonView):
         else:
             revision_obj = self.git.revision("HEAD")
 
-        dest_dir = "/tmp/rabbitvcs-" + unicode(revision)
+        dest_dir = rabbitvcs.util.helper.get_tmp_path("rabbitvcs-" + unicode(revision))
         
         self.git.export(
             path,

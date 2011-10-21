@@ -3,6 +3,7 @@
 #
 
 import os
+import os.path
 import re
 import shutil
 import fnmatch
@@ -43,6 +44,11 @@ def callback_get_user():
 
 def callback_get_cancel():
     return False
+
+def get_tmp_path(filename):
+    tmpdir = "/tmp/rabbitvcs"
+    if not os.path.isdir(tmpdir):
+        os.mkdir(tmpdir)
 
 class GittyupClient:
     def __init__(self, path=None, create=False):
@@ -1486,8 +1492,9 @@ class GittyupClient:
 
         """
         
-        cmd1 = ["git", "archive", "--format", "tar", "-o", "/tmp/rabbitvcs-git-export.tar", revision, path]
-        cmd2 = ["tar", "-xf", "/tmp/rabbitvcs-git-export.tar", "-C", dest_path]
+        tmp_file = get_tmp_path("rabbitvcs-git-export.tar")
+        cmd1 = ["git", "archive", "--format", "tar", "-o", tmp_file, revision, path]
+        cmd2 = ["tar", "-xf", tmp_file, "-C", dest_path]
         
         if not os.path.isdir(dest_path):
             os.mkdir(dest_path)

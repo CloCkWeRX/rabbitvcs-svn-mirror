@@ -68,7 +68,7 @@ class Diff(InterfaceNonView):
         self.stop_loading()
 
     def _build_export_path(self, index, revision, path):
-        dest = "/tmp/rabbitvcs-%s-%s-%s" % (str(index), str(revision)[:5], os.path.basename(path))
+        dest = rabbitvcs.util.helper.get_tmp_path("rabbitvcs-%s-%s-%s" % (str(index), str(revision)[:5], os.path.basename(path)))
         if os.path.exists(dest):
             if os.path.isdir(dest):
                 rmtree(dest, ignore_errors=True)

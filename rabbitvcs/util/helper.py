@@ -65,6 +65,13 @@ LINE_BREAK_CHAR = u'\u23CE'
 from rabbitvcs import gettext
 _ = gettext.gettext
 
+def get_tmp_path(filename):
+    tmpdir = "/tmp/rabbitvcs"
+    if not os.path.isdir(tmpdir):
+        os.mkdir(tmpdir)
+    
+    return "%s/%s" % (tmpdir, filename)
+
 def process_memory(pid):
     # ps -p 5205 -w -w -o rss --no-headers
     psproc = subprocess.Popen(
@@ -386,9 +393,11 @@ def launch_diff_tool(path1, path2=None):
         (lhs, rhs) = (path1, path2)
     else:
         patch = os.popen("svn diff --diff-cmd 'diff' '%s'" % path1).read()
-        open("/tmp/tmp.patch", "w").write(patch)
         
-        tmp_path = "/tmp/%s" % os.path.split(path1)[-1]
+        tmp_file = get_tmp_path("tmp.patch")
+        open(tmp_file, "w").write(patch)
+        
+        tmp_path = get_tmp_path(os.path.split(path1)[-1])
         if os.path.isfile(path1):
             shutil.copy(path1, tmp_path)
         elif os.path.isdir(path1):
@@ -397,8 +406,7 @@ def launch_diff_tool(path1, path2=None):
             return
 
         os.popen(
-            "patch --reverse '%s' < /tmp/tmp.patch" % 
-            tmp_path
+            "patch --reverse '%s' < %s" % (tmp_path, tmp_file)
         )
         (lhs, rhs) = (tmp_path, path1)
         

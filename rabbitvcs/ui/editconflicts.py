@@ -117,7 +117,7 @@ class SVNEditConflicts(InterfaceNonView):
 
         # If no merge-right file exists, merging is coming from head
         # so export the file from head
-        tmppath = "/tmp/%s.head" % os.path.basename(path)
+        tmppath = rabbitvcs.util.helper.get_tmp_path("%s.head" % os.path.basename(path))
         self.svn.export(path, tmppath)
 
         return tmppath
