@@ -27,7 +27,7 @@ import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.ui.log import log_dialog_factory
+from rabbitvcs.ui.log import SVNLogDialog
 from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.vcs
 import rabbitvcs.ui.widget
@@ -268,7 +268,7 @@ class SVNMerge(InterfaceView):
         self.mergerange_check_ready()
         
     def on_mergerange_show_log1_clicked(self, widget):
-        log_dialog_factory(
+        SVNLogDialog(
             self.get_widget("mergerange_from_urls").get_active_text(),
             ok_callback=self.on_mergerange_log1_closed, 
             multiple=True
@@ -305,7 +305,7 @@ class SVNMerge(InterfaceView):
                 self.get_widget("merge_reintegrate_repos"), 
                 self.repo_paths
             )
-            self.merge_reintegrate_repos.cb.connect("changed", self.on_merge_reintegrate_repos_changed)
+            self.merge_reintegrate_repos.cb.connect("changed", self.on_merge_reintegrate_from_urls_changed)
             self.get_widget("merge_reintegrate_working_copy").set_text(self.path)
 
         if not hasattr(self, "merge_reintegrate_revision"):
@@ -324,7 +324,7 @@ class SVNMerge(InterfaceView):
         self.merge_reintegrate_repos.set_child_text(new_url)
         self.merge_reintegrate_check_ready()
         
-    def on_merge_reintegrate_repos_changed(self, widget):
+    def on_merge_reintegrate_from_urls_changed(self, widget):
         self.merge_reintegrate_check_ready()
     
     def merge_reintegrate_check_ready(self):
@@ -351,7 +351,7 @@ class SVNMerge(InterfaceView):
             self.get_widget("mergetree_working_copy").set_text(self.path)
 
     def on_mergetree_from_show_log_clicked(self, widget):
-        log_dialog_factory(
+        SVNLogDialog(
             self.path,
             ok_callback=self.on_mergetree_from_show_log_closed, 
             multiple=False
@@ -362,7 +362,7 @@ class SVNMerge(InterfaceView):
         self.get_widget("mergetree_from_revision_number_opt").set_active(True)
 
     def on_mergetree_to_show_log_clicked(self, widget):
-        log_dialog_factory(
+        SVNLogDialog(
             self.path,
             ok_callback=self.on_mergetree_to_show_log_closed, 
             multiple=False
@@ -373,7 +373,7 @@ class SVNMerge(InterfaceView):
         self.get_widget("mergetree_to_revision_number_opt").set_active(True)
 
     def on_mergetree_working_copy_show_log_clicked(self, widget):
-        log_dialog_factory(self.path)
+        SVNLogDialog(self.path)
         
     def on_mergetree_from_revision_number_focused(self, widget, data):
         self.get_widget("mergetree_from_revision_number_opt").set_active(True)
