@@ -1,0 +1,23 @@
+Description: Remove GTK icon cache rebuilding.
+ This removes the rebuilding of the GTK icon cache after installing the core.
+ It is not needed in any distro with hicolor-icon-theme >= 0.10-2
+Forwarded: not-needed
+Author: Jason Heeris <jason.heeris@gmail.com>
+
+--- rabbitvcs-0.14/setup.py.orig	2011-02-18 21:04:33.000000000 +0800
++++ rabbitvcs-0.14/setup.py	2011-02-19 01:23:20.000000000 +0800
+@@ -154,13 +154,4 @@
+ # Post installation
+ #
+ 
+-# Make sure the icon cache is deleted and recreated
+-if sys.argv[1] == "install":
+-
+-    if os.uname()[0] != 'Darwin':
+-        print "Running gtk-update-icon-cache"
+-        
+-        subprocess.Popen(
+-            ["gtk-update-icon-cache", icon_theme_directory], 
+-            stdout=subprocess.PIPE
+-        ).communicate()[0]
++# Icon cache rebuilding not needed

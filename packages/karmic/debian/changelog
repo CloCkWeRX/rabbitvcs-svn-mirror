@@ -1,3 +1,15 @@
+rabbitvcs (0.14.2.1-1~karmic) karmic; urgency=low
+
+  * New upstream release
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Sat, 19 Feb 2011 01:19:48 +0800
+
+rabbitvcs (0.14.1.1-1~karmic) karmic; urgency=low
+
+  * New upstream release.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Sun, 09 Jan 2011 17:33:38 +0800
+
 rabbitvcs (0.14~beta4-1~karmic) karmic; urgency=low
 
   * New upstream beta release.
