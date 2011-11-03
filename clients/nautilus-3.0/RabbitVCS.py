@@ -60,7 +60,7 @@ import os.path
 from os.path import isdir, isfile, realpath, basename
 import datetime
 
-from gi.repository import Nautilus, GObject
+from gi.repository import Nautilus, GObject, Gtk, GdkPixbuf
 
 import pysvn
 
@@ -81,7 +81,7 @@ import rabbitvcs.ui.property_page
 from rabbitvcs.util.log import Log, reload_log_settings
 log = Log("rabbitvcs.util.extensions.Nautilus.RabbitVCS")
 
-from rabbitvcs import gettext
+from rabbitvcs import gettext, get_icon_path
 _ = gettext.gettext
 
 from rabbitvcs import version as EXT_VERSION
@@ -127,6 +127,25 @@ class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
         return path.replace("file://", "")
 
     def __init__(self):
+        factory = Gtk.IconFactory()
+        
+        rabbitvcs_icon_path = get_icon_path()
+        icon_paths = ["scalable/actions", "scalable/apps", "16x16/actions"]
+        for rel_icon_path in icon_paths:
+            icon_path = "%s/%s" % (rabbitvcs_icon_path, rel_icon_path)
+            for file in os.listdir(icon_path):
+                if file == ".svn":
+                    continue
+                    
+                (root, ext) = os.path.splitext(file)
+            
+                path = icon_path + "/" + file
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(path)
+                iconset = Gtk.IconSet.new_from_pixbuf(pixbuf)
+                factory.add(root, iconset)
+
+        factory.add_default()
+    
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = VCS()
 

@@ -90,3 +90,15 @@ def package_prefix():
         return rabbitvcs_prefix
     except ImportError, e:
         return ""
+
+def get_icon_path():
+    """
+    Return the path to the icon folder
+    
+    """
+    
+    try:
+        from rabbitvcs.buildinfo import icon_path
+        return icon_path
+    except ImportError, e:
+        return "%s/data/icons/hicolor" % os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
