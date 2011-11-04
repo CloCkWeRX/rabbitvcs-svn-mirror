@@ -23,7 +23,6 @@
 import os
 import thread
 
-import gnomevfs
 import pygtk
 import gobject
 import gtk
@@ -90,7 +89,7 @@ class CreatePatch:
         dialog.set_do_overwrite_confirmation(True)
         dialog.set_default_response(gtk.RESPONSE_OK)
         dialog.set_current_folder_uri(
-            gnomevfs.get_uri_from_local_path(get_common_directory(self.paths))
+            get_common_directory(self.paths).replace("file://", "")
         )
         response = dialog.run()
         
