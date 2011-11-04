@@ -36,6 +36,7 @@ import re
 import datetime
 import time
 import shutil
+import hashlib
 
 import urllib
 import urlparse
@@ -66,7 +67,10 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 def get_tmp_path(filename):
-    tmpdir = "/tmp/rabbitvcs"
+    day = datetime.datetime.now().day
+    m = hashlib.md5(str(day)).hexdigest()[0:10]
+    
+    tmpdir = "/tmp/rabbitvcs-%s" %m
     if not os.path.isdir(tmpdir):
         os.mkdir(tmpdir)
     
