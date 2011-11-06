@@ -1,5 +1,0 @@
-version=3
-opts=\
-downloadurlmangle=s|.*[?]name=(.*?)&.*|http://rabbitvcs.googlecode.com/files/$1|,\
-filenamemangle=s|[^/]+[?]name=(.*?)&.*|$1| \
-http://code.google.com/p/rabbitvcs/downloads/detail[?]name=rabbitvcs-([0-9.]+).tar.gz&.*
