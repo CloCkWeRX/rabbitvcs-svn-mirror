@@ -1,0 +1,5 @@
+rabbitvcs (0.15.0.1-1~oneiric) oneiric; urgency=low
+
+  * Initial packaging for Oneiric
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Sun, 06 Nov 2011 20:15:57 +0800
