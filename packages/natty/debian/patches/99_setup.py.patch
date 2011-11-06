@@ -4,12 +4,14 @@ Description: Remove GTK icon cache rebuilding.
 Forwarded: not-needed
 Author: Jason Heeris <jason.heeris@gmail.com>
 
---- rabbitvcs-0.14/setup.py.orig	2011-02-18 21:04:33.000000000 +0800
-+++ rabbitvcs-0.14/setup.py	2011-02-19 01:23:20.000000000 +0800
-@@ -154,13 +154,4 @@
+diff -Nur -x '*.orig' -x '*~' rabbitvcs-0.15/setup.py rabbitvcs-0.15.new/setup.py
+--- rabbitvcs-0.15/setup.py	2011-11-06 11:32:48.053065966 +0800
++++ rabbitvcs-0.15.new/setup.py	2011-11-06 11:33:02.232892091 +0800
+@@ -154,14 +154,3 @@
+ #
  # Post installation
  #
- 
+-
 -# Make sure the icon cache is deleted and recreated
 -if sys.argv[1] == "install":
 -
@@ -20,4 +22,3 @@ Author: Jason Heeris <jason.heeris@gmail.com>
 -            ["gtk-update-icon-cache", icon_theme_directory], 
 -            stdout=subprocess.PIPE
 -        ).communicate()[0]
-+# Icon cache rebuilding not needed
