@@ -6,7 +6,7 @@ Build-Depends: debhelper (>= 7),
                python (>= 2.5.2)
 Build-Depends-Indep: python-support (>= 0.5.3),
                      pkg-config (>= 0.20)
-Standards-Version: 3.9.2
+Standards-Version: 3.9.2.0
 XS-Python-Version: >= 2.5
 Homepage: http://www.rabbitvcs.org
 
@@ -15,7 +15,6 @@ Architecture: all
 Depends: ${misc:Depends},
          ${python:Depends},
          python-gtk2 (>= 2.12.1),
-         python-glade2 (>= 2.12.1),
          python-gobject (>= 2.14.1),
          python-svn (>= 1.5.2),
          python-dbus (>= 0.82.4),
@@ -29,37 +28,62 @@ Conflicts: nautilussvn, rabbitvcs
 Replaces: nautilussvn
 Description: Easy version control
  RabbitVCS is a set of graphical tools written to provide simple and
- straightforward access to Subversion (SVN) and Git. There are extensions for
- Nautilus, Thunar and GEdit, and a simple command-line interface.
+ straightforward access to the version control systems SVN (Subversion) and Git.
+ There are extensions for Nautilus, Thunar and GEdit, and a simple command-line
+ interface.
 
 Package: rabbitvcs-cli
 Architecture: all
 Depends: ${misc:Depends},
          ${python:Depends},
-         rabbitvcs-core (= 0.14.2.1)
+         rabbitvcs-core (>= 0.15)
 Description: Command line interface for RabbitVCS
  RabbitVCS is a set of graphical tools written to provide simple and
- straightforward access to Subversion (SVN) and Git. This is the command-line
- interface.
+ straightforward access to the version control systems SVN (Subversion) and Git.
+ This is the command-line interface.
 
 Package: rabbitvcs-gedit
 Architecture: all
 Depends: ${misc:Depends},
          gedit,
-         rabbitvcs-core (= 0.14.2.1)
+         rabbitvcs-core (>= 0.15)
 Description: Gedit extension for RabbitVCS
  RabbitVCS is a set of graphical tools written to provide simple and
- straightforward access to Subversion (SVN) and Git. This is the extension for
- gedit text editor.
+ straightforward access to the version control systems SVN (Subversion) and Git.
+ This is the extension for gedit text editor.
 
 Package: rabbitvcs-nautilus
 Architecture: all
 Depends: ${misc:Depends},
-         nautilus,
-         python-gnome2,
-         python-nautilus (>= 0.5.0),
-         rabbitvcs-core (= 0.14.2.1)
-Description: Nautilus extension for RabbitVCS
+         nautilus (<< 3.0~),
+         python-nautilus (>= 0.5.0~),
+         python-nautilus (<< 1.0~),
+         rabbitvcs-core (>= 0.15)
+Description: Nautilus 2 extension for RabbitVCS
  RabbitVCS is a set of graphical tools written to provide simple and
- straightforward access to Subversion (SVN) and Git. This is the extension for
- the Nautilus file manager.
+ straightforward access to the version control systems SVN (Subversion) and Git.
+ This is the extension for the Nautilus file manager (v2 only).
+
+Package: rabbitvcs-nautilus3
+Architecture: all
+Depends: ${misc:Depends},
+         nautilus (>= 3~),
+         python-nautilus (>= 1.0~),
+         python-gobject (>= 2.28.2~),
+         rabbitvcs-core (>= 0.15)
+Description: Nautilus 3 extension for RabbitVCS
+ RabbitVCS is a set of graphical tools written to provide simple and
+ straightforward access to the version control systems SVN (Subversion) and Git.
+ This is the extension for the Nautilus file manager (v3.0 or greater).
+
+Package: rabbitvcs-thunar
+Architecture: all
+Depends: ${misc:Depends},
+         thunar (>= 0.4.0),
+         thunarx-python (>= 0.2.0),
+         rabbitvcs-core (>= 0.15)
+Description: Thunar extension for RabbitVCS
+ RabbitVCS is a set of graphical tools written to provide simple and
+ straightforward access to the version control systems SVN (Subversion) and Git.
+ This is the extension for the Thunar file manager.
+ 
