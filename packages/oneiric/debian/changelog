@@ -1,13 +1,5 @@
-rabbitvcs (0.15.0.1-1~natty) natty; urgency=low
+rabbitvcs (0.15.0.1-1~oneiric) oneiric; urgency=low
 
-  * New upstream release
-  * New client for Nautilus 3
+  * Initial packaging for Oneiric
 
- -- Jason Heeris <jason.heeris@gmail.com>  Sun, 06 Nov 2011 19:59:03 +0800
-
-rabbitvcs (0.14.2.1-2~natty) natty; urgency=low
-
-  * First packaging for Natty.
-
- -- Jason Heeris <jason.heeris@gmail.com>  Wed, 15 Jun 2011 09:29:06 +0800
-
+ -- Jason Heeris <jason.heeris@gmail.com>  Sun, 06 Nov 2011 20:15:57 +0800
