@@ -60,8 +60,8 @@ license             = "GNU General Public License version 2 or later"
 # Paths
 #==============================================================================
 
-icon_theme_directory = PREFIX + "/share/icons/hicolor"
-locale_directory = PREFIX + "/share/locale"
+icon_theme_directory = "share/icons/hicolor"
+locale_directory = "share/locale"
 
 #==============================================================================
 # Helper functions
@@ -96,12 +96,12 @@ icons = include_by_pattern("data/icons/hicolor", icon_theme_directory, ".svg")
 
 # Config parsing specification
 config_spec = [(
-    PREFIX + "/share/rabbitvcs",
+    "share/rabbitvcs",
     ["rabbitvcs/util/configspec/configspec.ini"]
 )]
 
 # Documentation
-documentation = [(PREFIX + "/share/doc/rabbitvcs", [
+documentation = [("share/doc/rabbitvcs", [
     "AUTHORS",
     "MAINTAINERS"
 ])]
@@ -109,8 +109,8 @@ documentation = [(PREFIX + "/share/doc/rabbitvcs", [
 # Save build information so we can access the prefix later
 path = "rabbitvcs/buildinfo.py"
 buildinfo = '''rabbitvcs_prefix = "%s"
-icon_path = "%s"
-''' % (PREFIX, icon_theme_directory)
+icon_path = "%s/%s"
+''' % (PREFIX, PREFIX, icon_theme_directory)
 fh = open(path, "w")
 fh.write(buildinfo)
 fh.close()
@@ -145,7 +145,8 @@ dist = setup(
     package_data={
         "rabbitvcs": [
             # Include our GtkBuilder UI files right into the package
-            "ui/xml/*.xml"
+            "ui/xml/*.xml",
+            "ui/xml/dialogs/*.xml"
         ]
     },
     data_files=translations + icons + documentation + config_spec
