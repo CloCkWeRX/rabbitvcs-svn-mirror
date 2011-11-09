@@ -30,10 +30,12 @@ if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_
     from gi.repository import Gtk as gtk
     GTK_FILL = gtk.AttachOptions.FILL
     GTK_EXPAND = gtk.AttachOptions.EXPAND
+    GTK3 = True
 else:
     import gtk
     GTK_FILL = gtk.FILL
     GTK_EXPAND = gtk.EXPAND
+    GTK3 = False
 
 # GI Pango is broken in some versions of pygobject 2.28.x, if that is the case
 # set HAS_PANGO to false and do without ellipsizing for now
@@ -53,17 +55,21 @@ except AttributeError:
 
 import os.path
 
-try:
-    import gtkspell
-    HAS_GTKSPELL = True
-except ImportError:
-    HAS_GTKSPELL = False
+HAS_GTKSPELL = False
+if not GTK3:
+    try:
+        import gtkspell
+        HAS_GTKSPELL = True
+    except ImportError:
+        pass    
 
-try:
-    import gtksourceview
-    HAS_GTKSOURCEVIEW = True
-except ImportError:
-    HAS_GTKSOURCEVIEW = False
+HAS_GTKSOURCEVIEW = False
+if not GTK3:
+    try:
+        import gtksourceview
+        HAS_GTKSOURCEVIEW = True
+    except ImportError:
+        pass
 
 import rabbitvcs.util.helper
 
