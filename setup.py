@@ -33,7 +33,7 @@ import subprocess
 from distutils.core import setup
 import distutils.sysconfig
 
-PREFIX = "/usr"
+PREFIX = sys.prefix
 
 # If the user passed --prefix=... then use the new prefix
 for c in sys.argv:
@@ -48,7 +48,7 @@ for c in sys.argv:
 # This will eventually be passed to the setup function, but we already need them
 # for doing some other stuff so we have to declare them here.
 name                = "rabbitvcs"
-version             = "0.15.0.3"
+version             = "0.15.0.4"
 description         = "Easy version control"
 long_description    = """RabbitVCS is a set of graphical tools written to provide simple and straightforward access to the version control systems you use."""
 author              = "Bruce van der Kooij"
@@ -93,6 +93,7 @@ translations = include_by_pattern("locale", locale_directory, ".mo")
 
 # Icons
 icons = include_by_pattern("data/icons/hicolor", icon_theme_directory, ".svg")
+icons += include_by_pattern("data/icons/hicolor", icon_theme_directory, ".png")
 
 # Config parsing specification
 config_spec = [(
@@ -141,7 +142,6 @@ dist = setup(
     #   file) into site-packages
     # - data_files: any file you want, anywhere you want it
     packages=packages,
-    include_package_data=True,
     package_data={
         "rabbitvcs": [
             # Include our GtkBuilder UI files right into the package
