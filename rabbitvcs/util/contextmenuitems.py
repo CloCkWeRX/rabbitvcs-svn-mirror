@@ -362,6 +362,11 @@ class MenuRabbitVCSGit(MenuItem):
     label = _("RabbitVCS Git")
     icon = "rabbitvcs"
 
+class MenuRabbitVCSMercurial(MenuItem):
+    identifier = "RabbitVCS::RabbitVCS_Mercurial"
+    label = _("RabbitVCS Hg")
+    icon = "rabbitvcs"
+
 class MenuRepoBrowser(MenuItem):
     identifier = "RabbitVCS::Repo_Browser"
     label = _("Repository Browser")

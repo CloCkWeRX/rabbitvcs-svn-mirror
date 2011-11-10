@@ -35,7 +35,7 @@ if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_
 else:
     import gtk
 
-from rabbitvcs.vcs import create_vcs_instance, VCS_SVN, VCS_GIT, VCS_DUMMY
+from rabbitvcs.vcs import create_vcs_instance, VCS_SVN, VCS_GIT, VCS_DUMMY, VCS_MERCURIAL
 from rabbitvcs.util.log import Log
 from rabbitvcs import gettext
 from rabbitvcs.util.settings import SettingsManager
@@ -600,6 +600,7 @@ class ContextMenuConditions:
         checks = {
             "is_svn"                        : lambda path: (self.vcs_client.guess(path)["vcs"] == VCS_SVN),
             "is_git"                        : lambda path: (self.vcs_client.guess(path)["vcs"] == VCS_GIT),
+            "is_mercurial"                  : lambda path: (self.vcs_client.guess(path)["vcs"] == VCS_MERCURIAL),
             "is_dir"                        : os.path.isdir,
             "is_file"                       : os.path.isfile,
             "exists"                        : os.path.exists,
@@ -654,7 +655,7 @@ class ContextMenuConditions:
                 not self.path_dict["is_added"])
                         
     def commit(self, data=None):
-        if self.path_dict["is_svn"] or self.path_dict["is_git"]:
+        if self.path_dict["is_svn"] or self.path_dict["is_git"] or self.path_dict["is_mercurial"]:
             if self.path_dict["is_in_a_or_a_working_copy"]:
                 if (self.path_dict["is_added"] or
                         self.path_dict["is_modified"] or
@@ -889,6 +890,10 @@ class ContextMenuConditions:
     def rabbitvcs_git(self, data=None):
         return (self.path_dict["is_git"] or 
             not self.path_dict["is_in_a_or_a_working_copy"])
+
+    def rabbitvcs_mercurial(self, data=None):
+        return (self.path_dict["is_mercurial"] or 
+            not self.path_dict["is_in_a_or_a_working_copy"])
     
     def debug(self, data=None):
         return settings.get("general", "show_debug")
@@ -917,7 +922,7 @@ class ContextMenuConditions:
             not self.path_dict["is_in_a_or_a_working_copy"])
             
     def push(self, data=None):
-        return (self.path_dict["is_git"])
+        return (self.path_dict["is_git"] or self.path_dict["is_mercurial"])
 
     def branches(self, data=None):
         return (self.path_dict["is_git"])
@@ -1344,6 +1349,10 @@ class MainContextMenu:
                 (MenuCreatePatch, None),
                 (MenuApplyPatch, None),
                 (MenuSeparator, None),
+                (MenuSettings, None),
+                (MenuAbout, None)
+            ]),
+            (MenuRabbitVCSMercurial, [
                 (MenuSettings, None),
                 (MenuAbout, None)
             ])
