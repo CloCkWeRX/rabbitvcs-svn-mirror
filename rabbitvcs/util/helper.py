@@ -461,7 +461,11 @@ def open_item(path):
     if path == "" or path is None:
         return
     
-    subprocess.Popen(["gnome-open", os.path.abspath(path)])
+    import platform
+    if platform.system() == 'Darwin':
+        subprocess.Popen(["open", os.path.abspath(path)])
+    else:
+        subprocess.Popen(["gnome-open", os.path.abspath(path)])
     
 def browse_to_item(path):
     """
@@ -472,10 +476,16 @@ def browse_to_item(path):
     
     """
 
-    subprocess.Popen([
-        "nautilus", "--no-desktop", "--browser", 
-        os.path.dirname(os.path.abspath(path))
-    ])
+    import platform
+    if platform.system() == 'Darwin':
+        subprocess.Popen([
+            "open", "--reveal", os.path.dirname(os.path.abspath(path))
+        ])
+    else:
+        subprocess.Popen([
+            "nautilus", "--no-desktop", "--browser", 
+            os.path.dirname(os.path.abspath(path))
+        ])
     
 def delete_item(path):
     """
@@ -601,8 +611,11 @@ def launch_ui_window(filename, args=[], block=False):
     # path = "%s/ui/%s.py" % (basedir, filename)
     path = os.path.join(basedir, "ui", filename + ".py")
 
-    if os.path.exists(path): 
-        proc = subprocess.Popen([sys.executable, path] + args, env=env)
+    if os.path.exists(path):
+        executable = sys.executable
+        if "PYTHON" in os.environ.keys():
+            executable = os.environ["PYTHON"]
+        proc = subprocess.Popen([executable, path] + args, env=env)
 
         if block:
             proc.wait()
