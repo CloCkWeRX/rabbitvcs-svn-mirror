@@ -367,10 +367,35 @@ class GitStatus(Status):
             content=str(gittyup_status.identifier),
             metadata=None)
 
+class MercurialStatus(Status):
+    vcs_type = 'mercurial'
+    
+    content_status_map = {
+        'clean': status_normal,
+        'added': status_added,
+        'missing': status_missing,
+        'unknown': status_unversioned,
+        'removed': status_deleted,
+        'modified': status_modified,
+        'ignored': status_ignored
+    }
+    
+    metadata_status_map = {
+        'normal': status_normal,
+        None: status_normal
+    }
+
+    def __init__(self, mercurial_status):
+        super(MercurialStatus, self).__init__(
+            mercurial_status["path"],
+            content=str(mercurial_status["content"]),
+            metadata=None)
+
 STATUS_TYPES = [
     Status,
     SVNStatus,
-    GitStatus
+    GitStatus,
+    MercurialStatus
 ]
 
 class TestStatusObjects(unittest.TestCase):

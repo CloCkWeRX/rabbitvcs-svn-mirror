@@ -31,6 +31,7 @@ EXT_UTIL_ERROR = _("The output from '%s' was not able to be processed.\n%s")
 
 VCS_SVN = 'svn'
 VCS_GIT = 'git'
+VCS_MERCURIAL = 'mercurial'
 VCS_DUMMY = 'unknown'
 
 def guess(path):
@@ -40,7 +41,7 @@ def guess(path):
         folders = {
             ".svn": VCS_SVN,
             ".git": VCS_GIT,
-            ".hg": VCS_DUMMY,
+            ".hg": VCS_MERCURIAL,
             ".bzr": VCS_DUMMY,
             ".CVS": VCS_DUMMY
         }
@@ -84,6 +85,7 @@ class VCS:
                 return self.clients[VCS_SVN]
             except Exception, e:
                 logger.debug("Unable to load SVN module: %s" % e)
+                logger.exception(e)
                 self.clients[VCS_SVN] = self.dummy()
                 return self.clients[VCS_SVN]
 
@@ -114,11 +116,42 @@ class VCS:
                 self.clients[VCS_GIT] = git
                 return self.clients[VCS_GIT]
             except Exception, e:
-                import traceback
-                traceback.print_exc()
                 logger.debug("Unable to load Git module: %s" % e)
+                logger.exception(e)
                 self.clients[VCS_GIT] = self.dummy()
                 return self.clients[VCS_GIT]
+
+    def mercurial(self, path=None, is_repo_path=False):
+        if VCS_MERCURIAL in self.clients:
+            mercurial = self.clients[VCS_MERCURIAL]
+
+            if path:
+                if is_repo_path:
+                    mercurial.set_repository(path)
+                else:
+                    repo_path = mercurial.find_repository_path(path)
+                    mercurial.set_repository(repo_path)
+
+            return mercurial
+        else:
+            try:
+                from rabbitvcs.vcs.mercurial import Mercurial
+                mercurial = Mercurial()
+
+                if path:
+                    if is_repo_path:
+                        mercurial.set_repository(path)
+                    else:
+                        repo_path = mercurial.find_repository_path(path)
+                        mercurial.set_repository(repo_path)
+
+                self.clients[VCS_MERCURIAL] = mercurial
+                return self.clients[VCS_MERCURIAL]
+            except Exception, e:
+                logger.debug("Unable to load Mercurial module: %s" % e)
+                logger.exception(e)
+                self.clients[VCS_MERCURIAL] = self.dummy()
+                return self.clients[VCS_MERCURIAL]
 
     def client(self, path, vcs=None):
         # Determine the VCS instance based on the vcs parameter
@@ -127,12 +160,16 @@ class VCS:
                 return self.svn()
             elif vcs == VCS_GIT:
                 return self.git(path)
+            elif vcs == VCS_MERCURIAL:
+                return self.mercurial(path)
 
         guess = self.guess(path)
         if guess["vcs"] == VCS_GIT:
             return self.git(guess["repo_path"], is_repo_path=False)
         elif guess["vcs"] == VCS_SVN:
             return self.svn()
+        elif guess["vcs"] == VCS_MERCURIAL:
+            return self.mercurial(guess["repo_path"], is_repo_path=False)
         else:
             return self.dummy()
     
