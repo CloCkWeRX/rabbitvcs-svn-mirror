@@ -72,11 +72,41 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         self.base_dir = base_dir
         self.vcs = rabbitvcs.vcs.VCS()
 
+        self.files_table = rabbitvcs.ui.widget.Table(
+            self.get_widget("files_table"),
+            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
+                gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
+                _("Text Status"), _("Property Status")],
+            filters=[{
+                "callback": rabbitvcs.ui.widget.path_filter,
+                "user_data": {
+                    "base_dir": base_dir,
+                    "column": 1
+                }
+            }],
+            callbacks={
+                "row-activated":  self.on_files_table_row_activated,
+                "mouse-event":   self.on_files_table_mouse_event,
+                "key-event":     self.on_files_table_key_event,
+                "row-toggled":   self.on_files_table_toggle_event
+            },
+            flags={
+                "sortable": True, 
+                "sort_on": 1
+            }
+        )
+        self.files_table.allow_multiple()
+
+        self.message = rabbitvcs.ui.widget.TextView(
+            self.get_widget("message"),
+            (message and message or "")
+        )
+
         self.paths = []
         for path in paths:
             if self.vcs.is_in_a_or_a_working_copy(path):
                 self.paths.append(path)
-
         
     #
     # Helper functions
@@ -189,50 +219,6 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         if message is not None:
             self.message.set_text(message)
 
-class SVNCommit(Commit):
-    def __init__(self, paths, base_dir=None, message=None):
-        Commit.__init__(self, paths, base_dir, message)
-
-        self.get_widget("commit_to_box").show()
-
-        self.files_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("files_table"),
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
-                _("Text Status"), _("Property Status")],
-            filters=[{
-                "callback": rabbitvcs.ui.widget.path_filter,
-                "user_data": {
-                    "base_dir": base_dir,
-                    "column": 1
-                }
-            }],
-            callbacks={
-                "row-activated":  self.on_files_table_row_activated,
-                "mouse-event":   self.on_files_table_mouse_event,
-                "key-event":     self.on_files_table_key_event,
-                "row-toggled":   self.on_files_table_toggle_event
-            },
-            flags={
-                "sortable": True, 
-                "sort_on": 1
-            }
-        )
-        self.files_table.allow_multiple()
-        
-        self.message = rabbitvcs.ui.widget.TextView(
-            self.get_widget("message"),
-            (message and message or "")
-        )
-        self.get_widget("to").set_text(
-            self.vcs.svn().get_repo_url(self.base_dir)
-        )
-
-        self.items = None
-        if len(self.paths):
-            self.initialize_items()
-
     def populate_files_table(self):
         """
         First clears and then populates the files table based on the items
@@ -257,6 +243,20 @@ class SVNCommit(Commit):
                 item.simple_content_status(),
                 item.simple_metadata_status()
             ])
+
+class SVNCommit(Commit):
+    def __init__(self, paths, base_dir=None, message=None):
+        Commit.__init__(self, paths, base_dir, message)
+
+        self.get_widget("commit_to_box").show()
+        
+        self.get_widget("to").set_text(
+            self.vcs.svn().get_repo_url(self.base_dir)
+        )
+
+        self.items = None
+        if len(self.paths):
+            self.initialize_items()
 
     def on_ok_clicked(self, widget, data=None):
         items = self.files_table.get_activated_rows(1)
@@ -310,64 +310,9 @@ class GitCommit(Commit):
 
         self.git = self.vcs.git(paths[0])
 
-        self.files_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("files_table"),
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
-                _("Status")],
-            filters=[{
-                "callback": rabbitvcs.ui.widget.path_filter,
-                "user_data": {
-                    "base_dir": base_dir,
-                    "column": 1
-                }
-            }],
-            callbacks={
-                "row-activated":  self.on_files_table_row_activated,
-                "mouse-event":   self.on_files_table_mouse_event,
-                "key-event":     self.on_files_table_key_event,
-                "row-toggled":   self.on_files_table_toggle_event
-            },
-            flags={
-                "sortable": True, 
-                "sort_on": 1
-            }
-        )
-        self.files_table.allow_multiple()
-        
-        self.message = rabbitvcs.ui.widget.TextView(
-            self.get_widget("message"),
-            (message and message or "")
-        )
-
         self.items = None
         if len(self.paths):
             self.initialize_items()
-
-    def populate_files_table(self):
-        """
-        First clears and then populates the files table based on the items
-        retrieved in self.load()
-        
-        """
-        
-        self.files_table.clear()
-        for item in self.items:
-            if item.path in self.changes:
-                checked = self.changes[item.path]
-            else:
-                checked = self.should_item_be_activated(item)
-
-            if not self.should_item_be_visible(item):
-                continue
-
-            self.files_table.append([
-                checked,
-                item.path, 
-                rabbitvcs.util.helper.get_file_extension(item.path),
-                item.simple_content_status()
-            ])
 
     def on_ok_clicked(self, widget, data=None):
         items = self.files_table.get_activated_rows(1)
@@ -416,9 +361,72 @@ class GitCommit(Commit):
         self.changes[row[1]] = row[col]
 
 
+class MercurialCommit(Commit):
+    def __init__(self, paths, base_dir=None, message=None):
+        Commit.__init__(self, paths, base_dir, message)
+
+        self.mercurial = self.vcs.mercurial(paths[0])
+
+        options_box = self.get_widget("options_box")
+        
+        self.close_branch = gtk.CheckButton(_("Close Branch"))
+        options_box.pack_start(self.close_branch, False, False, 0)
+        self.close_branch.show()
+
+        self.items = None
+        if len(self.paths):
+            self.initialize_items()
+
+    def on_ok_clicked(self, widget, data=None):
+        items = self.files_table.get_activated_rows(1)
+        self.hide()
+
+        if len(items) == 0:
+            self.close()
+            return
+
+        staged = 0
+        for item in items:
+            try:
+                status = self.vcs.status(item, summarize=False).simple_content_status()
+                if status == rabbitvcs.vcs.status.status_missing:
+                    self.mercurial.revert([item])
+                    self.mercurial.remove(item)
+                else:
+                    self.mercurial.add(item)
+                    staged += 1
+            except Exception, e:
+                log.exception(e)
+
+        ticks = staged + len(items)*2
+
+        self.action = rabbitvcs.ui.action.MercurialAction(
+            self.mercurial,
+            register_gtk_quit=self.gtk_quit_is_set()
+        )
+        self.action.set_pbar_ticks(ticks)
+        self.action.append(self.action.set_header, _("Commit"))
+        self.action.append(self.action.set_status, _("Running Commit Command..."))
+        self.action.append(
+            rabbitvcs.util.helper.save_log_message, 
+            self.message.get_text()
+        )
+        self.action.append(
+            self.mercurial.commit, 
+            self.message.get_text()
+        )
+        self.action.append(self.action.set_status, _("Completed Commit"))
+        self.action.append(self.action.finish)
+        self.action.start()
+
+    def on_files_table_toggle_event(self, row, col):
+        # Adds path: True/False to the dict
+        self.changes[row[1]] = row[col]
+
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNCommit, 
-    rabbitvcs.vcs.VCS_GIT: GitCommit
+    rabbitvcs.vcs.VCS_GIT: GitCommit, 
+    rabbitvcs.vcs.VCS_MERCURIAL: MercurialCommit
 }
 
 def commit_factory(paths, base_dir=None, message=None):

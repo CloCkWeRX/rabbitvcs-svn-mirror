@@ -188,7 +188,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkVBox" id="vbox5">
+                      <object class="GtkVBox" id="options_box">
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <child>

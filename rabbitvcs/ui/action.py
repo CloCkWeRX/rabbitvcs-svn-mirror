@@ -743,6 +743,46 @@ class GitAction(VCSAction):
             path = data[27:]
             rabbitvcs.util.helper.launch_ui_window("editconflicts", [path], block=True)
 
+class MercurialAction(VCSAction):
+    def __init__(self, client, register_gtk_quit=False, notification=True,
+            run_in_thread=True):
+
+        self.client_in_same_thread = True
+
+        self.client = client
+        self.client.set_callback_notify(self.notify)
+        self.client.set_callback_get_user(self.get_user)
+        self.client.set_callback_get_cancel(self.cancel)
+
+        VCSAction.__init__(self, client, register_gtk_quit, notification,
+            run_in_thread)
+
+    def notify(self, data):
+        if self.has_notifier:
+            if data:
+                self.conflict_filter(data)
+                if isinstance(data, dict):
+                    self.notification.append([
+                        data["action"],
+                        data["path"],
+                        data["mime_type"]
+                    ])
+                else:
+                    self.notification.append(["", data, ""])
+
+    def get_user(self):
+        gtk.gdk.threads_enter()
+        dialog = rabbitvcs.ui.dialog.NameEmailPrompt()
+        result = dialog.run()
+        gtk.gdk.threads_leave()
+
+        return result
+
+    def conflict_filter(self, data):
+        if str(data).startswith("ERROR:"):
+            path = data[27:]
+            rabbitvcs.util.helper.launch_ui_window("editconflicts", [path], block=True)
+
 def vcs_action_factory(client, register_gtk_quit=False, notification=True,
         run_in_thread=True):
 

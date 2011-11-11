@@ -267,3 +267,7 @@ class Mercurial:
                     items.append(st_item)
 
         return items
+    
+    #
+    # Actions
+    #
