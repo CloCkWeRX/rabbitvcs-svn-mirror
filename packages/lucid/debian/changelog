@@ -1,3 +1,27 @@
+rabbitvcs (0.15.0.5-1~lucid) lucid; urgency=low
+
+  * New upstream release fixing gtkspell integration issue
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Thu, 10 Nov 2011 07:20:11 +0800
+
+rabbitvcs (0.15.0.3-1~lucid) lucid; urgency=low
+
+  * New upstream point release: fixes missing data files.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Wed, 09 Nov 2011 23:41:53 +0800
+
+rabbitvcs (0.15.0.1-3~lucid) lucid; urgency=low
+
+  * Fixed client installation
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Tue, 08 Nov 2011 08:12:10 +0800
+
+rabbitvcs (0.15.0.1-2~lucid) lucid; urgency=low
+
+  * Fixed epoch numbering
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Mon, 07 Nov 2011 23:34:05 +0800
+
 rabbitvcs (0.15.0.1-1~lucid) lucid; urgency=low
 
   * New upstream release

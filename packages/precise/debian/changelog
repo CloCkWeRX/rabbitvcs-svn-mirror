@@ -1,4 +1,28 @@
-rabbitvcs (0.15.0.1-1~precise) precise; urgency=low
+rabbitvcs (0.15.0.5-1~precise) precise; urgency=low
+
+  * New upstream release fixing gtkspell integration issue
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Thu, 10 Nov 2011 07:22:26 +0800
+
+rabbitvcs (0.15.0.3-1~precise) precise; urgency=low
+
+  * New upstream point release: fixes missing data files.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Wed, 09 Nov 2011 23:43:26 +0800
+
+rabbitvcs (0.15.0.1-3~precise) precise; urgency=low
+
+  * Fixed client installation
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Tue, 08 Nov 2011 08:22:51 +0800
+
+rabbitvcs (0.15.0.1-2~precise) precise; urgency=low
+
+  * Fixed epoch numbering of dependencies
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Mon, 07 Nov 2011 23:57:30 +0800
+
+rabbitvcs (0.15.0.1-1~precise~test1) precise; urgency=low
 
   * Initial packaging for precise
 

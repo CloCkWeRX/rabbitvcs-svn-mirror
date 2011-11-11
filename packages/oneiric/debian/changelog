@@ -1,4 +1,28 @@
-rabbitvcs (0.15.0.1-1~oneiric) oneiric; urgency=low
+rabbitvcs (0.15.0.5-1~oneiric) oneiric; urgency=low
+
+  * New upstream release fixing gtkspell integration issue
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Thu, 10 Nov 2011 07:21:56 +0800
+
+rabbitvcs (0.15.0.3-1~oneiric) oneiric; urgency=low
+
+  * New upstream point release: fixes missing data files.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Wed, 09 Nov 2011 23:43:02 +0800
+
+rabbitvcs (0.15.0.1-3~oneiric) oneiric; urgency=low
+
+  * Fixed client installation
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Tue, 08 Nov 2011 08:21:45 +0800
+
+rabbitvcs (0.15.0.1-2~oneiric) oneiric; urgency=low
+
+  * Fixed epoch numbering in dependency
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Mon, 07 Nov 2011 23:50:35 +0800
+
+rabbitvcs (0.15.0.1-1~oneiric~test1) oneiric; urgency=low
 
   * Initial packaging for Oneiric
 
