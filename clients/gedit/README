@@ -8,14 +8,24 @@ Requirements:
     * gedit
     * (all other RabbitVCS requirements)
 
-To install:
+To install for Gedit 3:
     To install for all users, copy rabbitvcs-plugin.py and 
-    rabbitvcs.gedit-plugin to:
+    rabbitvcs-gedit3.plugin to:
+        /usr/share/gedit/plugins
+
+    To install for a single user, copy rabbitvcs-plugin.py and 
+    rabbitvcs-gedit3.plugin to:
+        ~/.local/share/gedit/plugins
+
+To install for Gedit 2:
+    To install for all users, copy rabbitvcs-plugin.py and 
+    rabbitvcs-gedit2.gedit-plugin to:
         /usr/lib/gedit-2/plugins
 
     To install for a single user, copy rabbitvcs-plugin.py and 
-    rabbitvcs.gedit-plugin to:
-        ~/.gnome2/gedit/plugins
+    rabbitvcs-gedit2.gedit-plugin to:
+        ~/.gnome2/gedit/plugins        
+
 
 Troubleshooting:
 

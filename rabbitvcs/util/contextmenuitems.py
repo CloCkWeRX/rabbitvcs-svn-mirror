@@ -204,7 +204,7 @@ class MenuItem(object):
         )
             
         return action
-        
+
     def make_gtk_menu_item(self, id_magic = None):
         action = self.make_action(id_magic)
             
@@ -214,6 +214,17 @@ class MenuItem(object):
             action.set_menu_item_type(gtk.ImageMenuItem)
             menuitem = action.create_menu_item()
             menuitem.set_image(gtk.image_new_from_icon_name(self.icon, gtk.ICON_SIZE_MENU))
+        else:
+            menuitem = action.create_menu_item()
+            
+        return menuitem
+        
+    def make_gtk3_menu_item(self, id_magic = None):
+        action = self.make_action(id_magic)
+        
+        if self.icon:
+            menuitem = action.create_menu_item()
+            menuitem.set_image(gtk.Image.new_from_icon_name(self.icon, gtk.IconSize.MENU))
         else:
             menuitem = action.create_menu_item()
             

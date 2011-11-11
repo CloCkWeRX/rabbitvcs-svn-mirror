@@ -2,7 +2,7 @@
 # This is a Gedit plugin to allow for RabbitVCS integration in the Gedit
 # text editor.
 # 
-# Copyright (C) 2008-2008 by Adam Plumb <adamplumb@gmail.com>
+# Copyright (C) 2008-2011 by Adam Plumb <adamplumb@gmail.com>
 # 
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,8 +21,17 @@
 from gettext import gettext as _
 
 import os
-import gtk
-import gedit
+
+try:
+    from gi.repository import Gedit
+    os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"] = "1"
+    GTK3 = True
+except ImportError:
+    import gedit
+    GTK3 = False
+
+from gi.repository import GObject
+from gi.repository import Gtk as gtk
 
 import rabbitvcs.util.helper
 from rabbitvcs.vcs import create_vcs_instance
@@ -327,8 +336,15 @@ class RabbitVCSWindowHelper(GtkContextMenuCaller):
         
         manager = self._window.get_ui_manager()
         for menu_path in self._menu_paths:
-            widget = manager.get_widget(menu_path)
-            self._menubar_menu.update_action(widget.get_action())
+            # Gtk3 changes how we access a widget's action.  Get it from the
+            # UI Manager instead of the widget directly
+            if hasattr(manager, "get_action"):
+                action = manager.get_action(menu_path)
+            else:
+                widget = manager.get_widget(menu_path)
+                action = widget.get_action()
+
+            self._menubar_menu.update_action(action)
 
     # Menu activate handlers
     def reload_settings(self, proc):
@@ -337,49 +353,100 @@ class RabbitVCSWindowHelper(GtkContextMenuCaller):
     def on_context_menu_command_finished(self):
         self.update_ui()
 
-class RabbitVCSPlugin(gedit.Plugin):
-    def __init__(self):
-        gedit.Plugin.__init__(self)
-        self._instances = {}
-        self.id_name = "RabbitVCSContextMenuID"
-
-    def activate(self, window):
-        self._instances[window] = RabbitVCSWindowHelper(self, window)
-
-        handler_ids = []
-        for signal in ('tab-added', 'tab-removed'):
-            method = getattr(self, 'on_window_' + signal.replace('-', '_'))
-            handler_ids.append(window.connect(signal, method))
+if GTK3:
+    class RabbitVCSGedit3Plugin(GObject.Object, Gedit.WindowActivatable):
+        __gtype_name__ = "RabbitVCSGedit3Plugin"
+        window = GObject.property(type=Gedit.Window)
         
-        window.set_data(self.id_name, handler_ids)
-        if window in self._instances:
-            for view in window.get_views():
-                self._instances[window].connect_view(view, self.id_name)
+        def __init__(self):
+            GObject.Object.__init__(self)
+            self._instances = {}
+            self.id_name = "RabbitVCSContextMenuID"
 
-    def deactivate(self, window):
-        widgets = [window] + window.get_views()
-        for widget in widgets:
-            handler_ids = widget.get_data(self.id_name)
-            if handler_ids is not None:
-                for handler_id in handler_ids:
-                    widget.disconnect(handler_id)
-                widget.set_data(self.id_name, None)
+        def do_activate(self):
+            self._instances[self.window] = RabbitVCSWindowHelper(self, self.window)
 
-        if window in self._instances:
-            self._instances[window].deactivate()
-            del self._instances[window]
+            handler_ids = []
+            for signal in ('tab-added', 'tab-removed'):
+                method = getattr(self, 'on_window_' + signal.replace('-', '_'))
+                handler_ids.append(self.window.connect(signal, method))
+            
+            self.window.set_data(self.id_name, handler_ids)
+            if self.window in self._instances:
+                for view in self.window.get_views():
+                    self._instances[self.window].connect_view(view, self.id_name)
 
-    def update_ui(self, window):
-        if window in self._instances:
-            self._instances[window].update_ui()
+        def do_deactivate(self):
+            widgets = [self.window] + self.window.get_views()
+            for widget in widgets:
+                handler_ids = widget.get_data(self.id_name)
+                if handler_ids is not None:
+                    for handler_id in handler_ids:
+                        widget.disconnect(handler_id)
+                    widget.set_data(self.id_name, None)
 
-    def on_window_tab_added(self, window, tab):
-        if window in self._instances:
-            self._instances[window].connect_view(tab.get_view(), self.id_name)
-    
-    def on_window_tab_removed(self, window, tab):
-        if window in self._instances:
-            self._instances[window].disconnect_view(tab.get_view(), self.id_name)
+            if self.window in self._instances:
+                self._instances[self.window].deactivate()
+                del self._instances[self.window]
+
+        def do_update_state(self):
+            self.update_ui()
+
+        def update_ui(self):
+            if self.window in self._instances:
+                self._instances[self.window].update_ui()
+
+        def on_window_tab_added(self, window, tab):
+            if self.window in self._instances:
+                self._instances[self.window].connect_view(tab.get_view(), self.id_name)
+        
+        def on_window_tab_removed(self, window, tab):
+            if window in self._instances:
+                self._instances[self.window].disconnect_view(tab.get_view(), self.id_name)
+else:
+    class RabbitVCSGedit2Plugin(gedit.Plugin):
+        def __init__(self):
+            gedit.Plugin.__init__(self)
+            self._instances = {}
+            self.id_name = "RabbitVCSContextMenuID"
+
+        def activate(self, window):
+            self._instances[window] = RabbitVCSWindowHelper(self, window)
+
+            handler_ids = []
+            for signal in ('tab-added', 'tab-removed'):
+                method = getattr(self, 'on_window_' + signal.replace('-', '_'))
+                handler_ids.append(window.connect(signal, method))
+            
+            window.set_data(self.id_name, handler_ids)
+            if window in self._instances:
+                for view in window.get_views():
+                    self._instances[window].connect_view(view, self.id_name)
+
+        def deactivate(self, window):
+            widgets = [window] + window.get_views()
+            for widget in widgets:
+                handler_ids = widget.get_data(self.id_name)
+                if handler_ids is not None:
+                    for handler_id in handler_ids:
+                        widget.disconnect(handler_id)
+                    widget.set_data(self.id_name, None)
+
+            if window in self._instances:
+                self._instances[window].deactivate()
+                del self._instances[window]
+
+        def update_ui(self, window):
+            if window in self._instances:
+                self._instances[window].update_ui()
+
+        def on_window_tab_added(self, window, tab):
+            if window in self._instances:
+                self._instances[window].connect_view(tab.get_view(), self.id_name)
+        
+        def on_window_tab_removed(self, window, tab):
+            if window in self._instances:
+                self._instances[window].disconnect_view(tab.get_view(), self.id_name)
 
 class MenuIgnoreByFilename(MenuItem):
     identifier = "RabbitVCS::Ignore_By_Filename"
@@ -593,7 +660,10 @@ class GeditContextMenu(MenuBuilder):
     signal = "activate"
         
     def make_menu_item(self, item, id_magic):
-        return item.make_gtk_menu_item(id_magic)
+        if GTK3:
+            return item.make_gtk3_menu_item(id_magic)
+        else:
+            return item.make_gtk_menu_item(id_magic)
     
     def attach_submenu(self, menu_node, submenu_list):
         submenu = gtk.Menu()
