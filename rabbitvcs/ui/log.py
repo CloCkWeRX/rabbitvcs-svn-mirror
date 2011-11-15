@@ -328,6 +328,7 @@ class SVNLog(Log):
     def __init__(self, path):
         
         # on OSX, when launching from the Finder, the locale may not be set
+        import platform
         if platform.system() == 'Darwin':
             import locale
             locale.setlocale(locale.LC_ALL, "C")
