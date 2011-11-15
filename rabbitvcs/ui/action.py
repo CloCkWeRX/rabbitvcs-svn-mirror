@@ -44,6 +44,9 @@ _ = gettext.gettext
 
 gtk.gdk.threads_init()
 
+from rabbitvcs.util.log import Log
+log = Log("rabbitvcs.ui.action")
+
 class VCSNotifier(InterfaceView):
     """
     Provides a base class to handle threaded/gtk_unsafe calls to our vcs
@@ -87,6 +90,7 @@ class DummyNotifier:
 
     @gtk_unsafe
     def exception_callback(self, e):
+        log.exception(e)
         MessageBox(str(e))
 
 class MessageCallbackNotifier(VCSNotifier):
@@ -254,6 +258,7 @@ class LoadingNotifier(VCSNotifier):
     @gtk_unsafe
     def exception_callback(self, e):
         if not self.was_canceled_by_user:
+            log.exception(e)
             MessageBox(str(e))
 
 class VCSAction(threading.Thread):
