@@ -123,6 +123,17 @@ class InterfaceView(GtkBuilderWidgetWrapper):
         GtkBuilderWidgetWrapper.__init__(self, *args, **kwargs)
         self.do_gtk_quit = False
         
+        # On OSX, there is a glitch where GTK applications do not always come to the front
+        # when a launched (and methods like 'present()' don't appear to work correctly).
+        # So until GTK on OSX is fixed let's work around this issue...
+        import platform
+        if platform.system() == 'Darwin':
+            try:
+                import subprocess
+                subprocess.Popen('osascript -e "tell application \\"Python\\" to activate"', shell=True)
+            except:
+                pass
+        
         
     def hide(self):
         window = self.get_widget(self.gtkbuilder_id)
