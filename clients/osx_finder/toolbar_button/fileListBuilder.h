@@ -8,4 +8,4 @@
 
 #import <Cocoa/Cocoa.h>
 
-NSArray* getSelectedFilesList();
+NSArray* getSelectedFilesList(BOOL* containsFolders, BOOL* containsFiles);

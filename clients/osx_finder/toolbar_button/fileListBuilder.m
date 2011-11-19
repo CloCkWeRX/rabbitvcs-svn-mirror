@@ -42,7 +42,7 @@ void compileScript()
     
 }
 
-NSArray* getSelectedFilesList()
+NSArray* getSelectedFilesList(BOOL* containsFolders, BOOL* containsFiles)
 {
     //printf("Running script : \n %s", appleScript);
     
@@ -61,6 +61,7 @@ NSArray* getSelectedFilesList()
     {
         NSString* returnedValue = [returnDescriptor stringValue];        
         NSArray* selectedFiles = [returnedValue componentsSeparatedByString:@"\n"];
+        NSFileManager* fileManager = [NSFileManager defaultManager];
         
         NSMutableArray* cleanedUpList = [[NSMutableArray alloc] initWithCapacity:[selectedFiles count]];
         for (NSString* curr in selectedFiles)
@@ -68,6 +69,13 @@ NSArray* getSelectedFilesList()
             if ([curr length] > 0)
             {
                 [cleanedUpList addObject:curr];
+                BOOL isFolder = NO;
+                if ([fileManager fileExistsAtPath:curr isDirectory:&isFolder])
+                {
+                    if (isFolder) *containsFolders = YES;
+                    else *containsFiles = YES;
+                }
+                
             }
         }
         

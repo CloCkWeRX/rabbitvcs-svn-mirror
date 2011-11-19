@@ -19,6 +19,9 @@
     NSMutableArray* menuItems;
     NSArray* selectedFiles;
 
+    BOOL containsFolders;
+    BOOL containsFiles;
+    
     int selection;
 }
 -(id) init;
@@ -168,16 +171,25 @@ NSImage* imageUpdate;
     menu = [[NSMenu alloc] initWithTitle:title];
     
     [self addItem:@"Add" withIcon:imageAdd andId:ADD];
-    [self addItem:@"Annotate" withIcon:imageAnnotate andId:ANNOTATE];
+    
+    if (containsFiles && !containsFolders)
+    {
+        [self addItem:@"Annotate" withIcon:imageAnnotate andId:ANNOTATE];
+    }
+    
     [self addItem:@"Check for modifications" withIcon:imageCheckmods andId:CHECK_FOR_MODS];
-    [self addItem:@"Checkout" withIcon:imageCheckout andId:CHECKOUT];
-    [self addItem:@"Cleanup" withIcon:imageCleanup andId:CLEANUP];
+    
+    if (containsFolders && !containsFiles)
+    {
+        [self addItem:@"Checkout" withIcon:imageCheckout andId:CHECKOUT];
+        [self addItem:@"Cleanup" withIcon:imageCleanup andId:CLEANUP];
+    }
     [self addItem:@"Commit" withIcon:imageCommit andId:COMMIT];
     [self addItem:@"Delete" withIcon:imageDelete andId:DELETE];
     [self addItem:@"Export" withIcon:imageExport andId:EXPORT];
     [self addItem:@"Diff against base (raw)" withIcon:imageDiff andId:DIFF_RAW];
     [self addItem:@"Diff against base (side by side)" withIcon:imageDiff andId:DIFF_GUI];
-    [self addItem:@"Ignore" withIcon:imageIgnore andId:IGNORE];
+    //[self addItem:@"Ignore" withIcon:imageIgnore andId:IGNORE];
     [self addItem:@"Log" withIcon:imageLog andId:LOG];
     [self addItem:@"Mark Resolved" withIcon:imageResolve andId:MARK_RESOLVED];
     [self addItem:@"Properties" withIcon:imageProperties andId:PROPERTIES];
@@ -185,13 +197,17 @@ NSImage* imageUpdate;
     [self addItem:@"Rename" withIcon:imageRename andId:RENAME];
     [self addItem:@"Update" withIcon:imageUpdate andId:UPDATE];
     [self addItem:@"Update to revision..." withIcon:imageUpdate andId:UPDATE_TO];
-    [menu addItem:[NSMenuItem separatorItem]];
     
-    [self addItem:@"Branch/Tag" withIcon:imageBranch andId:BRANCH];
-    [self addItem:@"Merge" withIcon:imageMerge andId:MERGE];
-    [self addItem:@"Relocate" withIcon:imageRelocate andId:RELOCATE];
-    [self addItem:@"Repository Browser" withIcon:imageRepobrowser andId:REPO_BROWSER];
-    [self addItem:@"Switch" withIcon:imageSwitch andId:SWITCH];
+    if (containsFolders && !containsFiles)
+    {
+        [menu addItem:[NSMenuItem separatorItem]];
+        [self addItem:@"Branch/Tag" withIcon:imageBranch andId:BRANCH];
+        [self addItem:@"Merge" withIcon:imageMerge andId:MERGE];
+        [self addItem:@"Relocate" withIcon:imageRelocate andId:RELOCATE];
+        [self addItem:@"Repository Browser" withIcon:imageRepobrowser andId:REPO_BROWSER];
+        [self addItem:@"Switch" withIcon:imageSwitch andId:SWITCH];
+    }
+    
     [menu addItem:[NSMenuItem separatorItem]];
     
     [self addItem:@"Lock" withIcon:imageLock andId:LOCK];
@@ -210,6 +226,7 @@ NSImage* imageUpdate;
     [menu sizeToFit];
 }
 
+
 // -------------------------------------------------------------------
 // 
 // init
@@ -225,7 +242,9 @@ NSImage* imageUpdate;
     {
         [self setMenuItems:[[NSMutableArray alloc] init]];
     
-        [self setSelectedFiles:getSelectedFilesList()];
+        containsFolders = NO;
+        containsFiles = NO;
+        [self setSelectedFiles:getSelectedFilesList(&containsFolders, &containsFiles)];
     
         if ([self selectedFiles] == nil)
         {
@@ -417,7 +436,7 @@ int main(int argc, char *argv[])
     imageDelete = loadImage(@"rabbitvcs-delete");
     imageDiff = loadImage(@"rabbitvcs-diff");
     imageExport = loadImage(@"rabbitvcs-export");
-    imageIgnore = loadImage(@"rabbitvcs-ignore");
+    //imageIgnore = loadImage(@"rabbitvcs-ignore");
     imageLock = loadImage(@"rabbitvcs-lock");
     imageLog = loadImage(@"rabbitvcs-show_log");
     imageMerge = loadImage(@"rabbitvcs-merge");
