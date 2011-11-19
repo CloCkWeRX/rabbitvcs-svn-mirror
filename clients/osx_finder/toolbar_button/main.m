@@ -163,13 +163,13 @@ NSImage* imageUpdate;
 //
 // -------------------------------------------------------------------
 - (void) fillMenu
-{    
+{
     NSString* title = [[NSString alloc] initWithCString:"My Menu" encoding:NSUTF8StringEncoding];
     menu = [[NSMenu alloc] initWithTitle:title];
     
     [self addItem:@"Add" withIcon:imageAdd andId:ADD];
     [self addItem:@"Annotate" withIcon:imageAnnotate andId:ANNOTATE];
-    [self addItem:@"Check for modifications" withIcon:imageCheckmods andId:ANNOTATE];
+    [self addItem:@"Check for modifications" withIcon:imageCheckmods andId:CHECK_FOR_MODS];
     [self addItem:@"Checkout" withIcon:imageCheckout andId:CHECKOUT];
     [self addItem:@"Cleanup" withIcon:imageCleanup andId:CLEANUP];
     [self addItem:@"Commit" withIcon:imageCommit andId:COMMIT];
@@ -380,7 +380,7 @@ NSImage* imageUpdate;
 - (void) applicationDidFinishLaunching:(NSNotification*) notice
 {
     // DEBUG printf("inside appdidfinishlaunching\n") ;
-    //[[[MyMenu alloc] init] autorelease]; // Never returns
+    [[MyMenu alloc] init]; // Never returns
 }
 - (void) applicationDidBecomeActive:(NSNotification *)notif
 {
