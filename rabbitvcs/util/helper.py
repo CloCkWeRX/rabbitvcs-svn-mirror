@@ -498,11 +498,18 @@ def delete_item(path):
     abspath = os.path.abspath(path)
     permanent_delete = False
     try:
-        # If the gvfs-trash program is not found, an OSError exception will 
-        # be thrown, and rm will be used instead
-        retcode = subprocess.call(["gvfs-trash", abspath])
-        if retcode:
-            permanent_delete = True
+        
+        import platform
+        if platform.system() == 'Darwin':
+            retcode = subprocess.call(["mv", abspath, os.getenv("HOME") + "/.Trash"])
+            if retcode:
+                permanent_delete = True
+        else:
+            # If the gvfs-trash program is not found, an OSError exception will 
+            # be thrown, and rm will be used instead
+            retcode = subprocess.call(["gvfs-trash", abspath])
+            if retcode:
+                permanent_delete = True
     except OSError:
         permanent_delete = True
     
