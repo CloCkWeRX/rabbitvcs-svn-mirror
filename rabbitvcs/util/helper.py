@@ -113,7 +113,10 @@ def format_long_text(text, cols=None):
 
 def format_datetime(dt, format=None):
     if format:
-        return dt.strftime(format).decode(locale.getpreferredencoding(False))
+        enc = locale.getpreferredencoding(False)
+        if enc is None or len(enc) == 0:
+            enc = "UTF8"
+        return dt.strftime(format).decode(enc)
 
     now = datetime.datetime.now()
     delta = now - dt
@@ -135,7 +138,10 @@ def format_datetime(dt, format=None):
     else:
         returner = dt.strftime(DT_FORMAT_ALL)
 
-    return returner.decode(locale.getpreferredencoding(False))
+    enc = locale.getpreferredencoding(False)
+    if enc is None or len(enc) == 0:
+        enc = "UTF8"
+    return returner.decode(enc)
 
 def in_rich_compare(item, list):
     """ Tests whether the item is in the given list. This is mainly to work
