@@ -46,43 +46,18 @@ class GittyupCommand:
                                 stderr=subprocess.STDOUT,
                                 stdout=subprocess.PIPE,
                                 close_fds=True)
-        
-        fcntl.fcntl(
-            proc.stdout.fileno(),
-            fcntl.F_SETFL,
-            fcntl.fcntl(proc.stdout.fileno(), fcntl.F_GETFL) | os.O_NONBLOCK,
-        )
 
         stdout = []
-        last_chunk = ""
+
         while True:
-            readx = select.select([proc.stdout.fileno()], [], [])[0]
-            if readx:
-                chunk = last_chunk + proc.stdout.read()
-                if chunk == '':
-                    break
-                    
-                if chunk[-1] != "\n":
-                    last_chunk = chunk
-                    continue
-                
-                lines = self.get_lines(chunk)
-                
-                for line in lines:
-                    self.notify(line)
-                    stdout.append(line)
-                
-                chunk = ""
-                last_chunk = ""
+            line = proc.stdout.readline()
+            if line == '':
+                break
+            line = line.rstrip('\n') # Strip trailing newline.
+            self.notify(line)
+            stdout.append(line)
 
             if self.get_cancel():
                 proc.kill()
-
-        if chunk:
-            lines = self.get_lines(chunk)
-            
-            for line in lines:
-                self.notify(line)
-                stdout.append(line)
 
         return (0, stdout, None)
