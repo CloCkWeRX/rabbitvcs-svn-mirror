@@ -203,7 +203,10 @@ class Commit(InterfaceView, GtkContextMenuCaller):
 
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
-        rabbitvcs.util.helper.launch_diff_tool(*paths)
+        pathrev1 = rabbitvcs.util.helper.create_path_revision_string(paths[0], "base")
+        pathrev2 = rabbitvcs.util.helper.create_path_revision_string(paths[0], "working")
+        proc = rabbitvcs.util.helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
+        self.rescan_after_process_exit(proc, paths)
 
     def on_files_table_key_event(self, treeview, data=None):
         if gtk.gdk.keyval_name(data.keyval) == "Delete":
