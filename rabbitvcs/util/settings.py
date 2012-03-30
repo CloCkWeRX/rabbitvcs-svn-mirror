@@ -71,7 +71,8 @@ def find_configspec():
     configspec_paths = [
         os.path.join(dirname(__file__), "configspec/configspec.ini"),
         os.path.join(package_prefix(), "share/rabbitvcs/configspec.ini"),
-        "/usr/share/rabbitvcs/configspec.ini"
+        "/usr/share/rabbitvcs/configspec.ini",
+        "/usr/local/share/rabbitvcs/configspec.ini"
     ]
     
     for path in configspec_paths:
