@@ -207,6 +207,10 @@ class VCS:
         client = self.client(paths[0])
         return client.get_items(paths, statuses)
 
+    def statuses_for_add(self,paths):
+        client = self.client(paths[0])
+        return client.STATUSES_FOR_ADD
+
     def statuses_for_commit(self, paths):
         client = self.client(paths[0])
         return client.STATUSES_FOR_COMMIT

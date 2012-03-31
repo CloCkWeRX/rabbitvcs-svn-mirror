@@ -109,6 +109,10 @@ class Git:
         "removed"
     ]
 
+    STATUSES_FOR_ADD = [
+        "untracked"
+    ]
+
     STATUSES_FOR_COMMIT = [
         "untracked",
         "missing",
