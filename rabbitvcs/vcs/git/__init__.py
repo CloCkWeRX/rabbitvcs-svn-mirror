@@ -298,6 +298,20 @@ class Git:
         else:
             return Revision("hash", value)
 
+    def add(self, paths, recurse=True):
+        """
+        Add files to a git repository.
+
+        @type   paths:      list
+        @param  paths:      A list of paths or files.
+
+        @type   recurse: boolean
+        @param  recurse: Recursively add a directory's children
+
+        """
+        
+        return self.stage(paths)
+
     def is_tracking(self, name):
         return self.client.is_tracking("refs/heads/%s" % name)
         

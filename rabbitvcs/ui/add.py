@@ -62,7 +62,6 @@ class Add(InterfaceView, GtkContextMenuCaller):
         self.base_dir = base_dir
         self.last_row_clicked = None
         self.vcs = rabbitvcs.vcs.VCS()
-        self.svn = self.vcs.svn()
         self.items = []
         self.statuses = self.vcs.statuses_for_add(paths)
         self.files_table = rabbitvcs.ui.widget.Table(
@@ -137,25 +136,6 @@ class Add(InterfaceView, GtkContextMenuCaller):
     def on_cancel_clicked(self, widget):
         self.close()
 
-    def on_ok_clicked(self, widget):
-        items = self.files_table.get_activated_rows(1)
-        if not items:
-            self.close()
-            return
-
-        self.hide()
-
-        self.action = rabbitvcs.ui.action.SVNAction(
-            self.svn,
-            register_gtk_quit=self.gtk_quit_is_set()
-        )
-        self.action.append(self.action.set_header, _("Add"))
-        self.action.append(self.action.set_status, _("Running Add Command..."))
-        self.action.append(self.svn.add, items)
-        self.action.append(self.action.set_status, _("Completed Add"))
-        self.action.append(self.action.finish)
-        self.action.start()
-
     def on_select_all_toggled(self, widget):
         self.TOGGLE_ALL = not self.TOGGLE_ALL
         for row in self.files_table.get_items():
@@ -176,6 +156,65 @@ class Add(InterfaceView, GtkContextMenuCaller):
     def show_files_table_popup_menu(self, treeview, data):
         paths = self.files_table.get_selected_row_items(1)
         GtkFilesContextMenu(self, data, self.base_dir, paths).show()
+
+class SVNAdd(Add):
+    def __init__(self, paths, base_dir=None):
+        Add.__init__(self, paths, base_dir)
+        
+        self.svn = self.vcs.svn()
+
+    def on_ok_clicked(self, widget):
+        items = self.files_table.get_activated_rows(1)
+        if not items:
+            self.close()
+            return
+
+        self.hide()
+
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
+            register_gtk_quit=self.gtk_quit_is_set()
+        )
+        self.action.append(self.action.set_header, _("Add"))
+        self.action.append(self.action.set_status, _("Running Add Command..."))
+        self.action.append(self.svn.add, items)
+        self.action.append(self.action.set_status, _("Completed Add"))
+        self.action.append(self.action.finish)
+        self.action.start()
+
+class GitAdd(Add):
+    def __init__(self, paths, base_dir=None):
+        Add.__init__(self, paths, base_dir)
+        
+        self.git = self.vcs.git(paths[0])
+    
+    def on_ok_clicked(self, widget):
+        items = self.files_table.get_activated_rows(1)
+        if not items:
+            self.close()
+            return
+
+        self.hide()
+
+        self.action = rabbitvcs.ui.action.GitAction(
+            self.git,
+            register_gtk_quit=self.gtk_quit_is_set()
+        )
+        self.action.append(self.action.set_header, _("Add"))
+        self.action.append(self.action.set_status, _("Running Add Command..."))
+        self.action.append(self.git.add, items)
+        self.action.append(self.action.set_status, _("Completed Add"))
+        self.action.append(self.action.finish)
+        self.action.start()
+
+classes_map = {
+    rabbitvcs.vcs.VCS_SVN: SVNAdd,
+    rabbitvcs.vcs.VCS_GIT: GitAdd
+}
+
+def add_factory(paths, base_dir):
+    guess = rabbitvcs.vcs.guess (paths[0])
+    return classes_map[guess["vcs"]](paths,base_dir)
 
 class AddQuiet:
     def __init__(self, paths):
@@ -199,6 +238,6 @@ if __name__ == "__main__":
     if options.quiet:
         AddQuiet(paths)
     else:
-        window = Add(paths, options.base_dir)
+        window = add_factory(paths,options.base_dir)#Add(paths, options.base_dir)
         window.register_gtk_quit()
         gtk.main()
