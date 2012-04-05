@@ -397,18 +397,20 @@ class NewFolder(InterfaceView):
         )
 
     def on_folder_name_changed(self, widget):
-        complete = (self.folder_name.get_text() != "")
+        complete = (widget.get_text() != "")
         self.get_widget("ok").set_sensitive(complete)
 
     def run(self):
         dialog = self.get_widget("CreateFolder")
         dialog.set_default_response(gtk.RESPONSE_OK)
         result = dialog.run()
-        
+
+        fields_text = (self.folder_name.get_text(), self.textview.get_text())
+
         dialog.destroy()
         
         if result == gtk.RESPONSE_OK:
-            return (self.folder_name.get_text(), self.textview.get_text())
+            return fields_text
         else:
             return None
         
