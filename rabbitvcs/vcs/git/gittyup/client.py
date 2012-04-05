@@ -283,6 +283,8 @@ class GittyupClient:
 
             directories.append(rel_root)
         
+        #Remove duplicates in list
+        directories=list(set(directories))
         return (sorted(files), directories)
 
     def _get_blob_from_file(self, path):
@@ -1155,18 +1157,75 @@ class GittyupClient:
                 except Exception, e:
                     pass
 
+        # Determine untracked directories
+        cmd = ["git", "clean", "-nd", self.repo.path]
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
+
+        untracked_directories = []
+        for line in stdout:
+            components = re.match("^(Would remove)\s(.*?)$", line)
+            untracked_path = components.group(2)
+            if untracked_path[-1]=='/':
+                untracked_directories.append(untracked_path[:-1])
+
+        #Determine the ignored files and directories in Repo
+        cmd = ["git", "clean", "-ndX", self.repo.path]
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
+        except GittyupCommandError, e:
+            self.callback_notify(e)
+        ignored_directories=[]
+        for line in stdout:
+            components = re.match("^(Would remove)\s(.*?)$", line)
+            ignored_path=components.group(2)
+            if ignored_path[-1]=='/':
+                ignored_directories.append(ignored_path[:-1])
+                next
+            statuses.append(IgnoredStatus(ignored_path))
+            try:
+                del files_hash[ignored_path]
+            except Exception, e:
+                pass
         for file,data in files_hash.items():
-            statuses.append(NormalStatus(file))
+            ignore_file=False
+            untracked_file=False
+            for ignored_path in ignored_directories:
+                if ignored_path in file:
+                    ignore_file=True
+                    break
+            for untracked_path in untracked_directories:
+                if untracked_path in file:
+                    untracked_file=True
+                    break
+            if untracked_file==True:
+                statuses.append(UntrackedStatus(file))
+            elif ignore_file==True:
+                statuses.append(IgnoredStatus(file))
+            else:
+                statuses.append(NormalStatus(file))
 
         # Determine status of folders based on child contents
         for d in directories:
             d_status = NormalStatus(d)
-            
+
+            # Check if directory is untracked or a sub-directory of an untracked directory
+            for untracked_path in untracked_directories:
+                if untracked_path in d:
+                    d_status = UntrackedStatus(d)
+                    break
+            # Check if directory includes modified files
             for file in modified_files:
                 if os.path.join(d, os.path.basename(file)) == file:
                     d_status = ModifiedStatus(d)
                     break
-            
+            # Check if directory is ignored
+            for ignored_path in ignored_directories:
+                if ignored_path in d:
+                    d_status = IgnoredStatus(d)
+                    break
             statuses.append(d_status)
 
         return statuses

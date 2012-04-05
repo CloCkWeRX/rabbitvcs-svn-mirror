@@ -38,6 +38,9 @@ class UntrackedStatus(GittyupStatus):
 class MissingStatus(GittyupStatus):
     identifier = "missing"
 
+class IgnoredStatus(GittyupStatus):
+    identifier = "ignored"
+
 class NoStatus(GittyupStatus):
     identifier = ""
     def __eq__(self, other):
