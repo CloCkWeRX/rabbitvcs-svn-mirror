@@ -60,6 +60,7 @@ class CreatePatch:
         @param paths:   A list of local paths.
         
         """
+
         InterfaceView.__init__(self, "commit", "Commit")
 
         # Modify the Commit window to what we need for Create Patch
@@ -73,6 +74,40 @@ class CreatePatch:
         self.base_dir = base_dir
         self.vcs = rabbitvcs.vcs.VCS()
         self.activated_cache = {}
+        
+        self.common = rabbitvcs.util.helper.get_common_directory(paths)
+
+        if not self.vcs.is_versioned(self.common):
+            rabbitvcs.ui.dialog.MessageBox(_("The given path is not a working copy"))
+            raise SystemExit()
+
+        self.files_table = rabbitvcs.ui.widget.Table(
+            self.get_widget("files_table"),
+            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
+                gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
+                _("Text Status"), _("Property Status")],
+            filters=[{
+                "callback": rabbitvcs.ui.widget.path_filter,
+                "user_data": {
+                    "base_dir": base_dir,
+                    "column": 1
+                }
+            }],
+            callbacks={
+                "row-activated":  self.on_files_table_row_activated,
+                "mouse-event":   self.on_files_table_mouse_event,
+                "key-event":     self.on_files_table_key_event
+            },
+            flags={
+                "sortable": True, 
+                "sort_on": 1
+            }
+        )
+        self.files_table.allow_multiple()
+        
+        self.items = None
+        self.initialize_items()
 
     #
     # Helper functions
@@ -105,35 +140,6 @@ class SVNCreatePatch(CreatePatch, SVNCommit):
         CreatePatch.__init__(self, paths, base_dir)
 
         self.svn = self.vcs.svn()
-        self.common = rabbitvcs.util.helper.get_common_directory(paths)
-
-        if not self.svn.get_versioned_path(self.common):
-            rabbitvcs.ui.dialog.MessageBox(_("The given path is not a working copy"))
-            raise SystemExit()
-
-        self.files_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("files_table"),
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
-                _("Text Status"), _("Property Status")],
-            filters=[{
-                "callback": rabbitvcs.ui.widget.path_filter,
-                "user_data": {
-                    "base_dir": base_dir,
-                    "column": 1
-                }
-            }],
-            callbacks={
-                "row-activated":  self.on_files_table_row_activated,
-                "mouse-event":   self.on_files_table_mouse_event,
-                "key-event":     self.on_files_table_key_event
-            }
-        )
-        self.files_table.allow_multiple()
-        
-        self.items = None
-        self.initialize_items()
 
     #
     # Event handlers
@@ -201,39 +207,6 @@ class GitCreatePatch(CreatePatch, GitCommit):
         CreatePatch.__init__(self, paths, base_dir)
 
         self.git = self.vcs.git(paths[0])
-        self.common = rabbitvcs.util.helper.get_common_directory(paths)
-
-        if not self.vcs.is_versioned(self.common):
-            rabbitvcs.ui.dialog.MessageBox(_("The given path is not a working copy"))
-            raise SystemExit()
-
-        self.files_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("files_table"),
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
-                _("Text Status"), _("Property Status")],
-            filters=[{
-                "callback": rabbitvcs.ui.widget.path_filter,
-                "user_data": {
-                    "base_dir": base_dir,
-                    "column": 1
-                }
-            }],
-            callbacks={
-                "row-activated":  self.on_files_table_row_activated,
-                "mouse-event":   self.on_files_table_mouse_event,
-                "key-event":     self.on_files_table_key_event
-            },
-            flags={
-                "sortable": True, 
-                "sort_on": 1
-            }
-        )
-        self.files_table.allow_multiple()
-        
-        self.items = None
-        self.initialize_items()
 
     #
     # Event handlers
