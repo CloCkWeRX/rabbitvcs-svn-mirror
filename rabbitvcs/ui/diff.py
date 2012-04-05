@@ -292,7 +292,7 @@ class GitDiff(Diff):
         rabbitvcs.util.helper.launch_diff_tool(dest1, dest2)
 
 classes_map = {
-    rabbitvcs.vcs.VCS_SVN: SVNDiff, 
+    rabbitvcs.vcs.VCS_SVN: SVNDiff,
     rabbitvcs.vcs.VCS_GIT: GitDiff
 }
 
