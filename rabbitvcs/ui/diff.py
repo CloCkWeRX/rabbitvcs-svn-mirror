@@ -58,15 +58,18 @@ class Diff(InterfaceNonView):
 
         if path2 is None:
             self.path2 = path1
-                
+        
+        self.dialog = None
+        
     def launch(self):
+        
         if self.sidebyside:
             self.launch_sidebyside_diff()
         else:
             self.launch_unified_diff()
-
+        
         self.stop_loading()
-
+        
     def _build_export_path(self, index, revision, path):
         dest = rabbitvcs.util.helper.get_tmp_path("rabbitvcs-%s-%s-%s" % (str(index), str(revision)[:5], os.path.basename(path)))
         if os.path.exists(dest):
@@ -82,7 +85,15 @@ class Diff(InterfaceNonView):
         self.dialog.run()
     
     def stop_loading(self):
+        
+        # Sometimes the launching will be too fast, and the dialog we're trusted with
+        # cleaning up, may not even have been created!
+        while self.dialog == None:
+            # Wait for dialog's creation.
+            pass
+        
         self.dialog.close()
+        self.dialog = None
 
 class SVNDiff(Diff):
     def __init__(self, path1, revision1=None, path2=None, revision2=None,
