@@ -40,17 +40,19 @@ class GittyupCommand:
         return returner 
 
     def execute(self):
-        proc = subprocess.Popen(self.command, 
+        proc = subprocess.Popen(self.command,
                                 cwd=self.cwd,
                                 stdin=None,
                                 stderr=subprocess.STDOUT,
                                 stdout=subprocess.PIPE,
-                                close_fds=True)
+                                close_fds=True,
+                                preexec_fn=os.setsid)
 
         stdout = []
 
         while True:
             line = proc.stdout.readline()
+
             if line == '':
                 break
             line = line.rstrip('\n') # Strip trailing newline.
