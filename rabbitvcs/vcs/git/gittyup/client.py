@@ -724,13 +724,14 @@ class GittyupClient:
 
         """
     
-        more = ["-o", "origin"]
+        more = ["-o", "origin","--progress"]
         if bare:
             more.append("--bare")
     
         base_dir = os.path.split(path)[0]
     
         cmd = ["git", "clone", host, path] + more
+        
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
