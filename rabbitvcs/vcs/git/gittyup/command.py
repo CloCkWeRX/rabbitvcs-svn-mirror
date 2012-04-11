@@ -46,39 +46,17 @@ class GittyupCommand:
                                 stderr=subprocess.STDOUT,
                                 stdout=subprocess.PIPE,
                                 close_fds=True,
-                                preexec_fn=os.setsid)
+                                preexec_fn=os.setsid,
+                                universal_newlines=True)
 
         stdout = []
 
         while True:
-            #line = proc.stdout.readline()
-            line = ""
-            lastCharWasNewLine = False
-
-            # Build a line of text
-            while True:
-                c = proc.stdout.read(1)
-                # If we've reached the end of the file (pipe closed).
-                if c == '':
-                    break
-
-                line += c # Append character to line
-
-                # Break if we've complete a line.
-                if c == '\n':
-                    lastCharWasNewLine = True
-                    break
-
-                # Treat a carage return as newline unless 
-                if c == '\r' and lastCharWasNewLine == False:
-                    break
-
-                lastCharWasNewLine = False
+            line = proc.stdout.readline()
 
             if line == '':
                 break
-            #line = line.rstrip('\n') # Strip trailing newline.
-            line = line[:-1]# Strip trailing newline.
+            line = line.rstrip('\n') # Strip trailing newline.
             self.notify(line)
             stdout.append(line)
 
