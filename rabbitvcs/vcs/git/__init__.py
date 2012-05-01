@@ -952,9 +952,15 @@ class Git:
 
     def set_callback_notify(self, func):
         self.client.set_callback_notify(func)
+
+    def set_callback_progress_update(self, func):
+        self.client.set_callback_progress_update (func)
     
     def set_callback_get_user(self, func):
         self.client.set_callback_get_user(func)
         
     def set_callback_get_cancel(self, func):
         self.client.set_callback_get_cancel(func)
+    
+    def set_callback_cancel(self, func):
+        self.client.callback_cancel = func

@@ -53,6 +53,7 @@ def get_tmp_path(filename):
 class GittyupClient:
     def __init__(self, path=None, create=False):
         self.callback_notify = callback_notify_null
+        self.callback_progress_update = None
         self.callback_get_user = callback_get_user
         self.callback_get_cancel = callback_get_cancel
 
@@ -733,7 +734,7 @@ class GittyupClient:
         cmd = ["git", "clone", host, path] + more
         
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify_and_parse_progress, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
     
@@ -1617,6 +1618,9 @@ class GittyupClient:
     def set_callback_notify(self, func):
         self.callback_notify = func
 
+    def set_callback_progress_update(self, func):
+        self.callback_progress_update = func
+
     def set_callback_get_user(self, func):
         self.callback_get_user = func
     
@@ -1626,5 +1630,48 @@ class GittyupClient:
     def notify(self, data):
         self.callback_notify(data)
     
+    def notify_and_parse_progress(self, data):
+        # Ok, when progress is requested to a git command, it will
+        # respond with the current operation, and that operations current progress
+        # in the following format: "<Command>: <percentage>% (<pieces compeated>/<num pieces>)".
+        #
+        # When a command has reached 100% the format of this final message assumes the formatt:
+        #  "<Command>: 100% (<num pieces>/<num pieces>), <total size> <unit>, done."
+
+        #message = data ["path"]
+        message = data
+
+        print "parsing message: " + message
+
+        # First, we'll test to see if this is a progress notification.
+        if "%" not in message:
+            # No, this is just a regular message.  notify and return.
+            self.notify (data)
+            return
+
+        # Extract the percentage, which will be all numerals directly
+        # prior to '%'.
+        message_components = re.search ("^(.+) ([0-9]+)%", message)
+
+        fraction = float(message_components.group (2)) / 100 # Convert percentage to fraction.
+        current_action = message_components.group (1)
+
+        # If we're at 0%, then we want to notify which action we're performing.
+        if fraction == 0:
+            self.notify (current_action)
+            
+        # If we're finished (100%).
+
+        #print percentage_complete.group (1)
+        print message_components.group (1)
+
+        print fraction
+
+        # If we've registered a callback for progress, update with the new fraction.
+        if self.callback_progress_update != None:
+            self.callback_progress_update(fraction)
+        
+        #self.notify (data);
+    
     def get_cancel(self):
-        return self.callback_get_cancel()
+        return self.callback_get_cancel

@@ -194,6 +194,16 @@ class MessageCallbackNotifier(VCSNotifier):
         if not self.client_in_same_thread:
             gtk.gdk.threads_leave()
 
+    def set_progress_fraction(self, fraction):
+        """
+        An alternative method to access the progress bar directly.
+        
+        @type   percentage: int
+        @param  percentage: The percentage value to set the progress bar.
+
+        """
+        self.pbar.update(fraction)
+
     def focus_on_ok_button(self):
         self.get_widget("ok").grab_focus()
 
@@ -715,12 +725,14 @@ class GitAction(VCSAction):
         self.client_in_same_thread = True
 
         self.client = client
-        self.client.set_callback_notify(self.notify)
-        self.client.set_callback_get_user(self.get_user)
-        self.client.set_callback_get_cancel(self.cancel)
 
         VCSAction.__init__(self, client, register_gtk_quit, notification,
             run_in_thread)
+
+        self.client.set_callback_notify(self.notify)
+        self.client.set_callback_progress_update(self.notification.set_progress_fraction)
+        self.client.set_callback_get_user(self.get_user)
+        self.client.set_callback_get_cancel(self.cancel)
 
     def notify(self, data):
         if self.has_notifier:
