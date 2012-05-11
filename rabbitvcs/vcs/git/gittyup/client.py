@@ -61,6 +61,9 @@ class GittyupClient:
         
         self.git_version = None
 
+        self.numberOfCommandStages = 0
+        self.numberOfCommandStagesExecuted = 0
+
         if path:
             try:
                 self.repo = dulwich.repo.Repo(path)
@@ -724,7 +727,9 @@ class GittyupClient:
         @param  origin: Specify the origin of the repository
 
         """
-    
+
+        self.numberOfCommandStages = 3
+
         more = ["-o", "origin","--progress"]
         if bare:
             more.append("--bare")
@@ -1646,30 +1651,44 @@ class GittyupClient:
         # First, we'll test to see if this is a progress notification.
         if "%" not in message:
             # No, this is just a regular message.  notify and return.
-            self.notify (data)
+            self.notify(data)
             return
 
         # Extract the percentage, which will be all numerals directly
         # prior to '%'.
-        message_components = re.search ("^(.+) ([0-9]+)%", message)
+        message_components = re.search("^(.+) ([0-9]+)%", message)
 
-        fraction = float(message_components.group (2)) / 100 # Convert percentage to fraction.
-        current_action = message_components.group (1)
+        fraction = float(message_components.group(2)) / 100 # Convert percentage to fraction.
+        current_action = message_components.group(1)
 
         # If we're at 0%, then we want to notify which action we're performing.
         if fraction == 0:
-            self.notify (current_action)
+            self.notify(current_action)
+
+        #print "stage fraction: " + str (fraction)
+
+        # If we're using a number of stages, adjust the fraction acordingly.
+        if self.numberOfCommandStages > 0:
+            fraction = (self.numberOfCommandStagesExecuted + fraction) / self.numberOfCommandStages
             
-        # If we're finished (100%).
+        # If we've finished the current stage (100%).
+        if "done" in message:
+            self.numberOfCommandStagesExecuted += 1
 
-        #print percentage_complete.group (1)
-        print message_components.group (1)
+        #print message_components.group (1)
 
-        print fraction
+        #print "Num stages complete: " + str(self.numberOfCommandStagesExecuted)
 
         # If we've registered a callback for progress, update with the new fraction.
         if self.callback_progress_update != None:
+            print "setting pbar: " + str(fraction)
             self.callback_progress_update(fraction)
+
+        # If we've finished the whole command (all stages).
+        if fraction == 1 and "done" in message:
+            # Reset stage variables.
+            self.numberOfCommandStages = 0
+            self.numberOfCommandStagesExecuted = 0
         
         #self.notify (data);
     
