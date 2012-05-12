@@ -1656,7 +1656,11 @@ class GittyupClient:
 
         # Extract the percentage, which will be all numerals directly
         # prior to '%'.
-        message_components = re.search("^(.+) ([0-9]+)%", message)
+        message_components = re.search("^(.+): +([0-9]+)%", message)
+        
+        if message_components == None:
+            print "Error: failed to parse git string: " + data
+            return
 
         fraction = float(message_components.group(2)) / 100 # Convert percentage to fraction.
         current_action = message_components.group(1)
