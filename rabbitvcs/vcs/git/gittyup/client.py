@@ -1650,8 +1650,15 @@ class GittyupClient:
 
         # First, we'll test to see if this is a progress notification.
         if "%" not in message:
-            # No, this is just a regular message.  notify and return.
-            self.notify(data)
+            # No, this is just a regular message.
+            # Some messages have a strage tendancy to append a non-printable character,
+            # followed by a right square brace and a capitol "K".  This tests for, and
+            # strips these superfluous characters.
+            message_components = re.search("^(.+).\[K", message)
+            if message_components != None:
+                self.notify (message_components.group(1))
+            else:
+                self.notify(data)
             return
 
         # Extract the percentage, which will be all numerals directly
