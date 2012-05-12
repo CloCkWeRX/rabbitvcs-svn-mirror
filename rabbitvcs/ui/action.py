@@ -202,7 +202,13 @@ class MessageCallbackNotifier(VCSNotifier):
         @param  percentage: The percentage value to set the progress bar.
 
         """
+        if not self.client_in_same_thread:
+            gtk.gdk.threads_enter()
+
         self.pbar.update(fraction)
+
+        if not self.client_in_same_thread:
+            gtk.gdk.threads_leave()
 
     def focus_on_ok_button(self):
         self.get_widget("ok").grab_focus()
