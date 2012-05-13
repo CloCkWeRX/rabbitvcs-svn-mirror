@@ -1644,9 +1644,21 @@ class GittyupClient:
         #  "<Command>: 100% (<num pieces>/<num pieces>), <total size> <unit>, done."
 
         #message = data ["path"]
-        message = data
+        #message = data
+        
+        returnData = {"action":"","path":"","mime_type":""}
 
-        print "parsing message: " + message
+        print "parsing message: " + data
+
+        # Check to see if this is a remote command.
+        remote_check = re.search("^(remote: )(.+)$", data)
+
+        if remote_check != None:
+            returnData["action"] = "Remote"
+            message = remote_check.group(2)
+        else:
+            #returnData ["action"] = ""
+            message = data
 
         # First, we'll test to see if this is a progress notification.
         if "%" not in message:
@@ -1656,9 +1668,11 @@ class GittyupClient:
             # strips these superfluous characters.
             message_components = re.search("^(.+).\[K", message)
             if message_components != None:
-                self.notify (message_components.group(1))
+                returnData["path"] = message_components.group(1)
             else:
-                self.notify(data)
+                returnData["path"] = message
+
+            self.notify (returnData)
             return
 
         # Extract the percentage, which will be all numerals directly
@@ -1674,7 +1688,8 @@ class GittyupClient:
 
         # If we're at 0%, then we want to notify which action we're performing.
         if fraction == 0:
-            self.notify(current_action)
+                returnData["path"] = current_action
+                self.notify(returnData)
 
         #print "stage fraction: " + str (fraction)
 
