@@ -19,6 +19,7 @@ import dulwich.repo
 import dulwich.objects
 from dulwich.pack import Pack
 from dulwich.index import commit_index, write_index_dict, SHA1Writer
+#from dulwich.patch import write_tree_diff
 
 from exceptions import *
 import util
@@ -463,7 +464,7 @@ class GittyupClient:
 
             if status == MissingStatus:
                 self._remove_from_index(index, status.path)
-                index.write()           
+                index.write()
 
     def unstage(self, paths):
         """
@@ -825,7 +826,17 @@ class GittyupClient:
         
         if initial_commit:
             self.track("refs/heads/master")
-            
+
+        #branch_full = self.repo.refs.read_ref("head")
+        
+        #branch = re.search("refs/heads/(.+)", branch_full).group(1)
+
+        #self.notify("[" + commit.id + "] -> " + branch)
+        #self.notify("To branch: " + branch)
+        
+        # Print tree changes.
+        #dulwich.patch.write_tree_diff(sys.stdout, self.repo.object_store, commit.tree, commit.id)
+
         return commit.id
     
     def remove(self, paths):
@@ -903,10 +914,11 @@ class GittyupClient:
         @param  refspec: The branch name to pull from
         
         """
-        
-        cmd = ["git", "pull", repository, refspec]
+        self.numberOfCommandStages = 2
+
+        cmd = ["git", "pull","--progress", repository, refspec]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_progress, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
     
@@ -923,9 +935,12 @@ class GittyupClient:
         
         """
 
-        cmd = ["git", "push", repository, refspec]
+        self.numberOfCommandStages = 2
+
+        cmd = ["git", "push", "--progress", repository, refspec]
+        
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_progress, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
 
