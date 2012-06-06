@@ -918,7 +918,7 @@ class GittyupClient:
 
         cmd = ["git", "pull","--progress", repository, refspec]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_progress, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_pull, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
     
@@ -1663,7 +1663,12 @@ class GittyupClient:
         
         returnData = {"action":"","path":"","mime_type":""}
 
-        print "parsing message: " + data
+        print "parsing message: " + str(data)
+
+        # If data is already a dict, we'll assume it's already been parsed, and return.
+        if isinstance (data, dict):
+            self.notify (data);
+            return
 
         # Check to see if this is a remote command.
         remote_check = re.search("^(remote: )(.+)$", data)
@@ -1671,6 +1676,7 @@ class GittyupClient:
         if remote_check != None:
             returnData["action"] = "Remote"
             message = remote_check.group(2)
+
         else:
             #returnData ["action"] = ""
             message = data
@@ -1732,6 +1738,22 @@ class GittyupClient:
             self.numberOfCommandStagesExecuted = 0
         
         #self.notify (data);
+    def notify_and_parse_git_pull (self, data):
+        return_data = {"action":"","path":"","mime_type":""}
+
+        # Look for "From" line (e.g. "From ssh://server:22/my_project")
+        message_components = re.search("^From (.+)", data)
+
+        if message_components != None:
+            print "parsing 'from'"
+            
+            return_data["action"] = "From"
+            return_data["path"] = message_components.group(1)
+
+        else:
+            return_data = data
+
+        self.notify_and_parse_progress (return_data)
     
     def get_cancel(self):
         return self.callback_get_cancel
