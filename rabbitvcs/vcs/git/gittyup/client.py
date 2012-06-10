@@ -1741,6 +1741,8 @@ class GittyupClient:
     def notify_and_parse_git_pull (self, data):
         return_data = {"action":"","path":"","mime_type":""}
 
+        message_parsed = False
+
         # Look for "From" line (e.g. "From ssh://server:22/my_project")
         message_components = re.search("^From (.+)", data)
 
@@ -1749,8 +1751,17 @@ class GittyupClient:
             
             return_data["action"] = "From"
             return_data["path"] = message_components.group(1)
+            message_parsed = True
 
-        else:
+        # Look for "Branch" line (e.g. "* branch   master   -> FETCH_HEAD")
+        message_components = re.search("\* branch +([A-z0-9]+) +-> (.+)", data)
+
+        if message_components != None:
+            return_data["action"] = "Branch"
+            return_data["path"] = message_components.group(1) + " -> " + message_components.group(2)
+            message_parsed = True
+
+        if message_parsed == False:
             return_data = data
 
         self.notify_and_parse_progress (return_data)
