@@ -1761,6 +1761,16 @@ class GittyupClient:
             return_data["path"] = message_components.group(1) + " -> " + message_components.group(2)
             message_parsed = True
 
+		# Look for a file line (e.g. "src/somefile.py       | 5-++++")
+        message_components = re.search(" +(.+) +\| +([0-9]+) ([+-]+)", data)
+
+        if message_components != None:
+            return_data["action"] = "Modified"
+            return_data["path"] = message_components.group(1)
+            return_data["mime_type"] = message_components.group(2) + " " + message_components.group(3)
+            message_parsed = True
+
+
         if message_parsed == False:
             return_data = data
 
