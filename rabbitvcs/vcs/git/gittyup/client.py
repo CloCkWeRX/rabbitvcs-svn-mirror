@@ -827,14 +827,14 @@ class GittyupClient:
         if initial_commit:
             self.track("refs/heads/master")
 
-        #branch_full = self.repo.refs.read_ref("head")
+        branch_full = self.repo.refs.read_ref("head")
         
-        #branch = re.search("refs/heads/(.+)", branch_full).group(1)
+        branch = re.search("refs/heads/(.+)", branch_full).group(1)
 
-        #self.notify("[" + commit.id + "] -> " + branch)
-        #self.notify("To branch: " + branch)
+        self.notify("[" + commit.id + "] -> " + branch)
+        self.notify("To branch: " + branch)
         
-        # Print tree changes.
+        #Print tree changes.
         #dulwich.patch.write_tree_diff(sys.stdout, self.repo.object_store, commit.tree, commit.id)
 
         return commit.id
