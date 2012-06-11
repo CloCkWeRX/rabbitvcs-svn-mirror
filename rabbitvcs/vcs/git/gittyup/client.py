@@ -1670,6 +1670,15 @@ class GittyupClient:
             self.notify (data);
             return
 
+        # Is this an error?
+        message_components = re.search("^[eE]rror: (.+)", data)
+
+        if message_components != None:
+            returnData["action"] = "Error"
+            returnData["path"] = message_components.group(1)
+            self.notify (returnData)
+            return
+
         # Check to see if this is a remote command.
         remote_check = re.search("^(remote: )(.+)$", data)
 
@@ -1786,6 +1795,8 @@ class GittyupClient:
             return_data["path"] = message_components.group(2)
             return_data["mime_type"] = "mode: " + message_components.group(1)
             message_parsed = True
+
+
 
         if message_parsed == False:
             return_data = data
