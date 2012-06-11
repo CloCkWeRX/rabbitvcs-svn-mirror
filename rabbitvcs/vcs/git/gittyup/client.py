@@ -1770,6 +1770,22 @@ class GittyupClient:
             return_data["mime_type"] = message_components.group(2) + " " + message_components.group(3)
             message_parsed = True
 
+		# Look for a updating line (e.g. "Updating ffffff..ffffff")
+        message_components = re.search("^Updating ([a-f0-9.]+)", data)
+
+        if message_components != None:
+            return_data["action"] = "Updating"
+            return_data["path"] = message_components.group(1)
+            message_parsed = True
+
+		# Look for a "create mode" line (e.g. "create mode 100755 file.py")
+        message_components = re.search("^create mode ([0-9]+) (.+)", data)
+
+        if message_components != None:
+            return_data["action"] = "Create"
+            return_data["path"] = message_components.group(2)
+            return_data["mime_type"] = "mode: " + message_components.group(1)
+            message_parsed = True
 
         if message_parsed == False:
             return_data = data
