@@ -1216,17 +1216,20 @@ class GittyupClient:
                 if untracked_path in d:
                     d_status = UntrackedStatus(d)
                     break
+
             # Check if directory includes modified files
             for file in modified_files:
-                if os.path.join(d, os.path.basename(file)) == file:
+                if file.startswith(d):
                     d_status = ModifiedStatus(d)
                     break
+
             # Check if directory is ignored
             for ignored_path in ignored_directories:
                 if ignored_path in d:
                     d_status = IgnoredStatus(d)
                     break
             statuses.append(d_status)
+
 
         return statuses
 
