@@ -70,7 +70,8 @@ class GitPush(Push):
         
         self.repository_selector = rabbitvcs.ui.widget.GitRepositorySelector(
             self.get_widget("repository_container"),
-            self.git
+            self.git,
+            self.on_branch_changed
         )
 
         self.log_table = rabbitvcs.ui.widget.Table(
@@ -127,7 +128,9 @@ class GitPush(Push):
         gtk.gdk.threads_leave()
 
     def load_local_log(self):
-        self.local_log = self.git.log(limit=10, showtype="branch")
+        branch = self.repository_selector.branch_opt.get_active_text()
+        refspec = "refs/heads/%s" % branch
+        self.local_log = self.git.log(revision=self.git.revision(refspec), limit=10, showtype="branch")
         
     def load_remote_log(self):
         repository = self.repository_selector.repository_opt.get_active_text()
@@ -136,7 +139,14 @@ class GitPush(Push):
         refspec = "refs/remotes/%s/%s" % (repository, branch)
         self.remote_log = self.git.log(revision=self.git.revision(refspec), limit=10, showtype="branch")
 
+    def on_branch_changed(self, repository, branch):
+        self.load_local_log()
+        self.load_remote_log()
+        self.update_widgets()
+
     def update_widgets(self):
+        self.log_table.clear()
+        
         repository = self.repository_selector.repository_opt.get_active_text()
         branch = self.repository_selector.branch_opt.get_active_text()
 
@@ -146,18 +156,18 @@ class GitPush(Push):
 
         has_commits = False
         for item in self.local_log:
-            try:
+            remote_log_item = None
+            if self.remote_log:
                 remote_log_item = self.remote_log[0]
-                if unicode(remote_log_item.revision) != unicode(item.revision):
-                    self.log_table.append([
-                        rabbitvcs.util.helper.format_datetime(item.date),
-                        rabbitvcs.util.helper.format_long_text(item.message.rstrip("\n"))
-                    ])
-                    has_commits = True
-                else:
-                    break
 
-            except IndexError:
+            if (remote_log_item is None or
+                    unicode(remote_log_item.revision) != unicode(item.revision)):
+                self.log_table.append([
+                    rabbitvcs.util.helper.format_datetime(item.date),
+                    rabbitvcs.util.helper.format_long_text(item.message.rstrip("\n"))
+                ])
+                has_commits = True
+            else:
                 break
 
         if not has_commits:

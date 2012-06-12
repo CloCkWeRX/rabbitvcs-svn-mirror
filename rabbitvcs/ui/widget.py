@@ -1171,10 +1171,12 @@ class GitRepositorySelector:
         self.host.set_text(self.git.config.get('remote "%s"' % repo, "url"))
     
     def __repository_changed(self, repository_opt):
-        pass
+        if self.changed_callback:
+            self.changed_callback(repository_opt.get_active_text(), self.branch_opt.get_active_text())
    
     def __branch_changed(self, branch_opt):
-        pass
+        if self.changed_callback:
+            self.changed_callback(self.repository_opt.get_active_text(), self.branch_opt.get_active_text())
 
 class GitBranchSelector:
     def __init__(self, container, git, changed_callback=None):
