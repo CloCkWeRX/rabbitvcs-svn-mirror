@@ -790,6 +790,7 @@ class GittyupClient:
         if commit_all:
             self.stage_all()
 
+
         commit = dulwich.objects.Commit()
         commit.message = message
         commit.tree = commit_index(self.repo.object_store, self._get_index())
@@ -811,10 +812,10 @@ class GittyupClient:
         commit.author_timezone = (author_timezone and author_timezone or TZ)        
         
         commit.encoding = (encoding and encoding or ENCODING)
-        
+
         self.repo.object_store.add_object(commit)
         
-        self.repo.refs["HEAD"] = commit.id
+        self.repo.refs[self.repo.refs["HEAD"][5:]] = commit.id
         
         if initial_commit:
             self.track("refs/heads/master")
@@ -1348,7 +1349,7 @@ class GittyupClient:
             path = ""        
         if path:
             cmd += ["--", path]
-
+        print " ".join(cmd)
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
