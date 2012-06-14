@@ -944,8 +944,8 @@ class GittyupClient:
         
         return refs
     
-    def merge(self, branch1, branch2="master"):
-        cmd = ["git", "merge", branch1, branch2]
+    def merge(self, branch):
+        cmd = ["git", "merge", branch]
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
@@ -1349,7 +1349,7 @@ class GittyupClient:
             path = ""        
         if path:
             cmd += ["--", path]
-        print " ".join(cmd)
+
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:

@@ -413,12 +413,11 @@ class SVNMerge(InterfaceView):
         self.assistant.set_page_complete(self.page, True)
 
 class BranchMerge(InterfaceView):
-    def __init__(self, path, branch1=None, branch2=None):
+    def __init__(self, path, branch=None):
         InterfaceView.__init__(self, "branch-merge", "Merge")
 
         self.path = path
-        self.branch1 = branch1
-        self.branch2 = branch2
+        self.branch = branch
         self.vcs = rabbitvcs.vcs.VCS()
 
     def on_destroy(self, widget):
@@ -428,8 +427,8 @@ class BranchMerge(InterfaceView):
         self.close()
 
 class GitMerge(BranchMerge):
-    def __init__(self, path, branch1=None, branch2=None):
-        BranchMerge.__init__(self, path, branch1, branch2)
+    def __init__(self, path, branch=None):
+        BranchMerge.__init__(self, path, branch)
         self.git = self.vcs.git(path)
 
         self.init_branch_widgets()
@@ -437,15 +436,7 @@ class GitMerge(BranchMerge):
         self.from_branches = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("from_branch_container"),
             self.git,
-            revision=self.branch1,
-            url=path,
-            expand=True,
-            revision_changed_callback=self.__revision_changed
-        )
-        self.to_branches = rabbitvcs.ui.widget.RevisionSelector(
-            self.get_widget("to_branch_container"),
-            self.git,
-            revision=self.branch2,
+            revision=self.branch,
             url=path,
             expand=True,
             revision_changed_callback=self.__revision_changed
@@ -453,13 +444,19 @@ class GitMerge(BranchMerge):
         
         self.update_branch_info()
 
+        self.active_branch = self.git.get_active_branch()
+        if self.active_branch:
+            self.get_widget("to_branch").set_text(self.active_branch.name + " (" + self.active_branch.revision[0:7] + ")")
+        else:
+            self.get_widget("to_branch").set_text(_("No active branch"))
+
+
     def init_branch_widgets(self):
 
         self.info = {"from":{}, "to":{}}
 
         # FROM BRANCH INFO #
         from_container = self.get_widget("from_branch_info")
-        to_container = self.get_widget("to_branch_info")
         
         # Set up the Author line
         author = gtk.Label(_("Author:"))
@@ -511,59 +508,8 @@ class GitMerge(BranchMerge):
         
         from_container.show_all()
 
-        # Set up the Author line
-        author = gtk.Label(_("Author:"))
-        author.set_size_request(90, -1)
-        author.set_properties(xalign=0,yalign=0)
-        self.info['to']['author'] = gtk.Label("")
-        self.info['to']['author'].set_properties(xalign=0,yalign=0,selectable=True)
-        self.info['to']['author'].set_line_wrap(True)
-        to_author_container = gtk.HBox(False, 0)
-        to_author_container.pack_start(author, False, False, 0)
-        to_author_container.pack_start(self.info['to']['author'], False, False, 0)
-        to_container.pack_start(to_author_container, False, False, 0)
-
-        # Set up the Date line
-        date = gtk.Label(_("Date:"))
-        date.set_size_request(90, -1)
-        date.set_properties(xalign=0,yalign=0)
-        self.info['to']['date'] = gtk.Label("")
-        self.info['to']['date'].set_properties(xalign=0,yalign=0,selectable=True)
-        to_date_container = gtk.HBox(False, 0)
-        to_date_container.pack_start(date, False, False, 0)
-        to_date_container.pack_start(self.info['to']['date'], False, False, 0)
-        to_container.pack_start(to_date_container, False, False, 0)
-
-        # Set up the Revision line
-        revision = gtk.Label(_("Revision:"))
-        revision.set_size_request(90, -1)
-        revision.set_properties(xalign=0,yalign=0)
-        self.info['to']['revision'] = gtk.Label("")
-        self.info['to']['revision'].set_properties(xalign=0,selectable=True)
-        self.info['to']['revision'].set_line_wrap(True)
-        to_revision_container = gtk.HBox(False, 0)
-        to_revision_container.pack_start(revision, False, False, 0)
-        to_revision_container.pack_start(self.info['to']['revision'], False, False, 0)
-        to_container.pack_start(to_revision_container, False, False, 0)
-
-        # Set up the Log Message line
-        message = gtk.Label(_("Message:"))
-        message.set_size_request(90, -1)
-        message.set_properties(xalign=0,yalign=0)
-        self.info['to']['message'] = gtk.Label("")
-        self.info['to']['message'].set_properties(xalign=0,yalign=0,selectable=True)
-        self.info['to']['message'].set_line_wrap(True)
-        self.info['to']['message'].set_size_request(250, -1)
-        to_message_container = gtk.HBox(False, 0)
-        to_message_container.pack_start(message, False, False, 0)
-        to_message_container.pack_start(self.info['to']['message'], False, False, 0)
-        to_container.pack_start(to_message_container, False, False, 0)
-        
-        to_container.show_all()
-
     def update_branch_info(self):
         from_branch = self.from_branches.get_revision_object()
-        to_branch = self.to_branches.get_revision_object()
 
         if from_branch.value:
             log = self.git.log(self.path, limit=1, revision=from_branch, showtype="branch")
@@ -574,36 +520,27 @@ class GitMerge(BranchMerge):
                 self.info['from']['revision'].set_text(unicode(from_info.revision)[0:7])
                 self.info['from']['message'].set_text(cgi.escape(rabbitvcs.util.helper.format_long_text(from_info.message, 500)))
 
-        if to_branch.value:
-            log = self.git.log(self.path, limit=1, revision=to_branch, showtype="branch")
-            if log:
-                to_info = log[0]
-                self.info['to']['author'].set_text(to_info.author)
-                self.info['to']['date'].set_text(rabbitvcs.util.helper.format_datetime(to_info.date))
-                self.info['to']['revision'].set_text(unicode(to_info.revision)[0:7])
-                self.info['to']['message'].set_text(cgi.escape(rabbitvcs.util.helper.format_long_text(to_info.message, 500)))
-
     def on_from_branches_changed(self, widget):
         self.update_branch_info()
 
-    def on_to_branches_changed(self, widget):
-        self.update_branch_info()
-
     def on_ok_clicked(self, widget, data=None):
+        self.hide()
+        
         from_branch = self.from_branches.get_revision_object()
-        to_branch = self.to_branches.get_revision_object()
         
         self.action = rabbitvcs.ui.action.GitAction(
             self.git,
             register_gtk_quit=self.gtk_quit_is_set()
         )
         
+        self.action.append(self.action.set_header, _("Merge"))
+        self.action.append(self.action.set_status, _("Running Merge Command..."))
         self.action.append(
             self.git.merge,
-            from_branch,
-            to_branch
+            from_branch
         )
-        
+
+        self.action.append(self.action.set_status, _("Completed Merge"))
         self.action.append(self.action.finish)
         self.action.start()
 
@@ -630,13 +567,9 @@ if __name__ == "__main__":
         gtk.main()
     elif vcs_name == rabbitvcs.vcs.VCS_GIT:
         revision1 = None
-        revision2 = None
         if len(args) == 2:
             revision1 = args[1]
-        elif len(args) == 3:
-            revision1 = args[1]
-            revision2 = args[2]
 
-        window = GitMerge(path, revision1, revision2)
+        window = GitMerge(path, revision1)
         window.register_gtk_quit()
         gtk.main()

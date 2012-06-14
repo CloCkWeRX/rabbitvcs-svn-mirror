@@ -438,7 +438,20 @@ class Git:
             ))
         
         return branches
-        
+    
+    def get_active_branch(self):
+        results = self.client.branch_list()
+        for result in results:
+            if result["tracking"]:
+                return BranchEntry(
+                    result["name"],
+                    result["tracking"],
+                    result["revision"],
+                    result["message"]
+                )
+
+        return None
+    
     def checkout(self, paths=[], revision=Revision("HEAD")):
         """
         Checkout a series of paths from a tree or commit.  If no tree or commit
@@ -590,8 +603,8 @@ class Git:
         
         return self.client.fetch(host)
         
-    def merge(self, branch1, branch2):
-        return self.client.merge(branch1.primitive(), branch2.primitive())
+    def merge(self, branch):
+        return self.client.merge(branch.primitive())
 
     def remote_add(self, name, host):
         """
