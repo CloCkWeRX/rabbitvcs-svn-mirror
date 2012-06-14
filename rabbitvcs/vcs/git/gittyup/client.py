@@ -827,12 +827,17 @@ class GittyupClient:
         if initial_commit:
             self.track("refs/heads/master")
 
+		# Get the branch for this repository.
         branch_full = self.repo.refs.read_ref("head")
-        
-        branch = re.search("refs/heads/(.+)", branch_full).group(1)
 
-        self.notify("[" + commit.id + "] -> " + branch)
-        self.notify("To branch: " + branch)
+        if (branch_full != None):
+            branch_components = re.search("refs/heads/(.+)", branch_full)
+
+            if (branch_components != None):
+                branch = branch_components.group(1)
+
+                self.notify("[" + commit.id + "] -> " + branch)
+                self.notify("To branch: " + branch)
         
         #Print tree changes.
         #dulwich.patch.write_tree_diff(sys.stdout, self.repo.object_store, commit.tree, commit.id)
@@ -940,7 +945,7 @@ class GittyupClient:
         cmd = ["git", "push", "--progress", repository, refspec]
         
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_progress, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
 
@@ -1756,8 +1761,6 @@ class GittyupClient:
         message_components = re.search("^From (.+)", data)
 
         if message_components != None:
-            print "parsing 'from'"
-            
             return_data["action"] = "From"
             return_data["path"] = message_components.group(1)
             message_parsed = True
@@ -1796,7 +1799,23 @@ class GittyupClient:
             return_data["mime_type"] = "mode: " + message_components.group(1)
             message_parsed = True
 
+        if message_parsed == False:
+            return_data = data
 
+        self.notify_and_parse_progress (return_data)
+
+    def notify_and_parse_git_push (self, data):
+        return_data = {"action":"","path":"","mime_type":""}
+
+        message_parsed = False
+
+        # Look for to line. e.g. "To gitosis@server.org:project.git"
+        message_components = re.search("^To (.+)", data)
+
+        if message_components != None:
+            return_data["action"] = "To"
+            return_data["path"] = message_components.group(1)
+            message_parsed = True
 
         if message_parsed == False:
             return_data = data
