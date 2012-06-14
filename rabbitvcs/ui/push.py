@@ -170,8 +170,8 @@ class GitPush(Push):
             else:
                 break
 
+        self.get_widget("ok").set_sensitive(True)
         if not has_commits:
-            self.get_widget("ok").set_sensitive(False)
             self.get_widget("status").set_text(_("No commits found"))
 
 classes_map = {
