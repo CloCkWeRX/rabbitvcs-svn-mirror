@@ -815,7 +815,7 @@ class GittyupClient:
 
         self.repo.object_store.add_object(commit)
         
-        self.repo.refs[self.repo.refs["HEAD"][5:]] = commit.id
+        self.repo.refs["HEAD"] = commit.id
         
         if initial_commit:
             self.track("refs/heads/master")
