@@ -926,6 +926,12 @@ class RevisionSelector:
         self.revision_entry.connect("changed", self.__revision_entry_changed)
         hbox.pack_start(self.revision_entry, expand, expand, 0)
         
+        self.branch_selector = None
+        if client.vcs == rabbitvcs.vcs.VCS_GIT:
+            self.branch_selector = GitBranchSelector(hbox, client, self.__branch_selector_changed)
+            self.branch_selector.hide()
+        
+        
         self.revision_browse = gtk.Button()
         revision_browse_image = gtk.Image()
         revision_browse_image.set_from_stock(gtk.STOCK_FIND, 1)
@@ -981,6 +987,9 @@ class RevisionSelector:
         index = self.revision_kind_opt.get_active()
         
         allow_revision_browse = True
+
+        # Default to showing the revision entry
+        self.hide_branch_selector()
         
         # Only allow number entry if "Number" is selected
         if index == 1:
@@ -989,6 +998,9 @@ class RevisionSelector:
             if self.client.vcs == rabbitvcs.vcs.VCS_GIT:
                 self.revision_entry.set_sensitive(True)
                 allow_revision_browse = False
+
+                # If showing the "Branch" option, show the branch selector
+                self.show_branch_selector()
         else:
             self.revision_entry.set_text("")
             self.revision_entry.set_sensitive(False)
@@ -1017,6 +1029,12 @@ class RevisionSelector:
         @rtype  rabbitvcs.vcs.###.Revision
         @return A rabbitvcs revision object
         
+        index=0     HEAD
+        index=1     Revision Number
+        index=2
+            SVN     Working Copy
+            Git     Branch Selector
+        
         """
         index = self.revision_kind_opt.get_active()
         
@@ -1031,7 +1049,7 @@ class RevisionSelector:
             if self.client.vcs == rabbitvcs.vcs.VCS_SVN:
                 return self.client.revision("working")
             elif self.client.vcs == rabbitvcs.vcs.VCS_GIT:
-                return self.client.revision(self.revision_entry.get_text())
+                return self.client.revision(self.branch_selector.get_branch())
 
     def set_kind_head(self):
         self.revision_kind_opt.set_active(0)
@@ -1046,6 +1064,21 @@ class RevisionSelector:
     def set_kind_working(self):
         self.revision_kind_opt.set_active(2)
         self.determine_widget_sensitivity()
+
+    def show_branch_selector(self):
+        if self.branch_selector:
+            self.revision_entry.hide()
+            self.revision_browse.hide()
+            self.branch_selector.show()
+
+    def hide_branch_selector(self):
+        if self.branch_selector:
+            self.branch_selector.hide()
+            self.revision_entry.show()
+            self.revision_browse.show()
+
+    def __branch_selector_changed(self, branch):
+        self.__revision_entry_changed(self.revision_entry)
 
 class KeyValueTable(gtk.Table):
     """
@@ -1194,7 +1227,7 @@ class GitBranchSelector:
                 active = index
             index += 1
 
-        self.branch_opt = ComboBox(gtk.ComboBox(), tmp_branches)
+        self.branch_opt = ComboBox(gtk.ComboBoxEntry(), tmp_branches)
         self.branch_opt.set_active(active)
         self.branch_opt.cb.connect("changed", self.__branch_changed)
         self.branch_opt.cb.set_size_request(175, -1)
@@ -1214,7 +1247,13 @@ class GitBranchSelector:
 
     def __branch_changed(self, branch_opt):
         pass
-        
+    
+    def show(self):
+        self.vbox.show_all()
+    
+    def hide(self):
+        self.vbox.hide()
+
 class MultiFileTextEditor:
     """
     Edit a set of text/config/ignore files
