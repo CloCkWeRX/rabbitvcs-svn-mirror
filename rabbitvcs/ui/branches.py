@@ -267,7 +267,7 @@ class GitBranchManager(InterfaceView):
         
         revision = "HEAD"
         if self.revision:
-            revision = unicode(self.revision)
+            revision = unicode(self.git.get_active_branch().name)
 
         self.items_treeview.unselect_all()
         self.branch_entry.set_text("")
