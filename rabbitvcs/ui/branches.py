@@ -204,7 +204,7 @@ class GitBranchManager(InterfaceView):
         self.show_add()
 
     def on_delete_clicked(self, widget):
-        selected = self.items_treeview.get_selected_row_items(1)
+        selected = self.items_treeview.get_selected_row_items(0)
     
         confirm = rabbitvcs.ui.dialog.Confirmation(_("Are you sure you want to delete %s?" % ", ".join(selected)))
         result = confirm.run()
@@ -267,7 +267,7 @@ class GitBranchManager(InterfaceView):
         
         revision = "HEAD"
         if self.revision:
-            revision = unicode(self.revision)
+            revision = unicode(self.git.get_active_branch().name)
 
         self.items_treeview.unselect_all()
         self.branch_entry.set_text("")

@@ -56,6 +56,7 @@ class SVNUpdateToRevision(UpdateToRevision):
         UpdateToRevision.__init__(self, path, revision)
 
         self.svn = self.vcs.svn()
+        self.get_widget("options_box").show()
 
         self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("revision_container"),
@@ -115,6 +116,8 @@ class SVNUpdateToRevision(UpdateToRevision):
 class GitUpdateToRevision(UpdateToRevision):
     def __init__(self, path, revision):
         UpdateToRevision.__init__(self, path, revision)
+        
+        self.get_widget("revision_label").set_text(_("What revision/branch do you want to checkout?"))
 
         self.git = self.vcs.git(path)
 
