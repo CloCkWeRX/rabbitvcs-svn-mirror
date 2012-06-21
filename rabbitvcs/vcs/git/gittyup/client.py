@@ -1818,6 +1818,14 @@ class GittyupClient:
             return_data["path"] = message_components.group(1)
             message_parsed = True
 
+        # Look for "new branch" line. e.g. " * [new branch]   master -> master"
+        message_components = re.search("^ \* \[new branch\] +(.+) -> (.+)", data)
+
+        if message_components != None:
+            return_data["action"] = "New Branch"
+            return_data["path"] = message_components.group(1) + " -> " + message_components.group(2)
+            message_parsed = True
+
         if message_parsed == False:
             return_data = data
 
