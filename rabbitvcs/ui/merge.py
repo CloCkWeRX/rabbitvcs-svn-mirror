@@ -127,8 +127,8 @@ class SVNMerge(InterfaceView):
                 elif r.find(":") != -1:
                     (low, high) = r.split(":")
                 else:
-                    low = r
-                    high = r
+                    high = int(r)
+                    low = high - 1
 
                 # Before pysvn v1.6.3, there was a bug that required the ranges 
                 # tuple to have three elements, even though only two were used
