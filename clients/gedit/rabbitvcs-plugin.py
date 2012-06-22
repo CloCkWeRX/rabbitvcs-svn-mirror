@@ -23,15 +23,17 @@ from gettext import gettext as _
 import os
 
 try:
-    from gi.repository import Gedit
+    from gi.repository import Gedit, GObject
+    from gi.repository import Gtk as gtk
     os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"] = "1"
     GTK3 = True
 except ImportError:
     import gedit
+    import gobject
+    import gtk
     GTK3 = False
 
-from gi.repository import GObject
-from gi.repository import Gtk as gtk
+
 
 import rabbitvcs.util.helper
 from rabbitvcs.vcs import create_vcs_instance
