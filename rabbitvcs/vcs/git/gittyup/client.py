@@ -1677,11 +1677,11 @@ class GittyupClient:
             return
 
         # Is this an error?
-        message_components = re.search("^[eE]rror: (.+)", data)
+        message_components = re.search("^([eE]rror|[fF]atal): (.+)", data)
 
         if message_components != None:
             returnData["action"] = "Error"
-            returnData["path"] = message_components.group(1)
+            returnData["path"] = message_components.group(2)
             self.notify (returnData)
             return
 
