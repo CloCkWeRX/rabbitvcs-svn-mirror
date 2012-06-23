@@ -1657,19 +1657,17 @@ class GittyupClient:
         self.callback_notify(data)
     
     def notify_and_parse_progress(self, data):
-        # Ok, when progress is requested to a git command, it will
+        # When progress is requested to a git command, it will
         # respond with the current operation, and that operations current progress
         # in the following format: "<Command>: <percentage>% (<pieces compeated>/<num pieces>)".
         #
         # When a command has reached 100% the format of this final message assumes the formatt:
         #  "<Command>: 100% (<num pieces>/<num pieces>), <total size> <unit>, done."
 
-        #message = data ["path"]
-        #message = data
-        
+
         returnData = {"action":"","path":"","mime_type":""}
 
-        print "parsing message: " + str(data)
+        #print "parsing message: " + str(data)
 
         # If data is already a dict, we'll assume it's already been parsed, and return.
         if isinstance (data, dict):
@@ -1693,7 +1691,6 @@ class GittyupClient:
             message = remote_check.group(2)
 
         else:
-            #returnData ["action"] = ""
             message = data
 
         # First, we'll test to see if this is a progress notification.
@@ -1737,13 +1734,9 @@ class GittyupClient:
         if "done" in message:
             self.numberOfCommandStagesExecuted += 1
 
-        #print message_components.group (1)
-
-        #print "Num stages complete: " + str(self.numberOfCommandStagesExecuted)
-
         # If we've registered a callback for progress, update with the new fraction.
         if self.callback_progress_update != None:
-            print "setting pbar: " + str(fraction)
+            #print "setting pbar: " + str(fraction)
             self.callback_progress_update(fraction)
 
         # If we've finished the whole command (all stages).
@@ -1751,8 +1744,7 @@ class GittyupClient:
             # Reset stage variables.
             self.numberOfCommandStages = 0
             self.numberOfCommandStagesExecuted = 0
-        
-        #self.notify (data);
+
     def notify_and_parse_git_pull (self, data):
         return_data = {"action":"","path":"","mime_type":""}
 
