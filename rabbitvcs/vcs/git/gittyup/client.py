@@ -1819,6 +1819,14 @@ class GittyupClient:
             return_data["path"] = message_components.group(1) + " -> " + message_components.group(2)
             message_parsed = True
 
+        # Look for "rejected" line. e.g. " ![rejected]   master -> master (non-fast-forward)".
+        message_components = re.search("!\[rejected\] +(.+)", data)
+
+        if message_components != None:
+            return_data["action"] = "Rejected"
+            return_data["path"] = message_components.group(1)
+            message_parsed = True
+
         if message_parsed == False:
             return_data = data
 
