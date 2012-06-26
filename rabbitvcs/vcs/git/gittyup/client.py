@@ -1792,6 +1792,14 @@ class GittyupClient:
             return_data["mime_type"] = "mode: " + message_components.group(1)
             message_parsed = True
 
+        # Look for a "Auto-merging" line (e.g. "Auto-merging src/file.py")
+        message_components = re.search("^Auto-merging (.+)", data)
+
+        if message_components != None:
+            return_data["action"] = "Merging"
+            return_data["path"] = message_components.group(1)
+            message_parsed = True
+
         if message_parsed == False:
             return_data = data
 
