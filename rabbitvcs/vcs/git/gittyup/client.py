@@ -1802,8 +1802,9 @@ class GittyupClient:
 
         message_parsed = False
 
-        # Look for to line. e.g. "To gitosis@server.org:project.git"
-        message_components = re.search("^To (.+)", data)
+        # Look for to line. e.g. "To gitosis@server.org:project.git". Exclude any
+        # lines that include a space (as this could be a message about something else)
+        message_components = re.search("^To ([^ ]+$)", data)
 
         if message_components != None:
             return_data["action"] = "To"
