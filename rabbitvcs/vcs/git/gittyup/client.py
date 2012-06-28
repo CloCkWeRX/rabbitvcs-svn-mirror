@@ -971,8 +971,8 @@ class GittyupClient:
         
         return refs
     
-    def merge(self, branch1, branch2="master"):
-        cmd = ["git", "merge", branch1, branch2]
+    def merge(self, branch):
+        cmd = ["git", "merge", branch]
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
@@ -1244,17 +1244,20 @@ class GittyupClient:
                 if untracked_path in d:
                     d_status = UntrackedStatus(d)
                     break
+
             # Check if directory includes modified files
             for file in modified_files:
-                if os.path.join(d, os.path.basename(file)) == file:
+                if file.startswith(d):
                     d_status = ModifiedStatus(d)
                     break
+
             # Check if directory is ignored
             for ignored_path in ignored_directories:
                 if ignored_path in d:
                     d_status = IgnoredStatus(d)
                     break
             statuses.append(d_status)
+
 
         return statuses
 
@@ -1373,7 +1376,7 @@ class GittyupClient:
             path = ""        
         if path:
             cmd += ["--", path]
-        print " ".join(cmd)
+
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
@@ -1798,6 +1801,16 @@ class GittyupClient:
         if message_components != None:
             return_data["action"] = "Merging"
             return_data["path"] = message_components.group(1)
+            message_parsed = True
+
+        # Prepend "Error" to conflict lines. e.g. :
+        # CONFLICT (content): Merge conflict in file.py.
+        # Automatic merge failed; fix conflicts and then commit the result.
+        message_components = re.search("^CONFLICT \(|Automatic merge failed", data)
+
+        if message_components != None:
+            return_data["action"] = "Error"
+            return_data["path"] = data
             message_parsed = True
 
         if message_parsed == False:

@@ -257,7 +257,7 @@ class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
                 
         if not self.valid_uri(item.get_uri()): return Nautilus.OperationResult.FAILED
 
-        path = unicode(self.get_local_path(item.get_uri()), "utf-8")
+        path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri())).decode("utf-8")
 
         # log.debug("update_file_info() called for %s" % path)
 
@@ -374,7 +374,7 @@ class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
         paths = []
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = unicode(self.get_local_path(item.get_uri()), "utf-8")
+                path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri())).decode("utf-8")
                 paths.append(path)
                 self.nautilusVFSFile_table[path] = item
 
@@ -402,7 +402,7 @@ class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
         paths = []
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = unicode(self.get_local_path(item.get_uri()), "utf-8")
+                path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri())).decode("utf-8")
                 paths.append(path)
                 self.nautilusVFSFile_table[path] = item
 
@@ -454,7 +454,7 @@ class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
         """
 
         if not self.valid_uri(item.get_uri()): return
-        path = unicode(self.get_local_path(item.get_uri()), "utf-8")
+        path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri())).decode("utf-8")
         self.nautilusVFSFile_table[path] = item
 
         # log.debug("get_background_items_full() called")
@@ -477,7 +477,7 @@ class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
 
     def get_background_items(self, window, item):
         if not self.valid_uri(item.get_uri()): return
-        path = unicode(self.get_local_path(item.get_uri()), "utf-8")
+        path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri())).decode("utf-8")
         self.nautilusVFSFile_table[path] = item
 
         # log.debug("get_background_items() called")
@@ -613,7 +613,7 @@ class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
 
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = unicode(self.get_local_path(item.get_uri()), "utf-8")
+                path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri())).decode("utf-8")
                 
                 if self.vcs_client.is_in_a_or_a_working_copy(path):
                     paths.append(path)
