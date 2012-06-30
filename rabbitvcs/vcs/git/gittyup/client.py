@@ -19,6 +19,7 @@ import dulwich.repo
 import dulwich.objects
 from dulwich.pack import Pack
 from dulwich.index import commit_index, write_index_dict, SHA1Writer
+#from dulwich.patch import write_tree_diff
 
 from exceptions import *
 import util
@@ -53,12 +54,16 @@ def get_tmp_path(filename):
 class GittyupClient:
     def __init__(self, path=None, create=False):
         self.callback_notify = callback_notify_null
+        self.callback_progress_update = None
         self.callback_get_user = callback_get_user
         self.callback_get_cancel = callback_get_cancel
 
         self.global_ignore_patterns = []
         
         self.git_version = None
+
+        self.numberOfCommandStages = 0
+        self.numberOfCommandStagesExecuted = 0
 
         if path:
             try:
@@ -459,7 +464,7 @@ class GittyupClient:
 
             if status == MissingStatus:
                 self._remove_from_index(index, status.path)
-                index.write()           
+                index.write()
 
     def unstage(self, paths):
         """
@@ -723,16 +728,19 @@ class GittyupClient:
         @param  origin: Specify the origin of the repository
 
         """
-    
-        more = ["-o", "origin"]
+
+        self.numberOfCommandStages = 3
+
+        more = ["-o", "origin","--progress"]
         if bare:
             more.append("--bare")
     
         base_dir = os.path.split(path)[0]
     
         cmd = ["git", "clone", host, path] + more
+        
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify_and_parse_progress, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
     
@@ -819,7 +827,22 @@ class GittyupClient:
         
         if initial_commit:
             self.track("refs/heads/master")
-            
+
+		# Get the branch for this repository.
+        branch_full = self.repo.refs.read_ref("head")
+
+        if (branch_full != None):
+            branch_components = re.search("refs/heads/(.+)", branch_full)
+
+            if (branch_components != None):
+                branch = branch_components.group(1)
+
+                self.notify("[" + commit.id + "] -> " + branch)
+                self.notify("To branch: " + branch)
+        
+        #Print tree changes.
+        #dulwich.patch.write_tree_diff(sys.stdout, self.repo.object_store, commit.tree, commit.id)
+
         return commit.id
     
     def remove(self, paths):
@@ -897,10 +920,11 @@ class GittyupClient:
         @param  refspec: The branch name to pull from
         
         """
-        
-        cmd = ["git", "pull", repository, refspec]
+        self.numberOfCommandStages = 2
+
+        cmd = ["git", "pull","--progress", repository, refspec]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_pull, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
     
@@ -917,9 +941,12 @@ class GittyupClient:
         
         """
 
-        cmd = ["git", "push", repository, refspec]
+        self.numberOfCommandStages = 2
+
+        cmd = ["git", "push", "--progress", repository, refspec]
+        
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
 
@@ -1620,6 +1647,9 @@ class GittyupClient:
     def set_callback_notify(self, func):
         self.callback_notify = func
 
+    def set_callback_progress_update(self, func):
+        self.callback_progress_update = func
+
     def set_callback_get_user(self, func):
         self.callback_get_user = func
     
@@ -1629,5 +1659,199 @@ class GittyupClient:
     def notify(self, data):
         self.callback_notify(data)
     
+    def notify_and_parse_progress(self, data):
+        # When progress is requested to a git command, it will
+        # respond with the current operation, and that operations current progress
+        # in the following format: "<Command>: <percentage>% (<pieces compeated>/<num pieces>)".
+        #
+        # When a command has reached 100% the format of this final message assumes the formatt:
+        #  "<Command>: 100% (<num pieces>/<num pieces>), <total size> <unit>, done."
+
+
+        returnData = {"action":"","path":"","mime_type":""}
+
+        #print "parsing message: " + str(data)
+
+        # If data is already a dict, we'll assume it's already been parsed, and return.
+        if isinstance (data, dict):
+            self.notify (data);
+            return
+
+        # Is this an error?
+        message_components = re.search("^([eE]rror|[fF]atal): (.+)", data)
+
+        if message_components != None:
+            returnData["action"] = "Error"
+            returnData["path"] = message_components.group(2)
+            self.notify (returnData)
+            return
+
+        # Check to see if this is a remote command.
+        remote_check = re.search("^(remote: )(.+)$", data)
+
+        if remote_check != None:
+            returnData["action"] = "Remote"
+            message = remote_check.group(2)
+
+        else:
+            message = data
+
+        # First, we'll test to see if this is a progress notification.
+        if "%" not in message:
+            # No, this is just a regular message.
+            # Some messages have a strage tendancy to append a non-printable character,
+            # followed by a right square brace and a capitol "K".  This tests for, and
+            # strips these superfluous characters.
+            message_components = re.search("^(.+).\[K", message)
+            if message_components != None:
+                returnData["path"] = message_components.group(1)
+            else:
+                returnData["path"] = message
+
+            self.notify (returnData)
+            return
+
+        # Extract the percentage, which will be all numerals directly
+        # prior to '%'.
+        message_components = re.search("^(.+): +([0-9]+)%", message)
+        
+        if message_components == None:
+            print "Error: failed to parse git string: " + data
+            return
+
+        fraction = float(message_components.group(2)) / 100 # Convert percentage to fraction.
+        current_action = message_components.group(1)
+
+        # If we're at 0%, then we want to notify which action we're performing.
+        if fraction == 0:
+                returnData["path"] = current_action
+                self.notify(returnData)
+
+        #print "stage fraction: " + str (fraction)
+
+        # If we're using a number of stages, adjust the fraction acordingly.
+        if self.numberOfCommandStages > 0:
+            fraction = (self.numberOfCommandStagesExecuted + fraction) / self.numberOfCommandStages
+            
+        # If we've finished the current stage (100%).
+        if "done" in message:
+            self.numberOfCommandStagesExecuted += 1
+
+        # If we've registered a callback for progress, update with the new fraction.
+        if self.callback_progress_update != None:
+            #print "setting pbar: " + str(fraction)
+            self.callback_progress_update(fraction)
+
+        # If we've finished the whole command (all stages).
+        if fraction == 1 and "done" in message:
+            # Reset stage variables.
+            self.numberOfCommandStages = 0
+            self.numberOfCommandStagesExecuted = 0
+
+    def notify_and_parse_git_pull (self, data):
+        return_data = {"action":"","path":"","mime_type":""}
+
+        message_parsed = False
+
+        # Look for "From" line (e.g. "From ssh://server:22/my_project")
+        message_components = re.search("^From (.+)", data)
+
+        if message_components != None:
+            return_data["action"] = "From"
+            return_data["path"] = message_components.group(1)
+            message_parsed = True
+
+        # Look for "Branch" line (e.g. "* branch   master   -> FETCH_HEAD")
+        message_components = re.search("\* branch +([A-z0-9]+) +-> (.+)", data)
+
+        if message_components != None:
+            return_data["action"] = "Branch"
+            return_data["path"] = message_components.group(1) + " -> " + message_components.group(2)
+            message_parsed = True
+
+        # Look for a file line (e.g. "src/somefile.py       | 5-++++")
+        message_components = re.search(" +(.+) +\| +([0-9]+) ([+-]+)", data)
+
+        if message_components != None:
+            return_data["action"] = "Modified"
+            return_data["path"] = message_components.group(1)
+            return_data["mime_type"] = message_components.group(2) + " " + message_components.group(3)
+            message_parsed = True
+
+        # Look for a updating line (e.g. "Updating ffffff..ffffff")
+        message_components = re.search("^Updating ([a-f0-9.]+)", data)
+
+        if message_components != None:
+            return_data["action"] = "Updating"
+            return_data["path"] = message_components.group(1)
+            message_parsed = True
+
+        # Look for a "create mode" line (e.g. "create mode 100755 file.py")
+        message_components = re.search("^create mode ([0-9]+) (.+)", data)
+
+        if message_components != None:
+            return_data["action"] = "Create"
+            return_data["path"] = message_components.group(2)
+            return_data["mime_type"] = "mode: " + message_components.group(1)
+            message_parsed = True
+
+        # Look for a "Auto-merging" line (e.g. "Auto-merging src/file.py")
+        message_components = re.search("^Auto-merging (.+)", data)
+
+        if message_components != None:
+            return_data["action"] = "Merging"
+            return_data["path"] = message_components.group(1)
+            message_parsed = True
+
+        # Prepend "Error" to conflict lines. e.g. :
+        # CONFLICT (content): Merge conflict in file.py.
+        # Automatic merge failed; fix conflicts and then commit the result.
+        message_components = re.search("^CONFLICT \(|Automatic merge failed", data)
+
+        if message_components != None:
+            return_data["action"] = "Error"
+            return_data["path"] = data
+            message_parsed = True
+
+        if message_parsed == False:
+            return_data = data
+
+        self.notify_and_parse_progress (return_data)
+
+    def notify_and_parse_git_push (self, data):
+        return_data = {"action":"","path":"","mime_type":""}
+
+        message_parsed = False
+
+        # Look for to line. e.g. "To gitosis@server.org:project.git". Exclude any
+        # lines that include a space (as this could be a message about something else)
+        message_components = re.search("^To ([^ ]+$)", data)
+
+        if message_components != None:
+            return_data["action"] = "To"
+            return_data["path"] = message_components.group(1)
+            message_parsed = True
+
+        # Look for "new branch" line. e.g. " * [new branch]   master -> master"
+        message_components = re.search("^ \* \[new branch\] +(.+) -> (.+)", data)
+
+        if message_components != None:
+            return_data["action"] = "New Branch"
+            return_data["path"] = message_components.group(1) + " -> " + message_components.group(2)
+            message_parsed = True
+
+        # Look for "rejected" line. e.g. " ![rejected]   master -> master (non-fast-forward)".
+        message_components = re.search("!\[rejected\] +(.+)", data)
+
+        if message_components != None:
+            return_data["action"] = "Rejected"
+            return_data["path"] = message_components.group(1)
+            message_parsed = True
+
+        if message_parsed == False:
+            return_data = data
+
+        self.notify_and_parse_progress (return_data)
+    
     def get_cancel(self):
-        return self.callback_get_cancel()
+        return self.callback_get_cancel

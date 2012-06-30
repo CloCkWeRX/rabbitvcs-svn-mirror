@@ -46,7 +46,8 @@ class GittyupCommand:
                                 stderr=subprocess.STDOUT,
                                 stdout=subprocess.PIPE,
                                 close_fds=True,
-                                preexec_fn=os.setsid)
+                                preexec_fn=os.setsid,
+                                universal_newlines=True)
 
         stdout = []
 

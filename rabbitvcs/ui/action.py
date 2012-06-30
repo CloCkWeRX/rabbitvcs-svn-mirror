@@ -318,6 +318,24 @@ class VCSAction(threading.Thread):
 
         self.pbar_ticks = num
 
+    def set_progress_fraction(self, fraction):
+        """
+        An alternative method to access the progress bar directly.
+        
+        @type   percentage: int
+        @param  percentage: The percentage value to set the progress bar.
+
+        """
+        
+        if self.has_notifier:
+            if not self.client_in_same_thread:
+                gtk.gdk.threads_enter()
+    
+            self.notification.pbar.update(fraction)
+    
+            if not self.client_in_same_thread:
+                gtk.gdk.threads_leave()
+
     def set_header(self, header):
         self.notification.set_header(header)
 
@@ -715,12 +733,14 @@ class GitAction(VCSAction):
         self.client_in_same_thread = True
 
         self.client = client
-        self.client.set_callback_notify(self.notify)
-        self.client.set_callback_get_user(self.get_user)
-        self.client.set_callback_get_cancel(self.cancel)
 
         VCSAction.__init__(self, client, register_gtk_quit, notification,
             run_in_thread)
+
+        self.client.set_callback_notify(self.notify)
+        self.client.set_callback_progress_update(self.set_progress_fraction)
+        self.client.set_callback_get_user(self.get_user)
+        self.client.set_callback_get_cancel(self.cancel)
 
     def notify(self, data):
         if self.has_notifier:
