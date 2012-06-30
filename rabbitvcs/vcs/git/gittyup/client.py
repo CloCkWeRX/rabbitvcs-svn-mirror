@@ -1769,8 +1769,8 @@ class GittyupClient:
             return_data["path"] = message_components.group(1) + " -> " + message_components.group(2)
             message_parsed = True
 
-        # Look for a file line (e.g. "src/somefile.py       | 5-++++")
-        message_components = re.search(" +(.+) +\| +([0-9]+) ([+-]+)", data)
+        # Look for a file line (e.g. "src/somefile.py       | 5 -++++")
+        message_components = re.search(" +(.+) +\| *([0-9]+) ([+-]+)", data)
 
         if message_components != None:
             return_data["action"] = "Modified"
@@ -1822,7 +1822,7 @@ class GittyupClient:
             message_parsed = True
 
         # Look for a "rename" line (e.g. "rename src/{foo.py => bar.py} (50%)")
-        message_components = re.search("^rename (.+}) \([0-9]+%\)", data)
+        message_components = re.search("rename (.+}) \([0-9]+%\)", data)
 
         if message_components != None:
             return_data["action"] = "Rename"
@@ -1830,7 +1830,7 @@ class GittyupClient:
             message_parsed = True
 
         # Look for a "copy" line (e.g. "copy src/{foo.py => bar.py} (50%)")
-        message_components = re.search("^copy (.+}) \([0-9]+%\)", data)
+        message_components = re.search("copy (.+}) \([0-9]+%\)", data)
 
         if message_components != None:
             return_data["action"] = "Copy"
