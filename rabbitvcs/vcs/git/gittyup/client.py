@@ -1829,6 +1829,14 @@ class GittyupClient:
             return_data["path"] = message_components.group(1)
             message_parsed = True
 
+        # Look for a "copy" line (e.g. "copy src/{foo.py => bar.py} (50%)")
+        message_components = re.search("^copy (.+}) \([0-9]+%\)", data)
+
+        if message_components != None:
+            return_data["action"] = "Copy"
+            return_data["path"] = message_components.group(1)
+            message_parsed = True
+
         # Prepend "Error" to conflict lines. e.g. :
         # CONFLICT (content): Merge conflict in file.py.
         # Automatic merge failed; fix conflicts and then commit the result.
