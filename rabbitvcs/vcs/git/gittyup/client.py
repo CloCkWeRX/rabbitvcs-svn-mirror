@@ -1795,7 +1795,7 @@ class GittyupClient:
             return_data["mime_type"] = "mode: " + message_components.group(1)
             message_parsed = True
 
-        # Look for a "create mode" line (e.g. "create mode 100755 file.py")
+        # Look for a "delete mode" line (e.g. "create mode 100755 file.py")
         message_components = re.search("delete mode ([0-9]+) (.+)", data)
 
         if message_components != None:
@@ -1804,12 +1804,21 @@ class GittyupClient:
             return_data["mime_type"] = "mode: " + message_components.group(1)
             message_parsed = True
 
-        # Look for a "Auto-merging" line (e.g. "Auto-merging src/file.py")
+        # Look for an "Auto-merging" line (e.g. "Auto-merging src/file.py")
         message_components = re.search("^Auto-merging (.+)", data)
 
         if message_components != None:
             return_data["action"] = "Merging"
             return_data["path"] = message_components.group(1)
+            message_parsed = True
+
+        # Look for a "binary" line (e.g. "icons/file.png"    | Bin 0 -> 55555 bytes)
+        message_components = re.search("^[ ](.+) +\| Bin ([0-9]+ -> [0-9]+ bytes)", data)
+
+        if message_components != None:
+            return_data["action"] = "Binary"
+            return_data["path"] = message_components.group(1)
+            return_data["mime_type"] = message_components.group(2)
             message_parsed = True
 
         # Prepend "Error" to conflict lines. e.g. :
