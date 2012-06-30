@@ -1787,7 +1787,7 @@ class GittyupClient:
             message_parsed = True
 
         # Look for a "create mode" line (e.g. "create mode 100755 file.py")
-        message_components = re.search("^create mode ([0-9]+) (.+)", data)
+        message_components = re.search("create mode ([0-9]+) (.+)", data)
 
         if message_components != None:
             return_data["action"] = "Create"
