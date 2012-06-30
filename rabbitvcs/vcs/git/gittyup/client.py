@@ -1795,6 +1795,15 @@ class GittyupClient:
             return_data["mime_type"] = "mode: " + message_components.group(1)
             message_parsed = True
 
+        # Look for a "create mode" line (e.g. "create mode 100755 file.py")
+        message_components = re.search("delete mode ([0-9]+) (.+)", data)
+
+        if message_components != None:
+            return_data["action"] = "Delete"
+            return_data["path"] = message_components.group(2)
+            return_data["mime_type"] = "mode: " + message_components.group(1)
+            message_parsed = True
+
         # Look for a "Auto-merging" line (e.g. "Auto-merging src/file.py")
         message_components = re.search("^Auto-merging (.+)", data)
 
