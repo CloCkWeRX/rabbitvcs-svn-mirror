@@ -1821,6 +1821,14 @@ class GittyupClient:
             return_data["mime_type"] = message_components.group(2)
             message_parsed = True
 
+        # Look for a "rename" line (e.g. "rename src/{foo.py => bar.py} (50%)")
+        message_components = re.search("^rename (.+}) \([0-9]+%\)", data)
+
+        if message_components != None:
+            return_data["action"] = "Rename"
+            return_data["path"] = message_components.group(1)
+            message_parsed = True
+
         # Prepend "Error" to conflict lines. e.g. :
         # CONFLICT (content): Merge conflict in file.py.
         # Automatic merge failed; fix conflicts and then commit the result.
