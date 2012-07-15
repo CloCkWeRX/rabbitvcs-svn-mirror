@@ -107,6 +107,13 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         for path in paths:
             if self.vcs.is_in_a_or_a_working_copy(path):
                 self.paths.append(path)
+
+        self.settings = rabbitvcs.util.settings.SettingsManager()
+
+        # Set whether to show unversioned files as based on the users preferences.
+        self.get_widget("toggle_show_unversioned").set_active(
+            self.settings.get("general", "show_unversioned_files")
+        )
         
     #
     # Helper functions
@@ -200,6 +207,14 @@ class Commit(InterfaceView, GtkContextMenuCaller):
     def on_toggle_show_unversioned_toggled(self, widget, data=None):
         self.SHOW_UNVERSIONED = not self.SHOW_UNVERSIONED
         self.populate_files_table()
+
+        # Save this preference for future commits.
+        if self.settings.get("general", "show_unversioned_files") != self.SHOW_UNVERSIONED:
+            self.settings.set(
+                "general", "show_unversioned_files",
+                self.SHOW_UNVERSIONED
+            )
+            self.settings.write()
 
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)

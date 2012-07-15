@@ -127,7 +127,7 @@ class SettingsManager:
             self.backup_and_rewrite_config()
         
 
-    def get(self, section=None, keyword=None):
+    def get(self, section=None, keyword=None, force_type=None):
         """
         Get the settings for a section and/or keyword
         If no arguments are given, it just returns all settings
@@ -154,7 +154,17 @@ class SettingsManager:
             returner = self.settings[section][keyword]
         except KeyError:
             print "Error: section %s:%s doesn't exist" % (section, keyword)
-            
+
+        if force_type != None:
+            # A hack to ensure "bool" values are interpreted as such.
+            if force_type == bool and type(returner) == str:
+                if "True" in returner:
+                    return True
+                else:
+                    return False
+
+            print "Unable to force type '%s' for value '%s'." % (force_type, returner)
+
         return returner
         
     def set(self, section, keyword, value=""):
