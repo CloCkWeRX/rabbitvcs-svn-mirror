@@ -52,9 +52,10 @@ class Commit(InterfaceView, GtkContextMenuCaller):
     changes to a repository.  Pass it a list of local paths to commit.
     
     """
+    SETTINGS = rabbitvcs.util.settings.SettingsManager()
 
     TOGGLE_ALL = False
-    SHOW_UNVERSIONED = True
+    SHOW_UNVERSIONED = SETTINGS.get("general", "show_unversioned_files")
 
     # This keeps track of any changes that the user has made to the row
     # selections
@@ -108,13 +109,6 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             if self.vcs.is_in_a_or_a_working_copy(path):
                 self.paths.append(path)
 
-        self.settings = rabbitvcs.util.settings.SettingsManager()
-
-        # Set whether to show unversioned files as based on the users preferences.
-        self.get_widget("toggle_show_unversioned").set_active(
-            self.settings.get("general", "show_unversioned_files")
-        )
-        
     #
     # Helper functions
     # 
@@ -205,16 +199,18 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             row[0] = self.TOGGLE_ALL
             
     def on_toggle_show_unversioned_toggled(self, widget, data=None):
+
         self.SHOW_UNVERSIONED = not self.SHOW_UNVERSIONED
+        
         self.populate_files_table()
 
         # Save this preference for future commits.
-        if self.settings.get("general", "show_unversioned_files") != self.SHOW_UNVERSIONED:
-            self.settings.set(
+        if self.SETTINGS.get("general", "show_unversioned_files") != self.SHOW_UNVERSIONED:
+            self.SETTINGS.set(
                 "general", "show_unversioned_files",
                 self.SHOW_UNVERSIONED
             )
-            self.settings.write()
+            self.SETTINGS.write()
 
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
