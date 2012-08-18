@@ -197,6 +197,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         self.changes.clear()
         for row in self.files_table.get_items():
             row[0] = self.TOGGLE_ALL
+            self.changes[row[1]] = self.TOGGLE_ALL
             
     def on_toggle_show_unversioned_toggled(self, widget, data=None):
 
