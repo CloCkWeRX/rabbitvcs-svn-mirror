@@ -782,7 +782,7 @@ def quote_url(url_text):
 def unquote_url(url_text):
     (scheme, netloc, path, params, query, fragment) = urlparse.urlparse(url_text)
     # netloc_unquoted = urllib.unquote(netloc)
-    path_unquoted = urllib.unquote(path)
+    path_unquoted = urllib.unquote(path).decode('utf-8')
     params_unquoted = urllib.unquote(query)
     query_unquoted = urllib.unquote_plus(query)
     fragment_unquoted = urllib.unquote(fragment)
