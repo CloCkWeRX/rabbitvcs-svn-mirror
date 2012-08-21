@@ -308,7 +308,7 @@ class ContextMenuCallbacks:
         Refreshes an item status, which is actually just invalidate.
         """
         
-        self.debug_invalidate(menu_item)
+        self.debug_invalidate(widget)
     
     def debug_revert(self, widget, data1=None, data2=None):
         client = pysvn.Client()
