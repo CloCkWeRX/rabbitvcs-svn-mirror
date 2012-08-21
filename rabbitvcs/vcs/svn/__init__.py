@@ -454,7 +454,7 @@ class SVN:
         info = self.client_info(path)
         returner = ""
         try:
-            returner = info["url"]
+            returner = info["url"].encode('latin1')
         except Exception, e:
             log.exception(e)
 
@@ -1091,6 +1091,7 @@ class SVN:
             "action": rabbitvcs.vcs.svn.commit_completed
             }
         self.client.callback_notify(dummy_commit_dict)
+
         return retval
 
     def log(self, url_or_path, revision_start=Revision("head"),
