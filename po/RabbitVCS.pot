@@ -8,462 +8,104 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-07 13:56-0500\n"
+"POT-Creation-Date: 2012-08-24 08:37-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: util/helper.py:124
+#: util/helper.py:127
 msgid "just now"
 msgstr ""
 
-#: util/helper.py:126
+#: util/helper.py:129
 #, python-format
 msgid "%d minute(s) ago"
 msgstr ""
 
-#: util/helper.py:662
+#: util/helper.py:688
 #, python-format
 msgid "%i second"
 msgid_plural "%i seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#: util/helper.py:665
+#: util/helper.py:691
 #, python-format
 msgid "%i minute"
 msgid_plural "%i minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: util/helper.py:668
+#: util/helper.py:694
 #, python-format
 msgid "%i hour"
 msgid_plural "%i hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: util/helper.py:671
+#: util/helper.py:697
 #, python-format
 msgid "%i day"
 msgid_plural "%i days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: util/helper.py:674
+#: util/helper.py:700
 #, python-format
 msgid "%i week"
 msgid_plural "%i weeks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: util/helper.py:677
+#: util/helper.py:703
 #, python-format
 msgid "%i month"
 msgid_plural "%i months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: util/helper.py:680
+#: util/helper.py:706
 #, python-format
 msgid "%i year"
 msgid_plural "%i years"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ui/commit.py:93 ui/lock.py:111 ui/xml/dialogs/loading.xml.h:1 ui/add.py:95
-#: ui/unlock.py:85
-msgid "Loading..."
-msgstr ""
-
-#: ui/commit.py:100 ui/lock.py:114 ui/add.py:98 ui/unlock.py:109
+#: ui/export.py:45 ui/export.py:124
 #, python-format
-msgid "Found %d item(s)"
+msgid "Export - %s"
 msgstr ""
 
-#: ui/commit.py:202 ui/commit.py:317 ui/lock.py:70 ui/revert.py:62
-#: ui/revert.py:128 ui/stage.py:63 ui/markresolved.py:61 ui/log.py:348
-#: ui/log.py:586 ui/browser.py:89 ui/action.py:118 ui/unstage.py:63
-#: ui/add.py:72 ui/unlock.py:61
-msgid "Path"
+#: ui/export.py:72 ui/export.py:141 ui/clone.py:57
+msgid "The repository URL and destination path are both required fields."
 msgstr ""
 
-#: ui/commit.py:202 ui/commit.py:317 ui/lock.py:70 ui/revert.py:62
-#: ui/revert.py:128 ui/stage.py:63 ui/markresolved.py:61 ui/unstage.py:63
-#: ui/add.py:72 ui/unlock.py:61
-msgid "Extension"
+#: ui/export.py:92 ui/export.py:161
+msgid "Export"
 msgstr ""
 
-#: ui/commit.py:203 ui/revert.py:63 ui/markresolved.py:62
-msgid "Text Status"
+#: ui/export.py:93 ui/export.py:162
+msgid "Running Export Command..."
 msgstr ""
 
-#: ui/commit.py:203 ui/revert.py:63 ui/markresolved.py:62
-msgid "Property Status"
+#: ui/export.py:104 ui/export.py:170
+msgid "Completed Export"
 msgstr ""
 
-#: ui/commit.py:292 ui/commit.py:400 ui/xml/commit.xml.h:4
-#: util/contextmenuitems.py:346
-msgid "Commit"
+#: ui/reset.py:105 ui/xml/reset.xml.h:14 util/contextmenuitems.py:695
+msgid "Reset"
 msgstr ""
 
-#: ui/commit.py:293 ui/commit.py:401
-msgid "Running Commit Command..."
+#: ui/reset.py:106
+msgid "Running Reset Command..."
 msgstr ""
 
-#: ui/commit.py:299 ui/commit.py:410
-msgid "Completed Commit"
-msgstr ""
-
-#: ui/commit.py:318 ui/revert.py:129 ui/property_editor.py:111
-msgid "Status"
-msgstr ""
-
-#: ui/lock.py:71
-msgid "Locked"
-msgstr ""
-
-#: ui/lock.py:122
-msgid "Yes"
-msgstr ""
-
-#: ui/lock.py:163
-msgid "Get Lock"
-msgstr ""
-
-#: ui/lock.py:164
-msgid "Running Lock Command..."
-msgstr ""
-
-#: ui/lock.py:173
-msgid "Completed Lock"
-msgstr ""
-
-#: ui/remotes.py:59
-msgid "Remote Repository Manager"
-msgstr ""
-
-#: ui/remotes.py:60
-msgid "<b>Remote Repositories</b>"
-msgstr ""
-
-#: ui/remotes.py:66 ui/property_editor.py:111 ui/properties.py:63
-msgid "Name"
-msgstr ""
-
-#: ui/remotes.py:66
-msgid "Host"
-msgstr ""
-
-#: ui/remotes.py:128 ui/tags.py:230
-#, python-format
-msgid "Are you sure you want to delete %s?"
-msgstr ""
-
-#: ui/revert.py:50 ui/revert.py:103 ui/revert.py:115 ui/revert.py:168
-#: util/contextmenuitems.py:462
-msgid "Revert"
-msgstr ""
-
-#: ui/revert.py:104 ui/revert.py:169
-msgid "Running Revert Command..."
-msgstr ""
-
-#: ui/revert.py:106 ui/revert.py:171
-msgid "Completed Revert"
-msgstr ""
-
-#: ui/stage.py:50 ui/stage.py:101 util/contextmenuitems.py:684
-msgid "Stage"
-msgstr ""
-
-#: ui/stage.py:102
-msgid "Running Stage Command..."
-msgstr ""
-
-#: ui/stage.py:105
-msgid "Completed Stage"
-msgstr ""
-
-#: ui/widget.py:902 ui/widget.py:908 ui/xml/merge.xml.h:11
-msgid "HEAD"
-msgstr ""
-
-#: ui/widget.py:903 ui/log.py:48 ui/log.py:337 ui/log.py:570 ui/browser.py:89
-#: ui/xml/merge.xml.h:19 ui/annotate.py:127 ui/annotate.py:228
-msgid "Revision"
-msgstr ""
-
-#: ui/widget.py:904
-msgid "Branch"
-msgstr ""
-
-#: ui/widget.py:909
-msgid "Number"
-msgstr ""
-
-#: ui/widget.py:912
-msgid "Working Copy"
-msgstr ""
-
-#: ui/widget.py:1103
-msgid "Repository:"
-msgstr ""
-
-#: ui/widget.py:1122
-msgid "Branch:"
-msgstr ""
-
-#: ui/widget.py:1148 ui/xml/dialogs/certificate.xml.h:7
-msgid "Host:"
-msgstr ""
-
-#: ui/widget.py:1249
-msgid "Add line:"
-msgstr ""
-
-#: ui/widget.py:1254 ui/xml/add.xml.h:1 ui/tags.py:273 ui/add.py:152
-#: util/contextmenuitems.py:433
-msgid "Add"
-msgstr ""
-
-#: ui/settings.py:43 ui/xml/settings.xml.h:35
-msgid "Unknown"
-msgstr ""
-
-#: ui/settings.py:45
-msgid "There was an error communicating with the status checker service."
-msgstr ""
-
-#: ui/settings.py:59
-msgid "English"
-msgstr ""
-
-#: ui/settings.py:119
-msgid "Config file:"
-msgstr ""
-
-#: ui/settings.py:297
-msgid "Select a program"
-msgstr ""
-
-#: ui/settings.py:306
-msgid "Are you sure you want to clear your repository paths?"
-msgstr ""
-
-#: ui/settings.py:313
-msgid "Repository paths cleared"
-msgstr ""
-
-#: ui/settings.py:317
-msgid "Are you sure you want to clear your previous messages?"
-msgstr ""
-
-#: ui/settings.py:324
-msgid "Previous messages cleared"
-msgstr ""
-
-#: ui/settings.py:328
-msgid "Are you sure you want to clear your authentication information?"
-msgstr ""
-
-#: ui/settings.py:345
-msgid "Authentication information cleared"
-msgstr ""
-
-#: ui/import.py:40
-#, python-format
-msgid "Import - %s"
-msgstr ""
-
-#: ui/import.py:68
-msgid "The repository URL field is required."
-msgstr ""
-
-#: ui/import.py:80 ui/xml/import.xml.h:3 util/contextmenuitems.py:523
-msgid "Import"
-msgstr ""
-
-#: ui/import.py:81
-msgid "Running Import Command..."
-msgstr ""
-
-#: ui/import.py:89
-msgid "Completed Import"
-msgstr ""
-
-#: ui/markresolved.py:48 ui/markresolved.py:102 util/contextmenuitems.py:468
-msgid "Mark as Resolved"
-msgstr ""
-
-#: ui/markresolved.py:103
-msgid "Running Resolved Command..."
-msgstr ""
-
-#: ui/markresolved.py:106
-msgid "Completed Mark as Resolved"
-msgstr ""
-
-#: ui/log.py:120
-#, python-format
-msgid "Log - %s"
-msgstr ""
-
-#: ui/log.py:271 ui/log.py:272 ui/xml/log.xml.h:7
-msgid "N/A"
-msgstr ""
-
-#: ui/log.py:337 ui/log.py:570 ui/browser.py:89 ui/annotate.py:127
-#: ui/annotate.py:228
-msgid "Author"
-msgstr ""
-
-#: ui/log.py:338 ui/log.py:571 ui/browser.py:89 ui/annotate.py:128
-#: ui/annotate.py:229 ui/dialog.py:52
-msgid "Date"
-msgstr ""
-
-#: ui/log.py:338 ui/log.py:571 ui/xml/dialogs/message_box.xml.h:1
-#: ui/dialog.py:52
-msgid "Message"
-msgstr ""
-
-#: ui/log.py:348 ui/log.py:586 ui/action.py:118
-msgid "Action"
-msgstr ""
-
-#: ui/log.py:349
-msgid "Copy From Path"
-msgstr ""
-
-#: ui/log.py:349
-msgid "Copy From Revision"
-msgstr ""
-
-#: ui/log.py:570
-msgid "Graph"
-msgstr ""
-
-#: ui/log.py:798
-msgid "View diff against working copy"
-msgstr ""
-
-#: ui/log.py:803 util/contextmenuitems.py:397
-msgid "View diff against previous revision"
-msgstr ""
-
-#: ui/log.py:808
-msgid "View diff between revisions"
-msgstr ""
-
-#: ui/log.py:813
-msgid "Compare with working copy"
-msgstr ""
-
-#: ui/log.py:818 util/contextmenuitems.py:415
-msgid "Compare with previous revision"
-msgstr ""
-
-#: ui/log.py:823
-msgid "Compare revisions"
-msgstr ""
-
-#: ui/log.py:829
-msgid "Show changes against previous revision"
-msgstr ""
-
-#: ui/log.py:835
-msgid "Show changes between revisions"
-msgstr ""
-
-#: ui/log.py:840
-msgid "Update to this revision"
-msgstr ""
-
-#: ui/log.py:841
-msgid "Update the selected path to this revision"
-msgstr ""
-
-#: ui/log.py:846 ui/log.py:850
-msgid "Edit author..."
-msgstr ""
-
-#: ui/log.py:854
-msgid "Edit log message..."
-msgstr ""
-
-#: ui/log.py:858
-msgid "Edit revision properties..."
-msgstr ""
-
-#: ui/log.py:1119
-msgid "Edit author"
-msgstr ""
-
-#: ui/log.py:1131
-msgid "Edit log message"
-msgstr ""
-
-#: ui/update.py:53 ui/update.py:97 ui/xml/update.xml.h:6
-#: util/contextmenuitems.py:340
-msgid "Update"
-msgstr ""
-
-#: ui/update.py:54 ui/update.py:98 ui/updateto.py:94
-msgid "Updating..."
-msgstr ""
-
-#: ui/update.py:56 ui/update.py:103 ui/updateto.py:102
-msgid "Completed Update"
-msgstr ""
-
-#: ui/browser.py:89
-msgid "Size"
-msgstr ""
-
-#: ui/browser.py:331
-msgid "Select"
-msgstr ""
-
-#: ui/browser.py:352
-msgid "Create folder..."
-msgstr ""
-
-#: ui/browser.py:357
-msgid "Copy to..."
-msgstr ""
-
-#: ui/browser.py:362
-msgid "Copy URL to clipboard"
-msgstr ""
-
-#: ui/browser.py:367
-msgid "Move to..."
-msgstr ""
-
-#: ui/browser.py:476 ui/rename.py:53 ui/rename.py:85 ui/rename.py:114
-msgid "Rename"
-msgstr ""
-
-#: ui/browser.py:476 ui/rename.py:53
-msgid "New Name:"
-msgstr ""
-
-#: ui/browser.py:537
-msgid "Where do you want to copy the selection?"
-msgstr ""
-
-#: ui/browser.py:538 ui/browser.py:567
-msgid "New Location:"
-msgstr ""
-
-#: ui/browser.py:566
-msgid "Where do you want to move the selection?"
+#: ui/reset.py:113
+msgid "Completed Reset"
 msgstr ""
 
 #: ui/merge.py:94
@@ -478,103 +120,208 @@ msgstr ""
 msgid "Running Merge Command"
 msgstr ""
 
-#: ui/merge.py:98
+#: ui/merge.py:98 ui/merge.py:543
 msgid "Completed Merge"
 msgstr ""
 
-#: ui/merge.py:109
+#: ui/merge.py:109 ui/merge.py:536
 msgid "Merge"
 msgstr ""
 
-#: ui/merge.py:465 ui/merge.py:515
+#: ui/merge.py:451
+msgid "No active branch"
+msgstr ""
+
+#: ui/merge.py:462
 msgid "Author:"
 msgstr ""
 
-#: ui/merge.py:477 ui/merge.py:527 ui/tags.py:165
+#: ui/merge.py:474 ui/tags.py:165
 msgid "Date:"
 msgstr ""
 
-#: ui/merge.py:488 ui/merge.py:538 ui/xml/browser.xml.h:3 ui/tags.py:109
-#: ui/tags.py:176
+#: ui/merge.py:485 ui/xml/browser.xml.h:3 ui/tags.py:109 ui/tags.py:176
 msgid "Revision:"
 msgstr ""
 
-#: ui/merge.py:500 ui/merge.py:550 ui/tags.py:128 ui/tags.py:188
+#: ui/merge.py:497 ui/tags.py:128 ui/tags.py:188
 msgid "Message:"
 msgstr ""
 
-#: ui/property_editor.py:55
+#: ui/merge.py:537
+msgid "Running Merge Command..."
+msgstr ""
+
+#: ui/update.py:53 ui/update.py:97 ui/xml/update.xml.h:6
+#: util/contextmenuitems.py:351
+msgid "Update"
+msgstr ""
+
+#: ui/update.py:54 ui/update.py:98 ui/updateto.py:95
+msgid "Updating..."
+msgstr ""
+
+#: ui/update.py:56 ui/update.py:103 ui/updateto.py:103
+msgid "Completed Update"
+msgstr ""
+
+#: ui/create.py:51
+msgid "Repository successfully created"
+msgstr ""
+
+#: ui/create.py:53
 msgid ""
-"<b>Note:</b> changes to properties are applied instantly. You may review and "
-"undo changes using the context menu for each item.\n"
+"There was an error creating the repository.  Make sure the given folder is "
+"empty."
 msgstr ""
 
-#: ui/property_editor.py:60
+#: ui/create.py:67 util/contextmenuitems.py:656
+msgid "Initialize Repository"
+msgstr ""
+
+#: ui/create.py:68
+msgid "Setting up repository..."
+msgstr ""
+
+#: ui/create.py:70
+msgid "Completed repository setup"
+msgstr ""
+
+#: ui/xml/about.xml.h:1
+msgid "<b>Links</b>"
+msgstr ""
+
+#: ui/xml/about.xml.h:2
+msgid "<b>Version Information</b>"
+msgstr ""
+
+#: ui/xml/about.xml.h:3
+msgid "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
+msgstr ""
+
+#: ui/xml/about.xml.h:4 util/contextmenuitems.py:603
+msgid "About"
+msgstr ""
+
+#: ui/xml/about.xml.h:5
+msgid "Authors:"
+msgstr ""
+
+#: ui/xml/about.xml.h:6
+msgid "Thanks:"
+msgstr ""
+
+#: ui/xml/merge.xml.h:1
+msgid "<b>From URL</b>"
+msgstr ""
+
+#: ui/xml/merge.xml.h:2
+msgid "<b>From: (URL and revision to merge)</b>"
+msgstr ""
+
+#: ui/xml/merge.xml.h:3 ui/xml/update.xml.h:1 ui/xml/reset.xml.h:1
+#: ui/xml/git-update.xml.h:1
+msgid "<b>Options</b>"
+msgstr ""
+
+#: ui/xml/merge.xml.h:4
+msgid "<b>Revision Range</b>"
+msgstr ""
+
+#: ui/xml/merge.xml.h:5
+msgid "<b>To: (URL and revision to merge)</b>"
+msgstr ""
+
+#: ui/xml/merge.xml.h:6
+msgid "<b>URL to merge from</b>"
+msgstr ""
+
+#: ui/xml/merge.xml.h:7
+msgid "<b>Working Copy</b>"
+msgstr ""
+
+#: ui/xml/merge.xml.h:8
 msgid ""
-"Do you want to delete the selected properties from all files and "
-"subdirectories\n"
-"beneath this directory?"
+"Choose this method if you have made some changes to a branch and wish to "
+"merge your changes with another branch."
 msgstr ""
 
-#: ui/property_editor.py:101
-msgid "File is not under version control."
+#: ui/xml/merge.xml.h:9
+msgid ""
+"Choose this method if you wish to merge two different branches into your "
+"working copy."
 msgstr ""
 
-#: ui/property_editor.py:111 ui/properties.py:63
-msgid "Value"
+#: ui/xml/merge.xml.h:10
+msgid "Choose this method if you wish to reintegrate a branch into the trunk."
 msgstr ""
 
-#: ui/property_editor.py:111
-msgid "Reserved"
+#: ui/xml/merge.xml.h:11 ui/widget.py:908 ui/widget.py:914
+msgid "HEAD"
 msgstr ""
 
-#: ui/property_editor.py:155 ui/revprops.py:65 ui/properties.py:158
-msgid "Unable to retrieve properties list"
+#: ui/xml/merge.xml.h:12
+msgid "Ignore ancestry"
 msgstr ""
 
-#: ui/property_editor.py:189
-msgid "Unable to set new value for property."
+#: ui/xml/merge.xml.h:13
+msgid "Merge Assistant"
 msgstr ""
 
-#: ui/relocate.py:77
-msgid "The from and to url fields are both required."
+#: ui/xml/merge.xml.h:14
+msgid "Merge a range of revisions"
 msgstr ""
 
-#: ui/relocate.py:87 ui/xml/relocate.xml.h:3
-msgid "Relocate"
+#: ui/xml/merge.xml.h:15
+msgid "Merge two different trees"
 msgstr ""
 
-#: ui/relocate.py:88
-msgid "Running Relocate Command..."
+#: ui/xml/merge.xml.h:16
+msgid "Only record the merge"
 msgstr ""
 
-#: ui/relocate.py:95
-msgid "Completed Relocate"
+#: ui/xml/merge.xml.h:17 ui/xml/update.xml.h:4
+msgid "Recursive"
 msgstr ""
 
-#: ui/property_page.py:146
-msgid "Repository URL"
+#: ui/xml/merge.xml.h:18
+msgid "Reintegrate a branch"
 msgstr ""
 
-#: ui/xml/property_page.xml.h:1
-msgid "Content status:"
+#: ui/xml/merge.xml.h:19 ui/annotate.py:127 ui/annotate.py:228
+#: ui/widget.py:909 ui/browser.py:89 ui/log.py:48 ui/log.py:337 ui/log.py:570
+msgid "Revision"
 msgstr ""
 
-#: ui/xml/property_page.xml.h:2 ui/xml/dialogs/name_email_prompt.xml.h:4
-#: ui/tags.py:99
-msgid "Name:"
+#: ui/xml/merge.xml.h:20
+msgid "Show log"
 msgstr ""
 
-#: ui/xml/property_page.xml.h:3
-msgid "Property status:"
+#: ui/xml/merge.xml.h:21
+msgid "Test Merge"
 msgstr ""
 
-#: ui/xml/property_page.xml.h:4 util/contextmenuitems.py:352
-msgid "RabbitVCS"
+#: ui/xml/merge.xml.h:22
+msgid ""
+"Use the log dialog to select the revisions that you wish to merge.  Or write "
+"out the revisions manually, each separated by a comma.  You can specify a "
+"revision range by a dash. \n"
+"\n"
+"Example: 4-7,9,11,15-HEAD\n"
+"\n"
+"To merge all revisions, leave the box empty."
 msgstr ""
 
-#: ui/xml/property_page.xml.h:5
-msgid "VCS:"
+#: ui/xml/update.xml.h:2 ui/xml/reset.xml.h:4
+msgid "<b>Revision</b>"
+msgstr ""
+
+#: ui/xml/update.xml.h:3
+msgid "Omit Externals"
+msgstr ""
+
+#: ui/xml/update.xml.h:5
+msgid "Rollback to specified revision number"
 msgstr ""
 
 #: ui/xml/commit.xml.h:1 ui/xml/dialogs/create_folder.xml.h:1
@@ -589,8 +336,13 @@ msgstr ""
 msgid "<b>Commit to:</b>"
 msgstr ""
 
-#: ui/xml/commit.xml.h:5 ui/xml/import.xml.h:5 ui/xml/lock.xml.h:4
-#: ui/xml/dialogs/previous_messages.xml.h:3
+#: ui/xml/commit.xml.h:4 ui/commit.py:307 ui/commit.py:360 ui/commit.py:423
+#: util/contextmenuitems.py:357
+msgid "Commit"
+msgstr ""
+
+#: ui/xml/commit.xml.h:5 ui/xml/lock.xml.h:4
+#: ui/xml/dialogs/previous_messages.xml.h:3 ui/xml/import.xml.h:5
 msgid "Previous Messages"
 msgstr ""
 
@@ -602,20 +354,373 @@ msgstr ""
 msgid "Show unversioned files"
 msgstr ""
 
-#: ui/xml/import.xml.h:1
-msgid "<b>Import Message</b>"
+#: ui/xml/property_editor.xml.h:1
+msgid "<b>Remote URI:</b>"
 msgstr ""
 
-#: ui/xml/import.xml.h:2
-msgid "<b>Repository</b>"
+#: ui/xml/property_editor.xml.h:2
+msgid "<b>Working Copy:</b>"
 msgstr ""
 
-#: ui/xml/import.xml.h:4
-msgid "Include ignored files"
+#: ui/xml/property_editor.xml.h:3
+msgid "Add a new property."
+msgstr ""
+
+#: ui/xml/property_editor.xml.h:4
+msgid "Close this dialog."
+msgstr ""
+
+#: ui/xml/property_editor.xml.h:5
+msgid "Property Editor"
+msgstr ""
+
+#: ui/xml/property_editor.xml.h:6
+msgid "Refresh the list of properties."
+msgstr ""
+
+#: ui/xml/annotate.xml.h:1
+msgid "<b>From Revision</b>"
+msgstr ""
+
+#: ui/xml/annotate.xml.h:2
+msgid "<b>To Revision</b>"
+msgstr ""
+
+#: ui/xml/annotate.xml.h:3
+msgid "Annotate"
+msgstr ""
+
+#: ui/xml/log.xml.h:1
+msgid "100"
+msgstr ""
+
+#: ui/xml/log.xml.h:2
+msgid "<b>Affected File(s)</b> (double-click to compare with base)"
+msgstr ""
+
+#: ui/xml/log.xml.h:3 ui/xml/dialogs/previous_messages.xml.h:1
+msgid "<b>Message</b>"
+msgstr ""
+
+#: ui/xml/log.xml.h:4
+msgid "<b>Revisions Table</b>"
+msgstr ""
+
+#: ui/xml/log.xml.h:5
+msgid "Limit:"
+msgstr ""
+
+#: ui/xml/log.xml.h:6
+msgid "Log"
+msgstr ""
+
+#: ui/xml/log.xml.h:7 ui/log.py:271 ui/log.py:272
+msgid "N/A"
+msgstr ""
+
+#: ui/xml/log.xml.h:8
+msgid "Refresh"
+msgstr ""
+
+#: ui/xml/log.xml.h:9
+msgid "Showing Revisions:"
+msgstr ""
+
+#: ui/xml/log.xml.h:10
+msgid "Stop on copy"
+msgstr ""
+
+#: ui/xml/log.xml.h:11 ui/dialog.py:136
+msgid "to"
 msgstr ""
 
 #: ui/xml/notification.xml.h:1
 msgid "Notification Messages"
+msgstr ""
+
+#: ui/xml/properties.xml.h:1
+msgid "<b>Properties for:</b>"
+msgstr ""
+
+#: ui/xml/properties.xml.h:2
+msgid "<i>Selected properties will be applied recursively.</i>"
+msgstr ""
+
+#: ui/xml/properties.xml.h:3 util/contextmenuitems.py:472
+msgid "Delete"
+msgstr ""
+
+#: ui/xml/properties.xml.h:4
+msgid "Delete properties recursively"
+msgstr ""
+
+#: ui/xml/properties.xml.h:5
+msgid "Edit..."
+msgstr ""
+
+#: ui/xml/properties.xml.h:6
+msgid "New..."
+msgstr ""
+
+#: ui/xml/properties.xml.h:7 util/contextmenuitems.py:585
+msgid "Properties"
+msgstr ""
+
+#: ui/xml/properties.xml.h:8
+msgid "URL/Path:"
+msgstr ""
+
+#: ui/xml/lock.xml.h:1
+msgid "<b>Files to lock</b>"
+msgstr ""
+
+#: ui/xml/lock.xml.h:2
+msgid "<b>Please describe why you are locking these files</b>"
+msgstr ""
+
+#: ui/xml/lock.xml.h:3
+msgid "Lock Files"
+msgstr ""
+
+#: ui/xml/lock.xml.h:6
+msgid "Steal the locks"
+msgstr ""
+
+#: ui/xml/browser.xml.h:1
+msgid "Load/Refresh"
+msgstr ""
+
+#: ui/xml/browser.xml.h:2 util/contextmenuitems.py:383
+msgid "Repository Browser"
+msgstr ""
+
+#: ui/xml/browser.xml.h:4
+msgid "URL:"
+msgstr ""
+
+#: ui/xml/pull.xml.h:1
+msgid "<b>Pull Information</b>"
+msgstr ""
+
+#: ui/xml/pull.xml.h:2 ui/xml/git-update.xml.h:2
+msgid "Merge changes into local branch"
+msgstr ""
+
+#: ui/xml/pull.xml.h:3
+msgid "Pull"
+msgstr ""
+
+#: ui/xml/ignore.xml.h:1
+msgid "<b>Ignore and exclude files from being tracked</b>"
+msgstr ""
+
+#: ui/xml/ignore.xml.h:2
+msgid "Ignore"
+msgstr ""
+
+#: ui/xml/dialogs/name_email_prompt.xml.h:1
+msgid "<b>Enter Name and Email Details</b>"
+msgstr ""
+
+#: ui/xml/dialogs/name_email_prompt.xml.h:2
+msgid "Email:"
+msgstr ""
+
+#: ui/xml/dialogs/name_email_prompt.xml.h:3
+msgid "Name and Email"
+msgstr ""
+
+#: ui/xml/dialogs/name_email_prompt.xml.h:4 ui/xml/property_page.xml.h:2
+#: ui/tags.py:99
+msgid "Name:"
+msgstr ""
+
+#: ui/xml/dialogs/certificate.xml.h:1
+msgid "<b>Certificate Details</b>"
+msgstr ""
+
+#: ui/xml/dialogs/certificate.xml.h:2
+msgid "Accept Forever"
+msgstr ""
+
+#: ui/xml/dialogs/certificate.xml.h:3
+msgid "Accept Once"
+msgstr ""
+
+#: ui/xml/dialogs/certificate.xml.h:4
+msgid "Check Certificate"
+msgstr ""
+
+#: ui/xml/dialogs/certificate.xml.h:5
+msgid "Deny"
+msgstr ""
+
+#: ui/xml/dialogs/certificate.xml.h:6
+msgid "Fingerprint:"
+msgstr ""
+
+#: ui/xml/dialogs/certificate.xml.h:7 ui/widget.py:1187
+msgid "Host:"
+msgstr ""
+
+#: ui/xml/dialogs/certificate.xml.h:8
+msgid "Issuer:"
+msgstr ""
+
+#: ui/xml/dialogs/certificate.xml.h:9
+#: ui/xml/dialogs/ssl_client_cert_prompt.xml.h:3
+msgid "Realm:"
+msgstr ""
+
+#: ui/xml/dialogs/certificate.xml.h:10
+msgid "Valid:"
+msgstr ""
+
+#: ui/xml/dialogs/conflict_decision.xml.h:1
+msgid "<b>A conflict was found in the following file:</b>"
+msgstr ""
+
+#: ui/xml/dialogs/conflict_decision.xml.h:2
+msgid "Accept Mine"
+msgstr ""
+
+#: ui/xml/dialogs/conflict_decision.xml.h:3
+msgid "Accept Theirs"
+msgstr ""
+
+#: ui/xml/dialogs/conflict_decision.xml.h:4
+msgid "After the editing conflict, mark the file as resolved."
+msgstr ""
+
+#: ui/xml/dialogs/conflict_decision.xml.h:5
+msgid "Cancel"
+msgstr ""
+
+#: ui/xml/dialogs/conflict_decision.xml.h:6
+msgid "Edit Conflicts"
+msgstr ""
+
+#: ui/xml/dialogs/conflict_decision.xml.h:7
+msgid "Merge Manually"
+msgstr ""
+
+#: ui/xml/dialogs/error_notification.xml.h:1
+msgid "<span weight=\"bold\" size=\"xx-large\">RabbitVCS Error</span>"
+msgstr ""
+
+#: ui/xml/dialogs/error_notification.xml.h:2
+msgid "RabbitVCS Error"
+msgstr ""
+
+#: ui/xml/dialogs/confirmation.xml.h:1 ui/dialog.py:297
+msgid "Are you sure you want to continue?"
+msgstr ""
+
+#: ui/xml/dialogs/confirmation.xml.h:2
+msgid "Confirmation"
+msgstr ""
+
+#: ui/xml/dialogs/ssl_client_cert_prompt.xml.h:1
+msgid "<b>Please provide your ssl certification file</b>"
+msgstr ""
+
+#: ui/xml/dialogs/ssl_client_cert_prompt.xml.h:2
+msgid "Path:"
+msgstr ""
+
+#: ui/xml/dialogs/ssl_client_cert_prompt.xml.h:4
+msgid "SSL Client Certification"
+msgstr ""
+
+#: ui/xml/dialogs/ssl_client_cert_prompt.xml.h:5
+msgid "Save Authentication"
+msgstr ""
+
+#: ui/xml/dialogs/delete_confirmation.xml.h:2
+msgid ""
+"<span size=\"large\"><b>Are you sure you want to delete %item%?</b></span>"
+msgstr ""
+
+#: ui/xml/dialogs/delete_confirmation.xml.h:3
+msgid "Delete Confirmation"
+msgstr ""
+
+#: ui/xml/dialogs/delete_confirmation.xml.h:4
+msgid "The item(s) will be sent to the trash can."
+msgstr ""
+
+#: ui/xml/dialogs/message_box.xml.h:1 ui/dialog.py:52 ui/log.py:338
+#: ui/log.py:571
+msgid "Message"
+msgstr ""
+
+#: ui/xml/dialogs/loading.xml.h:1 ui/commit.py:124 ui/add.py:94
+#: ui/unlock.py:85 ui/lock.py:111
+msgid "Loading..."
+msgstr ""
+
+#: ui/xml/dialogs/property.xml.h:1
+msgid "<b>Edit Property Details</b>"
+msgstr ""
+
+#: ui/xml/dialogs/property.xml.h:2
+msgid "Apply property recursively"
+msgstr ""
+
+#: ui/xml/dialogs/property.xml.h:3
+msgid "Property"
+msgstr ""
+
+#: ui/xml/dialogs/property.xml.h:4
+msgid "Property:"
+msgstr ""
+
+#: ui/xml/dialogs/property.xml.h:5
+msgid "Value:"
+msgstr ""
+
+#: ui/xml/dialogs/create_folder.xml.h:2
+msgid "<b>Folder Name</b>"
+msgstr ""
+
+#: ui/xml/dialogs/create_folder.xml.h:3
+msgid "Create Folder..."
+msgstr ""
+
+#: ui/xml/dialogs/previous_messages.xml.h:2
+msgid "<b>Previous Messages</b>"
+msgstr ""
+
+#: ui/xml/clean.xml.h:1
+msgid "<b>Clean your Repository</b>"
+msgstr ""
+
+#: ui/xml/clean.xml.h:2 ui/clean.py:75 util/contextmenuitems.py:691
+msgid "Clean"
+msgstr ""
+
+#: ui/xml/clean.xml.h:3
+msgid "Dry run"
+msgstr ""
+
+#: ui/xml/clean.xml.h:4
+msgid "Force"
+msgstr ""
+
+#: ui/xml/clean.xml.h:5
+msgid "Remove directories"
+msgstr ""
+
+#: ui/xml/clean.xml.h:6
+msgid "Remove ignored files, too"
+msgstr ""
+
+#: ui/xml/clean.xml.h:7
+msgid "Remove only ignored files"
+msgstr ""
+
+#: ui/xml/clean.xml.h:8
+msgid "Remove untracked files from the working tree"
 msgstr ""
 
 #: ui/xml/settings.xml.h:1
@@ -726,7 +831,7 @@ msgstr ""
 msgid "Saved Data"
 msgstr ""
 
-#: ui/xml/settings.xml.h:28 util/contextmenuitems.py:581
+#: ui/xml/settings.xml.h:28 util/contextmenuitems.py:597
 msgid "Settings"
 msgstr ""
 
@@ -754,478 +859,13 @@ msgstr ""
 msgid "Type:"
 msgstr ""
 
-#: ui/xml/lock.xml.h:1
-msgid "<b>Files to lock</b>"
+#: ui/xml/settings.xml.h:35 ui/settings.py:43
+msgid "Unknown"
 msgstr ""
 
-#: ui/xml/lock.xml.h:2
-msgid "<b>Please describe why you are locking these files</b>"
-msgstr ""
-
-#: ui/xml/lock.xml.h:3
-msgid "Lock Files"
-msgstr ""
-
-#: ui/xml/lock.xml.h:6
-msgid "Steal the locks"
-msgstr ""
-
-#: ui/xml/properties.xml.h:1
-msgid "<b>Properties for:</b>"
-msgstr ""
-
-#: ui/xml/properties.xml.h:2
-msgid "<i>Selected properties will be applied recursively.</i>"
-msgstr ""
-
-#: ui/xml/properties.xml.h:3 util/contextmenuitems.py:456
-msgid "Delete"
-msgstr ""
-
-#: ui/xml/properties.xml.h:4
-msgid "Delete properties recursively"
-msgstr ""
-
-#: ui/xml/properties.xml.h:5
-msgid "Edit..."
-msgstr ""
-
-#: ui/xml/properties.xml.h:6
-msgid "New..."
-msgstr ""
-
-#: ui/xml/properties.xml.h:7 util/contextmenuitems.py:569
-msgid "Properties"
-msgstr ""
-
-#: ui/xml/properties.xml.h:8
-msgid "URL/Path:"
-msgstr ""
-
-#: ui/xml/pull.xml.h:1
-msgid "<b>Pull Information</b>"
-msgstr ""
-
-#: ui/xml/pull.xml.h:2 ui/xml/git-update.xml.h:2
-msgid "Merge changes into local branch"
-msgstr ""
-
-#: ui/xml/pull.xml.h:3
-msgid "Pull"
-msgstr ""
-
-#: ui/xml/ignore.xml.h:1
-msgid "<b>Ignore and exclude files from being tracked</b>"
-msgstr ""
-
-#: ui/xml/ignore.xml.h:2
-msgid "Ignore"
-msgstr ""
-
-#: ui/xml/property_editor.xml.h:1
-msgid "<b>Remote URI:</b>"
-msgstr ""
-
-#: ui/xml/property_editor.xml.h:2
-msgid "<b>Working Copy:</b>"
-msgstr ""
-
-#: ui/xml/property_editor.xml.h:3
-msgid "Add a new property."
-msgstr ""
-
-#: ui/xml/property_editor.xml.h:4
-msgid "Close this dialog."
-msgstr ""
-
-#: ui/xml/property_editor.xml.h:5
-msgid "Property Editor"
-msgstr ""
-
-#: ui/xml/property_editor.xml.h:6
-msgid "Refresh the list of properties."
-msgstr ""
-
-#: ui/xml/about.xml.h:1
-msgid "<b>Links</b>"
-msgstr ""
-
-#: ui/xml/about.xml.h:2
-msgid "<b>Version Information</b>"
-msgstr ""
-
-#: ui/xml/about.xml.h:3
-msgid "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
-msgstr ""
-
-#: ui/xml/about.xml.h:4 util/contextmenuitems.py:587
-msgid "About"
-msgstr ""
-
-#: ui/xml/about.xml.h:5
-msgid "Authors:"
-msgstr ""
-
-#: ui/xml/about.xml.h:6
-msgid "Thanks:"
-msgstr ""
-
-#: ui/xml/relocate.xml.h:1
-msgid "<b>Change the repository of your working copy</b>"
-msgstr ""
-
-#: ui/xml/relocate.xml.h:2
-msgid "From:"
-msgstr ""
-
-#: ui/xml/relocate.xml.h:4
-msgid "To:"
-msgstr ""
-
-#: ui/xml/merge.xml.h:1
-msgid "<b>From URL</b>"
-msgstr ""
-
-#: ui/xml/merge.xml.h:2
-msgid "<b>From: (URL and revision to merge)</b>"
-msgstr ""
-
-#: ui/xml/merge.xml.h:3 ui/xml/update.xml.h:1 ui/xml/git-update.xml.h:1
-#: ui/xml/reset.xml.h:1
-msgid "<b>Options</b>"
-msgstr ""
-
-#: ui/xml/merge.xml.h:4
-msgid "<b>Revision Range</b>"
-msgstr ""
-
-#: ui/xml/merge.xml.h:5
-msgid "<b>To: (URL and revision to merge)</b>"
-msgstr ""
-
-#: ui/xml/merge.xml.h:6
-msgid "<b>URL to merge from</b>"
-msgstr ""
-
-#: ui/xml/merge.xml.h:7
-msgid "<b>Working Copy</b>"
-msgstr ""
-
-#: ui/xml/merge.xml.h:8
-msgid ""
-"Choose this method if you have made some changes to a branch and wish to "
-"merge your changes with another branch."
-msgstr ""
-
-#: ui/xml/merge.xml.h:9
-msgid ""
-"Choose this method if you wish to merge two different branches into your "
-"working copy."
-msgstr ""
-
-#: ui/xml/merge.xml.h:10
-msgid "Choose this method if you wish to reintegrate a branch into the trunk."
-msgstr ""
-
-#: ui/xml/merge.xml.h:12
-msgid "Ignore ancestry"
-msgstr ""
-
-#: ui/xml/merge.xml.h:13
-msgid "Merge Assistant"
-msgstr ""
-
-#: ui/xml/merge.xml.h:14
-msgid "Merge a range of revisions"
-msgstr ""
-
-#: ui/xml/merge.xml.h:15
-msgid "Merge two different trees"
-msgstr ""
-
-#: ui/xml/merge.xml.h:16
-msgid "Only record the merge"
-msgstr ""
-
-#: ui/xml/merge.xml.h:17 ui/xml/update.xml.h:4
-msgid "Recursive"
-msgstr ""
-
-#: ui/xml/merge.xml.h:18
-msgid "Reintegrate a branch"
-msgstr ""
-
-#: ui/xml/merge.xml.h:20
-msgid "Show log"
-msgstr ""
-
-#: ui/xml/merge.xml.h:21
-msgid "Test Merge"
-msgstr ""
-
-#: ui/xml/merge.xml.h:22
-msgid ""
-"Use the log dialog to select the revisions that you wish to merge.  Or write "
-"out the revisions manually, each separated by a comma.  You can specify a "
-"revision range by a dash. \n"
-"\n"
-"Example: 4-7,9,11,15-HEAD\n"
-"\n"
-"To merge all revisions, leave the box empty."
-msgstr ""
-
-#: ui/xml/manager.xml.h:1
-msgid "label"
-msgstr ""
-
-#: ui/xml/log.xml.h:1
-msgid "100"
-msgstr ""
-
-#: ui/xml/log.xml.h:2
-msgid "<b>Affected File(s)</b> (double-click to compare with base)"
-msgstr ""
-
-#: ui/xml/log.xml.h:3 ui/xml/dialogs/previous_messages.xml.h:1
-msgid "<b>Message</b>"
-msgstr ""
-
-#: ui/xml/log.xml.h:4
-msgid "<b>Revisions Table</b>"
-msgstr ""
-
-#: ui/xml/log.xml.h:5
-msgid "Limit:"
-msgstr ""
-
-#: ui/xml/log.xml.h:6
-msgid "Log"
-msgstr ""
-
-#: ui/xml/log.xml.h:8
-msgid "Refresh"
-msgstr ""
-
-#: ui/xml/log.xml.h:9
-msgid "Showing Revisions:"
-msgstr ""
-
-#: ui/xml/log.xml.h:10
-msgid "Stop on copy"
-msgstr ""
-
-#: ui/xml/log.xml.h:11 ui/dialog.py:136
-msgid "to"
-msgstr ""
-
-#: ui/xml/dialogs/conflict_decision.xml.h:1
-msgid "<b>A conflict was found in the following file:</b>"
-msgstr ""
-
-#: ui/xml/dialogs/conflict_decision.xml.h:2
-msgid "Accept Mine"
-msgstr ""
-
-#: ui/xml/dialogs/conflict_decision.xml.h:3
-msgid "Accept Theirs"
-msgstr ""
-
-#: ui/xml/dialogs/conflict_decision.xml.h:4
-msgid "After the editing conflict, mark the file as resolved."
-msgstr ""
-
-#: ui/xml/dialogs/conflict_decision.xml.h:5
-msgid "Cancel"
-msgstr ""
-
-#: ui/xml/dialogs/conflict_decision.xml.h:6
-msgid "Edit Conflicts"
-msgstr ""
-
-#: ui/xml/dialogs/conflict_decision.xml.h:7
-msgid "Merge Manually"
-msgstr ""
-
-#: ui/xml/dialogs/create_folder.xml.h:2
-msgid "<b>Folder Name</b>"
-msgstr ""
-
-#: ui/xml/dialogs/create_folder.xml.h:3
-msgid "Create Folder..."
-msgstr ""
-
-#: ui/xml/dialogs/property.xml.h:1
-msgid "<b>Edit Property Details</b>"
-msgstr ""
-
-#: ui/xml/dialogs/property.xml.h:2
-msgid "Apply property recursively"
-msgstr ""
-
-#: ui/xml/dialogs/property.xml.h:3
-msgid "Property"
-msgstr ""
-
-#: ui/xml/dialogs/property.xml.h:4
-msgid "Property:"
-msgstr ""
-
-#: ui/xml/dialogs/property.xml.h:5
-msgid "Value:"
-msgstr ""
-
-#: ui/xml/dialogs/delete_confirmation.xml.h:2
-msgid ""
-"<span size=\"large\"><b>Are you sure you want to delete %item%?</b></span>"
-msgstr ""
-
-#: ui/xml/dialogs/delete_confirmation.xml.h:3
-msgid "Delete Confirmation"
-msgstr ""
-
-#: ui/xml/dialogs/delete_confirmation.xml.h:4
-msgid "The item(s) will be sent to the trash can."
-msgstr ""
-
-#: ui/xml/dialogs/name_email_prompt.xml.h:1
-msgid "<b>Enter Name and Email Details</b>"
-msgstr ""
-
-#: ui/xml/dialogs/name_email_prompt.xml.h:2
-msgid "Email:"
-msgstr ""
-
-#: ui/xml/dialogs/name_email_prompt.xml.h:3
-msgid "Name and Email"
-msgstr ""
-
-#: ui/xml/dialogs/error_notification.xml.h:1
-msgid "<span weight=\"bold\" size=\"xx-large\">RabbitVCS Error</span>"
-msgstr ""
-
-#: ui/xml/dialogs/error_notification.xml.h:2
-msgid "RabbitVCS Error"
-msgstr ""
-
-#: ui/xml/dialogs/ssl_client_cert_prompt.xml.h:1
-msgid "<b>Please provide your ssl certification file</b>"
-msgstr ""
-
-#: ui/xml/dialogs/ssl_client_cert_prompt.xml.h:2
-msgid "Path:"
-msgstr ""
-
-#: ui/xml/dialogs/ssl_client_cert_prompt.xml.h:3
-#: ui/xml/dialogs/certificate.xml.h:9
-msgid "Realm:"
-msgstr ""
-
-#: ui/xml/dialogs/ssl_client_cert_prompt.xml.h:4
-msgid "SSL Client Certification"
-msgstr ""
-
-#: ui/xml/dialogs/ssl_client_cert_prompt.xml.h:5
-msgid "Save Authentication"
-msgstr ""
-
-#: ui/xml/dialogs/previous_messages.xml.h:2
-msgid "<b>Previous Messages</b>"
-msgstr ""
-
-#: ui/xml/dialogs/certificate.xml.h:1
-msgid "<b>Certificate Details</b>"
-msgstr ""
-
-#: ui/xml/dialogs/certificate.xml.h:2
-msgid "Accept Forever"
-msgstr ""
-
-#: ui/xml/dialogs/certificate.xml.h:3
-msgid "Accept Once"
-msgstr ""
-
-#: ui/xml/dialogs/certificate.xml.h:4
-msgid "Check Certificate"
-msgstr ""
-
-#: ui/xml/dialogs/certificate.xml.h:5
-msgid "Deny"
-msgstr ""
-
-#: ui/xml/dialogs/certificate.xml.h:6
-msgid "Fingerprint:"
-msgstr ""
-
-#: ui/xml/dialogs/certificate.xml.h:8
-msgid "Issuer:"
-msgstr ""
-
-#: ui/xml/dialogs/certificate.xml.h:10
-msgid "Valid:"
-msgstr ""
-
-#: ui/xml/dialogs/confirmation.xml.h:1 ui/dialog.py:297
-msgid "Are you sure you want to continue?"
-msgstr ""
-
-#: ui/xml/dialogs/confirmation.xml.h:2
-msgid "Confirmation"
-msgstr ""
-
-#: ui/xml/clean.xml.h:1
-msgid "<b>Clean your Repository</b>"
-msgstr ""
-
-#: ui/xml/clean.xml.h:2 ui/clean.py:75 util/contextmenuitems.py:675
-msgid "Clean"
-msgstr ""
-
-#: ui/xml/clean.xml.h:3
-msgid "Dry run"
-msgstr ""
-
-#: ui/xml/clean.xml.h:4
-msgid "Force"
-msgstr ""
-
-#: ui/xml/clean.xml.h:5
-msgid "Remove directories"
-msgstr ""
-
-#: ui/xml/clean.xml.h:6
-msgid "Remove ignored files, too"
-msgstr ""
-
-#: ui/xml/clean.xml.h:7
-msgid "Remove only ignored files"
-msgstr ""
-
-#: ui/xml/clean.xml.h:8
-msgid "Remove untracked files from the working tree"
-msgstr ""
-
-#: ui/xml/browser.xml.h:1
-msgid "Load/Refresh"
-msgstr ""
-
-#: ui/xml/browser.xml.h:2 util/contextmenuitems.py:367
-msgid "Repository Browser"
-msgstr ""
-
-#: ui/xml/browser.xml.h:4
-msgid "URL:"
-msgstr ""
-
-#: ui/xml/update.xml.h:2 ui/xml/reset.xml.h:4
-msgid "<b>Revision</b>"
-msgstr ""
-
-#: ui/xml/update.xml.h:3
-msgid "Omit Externals"
-msgstr ""
-
-#: ui/xml/update.xml.h:5
-msgid "Rollback to specified revision number"
+#: ui/xml/add.xml.h:1 ui/widget.py:1301 ui/add.py:178 ui/add.py:203
+#: ui/tags.py:273 util/contextmenuitems.py:449
+msgid "Add"
 msgstr ""
 
 #: ui/xml/cleanup.xml.h:1 ui/cleanup.py:56
@@ -1237,10 +877,6 @@ msgid ""
 "Cleanup Requested....\n"
 "\n"
 "Begin working copy cleanup?"
-msgstr ""
-
-#: ui/xml/git-update.xml.h:3
-msgid "Update Local Repository"
 msgstr ""
 
 #: ui/xml/reset.xml.h:2
@@ -1279,24 +915,68 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: ui/xml/reset.xml.h:14 ui/reset.py:105 util/contextmenuitems.py:679
-msgid "Reset"
-msgstr ""
-
 #: ui/xml/reset.xml.h:15
 msgid "Reset current HEAD to specified state."
 msgstr ""
 
-#: ui/xml/annotate.xml.h:1
-msgid "<b>From Revision</b>"
+#: ui/xml/import.xml.h:1
+msgid "<b>Import Message</b>"
 msgstr ""
 
-#: ui/xml/annotate.xml.h:2
-msgid "<b>To Revision</b>"
+#: ui/xml/import.xml.h:2
+msgid "<b>Repository</b>"
 msgstr ""
 
-#: ui/xml/annotate.xml.h:3
-msgid "Annotate"
+#: ui/xml/import.xml.h:3 ui/import.py:80 util/contextmenuitems.py:539
+msgid "Import"
+msgstr ""
+
+#: ui/xml/import.xml.h:4
+msgid "Include ignored files"
+msgstr ""
+
+#: ui/xml/git-update.xml.h:3
+msgid "Update Local Repository"
+msgstr ""
+
+#: ui/xml/manager.xml.h:1
+msgid "label"
+msgstr ""
+
+#: ui/xml/relocate.xml.h:1
+msgid "<b>Change the repository of your working copy</b>"
+msgstr ""
+
+#: ui/xml/relocate.xml.h:2
+msgid "From:"
+msgstr ""
+
+#: ui/xml/relocate.xml.h:3 ui/relocate.py:87
+msgid "Relocate"
+msgstr ""
+
+#: ui/xml/relocate.xml.h:4
+msgid "To:"
+msgstr ""
+
+#: ui/xml/property_page.xml.h:1
+msgid "Content status:"
+msgstr ""
+
+#: ui/xml/property_page.xml.h:3
+msgid "Property status:"
+msgstr ""
+
+#: ui/xml/property_page.xml.h:4 util/contextmenuitems.py:363
+msgid "RabbitVCS"
+msgstr ""
+
+#: ui/xml/property_page.xml.h:5
+msgid "VCS:"
+msgstr ""
+
+#: ui/revprops.py:65 ui/property_editor.py:155 ui/properties.py:158
+msgid "Unable to retrieve properties list"
 msgstr ""
 
 #: ui/annotate.py:57
@@ -1312,6 +992,16 @@ msgstr ""
 msgid "Line"
 msgstr ""
 
+#: ui/annotate.py:127 ui/annotate.py:228 ui/browser.py:89 ui/log.py:337
+#: ui/log.py:570
+msgid "Author"
+msgstr ""
+
+#: ui/annotate.py:128 ui/annotate.py:229 ui/browser.py:89 ui/dialog.py:52
+#: ui/log.py:338 ui/log.py:571
+msgid "Date"
+msgstr ""
+
 #: ui/annotate.py:128 ui/annotate.py:229
 msgid "Text"
 msgstr ""
@@ -1320,87 +1010,261 @@ msgstr ""
 msgid "The from revision field must be an integer"
 msgstr ""
 
-#: ui/cleanup.py:55 util/contextmenuitems.py:497
-msgid "Cleanup"
+#: ui/widget.py:910
+msgid "Branch"
 msgstr ""
 
-#: ui/cleanup.py:58
-msgid "Completed Cleanup"
+#: ui/widget.py:915
+msgid "Number"
 msgstr ""
 
-#: ui/export.py:45 ui/export.py:124
+#: ui/widget.py:918
+msgid "Working Copy"
+msgstr ""
+
+#: ui/widget.py:1142
+msgid "Repository:"
+msgstr ""
+
+#: ui/widget.py:1161
+msgid "Branch:"
+msgstr ""
+
+#: ui/widget.py:1296
+msgid "Add line:"
+msgstr ""
+
+#: ui/property_editor.py:55
+msgid ""
+"<b>Note:</b> changes to properties are applied instantly. You may review and "
+"undo changes using the context menu for each item.\n"
+msgstr ""
+
+#: ui/property_editor.py:60
+msgid ""
+"Do you want to delete the selected properties from all files and "
+"subdirectories\n"
+"beneath this directory?"
+msgstr ""
+
+#: ui/property_editor.py:101
+msgid "File is not under version control."
+msgstr ""
+
+#: ui/property_editor.py:111 ui/properties.py:63 ui/remotes.py:66
+msgid "Name"
+msgstr ""
+
+#: ui/property_editor.py:111 ui/properties.py:63
+msgid "Value"
+msgstr ""
+
+#: ui/property_editor.py:111
+msgid "Reserved"
+msgstr ""
+
+#: ui/property_editor.py:111 ui/revert.py:129
+msgid "Status"
+msgstr ""
+
+#: ui/property_editor.py:189
+msgid "Unable to set new value for property."
+msgstr ""
+
+#: ui/commit.py:80 ui/revert.py:62 ui/revert.py:128 ui/markresolved.py:61
+#: ui/add.py:71 ui/unlock.py:61 ui/action.py:122 ui/browser.py:89
+#: ui/lock.py:70 ui/stage.py:63 ui/log.py:348 ui/log.py:586 ui/unstage.py:63
+msgid "Path"
+msgstr ""
+
+#: ui/commit.py:80 ui/revert.py:62 ui/revert.py:128 ui/markresolved.py:61
+#: ui/add.py:71 ui/unlock.py:61 ui/lock.py:70 ui/stage.py:63 ui/unstage.py:63
+msgid "Extension"
+msgstr ""
+
+#: ui/commit.py:81 ui/revert.py:63 ui/markresolved.py:62
+msgid "Text Status"
+msgstr ""
+
+#: ui/commit.py:81 ui/revert.py:63 ui/markresolved.py:62
+msgid "Property Status"
+msgstr ""
+
+#: ui/commit.py:131 ui/add.py:97 ui/unlock.py:109 ui/lock.py:114
 #, python-format
-msgid "Export - %s"
+msgid "Found %d item(s)"
 msgstr ""
 
-#: ui/export.py:72 ui/export.py:141 ui/clone.py:57
-msgid "The repository URL and destination path are both required fields."
+#: ui/commit.py:308 ui/commit.py:361 ui/commit.py:424
+msgid "Running Commit Command..."
 msgstr ""
 
-#: ui/export.py:92 ui/export.py:161
-msgid "Export"
+#: ui/commit.py:314 ui/commit.py:370 ui/commit.py:433
+msgid "Completed Commit"
 msgstr ""
 
-#: ui/export.py:93 ui/export.py:162
-msgid "Running Export Command..."
+#: ui/commit.py:387
+msgid "Close Branch"
 msgstr ""
 
-#: ui/export.py:104 ui/export.py:170
-msgid "Completed Export"
+#: ui/revert.py:50 ui/revert.py:103 ui/revert.py:115 ui/revert.py:168
+#: util/contextmenuitems.py:478
+msgid "Revert"
 msgstr ""
 
-#: ui/action.py:118
-msgid "Mime Type"
+#: ui/revert.py:104 ui/revert.py:169
+msgid "Running Revert Command..."
 msgstr ""
 
-#: ui/action.py:355
-msgid "Finished"
+#: ui/revert.py:106 ui/revert.py:171
+msgid "Completed Revert"
 msgstr ""
 
-#: ui/action.py:359
+#: ui/settings.py:45
+msgid "There was an error communicating with the status checker service."
+msgstr ""
+
+#: ui/settings.py:59
+msgid "English"
+msgstr ""
+
+#: ui/settings.py:119
+msgid "Config file:"
+msgstr ""
+
+#: ui/settings.py:297
+msgid "Select a program"
+msgstr ""
+
+#: ui/settings.py:306
+msgid "Are you sure you want to clear your repository paths?"
+msgstr ""
+
+#: ui/settings.py:313
+msgid "Repository paths cleared"
+msgstr ""
+
+#: ui/settings.py:317
+msgid "Are you sure you want to clear your previous messages?"
+msgstr ""
+
+#: ui/settings.py:324
+msgid "Previous messages cleared"
+msgstr ""
+
+#: ui/settings.py:328
+msgid "Are you sure you want to clear your authentication information?"
+msgstr ""
+
+#: ui/settings.py:345
+msgid "Authentication information cleared"
+msgstr ""
+
+#: ui/markresolved.py:48 ui/markresolved.py:102 util/contextmenuitems.py:484
+msgid "Mark as Resolved"
+msgstr ""
+
+#: ui/markresolved.py:103
+msgid "Running Resolved Command..."
+msgstr ""
+
+#: ui/markresolved.py:106
+msgid "Completed Mark as Resolved"
+msgstr ""
+
+#: ui/__init__.py:55
+msgid ""
+"You must specify a version control system using the --vcs [svn|git] option"
+msgstr ""
+
+#: ui/add.py:179 ui/add.py:204
+msgid "Running Add Command..."
+msgstr ""
+
+#: ui/add.py:181 ui/add.py:206
+msgid "Completed Add"
+msgstr ""
+
+#: ui/relocate.py:77
+msgid "The from and to url fields are both required."
+msgstr ""
+
+#: ui/relocate.py:88
+msgid "Running Relocate Command..."
+msgstr ""
+
+#: ui/relocate.py:95
+msgid "Completed Relocate"
+msgstr ""
+
+#: ui/property_page.py:146
+msgid "Repository URL"
+msgstr ""
+
+#: ui/tags.py:62
+msgid "Tag Manager"
+msgstr ""
+
+#: ui/tags.py:63
+msgid "<b>Tags</b>"
+msgstr ""
+
+#: ui/tags.py:74
+msgid "Tag"
+msgstr ""
+
+#: ui/tags.py:145 ui/tags.py:284
+msgid "Save"
+msgstr ""
+
+#: ui/tags.py:153
+msgid "Tagger:"
+msgstr ""
+
+#: ui/tags.py:230 ui/remotes.py:128
 #, python-format
-msgid "%s - Finished"
+msgid "Are you sure you want to delete %s?"
 msgstr ""
 
-#: ui/action.py:382
-msgid "Log Message"
+#: ui/tags.py:275
+msgid "<b>Add Tag</b>"
 msgstr ""
 
-#: ui/updateto.py:82
-msgid "Rollback To Revision"
+#: ui/tags.py:293
+msgid "<b>Tag Detail</b>"
 msgstr ""
 
-#: ui/updateto.py:83
-msgid "Rolling Back..."
+#: ui/ignore.py:100
+msgid "Ignore file:"
 msgstr ""
 
-#: ui/updateto.py:91
-msgid "Completed Rollback"
-msgstr ""
-
-#: ui/updateto.py:93
-msgid "Update To Revision"
-msgstr ""
-
-#: ui/updateto.py:138
-msgid "Checkout"
-msgstr ""
-
-#: ui/updateto.py:139
+#: ui/import.py:40
 #, python-format
-msgid "Checking out %s..."
+msgid "Import - %s"
 msgstr ""
 
-#: ui/updateto.py:145
-msgid "Completed Checkout"
+#: ui/import.py:68
+msgid "The repository URL field is required."
 msgstr ""
 
-#: ui/reset.py:106
-msgid "Running Reset Command..."
+#: ui/import.py:81
+msgid "Running Import Command..."
 msgstr ""
 
-#: ui/reset.py:113
-msgid "Completed Reset"
+#: ui/import.py:89
+msgid "Completed Import"
+msgstr ""
+
+#: ui/unlock.py:48 ui/unlock.py:127
+msgid "Unlock"
+msgstr ""
+
+#: ui/unlock.py:128
+msgid "Running Unlock Command..."
+msgstr ""
+
+#: ui/unlock.py:131
+msgid "Completed Unlock"
 msgstr ""
 
 #: ui/properties.py:55
@@ -1410,6 +1274,99 @@ msgstr ""
 
 #: ui/properties.py:179
 msgid "There was a problem saving your properties."
+msgstr ""
+
+#: ui/action.py:122 ui/log.py:348 ui/log.py:586
+msgid "Action"
+msgstr ""
+
+#: ui/action.py:122
+msgid "Mime Type"
+msgstr ""
+
+#: ui/action.py:378
+msgid "Finished"
+msgstr ""
+
+#: ui/action.py:382
+#, python-format
+msgid "%s - Finished"
+msgstr ""
+
+#: ui/action.py:405
+msgid "Log Message"
+msgstr ""
+
+#: ui/rename.py:49
+msgid "The requested file or folder does not exist."
+msgstr ""
+
+#: ui/rename.py:53 ui/rename.py:85 ui/rename.py:114 ui/browser.py:476
+msgid "Rename"
+msgstr ""
+
+#: ui/rename.py:53 ui/browser.py:476
+msgid "New Name:"
+msgstr ""
+
+#: ui/rename.py:61
+msgid "The new name field is required"
+msgstr ""
+
+#: ui/rename.py:86 ui/rename.py:115
+msgid "Running Rename Command..."
+msgstr ""
+
+#: ui/rename.py:92 ui/rename.py:121
+msgid "Completed Rename"
+msgstr ""
+
+#: ui/clone.py:47 ui/clone.py:65 util/contextmenuitems.py:661
+msgid "Clone"
+msgstr ""
+
+#: ui/clone.py:66
+msgid "Running Clone Command..."
+msgstr ""
+
+#: ui/clone.py:73
+msgid "Completed Clone"
+msgstr ""
+
+#: ui/browser.py:89
+msgid "Size"
+msgstr ""
+
+#: ui/browser.py:331
+msgid "Select"
+msgstr ""
+
+#: ui/browser.py:352
+msgid "Create folder..."
+msgstr ""
+
+#: ui/browser.py:357
+msgid "Copy to..."
+msgstr ""
+
+#: ui/browser.py:362
+msgid "Copy URL to clipboard"
+msgstr ""
+
+#: ui/browser.py:367
+msgid "Move to..."
+msgstr ""
+
+#: ui/browser.py:537
+msgid "Where do you want to copy the selection?"
+msgstr ""
+
+#: ui/browser.py:538 ui/browser.py:567
+msgid "New Location:"
+msgstr ""
+
+#: ui/browser.py:566
+msgid "Where do you want to move the selection?"
 msgstr ""
 
 #: ui/dialog.py:36
@@ -1439,12 +1396,113 @@ msgstr ""
 msgid "Added a folder to the repository"
 msgstr ""
 
-#: ui/diff.py:310
-msgid "View diff as side-by-side comparison"
+#: ui/lock.py:71
+msgid "Locked"
 msgstr ""
 
-#: ui/ignore.py:100
-msgid "Ignore file:"
+#: ui/lock.py:122
+msgid "Yes"
+msgstr ""
+
+#: ui/lock.py:163
+msgid "Get Lock"
+msgstr ""
+
+#: ui/lock.py:164
+msgid "Running Lock Command..."
+msgstr ""
+
+#: ui/lock.py:173
+msgid "Completed Lock"
+msgstr ""
+
+#: ui/stage.py:50 ui/stage.py:101 util/contextmenuitems.py:700
+msgid "Stage"
+msgstr ""
+
+#: ui/stage.py:102
+msgid "Running Stage Command..."
+msgstr ""
+
+#: ui/stage.py:105
+msgid "Completed Stage"
+msgstr ""
+
+#: ui/log.py:120
+#, python-format
+msgid "Log - %s"
+msgstr ""
+
+#: ui/log.py:349
+msgid "Copy From Path"
+msgstr ""
+
+#: ui/log.py:349
+msgid "Copy From Revision"
+msgstr ""
+
+#: ui/log.py:570
+msgid "Graph"
+msgstr ""
+
+#: ui/log.py:798
+msgid "View diff against working copy"
+msgstr ""
+
+#: ui/log.py:803 util/contextmenuitems.py:413
+msgid "View diff against previous revision"
+msgstr ""
+
+#: ui/log.py:808
+msgid "View diff between revisions"
+msgstr ""
+
+#: ui/log.py:813
+msgid "Compare with working copy"
+msgstr ""
+
+#: ui/log.py:818 util/contextmenuitems.py:431
+msgid "Compare with previous revision"
+msgstr ""
+
+#: ui/log.py:823
+msgid "Compare revisions"
+msgstr ""
+
+#: ui/log.py:829
+msgid "Show changes against previous revision"
+msgstr ""
+
+#: ui/log.py:835
+msgid "Show changes between revisions"
+msgstr ""
+
+#: ui/log.py:840
+msgid "Update to this revision"
+msgstr ""
+
+#: ui/log.py:841
+msgid "Update the selected path to this revision"
+msgstr ""
+
+#: ui/log.py:846 ui/log.py:850
+msgid "Edit author..."
+msgstr ""
+
+#: ui/log.py:854
+msgid "Edit log message..."
+msgstr ""
+
+#: ui/log.py:858
+msgid "Edit revision properties..."
+msgstr ""
+
+#: ui/log.py:1119
+msgid "Edit author"
+msgstr ""
+
+#: ui/log.py:1131
+msgid "Edit log message"
 msgstr ""
 
 #: ui/clean.py:76
@@ -1455,57 +1513,48 @@ msgstr ""
 msgid "Completed Clean"
 msgstr ""
 
-#: ui/tags.py:62
-msgid "Tag Manager"
+#: ui/updateto.py:83
+msgid "Rollback To Revision"
 msgstr ""
 
-#: ui/tags.py:63
-msgid "<b>Tags</b>"
+#: ui/updateto.py:84
+msgid "Rolling Back..."
 msgstr ""
 
-#: ui/tags.py:74
-msgid "Tag"
+#: ui/updateto.py:92
+msgid "Completed Rollback"
 msgstr ""
 
-#: ui/tags.py:145 ui/tags.py:284
-msgid "Save"
+#: ui/updateto.py:94
+msgid "Update To Revision"
 msgstr ""
 
-#: ui/tags.py:153
-msgid "Tagger:"
+#: ui/updateto.py:120
+msgid "What revision/branch do you want to checkout?"
 msgstr ""
 
-#: ui/tags.py:275
-msgid "<b>Add Tag</b>"
+#: ui/updateto.py:141
+msgid "Checkout"
 msgstr ""
 
-#: ui/tags.py:293
-msgid "<b>Tag Detail</b>"
+#: ui/updateto.py:142
+#, python-format
+msgid "Checking out %s..."
 msgstr ""
 
-#: ui/create.py:51
-msgid "Repository successfully created"
+#: ui/updateto.py:148
+msgid "Completed Checkout"
 msgstr ""
 
-#: ui/create.py:53
-msgid ""
-"There was an error creating the repository.  Make sure the given folder is "
-"empty."
+#: ui/cleanup.py:55 util/contextmenuitems.py:513
+msgid "Cleanup"
 msgstr ""
 
-#: ui/create.py:67 util/contextmenuitems.py:640
-msgid "Initialize Repository"
+#: ui/cleanup.py:58
+msgid "Completed Cleanup"
 msgstr ""
 
-#: ui/create.py:68
-msgid "Setting up repository..."
-msgstr ""
-
-#: ui/create.py:70
-msgid "Completed repository setup"
-msgstr ""
-
-#: ui/unstage.py:50 ui/unstage.py:101 util/contextmenuitems.py:689
+#: ui/unstage.py:50 ui/unstage.py:101 util/contextmenuitems.py:705
 msgid "Unstage"
 msgstr ""
 
@@ -1517,443 +1566,410 @@ msgstr ""
 msgid "Completed Unstage"
 msgstr ""
 
-#: ui/clone.py:47 ui/clone.py:65 util/contextmenuitems.py:645
-msgid "Clone"
+#: ui/remotes.py:59
+msgid "Remote Repository Manager"
 msgstr ""
 
-#: ui/clone.py:66
-msgid "Running Clone Command..."
+#: ui/remotes.py:60
+msgid "<b>Remote Repositories</b>"
 msgstr ""
 
-#: ui/clone.py:73
-msgid "Completed Clone"
+#: ui/remotes.py:66
+msgid "Host"
 msgstr ""
 
-#: ui/add.py:153
-msgid "Running Add Command..."
+#: ui/diff.py:321
+msgid "View diff as side-by-side comparison"
 msgstr ""
 
-#: ui/add.py:155
-msgid "Completed Add"
-msgstr ""
-
-#: ui/rename.py:49
-msgid "The requested file or folder does not exist."
-msgstr ""
-
-#: ui/rename.py:61
-msgid "The new name field is required"
-msgstr ""
-
-#: ui/rename.py:86 ui/rename.py:115
-msgid "Running Rename Command..."
-msgstr ""
-
-#: ui/rename.py:92 ui/rename.py:121
-msgid "Completed Rename"
-msgstr ""
-
-#: ui/__init__.py:55
-msgid ""
-"You must specify a version control system using the --vcs [svn|git] option"
-msgstr ""
-
-#: ui/unlock.py:48 ui/unlock.py:127
-msgid "Unlock"
-msgstr ""
-
-#: ui/unlock.py:128
-msgid "Running Unlock Command..."
-msgstr ""
-
-#: ui/unlock.py:131
-msgid "Completed Unlock"
-msgstr ""
-
-#: util/contextmenuitems.py:292
+#: util/contextmenuitems.py:303
 msgid "Debug"
 msgstr ""
 
-#: util/contextmenuitems.py:297
+#: util/contextmenuitems.py:308
 msgid "Bugs"
 msgstr ""
 
-#: util/contextmenuitems.py:302
+#: util/contextmenuitems.py:313
 msgid "Open Shell"
 msgstr ""
 
-#: util/contextmenuitems.py:308
+#: util/contextmenuitems.py:319
 msgid "Refresh Status"
 msgstr ""
 
-#: util/contextmenuitems.py:313
+#: util/contextmenuitems.py:324
 msgid "Debug Revert"
 msgstr ""
 
-#: util/contextmenuitems.py:314
+#: util/contextmenuitems.py:325
 msgid "Reverts everything it sees"
 msgstr ""
 
-#: util/contextmenuitems.py:320
+#: util/contextmenuitems.py:331
 msgid "Invalidate"
 msgstr ""
 
-#: util/contextmenuitems.py:321
+#: util/contextmenuitems.py:332
 msgid "Force an invalidate_extension_info() call"
 msgstr ""
 
-#: util/contextmenuitems.py:327
+#: util/contextmenuitems.py:338
 msgid "Add Emblem"
 msgstr ""
 
-#: util/contextmenuitems.py:328
+#: util/contextmenuitems.py:339
 msgid "Add an emblem"
 msgstr ""
 
-#: util/contextmenuitems.py:334
+#: util/contextmenuitems.py:345
 msgid "Checkout..."
 msgstr ""
 
-#: util/contextmenuitems.py:335
+#: util/contextmenuitems.py:346
 msgid "Check out a working copy"
 msgstr ""
 
-#: util/contextmenuitems.py:341
+#: util/contextmenuitems.py:352
 msgid "Update a working copy"
 msgstr ""
 
-#: util/contextmenuitems.py:347
+#: util/contextmenuitems.py:358
 msgid "Commit modifications to the repository"
 msgstr ""
 
-#: util/contextmenuitems.py:357
+#: util/contextmenuitems.py:368
 msgid "RabbitVCS SVN"
 msgstr ""
 
-#: util/contextmenuitems.py:362
+#: util/contextmenuitems.py:373
 msgid "RabbitVCS Git"
 msgstr ""
 
-#: util/contextmenuitems.py:368
+#: util/contextmenuitems.py:378
+msgid "RabbitVCS Hg"
+msgstr ""
+
+#: util/contextmenuitems.py:384
 msgid "Browse a repository tree"
 msgstr ""
 
-#: util/contextmenuitems.py:373
+#: util/contextmenuitems.py:389
 msgid "Check for Modifications..."
 msgstr ""
 
-#: util/contextmenuitems.py:374
+#: util/contextmenuitems.py:390
 msgid "Check for modifications made to the repository"
 msgstr ""
 
-#: util/contextmenuitems.py:379
+#: util/contextmenuitems.py:395
 msgid "Diff Menu..."
 msgstr ""
 
-#: util/contextmenuitems.py:380
+#: util/contextmenuitems.py:396
 msgid "List of comparison options"
 msgstr ""
 
-#: util/contextmenuitems.py:385
+#: util/contextmenuitems.py:401
 msgid "View diff against base"
 msgstr ""
 
-#: util/contextmenuitems.py:386
+#: util/contextmenuitems.py:402
 msgid "View the modifications made to a file"
 msgstr ""
 
-#: util/contextmenuitems.py:391
+#: util/contextmenuitems.py:407
 msgid "View diff between files/folders"
 msgstr ""
 
-#: util/contextmenuitems.py:392
+#: util/contextmenuitems.py:408
 msgid "View the differences between two files"
 msgstr ""
 
-#: util/contextmenuitems.py:398
+#: util/contextmenuitems.py:414
 msgid "View the modifications made to a file since its last change"
 msgstr ""
 
-#: util/contextmenuitems.py:403
+#: util/contextmenuitems.py:419
 msgid "Compare with base"
 msgstr ""
 
-#: util/contextmenuitems.py:404
+#: util/contextmenuitems.py:420
 msgid "Compare with base using side-by-side comparison tool"
 msgstr ""
 
-#: util/contextmenuitems.py:409
+#: util/contextmenuitems.py:425
 msgid "Compare files/folders"
 msgstr ""
 
-#: util/contextmenuitems.py:410
+#: util/contextmenuitems.py:426
 msgid "Compare the differences between two items"
 msgstr ""
 
-#: util/contextmenuitems.py:416
+#: util/contextmenuitems.py:432
 msgid "Compare with previous revision using side-by-side comparison tool"
 msgstr ""
 
-#: util/contextmenuitems.py:421
+#: util/contextmenuitems.py:437
 msgid "Show Changes..."
 msgstr ""
 
-#: util/contextmenuitems.py:422
+#: util/contextmenuitems.py:438
 msgid "Show changes between paths and revisions"
 msgstr ""
 
-#: util/contextmenuitems.py:427
+#: util/contextmenuitems.py:443
 msgid "Show Log"
 msgstr ""
 
-#: util/contextmenuitems.py:428
+#: util/contextmenuitems.py:444
 msgid "Show a file's log information"
 msgstr ""
 
-#: util/contextmenuitems.py:434
+#: util/contextmenuitems.py:450
 msgid "Schedule items to be added to the repository"
 msgstr ""
 
-#: util/contextmenuitems.py:439
+#: util/contextmenuitems.py:455
 msgid "Add to ignore list"
 msgstr ""
 
-#: util/contextmenuitems.py:444
+#: util/contextmenuitems.py:460
 msgid "Update to revision..."
 msgstr ""
 
-#: util/contextmenuitems.py:445
+#: util/contextmenuitems.py:461
 msgid "Update a file to a specific revision"
 msgstr ""
 
-#: util/contextmenuitems.py:450
+#: util/contextmenuitems.py:466
 msgid "Rename..."
 msgstr ""
 
-#: util/contextmenuitems.py:451
+#: util/contextmenuitems.py:467
 msgid "Schedule an item to be renamed on the repository"
 msgstr ""
 
-#: util/contextmenuitems.py:457
+#: util/contextmenuitems.py:473
 msgid "Schedule an item to be deleted from the repository"
 msgstr ""
 
-#: util/contextmenuitems.py:463
+#: util/contextmenuitems.py:479
 msgid "Revert an item to its unmodified state"
 msgstr ""
 
-#: util/contextmenuitems.py:469
+#: util/contextmenuitems.py:485
 msgid "Mark a conflicted item as resolved"
 msgstr ""
 
-#: util/contextmenuitems.py:474
+#: util/contextmenuitems.py:490
 msgid "Restore"
 msgstr ""
 
-#: util/contextmenuitems.py:475
+#: util/contextmenuitems.py:491
 msgid "Restore a missing item"
 msgstr ""
 
-#: util/contextmenuitems.py:479
+#: util/contextmenuitems.py:495
 msgid "Relocate..."
 msgstr ""
 
-#: util/contextmenuitems.py:480
+#: util/contextmenuitems.py:496
 msgid "Relocate your working copy"
 msgstr ""
 
-#: util/contextmenuitems.py:485
+#: util/contextmenuitems.py:501
 msgid "Get Lock..."
 msgstr ""
 
-#: util/contextmenuitems.py:486
+#: util/contextmenuitems.py:502
 msgid "Locally lock items"
 msgstr ""
 
-#: util/contextmenuitems.py:491
+#: util/contextmenuitems.py:507
 msgid "Release Lock..."
 msgstr ""
 
-#: util/contextmenuitems.py:492
+#: util/contextmenuitems.py:508
 msgid "Release lock on an item"
 msgstr ""
 
-#: util/contextmenuitems.py:498
+#: util/contextmenuitems.py:514
 msgid "Clean up working copy"
 msgstr ""
 
-#: util/contextmenuitems.py:503
+#: util/contextmenuitems.py:519
 msgid "Export..."
 msgstr ""
 
-#: util/contextmenuitems.py:504
+#: util/contextmenuitems.py:520
 msgid "Export a working copy or repository with no versioning information"
 msgstr ""
 
-#: util/contextmenuitems.py:517
+#: util/contextmenuitems.py:533
 msgid "Create Repository here"
 msgstr ""
 
-#: util/contextmenuitems.py:518
+#: util/contextmenuitems.py:534
 msgid "Create a repository in a folder"
 msgstr ""
 
-#: util/contextmenuitems.py:524
+#: util/contextmenuitems.py:540
 msgid "Import an item into a repository"
 msgstr ""
 
-#: util/contextmenuitems.py:533
+#: util/contextmenuitems.py:549
 msgid "Branch/tag..."
 msgstr ""
 
-#: util/contextmenuitems.py:534
+#: util/contextmenuitems.py:550
 msgid "Copy an item to another location in the repository"
 msgstr ""
 
-#: util/contextmenuitems.py:539
+#: util/contextmenuitems.py:555
 msgid "Switch..."
 msgstr ""
 
-#: util/contextmenuitems.py:540
+#: util/contextmenuitems.py:556
 msgid "Change the repository location of a working copy"
 msgstr ""
 
-#: util/contextmenuitems.py:545
+#: util/contextmenuitems.py:561
 msgid "Merge..."
 msgstr ""
 
-#: util/contextmenuitems.py:546
+#: util/contextmenuitems.py:562
 msgid "A wizard with steps for merging"
 msgstr ""
 
-#: util/contextmenuitems.py:551
+#: util/contextmenuitems.py:567
 msgid "Annotate..."
 msgstr ""
 
-#: util/contextmenuitems.py:552
+#: util/contextmenuitems.py:568
 msgid "Annotate a file"
 msgstr ""
 
-#: util/contextmenuitems.py:557
+#: util/contextmenuitems.py:573
 msgid "Create Patch..."
 msgstr ""
 
-#: util/contextmenuitems.py:558
+#: util/contextmenuitems.py:574
 msgid "Creates a unified diff file with all changes you made"
 msgstr ""
 
-#: util/contextmenuitems.py:563
+#: util/contextmenuitems.py:579
 msgid "Apply Patch..."
 msgstr ""
 
-#: util/contextmenuitems.py:564
+#: util/contextmenuitems.py:580
 msgid "Applies a unified diff file to the working copy"
 msgstr ""
 
-#: util/contextmenuitems.py:570
+#: util/contextmenuitems.py:586
 msgid "View the properties of an item"
 msgstr ""
 
-#: util/contextmenuitems.py:575
+#: util/contextmenuitems.py:591
 msgid "Help"
 msgstr ""
 
-#: util/contextmenuitems.py:576
+#: util/contextmenuitems.py:592
 msgid "View help"
 msgstr ""
 
-#: util/contextmenuitems.py:582
+#: util/contextmenuitems.py:598
 msgid "View or change RabbitVCS settings"
 msgstr ""
 
-#: util/contextmenuitems.py:588
+#: util/contextmenuitems.py:604
 msgid "About RabbitVCS"
 msgstr ""
 
-#: util/contextmenuitems.py:593
+#: util/contextmenuitems.py:609
 msgid "Open"
 msgstr ""
 
-#: util/contextmenuitems.py:594
+#: util/contextmenuitems.py:610
 msgid "Open a file"
 msgstr ""
 
-#: util/contextmenuitems.py:602
+#: util/contextmenuitems.py:618
 msgid "Browse to"
 msgstr ""
 
-#: util/contextmenuitems.py:603
+#: util/contextmenuitems.py:619
 msgid "Browse to a file or folder"
 msgstr ""
 
-#: util/contextmenuitems.py:608
+#: util/contextmenuitems.py:624
 msgid "Revert property"
 msgstr ""
 
-#: util/contextmenuitems.py:610
+#: util/contextmenuitems.py:626
 msgid "Revert this property to its original state"
 msgstr ""
 
-#: util/contextmenuitems.py:614
+#: util/contextmenuitems.py:630
 msgid "Revert property (recursive)"
 msgstr ""
 
-#: util/contextmenuitems.py:616
+#: util/contextmenuitems.py:632
 msgid "Revert this property to its original state (recursive)"
 msgstr ""
 
-#: util/contextmenuitems.py:621
+#: util/contextmenuitems.py:637
 msgid "Delete property"
 msgstr ""
 
-#: util/contextmenuitems.py:623
+#: util/contextmenuitems.py:639
 msgid "Delete this property"
 msgstr ""
 
-#: util/contextmenuitems.py:627
+#: util/contextmenuitems.py:643
 msgid "Delete property (recursive)"
 msgstr ""
 
-#: util/contextmenuitems.py:629
+#: util/contextmenuitems.py:645
 msgid "Delete this property (recursive)"
 msgstr ""
 
-#: util/contextmenuitems.py:634
+#: util/contextmenuitems.py:650
 msgid "Edit details"
 msgstr ""
 
-#: util/contextmenuitems.py:636
+#: util/contextmenuitems.py:652
 msgid "Show and edit property details"
 msgstr ""
 
-#: util/contextmenuitems.py:650
+#: util/contextmenuitems.py:666
 msgid "Fetch/Pull"
 msgstr ""
 
-#: util/contextmenuitems.py:655
+#: util/contextmenuitems.py:671
 msgid "Push"
 msgstr ""
 
-#: util/contextmenuitems.py:660
+#: util/contextmenuitems.py:676
 msgid "Branches"
 msgstr ""
 
-#: util/contextmenuitems.py:665
+#: util/contextmenuitems.py:681
 msgid "Tags"
 msgstr ""
 
-#: util/contextmenuitems.py:670
+#: util/contextmenuitems.py:686
 msgid "Remotes"
 msgstr ""
 
-#: util/contextmenuitems.py:694
+#: util/contextmenuitems.py:710
 msgid "Edit conflicts"
 msgstr ""
 
-#: util/contextmenuitems.py:720
+#: util/contextmenuitems.py:736
 msgid "Ignore item by filename"
 msgstr ""
 
-#: util/contextmenuitems.py:739
+#: util/contextmenuitems.py:755
 msgid "Ignore item by file extension"
 msgstr ""
