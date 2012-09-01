@@ -828,8 +828,8 @@ class GittyupClient:
         if initial_commit:
             self.track("refs/heads/master")
 
-		# Get the branch for this repository.
-        branch_full = self.repo.refs.read_ref("head")
+        # Get the branch for this repository.
+        branch_full = self.repo.refs.read_ref("HEAD")
 
         if (branch_full != None):
             branch_components = re.search("refs/heads/(.+)", branch_full)
