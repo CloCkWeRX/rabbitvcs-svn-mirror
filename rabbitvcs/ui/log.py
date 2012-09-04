@@ -952,7 +952,7 @@ class LogTopContextMenuCallbacks:
         ])
 
     def view_diff_previous_revision(self, widget, data=None):
-        if len(self.revisions[0]["parents"]) > 0:
+        if ("parents" in self.revisions[0]) and len(self.revisions[0]["parents"]) > 0:
             parent = unicode(self.revisions[0]["parents"][0])
         else:
             parent = unicode(self.revisions[0]["next_revision"])
@@ -987,7 +987,7 @@ class LogTopContextMenuCallbacks:
         ])
 
     def compare_previous_revision(self, widget, data=None):
-        if len(self.revisions[0]["parents"]) > 0:
+        if ("parents" in self.revisions[0]) and len(self.revisions[0]["parents"]) > 0:
             parent = unicode(self.revisions[0]["parents"][0])
         else:
             parent = unicode(self.revisions[0]["next_revision"])
@@ -1013,7 +1013,7 @@ class LogTopContextMenuCallbacks:
 
     def show_changes_previous_revision(self, widget, data=None):
         rev_first = unicode(self.revisions[0]["revision"])
-        if len(self.revisions[0]["parents"]) > 0:
+        if ("parents" in self.revisions[0]) and len(self.revisions[0]["parents"]) > 0:
             parent = unicode(self.revisions[0]["parents"][0])
         else:
             parent = unicode(self.revisions[0]["next_revision"])
@@ -1024,7 +1024,7 @@ class LogTopContextMenuCallbacks:
 
         rabbitvcs.util.helper.launch_ui_window("changes", [
             "%s@%s" % (path, parent),
-            "%s@%s" % (path, unicode(rev_last)),
+            "%s@%s" % (path, unicode(rev_first)),
             "--vcs=%s" % self.caller.get_vcs_name()
         ])
 
@@ -1273,7 +1273,7 @@ class LogBottomContextMenuCallbacks:
     def view_diff_previous_revision(self, widget, data=None):
         rev = unicode(self.revisions[0]["revision"])
 
-        if len(self.revisions[0]["parents"]) > 0:
+        if ("parents" in self.revisions[0]) and len(self.revisions[0]["parents"]) > 0:
             parent = unicode(self.revisions[0]["parents"][0])
         else:
             parent = unicode(self.revisions[0]["next_revision"])
@@ -1293,7 +1293,7 @@ class LogBottomContextMenuCallbacks:
     def compare_previous_revision(self, widget, data=None):
         rev = unicode(self.revisions[0]["revision"])
         
-        if len(self.revisions[0]["parents"]) > 0:
+        if ("parents" in self.revisions[0]) and len(self.revisions[0]["parents"]) > 0:
             parent = unicode(self.revisions[0]["parents"][0])
         else:
             parent = unicode(self.revisions[0]["next_revision"])
@@ -1315,7 +1315,7 @@ class LogBottomContextMenuCallbacks:
     def show_changes_previous_revision(self, widget, data=None):
         rev_first = unicode(self.revisions[0]["revision"])
         
-        if len(self.revisions[0]["parents"]) > 0:
+        if ("parents" in self.revisions[0]) and len(self.revisions[0]["parents"]) > 0:
             parent = unicode(self.revisions[0]["parents"][0])
         else:
             parent = unicode(self.revisions[0]["next_revision"])
