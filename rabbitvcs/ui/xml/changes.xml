@@ -11,6 +11,7 @@
     <property name="window_position">center</property>
     <property name="icon_name">rabbitvcs-small</property>
     <signal handler="on_destroy" name="destroy"/>
+    <signal handler="on_key_pressed" name="key_press_event"/>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -370,11 +371,11 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                            <signal handler="on_changes_table_button_pressed" name="button_press_event"/>
+                            <!--<signal handler="on_changes_table_button_pressed" name="button_press_event"/>-->
                             <signal handler="on_changes_table_cursor_changed" name="cursor_changed"/>
                             <signal handler="on_changes_table_row_doubleclicked" name="row_activated"/>
                             <signal handler="on_changes_table_button_released" name="button_release_event"/>
-                            <signal handler="on_changes_table_key_released" name="key_release_event"/>
+                            <!--<signal handler="on_changes_table_key_released" name="key_release_event"/>-->
                           </object>
                         </child>
                       </object>

@@ -157,6 +157,21 @@ class Add(InterfaceView, GtkContextMenuCaller):
         paths = self.files_table.get_selected_row_items(1)
         GtkFilesContextMenu(self, data, self.base_dir, paths).show()
 
+    def on_key_pressed(self, widget, data):
+        if (data.keyval == gtk.keysyms.Escape):
+            self.on_cancel_clicked(widget)
+            return True
+            
+        if (data.state & gtk.gdk.CONTROL_MASK and 
+                gtk.gdk.keyval_name(data.keyval).lower() == "w"):
+            self.on_cancel_clicked(widget)
+            return True
+
+        if (data.state & gtk.gdk.CONTROL_MASK and 
+                gtk.gdk.keyval_name(data.keyval).lower() == "q"):
+            self.on_cancel_clicked(widget)
+            return True                       
+
 class SVNAdd(Add):
     def __init__(self, paths, base_dir=None):
         Add.__init__(self, paths, base_dir)
