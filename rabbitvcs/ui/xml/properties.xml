@@ -2,7 +2,7 @@
 <!--Generated with glade3 3.4.1 on Thu Oct 15 09:51:29 2009 -->
 <interface>
   <object class="GtkWindow" id="Properties">
-    <property name="width_request">500</property>
+    <property name="width_request">600</property>
     <property name="visible">True</property>
     <property name="title" translatable="yes">Properties</property>
     <property name="window_position">GTK_WIN_POS_CENTER</property>
@@ -46,21 +46,10 @@
                         <property name="visible">True</property>
                         <property name="spacing">6</property>
                         <child>
-                          <object class="GtkLabel" id="label2">
-                            <property name="width_request">90</property>
-                            <property name="visible">True</property>
-                            <property name="xalign">0</property>
-                            <property name="label" translatable="yes">URL/Path:</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                          </packing>
-                        </child>
-                        <child>
                           <object class="GtkEntry" id="path">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="tooltip-text">URL/Path</property>
                             <signal handler="on_refresh_activate" name="activate"/>
                           </object>
                           <packing>
@@ -86,12 +75,12 @@
                             <property name="position">2</property>
                           </packing>
                         </child>
-                      </object>
+                        </object> 
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
                       </packing>
-                    </child>
+                    </child>                    
                     <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow12">
                         <property name="height_request">150</property>
