@@ -120,6 +120,7 @@ class Log(InterfaceView):
         self.get_widget("Log").set_title(_("Log - %s") % path)
         self.vcs = rabbitvcs.vcs.VCS()
 
+        self.filter_text = None
         self.path = path
         self.cache = LogCache()
 
@@ -163,6 +164,13 @@ class Log(InterfaceView):
         self.limit = int(self.get_widget("limit").get_text())
         self.cache.empty()
         self.load()
+
+    
+    def on_search(self, widget):
+        tb = self.get_widget("search_buffer")
+        self.filter_text = tb.get_text(tb.get_start_iter(), tb.get_end_iter()).lower()
+
+        self.refresh()
 
     #
     # Revisions table callbacks
@@ -413,18 +421,27 @@ class SVNLog(Log):
         if self.rev_start > self.rev_max:
             self.rev_max = self.rev_start
         
+        display_items = []
+
+        for item in self.revision_items:
+            msg = cgi.escape(item.message).lower()
+
+            should_add = not self.filter_text
+            should_add = should_add or msg.find(self.filter_text) > -1
+            should_add = should_add or item.author.lower().find(self.filter_text) > -1
+            should_add = should_add or str(item.revision).lower().find(self.filter_text) > -1
+            should_add = should_add or str(item.date).lower().find(self.filter_text) > -1
+
+            if should_add:
+                display_items.append(item)
+
         self.set_start_revision(self.rev_start)
         self.set_end_revision(self.rev_end)
 
-        for item in self.revision_items:
+        for item in display_items:
             msg = cgi.escape(rabbitvcs.util.helper.format_long_text(item.message, 80))
 
-            self.revisions_table.append([
-                unicode(item.revision),
-                item.author,
-                rabbitvcs.util.helper.format_datetime(item.date),
-                msg
-            ])
+            self.populate_table(item.revision, item.author, item.date, msg)
 
             # Stop on copy after adding the item to the table
             # so the user can look at the item that was copied
@@ -436,6 +453,15 @@ class SVNLog(Log):
         self.check_previous_sensitive()
         self.check_next_sensitive()
         self.set_loading(False)
+
+    def populate_table(self, revision, author, date, msg):
+        self.revisions_table.append([
+            unicode(revision),
+            author,
+            rabbitvcs.util.helper.format_datetime(date),
+            msg
+        ])
+
 
     def load(self):
         self.set_loading(True)
@@ -623,15 +649,30 @@ class GitLog(Log):
         self.set_start_revision(self.revision_items[0].revision.short())
         self.set_end_revision(self.revision_items[-1].revision.short())
 
-        grapher = revision_grapher(self.revision_items)
+        display_items = []
+
+        for item in self.revision_items:
+            msg = cgi.escape(item.message).lower()
+
+            should_add = not self.filter_text
+            should_add = should_add or msg.find(self.filter_text) > -1
+            should_add = should_add or item.author.lower().find(self.filter_text) > -1
+            should_add = should_add or unicode(item.revision).lower().find(self.filter_text) > -1
+            should_add = should_add or str(item.date).lower().find(self.filter_text) > -1
+
+            if should_add:
+                display_items.append(item)
+
+        grapher = revision_grapher(display_items)
         max_columns = 1
         for (item, node, in_lines, out_lines) in grapher:
             if max_columns < len(out_lines):
                 max_columns = len(out_lines)
 
-        graph_column = self.revisions_table.get_column(0)
-        cell = graph_column.get_cell_renderers()[0]
-        self.revisions_table.set_column_width(0, 16*max_columns)
+        if not self.filter_text:
+            graph_column = self.revisions_table.get_column(0)
+            cell = graph_column.get_cell_renderers()[0]
+            self.revisions_table.set_column_width(0, 16*max_columns)
 
         index = 0
         for (item, node, in_lines, out_lines) in grapher:
@@ -646,8 +687,12 @@ class GitLog(Log):
                 author = "<b>%s</b>" % author
                 date = "<b>%s</b>" % date            
             
+            graph_render = ()
+            if not self.filter_text:
+                graph_render = (node, in_lines, out_lines)
+
             self.revisions_table.append([
-                (node, in_lines, out_lines),
+                graph_render,
                 revision,
                 author,
                 date,

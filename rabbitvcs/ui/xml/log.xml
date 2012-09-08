@@ -47,6 +47,54 @@
                       </packing>
                     </child>
                     <child>
+                      <object class="GtkHBox" id="hbox-search">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="border_width">1</property>
+                        <property name="spacing">3</property>
+                        <child>
+                          <object class="GtkTextView" id="revisions_search">
+                            <property name="visible">True</property>
+                            <property name="border_width">1</property>
+                            <property name="pixels_above_lines">3</property>
+                            <property name="left_margin">4</property>
+                            <property name="right_margin">3</property>
+                            <property name="indent">4</property>
+                            <property name="buffer">search_buffer</property>
+                          </object>
+
+
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkCheckButton" id="stop_on_copy">
+                        <property name="label" translatable="yes">Stop on copy</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">False</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="draw_indicator">True</property>
+                        <signal name="toggled" handler="on_stop_on_copy_toggled" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
                       <object class="GtkHBox" id="hbox6">
                         <property name="visible">True</property>
                         <property name="spacing">3</property>
@@ -92,22 +140,6 @@
                         <property name="fill">False</property>
                         <property name="pack_type">end</property>
                         <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkCheckButton" id="stop_on_copy">
-                        <property name="label" translatable="yes">Stop on copy</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="draw_indicator">True</property>
-                        <signal handler="on_stop_on_copy_toggled" name="toggled"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="pack_type">end</property>
-                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
@@ -423,6 +455,11 @@
           </packing>
         </child>
       </object>
+
+
     </child>
   </object>
+  <object class="GtkTextBuffer" id="search_buffer">
+    <signal name="changed" handler="on_search" swapped="no"/>
+  </object>  
 </interface>
