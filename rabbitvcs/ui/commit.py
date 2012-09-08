@@ -373,7 +373,7 @@ class GitCommit(Commit):
         )
         self.action.append(self.action.set_status, _("Completed Commit"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.start() 
 
     def on_files_table_toggle_event(self, row, col):
         # Adds path: True/False to the dict
