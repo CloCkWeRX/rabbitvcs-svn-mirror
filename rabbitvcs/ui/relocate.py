@@ -62,12 +62,6 @@ class Relocate(InterfaceView):
             rabbitvcs.util.helper.get_repository_paths()
         )
 
-    def on_destroy(self, widget):
-        self.destroy()
-
-    def on_cancel_clicked(self, widget):
-        self.close()
-
     def on_ok_clicked(self, widget):
     
         from_url = self.get_widget("from_url").get_text()

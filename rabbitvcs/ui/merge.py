@@ -70,21 +70,14 @@ class SVNMerge(InterfaceView):
     #
     # Assistant UI Signal Callbacks
     #
-
-    def on_destroy(self, widget):
-        self.destroy()
     
-    def on_cancel_clicked(self, widget):
-        self.close()
-    
-    def on_close_clicked(self, widget):
-        self.close()
-
     def on_apply_clicked(self, widget):
         self.merge()
     
     def on_test_clicked(self, widget):
-        self.merge(test=True)            
+        self.merge(test=True)    
+
+   
 
     def merge(self, test=False):
         if self.type is None:
@@ -420,11 +413,11 @@ class BranchMerge(InterfaceView):
         self.branch = branch
         self.vcs = rabbitvcs.vcs.VCS()
 
-    def on_destroy(self, widget):
-        self.destroy()
         
     def on_cancel_clicked(self, widget, data=None):
         self.close()
+
+           
 
 class GitMerge(BranchMerge):
     def __init__(self, path, branch=None):
@@ -546,6 +539,8 @@ class GitMerge(BranchMerge):
 
     def __revision_changed(self, widget):
         self.update_branch_info()
+
+           
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main, VCS_OPT

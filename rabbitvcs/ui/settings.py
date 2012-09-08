@@ -344,20 +344,6 @@ class Settings(InterfaceView):
 
             rabbitvcs.ui.dialog.MessageBox(_("Authentication information cleared"))
             
-    def on_key_pressed(self, widget, data):
-        if (data.keyval == gtk.keysyms.Escape):
-            self.on_cancel_clicked(widget)
-            return True
-            
-        if (data.state & gtk.gdk.CONTROL_MASK and 
-                gtk.gdk.keyval_name(data.keyval).lower() == "w"):
-            self.on_cancel_clicked(widget)
-            return True
-
-        if (data.state & gtk.gdk.CONTROL_MASK and 
-                gtk.gdk.keyval_name(data.keyval).lower() == "q"):
-            self.on_cancel_clicked(widget)
-            return True
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main, BASEDIR_OPT

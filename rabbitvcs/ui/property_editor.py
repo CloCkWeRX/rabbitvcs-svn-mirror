@@ -160,16 +160,6 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
                 [propname, details["value"], "N/A", details["status"]]
                               )
 
-    def on_destroy(self, widget):
-        self.destroy()
-        
-    def on_close_clicked(self, widget):
-        """
-        Simply closes the dialog. No confirmation is needed, since changes to
-        properties are performed instantly.
-        """
-        self.close()
-
     def on_refresh_clicked(self, widget):
         self.refresh()
 

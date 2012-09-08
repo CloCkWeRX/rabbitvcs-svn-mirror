@@ -138,12 +138,6 @@ class SVNLock(InterfaceView, GtkContextMenuCaller):
     # UI Signal Callbacks
     #
     
-    def on_destroy(self, widget):
-        self.destroy()
-        
-    def on_cancel_clicked(self, widget, data=None):
-        self.close()
-        
     def on_ok_clicked(self, widget, data=None):
         steal_locks = self.get_widget("steal_locks").get_active()
         items = self.files_table.get_activated_rows(1)
@@ -187,6 +181,8 @@ class SVNLock(InterfaceView, GtkContextMenuCaller):
         message = dialog.run()
         if message is not None:
             self.message.set_text(message)
+
+
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNLock

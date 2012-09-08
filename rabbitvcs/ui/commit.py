@@ -182,32 +182,14 @@ class Commit(InterfaceView, GtkContextMenuCaller):
     def on_refresh_clicked(self, widget):
         self.initialize_items()        
 
-    def on_destroy(self, widget):
-        self.destroy()
-        
-    def on_cancel_clicked(self, widget, data=None):
-        self.close()
-        
     def on_key_pressed(self, widget, data):
+        if InterfaceView.on_key_pressed(self, widget, data):
+            return True
+
         if (data.state & (gtk.gdk.SHIFT_MASK | gtk.gdk.CONTROL_MASK) and 
                 gtk.gdk.keyval_name(data.keyval) == "Return"):
             self.on_ok_clicked(widget)
             return True
-
-        if (data.keyval == gtk.keysyms.Escape):
-            self.on_cancel_clicked(widget)
-            return True
-            
-        if (data.state & gtk.gdk.CONTROL_MASK and 
-                gtk.gdk.keyval_name(data.keyval).lower() == "w"):
-            self.on_cancel_clicked(widget)
-            return True
-
-        if (data.state & gtk.gdk.CONTROL_MASK and 
-                gtk.gdk.keyval_name(data.keyval).lower() == "q"):
-            self.on_cancel_clicked(widget)
-            return True               
-
             
     def on_toggle_show_all_toggled(self, widget, data=None):
         self.TOGGLE_ALL = not self.TOGGLE_ALL

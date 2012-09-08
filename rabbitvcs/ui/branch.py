@@ -84,12 +84,6 @@ class SVNBranch(InterfaceView):
         if (self.revision is None and status.has_modified()):
             self.revision_selector.set_kind_working()
 
-    def on_destroy(self, widget):
-        self.destroy()
-
-    def on_cancel_clicked(self, widget):
-        self.close()
-
     def on_ok_clicked(self, widget):
         src = self.from_urls.get_active_text()
         dest = self.to_urls.get_active_text()

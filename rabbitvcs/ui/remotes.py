@@ -78,12 +78,6 @@ class GitRemotes(InterfaceView):
 
         self.load()
         
-    def on_destroy(self, widget):
-        self.destroy()
-        
-    def on_close_clicked(self, widget):
-        self.close()
-        
     def load(self):
         self.items_treeview.clear()
 

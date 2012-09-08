@@ -87,12 +87,6 @@ class Checkout(InterfaceView):
         path = self._parse_path(self.get_widget("destination").get_text())
         return os.path.normpath(path)
 
-    def on_destroy(self, widget):
-        self.destroy()
-
-    def on_cancel_clicked(self, widget):
-        self.close()
-
     def on_file_chooser_clicked(self, widget, data=None):
         chooser = rabbitvcs.ui.dialog.FolderChooser()
         path = chooser.run()
@@ -129,6 +123,7 @@ class Checkout(InterfaceView):
             self.complete = False
         
         self.get_widget("ok").set_sensitive(self.complete)
+
 
 class SVNCheckout(Checkout):
     def __init__(self, path=None, url=None, revision=None):

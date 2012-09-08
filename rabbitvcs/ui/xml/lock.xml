@@ -9,6 +9,7 @@
     <property name="window_position">center</property>
     <property name="icon_name">rabbitvcs-small</property>
     <signal handler="on_destroy" name="destroy"/>
+    <signal handler="on_key_pressed" name="key_press_event"/>
     <child>
       <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -178,7 +179,7 @@
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="draw_indicator">True</property>
-                            <signal handler="on_steal_locks_toggled" name="toggled"/>
+                            <!--<signal handler="on_steal_locks_toggled" name="toggled"/>-->
                           </object>
                           <packing>
                             <property name="expand">False</property>

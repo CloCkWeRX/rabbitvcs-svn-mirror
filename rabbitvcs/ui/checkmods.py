@@ -75,12 +75,6 @@ class SVNCheckForModifications(InterfaceView):
 
         self.load()
 
-    def on_destroy(self, widget):
-        self.destroy()
-        
-    def on_close_clicked(self, widget):
-        self.close()
-
     def on_refresh_clicked(self, widget):
         if self.notebook.get_current_page() == 0:
             self.local_mods.refresh()

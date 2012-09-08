@@ -63,9 +63,6 @@ class VCSNotifier(InterfaceView):
         self.was_canceled_by_user = False
         self.canceled = False
 
-    def on_destroy(self, widget):
-        self.destroy()
-
     def set_canceled_by_user(self, was_canceled_by_user):
         self.was_canceled_by_user = was_canceled_by_user
 

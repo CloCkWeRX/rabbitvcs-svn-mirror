@@ -57,12 +57,6 @@ class SVNSwitch(InterfaceView):
         
         self.repositories.set_child_text(self.svn.get_repo_url(self.path))
 
-    def on_destroy(self, widget):
-        self.destroy()
-
-    def on_cancel_clicked(self, widget):
-        self.close()
-
     def on_ok_clicked(self, widget):
         url = self.repositories.get_active_text()
         

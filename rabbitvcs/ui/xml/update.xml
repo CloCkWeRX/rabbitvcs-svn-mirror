@@ -9,6 +9,7 @@
     <property name="window_position">center-always</property>
     <property name="icon_name">rabbitvcs-small</property>
     <signal name="destroy" handler="on_destroy"/>
+    <signal handler="on_key_pressed" name="key_press_event"/>
     <child>
       <object class="GtkVBox" id="vbox25">
         <property name="visible">True</property>

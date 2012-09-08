@@ -45,11 +45,7 @@ class UpdateToRevision(InterfaceView):
         self.revision = revision
         self.vcs = rabbitvcs.vcs.VCS()
 
-    def on_destroy(self, widget):
-        self.destroy()
 
-    def on_cancel_clicked(self, widget):
-        self.close()
 
 class SVNUpdateToRevision(UpdateToRevision):
     def __init__(self, path, revision):

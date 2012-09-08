@@ -67,15 +67,6 @@ class GitReset(InterfaceView):
         self.get_widget("none_opt").set_active(True)
         self.check_path()
 
-    def on_destroy(self, widget):
-        self.destroy()
-        
-    def on_close_clicked(self, widget):
-        self.close()
-    
-    def on_cancel_clicked(self, widget):
-        self.close()
-    
     def on_ok_clicked(self, widget):
         path = self.get_widget("path").get_text()
         

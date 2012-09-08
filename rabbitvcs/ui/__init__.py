@@ -172,7 +172,39 @@ class InterfaceView(GtkBuilderWidgetWrapper):
     
     def gtk_quit_is_set(self):
         return self.do_gtk_quit
-        
+
+    def on_destroy(self, widget):
+        self.destroy()
+
+    def on_cancel_clicked(self, widget):
+        self.close()
+
+    def on_close_clicked(self, widget):
+        self.close()
+
+    def on_refresh_clicked(self, widget):
+        return True
+
+    def on_key_pressed(self, widget, data):
+        if (data.keyval == gtk.keysyms.Escape):
+            self.on_cancel_clicked(widget)
+            return True
+            
+        if (data.state & gtk.gdk.CONTROL_MASK and 
+                gtk.gdk.keyval_name(data.keyval).lower() == "w"):
+            self.on_cancel_clicked(widget)
+            return True
+
+        if (data.state & gtk.gdk.CONTROL_MASK and 
+                gtk.gdk.keyval_name(data.keyval).lower() == "q"):
+            self.on_cancel_clicked(widget)
+            return True
+
+        if (data.state & gtk.gdk.CONTROL_MASK and 
+                gtk.gdk.keyval_name(data.keyval).lower() == "r"):
+            self.on_refresh_clicked(widget)
+            return True             
+
 class InterfaceNonView:
     """
     Provides a way for an interface to handle quitting, etc without having

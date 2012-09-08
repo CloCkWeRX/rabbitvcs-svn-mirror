@@ -77,12 +77,6 @@ class GitUpdate(InterfaceView):
             self.git
         )
 
-    def on_destroy(self, widget):
-        self.destroy()
-        
-    def on_cancel_clicked(self, widget, data=None):
-        self.close()
-
     def on_ok_clicked(self, widget, data=None):
         self.hide()
         merge = self.get_widget("merge").get_active()
@@ -104,20 +98,6 @@ class GitUpdate(InterfaceView):
         self.action.append(self.action.finish)
         self.action.start()
 
-    def on_key_pressed(self, widget, data):
-        if (data.keyval == gtk.keysyms.Escape):
-            self.on_cancel_clicked(widget)
-            return True
-            
-        if (data.state & gtk.gdk.CONTROL_MASK and 
-                gtk.gdk.keyval_name(data.keyval).lower() == "w"):
-            self.on_cancel_clicked(widget)
-            return True
-
-        if (data.state & gtk.gdk.CONTROL_MASK and 
-                gtk.gdk.keyval_name(data.keyval).lower() == "q"):
-            self.on_cancel_clicked(widget)
-            return True  
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNUpdate, 

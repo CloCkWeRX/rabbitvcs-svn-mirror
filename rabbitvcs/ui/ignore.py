@@ -104,15 +104,11 @@ class GitIgnore(InterfaceView):
             line_content=text
         )
         
-    def on_destroy(self, widget):
-        self.destroy()
-        
-    def on_cancel_clicked(self, widget, data=None):
-        self.close() 
-    
     def on_ok_clicked(self, widget, data=None):
         self.file_editor.save()
-        self.close()       
+        self.close()
+        
+
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNIgnore,

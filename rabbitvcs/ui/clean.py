@@ -51,15 +51,6 @@ class GitClean(InterfaceView):
         self.git = self.vcs.git(path)
         self.path = path
 
-    def on_destroy(self, widget):
-        self.destroy()
-        
-    def on_close_clicked(self, widget):
-        self.close()
-    
-    def on_cancel_clicked(self, widget):
-        self.close()
-    
     def on_ok_clicked(self, widget):
         remove_dir = self.get_widget("remove_directories").get_active()
         remove_ignored_too = self.get_widget("remove_ignored_too").get_active()

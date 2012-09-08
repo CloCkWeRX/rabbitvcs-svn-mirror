@@ -15,6 +15,7 @@
     <signal handler="on_cancel_clicked" name="cancel"/>
     <signal handler="on_close_clicked" name="close"/>
     <signal handler="on_prepare" name="prepare"/>
+    <signal handler="on_key_pressed" name="key_press_event"/>
     <child>
       <placeholder/>
     </child>

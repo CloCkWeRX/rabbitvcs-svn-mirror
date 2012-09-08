@@ -70,11 +70,6 @@ class PropertiesBase(InterfaceView):
     # UI Signal Callbacks
     #
 
-    def on_destroy(self, widget):
-        self.destroy()
-
-    def on_cancel_clicked(self, widget):
-        self.close()
 
     def on_ok_clicked(self, widget):
         self.save()
@@ -92,7 +87,6 @@ class PropertiesBase(InterfaceView):
         if name:
             self.set_selected_name_value(name, value, recurse)
 
-    
     def on_delete_clicked(self, widget, data=None):
         if not self.selected_rows:
             return

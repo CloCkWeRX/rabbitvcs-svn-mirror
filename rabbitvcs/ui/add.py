@@ -130,12 +130,6 @@ class Add(InterfaceView, GtkContextMenuCaller):
     # UI Signal Callbacks
     #
 
-    def on_destroy(self, widget):
-        self.destroy()
-
-    def on_cancel_clicked(self, widget):
-        self.close()
-
     def on_select_all_toggled(self, widget):
         self.TOGGLE_ALL = not self.TOGGLE_ALL
         for row in self.files_table.get_items():
@@ -157,20 +151,6 @@ class Add(InterfaceView, GtkContextMenuCaller):
         paths = self.files_table.get_selected_row_items(1)
         GtkFilesContextMenu(self, data, self.base_dir, paths).show()
 
-    def on_key_pressed(self, widget, data):
-        if (data.keyval == gtk.keysyms.Escape):
-            self.on_cancel_clicked(widget)
-            return True
-            
-        if (data.state & gtk.gdk.CONTROL_MASK and 
-                gtk.gdk.keyval_name(data.keyval).lower() == "w"):
-            self.on_cancel_clicked(widget)
-            return True
-
-        if (data.state & gtk.gdk.CONTROL_MASK and 
-                gtk.gdk.keyval_name(data.keyval).lower() == "q"):
-            self.on_cancel_clicked(widget)
-            return True                       
 
 class SVNAdd(Add):
     def __init__(self, paths, base_dir=None):
