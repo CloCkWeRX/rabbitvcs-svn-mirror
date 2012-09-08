@@ -179,7 +179,9 @@ class Commit(InterfaceView, GtkContextMenuCaller):
     #
     # Event handlers
     #
-    
+    def on_refresh_clicked(self, widget):
+        self.initialize_items()        
+
     def on_destroy(self, widget):
         self.destroy()
         
