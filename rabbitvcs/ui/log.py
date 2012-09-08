@@ -46,6 +46,8 @@ _ = gettext.gettext
 DATETIME_FORMAT = rabbitvcs.util.helper.LOCAL_DATETIME_FORMAT
 
 REVISION_LABEL = _("Revision")
+DATE_LABEL = _("Date")
+AUTHOR_LABEL = _("Author")
 
 def revision_grapher(history):
     """
@@ -139,6 +141,7 @@ class Log(InterfaceView):
         )
 
         self.stop_on_copy = False
+        self.revision_clipboard = gtk.Clipboard()
 
     #
     # UI Signal Callback Methods
@@ -168,7 +171,12 @@ class Log(InterfaceView):
         if (data.state & gtk.gdk.CONTROL_MASK and 
                 gtk.gdk.keyval_name(data.keyval).lower() == "q"):
             self.on_close_clicked(widget)
-            return True            
+            return True  
+
+        if (data.state & gtk.gdk.CONTROL_MASK and
+            gtk.gdk.keyval_name(data.keyval).lower() == "c"):
+            if len(self.revisions_table.get_selected_rows()) > 0:
+                self.copy_revision_text()
 
     def on_stop_on_copy_toggled(self, widget):
         self.stop_on_copy = self.get_widget("stop_on_copy").get_active()
@@ -533,6 +541,18 @@ class SVNLog(Log):
         self.revision_items[index].author = val
         self.revisions_table.set_row_item(index, 1, val)
 
+    def copy_revision_text(self):
+        text = "" 
+        for selected_row in self.revisions_table.get_selected_rows():
+            item = self.revision_items[selected_row]
+            
+            text += "%s: %s\n" % (REVISION_LABEL, unicode(item.revision))
+            text += "%s: %s\n" % (AUTHOR_LABEL, unicode(item.author))
+            text += "%s: %s\n" % (DATE_LABEL, unicode(item.date))
+            text += "%s\n\n" % item.message
+
+        self.revision_clipboard.set_text(text)
+
     def update_revision_message(self):
         combined_paths = []
         subitems = []
@@ -738,6 +758,18 @@ class GitLog(Log):
         self.action.append(self.refresh)
         self.action.start()
 
+    def copy_revision_text(self):
+        text = ""
+        for selected_row in self.revisions_table.get_selected_rows():
+            item = self.revision_items[selected_row]
+
+            text += "%s: %s\n" % (REVISION_LABEL, unicode(item.revision.short()))
+            text += "%s: %s\n" % (AUTHOR_LABEL, unicode(item.author))
+            text += "%s: %s\n" % (DATE_LABEL, unicode(item.date))
+            text += "%s\n\n" % item.message
+            
+        self.revision_clipboard.set_text(text)
+
     def update_revision_message(self):
         combined_paths = []
         subitems = []
@@ -904,6 +936,11 @@ class MenuUpdateToThisRevision(MenuItem):
     tooltip = _("Update the selected path to this revision")
     icon = "rabbitvcs-update"
 
+class MenuCopyClipboard(MenuItem):
+    identifier = "RabbitVCS::Copy_Clipboard"
+    label = _("Copy to clipboard")
+    tooltip = _("Copy to clipboard the full data of these revisions")
+
 class MenuEditAuthor(MenuItem):
     identifier = "RabbitVCS::Edit_Author"
     label = _("Edit author...")
@@ -935,6 +972,9 @@ class LogTopContextMenuConditions:
         
     def view_diff_working_copy(self, data=None):
         return (self.vcs.is_in_a_or_a_working_copy(self.path) and len(self.revisions) == 1)
+
+    def copy_clipboard(self, data=None):
+        return (len(self.revisions) > 0)
 
     def view_diff_previous_revision(self, data=None):
         item = self.revisions[0]["revision"]
@@ -1013,6 +1053,9 @@ class LogTopContextMenuCallbacks:
             "%s@%s" % (self.path, unicode(self.revisions[0]["revision"])),
             "--vcs=%s" % self.caller.get_vcs_name()
         ])
+
+    def copy_clipboard(self, widget, data=None):
+        self.caller.copy_revision_text()
 
     def view_diff_previous_revision(self, widget, data=None):
         if ("parents" in self.revisions[0]) and len(self.revisions[0]["parents"]) > 0:
@@ -1248,7 +1291,7 @@ class LogTopContextMenu:
         # The first element of each tuple is a key that matches a
         # ContextMenuItems item.  The second element is either None when there
         # is no submenu, or a recursive list of tuples for desired submenus.
-        self.structure = [
+        self.structure = [      
             (MenuViewDiffWorkingCopy, None),
             (MenuViewDiffPreviousRevision, None),
             (MenuViewDiffRevisions, None),
@@ -1257,6 +1300,8 @@ class LogTopContextMenu:
             (MenuCompareRevisions, None),
             (MenuShowChangesPreviousRevision, None),
             (MenuShowChangesRevisions, None),
+            (MenuSeparator, None),
+            (MenuCopyClipboard, None),
             (MenuSeparator, None),
             (MenuUpdateToThisRevision, None),
             (MenuCheckout, None),
