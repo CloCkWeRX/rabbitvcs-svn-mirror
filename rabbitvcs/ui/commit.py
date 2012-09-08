@@ -76,7 +76,8 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
             [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
+                gobject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_STATUS,
+                gobject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
                 _("Text Status"), _("Property Status")],
             filters=[{
