@@ -318,7 +318,7 @@ class SVNCommit(Commit):
     def do_commit(self, items, recurse):
         revision = self.vcs.svn().commit(items, self.message.get_text(), recurse=recurse)
 
-        self.action.set_status(_("Completed Commit") + " at Revision: " + revision.short())
+        self.action.set_status(_("Completed Commit") + " at Revision: " + revision.value())
 
     def on_files_table_toggle_event(self, row, col):
         # Adds path: True/False to the dict
