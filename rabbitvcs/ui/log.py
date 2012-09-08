@@ -211,9 +211,12 @@ class Log(InterfaceView):
             line = {
                 "revision": self.revision_items[row].revision,
                 "author": self.revision_items[row].author,
-                "message": self.revision_items[row].message,
-                "parents": self.revision_items[row].parents
+                "message": self.revision_items[row].message
             }
+
+            if self.revision_items[row].parents:
+                line["parents"] = self.revision_items[row].parents
+
             try:
                 line["next_revision"] = self.revision_items[row+1].revision
             except IndexError,e:
