@@ -365,7 +365,7 @@ class GitCommit(Commit):
         self.action.append(self.action.set_header, _("Commit"))
         self.action.append(self.action.set_status, _("Running Commit Command..."))
         self.action.append(
-            rabbitvcs.util.helper.save_log_message, 
+            rabbitvcs.util.helper.save_log_message,
             self.message.get_text()
         )
         self.action.append(
