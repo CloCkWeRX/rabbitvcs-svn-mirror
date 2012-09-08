@@ -72,6 +72,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
 
         self.base_dir = base_dir
         self.vcs = rabbitvcs.vcs.VCS()
+        self.items = []
 
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
@@ -99,7 +100,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             }
         )
         self.files_table.allow_multiple()
-
+        self.get_widget("toggle_show_unversioned").set_active(not self.SHOW_UNVERSIONED)
         self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message"),
             (message and message or "")
@@ -129,7 +130,6 @@ class Commit(InterfaceView, GtkContextMenuCaller):
 
         gtk.gdk.threads_enter()
         self.populate_files_table()
-        self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
         gtk.gdk.threads_leave()
 
     # Overrides the GtkContextMenuCaller method
@@ -242,6 +242,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         """
         
         self.files_table.clear()
+        n = 0
         for item in self.items:
             if item.path in self.changes:
                 checked = self.changes[item.path]
@@ -251,6 +252,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             if not self.should_item_be_visible(item):
                 continue
 
+            n += 1
             self.files_table.append([
                 checked,
                 item.path, 
@@ -258,6 +260,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
                 item.simple_content_status(),
                 item.simple_metadata_status()
             ])
+        self.get_widget("status").set_text(_("Found %d item(s)") % n)
 
 class SVNCommit(Commit):
     def __init__(self, paths, base_dir=None, message=None):
