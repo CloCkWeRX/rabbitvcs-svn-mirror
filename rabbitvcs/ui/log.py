@@ -453,7 +453,7 @@ class SVNLog(Log):
             self.svn.log, 
             self.path,
             revision_start=start,
-            limit=self.limit+1,
+            limit=self.limit,
             discover_changed_paths=True
         )
         self.action.append(self.refresh)
@@ -534,7 +534,7 @@ class SVNLog(Log):
                     
     def on_next_clicked(self, widget):
         self.previous_starts.append(self.rev_start)
-        self.rev_start = self.rev_end - 1
+        self.rev_start = int(self.rev_end) - 1
 
         if self.rev_start < 1:
             self.rev_start = 1
