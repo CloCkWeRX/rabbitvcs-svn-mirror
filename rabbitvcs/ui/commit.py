@@ -309,11 +309,16 @@ class SVNCommit(Commit):
         self.action.append(
             rabbitvcs.util.helper.save_log_message, 
             self.message.get_text()
-        )
-        self.action.append(self.vcs.svn().commit, items, self.message.get_text(), recurse=recurse)
+        ),
+        self.action.append(self.do_commit, items, recurse)
         self.action.append(self.action.set_status, _("Completed Commit"))
         self.action.append(self.action.finish)
         self.action.start()
+
+    def do_commit(self, items, recurse):
+        revision = self.vcs.svn().commit(items, self.message.get_text(), recurse=recurse)
+
+        self.action.set_status(_("Completed Commit") + " at Revision: " + revision)
 
     def on_files_table_toggle_event(self, row, col):
         # Adds path: True/False to the dict
