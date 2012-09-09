@@ -24,6 +24,8 @@
 Concrete VCS implementation for Subversion functionality.
 """
 import subprocess
+import os
+import shutil
 import os.path
 from os.path import isdir, isfile, dirname, islink, realpath
 from datetime import datetime
@@ -66,15 +68,22 @@ class Revision:
         self.value = value
         self.is_revision_object = True
 
+        # TODO Shift to options factory?
+        if self.value and str(self.value).lower().strip() == 'head':
+            self.kind = "head"
+
         if self.value is None and self.kind in ("number", "date"):
             self.kind = "head"
+
+        if self.kind == "head":
+            self.value = None
 
         self.__revision_kind = self.KINDS[self.kind]
         self.__revision = None
 
         try:
-            if value is not None:
-                self.__revision = pysvn.Revision(self.__revision_kind, value)
+            if self.value is not None:
+                self.__revision = pysvn.Revision(self.__revision_kind, self.value)
             else:
                 self.__revision = pysvn.Revision(self.__revision_kind)
         except Exception, e:
@@ -1182,7 +1191,9 @@ class SVN:
         @param  recurse: Whether or not to run a recursive checkout.
 
         """
-        
+        if os.path.exists(dest_path):
+            shutil.rmtree(dest_path)
+
         return self.client.export(src_url_or_path, dest_path, force,
             revision.primitive(), native_eol, ignore_externals, recurse)
 

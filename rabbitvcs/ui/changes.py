@@ -198,23 +198,24 @@ class Changes(InterfaceView):
         self.more_actions.set_sensitive(False)
     
     def view_selected_diff(self, sidebyside=False):
-        url1 = self.changes_table.get_row(self.selected_rows[0])[0]
-        url2 = url1
-        if url1 == ".":
-            url1 = ""
-            url2 = ""
+        for row in self.selected_rows:
+            url1 = self.changes_table.get_row(row)[0]
+            url2 = url1
+            if url1 == ".":
+                url1 = ""
+                url2 = ""
 
-        url1 = rabbitvcs.util.helper.url_join(self.first_urls.get_active_text(), url1)
-        url2 = rabbitvcs.util.helper.url_join(self.second_urls.get_active_text(), url2)
-        rev1 = self.get_first_revision()
-        rev2 = self.get_second_revision()
-        
-        rabbitvcs.util.helper.launch_ui_window("diff", [
-            "%s@%s" % (url1, unicode(rev1)),
-            "%s@%s" % (url2, unicode(rev2)),
-            "%s" % (sidebyside and "-s" or ""),
-            "--vcs=%s" % self.get_vcs_name()
-        ])
+            url1 = rabbitvcs.util.helper.url_join(self.first_urls.get_active_text(), url1)
+            url2 = rabbitvcs.util.helper.url_join(self.second_urls.get_active_text(), url2)
+            rev1 = self.get_first_revision()
+            rev2 = self.get_second_revision()
+            
+            rabbitvcs.util.helper.launch_ui_window("diff", [
+                "%s@%s" % (url1, unicode(rev1)),
+                "%s@%s" % (url2, unicode(rev2)),
+                "%s" % (sidebyside and "-s" or ""),
+                "--vcs=%s" % self.get_vcs_name()
+            ])
         
         
     #
@@ -276,8 +277,11 @@ class SVNChanges(Changes):
                 gobject.TYPE_STRING], 
             [_("Path"), _("Change"), _("Property Change")],
             flags={
-                "sortable": True, 
+                "sortable": True,
                 "sort_on": 1
+            },
+            callbacks={
+                "mouse-event":   self.on_changes_table_button_released
             }
         )
 
@@ -428,7 +432,7 @@ class MenuOpenSecond(MenuItem):
     
 class MenuViewDiff(MenuItem):
     identifier = "RabbitVCS::View_Diff"
-    label = _("View unified diff")   
+    label = _("View unified diff(s)")   
     icon = "rabbitvcs-diff"
 
 class MenuCompare(MenuItem):
@@ -457,12 +461,12 @@ class ChangesContextMenuConditions:
 
     def view_diff(self):
         return (
-            len(self.caller.selected_rows) == 1
+            len(self.caller.selected_rows) > 0
         )
 
     def compare(self):
         return (
-            len(self.caller.selected_rows) == 1
+            len(self.caller.selected_rows) > 0
         )
 
 class ChangesContextMenuCallbacks:
@@ -477,7 +481,12 @@ class ChangesContextMenuCallbacks:
 
         url = rabbitvcs.util.helper.url_join(self.caller.first_urls.get_active_text(), path)
         rev = self.caller.get_first_revision()
-        rabbitvcs.util.helper.launch_ui_window("open", [url, "-r", unicode(rev)])        
+
+        rabbitvcs.util.helper.launch_ui_window("open", [
+            "--vcs=%s" % self.caller.get_vcs_name(),
+            url,
+            "-r%s" % unicode(rev)            
+        ])
 
     def open_second(self, widget, data=None):
         path = self.caller.changes_table.get_row(self.caller.selected_rows[0])[0]
@@ -486,29 +495,34 @@ class ChangesContextMenuCallbacks:
 
         url = rabbitvcs.util.helper.url_join(self.caller.second_urls.get_active_text(), path)
         rev = self.caller.get_second_revision()
-        rabbitvcs.util.helper.launch_ui_window("open", [url, "-r", unicode(rev)])
+        rabbitvcs.util.helper.launch_ui_window("open", [
+            "--vcs=%s" % self.caller.get_vcs_name(),
+            url,
+            "-r%s" % unicode(rev)            
+        ])
 
     def view_diff(self, widget, data=None):
         self.caller.view_selected_diff()
 
     def compare(self, widget, data=None):
-        url1 = self.caller.changes_table.get_row(self.caller.selected_rows[0])[0]
-        url2 = url1
-        if url1 == ".":
-            url1 = ""
-            url2 = ""
+        for row in self.caller.selected_rows:
+            url1 = self.caller.changes_table.get_row(row)[0]
+            url2 = url1
+            if url1 == ".":
+                url1 = ""
+                url2 = ""
 
-        url1 = rabbitvcs.util.helper.url_join(self.caller.first_urls.get_active_text(), url1)
-        url2 = rabbitvcs.util.helper.url_join(self.caller.second_urls.get_active_text(), url2)
-        rev1 = self.caller.get_first_revision()
-        rev2 = self.caller.get_second_revision()
-        
-        rabbitvcs.util.helper.launch_ui_window("diff", [
-            "%s@%s" % (url1, unicode(rev1)), 
-            "%s@%s" % (url2, unicode(rev2)), 
-            "-s",
-            "--vcs=%s" % self.caller.get_vcs_name()
-        ])
+            url1 = rabbitvcs.util.helper.url_join(self.caller.first_urls.get_active_text(), url1)
+            url2 = rabbitvcs.util.helper.url_join(self.caller.second_urls.get_active_text(), url2)
+            rev1 = self.caller.get_first_revision()
+            rev2 = self.caller.get_second_revision()
+            
+            rabbitvcs.util.helper.launch_ui_window("diff", [
+                "%s@%s" % (url1, unicode(rev1)), 
+                "%s@%s" % (url2, unicode(rev2)), 
+                "-s",
+                "--vcs=%s" % self.caller.get_vcs_name()
+            ])
 
 class ChangesContextMenu:
     """

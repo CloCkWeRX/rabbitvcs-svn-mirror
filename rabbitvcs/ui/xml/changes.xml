@@ -374,7 +374,6 @@
                             <!--<signal handler="on_changes_table_button_pressed" name="button_press_event"/>-->
                             <signal handler="on_changes_table_cursor_changed" name="cursor_changed"/>
                             <signal handler="on_changes_table_row_doubleclicked" name="row_activated"/>
-                            <signal handler="on_changes_table_button_released" name="button_release_event"/>
                             <!--<signal handler="on_changes_table_key_released" name="key_release_event"/>-->
                           </object>
                         </child>
