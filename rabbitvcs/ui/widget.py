@@ -1109,9 +1109,10 @@ class KeyValueTable(gtk.Table):
                 label_value = gtk.Label("%s" % value)
                 if HAS_PANGO:
                     label_value.set_properties(xalign=0,                    \
-                                           ellipsize=PANGO_ELLIPSIZE_MIDDLE)
+                                           ellipsize=PANGO_ELLIPSIZE_MIDDLE, \
+                                           selectable=True)
                 else:
-                    label_value.set_properties(xalign=0)
+                    label_value.set_properties(xalign=0,selectable=True)
                     
                 self.attach(label_key,
                              0,1,
