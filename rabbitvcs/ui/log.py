@@ -159,6 +159,7 @@ class Log(InterfaceView):
         self.close()
     
     def on_key_pressed(self, widget, data):
+        InterfaceView.on_key_pressed(self, widget, data)
         if (data.state & gtk.gdk.CONTROL_MASK and
             gtk.gdk.keyval_name(data.keyval).lower() == "c"):
             if len(self.revisions_table.get_selected_rows()) > 0:
