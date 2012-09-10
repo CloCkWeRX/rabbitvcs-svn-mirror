@@ -23,12 +23,12 @@
 import unittest
 import doctest
 
-import lib.helper
+import rabbitvcs.util.helper
 
 if __name__ == "__main__":
     suite = unittest.TestSuite()
     
-    for module in (lib.helper,):
+    for module in (rabbitvcs.util.helper,):
         suite.addTest(doctest.DocTestSuite(module))
         runner = unittest.TextTestRunner()
         runner.run(suite)
