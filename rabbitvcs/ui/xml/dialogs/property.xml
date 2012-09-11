@@ -60,7 +60,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkEntry" id="property_name">
+                          <object class="GtkComboBoxEntry" id="property_name">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                           </object>

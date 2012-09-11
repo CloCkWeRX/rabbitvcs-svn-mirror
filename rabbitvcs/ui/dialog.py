@@ -229,8 +229,25 @@ class Property(InterfaceView):
         self.save_name = name
         self.save_value = value
         
-        self.name = self.get_widget("property_name")
-        self.name.set_text(name)
+        self.name = rabbitvcs.ui.widget.ComboBox(
+                self.get_widget("property_name"),
+                [   # default svn properties
+                    'svn:author',
+                    'svn:autoversioned',
+                    'svn:date',
+                    'svn:eol-style',
+                    'svn:executable',
+                    'svn:externals',
+                    'svn:ignore',
+                    'svn:keywords',
+                    'svn:log',
+                    'svn:mergeinfo',
+                    'svn:mime-type',
+                    'svn:needs-lock',
+                    'svn:special',
+                    ]
+                )
+        self.name.set_child_text(name)
         
         self.value = rabbitvcs.ui.widget.TextView(
             self.get_widget("property_value"), 
@@ -251,7 +268,7 @@ class Property(InterfaceView):
         return (self.save_name, self.save_value, self.recurse.get_active())
     
     def save(self):
-        self.save_name = self.name.get_text()
+        self.save_name = self.name.get_active_text()
         self.save_value = self.value.get_text()
         self.save_recurse = self.recurse.get_active()
 
