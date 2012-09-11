@@ -96,7 +96,7 @@ class GitUpdate(InterfaceView):
                 self.action.append(self.git.pull, "--all")
             else:   
                 self.action.append(self.git.fetch, "--all")
-        else                
+        else: 
             if merge:
                 self.action.append(self.git.pull, repository, branch)
             else:
