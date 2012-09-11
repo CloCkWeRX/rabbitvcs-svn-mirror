@@ -22,7 +22,7 @@
 
 from rabbitvcs.util.log import Log
 
-log = Log("rabbitvcs.util.__init__")
+logger = Log("rabbitvcs.util.__init__")
 
 class Function:
     """
@@ -118,7 +118,7 @@ class FunctionQueue:
             try:
                 func.start()
             except Exception, e:
-                log.exception()
+                logger.exception()
                 if self._exception:
                     self._exception.set_args(e)
                     self._exception.call()
