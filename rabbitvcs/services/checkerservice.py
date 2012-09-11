@@ -245,6 +245,8 @@ class StatusCheckerStub:
         If there is not already a DBUS object with the path "OBJECT_PATH", we
         create one by starting a new Python process that runs this file.
         """
+        # We need this to for the client to be able to do asynchronous calls
+        dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         self.session_bus = dbus.SessionBus()
         self.decoder = simplejson.JSONDecoder(object_hook=decode_status)
         self.status_checker = None
