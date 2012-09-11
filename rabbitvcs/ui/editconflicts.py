@@ -113,7 +113,7 @@ class SVNEditConflicts(InterfaceNonView):
         paths = os.listdir(os.path.dirname(path))
         for head in paths:
             if head.find(os.path.basename(path)) != -1 and head.find("merge-right") != -1:
-                return head
+                return os.path.join(os.path.dirname(path), head)
 
         # If no merge-right file exists, merging is coming from head
         # so export the file from head
