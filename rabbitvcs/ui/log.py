@@ -107,7 +107,8 @@ class Log(InterfaceView):
     selected_rows = []
     selected_row = []
     paths_selected_rows = []
-    
+    display_items = []
+
     limit = 100
 
     def __init__(self, path):
@@ -186,8 +187,17 @@ class Log(InterfaceView):
     # Revisions table callbacks
     #
 
+    # In this UI, we have an ability to filter and display only certain items.
+    def get_displayed_row_items(self, col):
+        items = []
+        for row in self.selected_rows:
+            items.append(self.display_items[row][col])
+        
+        return items
+
     def on_revisions_table_row_activated(self, treeview, event, col):
-        paths = self.revisions_table.get_selected_row_items(1)
+        paths = self.revisions_table.get_displayed_row_items(1)
+
         rabbitvcs.util.helper.launch_diff_tool(*paths)
 
     def on_revisions_table_mouse_event(self, treeview, data=None):
@@ -211,8 +221,8 @@ class Log(InterfaceView):
 
     def on_paths_table_row_activated(self, treeview, data=None, col=None):
         try:
-            revision1 = unicode(self.revision_items[self.revisions_table.get_selected_rows()[0]].revision)
-            revision2 = unicode(self.revision_items[self.revisions_table.get_selected_rows()[0]+1].revision)
+            revision1 = unicode(self.display_items[self.revisions_table.get_selected_rows()[0]].revision)
+            revision2 = unicode(self.display_items[self.revisions_table.get_selected_rows()[0]+1].revision)
             path_item = self.paths_table.get_row(self.paths_table.get_selected_rows()[0])[1]
             url = self.root_url + path_item
             self.view_diff_for_path(url, unicode(revision1), unicode(revision2), sidebyside=True)
@@ -227,21 +237,21 @@ class Log(InterfaceView):
         revisions = []
         for row in self.revisions_table.get_selected_rows():
             line = {
-                "revision": self.revision_items[row].revision,
-                "author": self.revision_items[row].author,
-                "message": self.revision_items[row].message
+                "revision": self.display_items[row].revision,
+                "author": self.display_items[row].author,
+                "message": self.display_items[row].message
             }
 
-            if self.revision_items[row].parents:
-                line["parents"] = self.revision_items[row].parents
+            if self.display_items[row].parents:
+                line["parents"] = self.display_items[row].parents
 
             try:
-                line["next_revision"] = self.revision_items[row+1].revision
+                line["next_revision"] = self.display_items[row+1].revision
             except IndexError,e:
                 pass
 
             try:
-                line["previous_revision"] = self.revision_items[row-1].revision
+                line["previous_revision"] = self.display_items[row-1].revision
             except IndexError,e:
                 pass          
                       
@@ -299,17 +309,17 @@ class Log(InterfaceView):
         revisions = []
         for row in self.revisions_table.get_selected_rows():
             line = {
-                "revision": self.revision_items[row].revision,
-                "author": self.revision_items[row].author,
-                "message": self.revision_items[row].message
+                "revision": self.display_items[row].revision,
+                "author": self.display_items[row].author,
+                "message": self.display_items[row].message
             }
             try:
-                line["next_revision"] = self.revision_items[row+1].revision
+                line["next_revision"] = self.display_items[row+1].revision
             except IndexError,e:
                 pass
 
             try:
-                line["previous_revision"] = self.revision_items[row-1].revision
+                line["previous_revision"] = self.display_items[row-1].revision
             except IndexError,e:
                 pass          
                       
@@ -431,7 +441,7 @@ class SVNLog(Log):
         if self.rev_start > self.rev_max:
             self.rev_max = self.rev_start
         
-        display_items = []
+        self.display_items = []
 
         for item in self.revision_items:
             msg = cgi.escape(item.message).lower()
@@ -443,12 +453,12 @@ class SVNLog(Log):
             should_add = should_add or str(item.date).lower().find(self.filter_text) > -1
 
             if should_add:
-                display_items.append(item)
+                self.display_items.append(item)
 
         self.set_start_revision(self.rev_start)
         self.set_end_revision(self.rev_end)
 
-        for item in display_items:
+        for item in self.display_items:
             msg = cgi.escape(rabbitvcs.util.helper.format_long_text(item.message, 80))
 
             self.populate_table(item.revision, item.author, item.date, msg)
@@ -506,7 +516,7 @@ class SVNLog(Log):
         )
 
         for row in self.revisions_table.get_selected_rows():
-            item = self.revision_items[row]
+            item = self.display_items[row]
             self.action.append(
                 self.svn.revpropset,
                 prop_name,
@@ -520,18 +530,18 @@ class SVNLog(Log):
         self.action.start()
 
     def on_log_message_edited(self, index, val):
-        self.revision_items[index].message = val
+        self.display_items[index].message = val
         self.revisions_table.set_row_item(index, 3, val)
         self.message.set_text(val)
 
     def on_author_edited(self, index, val):
-        self.revision_items[index].author = val
+        self.display_items[index].author = val
         self.revisions_table.set_row_item(index, 1, val)
 
     def copy_revision_text(self):
         text = "" 
         for selected_row in self.revisions_table.get_selected_rows():
-            item = self.revision_items[selected_row]
+            item = self.display_items[selected_row]
             
             text += "%s: %s\n" % (REVISION_LABEL, unicode(item.revision))
             text += "%s: %s\n" % (AUTHOR_LABEL, unicode(item.author))
@@ -545,7 +555,7 @@ class SVNLog(Log):
         subitems = []
                
         for selected_row in self.revisions_table.get_selected_rows():
-            item = self.revision_items[selected_row]
+            item = self.display_items[selected_row]
             
             if len(self.revisions_table.get_selected_rows()) == 1:
                 self.message.set_text(item.message)
@@ -671,7 +681,7 @@ class GitLog(Log):
         self.set_start_revision(self.revision_items[0].revision.short())
         self.set_end_revision(self.revision_items[-1].revision.short())
 
-        display_items = []
+        self.display_items = []
 
         for item in self.revision_items:
             msg = cgi.escape(item.message).lower()
@@ -683,9 +693,9 @@ class GitLog(Log):
             should_add = should_add or str(item.date).lower().find(self.filter_text) > -1
 
             if should_add:
-                display_items.append(item)
+                self.display_items.append(item)
 
-        grapher = revision_grapher(display_items)
+        grapher = revision_grapher(self.display_items)
         max_columns = 1
         for (item, node, in_lines, out_lines) in grapher:
             if max_columns < len(out_lines):
@@ -748,7 +758,7 @@ class GitLog(Log):
     def copy_revision_text(self):
         text = ""
         for selected_row in self.revisions_table.get_selected_rows():
-            item = self.revision_items[selected_row]
+            item = self.display_items[selected_row]
 
             text += "%s: %s\n" % (REVISION_LABEL, unicode(item.revision.short()))
             text += "%s: %s\n" % (AUTHOR_LABEL, unicode(item.author))
@@ -762,7 +772,7 @@ class GitLog(Log):
         subitems = []
         
         for selected_row in self.revisions_table.get_selected_rows():
-            item = self.revision_items[selected_row]
+            item = self.display_items[selected_row]
 
             if len(self.revisions_table.get_selected_rows()) == 1:
                 self.message.set_text(item.message)
