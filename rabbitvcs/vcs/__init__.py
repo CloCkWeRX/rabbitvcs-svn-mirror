@@ -55,7 +55,21 @@ def guess(path):
                     }
                     return cache                
             path_to_check = os.path.split(path_to_check)[0]
-            
+
+    # Attempt 2 - assume it's a path like "local.txt@1"
+    path_to_check = "./" + path.split("@")[0]
+
+    while path_to_check != "/" and path_to_check != "":
+        for folder, client in folders.items():
+            if os.path.isdir(os.path.join(path_to_check, folder)):
+                cache = {
+                    "vcs": client,
+                    "repo_path": path_to_check
+                }
+                return cache                
+        path_to_check = os.path.split(path_to_check)[0]            
+
+
     return {
         "vcs": VCS_DUMMY,
         "repo_path": path
