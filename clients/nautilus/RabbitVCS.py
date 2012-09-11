@@ -275,6 +275,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
             item.add_string_attribute(key, value)
 
     def update_status(self, item, path, status):
+        import rabbitvcs.ui
         if status.summary in rabbitvcs.ui.STATUS_EMBLEMS:
             item.add_emblem(rabbitvcs.ui.STATUS_EMBLEMS[status.summary])
 
