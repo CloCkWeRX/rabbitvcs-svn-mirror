@@ -83,6 +83,7 @@ class GitUpdate(InterfaceView):
 
         repository = self.repository_selector.repository_opt.get_active_text()
         branch = self.repository_selector.branch_opt.get_active_text()
+        fetch_all = self.get_widget("all").get_active()
     
         self.action = GitAction(
             self.git,
@@ -90,10 +91,17 @@ class GitUpdate(InterfaceView):
         )
         self.action.append(self.action.set_header, _("Update"))
         self.action.append(self.action.set_status, _("Updating..."))
-        if merge:
-            self.action.append(self.git.pull, repository, branch)
-        else:
-            self.action.append(self.git.fetch, repository, branch)
+        if fetch_all:
+            if merge:
+                self.action.append(self.git.pull, "--all")
+            else:   
+                self.action.append(self.git.fetch, "--all")
+        else                
+            if merge:
+                self.action.append(self.git.pull, repository, branch)
+            else:
+                self.action.append(self.git.fetch, repository, branch)
+                
         self.action.append(self.action.set_status, _("Completed Update"))
         self.action.append(self.action.finish)
         self.action.start()
