@@ -546,7 +546,17 @@ class SVNLog(Log):
             text += "%s: %s\n" % (REVISION_LABEL, unicode(item.revision))
             text += "%s: %s\n" % (AUTHOR_LABEL, unicode(item.author))
             text += "%s: %s\n" % (DATE_LABEL, unicode(item.date))
-            text += "%s\n\n" % item.message
+            text += "%s\n\n"   % item.message
+            if item.changed_paths is not None:
+                for subitem in item.changed_paths:
+                    text += "%s\t%s" % (subitem.action, subitem.path)
+
+                    if subitem.copy_from_path or subitem.copy_from_revision:
+                        text += " (Copied from %s %s)" % (subitem.copy_from_path, subitem.copy_from_revision)
+
+                    text += "\n"
+
+            text += "\n\n\n"
 
         self.revision_clipboard.set_text(text)
 
