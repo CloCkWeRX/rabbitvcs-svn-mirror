@@ -458,6 +458,9 @@ class SVNLog(Log):
         self.set_start_revision(self.rev_start)
         self.set_end_revision(self.rev_end)
 
+        self.check_previous_sensitive()
+        self.check_next_sensitive()
+
         for item in self.display_items:
             msg = cgi.escape(rabbitvcs.util.helper.format_long_text(item.message, 80))
 
@@ -468,10 +471,9 @@ class SVNLog(Log):
             if self.stop_on_copy:
                 for path in item.changed_paths:
                     if path.copy_from_path or path.copy_from_revision:
+                        self.set_loading(False)
                         return
-            
-        self.check_previous_sensitive()
-        self.check_next_sensitive()
+
         self.set_loading(False)
 
     def populate_table(self, revision, author, date, msg):
@@ -617,7 +619,7 @@ class SVNLog(Log):
         sensitive = True
         if self.rev_end == 1:
             sensitive = False
-        if len(self.revision_items) <= self.limit:
+        if len(self.revision_items) < self.limit:
             sensitive = False
 
         self.get_widget("next").set_sensitive(sensitive)
@@ -826,7 +828,7 @@ class GitLog(Log):
 
     def check_next_sensitive(self):
         sensitive = True
-        if len(self.revision_items) <= self.limit:
+        if len(self.revision_items) < self.limit:
             sensitive = False
 
         self.get_widget("next").set_sensitive(sensitive)
