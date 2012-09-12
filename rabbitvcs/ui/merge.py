@@ -37,9 +37,10 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 class SVNMerge(InterfaceView):
-    def __init__(self, path):
+    def __init__(self, path, revision_range = None):
         InterfaceView.__init__(self, "merge", "Merge")
         
+        self.revision_range = revision_range
         
         self.assistant = self.get_widget("Merge")
         
@@ -64,9 +65,25 @@ class SVNMerge(InterfaceView):
         self.assistant.set_forward_page_func(self.on_forward_clicked)
         
         self.repo_paths = rabbitvcs.util.helper.get_repository_paths()
-        
+
         # Keeps track of which stages should be marked as complete
         self.type = None
+
+        self.initialize_root_url()
+
+    def initialize_root_url(self):
+        action = SVNAction(
+            self.svn,
+            notification=False,
+            run_in_thread=False
+        )
+        
+        self.root_url = action.run_single(
+            self.svn.get_repo_root_url,
+            self.path
+        )
+
+
     #
     # Assistant UI Signal Callbacks
     #
@@ -235,6 +252,8 @@ class SVNMerge(InterfaceView):
             if self.get_widget("mergetype_range_opt").get_active():
                 next = 1
                 self.type = "range"
+                if self.revision_range:
+                    self.get_widget("mergerange_revisions").set_text(self.revision_range)
             elif self.get_widget("mergetype_reintegrate_opt").get_active():
                 next = 2
                 self.type = "reintegrate"
@@ -256,6 +275,7 @@ class SVNMerge(InterfaceView):
                 self.get_widget("mergerange_from_urls"), 
                 self.repo_paths
             )
+            self.mergerange_repos.set_child_text(self.root_url)
             self.get_widget("mergerange_working_copy").set_text(self.path)
         
         self.mergerange_check_ready()
@@ -546,7 +566,7 @@ if __name__ == "__main__":
     from rabbitvcs.ui import main, VCS_OPT
     (options, args) = main(
         [VCS_OPT],
-        usage="Usage: rabbitvcs merge path [revision... (for git)]"
+        usage="Usage: rabbitvcs merge path [revision/revision_range]"
     )
 
     path = args[0]
@@ -556,15 +576,15 @@ if __name__ == "__main__":
         vcs_name = rabbitvcs.vcs.guess(path)["vcs"]    
     
     window = None
+    revision_text = None
+    if len(args) >= 2:
+        revision_text = args[1]
+
     if vcs_name == rabbitvcs.vcs.VCS_SVN:
-        window = SVNMerge(path)
+        window = SVNMerge(path, revision_text)
         window.register_gtk_quit()
         gtk.main()
     elif vcs_name == rabbitvcs.vcs.VCS_GIT:
-        revision1 = None
-        if len(args) == 2:
-            revision1 = args[1]
-
-        window = GitMerge(path, revision1)
+        window = GitMerge(path, revision_text)
         window.register_gtk_quit()
         gtk.main()
