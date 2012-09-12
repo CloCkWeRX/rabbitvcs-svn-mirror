@@ -945,6 +945,12 @@ class MenuUpdateToThisRevision(MenuItem):
     tooltip = _("Update the selected path to this revision")
     icon = "rabbitvcs-update"
 
+class MenuRevertChangesFromThisRevision(MenuItem):
+    identifier = "RabbitVCS::Revert_Changes_From_This_Revision"
+    label = _("Revert changes from this revision")
+    tooltip = _("Update the selected path by reverse merging the changes")
+    icon = "rabbitvcs-revert"    
+
 class MenuCopyClipboard(MenuItem):
     identifier = "RabbitVCS::Copy_Clipboard"
     label = _("Copy to clipboard")
@@ -1010,6 +1016,11 @@ class LogTopContextMenuConditions:
         return (len(self.revisions) > 1)
 
     def update_to_this_revision(self, data=None):
+        return (self.vcs_name == rabbitvcs.vcs.VCS_SVN and len(self.revisions) == 1)
+
+    # TODO Evaluate multiple revisions later
+    # TODO Git?
+    def revert_changes_from_this_revision(self, data=None):
         return (self.vcs_name == rabbitvcs.vcs.VCS_SVN and len(self.revisions) == 1)
 
     def checkout(self, data=None):
@@ -1163,6 +1174,13 @@ class LogTopContextMenuCallbacks:
             "-r", unicode(self.revisions[0]["revision"]),
             "--vcs=%s" % self.caller.get_vcs_name()
         ])
+
+    def revert_changes_from_this_revision(self, widget, data=None):        
+        rabbitvcs.util.helper.launch_ui_window("merge", [
+            self.path,
+            unicode(self.revisions[0]["revision"]) + "-" + str(int(unicode(self.revisions[0]["revision"])) - 1),
+            "--vcs=%s" % self.caller.get_vcs_name()
+        ])        
         
     def checkout(self, widget, data=None):
         url = ""
@@ -1313,6 +1331,7 @@ class LogTopContextMenu:
             (MenuCopyClipboard, None),
             (MenuSeparator, None),
             (MenuUpdateToThisRevision, None),
+            (MenuRevertChangesFromThisRevision, None),
             (MenuCheckout, None),
             (MenuBranches, None),
             (MenuTags, None),
