@@ -3,7 +3,7 @@
   <!-- interface-requires gtk+ 2.10 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkAssistant" id="Merge">
-    <property name="width_request">550</property>
+    <property name="width_request">600</property>
     <property name="visible">True</property>
     <property name="border_width">12</property>
     <property name="title" translatable="yes">Merge Assistant</property>
