@@ -187,7 +187,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         if InterfaceView.on_key_pressed(self, widget, data):
             return True
 
-        if (data.state & (gtk.gdk.SHIFT_MASK | gtk.gdk.CONTROL_MASK) and 
+        if (data.state & (gtk.gdk.CONTROL_MASK) and 
                 gtk.gdk.keyval_name(data.keyval) == "Return"):
             self.on_ok_clicked(widget)
             return True
