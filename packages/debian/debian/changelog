@@ -1,3 +1,9 @@
+rabbitvcs (0.15.2-1) unstable; urgency=low
+
+  * New upstream release 0.15.2
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Sun, 16 Sep 2012 17:53:46 +0800
+
 rabbitvcs (0.15.0.5-1) unstable; urgency=low
 
   * New upstream release fixing several installation issues.

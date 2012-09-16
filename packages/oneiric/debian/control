@@ -45,7 +45,7 @@ Description: Command line interface for RabbitVCS
 Package: rabbitvcs-gedit
 Architecture: all
 Depends: ${misc:Depends},
-         gedit,
+         gedit (>= 3.0),
          rabbitvcs-core (>= 0.15)
 Description: Gedit extension for RabbitVCS
  RabbitVCS is a set of graphical tools written to provide simple and

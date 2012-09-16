@@ -1,3 +1,15 @@
+rabbitvcs (0.15.2-1~precise) precise; urgency=low
+
+  * New upstream release 0.15.2
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Sun, 16 Sep 2012 16:44:44 +0800
+
+rabbitvcs (0.15.1-1~precise) precise; urgency=low
+
+  * New upstream release (multiple bugfixes)
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Sun, 26 Aug 2012 10:06:10 +0800
+
 rabbitvcs (0.15.0.5-1~precise) precise; urgency=low
 
   * New upstream release fixing gtkspell integration issue

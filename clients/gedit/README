@@ -11,7 +11,7 @@ Requirements:
 To install for Gedit 3:
     To install for all users, copy rabbitvcs-plugin.py and 
     rabbitvcs-gedit3.plugin to:
-        /usr/share/gedit/plugins
+        /usr/lib/gedit/plugins
 
     To install for a single user, copy rabbitvcs-plugin.py and 
     rabbitvcs-gedit3.plugin to:

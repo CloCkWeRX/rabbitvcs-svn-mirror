@@ -45,12 +45,22 @@ Description: Command line interface for RabbitVCS
 Package: rabbitvcs-gedit
 Architecture: all
 Depends: ${misc:Depends},
-         gedit,
+         gedit (<< 3.0),
          rabbitvcs-core (>= 0.15)
 Description: Gedit extension for RabbitVCS
  RabbitVCS is a set of graphical tools written to provide simple and
  straightforward access to the version control systems SVN (Subversion) and Git.
- This is the extension for gedit text editor.
+ This is the extension for gedit (v2) text editor.
+
+Package: rabbitvcs-gedit3
+Architecture: all
+Depends: ${misc:Depends},
+         gedit (>= 3.0),
+         rabbitvcs-core (>= 0.15)
+Description: Gedit extension for RabbitVCS
+ RabbitVCS is a set of graphical tools written to provide simple and
+ straightforward access to the version control systems SVN (Subversion) and Git.
+ This is the extension for gedit (v3) text editor.
 
 Package: rabbitvcs-nautilus
 Architecture: all
