@@ -1071,8 +1071,10 @@ class LogTopContextMenuCallbacks:
     def find_parent(self, revision):
         if ("parents" in revision) and len(revision["parents"]) > 0:
             parent = unicode(revision["parents"][0])
-        else:
+        elif ("next_revision" in revision):
             parent = unicode(revision["next_revision"])
+        else:
+            parent = unicode(int(unicode(revision["revision"])) - 1)
 
         return parent
         
@@ -1404,6 +1406,16 @@ class LogBottomContextMenuCallbacks:
             
         self.paths = paths
         self.revisions = revisions
+
+    def find_parent(self, revision):
+        if ("parents" in revision) and len(revision["parents"]) > 0:
+            parent = unicode(revision["parents"][0])
+        elif ("next_revision" in revision):
+            parent = unicode(revision["next_revision"])
+        else:
+            parent = unicode(int(unicode(revision["revision"])) - 1)
+
+        return parent
 
     def view_diff_previous_revision(self, widget, data=None):
         rev = unicode(self.revisions[0]["revision"])
