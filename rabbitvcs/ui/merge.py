@@ -79,7 +79,7 @@ class SVNMerge(InterfaceView):
         )
         
         self.root_url = action.run_single(
-            self.svn.get_repo_root_url,
+            self.svn.get_repo_url,
             self.path
         )
 
