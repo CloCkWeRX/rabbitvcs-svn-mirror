@@ -143,7 +143,7 @@ class SVNMerge(InterfaceView):
                 else:
                     high = int(r)
                     low = high - 1
-                
+
                 # Before pysvn v1.6.3, there was a bug that required the ranges 
                 # tuple to have three elements, even though only two were used
                 # Fixed in Pysvn Revision 1114
@@ -225,7 +225,8 @@ class SVNMerge(InterfaceView):
                 self.path
             )
             kwargs = {
-                "recurse": recursive
+                "recurse": recursive,
+                "dry_run": test
             }
         
         if len(args) > 0:
