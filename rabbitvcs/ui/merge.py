@@ -133,26 +133,30 @@ class SVNMerge(InterfaceView):
             ranges = []
             for r in revisions.split(","):
                 if r.find("-") != -1:
-                    (low, high) = r.split("-")
+                    (low, high) = [ int(i) for i in r.split("-") ]
+                    if low < high:
+                        low -= 1
                 elif r.find(":") != -1:
-                    (low, high) = r.split(":")
+                    (low, high) = [ int(i) for i in r.split(":") ]
+                    if low < high:
+                        low -= 1
                 else:
                     high = int(r)
                     low = high - 1
-
+                
                 # Before pysvn v1.6.3, there was a bug that required the ranges 
                 # tuple to have three elements, even though only two were used
                 # Fixed in Pysvn Revision 1114
                 if (self.svn.interface == "pysvn" and self.svn.is_version_less_than((1,6,3,0))):
                     ranges.append((
-                        self.svn.revision("number", number=int(low)).primitive(),
-                        self.svn.revision("number", number=int(high)).primitive(),
+                        self.svn.revision("number", number=low).primitive(),
+                        self.svn.revision("number", number=high).primitive(),
                         None
                     ))
                 else:
                     ranges.append((
-                        self.svn.revision("number", number=int(low)).primitive(),
-                        self.svn.revision("number", number=int(high)).primitive(),
+                        self.svn.revision("number", number=low).primitive(),
+                        self.svn.revision("number", number=high).primitive(),
                     ))
 
             action.append(rabbitvcs.util.helper.save_repository_path, url)
