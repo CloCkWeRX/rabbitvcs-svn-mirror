@@ -20,20 +20,31 @@
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os
 import thread
+from time import sleep
 
 import pygtk
 import gobject
 import gtk
 
 from rabbitvcs.ui import InterfaceView
-from rabbitvcs.ui.add import Add
-from rabbitvcs.ui.action import SVNAction
+from rabbitvcs.util.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
 import rabbitvcs.util.helper
+import rabbitvcs.vcs
 from rabbitvcs.util.log import Log
+from rabbitvcs.vcs.status import Status
+
+log = Log("rabbitvcs.ui.revert")
+
+from rabbitvcs import gettext
+_ = gettext.gettext
+
+gtk.gdk.threads_init()
+
 
 import rabbitvcs.vcs
 
@@ -42,25 +53,22 @@ log = Log("rabbitvcs.ui.revert")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class SVNRevert(Add):
+class SVNRevert(InterfaceView, GtkContextMenuCaller):
     def __init__(self, paths, base_dir=None):
-        InterfaceView.__init__(self, "add", "Add")
-
-        self.window = self.get_widget("Add")
-        self.window.set_title(_("Revert"))
+        InterfaceView.__init__(self, "revert", "Revert")
 
         self.paths = paths
         self.base_dir = base_dir
         self.last_row_clicked = None
         self.vcs = rabbitvcs.vcs.VCS()
-        self.items = None
-        self.statuses = self.vcs.svn().STATUSES_FOR_REVERT
+        self.items = []
+
+        self.statuses = self.vcs.statuses_for_revert(paths)
         self.files_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("files_table"), 
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
-                gobject.TYPE_STRING ,gobject.TYPE_STRING, gobject.TYPE_STRING], 
-            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
-                _("Text Status"), _("Property Status")],
+            self.get_widget("files_table"),
+            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH,
+                gobject.TYPE_STRING],
+            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
             filters=[{
                 "callback": rabbitvcs.ui.widget.path_filter,
                 "user_data": {
@@ -106,6 +114,62 @@ class SVNRevert(Add):
         self.action.append(self.action.set_status, _("Completed Revert"))
         self.action.append(self.action.finish)
         self.action.start()
+
+    def load(self):
+        gtk.gdk.threads_enter()
+        self.get_widget("status").set_text(_("Loading..."))
+        self.items = self.vcs.get_items(self.paths, self.statuses)
+
+        self.populate_files_table()
+        self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
+        gtk.gdk.threads_leave()
+
+    def populate_files_table(self):
+        self.files_table.clear()
+        for item in self.items:
+            self.files_table.append([
+                True,
+                item.path,
+                rabbitvcs.util.helper.get_file_extension(item.path)
+            ])
+
+    # Overrides the GtkContextMenuCaller method
+    def on_context_menu_command_finished(self):
+        self.initialize_items()
+
+    def initialize_items(self):
+        """
+        Initializes the activated cache and loads the file items in a new thread
+        """
+
+        try:
+            thread.start_new_thread(self.load, ())
+        except Exception, e:
+            log.exception(e)
+
+    def on_select_all_toggled(self, widget):
+        self.TOGGLE_ALL = not self.TOGGLE_ALL
+        for row in self.files_table.get_items():
+            row[0] = self.TOGGLE_ALL
+
+    def on_files_table_row_activated(self, treeview, event, col):
+        paths = self.files_table.get_selected_row_items(1)
+        rabbitvcs.util.helper.launch_diff_tool(*paths)
+
+    def on_files_table_key_event(self, treeview, data=None):
+        if gtk.gdk.keyval_name(data.keyval) == "Delete":
+            self.delete_items(treeview, data)
+
+    def on_files_table_mouse_event(self, treeview, data=None):
+        if data is not None and data.button == 3:
+            self.show_files_table_popup_menu(treeview, data)
+
+    def show_files_table_popup_menu(self, treeview, data):
+        paths = self.files_table.get_selected_row_items(1)
+        GtkFilesContextMenu(self, data, self.base_dir, paths).show()
+
+# TODO Fix
+from rabbitvcs.ui.add import Add
 
 class GitRevert(Add):
     def __init__(self, paths, base_dir=None):
