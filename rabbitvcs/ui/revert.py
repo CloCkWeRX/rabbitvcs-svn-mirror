@@ -53,7 +53,10 @@ log = Log("rabbitvcs.ui.revert")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class SVNRevert(InterfaceView, GtkContextMenuCaller):
+class Revert(InterfaceView, GtkContextMenuCaller):
+
+    TOGGLE_ALL = True
+
     def __init__(self, paths, base_dir=None):
         InterfaceView.__init__(self, "revert", "Revert")
 
@@ -97,23 +100,7 @@ class SVNRevert(InterfaceView, GtkContextMenuCaller):
             ])
                     
     def on_ok_clicked(self, widget):
-        items = self.files_table.get_activated_rows(1)
-        if not items:
-            self.close()
-            return
-        self.hide()
-
-        self.action = rabbitvcs.ui.action.SVNAction(
-            self.vcs.svn(),
-            register_gtk_quit=self.gtk_quit_is_set()
-        )
-        
-        self.action.append(self.action.set_header, _("Revert"))
-        self.action.append(self.action.set_status, _("Running Revert Command..."))
-        self.action.append(self.vcs.svn().revert, items, recurse=True)
-        self.action.append(self.action.set_status, _("Completed Revert"))
-        self.action.append(self.action.finish)
-        self.action.start()
+        return True
 
     def load(self):
         gtk.gdk.threads_enter()
@@ -168,55 +155,39 @@ class SVNRevert(InterfaceView, GtkContextMenuCaller):
         paths = self.files_table.get_selected_row_items(1)
         GtkFilesContextMenu(self, data, self.base_dir, paths).show()
 
-# TODO Fix
-from rabbitvcs.ui.add import Add
 
-class GitRevert(Add):
+class SVNRevert(Revert):
     def __init__(self, paths, base_dir=None):
-        InterfaceView.__init__(self, "add", "Add")
+        Revert.__init__(self, paths, base_dir)
+        
+        self.svn = self.vcs.svn()
 
-        self.window = self.get_widget("Add")
-        self.window.set_title(_("Revert"))
+    def on_ok_clicked(self, widget):
+        items = self.files_table.get_activated_rows(1)
+        if not items:
+            self.close()
+            return
+        self.hide()
 
-        self.paths = paths
-        self.base_dir = base_dir
-        self.last_row_clicked = None
-        self.vcs = rabbitvcs.vcs.VCS()
-        self.git = self.vcs.git(self.paths[0])
-        self.items = None
-        self.statuses = self.git.STATUSES_FOR_REVERT
-        self.files_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("files_table"), 
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
-                gobject.TYPE_STRING ,gobject.TYPE_STRING], 
-            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
-                _("Status")],
-            filters=[{
-                "callback": rabbitvcs.ui.widget.path_filter,
-                "user_data": {
-                    "base_dir": base_dir,
-                    "column": 1
-                }
-            }],
-            callbacks={
-                "row-activated":  self.on_files_table_row_activated,
-                "mouse-event":   self.on_files_table_mouse_event,
-                "key-event":     self.on_files_table_key_event
-            }
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.vcs.svn(),
+            register_gtk_quit=self.gtk_quit_is_set()
         )
+        
+        self.action.append(self.action.set_header, _("Revert"))
+        self.action.append(self.action.set_status, _("Running Revert Command..."))
+        self.action.append(self.vcs.svn().revert, items, recurse=True)
+        self.action.append(self.action.set_status, _("Completed Revert"))
+        self.action.append(self.action.finish)
+        self.action.start()
 
-        self.initialize_items()
 
-    def populate_files_table(self):
-        self.files_table.clear()
-        for item in self.items:
-            self.files_table.append([
-                True, 
-                item.path, 
-                rabbitvcs.util.helper.get_file_extension(item.path),
-                item.simple_content_status()
-            ])
-                    
+class GitRevert(Revert):
+    def __init__(self, paths, base_dir=None):
+        Revert.__init__(self, paths, base_dir)
+        
+        self.git = self.vcs.git(self.paths[0])
+
     def on_ok_clicked(self, widget):
         items = self.files_table.get_activated_rows(1)
         if not items:
