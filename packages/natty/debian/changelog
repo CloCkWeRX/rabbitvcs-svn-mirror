@@ -1,6 +1,18 @@
 rabbitvcs (0.15.2-1~natty) natty; urgency=low
 
   * New upstream release 0.15.2
+  * Issue 187: Drop-down list of pre-defined properties in the property dialog
+  * Issue 261: RabbitVCS incompatible with TortoiseHg
+  * Issue 562: 'Refresh Status' does not work
+  * Issue 585: Fix "Browser can not handle path with non-English name"
+  * Issue 586: Fixed "Browser can not handle path with non-English name"
+  * Issue 564: Debian: Version of python-svn in Depends: is too low
+  * Issue 579: Ask for dulwich 0.6.1+
+  * Issue 605: Log window Forward button does not work for me
+  * Issue 628: (Sub)directories with a white space are not correctly managed
+  * Issue 716: Unicode regression from (Sub)directories with a white space are not correctly managed
+  * Fixed commit ID not being reported when committing to a git repository.
+  * Updated packaging for Ubuntu and Debian. Added packaging for Quantal Quetzal (12.10) Ubuntu release.
 
  -- Jason Heeris <jason.heeris@gmail.com>  Sun, 16 Sep 2012 16:39:59 +0800
 
