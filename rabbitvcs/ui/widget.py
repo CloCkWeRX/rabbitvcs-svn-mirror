@@ -87,6 +87,7 @@ TYPE_STATUS = 'TYPE_STATUS'
 TYPE_ELLIPSIZED = 'TYPE_ELLIPSIZED'
 TYPE_GRAPH = 'TYPE_GRAPH'
 TYPE_MARKUP = 'TYPE_MARKUP'
+TYPE_HIDDEN = 'TYPE_HIDDEN'
 
 ELLIPSIZE_COLUMN_CHARS = 20
 
@@ -359,6 +360,10 @@ class TableBase:
                 cell.set_property('yalign', 0)
                 col.pack_start(cell, False)
                 col.set_attributes(cell, text=i)
+            elif coltypes[i] == TYPE_HIDDEN:
+                coltypes[i] = str
+                col = gtk.TreeViewColumn(name, cell)
+                col.set_visible(False)
             elif coltypes[i] == TYPE_ELLIPSIZED:
                 coltypes[i] = str
                 cell = gtk.CellRendererText()

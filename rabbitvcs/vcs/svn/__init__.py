@@ -546,6 +546,49 @@ class SVN:
 
         return returner
 
+    def find_merge_candidate_revisions(self, from_url, to_path):
+        """
+        Return the list of revisions from from_url that are not already merged into to_path.
+
+        @type  from_url:  string
+        @param from_url:  A repository URL to merge from.
+
+        @type  to_path:   string
+        @param to_path:   A working copy path to merge into.
+
+        @rtype:           list
+        @return:          A list of revisions not already merged.
+        """
+
+        from_url_root = self.get_repo_root_url(from_url)
+        from_branch = from_url.replace(from_url_root, '')
+        from_branch = from_branch.rstrip('/')
+
+        merge_info = self.propget(to_path, "svn:mergeinfo")
+
+        merged_revisions = []
+        for branch in merge_info.split('\n'):
+            if not branch.startswith(from_branch + ':'):
+                continue
+            revisions = branch.split(':')[1]  # branch:rev,rev-rev,...
+            for rev in revisions.split(','):
+                if rev.find('-') != -1:
+                    (rev_s, rev_e) = rev.split('-')
+                    merged_revisions += range(int(rev_s), int(rev_e) + 1)
+                else:
+                    merged_revisions.append(int(rev))
+
+        from_log = self.log(from_url, strict_node_history=False)
+        from_revisions = [ int(l.revision.short()) for l in from_log ]
+
+        to_log = self.log(to_path, strict_node_history=False)
+        to_revisions = [ int(l.revision.short()) for l in to_log ]
+
+        candidate_revisions = list(set(from_revisions) - set(to_revisions) - set(merged_revisions))
+
+        return candidate_revisions
+
+
     #
     # properties
     #

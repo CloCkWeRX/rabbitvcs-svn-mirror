@@ -356,21 +356,29 @@ class Log(InterfaceView):
         return vcs
 
 class SVNLog(Log):
-    def __init__(self, path):
+    def __init__(self, path, merge_candidate_revisions=[]):
         Log.__init__(self, path)
                 
         self.svn = self.vcs.svn()
+        self.merge_candidate_revisions = merge_candidate_revisions
 
         self.revisions_table = rabbitvcs.ui.widget.Table(
             self.get_widget("revisions_table"),
             [gobject.TYPE_STRING, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING], 
+                gobject.TYPE_STRING, gobject.TYPE_STRING,
+                rabbitvcs.ui.widget.TYPE_HIDDEN],
             [_("Revision"), _("Author"), 
-                _("Date"), _("Message")],
+                _("Date"), _("Message"),
+                _("Color")],
             callbacks={
                 "mouse-event":   self.on_revisions_table_mouse_event
             }
         )
+
+        for i in range(4):
+            column = self.revisions_table.get_column(i)
+            cell = column.get_cell_renderers()[0]
+            column.add_attribute(cell, 'foreground', 4)
 
         self.paths_table = rabbitvcs.ui.widget.Table(
             self.get_widget("paths_table"),
@@ -463,8 +471,10 @@ class SVNLog(Log):
 
         for item in self.display_items:
             msg = cgi.escape(rabbitvcs.util.helper.format_long_text(item.message, 80))
+            rev = item.revision
+            color = "#000000" if int(rev.short()) in self.merge_candidate_revisions else "#c9c9c9"
 
-            self.populate_table(item.revision, item.author, item.date, msg)
+            self.populate_table(rev, item.author, item.date, msg, color)
 
             # Stop on copy after adding the item to the table
             # so the user can look at the item that was copied
@@ -476,12 +486,13 @@ class SVNLog(Log):
 
         self.set_loading(False)
 
-    def populate_table(self, revision, author, date, msg):
+    def populate_table(self, revision, author, date, msg, color):
         self.revisions_table.append([
             unicode(revision),
             author,
             rabbitvcs.util.helper.format_datetime(date),
-            msg
+            msg,
+            color
         ])
 
 
@@ -837,13 +848,13 @@ class GitLog(Log):
         self.root_url = self.git.get_repository() + "/"
 
 class SVNLogDialog(SVNLog):
-    def __init__(self, path, ok_callback=None, multiple=False):
+    def __init__(self, path, ok_callback=None, multiple=False, merge_candidate_revisions=[]):
         """
         Override the normal SVNLog class so that we can hide the window as we need.
         Also, provide a callback for when the OK button is clicked so that we
         can get some desired data.
         """
-        SVNLog.__init__(self, path)
+        SVNLog.__init__(self, path, merge_candidate_revisions)
         self.ok_callback = ok_callback
         self.multiple = multiple
         

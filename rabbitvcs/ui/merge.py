@@ -286,10 +286,15 @@ class SVNMerge(InterfaceView):
         self.mergerange_check_ready()
         
     def on_mergerange_show_log1_clicked(self, widget):
+        merge_candidate_revisions = self.svn.find_merge_candidate_revisions(
+            self.get_widget("mergerange_from_urls").get_active_text(),
+            self.path
+        )
         SVNLogDialog(
             self.get_widget("mergerange_from_urls").get_active_text(),
             ok_callback=self.on_mergerange_log1_closed, 
-            multiple=True
+            multiple=True,
+            merge_candidate_revisions=merge_candidate_revisions
         )
     
     def on_mergerange_log1_closed(self, data):
