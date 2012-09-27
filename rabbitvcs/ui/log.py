@@ -356,7 +356,7 @@ class Log(InterfaceView):
         return vcs
 
 class SVNLog(Log):
-    def __init__(self, path, merge_candidate_revisions=[]):
+    def __init__(self, path, merge_candidate_revisions=None):
         Log.__init__(self, path)
                 
         self.svn = self.vcs.svn()
@@ -472,7 +472,10 @@ class SVNLog(Log):
         for item in self.display_items:
             msg = cgi.escape(rabbitvcs.util.helper.format_long_text(item.message, 80))
             rev = item.revision
-            color = "#000000" if int(rev.short()) in self.merge_candidate_revisions else "#c9c9c9"
+            color = "#000000"
+            if (self.merge_candidate_revisions != None and
+                int(rev.short()) not in self.merge_candidate_revisions):
+                color = "#c9c9c9"
 
             self.populate_table(rev, item.author, item.date, msg, color)
 
@@ -848,7 +851,7 @@ class GitLog(Log):
         self.root_url = self.git.get_repository() + "/"
 
 class SVNLogDialog(SVNLog):
-    def __init__(self, path, ok_callback=None, multiple=False, merge_candidate_revisions=[]):
+    def __init__(self, path, ok_callback=None, multiple=False, merge_candidate_revisions=None):
         """
         Override the normal SVNLog class so that we can hide the window as we need.
         Also, provide a callback for when the OK button is clicked so that we
