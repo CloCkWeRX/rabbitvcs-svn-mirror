@@ -37,12 +37,14 @@ import rabbitvcs.util.helper
 import rabbitvcs.services.checkerservice
 from rabbitvcs.services.checkerservice import StatusCheckerStub
 
-from rabbitvcs import gettext
+from rabbitvcs import gettext, _gettext, APP_NAME, LOCALE_DIR
 _ = gettext.gettext
 
 CHECKER_UNKNOWN_INFO = _("Unknown")
 CHECKER_SERVICE_ERROR = _(
 "There was an error communicating with the status checker service.")
+
+from locale import getdefaultlocale
 
 class Settings(InterfaceView):
     def __init__(self, base_dir=None):
@@ -54,9 +56,14 @@ class Settings(InterfaceView):
 
         self.settings = rabbitvcs.util.settings.SettingsManager()
         
+        langs = []
+        language = os.environ.get('LANGUAGE', None)
+        if language:
+            langs += language.split(":")
+
         self.language = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("language"), 
-            [_("English")]
+            langs
         )
         self.language.set_active_from_value(
             self.settings.get("general", "language")
