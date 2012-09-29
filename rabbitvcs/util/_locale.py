@@ -2,13 +2,24 @@ import locale
 import os
 
 from rabbitvcs.util.log import Log
+import rabbitvcs.util.settings
+import rabbitvcs.util.helper
+
 log = Log("rabbitvcs.util.locale")
 
 def initialize_locale():
     try:
+        settings = rabbitvcs.util.settings.SettingsManager()
+
         sane_default = locale.getdefaultlocale(['LANG', 'LANGUAGE'])
+
         # Just try to set the default locale for the user
         locale.setlocale(locale.LC_ALL, sane_default)
+
+        # Now, if the user has set a default, try to apply that
+        user_default = settings.get("general", "language")
+        if user_default:
+            locale.setlocale(locale.LC_ALL, (user_default, sane_default[1]))
     except locale.Error:
         # If the user's environment does not specify an encoding, Python will
         # pick a default which might not be available. It seems to pick
