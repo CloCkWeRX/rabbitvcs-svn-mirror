@@ -351,11 +351,14 @@ class SVN:
         if self.is_working_copy(path):
             return True
         else:
-            # info will return nothing for an unversioned file inside a working copy
-            if (self.is_in_a_or_a_working_copy(path) and
-                    self.client_info(path)):
-                return True
-
+            try:
+                # info will return nothing for an unversioned file inside a working copy
+                if (self.is_in_a_or_a_working_copy(path) and
+                        self.client_info(path)):
+                    return True
+            except Exception, e:
+                log.exception("is_versioned exception for %s" % path)
+                
             return False
 
     def is_status(self, path, status_kind):
