@@ -38,6 +38,8 @@ from rabbitvcs.ui.dialog import DeleteConfirmation
 import rabbitvcs.util.helper
 import rabbitvcs.vcs
 
+import xml.sax.saxutils as saxutils
+
 from rabbitvcs import gettext
 _ = gettext.gettext
 
@@ -189,7 +191,7 @@ class GitBranchManager(InterfaceView):
 
         self.branch_list = self.git.branch_list()
         for item in self.branch_list:
-            name = item.name
+            name = saxutils.escape(item.name)
             if item.tracking:
                 name = "<b>%s</b>" % name            
             self.items_treeview.append([name])            
@@ -198,11 +200,15 @@ class GitBranchManager(InterfaceView):
         self.show_add()
 
     def on_delete_clicked(self, widget):
-        selected = self.items_treeview.get_selected_row_items(0)
+        items = self.items_treeview.get_selected_row_items(0)
+
+        selected = []
+        for branch in items:
+            selected.append(saxutils.unescape(branch).replace("<b>", "").replace("</b>", ""))
     
         confirm = rabbitvcs.ui.dialog.Confirmation(_("Are you sure you want to delete %s?" % ", ".join(selected)))
         result = confirm.run()
-        
+       
         if result == gtk.RESPONSE_OK or result == True:
             for branch in selected:
                 self.git.branch_delete(branch)
@@ -275,7 +281,7 @@ class GitBranchManager(InterfaceView):
     
     def show_edit(self, branch_name):
         self.state = STATE_EDIT
-
+        branch_name = saxutils.unescape(branch_name)
         self.selected_branch = None
         for item in self.branch_list:
             if item.name == branch_name:
@@ -284,15 +290,16 @@ class GitBranchManager(InterfaceView):
 
         self.save_button.set_label(_("Save"))
 
-        self.branch_entry.set_text(self.selected_branch.name)
-        self.revision_label.set_text(unicode(self.selected_branch.revision))
-        self.message_label.set_text(self.selected_branch.message.rstrip("\n"))
-        if self.selected_branch.tracking:
-            self.checkout_checkbox.set_active(True)
-            self.checkout_checkbox.set_sensitive(False)
-        else:
-            self.checkout_checkbox.set_active(False)
-            self.checkout_checkbox.set_sensitive(True)
+        if self.selected_branch:
+            self.branch_entry.set_text(self.selected_branch.name)
+            self.revision_label.set_text(unicode(self.selected_branch.revision))
+            self.message_label.set_text(self.selected_branch.message.rstrip("\n"))
+            if self.selected_branch.tracking:
+                self.checkout_checkbox.set_active(True)
+                self.checkout_checkbox.set_sensitive(False)
+            else:
+                self.checkout_checkbox.set_active(False)
+                self.checkout_checkbox.set_sensitive(True)
 
         self.show_containers(self.view_containers)
         self.get_widget("detail_label").set_markup(_("<b>Branch Detail</b>"))
