@@ -55,7 +55,7 @@ class SVNSwitch(InterfaceView):
             expand=True
         )
         
-        self.repositories.set_child_text(self.svn.get_repo_url(self.path))
+        self.repositories.set_child_text(rabbitvcs.util.helper.unquote_url(self.svn.get_repo_url(self.path)))
 
     def on_ok_clicked(self, widget):
         url = self.repositories.get_active_text()
@@ -77,7 +77,7 @@ class SVNSwitch(InterfaceView):
         self.action.append(
             self.svn.switch,
             self.path,
-            url,
+            rabbitvcs.util.helper.quote_url(url),
             revision=revision
         )
         self.action.append(self.action.set_status, _("Completed Switch"))
