@@ -384,14 +384,23 @@ class ContextMenuCallbacks:
             pathrev1 = rabbitvcs.util.helper.create_path_revision_string(self.vcs_client.svn().get_repo_url(self.paths[0]), previous_revision_number)
             pathrev2 = rabbitvcs.util.helper.create_path_revision_string(self.paths[0], "working")
             
-            proc = rabbitvcs.util.helper.launch_ui_window("diff", [pathrev1, pathrev2])
+            proc = rabbitvcs.util.helper.launch_ui_window("diff", [
+                "-s",
+                pathrev1,
+                pathrev2,
+                "--vcs=%s" % rabbitvcs.vcs.VCS_SVN
+            ])
             self.caller.rescan_after_process_exit(proc, self.paths)
 
     def compare_tool(self, widget, data1=None, data2=None):
         pathrev1 = rabbitvcs.util.helper.create_path_revision_string(self.paths[0], "base")
         pathrev2 = rabbitvcs.util.helper.create_path_revision_string(self.paths[0], "working")
 
-        proc = rabbitvcs.util.helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
+        proc = rabbitvcs.util.helper.launch_ui_window("diff", [
+            "-s",
+            pathrev1,
+            pathrev2
+        ])
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def compare_tool_multiple(self, widget, data1=None, data2=None):
@@ -406,7 +415,12 @@ class ContextMenuCallbacks:
             pathrev1 = rabbitvcs.util.helper.create_path_revision_string(self.vcs_client.svn().get_repo_url(self.paths[0]), previous_revision_number)
             pathrev2 = rabbitvcs.util.helper.create_path_revision_string(self.paths[0], "working")
 
-            proc = rabbitvcs.util.helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
+            proc = rabbitvcs.util.helper.launch_ui_window("diff", [
+                "-s",
+                pathrev1,
+                pathrev2,
+                "--vcs=%s" % rabbitvcs.vcs.VCS_SVN
+            ])
             self.caller.rescan_after_process_exit(proc, self.paths)
 
     def show_changes(self, widget, data1=None, data2=None):
