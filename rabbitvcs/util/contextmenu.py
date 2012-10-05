@@ -403,7 +403,7 @@ class ContextMenuCallbacks:
         if guess["vcs"] == rabbitvcs.vcs.VCS_SVN:
             previous_revision_number = self.vcs_client.svn().get_revision(self.paths[0]) - 1
 
-            pathrev1 = rabbitvcs.util.helper.create_path_revision_string(self.vcs_client.get_repo_url(self.paths[0]), previous_revision_number)
+            pathrev1 = rabbitvcs.util.helper.create_path_revision_string(self.vcs_client.svn().get_repo_url(self.paths[0]), previous_revision_number)
             pathrev2 = rabbitvcs.util.helper.create_path_revision_string(self.paths[0], "working")
 
             proc = rabbitvcs.util.helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
