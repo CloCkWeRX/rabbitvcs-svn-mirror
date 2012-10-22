@@ -1238,7 +1238,12 @@ class SVN:
 
         """
         if os.path.exists(dest_path):
-            shutil.rmtree(dest_path)
+            if os.path.isdir(dest_path):
+                shutil.rmtree(dest_path)
+            else:
+                os.remove(dest_path)
+
+
 
         return self.client.export(src_url_or_path, dest_path, force,
             revision.primitive(), native_eol, ignore_externals, recurse)
