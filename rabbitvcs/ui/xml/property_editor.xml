@@ -4,6 +4,7 @@
   <!-- interface-naming-policy project-wide -->
   <object class="GtkWindow" id="PropertyEditor">
     <property name="width_request">440</property>
+    <property name="height_request">600</property>
     <property name="visible">True</property>
     <property name="title" translatable="yes">Property Editor</property>
     <property name="icon_name">rabbitvcs-small</property>
