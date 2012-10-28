@@ -6,7 +6,8 @@
 
 
   <object class="GtkDialog" id="Property">
-    <property name="width_request">400</property>
+    <property name="default_width">600</property>
+    <property name="default_height">400</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Property</property>
     <property name="window_position">center</property>
