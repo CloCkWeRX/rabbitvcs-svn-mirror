@@ -561,7 +561,7 @@ class Git:
         
         return self.client.move(source, dest)
         
-    def pull(self, repository="origin", refspec="master"):
+    def pull(self, repository="origin", refspec="master", options=None):
         """
         Fetch objects from a remote repository and merge with the local 
             repository
@@ -574,7 +574,7 @@ class Git:
         
         """
         
-        return self.client.pull(repository, refspec)
+        return self.client.pull(repository, refspec, options)
 
     def push(self, repository="origin", refspec="master"):
         """

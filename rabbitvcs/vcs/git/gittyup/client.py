@@ -908,7 +908,7 @@ class GittyupClient:
         # Actually move the file/folder
         shutil.move(source, dest)
 
-    def pull(self, repository="origin", refspec="master"):
+    def pull(self, repository="origin", refspec="master", options=None):
         """
         Fetch objects from a remote repository and merge with the local 
             repository
@@ -922,7 +922,18 @@ class GittyupClient:
         """
         self.numberOfCommandStages = 2
 
-        cmd = ["git", "pull","--progress", repository, refspec]
+        cmd = ["git", "pull", "--progress"]
+
+        if options != None:
+            if options.count("rebase"):
+                cmd.append("--rebase")
+
+            if options.count("all"):
+                cmd.append("--all")
+            else:
+                cmd.append (repository)
+                cmd.append (refspec)
+
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_pull, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
