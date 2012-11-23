@@ -27,6 +27,8 @@ _ = gettext.gettext
 from rabbitvcs.util.log import Log
 logger = Log("rabbitvcs.vcs")
 
+from rabbitvcs.util.helper import get_exclude_paths
+
 EXT_UTIL_ERROR = _("The output from '%s' was not able to be processed.\n%s")
 
 VCS_SVN = 'svn'
@@ -77,9 +79,10 @@ def guess(path):
 
 class VCS:
     clients = {}
+    exclude_paths = []
     
     def __init__(self):
-        pass
+        self.exclude_paths = get_exclude_paths()
     
     def dummy(self):
         if VCS_DUMMY in self.clients:
@@ -168,6 +171,10 @@ class VCS:
                 return self.clients[VCS_MERCURIAL]
 
     def client(self, path, vcs=None):
+        if self.should_exclude(path):
+            logger.debug("Excluding path: %s" % path)
+            return self.dummy()
+
         # Determine the VCS instance based on the vcs parameter
         if vcs:
             if vcs == VCS_SVN:
@@ -186,6 +193,13 @@ class VCS:
             return self.mercurial(guess["repo_path"], is_repo_path=False)
         else:
             return self.dummy()
+    
+    def should_exclude(self, path):
+        for exclude_path in self.exclude_paths:
+            if path.startswith(exclude_path):
+                return True
+        
+        return False
     
     def guess(self, path):
         return guess(path)

@@ -274,6 +274,22 @@ def get_previous_messages():
     
     return returner
 
+def get_exclude_paths_path():
+    return os.path.join(get_home_folder(), "exclude_paths")
+
+def get_exclude_paths():
+    path = get_exclude_paths_path()
+    if not os.path.exists(path):
+        return []
+        
+    f = open(path, "r")
+    paths = []
+    for l in f:
+        paths.append(l.strip())
+    f.close()
+    
+    return paths
+
 def encode_revisions(revision_array):
     """
     Takes a list of integer revision numbers and converts to a TortoiseSVN-like
