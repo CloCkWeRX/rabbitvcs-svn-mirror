@@ -1,0 +1,29 @@
+RabbitVCS Nautilus3 Extension
+
+This extension is meant to be used with the Nautilus File Manager v3,
+
+Requirements:
+    * nautilus (>= v3.0)
+    * nautilus-python (>= 1.0)
+    * python-dbus (> 0.80)
+    * (all other RabbitVCS requirements)
+
+To install:
+    To install for all users, copy RabbitVCS.py to:
+        /usr/share/nautilus-python/extensions
+    
+    To install for a single user, copy RabbitVCS.py to:
+        ~/.local/share/nautilus-python-extensions
+    
+    In both cases, you may need to create the python/python-extensions folder.
+    
+    Restart nautilus with the following commands:
+        $ nautilus -q
+        $ pgrep -f service.py | xargs kill
+        $ nohup nautilus > /dev/null &
+
+Troubleshooting:
+
+    See the known-issues section of our website:
+        http://wiki.rabbitvcs.org/wiki/support/known-issues
+    
