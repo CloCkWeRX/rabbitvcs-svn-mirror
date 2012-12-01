@@ -31,7 +31,7 @@ from os.path import isdir, isfile, realpath, basename
 import datetime
 import time
 import threading
-
+import urllib
 import thunarx
 import pysvn
 import gobject
@@ -149,7 +149,7 @@ class RabbitVCS(thunarx.MenuProvider, thunarx.PropertyPageProvider):
         self.status_checker = StatusChecker()
     
     def get_local_path(self, item):
-        return item.get_uri().replace("file://", "")
+        return urllib.unquote(item.get_uri().replace("file://", ""))
 
     #~ @disable
     # @timeit
