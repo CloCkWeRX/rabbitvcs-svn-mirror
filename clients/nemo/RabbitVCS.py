@@ -389,11 +389,11 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
             conditions_dict = self.items_cache[paths_str]
             if conditions_dict and conditions_dict != "in-progress":
                 conditions = NautilusMenuConditions(conditions_dict)
-                menu = NautilusMainContextMenu(self, window.get_data("base_dir"), paths, conditions).get_menu()
+                menu = NautilusMainContextMenu(self, window.base_dir, paths, conditions).get_menu()
                 return menu
         
         if conditions_dict != "in-progress":
-            self.status_checker.generate_menu_conditions_async(provider, window.get_data("base_dir"), paths, self.update_file_items)        
+            self.status_checker.generate_menu_conditions_async(provider, window.base_dir, paths, self.update_file_items)        
             self.items_cache[path] = "in-progress"
             
         return ()
@@ -410,7 +410,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
         
         # log.debug("get_file_items() called")
         
-        return NautilusMainContextMenu(self, window.get_data("base_dir"), paths).get_menu()
+        return NautilusMainContextMenu(self, window.base_dir, paths).get_menu()
 
     def update_file_items(self, provider, base_dir, paths, conditions_dict):
         paths_str = "-".join(paths)
@@ -467,7 +467,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
                 menu = NautilusMainContextMenu(self, path, [path], conditions).get_menu()                
                 return menu
 
-        window.set_data("base_dir", path)
+        window.base_dir = path
 
         if conditions_dict != "in-progress":
             self.status_checker.generate_menu_conditions_async(provider, path, [path], self.update_background_items)
@@ -482,7 +482,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
 
         # log.debug("get_background_items() called")
         
-        window.set_data("base_dir", path)
+        window.base_dir = path
         
         return NautilusMainContextMenu(self, path, [path]).get_menu()
 
