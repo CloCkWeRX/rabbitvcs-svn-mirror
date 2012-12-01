@@ -456,7 +456,7 @@ def launch_merge_tool(path1, path2=""):
     if not os.path.exists(diff["path"]):
         return
 
-    os.popen("%s %s %s" % (diff["path"], path1, path2))
+    os.popen("%s '%s' '%s'" % (diff["path"], path1, path2))
     
 def get_file_extension(path):
     """
