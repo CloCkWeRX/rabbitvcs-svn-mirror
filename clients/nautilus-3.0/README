@@ -13,7 +13,7 @@ To install:
         /usr/share/nautilus-python/extensions
     
     To install for a single user, copy RabbitVCS.py to:
-        ~/.local/share/nautilus-python-extensions
+        ~/.local/share/nautilus/python-extensions
     
     In both cases, you may need to create the python/python-extensions folder.
     
