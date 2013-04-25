@@ -1206,9 +1206,10 @@ class GittyupClient:
         untracked_directories = []
         for line in stdout:
             components = re.match("^(Would remove)\s(.*?)$", line)
-            untracked_path = components.group(2)
-            if untracked_path[-1]=='/':
-                untracked_directories.append(untracked_path[:-1])
+            if components:
+                untracked_path = components.group(2)
+                if untracked_path[-1]=='/':
+                    untracked_directories.append(untracked_path[:-1])
 
         #Determine the ignored files and directories in Repo
         cmd = ["git", "clean", "-ndX", self.repo.path]
@@ -1219,16 +1220,17 @@ class GittyupClient:
         ignored_directories=[]
         for line in stdout:
             components = re.match("^(Would remove)\s(.*?)$", line)
-            ignored_path=components.group(2)
-            if ignored_path[-1]=='/':
-                ignored_directories.append(ignored_path[:-1])
-                next
-            statuses.append(IgnoredStatus(ignored_path))
-            self.ignored_paths.append(ignored_path)
-            try:
-                del files_hash[ignored_path]
-            except Exception, e:
-                pass
+            if components:
+                ignored_path=components.group(2)
+                if ignored_path[-1]=='/':
+                    ignored_directories.append(ignored_path[:-1])
+                    next
+                statuses.append(IgnoredStatus(ignored_path))
+                self.ignored_paths.append(ignored_path)
+                try:
+                    del files_hash[ignored_path]
+                except Exception, e:
+                    pass
         for file,data in files_hash.items():
             ignore_file=False
             untracked_file=False
