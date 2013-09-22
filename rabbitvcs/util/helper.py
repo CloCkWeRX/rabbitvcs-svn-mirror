@@ -68,7 +68,7 @@ _ = gettext.gettext
 
 def get_tmp_path(filename):
     day = datetime.datetime.now().day
-    m = hashlib.md5(str(day)).hexdigest()[0:10]
+    m = hashlib.md5(str(day) + str(os.geteuid())).hexdigest()[0:10]
     
     tmpdir = "/tmp/rabbitvcs-%s" %m
     if not os.path.isdir(tmpdir):
