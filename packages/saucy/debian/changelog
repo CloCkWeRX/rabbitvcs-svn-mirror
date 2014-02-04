@@ -14,5 +14,8 @@ rabbitvcs (0.16.0-1~saucy) saucy; urgency=low
   * Issue 715 Defect  Regression - filtering a log displays the wrong selections in the files UI.
   * Issue 720 Defect  Regression - Forward buttons no longer enabled
   * Issue 728 Enhancement Nemo integration
+  * Issue 843 Defect
+  * Issue 692 Enhancement Apply patch by Francis Bisson for Caja integration
+  * Issue 492 Defect Add the effective user id into the generated file paths
 
- -- Daniel O'Connor <daniel.oconnor@gmail.com>  Sun, 5 May 2013 14:05:59 +0930
+ -- Daniel O'Connor <daniel.oconnor@gmail.com>  Sun, 5 Feb 2014 04:24:00 +0930
