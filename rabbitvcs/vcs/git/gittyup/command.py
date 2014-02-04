@@ -40,11 +40,14 @@ class GittyupCommand:
         return returner 
 
     def execute(self):
+        env = os.environ.copy()
+        env["LANG"] = "C";
         proc = subprocess.Popen(self.command,
                                 cwd=self.cwd,
                                 stdin=None,
                                 stderr=subprocess.STDOUT,
                                 stdout=subprocess.PIPE,
+                                env=env,
                                 close_fds=True,
                                 preexec_fn=os.setsid,
                                 universal_newlines=True)
