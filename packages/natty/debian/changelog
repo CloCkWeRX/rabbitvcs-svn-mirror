@@ -1,0 +1,61 @@
+rabbitvcs (0.15.2-1~natty) natty; urgency=low
+
+  * New upstream release 0.15.2
+  * Issue 187: Drop-down list of pre-defined properties in the property dialog
+  * Issue 261: RabbitVCS incompatible with TortoiseHg
+  * Issue 562: 'Refresh Status' does not work
+  * Issue 585: Fix "Browser can not handle path with non-English name"
+  * Issue 586: Fixed "Browser can not handle path with non-English name"
+  * Issue 564: Debian: Version of python-svn in Depends: is too low
+  * Issue 579: Ask for dulwich 0.6.1+
+  * Issue 605: Log window Forward button does not work for me
+  * Issue 628: (Sub)directories with a white space are not correctly managed
+  * Issue 716: Unicode regression from (Sub)directories with a white space are not correctly managed
+  * Fixed commit ID not being reported when committing to a git repository.
+  * Updated packaging for Ubuntu and Debian. Added packaging for Quantal Quetzal (12.10) Ubuntu release.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Sun, 16 Sep 2012 16:39:59 +0800
+
+rabbitvcs (0.15.1-1~natty) natty; urgency=low
+
+  * New upstream release (multiple bugfixes)
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Sun, 26 Aug 2012 10:05:50 +0800
+
+rabbitvcs (0.15.0.5-1~natty) natty; urgency=low
+
+  * New upstream release fixing gtkspell integration issue
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Thu, 10 Nov 2011 07:21:22 +0800
+
+rabbitvcs (0.15.0.3-1~natty) natty; urgency=low
+
+  * New upstream point release: fixes missing data files.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Wed, 09 Nov 2011 23:42:36 +0800
+
+rabbitvcs (0.15.0.1-3~natty) natty; urgency=low
+
+  * Fixed client installation
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Tue, 08 Nov 2011 08:19:03 +0800
+
+rabbitvcs (0.15.0.1-2~natty) natty; urgency=low
+
+  * Fixed epoch numbers in release
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Tue, 08 Nov 2011 08:05:51 +0800
+
+rabbitvcs (0.15.0.1-1~natty) natty; urgency=low
+
+  * New upstream release
+  * New client for Nautilus 3
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Sun, 06 Nov 2011 19:59:03 +0800
+
+rabbitvcs (0.14.2.1-2~natty) natty; urgency=low
+
+  * First packaging for Natty.
+
+ -- Jason Heeris <jason.heeris@gmail.com>  Wed, 15 Jun 2011 09:29:06 +0800
+

@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+
+#
+# This is a command line tool to allow better 
+# integration with the Subversion source control system.
+# 
+# Copyright (C) 2008-2008 by Adam Plumb <adamplumb@gmail.com>
+# 
+# RabbitVCS is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# RabbitVCS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
+#
+
+import os.path
+import sys
+from optparse import OptionParser
+
+from rabbitvcs.util.helper import launch_ui_window
+
+usage = """Usage: rabbitvcs <module> [path1] [path2] ...
+
+Available Modules
+------------------
+
+SVN:
+    about, add, annotate, applypatch, branch, browser, changes, checkmods, 
+    checkout, cleanup, commit, createpatch, create, delete, diff, editconflicts,
+    export, ignore, import, lock, log, merge, properties, open, relocate, rename, 
+    markresolved, revert, settings, switch, unlock, update, updateto
+
+Git:
+    about, add, annotate, applybranch, branches, changes, checkout, clean, 
+    clone, commit, createpatch, create, delete, diff, editconflicts, export, 
+    ignore, log, merge, open, push, rename, remotes, reset, revert, settings, 
+    tags, update
+
+For module specific help type: rabbitvcs <module> -h
+"""
+
+args = sys.argv
+
+if len(args) < 2 or args[1] == "-h":
+    raise SystemExit(usage)
+
+args.pop(0) # remove this file's path
+module = args.pop(0)
+
+# If a filename/path is given, try to expand it to and absolute path
+i = 0
+for arg in args:
+    if os.path.exists(arg):
+        args[i] = os.path.abspath(arg)
+    i += 1
+
+launch_ui_window(module, args)

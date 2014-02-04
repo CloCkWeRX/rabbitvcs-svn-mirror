@@ -1,0 +1,17 @@
+RabbitVCS Command Line Plugin
+
+This script is meant to be used from the command line.  It simply wraps around
+various RabbitVCS commands and opens dialogs and windows as if launched from
+a graphical user interface.
+
+Requirements:
+    * (all other RabbitVCS requirements)
+
+To install:
+    To install, copy the rabbitvcs shell script to:
+        /usr/bin
+
+Troubleshooting:
+
+    See the known-issues section of our website:
+        http://wiki.rabbitvcs.org/wiki/support/known-issues

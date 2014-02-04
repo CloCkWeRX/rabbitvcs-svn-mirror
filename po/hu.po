@@ -1,0 +1,2020 @@
+# Hungarian translation of rabbit-vcs
+# Copyright (C) 2010 Free Software Foundation, Inc.
+# This file is distributed under the same license as the rabbit-vcs-package.
+# Laszlo Csordas <csola48 at gmail dot com>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: rabbit-vcs 0.13.3 v01\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-11-26 09:51-0500\n"
+"PO-Revision-Date: 2010-06-22 09:46+0000\n"
+"Last-Translator: csola48 <Unknown>\n"
+"Language-Team: hungarian <csola48@gmail.hu>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2010-12-09 23:36+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+"X-Poedit-Country: HUNGARY\n"
+"X-Poedit-Language: Hungarian\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: util/helper.py:109
+msgid "just now"
+msgstr ""
+
+#: util/helper.py:111
+#, python-format
+msgid "%d minute(s) ago"
+msgstr ""
+
+#: util/helper.py:631
+#, python-format
+msgid "%i second"
+msgid_plural "%i seconds"
+msgstr[0] "%i mp"
+msgstr[1] "%i mp"
+
+#: util/helper.py:634
+#, python-format
+msgid "%i minute"
+msgid_plural "%i minutes"
+msgstr[0] "%i perc"
+msgstr[1] "%i perc"
+
+#: util/helper.py:637
+#, python-format
+msgid "%i hour"
+msgid_plural "%i hours"
+msgstr[0] "%i óra"
+msgstr[1] "%i óra"
+
+#: util/helper.py:640
+#, python-format
+msgid "%i day"
+msgid_plural "%i days"
+msgstr[0] "%i nap"
+msgstr[1] "%i nap"
+
+#: util/helper.py:643
+#, python-format
+msgid "%i week"
+msgid_plural "%i weeks"
+msgstr[0] "%i hét"
+msgstr[1] "%i hét"
+
+#: util/helper.py:646
+#, python-format
+msgid "%i month"
+msgid_plural "%i months"
+msgstr[0] "%i hónap"
+msgstr[1] "%i hónap"
+
+#: util/helper.py:649
+#, python-format
+msgid "%i year"
+msgid_plural "%i years"
+msgstr[0] "%i év"
+msgstr[1] "%i év"
+
+#: util/contextmenuitems.py:270
+msgid "Debug"
+msgstr "Nyomkövetés"
+
+#: util/contextmenuitems.py:275
+msgid "Bugs"
+msgstr "Program hiba"
+
+#: util/contextmenuitems.py:280
+msgid "Open Shell"
+msgstr "revert"
+
+#: util/contextmenuitems.py:286
+msgid "Refresh Status"
+msgstr "Frissített állapot"
+
+#: util/contextmenuitems.py:291
+msgid "Debug Revert"
+msgstr "Nyomkövetés visszafelé"
+
+#: util/contextmenuitems.py:292
+msgid "Reverts everything it sees"
+msgstr "Minden látható visszavonása"
+
+#: util/contextmenuitems.py:298
+msgid "Invalidate"
+msgstr "Érvénytelenítés"
+
+#: util/contextmenuitems.py:299
+msgid "Force an invalidate_extension_info() call"
+msgstr "Egy érvénytelen kiterjesztés információ lehívásának kényszerítése"
+
+#: util/contextmenuitems.py:305
+msgid "Add Emblem"
+msgstr "Jelkép hozzáadása"
+
+#: util/contextmenuitems.py:306
+msgid "Add an emblem"
+msgstr "Egy jelkép hozzáadása"
+
+#: util/contextmenuitems.py:312
+msgid "Checkout..."
+msgstr "Ellenőrzés..."
+
+#: util/contextmenuitems.py:313
+msgid "Check out a working copy"
+msgstr "Munkapéldány ellenőrzése"
+
+#: util/contextmenuitems.py:318 ui/update.py:53 ui/update.py:97
+#: ui/glade/update.glade.h:6
+msgid "Update"
+msgstr "Frissítés"
+
+#: util/contextmenuitems.py:319
+msgid "Update a working copy"
+msgstr "Munkapéldány frissítése"
+
+#: util/contextmenuitems.py:324 ui/commit.py:288 ui/commit.py:384
+#: ui/glade/commit.glade.h:4
+msgid "Commit"
+msgstr "Beküldés"
+
+#: util/contextmenuitems.py:325
+msgid "Commit modifications to the repository"
+msgstr "Módosítás beküldése a tárolóba"
+
+#: util/contextmenuitems.py:330 ui/glade/property_page.glade.h:4
+msgid "RabbitVCS"
+msgstr "RabbitVCS"
+
+#: util/contextmenuitems.py:335
+msgid "RabbitVCS SVN"
+msgstr ""
+
+#: util/contextmenuitems.py:340
+msgid "RabbitVCS Git"
+msgstr ""
+
+#: util/contextmenuitems.py:345 ui/glade/browser.glade.h:2
+msgid "Repository Browser"
+msgstr "Tároló böngészés"
+
+#: util/contextmenuitems.py:346
+msgid "Browse a repository tree"
+msgstr "Tároló fa böngészése"
+
+#: util/contextmenuitems.py:351
+msgid "Check for Modifications..."
+msgstr "Módosítások ellenőrzése..."
+
+#: util/contextmenuitems.py:352
+msgid "Check for modifications made to the repository"
+msgstr "Tárolóhoz készített módosítások ellenőrzése"
+
+#: util/contextmenuitems.py:357
+msgid "Diff Menu..."
+msgstr "Összehasonlító menü..."
+
+#: util/contextmenuitems.py:358
+msgid "List of comparison options"
+msgstr "Összehasonlító lista beállítások"
+
+#: util/contextmenuitems.py:363
+msgid "View diff against base"
+msgstr "Összehasonlító nézet a munkapéldánnyal"
+
+#: util/contextmenuitems.py:364
+msgid "View the modifications made to a file"
+msgstr "Fájlhoz készített módosítás nézete"
+
+#: util/contextmenuitems.py:369
+msgid "View diff between files/folders"
+msgstr "Összehasonlító nézet fájlok/dossziék között"
+
+#: util/contextmenuitems.py:370
+msgid "View the differences between two files"
+msgstr "Összehasonlító nézet két fájl között"
+
+#: util/contextmenuitems.py:375 ui/log.py:786
+msgid "View diff against previous revision"
+msgstr "Összehasonlító nézet az előző revízióval"
+
+#: util/contextmenuitems.py:376
+msgid "View the modifications made to a file since its last change"
+msgstr "Egy fájl módosítások megnézése az utolsó változás óta"
+
+#: util/contextmenuitems.py:381
+msgid "Compare with base"
+msgstr "Összehasonlítás a bázissal"
+
+#: util/contextmenuitems.py:382
+msgid "Compare with base using side-by-side comparison tool"
+msgstr "Összehasonlítás a bázissal a párhuzamos összehasonlító eszközzel"
+
+#: util/contextmenuitems.py:387
+msgid "Compare files/folders"
+msgstr "Fájl/dosszié összehasonlítása"
+
+#: util/contextmenuitems.py:388
+msgid "Compare the differences between two items"
+msgstr "Különbségek összehasonlítása két tétel között"
+
+#: util/contextmenuitems.py:393 ui/log.py:801
+msgid "Compare with previous revision"
+msgstr "Összehasonlítás az előző revízióval"
+
+#: util/contextmenuitems.py:394
+msgid "Compare with previous revision using side-by-side comparison tool"
+msgstr ""
+"Összehasonlítás az előző revízió használatával a párhuzamos összehasonlító "
+"eszközzel"
+
+#: util/contextmenuitems.py:399
+msgid "Show Changes..."
+msgstr "Változások mutatása..."
+
+#: util/contextmenuitems.py:400
+msgid "Show changes between paths and revisions"
+msgstr "Változások mutatása az útvonal és a revízió között"
+
+#: util/contextmenuitems.py:405
+msgid "Show Log"
+msgstr "Napló mutatása"
+
+#: util/contextmenuitems.py:406
+msgid "Show a file's log information"
+msgstr "Fájl napló információ mutatása"
+
+#: util/contextmenuitems.py:411 ui/add.py:156 ui/tags.py:273
+#: ui/branches.py:274 ui/widget.py:1199 ui/glade/add.glade.h:1
+msgid "Add"
+msgstr "Hozzáadás"
+
+#: util/contextmenuitems.py:412
+msgid "Schedule items to be added to the repository"
+msgstr "Jegyzett tételek hozzáadása a tárolóhoz"
+
+#: util/contextmenuitems.py:417
+msgid "Add to ignore list"
+msgstr "Hozzáadás a mellőzött fájl listához"
+
+#: util/contextmenuitems.py:422
+msgid "Update to revision..."
+msgstr "Revízió frissítése..."
+
+#: util/contextmenuitems.py:423
+msgid "Update a file to a specific revision"
+msgstr "Egy fájl frissítése speciális revízióhoz"
+
+#: util/contextmenuitems.py:428
+msgid "Rename..."
+msgstr "Átnevezés..."
+
+#: util/contextmenuitems.py:429
+msgid "Schedule an item to be renamed on the repository"
+msgstr "Jegyzett tételek lesznek átnevezve a tárolóban"
+
+#: util/contextmenuitems.py:434 ui/glade/properties.glade.h:3
+msgid "Delete"
+msgstr "Törlés"
+
+#: util/contextmenuitems.py:435
+msgid "Schedule an item to be deleted from the repository"
+msgstr "Jegyzett tételek törölve lesznek a tárolóból"
+
+#: util/contextmenuitems.py:440 ui/revert.py:50 ui/revert.py:103
+#: ui/revert.py:115 ui/revert.py:168
+msgid "Revert"
+msgstr "Visszavonás"
+
+#: util/contextmenuitems.py:441
+msgid "Revert an item to its unmodified state"
+msgstr "Egy tétel nem módosított állapotának visszavonása"
+
+#: util/contextmenuitems.py:446 ui/resolve.py:48 ui/resolve.py:102
+msgid "Resolve"
+msgstr "Feloldás"
+
+#: util/contextmenuitems.py:447
+msgid "Mark a conflicted item as resolved"
+msgstr "Egy konfliktusos tétel megoldottként való megjelölése"
+
+#: util/contextmenuitems.py:452
+msgid "Restore"
+msgstr "Visszaállítva"
+
+#: util/contextmenuitems.py:453
+msgid "Restore a missing item"
+msgstr "Elveszett tétel visszatöltése"
+
+#: util/contextmenuitems.py:457
+msgid "Relocate..."
+msgstr "Áthelyez..."
+
+#: util/contextmenuitems.py:458
+msgid "Relocate your working copy"
+msgstr "Munkapéldány áthelyezése"
+
+#: util/contextmenuitems.py:463
+msgid "Get Lock..."
+msgstr "Zárás..."
+
+#: util/contextmenuitems.py:464
+msgid "Locally lock items"
+msgstr "Helyi zárolt tételek"
+
+#: util/contextmenuitems.py:469
+msgid "Release Lock..."
+msgstr "Nyitás..."
+
+#: util/contextmenuitems.py:470
+msgid "Release lock on an item"
+msgstr "Egy tétel kinyitása"
+
+#: util/contextmenuitems.py:475 ui/cleanup.py:55
+msgid "Cleanup"
+msgstr "Tisztítás"
+
+#: util/contextmenuitems.py:476
+msgid "Clean up working copy"
+msgstr "Munkapéldány tisztítása"
+
+#: util/contextmenuitems.py:481
+msgid "Export..."
+msgstr "Export..."
+
+#: util/contextmenuitems.py:482
+msgid "Export a working copy or repository with no versioning information"
+msgstr "Egy munkapéldány vagy tároló verziókezelésen kívűli információval"
+
+#: util/contextmenuitems.py:487
+msgid "Create Repository here"
+msgstr "Tároló készítése ide"
+
+#: util/contextmenuitems.py:488
+msgid "Create a repository in a folder"
+msgstr "Tároló készítése ebben a dossziéban"
+
+#: util/contextmenuitems.py:493 ui/import.py:80 ui/glade/import.glade.h:3
+msgid "Import"
+msgstr "Import"
+
+#: util/contextmenuitems.py:494
+msgid "Import an item into a repository"
+msgstr "Egy tétel importálása a tárolóba"
+
+#: util/contextmenuitems.py:503
+msgid "Branch/tag..."
+msgstr "Branch/tag..."
+
+#: util/contextmenuitems.py:504
+msgid "Copy an item to another location in the repository"
+msgstr "Egy tétel másolása másik helyre a tárolóban"
+
+#: util/contextmenuitems.py:509
+msgid "Switch..."
+msgstr "Kapcsoló..."
+
+#: util/contextmenuitems.py:510
+msgid "Change the repository location of a working copy"
+msgstr "Munkapéldány helyének megváltoztatása a tárolóban"
+
+#: util/contextmenuitems.py:515
+msgid "Merge..."
+msgstr "Egyesítés..."
+
+#: util/contextmenuitems.py:516
+msgid "A wizard with steps for merging"
+msgstr "Egyesítő varázsló"
+
+#: util/contextmenuitems.py:521
+msgid "Annotate..."
+msgstr "Jegyzet..."
+
+#: util/contextmenuitems.py:522
+msgid "Annotate a file"
+msgstr "Jegyzet egy fájlhoz"
+
+#: util/contextmenuitems.py:527
+msgid "Create Patch..."
+msgstr "Hibajavítás készítése..."
+
+#: util/contextmenuitems.py:528
+msgid "Creates a unified diff file with all changes you made"
+msgstr ""
+"Egységes összehasonlító fájl készítése, amely minden változást tartalmaz"
+
+#: util/contextmenuitems.py:533
+msgid "Apply Patch..."
+msgstr "Hibajavítás alkalmazása..."
+
+#: util/contextmenuitems.py:534
+msgid "Applies a unified diff file to the working copy"
+msgstr "Egységes összehasonlító fájl alkalmazása a munkapéldányban"
+
+#: util/contextmenuitems.py:539 ui/glade/properties.glade.h:7
+msgid "Properties"
+msgstr "Tulajdonságok"
+
+#: util/contextmenuitems.py:540
+msgid "View the properties of an item"
+msgstr "Egy tétel tulajdonságainak nézete"
+
+#: util/contextmenuitems.py:545
+msgid "Help"
+msgstr "Súgó"
+
+#: util/contextmenuitems.py:546
+msgid "View help"
+msgstr "Súgó nézet"
+
+#: util/contextmenuitems.py:551 ui/glade/settings.glade.h:28
+msgid "Settings"
+msgstr "Beállítások"
+
+#: util/contextmenuitems.py:552
+msgid "View or change RabbitVCS settings"
+msgstr "RabbitVCS beállítások nézete vagy cseréje"
+
+#: util/contextmenuitems.py:557 ui/glade/about.glade.h:4
+msgid "About"
+msgstr "Névjegy"
+
+#: util/contextmenuitems.py:558
+msgid "About RabbitVCS"
+msgstr "RabbitVCS névjegye"
+
+#: util/contextmenuitems.py:563
+msgid "Open"
+msgstr "Megnyit"
+
+#: util/contextmenuitems.py:564
+msgid "Open a file"
+msgstr "Fájl megnyitása"
+
+#: util/contextmenuitems.py:572
+msgid "Browse to"
+msgstr "Böngészés"
+
+#: util/contextmenuitems.py:573
+msgid "Browse to a file or folder"
+msgstr "Fájl vagy dosszié böngészése"
+
+#: util/contextmenuitems.py:578
+msgid "Revert property"
+msgstr "Visszavont tulajdonság"
+
+#: util/contextmenuitems.py:580
+msgid "Revert this property to its original state"
+msgstr "Eredeti tulajdonságok visszaállítása"
+
+#: util/contextmenuitems.py:584
+msgid "Revert property (recursive)"
+msgstr "Tulajdonságok visszaállítása (rekurzívan)"
+
+#: util/contextmenuitems.py:586
+msgid "Revert this property to its original state (recursive)"
+msgstr "Ezen tulajdonság eredeti állapotba való visszaállítása (rekurzívan)"
+
+#: util/contextmenuitems.py:591
+msgid "Delete property"
+msgstr "Tulajdonság törlése"
+
+#: util/contextmenuitems.py:593
+msgid "Delete this property"
+msgstr "Ezen tulajdonság törlése"
+
+#: util/contextmenuitems.py:597
+msgid "Delete property (recursive)"
+msgstr ""
+
+#: util/contextmenuitems.py:599
+msgid "Delete this property (recursive)"
+msgstr "Ezen tulajdonság törlése (rekurzívan)"
+
+#: util/contextmenuitems.py:604
+msgid "Edit details"
+msgstr ""
+
+#: util/contextmenuitems.py:606
+msgid "Show and edit property details"
+msgstr ""
+
+#: util/contextmenuitems.py:610
+msgid "Initialize Repository"
+msgstr ""
+
+#: util/contextmenuitems.py:615 ui/clone.py:47 ui/clone.py:65
+msgid "Clone"
+msgstr ""
+
+#: util/contextmenuitems.py:620
+msgid "Fetch/Pull"
+msgstr ""
+
+#: util/contextmenuitems.py:625 ui/push.py:96
+msgid "Push"
+msgstr ""
+
+#: util/contextmenuitems.py:630
+msgid "Branches"
+msgstr ""
+
+#: util/contextmenuitems.py:635
+msgid "Tags"
+msgstr ""
+
+#: util/contextmenuitems.py:640
+msgid "Remotes"
+msgstr ""
+
+#: util/contextmenuitems.py:666
+msgid "Ignore item by filename"
+msgstr "Mellőzött tétel fájl név szerint"
+
+#: util/contextmenuitems.py:685
+msgid "Ignore item by file extension"
+msgstr "Mellőzött tétel fájl kiterjesztés szerint"
+
+#: ui/update.py:54 ui/update.py:98 ui/updateto.py:94
+msgid "Updating..."
+msgstr "Frissítés..."
+
+#: ui/update.py:56 ui/update.py:103 ui/updateto.py:102
+msgid "Completed Update"
+msgstr "Frissítés befejezve"
+
+#: ui/updateto.py:82
+msgid "Rollback To Revision"
+msgstr ""
+
+#: ui/updateto.py:83
+msgid "Rolling Back..."
+msgstr ""
+
+#: ui/updateto.py:91
+msgid "Completed Rollback"
+msgstr ""
+
+#: ui/updateto.py:93
+msgid "Update To Revision"
+msgstr "Revízió frissítése"
+
+#: ui/updateto.py:138 ui/checkout.py:173
+msgid "Checkout"
+msgstr "Ellenőrzés"
+
+#: ui/updateto.py:139
+#, python-format
+msgid "Checking out %s..."
+msgstr ""
+
+#: ui/updateto.py:145 ui/checkout.py:184
+msgid "Completed Checkout"
+msgstr "Ellenőrzés befejezve"
+
+#: ui/add.py:72 ui/commit.py:205 ui/commit.py:313 ui/revert.py:62
+#: ui/revert.py:128 ui/checkmods.py:67 ui/resolve.py:61 ui/changes.py:279
+#: ui/changes.py:364 ui/log.py:337 ui/log.py:572 ui/lock.py:72
+#: ui/createpatch.py:119 ui/createpatch.py:215 ui/action.py:118
+#: ui/unlock.py:61 ui/browser.py:89
+msgid "Path"
+msgstr "Útvonal"
+
+#: ui/add.py:72 ui/commit.py:205 ui/commit.py:313 ui/revert.py:62
+#: ui/revert.py:128 ui/checkmods.py:67 ui/resolve.py:61 ui/lock.py:72
+#: ui/createpatch.py:119 ui/createpatch.py:215 ui/unlock.py:61
+msgid "Extension"
+msgstr "Kiterjesztés"
+
+#: ui/add.py:95 ui/commit.py:93 ui/lock.py:115 ui/unlock.py:85
+#: ui/glade/dialogs.glade.h:33
+msgid "Loading..."
+msgstr "Betöltés..."
+
+#: ui/add.py:98 ui/commit.py:100 ui/lock.py:118 ui/unlock.py:107
+#, python-format
+msgid "Found %d item(s)"
+msgstr "Talált %d elemet"
+
+#: ui/add.py:157
+msgid "Running Add Command..."
+msgstr "Hozzáadás parancs fut..."
+
+#: ui/add.py:159
+msgid "Completed Add"
+msgstr "Hozzáadás befejezve"
+
+#: ui/ignore.py:100
+msgid "Ignore file:"
+msgstr ""
+
+#: ui/tags.py:62
+msgid "Tag Manager"
+msgstr ""
+
+#: ui/tags.py:63
+msgid "<b>Tags</b>"
+msgstr ""
+
+#: ui/tags.py:74
+msgid "Tag"
+msgstr ""
+
+#: ui/tags.py:99 ui/branches.py:100 ui/glade/dialogs.glade.h:38
+#: ui/glade/property_page.glade.h:2
+msgid "Name:"
+msgstr ""
+
+#: ui/tags.py:109 ui/tags.py:176 ui/branches.py:155 ui/merge.py:438
+#: ui/merge.py:488 ui/glade/browser.glade.h:3
+msgid "Revision:"
+msgstr "Revízió:"
+
+#: ui/tags.py:128 ui/tags.py:188 ui/branches.py:167 ui/merge.py:450
+#: ui/merge.py:500
+msgid "Message:"
+msgstr ""
+
+#: ui/tags.py:145 ui/tags.py:284 ui/branches.py:147 ui/branches.py:291
+msgid "Save"
+msgstr ""
+
+#: ui/tags.py:153
+msgid "Tagger:"
+msgstr ""
+
+#: ui/tags.py:165 ui/merge.py:427 ui/merge.py:477
+msgid "Date:"
+msgstr ""
+
+#: ui/tags.py:230 ui/branches.py:209 ui/remotes.py:128
+#, python-format
+msgid "Are you sure you want to delete %s?"
+msgstr ""
+
+#: ui/tags.py:275
+msgid "<b>Add Tag</b>"
+msgstr ""
+
+#: ui/tags.py:293
+msgid "<b>Tag Detail</b>"
+msgstr ""
+
+#: ui/export.py:45 ui/export.py:114
+#, python-format
+msgid "Export - %s"
+msgstr "Export - %s"
+
+#: ui/export.py:72 ui/export.py:131 ui/clone.py:57 ui/checkout.py:163
+msgid "The repository URL and destination path are both required fields."
+msgstr "A tároló URL és a végcél útvonal mezőket igényelnek."
+
+#: ui/export.py:92 ui/export.py:151
+msgid "Export"
+msgstr "Export"
+
+#: ui/export.py:93 ui/export.py:152
+msgid "Running Export Command..."
+msgstr "Exportálás parancs fut..."
+
+#: ui/export.py:104 ui/export.py:160
+msgid "Completed Export"
+msgstr "Exportálás befejezve"
+
+#: ui/applypatch.py:57 ui/applypatch.py:113 ui/applypatch.py:143
+msgid "Apply Patch"
+msgstr "Hibajavítás alkalmazása"
+
+#: ui/applypatch.py:74
+msgid "Apply Patch To Directory..."
+msgstr "Hibajavítás alkalmazása a könyvtárra"
+
+#: ui/applypatch.py:114 ui/applypatch.py:144
+msgid "Applying Patch File..."
+msgstr "Hibajavító fájl alkalmazása..."
+
+#: ui/applypatch.py:116 ui/applypatch.py:146
+msgid "Patch File Applied"
+msgstr "Hibajavító fájl alkalmazva"
+
+#: ui/branches.py:62
+msgid "Branch Manager"
+msgstr ""
+
+#: ui/branches.py:63
+msgid "<b>Branches</b>"
+msgstr ""
+
+#: ui/branches.py:73 ui/widget.py:855
+msgid "Branch"
+msgstr ""
+
+#: ui/branches.py:110
+msgid "Start Point:"
+msgstr ""
+
+#: ui/branches.py:129
+msgid "Keep old branch's history"
+msgstr ""
+
+#: ui/branches.py:138
+msgid "Set as active branch"
+msgstr ""
+
+#: ui/branches.py:280
+msgid "<b>Add Branch</b>"
+msgstr ""
+
+#: ui/branches.py:304
+msgid "<b>Branch Detail</b>"
+msgstr ""
+
+#: ui/push.py:76 ui/dialog.py:54 ui/annotate.py:128 ui/annotate.py:229
+#: ui/log.py:327 ui/log.py:557 ui/browser.py:89
+msgid "Date"
+msgstr "Dátum"
+
+#: ui/push.py:76 ui/dialog.py:54 ui/log.py:327 ui/log.py:557
+#: ui/glade/dialogs.glade.h:36
+msgid "Message"
+msgstr "Üzenet"
+
+#: ui/push.py:97
+msgid "Running Push Command..."
+msgstr ""
+
+#: ui/push.py:99
+msgid "Completed Push"
+msgstr ""
+
+#: ui/import.py:40
+#, python-format
+msgid "Import - %s"
+msgstr "Import - %s"
+
+#: ui/import.py:68
+msgid "The repository URL field is required."
+msgstr "Tároló URL mező igényelt"
+
+#: ui/import.py:81
+msgid "Running Import Command..."
+msgstr "Importálás parancs fut..."
+
+#: ui/import.py:89
+msgid "Completed Import"
+msgstr "Importálás befejezve"
+
+#: ui/rename.py:48
+msgid "The requested file or folder does not exist."
+msgstr ""
+
+#: ui/rename.py:52 ui/rename.py:84 ui/rename.py:113 ui/browser.py:470
+msgid "Rename"
+msgstr "Átnevezés"
+
+#: ui/rename.py:52 ui/browser.py:470 ui/glade/dialogs.glade.h:39
+msgid "New Name:"
+msgstr "Új név:"
+
+#: ui/rename.py:60
+msgid "The new name field is required"
+msgstr "Új név mező szükséges"
+
+#: ui/rename.py:85 ui/rename.py:114
+msgid "Running Rename Command..."
+msgstr "Átnevezés parancs fut..."
+
+#: ui/rename.py:91 ui/rename.py:120
+msgid "Completed Rename"
+msgstr "Átnevezés befejezve"
+
+#: ui/commit.py:206 ui/revert.py:63 ui/checkmods.py:68 ui/resolve.py:62
+#: ui/createpatch.py:120
+msgid "Text Status"
+msgstr "Szöveg állapot"
+
+#: ui/commit.py:206 ui/revert.py:63 ui/checkmods.py:68 ui/resolve.py:62
+#: ui/createpatch.py:120
+msgid "Property Status"
+msgstr "Tulajdonság állapot"
+
+#: ui/commit.py:289 ui/commit.py:385
+msgid "Running Commit Command..."
+msgstr "Beküldés parancs fut..."
+
+#: ui/commit.py:295 ui/commit.py:394
+msgid "Completed Commit"
+msgstr "Beküldés befejezve"
+
+#: ui/commit.py:314 ui/revert.py:129 ui/createpatch.py:216
+#: ui/property_editor.py:112
+msgid "Status"
+msgstr "Állapot"
+
+#: ui/diff.py:284
+msgid "View diff as side-by-side comparison"
+msgstr "Összehasonlító nézet, mint párhuzamos összehasonlítás"
+
+#: ui/merge.py:87
+msgid "Running Merge Test"
+msgstr "Egyesítés teszt fut"
+
+#: ui/merge.py:88
+msgid "Completed Merge Test"
+msgstr "Egyesítés teszt befejezve"
+
+#: ui/merge.py:90
+msgid "Running Merge Command"
+msgstr "Egyesítés parancs fut"
+
+#: ui/merge.py:91
+msgid "Completed Merge"
+msgstr "Egyesítés befejezve"
+
+#: ui/merge.py:102
+msgid "Merge"
+msgstr "Egyesítés"
+
+#: ui/merge.py:415 ui/merge.py:465
+msgid "Author:"
+msgstr ""
+
+#: ui/dialog.py:38
+#, python-format
+msgid ""
+"An error has occurred in the RabbitVCS Nautilus extension. Please contact "
+"the <a href=\"%s\">RabbitVCS team</a> with the error details listed below:"
+msgstr ""
+"Egy hiba történt a RabbitVCS Nautilus kiterjesztésben. Vegye fel a "
+"kapcsolatot <a href=\"%s\">RabbitVCS team</a> a hiba alábbi részletes "
+"leírásával:"
+
+#: ui/dialog.py:108
+msgid "Select a Folder"
+msgstr "Dosszié választása"
+
+#: ui/dialog.py:138 ui/glade/log.glade.h:11
+msgid "to"
+msgstr "eddig"
+
+#: ui/dialog.py:261
+msgid "Select a File"
+msgstr "Fájl választása"
+
+#: ui/dialog.py:280
+msgid "Save As..."
+msgstr "Mentés másként…"
+
+#: ui/dialog.py:299 ui/glade/dialogs.glade.h:19
+msgid "Are you sure you want to continue?"
+msgstr "Biztos, hogy folytatni akarja?"
+
+#: ui/dialog.py:327
+msgid "the selected item(s)"
+msgstr "a kiválasztott tétel/ek/"
+
+#: ui/dialog.py:398
+msgid "Added a folder to the repository"
+msgstr "Dosszié hozzáadása a tárolóhoz"
+
+#: ui/revert.py:104 ui/revert.py:169
+msgid "Running Revert Command..."
+msgstr "Visszavonás parancs fut"
+
+#: ui/revert.py:106 ui/revert.py:171
+msgid "Completed Revert"
+msgstr "Visszavonás befejezve"
+
+#: ui/clone.py:66
+msgid "Running Clone Command..."
+msgstr ""
+
+#: ui/clone.py:73
+msgid "Completed Clone"
+msgstr ""
+
+#: ui/relocate.py:77
+msgid "The from and to url fields are both required."
+msgstr "Az URL tartomány határainak megadása szükséges."
+
+#: ui/relocate.py:87 ui/glade/relocate.glade.h:3
+msgid "Relocate"
+msgstr "Áthelyez"
+
+#: ui/relocate.py:88
+msgid "Running Relocate Command..."
+msgstr "Áthelyezés parancs fut..."
+
+#: ui/relocate.py:95
+msgid "Completed Relocate"
+msgstr "Áthelyezés befejezve"
+
+#: ui/checkmods.py:69 ui/annotate.py:127 ui/annotate.py:228 ui/log.py:48
+#: ui/log.py:326 ui/log.py:556 ui/widget.py:854 ui/browser.py:89
+#: ui/glade/merge.glade.h:17
+msgid "Revision"
+msgstr "Revízió"
+
+#: ui/checkmods.py:69 ui/annotate.py:127 ui/annotate.py:228 ui/log.py:326
+#: ui/log.py:556 ui/browser.py:89
+msgid "Author"
+msgstr "Szerző"
+
+#: ui/checkmods.py:160 ui/changes.py:50 ui/changes.py:420
+msgid "View unified diff"
+msgstr "Egységes összehasonlító nézet"
+
+#: ui/checkmods.py:165 ui/changes.py:425
+msgid "Compare side by side"
+msgstr "Párhuzamos összehasonlítás"
+
+#: ui/resolve.py:103
+msgid "Running Resolve Command..."
+msgstr "Feloldás parancs fut..."
+
+#: ui/resolve.py:106
+msgid "Completed Resolve"
+msgstr "Feloldás befejezve"
+
+#: ui/changes.py:49
+msgid "More Actions..."
+msgstr "Több lépés..."
+
+#: ui/changes.py:279 ui/changes.py:364
+msgid "Change"
+msgstr "Változás"
+
+#: ui/changes.py:279
+msgid "Property Change"
+msgstr "Tulajdonság változása"
+
+#: ui/changes.py:321 ui/lock.py:126
+msgid "Yes"
+msgstr "Igen"
+
+#: ui/changes.py:321
+msgid "No"
+msgstr "Nem"
+
+#: ui/changes.py:410
+msgid "Open from first revision"
+msgstr "Az első revízió megnyitása"
+
+#: ui/changes.py:415
+msgid "Open from second revision"
+msgstr "A második revízió megnyitása"
+
+#: ui/annotate.py:57
+msgid "Cannot annotate a directory"
+msgstr "Nem lehet jegyzetet fűzni a könyvtárhoz"
+
+#: ui/annotate.py:63
+#, python-format
+msgid "Annotate - %s"
+msgstr "Jegyzet - %s"
+
+#: ui/annotate.py:127 ui/annotate.py:228
+msgid "Line"
+msgstr "Sor"
+
+#: ui/annotate.py:128 ui/annotate.py:229
+msgid "Text"
+msgstr "Szöveg"
+
+#: ui/annotate.py:143
+msgid "The from revision field must be an integer"
+msgstr "A revízió mező egész szám kell legyen"
+
+#: ui/log.py:120
+#, python-format
+msgid "Log - %s"
+msgstr "Napló - %s"
+
+#: ui/log.py:270 ui/log.py:271 ui/glade/log.glade.h:7
+msgid "N/A"
+msgstr "N/A"
+
+#: ui/log.py:337 ui/log.py:572 ui/action.py:118
+msgid "Action"
+msgstr "Esemény"
+
+#: ui/log.py:338
+msgid "Copy From Path"
+msgstr "Másolás az útvonalról"
+
+#: ui/log.py:338
+msgid "Copy From Revision"
+msgstr "Másolás a revízióból"
+
+#: ui/log.py:556
+msgid "Graph"
+msgstr ""
+
+#: ui/log.py:781
+msgid "View diff against working copy"
+msgstr "Összehasonlító nézet a munkapéldánnyal"
+
+#: ui/log.py:791
+msgid "View diff between revisions"
+msgstr "Összehasonlító nézet revíziók között"
+
+#: ui/log.py:796
+msgid "Compare with working copy"
+msgstr "Összehasonlítás a munkapéldánnyal"
+
+#: ui/log.py:806
+msgid "Compare revisions"
+msgstr "Revíziók összehasonlítása"
+
+#: ui/log.py:812
+msgid "Show changes against previous revision"
+msgstr ""
+
+#: ui/log.py:818
+msgid "Show changes between revisions"
+msgstr "Változások mutatása két revízió között"
+
+#: ui/log.py:823
+msgid "Update to this revision"
+msgstr ""
+
+#: ui/log.py:824
+msgid "Update the selected path to this revision"
+msgstr ""
+
+#: ui/log.py:829 ui/log.py:833
+msgid "Edit author..."
+msgstr "Szerző szerkesztése..."
+
+#: ui/log.py:837
+msgid "Edit log message..."
+msgstr "Napló üzenet szerkesztése..."
+
+#: ui/log.py:841
+msgid "Edit revision properties..."
+msgstr "Revízió tulajdonságok szerkesztése..."
+
+#: ui/log.py:1047
+msgid "Edit author"
+msgstr "Szerző szerkesztése"
+
+#: ui/log.py:1059
+msgid "Edit log message"
+msgstr "Napló üzenet szerkesztése"
+
+#: ui/settings.py:43 ui/glade/settings.glade.h:35
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+#: ui/settings.py:45
+msgid "There was an error communicating with the status checker service."
+msgstr ""
+
+#: ui/settings.py:59
+msgid "English"
+msgstr "angol"
+
+#: ui/settings.py:119
+msgid "Config file:"
+msgstr ""
+
+#: ui/settings.py:294
+msgid "Select a program"
+msgstr "Egy program választása"
+
+#: ui/settings.py:303
+msgid "Are you sure you want to clear your repository paths?"
+msgstr "Biztos, hogy akarja törölni a tároló útvonalakat?"
+
+#: ui/settings.py:310
+msgid "Repository paths cleared"
+msgstr "Tároló útvonal törölve"
+
+#: ui/settings.py:314
+msgid "Are you sure you want to clear your previous messages?"
+msgstr "Biztos, hogy akarja törölni a korábbi üzeneteket?"
+
+#: ui/settings.py:321
+msgid "Previous messages cleared"
+msgstr "Előző üzenet törölve"
+
+#: ui/settings.py:325
+msgid "Are you sure you want to clear your authentication information?"
+msgstr "Biztos, hogy akarja törölni a hitelesítési információt?"
+
+#: ui/settings.py:342
+msgid "Authentication information cleared"
+msgstr "Hitelesítési információ törölve"
+
+#: ui/revprops.py:65 ui/properties.py:158 ui/property_editor.py:155
+msgid "Unable to retrieve properties list"
+msgstr "Tulajdonság lista nem állítható helyre"
+
+#: ui/branch.py:99
+msgid "You must supply a destination path."
+msgstr "Meg kell adni a végcél útvonalat."
+
+#: ui/branch.py:115
+msgid "Branch/tag"
+msgstr "Branch/tag"
+
+#: ui/branch.py:116
+msgid "Running Branch/tag Command..."
+msgstr "Branch/tag parancs fut..."
+
+#: ui/branch.py:118
+msgid "Completed Branch/tag"
+msgstr "Branch/tag parancs befejezve"
+
+#: ui/lock.py:73
+msgid "Locked"
+msgstr "Zárva"
+
+#: ui/lock.py:167
+msgid "Get Lock"
+msgstr "Zárolás"
+
+#: ui/lock.py:168
+msgid "Running Lock Command..."
+msgstr "Zárás parancs fut..."
+
+#: ui/lock.py:177
+msgid "Completed Lock"
+msgstr "Zárás befejezve"
+
+#: ui/switch.py:70
+msgid "The repository location is a required field."
+msgstr "Tároló helye mező igényelt"
+
+#: ui/switch.py:80
+msgid "Switch"
+msgstr "Kapcsoló"
+
+#: ui/switch.py:81
+msgid "Running Switch Command..."
+msgstr "Kapcsoló parancs fut..."
+
+#: ui/switch.py:89
+msgid "Completed Switch"
+msgstr "Kapcsoló parancs befejezve"
+
+#: ui/widget.py:853 ui/widget.py:859 ui/glade/merge.glade.h:10
+msgid "HEAD"
+msgstr "HEAD"
+
+#: ui/widget.py:860
+msgid "Number"
+msgstr "Szám"
+
+#: ui/widget.py:861
+msgid "Working Copy"
+msgstr "Munkapéldány"
+
+#: ui/widget.py:1056
+msgid "Repository:"
+msgstr ""
+
+#: ui/widget.py:1075
+msgid "Branch:"
+msgstr ""
+
+#: ui/widget.py:1093 ui/glade/dialogs.glade.h:30
+msgid "Host:"
+msgstr "Host:"
+
+#: ui/widget.py:1194
+msgid "Add line:"
+msgstr ""
+
+#: ui/checkout.py:139 ui/checkout.py:213
+#, python-format
+msgid "Checkout - %s"
+msgstr "Ellenőrzés - %s"
+
+#: ui/checkout.py:174
+msgid "Running Checkout Command..."
+msgstr "Ellenőrzés parancs fut..."
+
+#: ui/remotes.py:59
+msgid "Remote Repository Manager"
+msgstr ""
+
+#: ui/remotes.py:60
+msgid "<b>Remote Repositories</b>"
+msgstr ""
+
+#: ui/remotes.py:66 ui/properties.py:63 ui/property_editor.py:112
+msgid "Name"
+msgstr "Név"
+
+#: ui/remotes.py:66
+msgid "Host"
+msgstr ""
+
+#: ui/property_page.py:126
+msgid "Repository URL"
+msgstr ""
+
+#: ui/createpatch.py:68 ui/createpatch.py:86 ui/createpatch.py:162
+#: ui/createpatch.py:262
+msgid "Create Patch"
+msgstr "Hibajavítás készítése"
+
+#: ui/createpatch.py:112 ui/createpatch.py:208
+msgid "The given path is not a working copy"
+msgstr "A megadott útvonal nem a munkapéldányé."
+
+#: ui/createpatch.py:163 ui/createpatch.py:263
+msgid "Creating Patch File..."
+msgstr "Hibajavító fájl készítése..."
+
+#: ui/createpatch.py:193 ui/createpatch.py:292
+msgid "Patch File Created"
+msgstr "Hibajavító fájl elkészítve"
+
+#: ui/properties.py:55
+#, python-format
+msgid "Properties - %s"
+msgstr "Tulajdonságok - %s"
+
+#: ui/properties.py:63 ui/property_editor.py:112
+msgid "Value"
+msgstr "Érték"
+
+#: ui/properties.py:179
+msgid "There was a problem saving your properties."
+msgstr "Tulajdonságok mentésénél probléma adódott."
+
+#: ui/property_editor.py:56
+msgid ""
+"<b>Note:</b> changes to properties are applied instantly. You may review and "
+"undo changes using the context menu for each item.\n"
+msgstr ""
+"<b>Figyelem:</b> a tulajdonságok változása azonnal megtörténik. Megnézheti "
+"és visszavonhatja a változás használatát minden tételre va menüben.\n"
+
+#: ui/property_editor.py:61
+msgid ""
+"Do you want to delete the selected properties from all files and "
+"subdirectories\n"
+"beneath this directory?"
+msgstr ""
+"Törölni akarja a kiválasztott tulajdonságot minden fájlnál és alkönyvtárban\n"
+"ezen könyvtárban?"
+
+#: ui/property_editor.py:102
+msgid "File is not under version control."
+msgstr "Ez a fájl nincs verzió kontroll alatt."
+
+#: ui/property_editor.py:112
+msgid "Reserved"
+msgstr "Fenntartott"
+
+#: ui/property_editor.py:189
+msgid "Unable to set new value for property."
+msgstr "Nem engedélyezett a tulajdonság új értéke."
+
+#: ui/__init__.py:50
+msgid ""
+"You must specify a version control system using the --vcs [svn|git] option"
+msgstr ""
+
+#: ui/action.py:118
+msgid "Mime Type"
+msgstr "Mime típus"
+
+#: ui/action.py:338
+msgid "Finished"
+msgstr "Befejezve"
+
+#: ui/action.py:342
+#, python-format
+msgid "%s - Finished"
+msgstr "%s - Befejezve"
+
+#: ui/action.py:365
+msgid "Log Message"
+msgstr "Napló bejegyzés"
+
+#: ui/unlock.py:48 ui/unlock.py:125
+msgid "Unlock"
+msgstr "Nyitás"
+
+#: ui/unlock.py:126
+msgid "Running Unlock Command..."
+msgstr "Nyitás parancs fut..."
+
+#: ui/unlock.py:129
+msgid "Completed Unlock"
+msgstr "Nyitás befejezve"
+
+#: ui/browser.py:89
+msgid "Size"
+msgstr "Méret"
+
+#: ui/browser.py:326
+msgid "Select"
+msgstr ""
+
+#: ui/browser.py:348
+msgid "Create folder..."
+msgstr "Dosszié létrehozása..."
+
+#: ui/browser.py:353
+msgid "Copy to..."
+msgstr "Másolás..."
+
+#: ui/browser.py:358
+msgid "Copy URL to clipboard"
+msgstr "URL másolása a vágólapra"
+
+#: ui/browser.py:363
+msgid "Move to..."
+msgstr "Áthelyezés..."
+
+#: ui/browser.py:531
+msgid "Where do you want to copy the selection?"
+msgstr "Hová akarja másolni a kijelölést?"
+
+#: ui/browser.py:532 ui/browser.py:561
+msgid "New Location:"
+msgstr "Új hely:"
+
+#: ui/browser.py:560
+msgid "Where do you want to move the selection?"
+msgstr "Hová akarja áthelyezni a kijelölést?"
+
+#: ui/cleanup.py:56 ui/glade/cleanup.glade.h:1
+msgid "Cleaning Up..."
+msgstr "Tisztítás..."
+
+#: ui/cleanup.py:58
+msgid "Completed Cleanup"
+msgstr "Tisztítás befejezve"
+
+#: ui/create.py:46
+msgid "Repository successfully created"
+msgstr "Tároló sikeresen elkészítve"
+
+#: ui/create.py:48
+msgid ""
+"There was an error creating the repository.  Make sure the given folder is "
+"empty."
+msgstr "Hiba a tároló készítésekor. Ellenőrizze, hogy a dosszié üres."
+
+#: ui/glade/properties.glade.h:1
+msgid "<b>Properties for:</b>"
+msgstr "<b>Tulajdonságok ehhez:</b>"
+
+#: ui/glade/properties.glade.h:2
+msgid "<i>Selected properties will be applied recursively.</i>"
+msgstr "<i>Kiválasztott tulajdonságok rekurzívan lesznek használva.</i>"
+
+#: ui/glade/properties.glade.h:4
+msgid "Delete properties recursively"
+msgstr "Rekurzív tulajdonságok törlése"
+
+#: ui/glade/properties.glade.h:5
+msgid "Edit..."
+msgstr "Szerkesztés..."
+
+#: ui/glade/properties.glade.h:6
+msgid "New..."
+msgstr "Új..."
+
+#: ui/glade/properties.glade.h:8
+msgid "URL/Path:"
+msgstr "URL/Útvonal"
+
+#: ui/glade/browser.glade.h:1
+msgid "Load/Refresh"
+msgstr "Betöltés/Frissítés"
+
+#: ui/glade/browser.glade.h:4
+msgid "URL:"
+msgstr "URL:"
+
+#: ui/glade/dialogs.glade.h:1
+msgid "<b>A conflict was found in the following file:</b>"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:2 ui/glade/commit.glade.h:1
+msgid "<b>Add Message</b>"
+msgstr "<b>Üzenet hozzáadása</b>"
+
+#: ui/glade/dialogs.glade.h:3
+msgid "<b>Certificate Details</b>"
+msgstr "<b>Tanúsítvány részletei</b>"
+
+#: ui/glade/dialogs.glade.h:4
+msgid "<b>Edit Property Details</b>"
+msgstr "<b>Tulajdonság részleteinek szerkesztése</b>"
+
+#: ui/glade/dialogs.glade.h:5
+msgid "<b>Enter Name and Email Details</b>"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:6
+msgid "<b>Folder Name</b>"
+msgstr "<b>Dosszié neve</b>"
+
+#: ui/glade/dialogs.glade.h:7 ui/glade/log.glade.h:3
+msgid "<b>Message</b>"
+msgstr "<b>Üzenet</b>"
+
+#: ui/glade/dialogs.glade.h:8
+msgid "<b>Please add your authentication details</b>"
+msgstr "<b>Adja meg az Ön azonosítóit</b>"
+
+#: ui/glade/dialogs.glade.h:9
+msgid "<b>Please provide your ssl certification file</b>"
+msgstr "<b>Kérjük adja meg az Ön SSL igazoló fájlját</b>"
+
+#: ui/glade/dialogs.glade.h:10
+msgid "<b>Previous Messages</b>"
+msgstr "<b>Korábbi üzenetek</b>"
+
+#: ui/glade/dialogs.glade.h:12
+msgid ""
+"<span size=\"large\"><b>Are you sure you want to delete %item%?</b></span>"
+msgstr ""
+"<span size=\"large\"><b>Akarja törölni a/z/ %item% tételt?</b></span>"
+
+#: ui/glade/dialogs.glade.h:13
+msgid "<span weight=\"bold\" size=\"xx-large\">RabbitVCS Error</span>"
+msgstr "<span weight=\"bold\" size=\"xx-large\">RabbitVCS Error</span>"
+
+#: ui/glade/dialogs.glade.h:14
+msgid "Accept Forever"
+msgstr "Mindig elfogad"
+
+#: ui/glade/dialogs.glade.h:15
+msgid "Accept Mine"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:16
+msgid "Accept Once"
+msgstr "Egyszer elfogad"
+
+#: ui/glade/dialogs.glade.h:17
+msgid "Accept Theirs"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:18
+msgid "Apply property recursively"
+msgstr "Tulajdonság megadása rekurzívan"
+
+#: ui/glade/dialogs.glade.h:20
+msgid "Authentication"
+msgstr "Hitelesítés"
+
+#: ui/glade/dialogs.glade.h:21
+msgid "Cancel"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:22
+msgid "Check Certificate"
+msgstr "Tanúsítvány ellenőrzése"
+
+#: ui/glade/dialogs.glade.h:23
+msgid "Confirmation"
+msgstr "Megerősítés"
+
+#: ui/glade/dialogs.glade.h:24
+msgid "Conflict Resolution Decision"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:25
+msgid "Create Folder..."
+msgstr "Dosszié készítése..."
+
+#: ui/glade/dialogs.glade.h:26
+msgid "Delete Confirmation"
+msgstr "Megerősítés törlése..."
+
+#: ui/glade/dialogs.glade.h:27
+msgid "Deny"
+msgstr "Visszautasít"
+
+#: ui/glade/dialogs.glade.h:28
+msgid "Email:"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:29
+msgid "Fingerprint:"
+msgstr "Ujjlenyomat:"
+
+#: ui/glade/dialogs.glade.h:31
+msgid "How do you want to handle this?"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:32
+msgid "Issuer:"
+msgstr "Kibocsájtó:"
+
+#: ui/glade/dialogs.glade.h:34
+msgid "Login:"
+msgstr "Felhasználó név:"
+
+#: ui/glade/dialogs.glade.h:35
+msgid "Merge Manually"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:37
+msgid "Name and Email"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:40
+msgid "Password:"
+msgstr "Jelszó:"
+
+#: ui/glade/dialogs.glade.h:41
+msgid "Path:"
+msgstr "Útvonal:"
+
+#: ui/glade/dialogs.glade.h:42 ui/glade/lock.glade.h:4
+#: ui/glade/commit.glade.h:5 ui/glade/import.glade.h:5
+msgid "Previous Messages"
+msgstr "Előző üzenet"
+
+#: ui/glade/dialogs.glade.h:43
+msgid "Property"
+msgstr "Tulajdonság"
+
+#: ui/glade/dialogs.glade.h:44
+msgid "Property:"
+msgstr "Tulajdonság:"
+
+#: ui/glade/dialogs.glade.h:45
+msgid "RabbitVCS Error"
+msgstr "RabbitVCS hiba"
+
+#: ui/glade/dialogs.glade.h:46
+msgid "Realm:"
+msgstr "Övezet:"
+
+#: ui/glade/dialogs.glade.h:47
+msgid "SSL Client Certification"
+msgstr "SSL kliens igazolás"
+
+#: ui/glade/dialogs.glade.h:48
+msgid "Save Authentication"
+msgstr "Hitelesítés mentése"
+
+#: ui/glade/dialogs.glade.h:49
+msgid "Text Change"
+msgstr "Szöveg változás"
+
+#: ui/glade/dialogs.glade.h:50
+msgid "The item(s) will be sent to the trash can."
+msgstr "A tétel a kukába kerül."
+
+#: ui/glade/dialogs.glade.h:51
+msgid "Valid:"
+msgstr "Érvényeség:"
+
+#: ui/glade/dialogs.glade.h:52
+msgid "Value:"
+msgstr "Érték:"
+
+#: ui/glade/pull.glade.h:1
+msgid "<b>Pull Information</b>"
+msgstr ""
+
+#: ui/glade/pull.glade.h:2 ui/glade/git-update.glade.h:2
+msgid "Merge changes into local branch"
+msgstr ""
+
+#: ui/glade/pull.glade.h:3
+msgid "Pull"
+msgstr ""
+
+#: ui/glade/manager.glade.h:1
+msgid "label"
+msgstr ""
+
+#: ui/glade/about.glade.h:1
+msgid "<b>Links</b>"
+msgstr "<b>Link</b>"
+
+#: ui/glade/about.glade.h:2
+msgid "<b>Version Information</b>"
+msgstr "<b>Verzió információ</b>"
+
+#: ui/glade/about.glade.h:3
+msgid "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
+msgstr "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
+
+#: ui/glade/about.glade.h:5
+msgid "Authors:"
+msgstr "Szerzők:"
+
+#: ui/glade/about.glade.h:6
+msgid "Thanks:"
+msgstr "Köszönet:"
+
+#: ui/glade/property_page.glade.h:1
+msgid "Content status:"
+msgstr ""
+
+#: ui/glade/property_page.glade.h:3
+msgid "Property status:"
+msgstr ""
+
+#: ui/glade/property_page.glade.h:5
+msgid "VCS:"
+msgstr ""
+
+#: ui/glade/log.glade.h:1
+msgid "100"
+msgstr "100"
+
+#: ui/glade/log.glade.h:2
+msgid "<b>Affected File(s)</b> (double-click to compare with base)"
+msgstr ""
+"<b>Érintett fájl/ok/</b> (kettős klikkantással összehasonlítás a bázissal)"
+
+#: ui/glade/log.glade.h:4
+msgid "<b>Revisions Table</b>"
+msgstr "<b>Revíziós tábla</b>"
+
+#: ui/glade/log.glade.h:5
+msgid "Limit:"
+msgstr "Határ:"
+
+#: ui/glade/log.glade.h:6
+msgid "Log"
+msgstr "Napló"
+
+#: ui/glade/log.glade.h:8
+msgid "Refresh"
+msgstr "Frissítés"
+
+#: ui/glade/log.glade.h:9
+msgid "Showing Revisions:"
+msgstr "Revíziók mutatása:"
+
+#: ui/glade/log.glade.h:10
+msgid "Stop on copy"
+msgstr "Másolás megállítása"
+
+#: ui/glade/cleanup.glade.h:2
+msgid ""
+"Cleanup Requested....\n"
+"\n"
+"Begin working copy cleanup?"
+msgstr ""
+"Tisztítást igényelt....\n"
+"\n"
+"Kezdődhet a munkapéldány tisztítása?"
+
+#: ui/glade/settings.glade.h:1
+msgid "<b>Authentication</b>"
+msgstr "<b>Azonosítás</b>"
+
+#: ui/glade/settings.glade.h:2
+msgid "<b>Checker type:</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:3
+msgid "<b>Configuration Editor</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:4
+msgid "<b>Log Messages</b>"
+msgstr "<b>Napló üzenetek</b>"
+
+#: ui/glade/settings.glade.h:5
+msgid "<b>Logging Options</b>"
+msgstr "<b>Naplózási beállítások</b>"
+
+#: ui/glade/settings.glade.h:6
+msgid "<b>Memory usage:</b> "
+msgstr ""
+
+#: ui/glade/settings.glade.h:7
+msgid "<b>Other Information</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:8
+msgid "<b>Process ID:</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:9
+msgid "<b>Program used to compare files</b>"
+msgstr "<b>Program a fájlok összehasonlításához</b>"
+
+#: ui/glade/settings.glade.h:10
+msgid "<b>RabbitVCS</b>"
+msgstr "<b>RabbitVCS</b>"
+
+#: ui/glade/settings.glade.h:11
+msgid "<b>URL History</b>"
+msgstr "<b>URL előzmények</b>"
+
+#: ui/glade/settings.glade.h:12
+msgid "Browse..."
+msgstr "Böngészés..."
+
+#: ui/glade/settings.glade.h:13
+msgid "Clear your authentication information"
+msgstr "Az Ön azonosítási információinak törlése"
+
+#: ui/glade/settings.glade.h:14
+msgid "Enable emblems"
+msgstr "Jelképek engedélyezve"
+
+#: ui/glade/settings.glade.h:15
+msgid "Enable file attributes"
+msgstr "Fájl attributomok engedélyezve"
+
+#: ui/glade/settings.glade.h:16
+msgid "Enable recursive status checks"
+msgstr "Rekurzív állapotellenőrzés engedélyezve"
+
+#: ui/glade/settings.glade.h:17
+msgid "External Programs"
+msgstr "Külső programok"
+
+#: ui/glade/settings.glade.h:18
+msgid "General"
+msgstr "Általános"
+
+#: ui/glade/settings.glade.h:19
+msgid "Git"
+msgstr ""
+
+#: ui/glade/settings.glade.h:20
+msgid "Language:"
+msgstr "Nyelv:"
+
+#: ui/glade/settings.glade.h:21
+msgid "Logging"
+msgstr "Naplózás"
+
+#: ui/glade/settings.glade.h:22
+msgid "Minimum level to log"
+msgstr "Minimális naplóbejegyzés"
+
+#: ui/glade/settings.glade.h:23
+msgid "Number of URLs to remember"
+msgstr "Megjegyzett URL-ek száma"
+
+#: ui/glade/settings.glade.h:24
+msgid "Number of messages to remember"
+msgstr "Megjegyzett üzenetek száma"
+
+#: ui/glade/settings.glade.h:25
+msgid "Refresh Information"
+msgstr ""
+
+#: ui/glade/settings.glade.h:26
+msgid "Restart Checker"
+msgstr ""
+
+#: ui/glade/settings.glade.h:27
+msgid "Saved Data"
+msgstr "Mentett adat"
+
+#: ui/glade/settings.glade.h:29
+msgid "Show RabbitVCS debugging tools"
+msgstr "RabbitVCS nyomkövető eszköz mutatása"
+
+#: ui/glade/settings.glade.h:30
+msgid "Show new version on the left side"
+msgstr ""
+
+#: ui/glade/settings.glade.h:31
+msgid "Status Checker"
+msgstr ""
+
+#: ui/glade/settings.glade.h:32
+msgid "Stop Checker"
+msgstr ""
+
+#: ui/glade/settings.glade.h:33
+msgid "The debug menu is used to diagnose problems with RabbitVCS itself"
+msgstr "A nyomkövetés menü a problémák diagnózisára a RabbitVCS-t használja"
+
+#: ui/glade/settings.glade.h:34
+msgid "Type:"
+msgstr "Típus:"
+
+#: ui/glade/lock.glade.h:1
+msgid "<b>Files to lock</b>"
+msgstr "<b>Zárolt fájlok</b>"
+
+#: ui/glade/lock.glade.h:2
+msgid "<b>Please describe why you are locking these files</b>"
+msgstr "<b>Írja le, miért akarja zárolni ezeket a fájlokat?</b>"
+
+#: ui/glade/lock.glade.h:3
+msgid "Lock Files"
+msgstr "Zárolt fájlok"
+
+#: ui/glade/lock.glade.h:5 ui/glade/add.glade.h:2 ui/glade/commit.glade.h:6
+msgid "Select / Deselect all"
+msgstr "Kiválasztás / Összes kiválasztás"
+
+#: ui/glade/lock.glade.h:6
+msgid "Steal the locks"
+msgstr "Zárolások ellopása"
+
+#: ui/glade/annotate.glade.h:1
+msgid "<b>From Revision</b>"
+msgstr "<b>Revíziótól</b>"
+
+#: ui/glade/annotate.glade.h:2
+msgid "<b>To Revision</b>"
+msgstr "<b>Revízióig</b>"
+
+#: ui/glade/annotate.glade.h:3
+msgid "Annotate"
+msgstr "Jegyzet"
+
+#: ui/glade/ignore.glade.h:1
+msgid "<b>Ignore and exclude files from being tracked</b>"
+msgstr ""
+
+#: ui/glade/ignore.glade.h:2
+msgid "Ignore"
+msgstr ""
+
+#: ui/glade/commit.glade.h:2
+msgid "<b>Changed Files</b> (double-click to compare with base)"
+msgstr ""
+"<b>Változott fájlok</b> (kettős klikkantással összehasonlítás a bázissal)"
+
+#: ui/glade/commit.glade.h:3
+msgid "<b>Commit to:</b>"
+msgstr "<b>Beküldés</b>"
+
+#: ui/glade/commit.glade.h:7
+msgid "Show unversioned files"
+msgstr "Verziókezelésen kívüli fájlok mutatása"
+
+#: ui/glade/notification.glade.h:1
+msgid "Notification Messages"
+msgstr "Értesítés"
+
+#: ui/glade/property_editor.glade.h:1
+msgid "<b>Remote URI:</b>"
+msgstr "<b>Távoli URI:</b>"
+
+#: ui/glade/property_editor.glade.h:2
+msgid "<b>Working Copy:</b>"
+msgstr "<b>Munkapéldány:</b>"
+
+#: ui/glade/property_editor.glade.h:3
+msgid "Add a new property."
+msgstr "Egy új tulajdonság hozzáadása"
+
+#: ui/glade/property_editor.glade.h:4
+msgid "Close this dialog."
+msgstr "Párbeszéd bezárása."
+
+#: ui/glade/property_editor.glade.h:5
+msgid "Property Editor"
+msgstr "Tulajdonság szerkesztő"
+
+#: ui/glade/property_editor.glade.h:6
+msgid "Refresh the list of properties."
+msgstr "Tulajdonságok listájának frissítése."
+
+#: ui/glade/relocate.glade.h:1
+msgid "<b>Change the repository of your working copy</b>"
+msgstr "<b>Tároló cseréje az Ön munkapéldányhoz</b>"
+
+#: ui/glade/relocate.glade.h:2
+msgid "From:"
+msgstr "Innen:"
+
+#: ui/glade/relocate.glade.h:4
+msgid "To:"
+msgstr "Eddig:"
+
+#: ui/glade/git-update.glade.h:1 ui/glade/update.glade.h:1
+#: ui/glade/merge.glade.h:3
+msgid "<b>Options</b>"
+msgstr "<b>Opciók</b>"
+
+#: ui/glade/git-update.glade.h:3
+msgid "Update Local Repository"
+msgstr ""
+
+#: ui/glade/update.glade.h:2
+msgid "<b>Revision</b>"
+msgstr "<b>Revízió</b>"
+
+#: ui/glade/update.glade.h:3
+msgid "Omit Externals"
+msgstr "Külső tárolók kihagyása"
+
+#: ui/glade/update.glade.h:4 ui/glade/merge.glade.h:16
+msgid "Recursive"
+msgstr "Rekurzív"
+
+#: ui/glade/update.glade.h:5
+msgid "Rollback to specified revision number"
+msgstr ""
+
+#: ui/glade/import.glade.h:1
+msgid "<b>Import Message</b>"
+msgstr "<b>Import üzenet</b>"
+
+#: ui/glade/import.glade.h:2
+msgid "<b>Repository</b>"
+msgstr "<b>Tároló</b>"
+
+#: ui/glade/import.glade.h:4
+msgid "Include ignored files"
+msgstr "Mellőzött fájlokat tartalmaz"
+
+#: ui/glade/merge.glade.h:1
+msgid "<b>From URL</b>"
+msgstr "<b>Ettől az URL-től</b>"
+
+#: ui/glade/merge.glade.h:2
+msgid "<b>From: (URL and revision to merge)</b>"
+msgstr "<b>Innen: (URL és revízió egyesítve)</b>"
+
+#: ui/glade/merge.glade.h:4
+msgid "<b>Revision Range</b>"
+msgstr "<b>Revíziós terület</b>"
+
+#: ui/glade/merge.glade.h:5
+msgid "<b>To: (URL and revision to merge)</b>"
+msgstr "<b>Eddig: (URL és revízió egyesítve)</b>"
+
+#: ui/glade/merge.glade.h:6
+msgid "<b>URL to merge from</b>"
+msgstr "<b>URL egyesítve innen</b>"
+
+#: ui/glade/merge.glade.h:7
+msgid "<b>Working Copy</b>"
+msgstr "<b>Munkapéldány</b>"
+
+#: ui/glade/merge.glade.h:8
+msgid ""
+"Choose this method if you have made some changes to a branch and wish to "
+"merge your changes with another branch."
+msgstr ""
+"Válassza ezt a módszert, ha Önnek sok változása van a branchban és "
+"egyesíteni kívánja a módosításokat egy másik branchcsal."
+
+#: ui/glade/merge.glade.h:9
+msgid ""
+"Choose this method if you wish to merge two different branches into your "
+"working copy."
+msgstr ""
+"Válassza ezt a módszert, ha két különböző branchot kíván egyesíteni a "
+"munkapéldányában."
+
+#: ui/glade/merge.glade.h:11
+msgid "Ignore ancestry"
+msgstr "Eredet mellőzése"
+
+#: ui/glade/merge.glade.h:12
+msgid "Merge Assistant"
+msgstr "Egyesítés segéd"
+
+#: ui/glade/merge.glade.h:13
+msgid "Merge a range of revisions"
+msgstr "Egy revíziós terület egyesítése"
+
+#: ui/glade/merge.glade.h:14
+msgid "Merge two different trees"
+msgstr "Két különböző fa egyesítése"
+
+#: ui/glade/merge.glade.h:15
+msgid "Only record the merge"
+msgstr "Csak rögzítése az egyesítésnek"
+
+#: ui/glade/merge.glade.h:18
+msgid "Show log"
+msgstr "Napló mutatása"
+
+#: ui/glade/merge.glade.h:19
+msgid "Test Merge"
+msgstr "Egyesítés teszt"
+
+#: ui/glade/merge.glade.h:20
+msgid ""
+"Use the log dialog to select the revisions that you wish to merge.  Or write "
+"out the revisions manually, each separated by a comma.  You can specify a "
+"revision range by a dash. \n"
+"\n"
+"Example: 4-7,9,11,15-HEAD\n"
+"\n"
+"To merge all revisions, leave the box empty."
+msgstr ""
+"A kiválasztott revíziók egyesítéséhez használja a napló bejegyzést vagy írja "
+"ki a revíziókat kézzel azokat vesszővel elválasztva.  Egy tartomány "
+"megadásához kötőjelet használhat.\n"
+"\n"
+"Például: 4-7,9,11,15-HEAD\n"
+"\n"
+"Az összes revízió egyesítéséhez hagyja üresen a szövegdobozt."

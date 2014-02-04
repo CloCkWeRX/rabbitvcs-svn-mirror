@@ -1,0 +1,24 @@
+Scripts README
+----------------
+
+To start a new translation:
+    
+    $ sh initialize_new_translation.sh <YOUR_LOCALE>
+    
+    This will create a .po file in the /trunk/rabbitvcs/po directory with the
+    name <YOUR_LOCALE>.po.  Translate the strings in the .po file any way you
+    want.
+    
+To install a translation:
+
+    $ sh install_translation.sh <YOUR_LOCALE> <PATH_TO_PO_FILE>
+    
+    This will take your .po file and install it in the 
+    /trunk/rabbitvcs/locale/<YOUR_LOCALE>/LC_MESSAGES folder.
+    
+To test a translation:
+
+    $ LANGUAGE=<YOUR_LOCALE> /path/to/trunk/clients/cli/rabbitvcs commit
+    
+For more on translating, see our wiki page at: 
+    http://wiki.rabbitvcs.org/wiki/contribute/translate

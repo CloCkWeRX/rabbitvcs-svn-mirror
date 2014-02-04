@@ -1,0 +1,2026 @@
+# Dutch translation for rabbitvcs
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the rabbitvcs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: rabbitvcs\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-11-26 09:51-0500\n"
+"PO-Revision-Date: 2010-12-09 15:20+0000\n"
+"Last-Translator: Reinout van Schouwen <reinouts@gnome.org>\n"
+"Language-Team: Dutch <vertaling@vrijschrift.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Launchpad-Export-Date: 2010-12-09 23:36+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+"X-Poedit-Language: Dutch\n"
+
+#: util/helper.py:109
+msgid "just now"
+msgstr "nu net"
+
+#: util/helper.py:111
+#, python-format
+msgid "%d minute(s) ago"
+msgstr "%d minu(u)t(en) geleden"
+
+#: util/helper.py:631
+#, python-format
+msgid "%i second"
+msgid_plural "%i seconds"
+msgstr[0] "%i seconde"
+msgstr[1] "%i seconden"
+
+#: util/helper.py:634
+#, python-format
+msgid "%i minute"
+msgid_plural "%i minutes"
+msgstr[0] "%i minuut"
+msgstr[1] "%i minuten"
+
+#: util/helper.py:637
+#, python-format
+msgid "%i hour"
+msgid_plural "%i hours"
+msgstr[0] "%i uur"
+msgstr[1] "%i uur"
+
+#: util/helper.py:640
+#, python-format
+msgid "%i day"
+msgid_plural "%i days"
+msgstr[0] "%i dag"
+msgstr[1] "%i dagen"
+
+#: util/helper.py:643
+#, python-format
+msgid "%i week"
+msgid_plural "%i weeks"
+msgstr[0] "%i week"
+msgstr[1] "%i weken"
+
+#: util/helper.py:646
+#, python-format
+msgid "%i month"
+msgid_plural "%i months"
+msgstr[0] "%i maand"
+msgstr[1] "%i maanden"
+
+#: util/helper.py:649
+#, python-format
+msgid "%i year"
+msgid_plural "%i years"
+msgstr[0] "%i jaar"
+msgstr[1] "%i jaar"
+
+#: util/contextmenuitems.py:270
+msgid "Debug"
+msgstr "Debuggen"
+
+#: util/contextmenuitems.py:275
+msgid "Bugs"
+msgstr "Fouten"
+
+#: util/contextmenuitems.py:280
+msgid "Open Shell"
+msgstr "Shell openen"
+
+#: util/contextmenuitems.py:286
+msgid "Refresh Status"
+msgstr "Verversingsstatus"
+
+#: util/contextmenuitems.py:291
+msgid "Debug Revert"
+msgstr "Debug-terugdraaien"
+
+#: util/contextmenuitems.py:292
+msgid "Reverts everything it sees"
+msgstr "Alles in zicht terugdraaien"
+
+#: util/contextmenuitems.py:298
+msgid "Invalidate"
+msgstr "Ongeldig maken"
+
+#: util/contextmenuitems.py:299
+msgid "Force an invalidate_extension_info() call"
+msgstr "Aanroep van invalidate_extension_info() afdwingen"
+
+#: util/contextmenuitems.py:305
+msgid "Add Emblem"
+msgstr "Embleem toevoegen"
+
+#: util/contextmenuitems.py:306
+msgid "Add an emblem"
+msgstr "Een embleem toevoegen…"
+
+#: util/contextmenuitems.py:312
+msgid "Checkout..."
+msgstr "Uitchecken…"
+
+#: util/contextmenuitems.py:313
+msgid "Check out a working copy"
+msgstr "Een werkversie uitchecken"
+
+#: util/contextmenuitems.py:318 ui/update.py:53 ui/update.py:97
+#: ui/glade/update.glade.h:6
+msgid "Update"
+msgstr "Updaten"
+
+#: util/contextmenuitems.py:319
+msgid "Update a working copy"
+msgstr "Een werkversie updaten"
+
+#: util/contextmenuitems.py:324 ui/commit.py:288 ui/commit.py:384
+#: ui/glade/commit.glade.h:4
+msgid "Commit"
+msgstr "Commit"
+
+#: util/contextmenuitems.py:325
+msgid "Commit modifications to the repository"
+msgstr "Aanpassingen committen in het repository"
+
+#: util/contextmenuitems.py:330 ui/glade/property_page.glade.h:4
+msgid "RabbitVCS"
+msgstr "RabbitVCS"
+
+#: util/contextmenuitems.py:335
+msgid "RabbitVCS SVN"
+msgstr "RabbitVCS SVN"
+
+#: util/contextmenuitems.py:340
+msgid "RabbitVCS Git"
+msgstr "RabbitVCS Git"
+
+#: util/contextmenuitems.py:345 ui/glade/browser.glade.h:2
+msgid "Repository Browser"
+msgstr "Bladeren door repository"
+
+#: util/contextmenuitems.py:346
+msgid "Browse a repository tree"
+msgstr "Een repository-boom doorbladeren"
+
+#: util/contextmenuitems.py:351
+msgid "Check for Modifications..."
+msgstr "Controleren op aanpassingen…"
+
+#: util/contextmenuitems.py:352
+msgid "Check for modifications made to the repository"
+msgstr "Controleren op wijzigingen die aan het repository zijn gemaakt"
+
+#: util/contextmenuitems.py:357
+msgid "Diff Menu..."
+msgstr "Diff-menu…"
+
+#: util/contextmenuitems.py:358
+msgid "List of comparison options"
+msgstr "Lijst van vergelijkingsopties"
+
+#: util/contextmenuitems.py:363
+msgid "View diff against base"
+msgstr "Diff ten opzichte van basis bekijken"
+
+#: util/contextmenuitems.py:364
+msgid "View the modifications made to a file"
+msgstr "De wijzigingen aan een bestand bekijken"
+
+#: util/contextmenuitems.py:369
+msgid "View diff between files/folders"
+msgstr "Diff tussen bestanden/mappen bekijken"
+
+#: util/contextmenuitems.py:370
+msgid "View the differences between two files"
+msgstr "De verschillen tussen twee bestanden bekijken"
+
+#: util/contextmenuitems.py:375 ui/log.py:786
+msgid "View diff against previous revision"
+msgstr "Diff ten opzichte van eerdere revisie bekijken"
+
+#: util/contextmenuitems.py:376
+msgid "View the modifications made to a file since its last change"
+msgstr "De aanpassingen aan een bestand sinds de laatste wijziging bekijken"
+
+#: util/contextmenuitems.py:381
+msgid "Compare with base"
+msgstr "Vergelijken met basis"
+
+#: util/contextmenuitems.py:382
+msgid "Compare with base using side-by-side comparison tool"
+msgstr ""
+"Met basisversie vergelijken met behulp van naast-elkaar-vergelijkprogramma"
+
+#: util/contextmenuitems.py:387
+msgid "Compare files/folders"
+msgstr "Bestanden/mappen vergelijken"
+
+#: util/contextmenuitems.py:388
+msgid "Compare the differences between two items"
+msgstr "De verschillen tussen twee items vergelijken"
+
+#: util/contextmenuitems.py:393 ui/log.py:801
+msgid "Compare with previous revision"
+msgstr "Vergelijken met eerdere revisie"
+
+#: util/contextmenuitems.py:394
+msgid "Compare with previous revision using side-by-side comparison tool"
+msgstr ""
+"Vergelijken met eerdere revisie met behulp van naast-elkaar-"
+"vergelijkprogramma"
+
+#: util/contextmenuitems.py:399
+msgid "Show Changes..."
+msgstr "Wijzigingen weergeven…"
+
+#: util/contextmenuitems.py:400
+msgid "Show changes between paths and revisions"
+msgstr "Wijzigingen tussen paden en revisies tonen"
+
+#: util/contextmenuitems.py:405
+msgid "Show Log"
+msgstr "Logboek tonen"
+
+#: util/contextmenuitems.py:406
+msgid "Show a file's log information"
+msgstr "De logboekinformatie over een bestand tonen"
+
+#: util/contextmenuitems.py:411 ui/add.py:156 ui/tags.py:273
+#: ui/branches.py:274 ui/widget.py:1199 ui/glade/add.glade.h:1
+msgid "Add"
+msgstr "Toevoegen"
+
+#: util/contextmenuitems.py:412
+msgid "Schedule items to be added to the repository"
+msgstr "Items klaarzetten om toegevoegd te worden aan het repository"
+
+#: util/contextmenuitems.py:417
+msgid "Add to ignore list"
+msgstr "Voeg toe aan negeer lijst"
+
+#: util/contextmenuitems.py:422
+msgid "Update to revision..."
+msgstr "Updaten naar revisie…"
+
+#: util/contextmenuitems.py:423
+msgid "Update a file to a specific revision"
+msgstr "Updaten naar een specifieke revisie"
+
+#: util/contextmenuitems.py:428
+msgid "Rename..."
+msgstr "Hernoemen…"
+
+#: util/contextmenuitems.py:429
+msgid "Schedule an item to be renamed on the repository"
+msgstr "Een item klaarzetten om hernoemd te worden in het repository"
+
+#: util/contextmenuitems.py:434 ui/glade/properties.glade.h:3
+msgid "Delete"
+msgstr "Verwijderen"
+
+#: util/contextmenuitems.py:435
+msgid "Schedule an item to be deleted from the repository"
+msgstr "Een item klaarzetten om verwijderd te worden uit het repository"
+
+#: util/contextmenuitems.py:440 ui/revert.py:50 ui/revert.py:103
+#: ui/revert.py:115 ui/revert.py:168
+msgid "Revert"
+msgstr "Terugdraaien"
+
+#: util/contextmenuitems.py:441
+msgid "Revert an item to its unmodified state"
+msgstr "Een item terugzetten naar zijn ongemodificeerde staat"
+
+#: util/contextmenuitems.py:446 ui/resolve.py:48 ui/resolve.py:102
+msgid "Resolve"
+msgstr "Oplossen"
+
+#: util/contextmenuitems.py:447
+msgid "Mark a conflicted item as resolved"
+msgstr "Een item in conflict markeren als opgelost"
+
+#: util/contextmenuitems.py:452
+msgid "Restore"
+msgstr "Terugzetten"
+
+#: util/contextmenuitems.py:453
+msgid "Restore a missing item"
+msgstr "Een ontbrekend item herstellen"
+
+#: util/contextmenuitems.py:457
+msgid "Relocate..."
+msgstr "Verhuizen…"
+
+#: util/contextmenuitems.py:458
+msgid "Relocate your working copy"
+msgstr "Uw werkversie verhuizen"
+
+#: util/contextmenuitems.py:463
+msgid "Get Lock..."
+msgstr "Blokkering verkrijgen…"
+
+#: util/contextmenuitems.py:464
+msgid "Locally lock items"
+msgstr "Items lokaal blokkeren"
+
+#: util/contextmenuitems.py:469
+msgid "Release Lock..."
+msgstr "Blokkering vrijgeven…"
+
+#: util/contextmenuitems.py:470
+msgid "Release lock on an item"
+msgstr "Blokkering op een item vrijgeven"
+
+#: util/contextmenuitems.py:475 ui/cleanup.py:55
+msgid "Cleanup"
+msgstr "Opruimen"
+
+#: util/contextmenuitems.py:476
+msgid "Clean up working copy"
+msgstr "Werkversie opschonen"
+
+#: util/contextmenuitems.py:481
+msgid "Export..."
+msgstr "Exporteren…"
+
+#: util/contextmenuitems.py:482
+msgid "Export a working copy or repository with no versioning information"
+msgstr ""
+"Een werkversie of repository exporteren zonder versiebeheer-informatie"
+
+#: util/contextmenuitems.py:487
+msgid "Create Repository here"
+msgstr "Hier een repository aanmaken"
+
+#: util/contextmenuitems.py:488
+msgid "Create a repository in a folder"
+msgstr "Repository in een map aanmaken"
+
+#: util/contextmenuitems.py:493 ui/import.py:80 ui/glade/import.glade.h:3
+msgid "Import"
+msgstr "Importeren"
+
+#: util/contextmenuitems.py:494
+msgid "Import an item into a repository"
+msgstr "Item importeren in een repository"
+
+#: util/contextmenuitems.py:503
+msgid "Branch/tag..."
+msgstr "Branch/tag…"
+
+#: util/contextmenuitems.py:504
+msgid "Copy an item to another location in the repository"
+msgstr "Een item kopiëren naar een andere locatie in het repository"
+
+#: util/contextmenuitems.py:509
+msgid "Switch..."
+msgstr "Wisselen…"
+
+#: util/contextmenuitems.py:510
+msgid "Change the repository location of a working copy"
+msgstr "De repository-locatie van een werkversie wijzigen"
+
+#: util/contextmenuitems.py:515
+msgid "Merge..."
+msgstr "Samenvoegen…"
+
+#: util/contextmenuitems.py:516
+msgid "A wizard with steps for merging"
+msgstr "Een wizard met samenvoegstappen"
+
+#: util/contextmenuitems.py:521
+msgid "Annotate..."
+msgstr "Annoteren…"
+
+#: util/contextmenuitems.py:522
+msgid "Annotate a file"
+msgstr "Een bestand annoteren"
+
+#: util/contextmenuitems.py:527
+msgid "Create Patch..."
+msgstr "Patch aanmaken…"
+
+#: util/contextmenuitems.py:528
+msgid "Creates a unified diff file with all changes you made"
+msgstr ""
+"Maakt een geünificeerd diff-bestand met al de wijzigingen die u gemaakt heeft"
+
+#: util/contextmenuitems.py:533
+msgid "Apply Patch..."
+msgstr "Patch toepassen…"
+
+#: util/contextmenuitems.py:534
+msgid "Applies a unified diff file to the working copy"
+msgstr "Past een geünificeerd diff-bestand toe op de werkversie"
+
+#: util/contextmenuitems.py:539 ui/glade/properties.glade.h:7
+msgid "Properties"
+msgstr "Eigenschappen"
+
+#: util/contextmenuitems.py:540
+msgid "View the properties of an item"
+msgstr "De eigenschappen van een item bekijken"
+
+#: util/contextmenuitems.py:545
+msgid "Help"
+msgstr "Hulp"
+
+#: util/contextmenuitems.py:546
+msgid "View help"
+msgstr "Hulp weergeven"
+
+#: util/contextmenuitems.py:551 ui/glade/settings.glade.h:28
+msgid "Settings"
+msgstr "Instellingen"
+
+#: util/contextmenuitems.py:552
+msgid "View or change RabbitVCS settings"
+msgstr "RabbitVCS-instellingen bekijken of wijzigen"
+
+#: util/contextmenuitems.py:557 ui/glade/about.glade.h:4
+msgid "About"
+msgstr "Over"
+
+#: util/contextmenuitems.py:558
+msgid "About RabbitVCS"
+msgstr "Info over RabbitVCS"
+
+#: util/contextmenuitems.py:563
+msgid "Open"
+msgstr "Open"
+
+#: util/contextmenuitems.py:564
+msgid "Open a file"
+msgstr "Bestand openen"
+
+#: util/contextmenuitems.py:572
+msgid "Browse to"
+msgstr "Bladeren naar"
+
+#: util/contextmenuitems.py:573
+msgid "Browse to a file or folder"
+msgstr "Naar een bestand of map navigeren"
+
+#: util/contextmenuitems.py:578
+msgid "Revert property"
+msgstr "Eigenschap terugdraaien"
+
+#: util/contextmenuitems.py:580
+msgid "Revert this property to its original state"
+msgstr "Deze eigenschap terugdraaien naar haar oorspronkelijke staat"
+
+#: util/contextmenuitems.py:584
+msgid "Revert property (recursive)"
+msgstr "Eigenschap terugdraaien (recursief)"
+
+#: util/contextmenuitems.py:586
+msgid "Revert this property to its original state (recursive)"
+msgstr ""
+"Deze eigenschap terugdraaien naar haar oorspronkelijke staat (recursief)"
+
+#: util/contextmenuitems.py:591
+msgid "Delete property"
+msgstr "Eigenschap verwijderen"
+
+#: util/contextmenuitems.py:593
+msgid "Delete this property"
+msgstr "Deze eigenschap verwijderen"
+
+#: util/contextmenuitems.py:597
+msgid "Delete property (recursive)"
+msgstr "Eigenschap verwijderen (recursief)"
+
+#: util/contextmenuitems.py:599
+msgid "Delete this property (recursive)"
+msgstr "Deze eigenschap verwijderen (recursief)"
+
+#: util/contextmenuitems.py:604
+msgid "Edit details"
+msgstr "Details bewerken"
+
+#: util/contextmenuitems.py:606
+msgid "Show and edit property details"
+msgstr "Eigenschapdetails tonen en bewerken"
+
+#: util/contextmenuitems.py:610
+msgid "Initialize Repository"
+msgstr "Repository initialiseren"
+
+#: util/contextmenuitems.py:615 ui/clone.py:47 ui/clone.py:65
+msgid "Clone"
+msgstr "Klonen"
+
+#: util/contextmenuitems.py:620
+msgid "Fetch/Pull"
+msgstr "Fetch/Pull"
+
+#: util/contextmenuitems.py:625 ui/push.py:96
+msgid "Push"
+msgstr "Push"
+
+#: util/contextmenuitems.py:630
+msgid "Branches"
+msgstr "Branches"
+
+#: util/contextmenuitems.py:635
+msgid "Tags"
+msgstr "Tags"
+
+#: util/contextmenuitems.py:640
+msgid "Remotes"
+msgstr ""
+
+#: util/contextmenuitems.py:666
+msgid "Ignore item by filename"
+msgstr "Item negeren per bestandsnaam"
+
+#: util/contextmenuitems.py:685
+msgid "Ignore item by file extension"
+msgstr "Item negeren per extensie"
+
+#: ui/update.py:54 ui/update.py:98 ui/updateto.py:94
+msgid "Updating..."
+msgstr "Updaten..."
+
+#: ui/update.py:56 ui/update.py:103 ui/updateto.py:102
+msgid "Completed Update"
+msgstr "Update is voltooid"
+
+#: ui/updateto.py:82
+msgid "Rollback To Revision"
+msgstr "Terugdraaien naar revisie"
+
+#: ui/updateto.py:83
+msgid "Rolling Back..."
+msgstr "Terugdraaien…"
+
+#: ui/updateto.py:91
+msgid "Completed Rollback"
+msgstr "Terugdraaien voltooid"
+
+#: ui/updateto.py:93
+msgid "Update To Revision"
+msgstr "Updaten naar revisie"
+
+#: ui/updateto.py:138 ui/checkout.py:173
+msgid "Checkout"
+msgstr "Uitchecken"
+
+#: ui/updateto.py:139
+#, python-format
+msgid "Checking out %s..."
+msgstr "Uitchecken van %s…"
+
+#: ui/updateto.py:145 ui/checkout.py:184
+msgid "Completed Checkout"
+msgstr "Uitchecken voltooid"
+
+#: ui/add.py:72 ui/commit.py:205 ui/commit.py:313 ui/revert.py:62
+#: ui/revert.py:128 ui/checkmods.py:67 ui/resolve.py:61 ui/changes.py:279
+#: ui/changes.py:364 ui/log.py:337 ui/log.py:572 ui/lock.py:72
+#: ui/createpatch.py:119 ui/createpatch.py:215 ui/action.py:118
+#: ui/unlock.py:61 ui/browser.py:89
+msgid "Path"
+msgstr "Pad"
+
+#: ui/add.py:72 ui/commit.py:205 ui/commit.py:313 ui/revert.py:62
+#: ui/revert.py:128 ui/checkmods.py:67 ui/resolve.py:61 ui/lock.py:72
+#: ui/createpatch.py:119 ui/createpatch.py:215 ui/unlock.py:61
+msgid "Extension"
+msgstr "Extensie"
+
+#: ui/add.py:95 ui/commit.py:93 ui/lock.py:115 ui/unlock.py:85
+#: ui/glade/dialogs.glade.h:33
+msgid "Loading..."
+msgstr "Laden..."
+
+#: ui/add.py:98 ui/commit.py:100 ui/lock.py:118 ui/unlock.py:107
+#, python-format
+msgid "Found %d item(s)"
+msgstr "%d item(s) gevonden"
+
+#: ui/add.py:157
+msgid "Running Add Command..."
+msgstr "Wordt toegevoegd..."
+
+#: ui/add.py:159
+msgid "Completed Add"
+msgstr "Toevoegen klaar"
+
+#: ui/ignore.py:100
+msgid "Ignore file:"
+msgstr "Bestand negeren:"
+
+#: ui/tags.py:62
+msgid "Tag Manager"
+msgstr "Tagbeheer"
+
+#: ui/tags.py:63
+msgid "<b>Tags</b>"
+msgstr "<b>Tags</b>"
+
+#: ui/tags.py:74
+msgid "Tag"
+msgstr "Tag"
+
+#: ui/tags.py:99 ui/branches.py:100 ui/glade/dialogs.glade.h:38
+#: ui/glade/property_page.glade.h:2
+msgid "Name:"
+msgstr "Name:"
+
+#: ui/tags.py:109 ui/tags.py:176 ui/branches.py:155 ui/merge.py:438
+#: ui/merge.py:488 ui/glade/browser.glade.h:3
+msgid "Revision:"
+msgstr "Revisie:"
+
+#: ui/tags.py:128 ui/tags.py:188 ui/branches.py:167 ui/merge.py:450
+#: ui/merge.py:500
+msgid "Message:"
+msgstr "Message:"
+
+#: ui/tags.py:145 ui/tags.py:284 ui/branches.py:147 ui/branches.py:291
+msgid "Save"
+msgstr "Opslaan"
+
+#: ui/tags.py:153
+msgid "Tagger:"
+msgstr "Tagger:"
+
+#: ui/tags.py:165 ui/merge.py:427 ui/merge.py:477
+msgid "Date:"
+msgstr "Datum:"
+
+#: ui/tags.py:230 ui/branches.py:209 ui/remotes.py:128
+#, python-format
+msgid "Are you sure you want to delete %s?"
+msgstr "Wilt u %s echt verwijderen?"
+
+#: ui/tags.py:275
+msgid "<b>Add Tag</b>"
+msgstr "<b>Tag toevoegen</b>"
+
+#: ui/tags.py:293
+msgid "<b>Tag Detail</b>"
+msgstr "<b>Tagdetail</b>"
+
+#: ui/export.py:45 ui/export.py:114
+#, python-format
+msgid "Export - %s"
+msgstr "Exporteren — %s"
+
+#: ui/export.py:72 ui/export.py:131 ui/clone.py:57 ui/checkout.py:163
+msgid "The repository URL and destination path are both required fields."
+msgstr "De repository URL en doel pad velden zijn beide verplicht."
+
+#: ui/export.py:92 ui/export.py:151
+msgid "Export"
+msgstr "Exporteren"
+
+#: ui/export.py:93 ui/export.py:152
+msgid "Running Export Command..."
+msgstr "Wordt geëxporteerd..."
+
+#: ui/export.py:104 ui/export.py:160
+msgid "Completed Export"
+msgstr "Export is klaar"
+
+#: ui/applypatch.py:57 ui/applypatch.py:113 ui/applypatch.py:143
+msgid "Apply Patch"
+msgstr "Patch toepassen"
+
+#: ui/applypatch.py:74
+msgid "Apply Patch To Directory..."
+msgstr "Patch op map toepassen..."
+
+#: ui/applypatch.py:114 ui/applypatch.py:144
+msgid "Applying Patch File..."
+msgstr "Patchbestand toepassen..."
+
+#: ui/applypatch.py:116 ui/applypatch.py:146
+msgid "Patch File Applied"
+msgstr "Patchbestand toegepast"
+
+#: ui/branches.py:62
+msgid "Branch Manager"
+msgstr "Branchbeheer"
+
+#: ui/branches.py:63
+msgid "<b>Branches</b>"
+msgstr "<b>Branches</b>"
+
+#: ui/branches.py:73 ui/widget.py:855
+msgid "Branch"
+msgstr "Branch"
+
+#: ui/branches.py:110
+msgid "Start Point:"
+msgstr "Startpunt:"
+
+#: ui/branches.py:129
+msgid "Keep old branch's history"
+msgstr "Geschiedenis van oude branch behouden"
+
+#: ui/branches.py:138
+msgid "Set as active branch"
+msgstr "Als actieve branch instellen"
+
+#: ui/branches.py:280
+msgid "<b>Add Branch</b>"
+msgstr "<b>Branch toevoegen</b>"
+
+#: ui/branches.py:304
+msgid "<b>Branch Detail</b>"
+msgstr "<b>Branchdetail</b>"
+
+#: ui/push.py:76 ui/dialog.py:54 ui/annotate.py:128 ui/annotate.py:229
+#: ui/log.py:327 ui/log.py:557 ui/browser.py:89
+msgid "Date"
+msgstr "Datum"
+
+#: ui/push.py:76 ui/dialog.py:54 ui/log.py:327 ui/log.py:557
+#: ui/glade/dialogs.glade.h:36
+msgid "Message"
+msgstr "Boodschap"
+
+#: ui/push.py:97
+msgid "Running Push Command..."
+msgstr "Uitvoeren Push-opdracht…"
+
+#: ui/push.py:99
+msgid "Completed Push"
+msgstr "Push voltooid"
+
+#: ui/import.py:40
+#, python-format
+msgid "Import - %s"
+msgstr "Importeren — %s"
+
+#: ui/import.py:68
+msgid "The repository URL field is required."
+msgstr "Het repository URL veld is verplicht."
+
+#: ui/import.py:81
+msgid "Running Import Command..."
+msgstr "Wordt geïmporteerd..."
+
+#: ui/import.py:89
+msgid "Completed Import"
+msgstr "Importeren klaar"
+
+#: ui/rename.py:48
+msgid "The requested file or folder does not exist."
+msgstr "Het bestand of de map die werd gevraagd bestaat niet."
+
+#: ui/rename.py:52 ui/rename.py:84 ui/rename.py:113 ui/browser.py:470
+msgid "Rename"
+msgstr "Hernoemen"
+
+#: ui/rename.py:52 ui/browser.py:470 ui/glade/dialogs.glade.h:39
+msgid "New Name:"
+msgstr "Nieuwe naam:"
+
+#: ui/rename.py:60
+msgid "The new name field is required"
+msgstr "Het veld 'nieuwe naam' is verplicht."
+
+#: ui/rename.py:85 ui/rename.py:114
+msgid "Running Rename Command..."
+msgstr "Uitvoeren rename-opdracht…"
+
+#: ui/rename.py:91 ui/rename.py:120
+msgid "Completed Rename"
+msgstr "Hernoemen voltooid"
+
+#: ui/commit.py:206 ui/revert.py:63 ui/checkmods.py:68 ui/resolve.py:62
+#: ui/createpatch.py:120
+msgid "Text Status"
+msgstr "Tekst-status"
+
+#: ui/commit.py:206 ui/revert.py:63 ui/checkmods.py:68 ui/resolve.py:62
+#: ui/createpatch.py:120
+msgid "Property Status"
+msgstr "Eigenschapsstatus"
+
+#: ui/commit.py:289 ui/commit.py:385
+msgid "Running Commit Command..."
+msgstr "Commit-opdracht uitvoeren…"
+
+#: ui/commit.py:295 ui/commit.py:394
+msgid "Completed Commit"
+msgstr "Commit voltooid"
+
+#: ui/commit.py:314 ui/revert.py:129 ui/createpatch.py:216
+#: ui/property_editor.py:112
+msgid "Status"
+msgstr "Status"
+
+#: ui/diff.py:284
+msgid "View diff as side-by-side comparison"
+msgstr "Diff als naast-elkaar-vergelijking bekijken"
+
+#: ui/merge.py:87
+msgid "Running Merge Test"
+msgstr "Samenvoegtest draaien"
+
+#: ui/merge.py:88
+msgid "Completed Merge Test"
+msgstr "Samenvoegtest voltooid"
+
+#: ui/merge.py:90
+msgid "Running Merge Command"
+msgstr "Bezig met uitvoeren van merge-opdracht"
+
+#: ui/merge.py:91
+msgid "Completed Merge"
+msgstr "Samenvoegen voltooid"
+
+#: ui/merge.py:102
+msgid "Merge"
+msgstr "Samenvoegen"
+
+#: ui/merge.py:415 ui/merge.py:465
+msgid "Author:"
+msgstr "Auteur:"
+
+#: ui/dialog.py:38
+#, python-format
+msgid ""
+"An error has occurred in the RabbitVCS Nautilus extension. Please contact "
+"the <a href=\"%s\">RabbitVCS team</a> with the error details listed below:"
+msgstr ""
+"Er is een fout opgetreden in de RabbitVCS Nautilus-extensie. Neem contact op "
+"met het <a href=\"%s\">RabbitVCS-team</a> met de hieronder vermelde "
+"foutdetails:"
+
+#: ui/dialog.py:108
+msgid "Select a Folder"
+msgstr "Selecteer een map"
+
+#: ui/dialog.py:138 ui/glade/log.glade.h:11
+msgid "to"
+msgstr "naar"
+
+#: ui/dialog.py:261
+msgid "Select a File"
+msgstr "Selecteer een bestand"
+
+#: ui/dialog.py:280
+msgid "Save As..."
+msgstr "Opslaan als…"
+
+#: ui/dialog.py:299 ui/glade/dialogs.glade.h:19
+msgid "Are you sure you want to continue?"
+msgstr "Weet je zeker dat je wil verdergaan?"
+
+#: ui/dialog.py:327
+msgid "the selected item(s)"
+msgstr "de geselecteerde item(s)"
+
+#: ui/dialog.py:398
+msgid "Added a folder to the repository"
+msgstr "Map toegevoegd aan het repository"
+
+#: ui/revert.py:104 ui/revert.py:169
+msgid "Running Revert Command..."
+msgstr "Bezig met uitvoeren revert-opdracht…"
+
+#: ui/revert.py:106 ui/revert.py:171
+msgid "Completed Revert"
+msgstr "Terugdraaien voltooid"
+
+#: ui/clone.py:66
+msgid "Running Clone Command..."
+msgstr "Uitvoeren van kloon-opdracht…"
+
+#: ui/clone.py:73
+msgid "Completed Clone"
+msgstr "Klonen voltooid"
+
+#: ui/relocate.py:77
+msgid "The from and to url fields are both required."
+msgstr "De 'vanaf' en 'tot' url velden zijn beide verplicht."
+
+#: ui/relocate.py:87 ui/glade/relocate.glade.h:3
+msgid "Relocate"
+msgstr "Verhuizen"
+
+#: ui/relocate.py:88
+msgid "Running Relocate Command..."
+msgstr "Uitvoeren relocate-opdracht…"
+
+#: ui/relocate.py:95
+msgid "Completed Relocate"
+msgstr "Verhuizen voltooid"
+
+#: ui/checkmods.py:69 ui/annotate.py:127 ui/annotate.py:228 ui/log.py:48
+#: ui/log.py:326 ui/log.py:556 ui/widget.py:854 ui/browser.py:89
+#: ui/glade/merge.glade.h:17
+msgid "Revision"
+msgstr "Revisie"
+
+#: ui/checkmods.py:69 ui/annotate.py:127 ui/annotate.py:228 ui/log.py:326
+#: ui/log.py:556 ui/browser.py:89
+msgid "Author"
+msgstr "Auteur"
+
+#: ui/checkmods.py:160 ui/changes.py:50 ui/changes.py:420
+msgid "View unified diff"
+msgstr "Geünificeerde diff bekijken"
+
+#: ui/checkmods.py:165 ui/changes.py:425
+msgid "Compare side by side"
+msgstr "Naast elkaar vergelijken"
+
+#: ui/resolve.py:103
+msgid "Running Resolve Command..."
+msgstr "Bezig met uitvoeren resolve-opdracht…"
+
+#: ui/resolve.py:106
+msgid "Completed Resolve"
+msgstr "Oplossen voltooid"
+
+#: ui/changes.py:49
+msgid "More Actions..."
+msgstr "Meer acties..."
+
+#: ui/changes.py:279 ui/changes.py:364
+msgid "Change"
+msgstr "Verandering"
+
+#: ui/changes.py:279
+msgid "Property Change"
+msgstr "Eigenschap-wijziging"
+
+#: ui/changes.py:321 ui/lock.py:126
+msgid "Yes"
+msgstr "Ja"
+
+#: ui/changes.py:321
+msgid "No"
+msgstr "Nee"
+
+#: ui/changes.py:410
+msgid "Open from first revision"
+msgstr "Openen vanaf eerste revisie"
+
+#: ui/changes.py:415
+msgid "Open from second revision"
+msgstr "Openen vanaf tweede revisie"
+
+#: ui/annotate.py:57
+msgid "Cannot annotate a directory"
+msgstr "Kan een map niet annoteren"
+
+#: ui/annotate.py:63
+#, python-format
+msgid "Annotate - %s"
+msgstr "Annoteren — %s"
+
+#: ui/annotate.py:127 ui/annotate.py:228
+msgid "Line"
+msgstr "Regel"
+
+#: ui/annotate.py:128 ui/annotate.py:229
+msgid "Text"
+msgstr "Tekst"
+
+#: ui/annotate.py:143
+msgid "The from revision field must be an integer"
+msgstr "De 'vanaf' revisie moet een integer zijn."
+
+#: ui/log.py:120
+#, python-format
+msgid "Log - %s"
+msgstr "Logboek — %s"
+
+#: ui/log.py:270 ui/log.py:271 ui/glade/log.glade.h:7
+msgid "N/A"
+msgstr "N.v.t."
+
+#: ui/log.py:337 ui/log.py:572 ui/action.py:118
+msgid "Action"
+msgstr "Actie"
+
+#: ui/log.py:338
+msgid "Copy From Path"
+msgstr "Kopiëren van pad"
+
+#: ui/log.py:338
+msgid "Copy From Revision"
+msgstr "Kopiëren van revisie"
+
+#: ui/log.py:556
+msgid "Graph"
+msgstr "Grafiek"
+
+#: ui/log.py:781
+msgid "View diff against working copy"
+msgstr "Diff ten opzichte van werkversie bekijken"
+
+#: ui/log.py:791
+msgid "View diff between revisions"
+msgstr "Diff tussen revisies tonen"
+
+#: ui/log.py:796
+msgid "Compare with working copy"
+msgstr "Vergelijken met werkversie"
+
+#: ui/log.py:806
+msgid "Compare revisions"
+msgstr "Revisies vergelijken"
+
+#: ui/log.py:812
+msgid "Show changes against previous revision"
+msgstr "Wijzigingen tonen ten opzichte van vorige revisie"
+
+#: ui/log.py:818
+msgid "Show changes between revisions"
+msgstr "Wijzigingen tussen revisies tonen"
+
+#: ui/log.py:823
+msgid "Update to this revision"
+msgstr "Updaten naar deze revisie"
+
+#: ui/log.py:824
+msgid "Update the selected path to this revision"
+msgstr "Het geselecteerde pad updaten naar deze revisie"
+
+#: ui/log.py:829 ui/log.py:833
+msgid "Edit author..."
+msgstr "Auteur bewerken…"
+
+#: ui/log.py:837
+msgid "Edit log message..."
+msgstr "Logboekmelding bewerken…"
+
+#: ui/log.py:841
+msgid "Edit revision properties..."
+msgstr "Revisie-eigenschappen bewerken…"
+
+#: ui/log.py:1047
+msgid "Edit author"
+msgstr "Auteur bewerken"
+
+#: ui/log.py:1059
+msgid "Edit log message"
+msgstr "Logboekmelding bewerken"
+
+#: ui/settings.py:43 ui/glade/settings.glade.h:35
+msgid "Unknown"
+msgstr "Onbekend"
+
+#: ui/settings.py:45
+msgid "There was an error communicating with the status checker service."
+msgstr ""
+"Er is een fout opgetreden bij het communiceren met de statuscontroledienst."
+
+#: ui/settings.py:59
+msgid "English"
+msgstr "Engels"
+
+#: ui/settings.py:119
+msgid "Config file:"
+msgstr "Configuratiebestand:"
+
+#: ui/settings.py:294
+msgid "Select a program"
+msgstr "Selecteer een programma"
+
+#: ui/settings.py:303
+msgid "Are you sure you want to clear your repository paths?"
+msgstr "Weet u zeker dat u uw repositorypaden wilt wissen?"
+
+#: ui/settings.py:310
+msgid "Repository paths cleared"
+msgstr "Repository paden gewist"
+
+#: ui/settings.py:314
+msgid "Are you sure you want to clear your previous messages?"
+msgstr "Weet u zeker dat u uw vorige berichten wilt wissen?"
+
+#: ui/settings.py:321
+msgid "Previous messages cleared"
+msgstr "Vorige berichten gewist"
+
+#: ui/settings.py:325
+msgid "Are you sure you want to clear your authentication information?"
+msgstr "Weet u zeker dat u uw authenticatie-informatie wilt wissen?"
+
+#: ui/settings.py:342
+msgid "Authentication information cleared"
+msgstr "Authenticatie-informatie gewist"
+
+#: ui/revprops.py:65 ui/properties.py:158 ui/property_editor.py:155
+msgid "Unable to retrieve properties list"
+msgstr "Niet in staat eigenschappenlijst op te halen"
+
+#: ui/branch.py:99
+msgid "You must supply a destination path."
+msgstr "Een doel pad is verplicht."
+
+#: ui/branch.py:115
+msgid "Branch/tag"
+msgstr "Branch/tag"
+
+#: ui/branch.py:116
+msgid "Running Branch/tag Command..."
+msgstr "Branch/tag wordt uitgevoerd..."
+
+#: ui/branch.py:118
+msgid "Completed Branch/tag"
+msgstr "Branch/tag is klaar"
+
+#: ui/lock.py:73
+msgid "Locked"
+msgstr "Vergrendeld"
+
+#: ui/lock.py:167
+msgid "Get Lock"
+msgstr "Vergrendelen"
+
+#: ui/lock.py:168
+msgid "Running Lock Command..."
+msgstr "Wordt vergrendeld..."
+
+#: ui/lock.py:177
+msgid "Completed Lock"
+msgstr "Vergrendelen is klaar"
+
+#: ui/switch.py:70
+msgid "The repository location is a required field."
+msgstr "De repository-locatie is een vereist veld."
+
+#: ui/switch.py:80
+msgid "Switch"
+msgstr "Wisselen"
+
+#: ui/switch.py:81
+msgid "Running Switch Command..."
+msgstr "Bezig met uitvoeren switch-opdracht…"
+
+#: ui/switch.py:89
+msgid "Completed Switch"
+msgstr "Wisselen voltooid"
+
+#: ui/widget.py:853 ui/widget.py:859 ui/glade/merge.glade.h:10
+msgid "HEAD"
+msgstr "HEAD"
+
+#: ui/widget.py:860
+msgid "Number"
+msgstr "Nummer"
+
+#: ui/widget.py:861
+msgid "Working Copy"
+msgstr "Werkversie"
+
+#: ui/widget.py:1056
+msgid "Repository:"
+msgstr "Repository:"
+
+#: ui/widget.py:1075
+msgid "Branch:"
+msgstr "Branch:"
+
+#: ui/widget.py:1093 ui/glade/dialogs.glade.h:30
+msgid "Host:"
+msgstr "Hostcomputer:"
+
+#: ui/widget.py:1194
+msgid "Add line:"
+msgstr "Regel toevoegen:"
+
+#: ui/checkout.py:139 ui/checkout.py:213
+#, python-format
+msgid "Checkout - %s"
+msgstr "Uitchecken — %s"
+
+#: ui/checkout.py:174
+msgid "Running Checkout Command..."
+msgstr "Uitvoeren checkout-opdracht…"
+
+#: ui/remotes.py:59
+msgid "Remote Repository Manager"
+msgstr "Afstandrepository-beheer"
+
+#: ui/remotes.py:60
+msgid "<b>Remote Repositories</b>"
+msgstr "<b>Repository's op afstand</b>"
+
+#: ui/remotes.py:66 ui/properties.py:63 ui/property_editor.py:112
+msgid "Name"
+msgstr "Naam"
+
+#: ui/remotes.py:66
+msgid "Host"
+msgstr "Host"
+
+#: ui/property_page.py:126
+msgid "Repository URL"
+msgstr "Repository-URL"
+
+#: ui/createpatch.py:68 ui/createpatch.py:86 ui/createpatch.py:162
+#: ui/createpatch.py:262
+msgid "Create Patch"
+msgstr "Patch aanmaken"
+
+#: ui/createpatch.py:112 ui/createpatch.py:208
+msgid "The given path is not a working copy"
+msgstr "Het gegeven pad is geen werk kopie"
+
+#: ui/createpatch.py:163 ui/createpatch.py:263
+msgid "Creating Patch File..."
+msgstr "Bezig met maken van patch-bestand…"
+
+#: ui/createpatch.py:193 ui/createpatch.py:292
+msgid "Patch File Created"
+msgstr "Patch-bestand aangemaakt"
+
+#: ui/properties.py:55
+#, python-format
+msgid "Properties - %s"
+msgstr "Eigenschappen — %s"
+
+#: ui/properties.py:63 ui/property_editor.py:112
+msgid "Value"
+msgstr "Waarde"
+
+#: ui/properties.py:179
+msgid "There was a problem saving your properties."
+msgstr "Er trad een probleem op bij het opslaan van uw eigenschappen."
+
+#: ui/property_editor.py:56
+msgid ""
+"<b>Note:</b> changes to properties are applied instantly. You may review and "
+"undo changes using the context menu for each item.\n"
+msgstr ""
+"<b>Merk op:</b> veranderingen aan eigenschappen worden direct doorgevoerd. U "
+"kunt veranderingen herzien en ongedaan maken met behulp van het contextmenu "
+"voor elk item.\n"
+
+#: ui/property_editor.py:61
+msgid ""
+"Do you want to delete the selected properties from all files and "
+"subdirectories\n"
+"beneath this directory?"
+msgstr ""
+"Wilt u de geselecteerde eigenschappen van alle bestanden en submappen\n"
+"onder deze map verwijderen?"
+
+#: ui/property_editor.py:102
+msgid "File is not under version control."
+msgstr "Bestand is niet onder versiebeheer"
+
+#: ui/property_editor.py:112
+msgid "Reserved"
+msgstr "Gereserveerd"
+
+#: ui/property_editor.py:189
+msgid "Unable to set new value for property."
+msgstr "Niet in staat nieuwe waarde voor eigenschap in te stellen."
+
+#: ui/__init__.py:50
+msgid ""
+"You must specify a version control system using the --vcs [svn|git] option"
+msgstr ""
+"U dient een versiecontrolesysteem op te geven met de optie --vcs [svn|git]"
+
+#: ui/action.py:118
+msgid "Mime Type"
+msgstr "Mime type"
+
+#: ui/action.py:338
+msgid "Finished"
+msgstr "Klaar"
+
+#: ui/action.py:342
+#, python-format
+msgid "%s - Finished"
+msgstr "%s - klaar"
+
+#: ui/action.py:365
+msgid "Log Message"
+msgstr "Logboekmelding"
+
+#: ui/unlock.py:48 ui/unlock.py:125
+msgid "Unlock"
+msgstr "Ontgrendelen"
+
+#: ui/unlock.py:126
+msgid "Running Unlock Command..."
+msgstr "Bezig met uitvoeren unlock-opdracht…"
+
+#: ui/unlock.py:129
+msgid "Completed Unlock"
+msgstr "Unlock voltooid"
+
+#: ui/browser.py:89
+msgid "Size"
+msgstr "Grootte"
+
+#: ui/browser.py:326
+msgid "Select"
+msgstr "Selecteren"
+
+#: ui/browser.py:348
+msgid "Create folder..."
+msgstr "Map maken..."
+
+#: ui/browser.py:353
+msgid "Copy to..."
+msgstr "Kopiëren naar..."
+
+#: ui/browser.py:358
+msgid "Copy URL to clipboard"
+msgstr "Locatie naar het klembord kopiëren"
+
+#: ui/browser.py:363
+msgid "Move to..."
+msgstr "Verplaatsen naar..."
+
+#: ui/browser.py:531
+msgid "Where do you want to copy the selection?"
+msgstr "Waarheen wilt u de selectie kopiëren?"
+
+#: ui/browser.py:532 ui/browser.py:561
+msgid "New Location:"
+msgstr "Nieuwe locatie:"
+
+#: ui/browser.py:560
+msgid "Where do you want to move the selection?"
+msgstr "Waarheen wilt u de selectie verplaatsen?"
+
+#: ui/cleanup.py:56 ui/glade/cleanup.glade.h:1
+msgid "Cleaning Up..."
+msgstr "Wordt opgeruimd..."
+
+#: ui/cleanup.py:58
+msgid "Completed Cleanup"
+msgstr "Opruimen voltooid"
+
+#: ui/create.py:46
+msgid "Repository successfully created"
+msgstr "Repository succesvol aangemaakt"
+
+#: ui/create.py:48
+msgid ""
+"There was an error creating the repository.  Make sure the given folder is "
+"empty."
+msgstr ""
+"Er is een fout opgetreden bij het aanmaken van het repository. Zorg ervoor "
+"dat de opgegeven map leeg is."
+
+#: ui/glade/properties.glade.h:1
+msgid "<b>Properties for:</b>"
+msgstr "<b>Eigenschappen voor:</b>"
+
+#: ui/glade/properties.glade.h:2
+msgid "<i>Selected properties will be applied recursively.</i>"
+msgstr "<i>Geselecteerde eigenschappen worden recursief toegepast.</i>"
+
+#: ui/glade/properties.glade.h:4
+msgid "Delete properties recursively"
+msgstr "Eigenschappen recursief verwijderen"
+
+#: ui/glade/properties.glade.h:5
+msgid "Edit..."
+msgstr "Bewerken..."
+
+#: ui/glade/properties.glade.h:6
+msgid "New..."
+msgstr "Nieuw…"
+
+#: ui/glade/properties.glade.h:8
+msgid "URL/Path:"
+msgstr "URL/Pad:"
+
+#: ui/glade/browser.glade.h:1
+msgid "Load/Refresh"
+msgstr "Laden/verversen"
+
+#: ui/glade/browser.glade.h:4
+msgid "URL:"
+msgstr "URL:"
+
+#: ui/glade/dialogs.glade.h:1
+msgid "<b>A conflict was found in the following file:</b>"
+msgstr "<b>Er is een conflict gevonden in het volgende bestand:</b>"
+
+#: ui/glade/dialogs.glade.h:2 ui/glade/commit.glade.h:1
+msgid "<b>Add Message</b>"
+msgstr "<b>Boodschap Toevoegen</b>"
+
+#: ui/glade/dialogs.glade.h:3
+msgid "<b>Certificate Details</b>"
+msgstr "<b>Certificaatdetails</b>"
+
+#: ui/glade/dialogs.glade.h:4
+msgid "<b>Edit Property Details</b>"
+msgstr "<b>Eigenschapdetails bewerken</b>"
+
+#: ui/glade/dialogs.glade.h:5
+msgid "<b>Enter Name and Email Details</b>"
+msgstr "<b>Voer naam- en e-maildetails in</b>"
+
+#: ui/glade/dialogs.glade.h:6
+msgid "<b>Folder Name</b>"
+msgstr "<b>Mapnaam</b>"
+
+#: ui/glade/dialogs.glade.h:7 ui/glade/log.glade.h:3
+msgid "<b>Message</b>"
+msgstr "<b>Bericht</b>"
+
+#: ui/glade/dialogs.glade.h:8
+msgid "<b>Please add your authentication details</b>"
+msgstr "<b>Gelieve uw authenticatiedetails toe te voegen</b>"
+
+#: ui/glade/dialogs.glade.h:9
+msgid "<b>Please provide your ssl certification file</b>"
+msgstr "<b>Geef alstublieft uw ssl certification-bestand</b>"
+
+#: ui/glade/dialogs.glade.h:10
+msgid "<b>Previous Messages</b>"
+msgstr "<b>Eerdere berichten</b>"
+
+#: ui/glade/dialogs.glade.h:12
+msgid ""
+"<span size=\"large\"><b>Are you sure you want to delete %item%?</b></span>"
+msgstr ""
+"<span size=\"large\"><b>Weet u zeker dat u %item% wilt "
+"verwijderen?</b></span>"
+
+#: ui/glade/dialogs.glade.h:13
+msgid "<span weight=\"bold\" size=\"xx-large\">RabbitVCS Error</span>"
+msgstr "<span weight=\"bold\" size=\"xx-large\">RabbitVCS-fout</span>"
+
+#: ui/glade/dialogs.glade.h:14
+msgid "Accept Forever"
+msgstr "Voor altijd accepteren"
+
+#: ui/glade/dialogs.glade.h:15
+msgid "Accept Mine"
+msgstr "Van mij accepteren"
+
+#: ui/glade/dialogs.glade.h:16
+msgid "Accept Once"
+msgstr "Eenmalig accpeteren"
+
+#: ui/glade/dialogs.glade.h:17
+msgid "Accept Theirs"
+msgstr "Van hen accepteren"
+
+#: ui/glade/dialogs.glade.h:18
+msgid "Apply property recursively"
+msgstr "Eigenschap recursief toepassen"
+
+#: ui/glade/dialogs.glade.h:20
+msgid "Authentication"
+msgstr "Authenticatie"
+
+#: ui/glade/dialogs.glade.h:21
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: ui/glade/dialogs.glade.h:22
+msgid "Check Certificate"
+msgstr "Certificaat controleren"
+
+#: ui/glade/dialogs.glade.h:23
+msgid "Confirmation"
+msgstr "Bevestiging"
+
+#: ui/glade/dialogs.glade.h:24
+msgid "Conflict Resolution Decision"
+msgstr "Beslissing op conflictoplossing"
+
+#: ui/glade/dialogs.glade.h:25
+msgid "Create Folder..."
+msgstr "Map aanmaken…"
+
+#: ui/glade/dialogs.glade.h:26
+msgid "Delete Confirmation"
+msgstr "Verwijderen bevestigen"
+
+#: ui/glade/dialogs.glade.h:27
+msgid "Deny"
+msgstr "Weigeren"
+
+#: ui/glade/dialogs.glade.h:28
+msgid "Email:"
+msgstr "E-mail:"
+
+#: ui/glade/dialogs.glade.h:29
+msgid "Fingerprint:"
+msgstr "Vingerafdruk:"
+
+#: ui/glade/dialogs.glade.h:31
+msgid "How do you want to handle this?"
+msgstr "Hoe wilt u dit afhandelen?"
+
+#: ui/glade/dialogs.glade.h:32
+msgid "Issuer:"
+msgstr "Uitgever:"
+
+#: ui/glade/dialogs.glade.h:34
+msgid "Login:"
+msgstr "Aanmeldnaam:"
+
+#: ui/glade/dialogs.glade.h:35
+msgid "Merge Manually"
+msgstr "Handmatig samenvoegen"
+
+#: ui/glade/dialogs.glade.h:37
+msgid "Name and Email"
+msgstr "Naam en e-mail"
+
+#: ui/glade/dialogs.glade.h:40
+msgid "Password:"
+msgstr "Wachtwoord:"
+
+#: ui/glade/dialogs.glade.h:41
+msgid "Path:"
+msgstr "Pad:"
+
+#: ui/glade/dialogs.glade.h:42 ui/glade/lock.glade.h:4
+#: ui/glade/commit.glade.h:5 ui/glade/import.glade.h:5
+msgid "Previous Messages"
+msgstr "Vorige boodschappen"
+
+#: ui/glade/dialogs.glade.h:43
+msgid "Property"
+msgstr "Eigenschap"
+
+#: ui/glade/dialogs.glade.h:44
+msgid "Property:"
+msgstr "Eigenschap:"
+
+#: ui/glade/dialogs.glade.h:45
+msgid "RabbitVCS Error"
+msgstr "RabbitVCS-fout"
+
+#: ui/glade/dialogs.glade.h:46
+msgid "Realm:"
+msgstr "Omgeving:"
+
+#: ui/glade/dialogs.glade.h:47
+msgid "SSL Client Certification"
+msgstr "SSL-gebruikerscertificaat"
+
+#: ui/glade/dialogs.glade.h:48
+msgid "Save Authentication"
+msgstr "Authenticatie opslaan"
+
+#: ui/glade/dialogs.glade.h:49
+msgid "Text Change"
+msgstr "Tekstwijziging"
+
+#: ui/glade/dialogs.glade.h:50
+msgid "The item(s) will be sent to the trash can."
+msgstr "De item(s) worden in de prullenbak gegooid."
+
+#: ui/glade/dialogs.glade.h:51
+msgid "Valid:"
+msgstr "Geldig:"
+
+#: ui/glade/dialogs.glade.h:52
+msgid "Value:"
+msgstr "Waarde:"
+
+#: ui/glade/pull.glade.h:1
+msgid "<b>Pull Information</b>"
+msgstr "<b>Informatie over pull</b>"
+
+#: ui/glade/pull.glade.h:2 ui/glade/git-update.glade.h:2
+msgid "Merge changes into local branch"
+msgstr "Wijzigingen samenvoegen in lokale branch"
+
+#: ui/glade/pull.glade.h:3
+msgid "Pull"
+msgstr "Pull"
+
+#: ui/glade/manager.glade.h:1
+msgid "label"
+msgstr "label"
+
+#: ui/glade/about.glade.h:1
+msgid "<b>Links</b>"
+msgstr "<b>Koppelingen</b>"
+
+#: ui/glade/about.glade.h:2
+msgid "<b>Version Information</b>"
+msgstr "<b>Versie Informatie</b>"
+
+#: ui/glade/about.glade.h:3
+msgid "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
+msgstr "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
+
+#: ui/glade/about.glade.h:5
+msgid "Authors:"
+msgstr "Auteurs:"
+
+#: ui/glade/about.glade.h:6
+msgid "Thanks:"
+msgstr "Met dank aan:"
+
+#: ui/glade/property_page.glade.h:1
+msgid "Content status:"
+msgstr "Inhoudstatus:"
+
+#: ui/glade/property_page.glade.h:3
+msgid "Property status:"
+msgstr "Eigenschapsstatus:"
+
+#: ui/glade/property_page.glade.h:5
+msgid "VCS:"
+msgstr "VCS:"
+
+#: ui/glade/log.glade.h:1
+msgid "100"
+msgstr "100"
+
+#: ui/glade/log.glade.h:2
+msgid "<b>Affected File(s)</b> (double-click to compare with base)"
+msgstr ""
+"<b>Betrokken bestand(en)</b> (dubbelklik om te vergelijken met basis)"
+
+#: ui/glade/log.glade.h:4
+msgid "<b>Revisions Table</b>"
+msgstr "<b>Revisietabel</b>"
+
+#: ui/glade/log.glade.h:5
+msgid "Limit:"
+msgstr "Limiet:"
+
+#: ui/glade/log.glade.h:6
+msgid "Log"
+msgstr "Logboek"
+
+#: ui/glade/log.glade.h:8
+msgid "Refresh"
+msgstr "Verversen"
+
+#: ui/glade/log.glade.h:9
+msgid "Showing Revisions:"
+msgstr "Getoonde revisies:"
+
+#: ui/glade/log.glade.h:10
+msgid "Stop on copy"
+msgstr "Op kopie stoppen"
+
+#: ui/glade/cleanup.glade.h:2
+msgid ""
+"Cleanup Requested....\n"
+"\n"
+"Begin working copy cleanup?"
+msgstr ""
+"Opschonen aangevraagd…\n"
+"\n"
+"Beginnen met opschonen van werkversie?"
+
+#: ui/glade/settings.glade.h:1
+msgid "<b>Authentication</b>"
+msgstr "<b>Authenticatie</b>"
+
+#: ui/glade/settings.glade.h:2
+msgid "<b>Checker type:</b>"
+msgstr "<b>Checkertype:</b>"
+
+#: ui/glade/settings.glade.h:3
+msgid "<b>Configuration Editor</b>"
+msgstr "<b>Configuratie-editor</b>"
+
+#: ui/glade/settings.glade.h:4
+msgid "<b>Log Messages</b>"
+msgstr "<b>Logboekberichten</b>"
+
+#: ui/glade/settings.glade.h:5
+msgid "<b>Logging Options</b>"
+msgstr "<b>Logboek-opties</b>"
+
+#: ui/glade/settings.glade.h:6
+msgid "<b>Memory usage:</b> "
+msgstr "<b>Geheugengebruik:</b> "
+
+#: ui/glade/settings.glade.h:7
+msgid "<b>Other Information</b>"
+msgstr "<b>Andere informatie</b>"
+
+#: ui/glade/settings.glade.h:8
+msgid "<b>Process ID:</b>"
+msgstr "<b>Proces-ID:</b>"
+
+#: ui/glade/settings.glade.h:9
+msgid "<b>Program used to compare files</b>"
+msgstr "<b>Programma voor bestandsvergelijking</b>"
+
+#: ui/glade/settings.glade.h:10
+msgid "<b>RabbitVCS</b>"
+msgstr "<b>RabbitVCS</b>"
+
+#: ui/glade/settings.glade.h:11
+msgid "<b>URL History</b>"
+msgstr "<b>URL-geschiedenis</b>"
+
+#: ui/glade/settings.glade.h:12
+msgid "Browse..."
+msgstr "Bladeren…"
+
+#: ui/glade/settings.glade.h:13
+msgid "Clear your authentication information"
+msgstr "Uw authenticatie-informatie wissen"
+
+#: ui/glade/settings.glade.h:14
+msgid "Enable emblems"
+msgstr "Emblemen inschakelen…"
+
+#: ui/glade/settings.glade.h:15
+msgid "Enable file attributes"
+msgstr "Bestandskenmerken inschakelen"
+
+#: ui/glade/settings.glade.h:16
+msgid "Enable recursive status checks"
+msgstr "Recursieve statuscontroles inschakelen"
+
+#: ui/glade/settings.glade.h:17
+msgid "External Programs"
+msgstr "Externe programma's"
+
+#: ui/glade/settings.glade.h:18
+msgid "General"
+msgstr "Algemeen"
+
+#: ui/glade/settings.glade.h:19
+msgid "Git"
+msgstr "Git"
+
+#: ui/glade/settings.glade.h:20
+msgid "Language:"
+msgstr "Taal:"
+
+#: ui/glade/settings.glade.h:21
+msgid "Logging"
+msgstr "Logboek"
+
+#: ui/glade/settings.glade.h:22
+msgid "Minimum level to log"
+msgstr "Minimumniveau voor loggen"
+
+#: ui/glade/settings.glade.h:23
+msgid "Number of URLs to remember"
+msgstr "Het aantal te onthouden URLs"
+
+#: ui/glade/settings.glade.h:24
+msgid "Number of messages to remember"
+msgstr "Het aantal te onthouden berichten"
+
+#: ui/glade/settings.glade.h:25
+msgid "Refresh Information"
+msgstr "Informatie verversen"
+
+#: ui/glade/settings.glade.h:26
+msgid "Restart Checker"
+msgstr "Checker herstarten"
+
+#: ui/glade/settings.glade.h:27
+msgid "Saved Data"
+msgstr "Opgeslagen data"
+
+#: ui/glade/settings.glade.h:29
+msgid "Show RabbitVCS debugging tools"
+msgstr "RabbitVCS-debughulpprogramma's tonen"
+
+#: ui/glade/settings.glade.h:30
+msgid "Show new version on the left side"
+msgstr "Nieuwe versie tonen aan de linkerkant"
+
+#: ui/glade/settings.glade.h:31
+msgid "Status Checker"
+msgstr "Statuschecker"
+
+#: ui/glade/settings.glade.h:32
+msgid "Stop Checker"
+msgstr "Stopchecker"
+
+#: ui/glade/settings.glade.h:33
+msgid "The debug menu is used to diagnose problems with RabbitVCS itself"
+msgstr ""
+"Het debugmenu is bedoeld om problemen met RabbitVCS zelf te diagnosticeren"
+
+#: ui/glade/settings.glade.h:34
+msgid "Type:"
+msgstr "Type:"
+
+#: ui/glade/lock.glade.h:1
+msgid "<b>Files to lock</b>"
+msgstr "<b>Te vergrendelen bestanden</b>"
+
+#: ui/glade/lock.glade.h:2
+msgid "<b>Please describe why you are locking these files</b>"
+msgstr "<b>Beschrijf waarom u deze bestanden vergrendelt</b>"
+
+#: ui/glade/lock.glade.h:3
+msgid "Lock Files"
+msgstr "Bestanden vergrendelen"
+
+#: ui/glade/lock.glade.h:5 ui/glade/add.glade.h:2 ui/glade/commit.glade.h:6
+msgid "Select / Deselect all"
+msgstr "Alles (de)selecteren"
+
+#: ui/glade/lock.glade.h:6
+msgid "Steal the locks"
+msgstr "De blokkeringen stelen"
+
+#: ui/glade/annotate.glade.h:1
+msgid "<b>From Revision</b>"
+msgstr "<b>Van Revisie</b>"
+
+#: ui/glade/annotate.glade.h:2
+msgid "<b>To Revision</b>"
+msgstr "<b>Naar Revisie</b>"
+
+#: ui/glade/annotate.glade.h:3
+msgid "Annotate"
+msgstr "Annoteren"
+
+#: ui/glade/ignore.glade.h:1
+msgid "<b>Ignore and exclude files from being tracked</b>"
+msgstr "<b>Bestanden negeren en uitsluiten van gevolgd worden</b>"
+
+#: ui/glade/ignore.glade.h:2
+msgid "Ignore"
+msgstr "Negeren"
+
+#: ui/glade/commit.glade.h:2
+msgid "<b>Changed Files</b> (double-click to compare with base)"
+msgstr "<b>Gewijzigde bestanden</b> (dubbelklik om met basis te vergelijken)"
+
+#: ui/glade/commit.glade.h:3
+msgid "<b>Commit to:</b>"
+msgstr "<b>Committen naar:</b>"
+
+#: ui/glade/commit.glade.h:7
+msgid "Show unversioned files"
+msgstr "Bestanden buiten versiebeheer tonen"
+
+#: ui/glade/notification.glade.h:1
+msgid "Notification Messages"
+msgstr "Meldingen"
+
+#: ui/glade/property_editor.glade.h:1
+msgid "<b>Remote URI:</b>"
+msgstr "<b>URI op afstand:</b>"
+
+#: ui/glade/property_editor.glade.h:2
+msgid "<b>Working Copy:</b>"
+msgstr "<b>Werkversie:</b>"
+
+#: ui/glade/property_editor.glade.h:3
+msgid "Add a new property."
+msgstr "Nieuwe eigenschap toevoegen."
+
+#: ui/glade/property_editor.glade.h:4
+msgid "Close this dialog."
+msgstr "Dit dialoogvenster sluiten."
+
+#: ui/glade/property_editor.glade.h:5
+msgid "Property Editor"
+msgstr "Eigenschappen-editor"
+
+#: ui/glade/property_editor.glade.h:6
+msgid "Refresh the list of properties."
+msgstr "De eigenschappenlijst verversen"
+
+#: ui/glade/relocate.glade.h:1
+msgid "<b>Change the repository of your working copy</b>"
+msgstr "<b>Het repository van uw werkversie veranderen</b>"
+
+#: ui/glade/relocate.glade.h:2
+msgid "From:"
+msgstr "Van:"
+
+#: ui/glade/relocate.glade.h:4
+msgid "To:"
+msgstr "Naar:"
+
+#: ui/glade/git-update.glade.h:1 ui/glade/update.glade.h:1
+#: ui/glade/merge.glade.h:3
+msgid "<b>Options</b>"
+msgstr "<b>Opties</b>"
+
+#: ui/glade/git-update.glade.h:3
+msgid "Update Local Repository"
+msgstr "Lokale repository updaten"
+
+#: ui/glade/update.glade.h:2
+msgid "<b>Revision</b>"
+msgstr "<b>Revisie</b>"
+
+#: ui/glade/update.glade.h:3
+msgid "Omit Externals"
+msgstr "Externen overslaan"
+
+#: ui/glade/update.glade.h:4 ui/glade/merge.glade.h:16
+msgid "Recursive"
+msgstr "Recursief"
+
+#: ui/glade/update.glade.h:5
+msgid "Rollback to specified revision number"
+msgstr "Terugdraaien naar opgegeven revisienummer"
+
+#: ui/glade/import.glade.h:1
+msgid "<b>Import Message</b>"
+msgstr "<b>Bericht importeren</b>"
+
+#: ui/glade/import.glade.h:2
+msgid "<b>Repository</b>"
+msgstr "<b>Repository</b>"
+
+#: ui/glade/import.glade.h:4
+msgid "Include ignored files"
+msgstr "Genegeerde bestanden meenemen"
+
+#: ui/glade/merge.glade.h:1
+msgid "<b>From URL</b>"
+msgstr "<b>Van URL</b>"
+
+#: ui/glade/merge.glade.h:2
+msgid "<b>From: (URL and revision to merge)</b>"
+msgstr "<b>Van: (Samen te voegen URL en revisie)</b>"
+
+#: ui/glade/merge.glade.h:4
+msgid "<b>Revision Range</b>"
+msgstr "<b>Revisiebereik</b>"
+
+#: ui/glade/merge.glade.h:5
+msgid "<b>To: (URL and revision to merge)</b>"
+msgstr "<b>Naar: (samen te voegen URL en revisie)</b>"
+
+#: ui/glade/merge.glade.h:6
+msgid "<b>URL to merge from</b>"
+msgstr "<b>URL waarvandaan samen te voegen</b>"
+
+#: ui/glade/merge.glade.h:7
+msgid "<b>Working Copy</b>"
+msgstr "<b>Werkversie</b>"
+
+#: ui/glade/merge.glade.h:8
+msgid ""
+"Choose this method if you have made some changes to a branch and wish to "
+"merge your changes with another branch."
+msgstr ""
+"Gebruik deze methode als u wijzigingen hebt gemaakt aan een branch en uw "
+"wijzigingen wilt samenvoegen met een andere branch."
+
+#: ui/glade/merge.glade.h:9
+msgid ""
+"Choose this method if you wish to merge two different branches into your "
+"working copy."
+msgstr ""
+"Gebruik deze methode als u twee verschillende branches wilt samenvoegen naar "
+"uw werkversie."
+
+#: ui/glade/merge.glade.h:11
+msgid "Ignore ancestry"
+msgstr "Voorgeschiedenis negeren"
+
+#: ui/glade/merge.glade.h:12
+msgid "Merge Assistant"
+msgstr "Samenvoeg-assistent"
+
+#: ui/glade/merge.glade.h:13
+msgid "Merge a range of revisions"
+msgstr "Een reeks revisies samenvoegen"
+
+#: ui/glade/merge.glade.h:14
+msgid "Merge two different trees"
+msgstr "Twee verschillende bomen samenvoegen"
+
+#: ui/glade/merge.glade.h:15
+msgid "Only record the merge"
+msgstr "Alleen het samvoegen opnemen"
+
+#: ui/glade/merge.glade.h:18
+msgid "Show log"
+msgstr "Toon log"
+
+#: ui/glade/merge.glade.h:19
+msgid "Test Merge"
+msgstr "Test-samenvoegen"
+
+#: ui/glade/merge.glade.h:20
+msgid ""
+"Use the log dialog to select the revisions that you wish to merge.  Or write "
+"out the revisions manually, each separated by a comma.  You can specify a "
+"revision range by a dash. \n"
+"\n"
+"Example: 4-7,9,11,15-HEAD\n"
+"\n"
+"To merge all revisions, leave the box empty."
+msgstr ""
+
+#~ msgid "Completed"
+#~ msgstr "Klaar"
+
+#~ msgid "(no author)"
+#~ msgstr "(geen auteur)"

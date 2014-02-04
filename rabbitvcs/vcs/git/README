@@ -1,0 +1,7 @@
+Hopefully a better library will come along for Git eventually, but in the meantime
+this should supply the basic functionality needed to work with Git.  
+
+Dependencies
+------------
+* dulwich >= 0.6.1
+* python >= 2.4

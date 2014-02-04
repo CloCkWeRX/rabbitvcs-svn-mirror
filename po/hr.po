@@ -1,0 +1,2021 @@
+# Croatian translation for rabbitvcs
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# This file is distributed under the same license as the rabbitvcs package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: rabbitvcs\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2010-11-26 09:51-0500\n"
+"PO-Revision-Date: 2010-04-10 08:37+0000\n"
+"Last-Translator: Vedran Miletić <rivanvx@gmail.com>\n"
+"Language-Team: Croatian <hr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Launchpad-Export-Date: 2010-12-09 23:36+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: util/helper.py:109
+msgid "just now"
+msgstr ""
+
+#: util/helper.py:111
+#, python-format
+msgid "%d minute(s) ago"
+msgstr ""
+
+#: util/helper.py:631
+#, python-format
+msgid "%i second"
+msgid_plural "%i seconds"
+msgstr[0] "%i sekunda"
+msgstr[1] "%i sekunda"
+msgstr[2] "%i sekundi"
+
+#: util/helper.py:634
+#, python-format
+msgid "%i minute"
+msgid_plural "%i minutes"
+msgstr[0] "%i minuta"
+msgstr[1] "%i minute"
+msgstr[2] "%i minuta"
+
+#: util/helper.py:637
+#, python-format
+msgid "%i hour"
+msgid_plural "%i hours"
+msgstr[0] "%i sat"
+msgstr[1] "%i sati"
+msgstr[2] "%i sati"
+
+#: util/helper.py:640
+#, python-format
+msgid "%i day"
+msgid_plural "%i days"
+msgstr[0] "%i dan"
+msgstr[1] "%i dana"
+msgstr[2] "%i dana"
+
+#: util/helper.py:643
+#, python-format
+msgid "%i week"
+msgid_plural "%i weeks"
+msgstr[0] "%i tjedan"
+msgstr[1] "%i tjedana"
+msgstr[2] "%i tjedana"
+
+#: util/helper.py:646
+#, python-format
+msgid "%i month"
+msgid_plural "%i months"
+msgstr[0] "%i mjesec"
+msgstr[1] "%i mjeseci"
+msgstr[2] "%i mjeseci"
+
+#: util/helper.py:649
+#, python-format
+msgid "%i year"
+msgid_plural "%i years"
+msgstr[0] "%i godina"
+msgstr[1] "%i godina"
+msgstr[2] "%i godina"
+
+#: util/contextmenuitems.py:270
+msgid "Debug"
+msgstr "Pronađi grešku"
+
+#: util/contextmenuitems.py:275
+msgid "Bugs"
+msgstr "Greške"
+
+#: util/contextmenuitems.py:280
+msgid "Open Shell"
+msgstr "Otvori komandni  prozor"
+
+#: util/contextmenuitems.py:286
+msgid "Refresh Status"
+msgstr "Osvježi status"
+
+#: util/contextmenuitems.py:291
+msgid "Debug Revert"
+msgstr "Pronađi greške u povratku"
+
+#: util/contextmenuitems.py:292
+msgid "Reverts everything it sees"
+msgstr "Povrati na staro sve što pronađeš"
+
+#: util/contextmenuitems.py:298
+msgid "Invalidate"
+msgstr "Učini nevažećim"
+
+#: util/contextmenuitems.py:299
+msgid "Force an invalidate_extension_info() call"
+msgstr "Prinudno pozovi invalidate_extension_info()"
+
+#: util/contextmenuitems.py:305
+msgid "Add Emblem"
+msgstr "Dodaj oznaku"
+
+#: util/contextmenuitems.py:306
+msgid "Add an emblem"
+msgstr "Dodaje oznaku ikone"
+
+#: util/contextmenuitems.py:312
+msgid "Checkout..."
+msgstr "Preuzmi..-"
+
+#: util/contextmenuitems.py:313
+msgid "Check out a working copy"
+msgstr "Preuzmi radnu kopiju"
+
+#: util/contextmenuitems.py:318 ui/update.py:53 ui/update.py:97
+#: ui/glade/update.glade.h:6
+msgid "Update"
+msgstr "Ažuriraj"
+
+#: util/contextmenuitems.py:319
+msgid "Update a working copy"
+msgstr "Obnovi radnu kopiju"
+
+#: util/contextmenuitems.py:324 ui/commit.py:288 ui/commit.py:384
+#: ui/glade/commit.glade.h:4
+msgid "Commit"
+msgstr "Pohrani"
+
+#: util/contextmenuitems.py:325
+msgid "Commit modifications to the repository"
+msgstr "Pohrani izmjene u skladište"
+
+#: util/contextmenuitems.py:330 ui/glade/property_page.glade.h:4
+msgid "RabbitVCS"
+msgstr "RabbitVCS"
+
+#: util/contextmenuitems.py:335
+msgid "RabbitVCS SVN"
+msgstr ""
+
+#: util/contextmenuitems.py:340
+msgid "RabbitVCS Git"
+msgstr ""
+
+#: util/contextmenuitems.py:345 ui/glade/browser.glade.h:2
+msgid "Repository Browser"
+msgstr "Preglednik skladišta"
+
+#: util/contextmenuitems.py:346
+msgid "Browse a repository tree"
+msgstr "Pregledaj stablo skladišta"
+
+#: util/contextmenuitems.py:351
+msgid "Check for Modifications..."
+msgstr "Provjeri izmjene..."
+
+#: util/contextmenuitems.py:352
+msgid "Check for modifications made to the repository"
+msgstr "Provjeri izmjene napravljene u skladištu"
+
+#: util/contextmenuitems.py:357
+msgid "Diff Menu..."
+msgstr "Izbornik razlika..."
+
+#: util/contextmenuitems.py:358
+msgid "List of comparison options"
+msgstr "Popis opcija usporedbe"
+
+#: util/contextmenuitems.py:363
+msgid "View diff against base"
+msgstr "Prikaži razliku prema osnovi"
+
+#: util/contextmenuitems.py:364
+msgid "View the modifications made to a file"
+msgstr "Pogledaj izmjene datoteke"
+
+#: util/contextmenuitems.py:369
+msgid "View diff between files/folders"
+msgstr "Pogledaj razlike između datoteka/mapa"
+
+#: util/contextmenuitems.py:370
+msgid "View the differences between two files"
+msgstr "Pogledaj razliku između dvije datoteke"
+
+#: util/contextmenuitems.py:375 ui/log.py:786
+msgid "View diff against previous revision"
+msgstr "Pogedaj razliku od prošle inačice"
+
+#: util/contextmenuitems.py:376
+msgid "View the modifications made to a file since its last change"
+msgstr "Pogledaj izmjene u datoteci od zadnje promjene"
+
+#: util/contextmenuitems.py:381
+msgid "Compare with base"
+msgstr "Usporedi s osnovnom"
+
+#: util/contextmenuitems.py:382
+msgid "Compare with base using side-by-side comparison tool"
+msgstr "Usporedi s osnovom koristeći usporedni alat (jedan do drugog)"
+
+#: util/contextmenuitems.py:387
+msgid "Compare files/folders"
+msgstr "Usporedi datoteke/mape"
+
+#: util/contextmenuitems.py:388
+msgid "Compare the differences between two items"
+msgstr "Usporedi razlike između dvije stavke"
+
+#: util/contextmenuitems.py:393 ui/log.py:801
+msgid "Compare with previous revision"
+msgstr "Usporedi s prethodnom inačicom"
+
+#: util/contextmenuitems.py:394
+msgid "Compare with previous revision using side-by-side comparison tool"
+msgstr "Usporedi s prošlom revizijom"
+
+#: util/contextmenuitems.py:399
+msgid "Show Changes..."
+msgstr "Pokaži promjene..."
+
+#: util/contextmenuitems.py:400
+msgid "Show changes between paths and revisions"
+msgstr "Prikaži promjene između staza i revizija"
+
+#: util/contextmenuitems.py:405
+msgid "Show Log"
+msgstr "Prikaži dnevnik"
+
+#: util/contextmenuitems.py:406
+msgid "Show a file's log information"
+msgstr "Pokazuje informacije iz dnevnika za datoteku"
+
+#: util/contextmenuitems.py:411 ui/add.py:156 ui/tags.py:273
+#: ui/branches.py:274 ui/widget.py:1199 ui/glade/add.glade.h:1
+msgid "Add"
+msgstr "Dodaj"
+
+#: util/contextmenuitems.py:412
+msgid "Schedule items to be added to the repository"
+msgstr "Rasporedi stavke za dodavanje u skladište"
+
+#: util/contextmenuitems.py:417
+msgid "Add to ignore list"
+msgstr "Dodaj na listu zanemarenih"
+
+#: util/contextmenuitems.py:422
+msgid "Update to revision..."
+msgstr "Obnovi na reviziju..."
+
+#: util/contextmenuitems.py:423
+msgid "Update a file to a specific revision"
+msgstr "Obnavlja datoteku na određenu reviziju"
+
+#: util/contextmenuitems.py:428
+msgid "Rename..."
+msgstr "Promijeni ime..."
+
+#: util/contextmenuitems.py:429
+msgid "Schedule an item to be renamed on the repository"
+msgstr "Priloži stavku za promjenu imena u skladištu"
+
+#: util/contextmenuitems.py:434 ui/glade/properties.glade.h:3
+msgid "Delete"
+msgstr "Obriši"
+
+#: util/contextmenuitems.py:435
+msgid "Schedule an item to be deleted from the repository"
+msgstr "Pripremi stavku kako bi se obrisala iz skladišta"
+
+#: util/contextmenuitems.py:440 ui/revert.py:50 ui/revert.py:103
+#: ui/revert.py:115 ui/revert.py:168
+msgid "Revert"
+msgstr "Vrati izvorno"
+
+#: util/contextmenuitems.py:441
+msgid "Revert an item to its unmodified state"
+msgstr "Vrati na staro stavku - poništi promjene"
+
+#: util/contextmenuitems.py:446 ui/resolve.py:48 ui/resolve.py:102
+msgid "Resolve"
+msgstr "Razriješi"
+
+#: util/contextmenuitems.py:447
+msgid "Mark a conflicted item as resolved"
+msgstr "Označi razriješenom stavku u sukobu"
+
+#: util/contextmenuitems.py:452
+msgid "Restore"
+msgstr "Vrati"
+
+#: util/contextmenuitems.py:453
+msgid "Restore a missing item"
+msgstr "Vrati nedostajeće"
+
+#: util/contextmenuitems.py:457
+msgid "Relocate..."
+msgstr "Premjesti..."
+
+#: util/contextmenuitems.py:458
+msgid "Relocate your working copy"
+msgstr "Premjesti radnu kopiju na drugi poslužitelj"
+
+#: util/contextmenuitems.py:463
+msgid "Get Lock..."
+msgstr "Zaključaj..."
+
+#: util/contextmenuitems.py:464
+msgid "Locally lock items"
+msgstr "Lokalno zaključava stavke"
+
+#: util/contextmenuitems.py:469
+msgid "Release Lock..."
+msgstr "Oslobodi..."
+
+#: util/contextmenuitems.py:470
+msgid "Release lock on an item"
+msgstr "Otključaj stavku"
+
+#: util/contextmenuitems.py:475 ui/cleanup.py:55
+msgid "Cleanup"
+msgstr "Očisti"
+
+#: util/contextmenuitems.py:476
+msgid "Clean up working copy"
+msgstr "Očisti radnu kopiju"
+
+#: util/contextmenuitems.py:481
+msgid "Export..."
+msgstr "Izvoz…"
+
+#: util/contextmenuitems.py:482
+msgid "Export a working copy or repository with no versioning information"
+msgstr "Izvezi radnu kopiju ili skladište bez informacije o verzijama"
+
+#: util/contextmenuitems.py:487
+msgid "Create Repository here"
+msgstr "Ovdje napravi skladište"
+
+#: util/contextmenuitems.py:488
+msgid "Create a repository in a folder"
+msgstr "Napravi skladište u mapi"
+
+#: util/contextmenuitems.py:493 ui/import.py:80 ui/glade/import.glade.h:3
+msgid "Import"
+msgstr "Uvezi"
+
+#: util/contextmenuitems.py:494
+msgid "Import an item into a repository"
+msgstr "Uvezi stavku u skladište"
+
+#: util/contextmenuitems.py:503
+msgid "Branch/tag..."
+msgstr "Grana/oznaka..."
+
+#: util/contextmenuitems.py:504
+msgid "Copy an item to another location in the repository"
+msgstr "Kopiraj stavku na drugo mjesto unutar skladišta"
+
+#: util/contextmenuitems.py:509
+msgid "Switch..."
+msgstr "Zamijeni..."
+
+#: util/contextmenuitems.py:510
+msgid "Change the repository location of a working copy"
+msgstr "Zamijeni sidrište radne kopije u skladištu"
+
+#: util/contextmenuitems.py:515
+msgid "Merge..."
+msgstr "Stopi..."
+
+#: util/contextmenuitems.py:516
+msgid "A wizard with steps for merging"
+msgstr "Čarobnjak s koracima za stapanje"
+
+#: util/contextmenuitems.py:521
+msgid "Annotate..."
+msgstr "Označi..."
+
+#: util/contextmenuitems.py:522
+msgid "Annotate a file"
+msgstr "Dodaj bilješke datoteci"
+
+#: util/contextmenuitems.py:527
+msgid "Create Patch..."
+msgstr "Napravi zakrpu..."
+
+#: util/contextmenuitems.py:528
+msgid "Creates a unified diff file with all changes you made"
+msgstr "Napravi objedinjenu datoteku razlika sa svim vašim promjenama"
+
+#: util/contextmenuitems.py:533
+msgid "Apply Patch..."
+msgstr "Primjeni zakrpu..."
+
+#: util/contextmenuitems.py:534
+msgid "Applies a unified diff file to the working copy"
+msgstr "Primijenjuje datoteku objedinjenih razlika na radnu kopiju"
+
+#: util/contextmenuitems.py:539 ui/glade/properties.glade.h:7
+msgid "Properties"
+msgstr "Svojstva"
+
+#: util/contextmenuitems.py:540
+msgid "View the properties of an item"
+msgstr "Pogledaj svojstva stavke"
+
+#: util/contextmenuitems.py:545
+msgid "Help"
+msgstr "Pomoć"
+
+#: util/contextmenuitems.py:546
+msgid "View help"
+msgstr "Pogledaj pomoć"
+
+#: util/contextmenuitems.py:551 ui/glade/settings.glade.h:28
+msgid "Settings"
+msgstr "Postavke"
+
+#: util/contextmenuitems.py:552
+msgid "View or change RabbitVCS settings"
+msgstr "Pogledaj ili promijeni RabiitVCS postavke"
+
+#: util/contextmenuitems.py:557 ui/glade/about.glade.h:4
+msgid "About"
+msgstr "O programu"
+
+#: util/contextmenuitems.py:558
+msgid "About RabbitVCS"
+msgstr "O RabiitVCS programu"
+
+#: util/contextmenuitems.py:563
+msgid "Open"
+msgstr "Otvori"
+
+#: util/contextmenuitems.py:564
+msgid "Open a file"
+msgstr "Otvori datoteku"
+
+#: util/contextmenuitems.py:572
+msgid "Browse to"
+msgstr "Pregledaj"
+
+#: util/contextmenuitems.py:573
+msgid "Browse to a file or folder"
+msgstr "Pregledaj datoteku ili mapu"
+
+#: util/contextmenuitems.py:578
+msgid "Revert property"
+msgstr "Poništi promjene svojstva"
+
+#: util/contextmenuitems.py:580
+msgid "Revert this property to its original state"
+msgstr "Vrati vrijednost svojstva na originalnu"
+
+#: util/contextmenuitems.py:584
+msgid "Revert property (recursive)"
+msgstr "Poništi promjene svojstva (poniruće)"
+
+#: util/contextmenuitems.py:586
+msgid "Revert this property to its original state (recursive)"
+msgstr "Vrati vrijednost svojstva na originalnu (poniruće)"
+
+#: util/contextmenuitems.py:591
+msgid "Delete property"
+msgstr "Obriši svojstvo"
+
+#: util/contextmenuitems.py:593
+msgid "Delete this property"
+msgstr "Obriši ovo svojstvo"
+
+#: util/contextmenuitems.py:597
+msgid "Delete property (recursive)"
+msgstr ""
+
+#: util/contextmenuitems.py:599
+msgid "Delete this property (recursive)"
+msgstr "Obriši ovo svojstvo (poniruće)"
+
+#: util/contextmenuitems.py:604
+msgid "Edit details"
+msgstr ""
+
+#: util/contextmenuitems.py:606
+msgid "Show and edit property details"
+msgstr ""
+
+#: util/contextmenuitems.py:610
+msgid "Initialize Repository"
+msgstr ""
+
+#: util/contextmenuitems.py:615 ui/clone.py:47 ui/clone.py:65
+msgid "Clone"
+msgstr ""
+
+#: util/contextmenuitems.py:620
+msgid "Fetch/Pull"
+msgstr ""
+
+#: util/contextmenuitems.py:625 ui/push.py:96
+msgid "Push"
+msgstr ""
+
+#: util/contextmenuitems.py:630
+msgid "Branches"
+msgstr ""
+
+#: util/contextmenuitems.py:635
+msgid "Tags"
+msgstr ""
+
+#: util/contextmenuitems.py:640
+msgid "Remotes"
+msgstr ""
+
+#: util/contextmenuitems.py:666
+msgid "Ignore item by filename"
+msgstr "Zanemari predmet po imenu"
+
+#: util/contextmenuitems.py:685
+msgid "Ignore item by file extension"
+msgstr "Zanemari stavku prema nastavku"
+
+#: ui/update.py:54 ui/update.py:98 ui/updateto.py:94
+msgid "Updating..."
+msgstr "Ažuriram..."
+
+#: ui/update.py:56 ui/update.py:103 ui/updateto.py:102
+msgid "Completed Update"
+msgstr "Ažuriranje završeno"
+
+#: ui/updateto.py:82
+msgid "Rollback To Revision"
+msgstr ""
+
+#: ui/updateto.py:83
+msgid "Rolling Back..."
+msgstr ""
+
+#: ui/updateto.py:91
+msgid "Completed Rollback"
+msgstr ""
+
+#: ui/updateto.py:93
+msgid "Update To Revision"
+msgstr "Ažuriraj na inačicu"
+
+#: ui/updateto.py:138 ui/checkout.py:173
+msgid "Checkout"
+msgstr "Preuzmi"
+
+#: ui/updateto.py:139
+#, python-format
+msgid "Checking out %s..."
+msgstr ""
+
+#: ui/updateto.py:145 ui/checkout.py:184
+msgid "Completed Checkout"
+msgstr "Preuzimanje završeno"
+
+#: ui/add.py:72 ui/commit.py:205 ui/commit.py:313 ui/revert.py:62
+#: ui/revert.py:128 ui/checkmods.py:67 ui/resolve.py:61 ui/changes.py:279
+#: ui/changes.py:364 ui/log.py:337 ui/log.py:572 ui/lock.py:72
+#: ui/createpatch.py:119 ui/createpatch.py:215 ui/action.py:118
+#: ui/unlock.py:61 ui/browser.py:89
+msgid "Path"
+msgstr "Staza"
+
+#: ui/add.py:72 ui/commit.py:205 ui/commit.py:313 ui/revert.py:62
+#: ui/revert.py:128 ui/checkmods.py:67 ui/resolve.py:61 ui/lock.py:72
+#: ui/createpatch.py:119 ui/createpatch.py:215 ui/unlock.py:61
+msgid "Extension"
+msgstr "Proširenje"
+
+#: ui/add.py:95 ui/commit.py:93 ui/lock.py:115 ui/unlock.py:85
+#: ui/glade/dialogs.glade.h:33
+msgid "Loading..."
+msgstr "Učitavanje..."
+
+#: ui/add.py:98 ui/commit.py:100 ui/lock.py:118 ui/unlock.py:107
+#, python-format
+msgid "Found %d item(s)"
+msgstr "Pronađeno %d stavaka"
+
+#: ui/add.py:157
+msgid "Running Add Command..."
+msgstr "Dodavanje..."
+
+#: ui/add.py:159
+msgid "Completed Add"
+msgstr "Završeno dodavanje"
+
+#: ui/ignore.py:100
+msgid "Ignore file:"
+msgstr ""
+
+#: ui/tags.py:62
+msgid "Tag Manager"
+msgstr ""
+
+#: ui/tags.py:63
+msgid "<b>Tags</b>"
+msgstr ""
+
+#: ui/tags.py:74
+msgid "Tag"
+msgstr ""
+
+#: ui/tags.py:99 ui/branches.py:100 ui/glade/dialogs.glade.h:38
+#: ui/glade/property_page.glade.h:2
+msgid "Name:"
+msgstr ""
+
+#: ui/tags.py:109 ui/tags.py:176 ui/branches.py:155 ui/merge.py:438
+#: ui/merge.py:488 ui/glade/browser.glade.h:3
+msgid "Revision:"
+msgstr "Revizija:"
+
+#: ui/tags.py:128 ui/tags.py:188 ui/branches.py:167 ui/merge.py:450
+#: ui/merge.py:500
+msgid "Message:"
+msgstr ""
+
+#: ui/tags.py:145 ui/tags.py:284 ui/branches.py:147 ui/branches.py:291
+msgid "Save"
+msgstr ""
+
+#: ui/tags.py:153
+msgid "Tagger:"
+msgstr ""
+
+#: ui/tags.py:165 ui/merge.py:427 ui/merge.py:477
+msgid "Date:"
+msgstr ""
+
+#: ui/tags.py:230 ui/branches.py:209 ui/remotes.py:128
+#, python-format
+msgid "Are you sure you want to delete %s?"
+msgstr ""
+
+#: ui/tags.py:275
+msgid "<b>Add Tag</b>"
+msgstr ""
+
+#: ui/tags.py:293
+msgid "<b>Tag Detail</b>"
+msgstr ""
+
+#: ui/export.py:45 ui/export.py:114
+#, python-format
+msgid "Export - %s"
+msgstr "Izvoz - %s"
+
+#: ui/export.py:72 ui/export.py:131 ui/clone.py:57 ui/checkout.py:163
+msgid "The repository URL and destination path are both required fields."
+msgstr "URL skladišta i odredišna staza su obavezna polja."
+
+#: ui/export.py:92 ui/export.py:151
+msgid "Export"
+msgstr "Izvoz"
+
+#: ui/export.py:93 ui/export.py:152
+msgid "Running Export Command..."
+msgstr "Izvoz u tijeku..."
+
+#: ui/export.py:104 ui/export.py:160
+msgid "Completed Export"
+msgstr "Izvoz završen"
+
+#: ui/applypatch.py:57 ui/applypatch.py:113 ui/applypatch.py:143
+msgid "Apply Patch"
+msgstr "Primijeni zakrpu"
+
+#: ui/applypatch.py:74
+msgid "Apply Patch To Directory..."
+msgstr "Primijeni zakrpu na mapu..."
+
+#: ui/applypatch.py:114 ui/applypatch.py:144
+msgid "Applying Patch File..."
+msgstr "Primjena zakrpe..."
+
+#: ui/applypatch.py:116 ui/applypatch.py:146
+msgid "Patch File Applied"
+msgstr "Zakrpa primijenjena"
+
+#: ui/branches.py:62
+msgid "Branch Manager"
+msgstr ""
+
+#: ui/branches.py:63
+msgid "<b>Branches</b>"
+msgstr ""
+
+#: ui/branches.py:73 ui/widget.py:855
+msgid "Branch"
+msgstr ""
+
+#: ui/branches.py:110
+msgid "Start Point:"
+msgstr ""
+
+#: ui/branches.py:129
+msgid "Keep old branch's history"
+msgstr ""
+
+#: ui/branches.py:138
+msgid "Set as active branch"
+msgstr ""
+
+#: ui/branches.py:280
+msgid "<b>Add Branch</b>"
+msgstr ""
+
+#: ui/branches.py:304
+msgid "<b>Branch Detail</b>"
+msgstr ""
+
+#: ui/push.py:76 ui/dialog.py:54 ui/annotate.py:128 ui/annotate.py:229
+#: ui/log.py:327 ui/log.py:557 ui/browser.py:89
+msgid "Date"
+msgstr "Datum"
+
+#: ui/push.py:76 ui/dialog.py:54 ui/log.py:327 ui/log.py:557
+#: ui/glade/dialogs.glade.h:36
+msgid "Message"
+msgstr "Poruka"
+
+#: ui/push.py:97
+msgid "Running Push Command..."
+msgstr ""
+
+#: ui/push.py:99
+msgid "Completed Push"
+msgstr ""
+
+#: ui/import.py:40
+#, python-format
+msgid "Import - %s"
+msgstr "Uvezi - %s"
+
+#: ui/import.py:68
+msgid "The repository URL field is required."
+msgstr "URL skladišta je obavezno polje."
+
+#: ui/import.py:81
+msgid "Running Import Command..."
+msgstr "Izrada uvoza u tijeku..."
+
+#: ui/import.py:89
+msgid "Completed Import"
+msgstr "Završen uvoz"
+
+#: ui/rename.py:48
+msgid "The requested file or folder does not exist."
+msgstr ""
+
+#: ui/rename.py:52 ui/rename.py:84 ui/rename.py:113 ui/browser.py:470
+msgid "Rename"
+msgstr "Promijeni naziv"
+
+#: ui/rename.py:52 ui/browser.py:470 ui/glade/dialogs.glade.h:39
+msgid "New Name:"
+msgstr "Novo ime:"
+
+#: ui/rename.py:60
+msgid "The new name field is required"
+msgstr "Polje novog imena je obavezno"
+
+#: ui/rename.py:85 ui/rename.py:114
+msgid "Running Rename Command..."
+msgstr "Promjena naziva u tijeku..."
+
+#: ui/rename.py:91 ui/rename.py:120
+msgid "Completed Rename"
+msgstr "Promjena naziva završena"
+
+#: ui/commit.py:206 ui/revert.py:63 ui/checkmods.py:68 ui/resolve.py:62
+#: ui/createpatch.py:120
+msgid "Text Status"
+msgstr "Status teksta"
+
+#: ui/commit.py:206 ui/revert.py:63 ui/checkmods.py:68 ui/resolve.py:62
+#: ui/createpatch.py:120
+msgid "Property Status"
+msgstr "Status svojstva"
+
+#: ui/commit.py:289 ui/commit.py:385
+msgid "Running Commit Command..."
+msgstr "Pohranjivanje u tijeku..."
+
+#: ui/commit.py:295 ui/commit.py:394
+msgid "Completed Commit"
+msgstr "Pohrana završena"
+
+#: ui/commit.py:314 ui/revert.py:129 ui/createpatch.py:216
+#: ui/property_editor.py:112
+msgid "Status"
+msgstr "Status"
+
+#: ui/diff.py:284
+msgid "View diff as side-by-side comparison"
+msgstr "Pogedaj razliku usporedno"
+
+#: ui/merge.py:87
+msgid "Running Merge Test"
+msgstr "Testiranje stapanja"
+
+#: ui/merge.py:88
+msgid "Completed Merge Test"
+msgstr "Završen test stapanja"
+
+#: ui/merge.py:90
+msgid "Running Merge Command"
+msgstr "Izvršavanje stapanja"
+
+#: ui/merge.py:91
+msgid "Completed Merge"
+msgstr "Stapanje završeno"
+
+#: ui/merge.py:102
+msgid "Merge"
+msgstr "Stopi"
+
+#: ui/merge.py:415 ui/merge.py:465
+msgid "Author:"
+msgstr ""
+
+#: ui/dialog.py:38
+#, python-format
+msgid ""
+"An error has occurred in the RabbitVCS Nautilus extension. Please contact "
+"the <a href=\"%s\">RabbitVCS team</a> with the error details listed below:"
+msgstr ""
+"Dogodila se greška u RabbitVCS Nautilus proširenju. Molimo javite <a "
+"href=\"%s\">RabbitVCS timu</a> detalje greške:"
+
+#: ui/dialog.py:108
+msgid "Select a Folder"
+msgstr "Odaberi mapu"
+
+#: ui/dialog.py:138 ui/glade/log.glade.h:11
+msgid "to"
+msgstr "do"
+
+#: ui/dialog.py:261
+msgid "Select a File"
+msgstr "Odaberi datoteku"
+
+#: ui/dialog.py:280
+msgid "Save As..."
+msgstr "Spremi kao..."
+
+#: ui/dialog.py:299 ui/glade/dialogs.glade.h:19
+msgid "Are you sure you want to continue?"
+msgstr "Da li sigurno želite nastaviti?"
+
+#: ui/dialog.py:327
+msgid "the selected item(s)"
+msgstr "odabrana(e) stavka(e)"
+
+#: ui/dialog.py:398
+msgid "Added a folder to the repository"
+msgstr "Mapa je dodana u skladište"
+
+#: ui/revert.py:104 ui/revert.py:169
+msgid "Running Revert Command..."
+msgstr "Izvršavanje vraćanja...."
+
+#: ui/revert.py:106 ui/revert.py:171
+msgid "Completed Revert"
+msgstr "Vraćanje završeno"
+
+#: ui/clone.py:66
+msgid "Running Clone Command..."
+msgstr ""
+
+#: ui/clone.py:73
+msgid "Completed Clone"
+msgstr ""
+
+#: ui/relocate.py:77
+msgid "The from and to url fields are both required."
+msgstr "Polja url-ova su obavezna."
+
+#: ui/relocate.py:87 ui/glade/relocate.glade.h:3
+msgid "Relocate"
+msgstr "Premjesti"
+
+#: ui/relocate.py:88
+msgid "Running Relocate Command..."
+msgstr "Izvršava se premještanje..."
+
+#: ui/relocate.py:95
+msgid "Completed Relocate"
+msgstr "Završeno premještanje"
+
+#: ui/checkmods.py:69 ui/annotate.py:127 ui/annotate.py:228 ui/log.py:48
+#: ui/log.py:326 ui/log.py:556 ui/widget.py:854 ui/browser.py:89
+#: ui/glade/merge.glade.h:17
+msgid "Revision"
+msgstr "Inačica"
+
+#: ui/checkmods.py:69 ui/annotate.py:127 ui/annotate.py:228 ui/log.py:326
+#: ui/log.py:556 ui/browser.py:89
+msgid "Author"
+msgstr "Autor"
+
+#: ui/checkmods.py:160 ui/changes.py:50 ui/changes.py:420
+msgid "View unified diff"
+msgstr "Vidi ukupnu razliku"
+
+#: ui/checkmods.py:165 ui/changes.py:425
+msgid "Compare side by side"
+msgstr "Usporedi jedno do drugog"
+
+#: ui/resolve.py:103
+msgid "Running Resolve Command..."
+msgstr "Izvršavanje razriješavanja..."
+
+#: ui/resolve.py:106
+msgid "Completed Resolve"
+msgstr "Razriješavanje završeno"
+
+#: ui/changes.py:49
+msgid "More Actions..."
+msgstr "Više akcija..."
+
+#: ui/changes.py:279 ui/changes.py:364
+msgid "Change"
+msgstr "Promijeni"
+
+#: ui/changes.py:279
+msgid "Property Change"
+msgstr "Promjena svojstva"
+
+#: ui/changes.py:321 ui/lock.py:126
+msgid "Yes"
+msgstr "Da"
+
+#: ui/changes.py:321
+msgid "No"
+msgstr "Ne"
+
+#: ui/changes.py:410
+msgid "Open from first revision"
+msgstr "Otvori iz prve revizije"
+
+#: ui/changes.py:415
+msgid "Open from second revision"
+msgstr "Otvori iz druge revizije"
+
+#: ui/annotate.py:57
+msgid "Cannot annotate a directory"
+msgstr "Ne možete označiti mapu"
+
+#: ui/annotate.py:63
+#, python-format
+msgid "Annotate - %s"
+msgstr "Označi - %s"
+
+#: ui/annotate.py:127 ui/annotate.py:228
+msgid "Line"
+msgstr "Redak"
+
+#: ui/annotate.py:128 ui/annotate.py:229
+msgid "Text"
+msgstr "Tekst"
+
+#: ui/annotate.py:143
+msgid "The from revision field must be an integer"
+msgstr "Polje inačice treba sadržavati broj"
+
+#: ui/log.py:120
+#, python-format
+msgid "Log - %s"
+msgstr "Dnevnik - %s"
+
+#: ui/log.py:270 ui/log.py:271 ui/glade/log.glade.h:7
+msgid "N/A"
+msgstr "Nije primjenjivo"
+
+#: ui/log.py:337 ui/log.py:572 ui/action.py:118
+msgid "Action"
+msgstr "Akcija"
+
+#: ui/log.py:338
+msgid "Copy From Path"
+msgstr "Kopiraj sa staze"
+
+#: ui/log.py:338
+msgid "Copy From Revision"
+msgstr "Kopiraj iz inačice"
+
+#: ui/log.py:556
+msgid "Graph"
+msgstr ""
+
+#: ui/log.py:781
+msgid "View diff against working copy"
+msgstr "Pogledaj razliku u odnosu na radnu kopiju"
+
+#: ui/log.py:791
+msgid "View diff between revisions"
+msgstr "Pogledaj razliku između inačica"
+
+#: ui/log.py:796
+msgid "Compare with working copy"
+msgstr "Usporedi s radnom kopijlom"
+
+#: ui/log.py:806
+msgid "Compare revisions"
+msgstr "Usporedi inačice"
+
+#: ui/log.py:812
+msgid "Show changes against previous revision"
+msgstr ""
+
+#: ui/log.py:818
+msgid "Show changes between revisions"
+msgstr "Pogledaj razlike između revizija"
+
+#: ui/log.py:823
+msgid "Update to this revision"
+msgstr ""
+
+#: ui/log.py:824
+msgid "Update the selected path to this revision"
+msgstr ""
+
+#: ui/log.py:829 ui/log.py:833
+msgid "Edit author..."
+msgstr "Uredi autora..."
+
+#: ui/log.py:837
+msgid "Edit log message..."
+msgstr "Uredi poruku dnevnika..."
+
+#: ui/log.py:841
+msgid "Edit revision properties..."
+msgstr "Uredi svojstva revizije..."
+
+#: ui/log.py:1047
+msgid "Edit author"
+msgstr "Uredi autora"
+
+#: ui/log.py:1059
+msgid "Edit log message"
+msgstr "Uredi poruku dnevnika"
+
+#: ui/settings.py:43 ui/glade/settings.glade.h:35
+msgid "Unknown"
+msgstr "Napoznato"
+
+#: ui/settings.py:45
+msgid "There was an error communicating with the status checker service."
+msgstr ""
+
+#: ui/settings.py:59
+msgid "English"
+msgstr "Engleski"
+
+#: ui/settings.py:119
+msgid "Config file:"
+msgstr ""
+
+#: ui/settings.py:294
+msgid "Select a program"
+msgstr "Odaberite program"
+
+#: ui/settings.py:303
+msgid "Are you sure you want to clear your repository paths?"
+msgstr "Da li ste sigurni da želite očistiti staze skladišta?"
+
+#: ui/settings.py:310
+msgid "Repository paths cleared"
+msgstr "Skladišne staze očišćene"
+
+#: ui/settings.py:314
+msgid "Are you sure you want to clear your previous messages?"
+msgstr "Da li se sigruni da želite očistiti vaše prethodne poruke?"
+
+#: ui/settings.py:321
+msgid "Previous messages cleared"
+msgstr "Prethodne poruke očišćene"
+
+#: ui/settings.py:325
+msgid "Are you sure you want to clear your authentication information?"
+msgstr "Da li sigurno želite očistiti vaše autentikacijske podatke?"
+
+#: ui/settings.py:342
+msgid "Authentication information cleared"
+msgstr "Autentikacijski podaci očišćeni"
+
+#: ui/revprops.py:65 ui/properties.py:158 ui/property_editor.py:155
+msgid "Unable to retrieve properties list"
+msgstr "U nemogućnosti pribaviti popis svojstava"
+
+#: ui/branch.py:99
+msgid "You must supply a destination path."
+msgstr "Trebate odabrati odredišnu stazu."
+
+#: ui/branch.py:115
+msgid "Branch/tag"
+msgstr "Grana/oznaka"
+
+#: ui/branch.py:116
+msgid "Running Branch/tag Command..."
+msgstr "Izrada grane/oznake"
+
+#: ui/branch.py:118
+msgid "Completed Branch/tag"
+msgstr "Završena izrada grane/oznake"
+
+#: ui/lock.py:73
+msgid "Locked"
+msgstr "Zaključano"
+
+#: ui/lock.py:167
+msgid "Get Lock"
+msgstr "Zaključaj"
+
+#: ui/lock.py:168
+msgid "Running Lock Command..."
+msgstr "Zaključavanje..."
+
+#: ui/lock.py:177
+msgid "Completed Lock"
+msgstr "Zaključano"
+
+#: ui/switch.py:70
+msgid "The repository location is a required field."
+msgstr "Lokacija skladišta je obavezno polje."
+
+#: ui/switch.py:80
+msgid "Switch"
+msgstr "Zamijeni"
+
+#: ui/switch.py:81
+msgid "Running Switch Command..."
+msgstr "Zamijena u tijeku"
+
+#: ui/switch.py:89
+msgid "Completed Switch"
+msgstr "Zamjena izvršena"
+
+#: ui/widget.py:853 ui/widget.py:859 ui/glade/merge.glade.h:10
+msgid "HEAD"
+msgstr "najnovije"
+
+#: ui/widget.py:860
+msgid "Number"
+msgstr "Broj"
+
+#: ui/widget.py:861
+msgid "Working Copy"
+msgstr "Radna verzija"
+
+#: ui/widget.py:1056
+msgid "Repository:"
+msgstr ""
+
+#: ui/widget.py:1075
+msgid "Branch:"
+msgstr ""
+
+#: ui/widget.py:1093 ui/glade/dialogs.glade.h:30
+msgid "Host:"
+msgstr "Poslužitelj"
+
+#: ui/widget.py:1194
+msgid "Add line:"
+msgstr ""
+
+#: ui/checkout.py:139 ui/checkout.py:213
+#, python-format
+msgid "Checkout - %s"
+msgstr "Preuzimanje - %s"
+
+#: ui/checkout.py:174
+msgid "Running Checkout Command..."
+msgstr "Preuzimanje u tijeku..."
+
+#: ui/remotes.py:59
+msgid "Remote Repository Manager"
+msgstr ""
+
+#: ui/remotes.py:60
+msgid "<b>Remote Repositories</b>"
+msgstr ""
+
+#: ui/remotes.py:66 ui/properties.py:63 ui/property_editor.py:112
+msgid "Name"
+msgstr "Naziv"
+
+#: ui/remotes.py:66
+msgid "Host"
+msgstr ""
+
+#: ui/property_page.py:126
+msgid "Repository URL"
+msgstr ""
+
+#: ui/createpatch.py:68 ui/createpatch.py:86 ui/createpatch.py:162
+#: ui/createpatch.py:262
+msgid "Create Patch"
+msgstr "Izradi zakrpu"
+
+#: ui/createpatch.py:112 ui/createpatch.py:208
+msgid "The given path is not a working copy"
+msgstr "Odabrana staza nije radna kopija"
+
+#: ui/createpatch.py:163 ui/createpatch.py:263
+msgid "Creating Patch File..."
+msgstr "Izrada zakrpe..."
+
+#: ui/createpatch.py:193 ui/createpatch.py:292
+msgid "Patch File Created"
+msgstr "Zakrpa napravljena"
+
+#: ui/properties.py:55
+#, python-format
+msgid "Properties - %s"
+msgstr "Svojstva - %s"
+
+#: ui/properties.py:63 ui/property_editor.py:112
+msgid "Value"
+msgstr "Vrijednost"
+
+#: ui/properties.py:179
+msgid "There was a problem saving your properties."
+msgstr "Snimanje svojstava nije uspjelo."
+
+#: ui/property_editor.py:56
+msgid ""
+"<b>Note:</b> changes to properties are applied instantly. You may review and "
+"undo changes using the context menu for each item.\n"
+msgstr ""
+"<b>Napomena:</b> promjene svojstava se primjenjuju odmah. Možete provjeriti "
+"i poništiti promjene koristeći skočni izbornik za svaku stavku.\n"
+
+#: ui/property_editor.py:61
+msgid ""
+"Do you want to delete the selected properties from all files and "
+"subdirectories\n"
+"beneath this directory?"
+msgstr ""
+"Želite li obrisati označena svojstva iz svih datatoteka \n"
+"i poddirektorija u ovoj mapi?"
+
+#: ui/property_editor.py:102
+msgid "File is not under version control."
+msgstr "Datoteka nije pod sustavom kontrola verzija."
+
+#: ui/property_editor.py:112
+msgid "Reserved"
+msgstr "Rezervirano"
+
+#: ui/property_editor.py:189
+msgid "Unable to set new value for property."
+msgstr "Nije moguće postaviti novu vrijednost stvojstva."
+
+#: ui/__init__.py:50
+msgid ""
+"You must specify a version control system using the --vcs [svn|git] option"
+msgstr ""
+
+#: ui/action.py:118
+msgid "Mime Type"
+msgstr "Mime tip"
+
+#: ui/action.py:338
+msgid "Finished"
+msgstr "Završeno"
+
+#: ui/action.py:342
+#, python-format
+msgid "%s - Finished"
+msgstr "%s - Završeno"
+
+#: ui/action.py:365
+msgid "Log Message"
+msgstr "Komentar za dnevnik"
+
+#: ui/unlock.py:48 ui/unlock.py:125
+msgid "Unlock"
+msgstr "Otključaj"
+
+#: ui/unlock.py:126
+msgid "Running Unlock Command..."
+msgstr "Otključavanje u tijeku..."
+
+#: ui/unlock.py:129
+msgid "Completed Unlock"
+msgstr "Otključavanje završeno"
+
+#: ui/browser.py:89
+msgid "Size"
+msgstr "Veličina"
+
+#: ui/browser.py:326
+msgid "Select"
+msgstr ""
+
+#: ui/browser.py:348
+msgid "Create folder..."
+msgstr "Napravi mapu..."
+
+#: ui/browser.py:353
+msgid "Copy to..."
+msgstr "Kopiraj u..."
+
+#: ui/browser.py:358
+msgid "Copy URL to clipboard"
+msgstr "Kopiraj URL u spremnik"
+
+#: ui/browser.py:363
+msgid "Move to..."
+msgstr "Premjesti..."
+
+#: ui/browser.py:531
+msgid "Where do you want to copy the selection?"
+msgstr "Gdje želite kopirati odabrano?"
+
+#: ui/browser.py:532 ui/browser.py:561
+msgid "New Location:"
+msgstr "Nova lokacija:"
+
+#: ui/browser.py:560
+msgid "Where do you want to move the selection?"
+msgstr "Gdje želite premjestiti odabrano?"
+
+#: ui/cleanup.py:56 ui/glade/cleanup.glade.h:1
+msgid "Cleaning Up..."
+msgstr "Čišćenje..."
+
+#: ui/cleanup.py:58
+msgid "Completed Cleanup"
+msgstr "Završeno čišćenje"
+
+#: ui/create.py:46
+msgid "Repository successfully created"
+msgstr "Skladište uspješno napravljeno"
+
+#: ui/create.py:48
+msgid ""
+"There was an error creating the repository.  Make sure the given folder is "
+"empty."
+msgstr ""
+"Dogodila se pogreška prilikom kreiranja skladišta. Provjerite da li je "
+"odabrana mapa prazna."
+
+#: ui/glade/properties.glade.h:1
+msgid "<b>Properties for:</b>"
+msgstr "<b>Svojstva za:</b>"
+
+#: ui/glade/properties.glade.h:2
+msgid "<i>Selected properties will be applied recursively.</i>"
+msgstr "<i>Odabrana svojstva biti će primijenjena ponirući.</i>"
+
+#: ui/glade/properties.glade.h:4
+msgid "Delete properties recursively"
+msgstr "Obriši svojstva ponirući"
+
+#: ui/glade/properties.glade.h:5
+msgid "Edit..."
+msgstr "Uredi..."
+
+#: ui/glade/properties.glade.h:6
+msgid "New..."
+msgstr "Novo..."
+
+#: ui/glade/properties.glade.h:8
+msgid "URL/Path:"
+msgstr "URL staza:"
+
+#: ui/glade/browser.glade.h:1
+msgid "Load/Refresh"
+msgstr "Osvježi"
+
+#: ui/glade/browser.glade.h:4
+msgid "URL:"
+msgstr "URL:"
+
+#: ui/glade/dialogs.glade.h:1
+msgid "<b>A conflict was found in the following file:</b>"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:2 ui/glade/commit.glade.h:1
+msgid "<b>Add Message</b>"
+msgstr "<b>Dodaj poruku</b>"
+
+#: ui/glade/dialogs.glade.h:3
+msgid "<b>Certificate Details</b>"
+msgstr "<b>Detalji o certifikatu</b>"
+
+#: ui/glade/dialogs.glade.h:4
+msgid "<b>Edit Property Details</b>"
+msgstr "<b>Uredi vrijednost svojstva</b>"
+
+#: ui/glade/dialogs.glade.h:5
+msgid "<b>Enter Name and Email Details</b>"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:6
+msgid "<b>Folder Name</b>"
+msgstr "<b>Ime mape</b>"
+
+#: ui/glade/dialogs.glade.h:7 ui/glade/log.glade.h:3
+msgid "<b>Message</b>"
+msgstr "<b>Poruka</b>"
+
+#: ui/glade/dialogs.glade.h:8
+msgid "<b>Please add your authentication details</b>"
+msgstr "<b>Molim dopunite svojim autentikacijskim podacima</b>"
+
+#: ui/glade/dialogs.glade.h:9
+msgid "<b>Please provide your ssl certification file</b>"
+msgstr "<b>Molimo, postavite dateteku s ssl certifikatom</b>"
+
+#: ui/glade/dialogs.glade.h:10
+msgid "<b>Previous Messages</b>"
+msgstr "<b>Prethodne poruke</b>"
+
+#: ui/glade/dialogs.glade.h:12
+msgid ""
+"<span size=\"large\"><b>Are you sure you want to delete %item%?</b></span>"
+msgstr ""
+"<span size=\"large\"><b>Da li sigurno želite obrisati %item%?</b></span>"
+
+#: ui/glade/dialogs.glade.h:13
+msgid "<span weight=\"bold\" size=\"xx-large\">RabbitVCS Error</span>"
+msgstr "<span weight=\"bold\" size=\"xx-large\">RabbitVCS greška</span>"
+
+#: ui/glade/dialogs.glade.h:14
+msgid "Accept Forever"
+msgstr "Prihvati za stalno"
+
+#: ui/glade/dialogs.glade.h:15
+msgid "Accept Mine"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:16
+msgid "Accept Once"
+msgstr "Prihvati za ovaj put"
+
+#: ui/glade/dialogs.glade.h:17
+msgid "Accept Theirs"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:18
+msgid "Apply property recursively"
+msgstr "Primijeni svojstvo ponirući"
+
+#: ui/glade/dialogs.glade.h:20
+msgid "Authentication"
+msgstr "Prijava"
+
+#: ui/glade/dialogs.glade.h:21
+msgid "Cancel"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:22
+msgid "Check Certificate"
+msgstr "Provjeri certifikat"
+
+#: ui/glade/dialogs.glade.h:23
+msgid "Confirmation"
+msgstr "Potvrda"
+
+#: ui/glade/dialogs.glade.h:24
+msgid "Conflict Resolution Decision"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:25
+msgid "Create Folder..."
+msgstr "Izradi mapu..."
+
+#: ui/glade/dialogs.glade.h:26
+msgid "Delete Confirmation"
+msgstr "Potvrda brisanja"
+
+#: ui/glade/dialogs.glade.h:27
+msgid "Deny"
+msgstr "Uskrati"
+
+#: ui/glade/dialogs.glade.h:28
+msgid "Email:"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:29
+msgid "Fingerprint:"
+msgstr "Otisak prsta:"
+
+#: ui/glade/dialogs.glade.h:31
+msgid "How do you want to handle this?"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:32
+msgid "Issuer:"
+msgstr "Izdavač:"
+
+#: ui/glade/dialogs.glade.h:34
+msgid "Login:"
+msgstr "Login:"
+
+#: ui/glade/dialogs.glade.h:35
+msgid "Merge Manually"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:37
+msgid "Name and Email"
+msgstr ""
+
+#: ui/glade/dialogs.glade.h:40
+msgid "Password:"
+msgstr "Zaporka:"
+
+#: ui/glade/dialogs.glade.h:41
+msgid "Path:"
+msgstr "Putanja:"
+
+#: ui/glade/dialogs.glade.h:42 ui/glade/lock.glade.h:4
+#: ui/glade/commit.glade.h:5 ui/glade/import.glade.h:5
+msgid "Previous Messages"
+msgstr "Prethodne poruke"
+
+#: ui/glade/dialogs.glade.h:43
+msgid "Property"
+msgstr "Svojstvo"
+
+#: ui/glade/dialogs.glade.h:44
+msgid "Property:"
+msgstr "Svojstvo:"
+
+#: ui/glade/dialogs.glade.h:45
+msgid "RabbitVCS Error"
+msgstr "RabbitVCS greška"
+
+#: ui/glade/dialogs.glade.h:46
+msgid "Realm:"
+msgstr "Područje:"
+
+#: ui/glade/dialogs.glade.h:47
+msgid "SSL Client Certification"
+msgstr "SSL Client Certification"
+
+#: ui/glade/dialogs.glade.h:48
+msgid "Save Authentication"
+msgstr "Spremi autentikaciju"
+
+#: ui/glade/dialogs.glade.h:49
+msgid "Text Change"
+msgstr "Promjena teksta"
+
+#: ui/glade/dialogs.glade.h:50
+msgid "The item(s) will be sent to the trash can."
+msgstr "Stavke će biti biti prebačeni u smeće"
+
+#: ui/glade/dialogs.glade.h:51
+msgid "Valid:"
+msgstr "Ispravno:"
+
+#: ui/glade/dialogs.glade.h:52
+msgid "Value:"
+msgstr "Vrijednost:"
+
+#: ui/glade/pull.glade.h:1
+msgid "<b>Pull Information</b>"
+msgstr ""
+
+#: ui/glade/pull.glade.h:2 ui/glade/git-update.glade.h:2
+msgid "Merge changes into local branch"
+msgstr ""
+
+#: ui/glade/pull.glade.h:3
+msgid "Pull"
+msgstr ""
+
+#: ui/glade/manager.glade.h:1
+msgid "label"
+msgstr ""
+
+#: ui/glade/about.glade.h:1
+msgid "<b>Links</b>"
+msgstr "<b>Poveznice</b>"
+
+#: ui/glade/about.glade.h:2
+msgid "<b>Version Information</b>"
+msgstr "<b>Informacija o verziji</b>"
+
+#: ui/glade/about.glade.h:3
+msgid "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
+msgstr "<span size=\"xx-large\"><b>RabbitVCS</b></span>"
+
+#: ui/glade/about.glade.h:5
+msgid "Authors:"
+msgstr "Autori:"
+
+#: ui/glade/about.glade.h:6
+msgid "Thanks:"
+msgstr "Zahvale:"
+
+#: ui/glade/property_page.glade.h:1
+msgid "Content status:"
+msgstr ""
+
+#: ui/glade/property_page.glade.h:3
+msgid "Property status:"
+msgstr ""
+
+#: ui/glade/property_page.glade.h:5
+msgid "VCS:"
+msgstr ""
+
+#: ui/glade/log.glade.h:1
+msgid "100"
+msgstr "100"
+
+#: ui/glade/log.glade.h:2
+msgid "<b>Affected File(s)</b> (double-click to compare with base)"
+msgstr "<b>Datoteka(e) promjene</b> (dvoklik za usporedbu s osnovom)"
+
+#: ui/glade/log.glade.h:4
+msgid "<b>Revisions Table</b>"
+msgstr "<b>Tablica inačica</b>"
+
+#: ui/glade/log.glade.h:5
+msgid "Limit:"
+msgstr "Ograničenje:"
+
+#: ui/glade/log.glade.h:6
+msgid "Log"
+msgstr "Dnevnik"
+
+#: ui/glade/log.glade.h:8
+msgid "Refresh"
+msgstr "Osvježi"
+
+#: ui/glade/log.glade.h:9
+msgid "Showing Revisions:"
+msgstr "Prikazuje inačice:"
+
+#: ui/glade/log.glade.h:10
+msgid "Stop on copy"
+msgstr "Zaustavi se na kopiranju"
+
+#: ui/glade/cleanup.glade.h:2
+msgid ""
+"Cleanup Requested....\n"
+"\n"
+"Begin working copy cleanup?"
+msgstr ""
+"Potrebno je čišćenje...\n"
+"\n"
+"Da li želite pokrenuti čišćenje?"
+
+#: ui/glade/settings.glade.h:1
+msgid "<b>Authentication</b>"
+msgstr "<b>Prijava korisnika</b>"
+
+#: ui/glade/settings.glade.h:2
+msgid "<b>Checker type:</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:3
+msgid "<b>Configuration Editor</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:4
+msgid "<b>Log Messages</b>"
+msgstr "<b>Poruke dnevnika</b>"
+
+#: ui/glade/settings.glade.h:5
+msgid "<b>Logging Options</b>"
+msgstr "<b>Mogućnosti dnevnika</b>"
+
+#: ui/glade/settings.glade.h:6
+msgid "<b>Memory usage:</b> "
+msgstr ""
+
+#: ui/glade/settings.glade.h:7
+msgid "<b>Other Information</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:8
+msgid "<b>Process ID:</b>"
+msgstr ""
+
+#: ui/glade/settings.glade.h:9
+msgid "<b>Program used to compare files</b>"
+msgstr "<b>Program za usporedbu datoteka</b>"
+
+#: ui/glade/settings.glade.h:10
+msgid "<b>RabbitVCS</b>"
+msgstr "<b>RabbitVCS</b>"
+
+#: ui/glade/settings.glade.h:11
+msgid "<b>URL History</b>"
+msgstr "<b>URL Povijest</b>"
+
+#: ui/glade/settings.glade.h:12
+msgid "Browse..."
+msgstr "Pregledaj..."
+
+#: ui/glade/settings.glade.h:13
+msgid "Clear your authentication information"
+msgstr "Izbriši podatke za prijavu korisnika"
+
+#: ui/glade/settings.glade.h:14
+msgid "Enable emblems"
+msgstr "Omogući oznake"
+
+#: ui/glade/settings.glade.h:15
+msgid "Enable file attributes"
+msgstr "Omogući svojstva datoteka"
+
+#: ui/glade/settings.glade.h:16
+msgid "Enable recursive status checks"
+msgstr "Omogući poniruću provjeru statusa"
+
+#: ui/glade/settings.glade.h:17
+msgid "External Programs"
+msgstr "Vanjski programi"
+
+#: ui/glade/settings.glade.h:18
+msgid "General"
+msgstr "Općenito"
+
+#: ui/glade/settings.glade.h:19
+msgid "Git"
+msgstr ""
+
+#: ui/glade/settings.glade.h:20
+msgid "Language:"
+msgstr "Jezik:"
+
+#: ui/glade/settings.glade.h:21
+msgid "Logging"
+msgstr "Pisanje dnevnika"
+
+#: ui/glade/settings.glade.h:22
+msgid "Minimum level to log"
+msgstr "Najmanja razina logiranja"
+
+#: ui/glade/settings.glade.h:23
+msgid "Number of URLs to remember"
+msgstr "Broj zapamćenih URL-ova"
+
+#: ui/glade/settings.glade.h:24
+msgid "Number of messages to remember"
+msgstr "Broj spremljenih poruka"
+
+#: ui/glade/settings.glade.h:25
+msgid "Refresh Information"
+msgstr ""
+
+#: ui/glade/settings.glade.h:26
+msgid "Restart Checker"
+msgstr ""
+
+#: ui/glade/settings.glade.h:27
+msgid "Saved Data"
+msgstr "Spremljeni podaci"
+
+#: ui/glade/settings.glade.h:29
+msgid "Show RabbitVCS debugging tools"
+msgstr "Prikaži RabbitVCS alate za traženje grešaka (debugging)"
+
+#: ui/glade/settings.glade.h:30
+msgid "Show new version on the left side"
+msgstr ""
+
+#: ui/glade/settings.glade.h:31
+msgid "Status Checker"
+msgstr ""
+
+#: ui/glade/settings.glade.h:32
+msgid "Stop Checker"
+msgstr ""
+
+#: ui/glade/settings.glade.h:33
+msgid "The debug menu is used to diagnose problems with RabbitVCS itself"
+msgstr "Debug izbornik se koristi za traženje grešaka unutar RabbitVCSa"
+
+#: ui/glade/settings.glade.h:34
+msgid "Type:"
+msgstr "Tip:"
+
+#: ui/glade/lock.glade.h:1
+msgid "<b>Files to lock</b>"
+msgstr "<b>Datoteke za zaključavanje</b>"
+
+#: ui/glade/lock.glade.h:2
+msgid "<b>Please describe why you are locking these files</b>"
+msgstr "<b>Molim opišite zašto zaključavate ove datoteke</b>"
+
+#: ui/glade/lock.glade.h:3
+msgid "Lock Files"
+msgstr "Zaključaj datoteke"
+
+#: ui/glade/lock.glade.h:5 ui/glade/add.glade.h:2 ui/glade/commit.glade.h:6
+msgid "Select / Deselect all"
+msgstr "Označi  sve / Makni sve oznake"
+
+#: ui/glade/lock.glade.h:6
+msgid "Steal the locks"
+msgstr "Preuzmi lokote"
+
+#: ui/glade/annotate.glade.h:1
+msgid "<b>From Revision</b>"
+msgstr "<b>Od inančice</b>"
+
+#: ui/glade/annotate.glade.h:2
+msgid "<b>To Revision</b>"
+msgstr "<b>Do inačice</b>"
+
+#: ui/glade/annotate.glade.h:3
+msgid "Annotate"
+msgstr "Pribilježi"
+
+#: ui/glade/ignore.glade.h:1
+msgid "<b>Ignore and exclude files from being tracked</b>"
+msgstr ""
+
+#: ui/glade/ignore.glade.h:2
+msgid "Ignore"
+msgstr ""
+
+#: ui/glade/commit.glade.h:2
+msgid "<b>Changed Files</b> (double-click to compare with base)"
+msgstr "<b>Promijenjene datoteke</b> (dvoklik za usporedbu s osnovom)"
+
+#: ui/glade/commit.glade.h:3
+msgid "<b>Commit to:</b>"
+msgstr "<b>Pohrani u:</b>"
+
+#: ui/glade/commit.glade.h:7
+msgid "Show unversioned files"
+msgstr "Prikaži datoteke bez verzije"
+
+#: ui/glade/notification.glade.h:1
+msgid "Notification Messages"
+msgstr "Obavijesne poruke"
+
+#: ui/glade/property_editor.glade.h:1
+msgid "<b>Remote URI:</b>"
+msgstr "<b>Udaljeni URI:</b>"
+
+#: ui/glade/property_editor.glade.h:2
+msgid "<b>Working Copy:</b>"
+msgstr "<b>Radna kopija:</b>"
+
+#: ui/glade/property_editor.glade.h:3
+msgid "Add a new property."
+msgstr "Dodaj novo svojstvo"
+
+#: ui/glade/property_editor.glade.h:4
+msgid "Close this dialog."
+msgstr "Zatvori dijalog."
+
+#: ui/glade/property_editor.glade.h:5
+msgid "Property Editor"
+msgstr "Editor za svojstva"
+
+#: ui/glade/property_editor.glade.h:6
+msgid "Refresh the list of properties."
+msgstr "Osvježi popis svojstava."
+
+#: ui/glade/relocate.glade.h:1
+msgid "<b>Change the repository of your working copy</b>"
+msgstr "<b>Promijeni skladište za radnu kopiju</b>"
+
+#: ui/glade/relocate.glade.h:2
+msgid "From:"
+msgstr "Od:"
+
+#: ui/glade/relocate.glade.h:4
+msgid "To:"
+msgstr "Do:"
+
+#: ui/glade/git-update.glade.h:1 ui/glade/update.glade.h:1
+#: ui/glade/merge.glade.h:3
+msgid "<b>Options</b>"
+msgstr "<b>Mogućnosti</b>"
+
+#: ui/glade/git-update.glade.h:3
+msgid "Update Local Repository"
+msgstr ""
+
+#: ui/glade/update.glade.h:2
+msgid "<b>Revision</b>"
+msgstr "<b>Inačica</b>"
+
+#: ui/glade/update.glade.h:3
+msgid "Omit Externals"
+msgstr "Preskoči vanjska skladišta"
+
+#: ui/glade/update.glade.h:4 ui/glade/merge.glade.h:16
+msgid "Recursive"
+msgstr "Ponirući"
+
+#: ui/glade/update.glade.h:5
+msgid "Rollback to specified revision number"
+msgstr ""
+
+#: ui/glade/import.glade.h:1
+msgid "<b>Import Message</b>"
+msgstr "<b>Uvoz poruke</b>"
+
+#: ui/glade/import.glade.h:2
+msgid "<b>Repository</b>"
+msgstr "<b>Skladište</b>"
+
+#: ui/glade/import.glade.h:4
+msgid "Include ignored files"
+msgstr "Uključi zanemarene datoteke"
+
+#: ui/glade/merge.glade.h:1
+msgid "<b>From URL</b>"
+msgstr "<b>Od URL-a</b>"
+
+#: ui/glade/merge.glade.h:2
+msgid "<b>From: (URL and revision to merge)</b>"
+msgstr "<b>Do: (URL i inačica za stapanje)</b>"
+
+#: ui/glade/merge.glade.h:4
+msgid "<b>Revision Range</b>"
+msgstr "<b>Raspon inačica</b>"
+
+#: ui/glade/merge.glade.h:5
+msgid "<b>To: (URL and revision to merge)</b>"
+msgstr "<b>Do: (URL i inačica za stapanje)</b>"
+
+#: ui/glade/merge.glade.h:6
+msgid "<b>URL to merge from</b>"
+msgstr "<b>URL od kojeg stapamo</b>"
+
+#: ui/glade/merge.glade.h:7
+msgid "<b>Working Copy</b>"
+msgstr "<b>Radna kopija</b>"
+
+#: ui/glade/merge.glade.h:8
+msgid ""
+"Choose this method if you have made some changes to a branch and wish to "
+"merge your changes with another branch."
+msgstr ""
+"Odaberite ovu metodu ako imate neke promjene u grani i želite stopiti svoje "
+"promjene s drugom granom."
+
+#: ui/glade/merge.glade.h:9
+msgid ""
+"Choose this method if you wish to merge two different branches into your "
+"working copy."
+msgstr ""
+"Odaberite ovu metodu ako želite stopiti dvije različite grane u vašu radnu "
+"kopiju."
+
+#: ui/glade/merge.glade.h:11
+msgid "Ignore ancestry"
+msgstr "Zanemari porijeklo"
+
+#: ui/glade/merge.glade.h:12
+msgid "Merge Assistant"
+msgstr "Pomoćnik stapanja"
+
+#: ui/glade/merge.glade.h:13
+msgid "Merge a range of revisions"
+msgstr "Stopi raspon inačica"
+
+#: ui/glade/merge.glade.h:14
+msgid "Merge two different trees"
+msgstr "Stopi dva različita stabla"
+
+#: ui/glade/merge.glade.h:15
+msgid "Only record the merge"
+msgstr "Samo zabilježi stapanje"
+
+#: ui/glade/merge.glade.h:18
+msgid "Show log"
+msgstr "Prikaži dnevnik"
+
+#: ui/glade/merge.glade.h:19
+msgid "Test Merge"
+msgstr "Test stapanja"
+
+#: ui/glade/merge.glade.h:20
+msgid ""
+"Use the log dialog to select the revisions that you wish to merge.  Or write "
+"out the revisions manually, each separated by a comma.  You can specify a "
+"revision range by a dash. \n"
+"\n"
+"Example: 4-7,9,11,15-HEAD\n"
+"\n"
+"To merge all revisions, leave the box empty."
+msgstr ""
+"Koristite dnevnik za odabir revizija koje želite stopiti. Možete i upisati "
+"revizije odvojene zarezima, a raspon revizija je moguće upisati koristeći "
+"crticu '-'. \n"
+"\n"
+"Primjer: 4-7,9,11,15-HEAD\n"
+"\n"
+"Za stapanje svih revizija, polje ostavite nepopunjeno."
