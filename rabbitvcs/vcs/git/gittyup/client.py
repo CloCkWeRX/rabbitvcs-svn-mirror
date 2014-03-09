@@ -1385,7 +1385,7 @@ class GittyupClient:
     def log(self, path="", skip=0, limit=None, revision="", showtype="all"):
         
         cmd = ["git", "--no-pager", "log", "--numstat", "--parents", "--pretty=fuller", 
-            "--date-order"]
+            "--date-order", "--date=default"]
 
         if showtype == "all":
             cmd.append("--all")
