@@ -56,6 +56,7 @@ class GitStage(Add):
         self.git = self.vcs.git(self.paths[0])
         self.items = None
         self.statuses = self.git.STATUSES_FOR_STAGE
+        self.show_ignored = False
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"), 
             [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
