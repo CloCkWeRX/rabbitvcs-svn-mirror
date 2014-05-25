@@ -32,6 +32,10 @@ from __future__ import with_statement
 from __future__ import absolute_import
 import six
 from six.moves import range
+
+import signal
+signal.signal(signal.SIGINT, signal.SIG_DFL)
+
 def log_all_exceptions(type, value, tb):
     import sys, traceback
     from rabbitvcs.util.log import Log
