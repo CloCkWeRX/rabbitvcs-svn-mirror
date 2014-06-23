@@ -34,6 +34,9 @@ Install:
     (as root or using sudo)
     $ python setup.py install
 
+    On Ubuntu or Debian-based distros, instead run:
+    $ sudo python setup.py install --install-layout=deb
+
     Each clients' README file contains details on their dependencies and 
     installation.
 
