@@ -36,7 +36,7 @@ else:
 
     # Create a new branch, don't track it
     g.branch("branch1")
-    assert ("branch1" in g.branch_list())
+    assert "branch1" in [x['name'] for x in g.branch_list()]
 
     # Make sure we are still tracking master
     assert (g.is_tracking("refs/heads/master"))
@@ -47,7 +47,7 @@ else:
     
     # Rename branch1 to branch1b
     g.branch_rename("branch1", "branch1b")
-    assert ("branch1b" in g.branch_list())
+    assert "branch1b" in [x['name'] for x in g.branch_list()]
 
     # Make sure we are now tracking branch1b
     assert (g.is_tracking("refs/heads/branch1b"))
