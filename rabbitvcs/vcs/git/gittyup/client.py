@@ -584,7 +584,10 @@ class GittyupClient:
         cmd = ["git", "branch"]
         if track:
             cmd.append("-t")
-        
+
+        if commit_sha is None:
+            commit_sha = self.repo.head()
+
         cmd += [name, commit_sha]
 
         try:
