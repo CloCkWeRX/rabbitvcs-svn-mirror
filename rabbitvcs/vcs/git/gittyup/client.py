@@ -93,7 +93,7 @@ class GittyupClient:
             f.close()
 
     def _get_index(self):
-        if self.repo.has_index() == False:
+        if not self.repo.has_index():
             self._initialize_index()
         
         return self.repo.open_index()
@@ -352,17 +352,11 @@ class GittyupClient:
         if not os.path.isdir(path):
             os.mkdir(path)
 
-        cmd = ["git", "init"]
-        
         if bare:
-            cmd.append("--bare")
-        
-        cmd.append(path)
-
-        try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=path, notify=self.notify, cancel=self.get_cancel).execute()
-        except GittyupCommandError, e:
-            self.callback_notify(e)
+            dulwich.repo.Repo.init_bare(path)
+        else:
+            dulwich.repo.Repo.init(path)
+        self.set_repository(path)
 
     def set_repository(self, path):
         try:
