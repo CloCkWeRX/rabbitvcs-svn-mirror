@@ -966,8 +966,11 @@ class GittyupClient:
         # Setup the section name in the config for the remote target.
         remoteKey = "remote \"" + repository + "\""
 
-        # Prompt for password if a username exists in the remote url without a password.
-        isPassword, originalRemoteUrl = self.promptPassword(remoteKey)
+    	# Prompt for username if it does not exist in the url.
+		isUsername, originalRemoteUrl = self.promptUsername(remoteKey)
+
+    	# Prompt for password if a username exists in the remote url without a password.
+    	isPassword, originalRemoteUrl2 = self.promptPassword(remoteKey)
 
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
@@ -979,6 +982,22 @@ class GittyupClient:
             # Write original url back to config.
             self.config.set(remoteKey, "url", originalRemoteUrl)
             self.config.write()
+
+    def onUsername(self, window, username, remoteKey, originalRemoteUrl, isOk):
+        if isOk == True:
+            if username == "":
+                tkMessageBox.showinfo("debug", "Please enter a username.", parent=window)
+                return
+            else:
+                # Insert password into url.
+                newRemoteUrl = originalRemoteUrl.replace("://", "://" + username + "@")
+
+                # Write url temporarily back to config.
+                self.config.set(remoteKey, "url", newRemoteUrl)
+                self.config.write()
+
+        # Close dialog.
+        window.destroy()
 
     def onPassword(self, window, password, remoteKey, originalRemoteUrl, isOk):
         if isOk == True:
@@ -996,6 +1015,57 @@ class GittyupClient:
         # Close dialog.
         window.destroy()
 
+    def promptUsername(self, remoteKey):
+        """
+        If the github url contains no username, prompt for one and write the url back to the config.
+        Note, we'll set the url back to its original (without the password) after the call completes.
+        https://user@github.com/path/repositoryName.git
+        """
+        isUsername = False
+
+        # Get existing url from config.
+        originalRemoteUrl = self.config.get(remoteKey, "url")
+
+		if originalRemoteUrl.find('@') == -1:
+			# No username or password. Prompt for both. Create dialog.
+            window = Tkinter.Tk()
+
+            window.title("Please enter your username")
+            window.resizable(0,0)
+            window["padx"] = 40
+            window["pady"] = 20
+            textFrame = Tkinter.Frame(window)
+
+            # Create textbox label.
+            entryLabel = Tkinter.Label(textFrame)
+            entryLabel["text"] = "Username:"
+            entryLabel.pack(side=Tkinter.LEFT)
+
+            # Create textbox.
+            entryWidget = Tkinter.Entry(textFrame)
+            entryWidget["width"] = 25
+            entryWidget.bind("<Return>", (lambda event: self.onUsername(window, entryWidget.get(), remoteKey, originalRemoteUrl, True)))
+            entryWidget.bind("<KP_Enter>", (lambda event: self.onUsername(window, entryWidget.get(), remoteKey, originalRemoteUrl, True)))
+            entryWidget.pack(side=Tkinter.LEFT)
+            entryWidget.focus();
+
+            textFrame.pack()
+
+            # Create OK button.
+            button = Tkinter.Button(window, width=5, text="OK", command = (lambda: self.onUsername(window, entryWidget.get(), remoteKey, originalRemoteUrl, True)))
+            button.pack(side=Tkinter.RIGHT)
+
+            # Create Cancel button.
+            button = Tkinter.Button(window, width=5, text="Cancel", command = (lambda: self.onUsername(window, entryWidget.get(), remoteKey, originalRemoteUrl, False)))
+            button.pack(side=Tkinter.RIGHT)
+
+            # Show dialog.
+            window.mainloop()
+
+            isUsername = True
+	
+        return isUsername, originalRemoteUrl
+
     def promptPassword(self, remoteKey):
         """
         If a username exists in the github url without a password, prompt the user and write the url back to the config.
@@ -1009,12 +1079,8 @@ class GittyupClient:
 
         # If the url contains a username (@) without a password (:), then prompt for a password.
         if originalRemoteUrl.find('@') > -1 and originalRemoteUrl.rfind(':') <= 5:
-            # Prompt for password.
-            password = ""
-
-            # Create dialog.
+            # Prompt for password. Create dialog.
             window = Tkinter.Tk()
-            #window.wm_withdraw()
 
             window.title("Please enter your password")
             window.resizable(0,0)
