@@ -937,11 +937,34 @@ class GittyupClient:
                 cmd.append (repository)
                 cmd.append (refspec)
 
+        # Setup the section name in the config for the remote target.
+        remoteKey = "remote \"" + repository + "\""
+        isUsername = False
+        isPassword = False
+
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_pull, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
+			if stdout[0].find('could not read Username') > -1:
+		    	# Prompt for username if it does not exist in the url.
+				isUsername, originalRemoteUrl = self.promptUsername(remoteKey)
+
+		    	# Prompt for password if a username exists in the remote url without a password.
+		    	isPassword, originalRemoteUrl2 = self.promptPassword(remoteKey)
+		    elif stdout[0].find('could not read Password') > -1:
+		    	# Prompt for password if a username exists in the remote url without a password.
+		    	isPassword, originalRemoteUrl = self.promptPassword(remoteKey)
+
+	    	# Try again.
+        	(status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
-    
+
+        # If we prompted for a password and write it to the config, remove it now before continuing.
+        if isUsername == True or isPassword == True:
+            # Write original url back to config.
+            self.config.set(remoteKey, "url", originalRemoteUrl)
+            self.config.write()
+
     def push(self, repository="origin", refspec="master"):
         """
         Push objects from the local repository into the remote repository
@@ -965,20 +988,28 @@ class GittyupClient:
 
         # Setup the section name in the config for the remote target.
         remoteKey = "remote \"" + repository + "\""
-
-    	# Prompt for username if it does not exist in the url.
-		isUsername, originalRemoteUrl = self.promptUsername(remoteKey)
-
-    	# Prompt for password if a username exists in the remote url without a password.
-    	isPassword, originalRemoteUrl2 = self.promptPassword(remoteKey)
+        isUsername = False
+        isPassword = False
 
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
+			if stdout[0].find('could not read Username') > -1:
+		    	# Prompt for username if it does not exist in the url.
+				isUsername, originalRemoteUrl = self.promptUsername(remoteKey)
+
+		    	# Prompt for password if a username exists in the remote url without a password.
+		    	isPassword, originalRemoteUrl2 = self.promptPassword(remoteKey)
+		    elif stdout[0].find('could not read Password') > -1:
+		    	# Prompt for password if a username exists in the remote url without a password.
+		    	isPassword, originalRemoteUrl = self.promptPassword(remoteKey)
+
+	    	# Try again.
+        	(status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
 
         # If we prompted for a password and write it to the config, remove it now before continuing.
-        if isPassword == True:
+        if isUsername == True or isPassword == True:
             # Write original url back to config.
             self.config.set(remoteKey, "url", originalRemoteUrl)
             self.config.write()
