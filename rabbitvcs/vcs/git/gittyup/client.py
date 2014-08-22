@@ -27,6 +27,9 @@ from objects import *
 from config import GittyupLocalFallbackConfig
 from command import GittyupCommand
 
+import Tkinter
+import tkMessageBox
+
 TZ = -1 * time.timezone
 ENCODING = "UTF-8"
 
@@ -955,11 +958,100 @@ class GittyupClient:
         self.numberOfCommandStages = 2
 
         cmd = ["git", "push", "--progress", repository, refspec]
-        
+
+        #window = Tkinter.Tk()
+        #window.wm_withdraw()
+        #tkMessageBox.showinfo("debug", "msg", parent=window)
+
+        # Setup the section name in the config for the remote target.
+        remoteKey = "remote \"" + repository + "\""
+
+        # Prompt for password if a username exists in the remote url without a password.
+        isPassword, originalRemoteUrl = self.promptPassword(remoteKey)
+
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
+
+        # If we prompted for a password and write it to the config, remove it now before continuing.
+        if isPassword == True:
+            # Write original url back to config.
+            self.config.set(remoteKey, "url", originalRemoteUrl)
+            self.config.write()
+
+    def onPassword(self, window, password, remoteKey, originalRemoteUrl, isOk):
+        if isOk == True:
+            if password == "":
+                tkMessageBox.showinfo("debug", "Please enter a password.", parent=window)
+                return
+            else:
+                # Insert password into url.
+                newRemoteUrl = originalRemoteUrl.replace("@", ":" + password + "@")
+
+                # Write url temporarily back to config.
+                self.config.set(remoteKey, "url", newRemoteUrl)
+                self.config.write()
+
+        # Close dialog.
+        window.destroy()
+
+    def promptPassword(self, remoteKey):
+        """
+        If a username exists in the github url without a password, prompt the user and write the url back to the config.
+        Note, we'll set the url back to its original (without the password) after the call completes.
+        https://user@github.com/path/repositoryName.git
+        """
+        isPassword = False
+
+        # Get existing url from config.
+        originalRemoteUrl = self.config.get(remoteKey, "url")
+
+        # If the url contains a username (@) without a password (:), then prompt for a password.
+        if originalRemoteUrl.find('@') > -1 and originalRemoteUrl.rfind(':') <= 5:
+            # Prompt for password.
+            password = ""
+
+            # Create dialog.
+            window = Tkinter.Tk()
+            #window.wm_withdraw()
+
+            window.title("Please enter your password")
+            window.resizable(0,0)
+            window["padx"] = 40
+            window["pady"] = 20
+            textFrame = Tkinter.Frame(window)
+
+            # Create textbox label.
+            entryLabel = Tkinter.Label(textFrame)
+            entryLabel["text"] = "Password:"
+            entryLabel.pack(side=Tkinter.LEFT)
+
+            # Create textbox.
+            entryWidget = Tkinter.Entry(textFrame)
+            entryWidget["show"] = "*"
+            entryWidget["width"] = 25
+            entryWidget.bind("<Return>", (lambda event: self.onPassword(window, entryWidget.get(), remoteKey, originalRemoteUrl, True)))
+            entryWidget.bind("<KP_Enter>", (lambda event: self.onPassword(window, entryWidget.get(), remoteKey, originalRemoteUrl, True)))
+            entryWidget.pack(side=Tkinter.LEFT)
+            entryWidget.focus();
+
+            textFrame.pack()
+
+            # Create OK button.
+            button = Tkinter.Button(window, width=5, text="OK", command = (lambda: self.onPassword(window, entryWidget.get(), remoteKey, originalRemoteUrl, True)))
+            button.pack(side=Tkinter.RIGHT)
+
+            # Create Cancel button.
+            button = Tkinter.Button(window, width=5, text="Cancel", command = (lambda: self.onPassword(window, entryWidget.get(), remoteKey, originalRemoteUrl, False)))
+            button.pack(side=Tkinter.RIGHT)
+
+            # Show dialog.
+            window.mainloop()
+
+            isPassword = True
+
+        return isPassword, originalRemoteUrl
 
     def fetch(self, host):
         """
