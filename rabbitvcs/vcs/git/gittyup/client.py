@@ -744,35 +744,35 @@ class GittyupClient:
         
         isUsername = False
         isPassword = False
-		self.modifiedHost = host
+        self.modifiedHost = host
 
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify_and_parse_progress, cancel=self.get_cancel).execute()
 
-			if stdout[1].find('could not read Username') > -1:
-		    	# Prompt for username if it does not exist in the url.
-				isUsername, originalRemoteUrl = self.promptUsername(self.modifiedHost)
+            if stdout[1].find('could not read Username') > -1:
+                # Prompt for username if it does not exist in the url.
+                isUsername, originalRemoteUrl = self.promptUsername(self.modifiedHost)
 
-		    	# Prompt for password if a username exists in the remote url without a password.
-		    	isPassword, originalRemoteUrl2 = self.promptPassword(self.modifiedHost)
-		    elif stdout[1].find('could not read Password') > -1:
-		    	# Prompt for password if a username exists in the remote url without a password.
-		    	isPassword, originalRemoteUrl = self.promptPassword(self.modifiedHost)
+                # Prompt for password if a username exists in the remote url without a password.
+                isPassword, originalRemoteUrl2 = self.promptPassword(self.modifiedHost)
+            elif stdout[1].find('could not read Password') > -1:
+                # Prompt for password if a username exists in the remote url without a password.
+                isPassword, originalRemoteUrl = self.promptPassword(self.modifiedHost)
 
-		    if isUsername == True or isPassword == True:
-		    	# Update the cmd with the username and password.
-		    	cmd = ["git", "clone", self.modifiedHost, path] + more
+            if isUsername == True or isPassword == True:
+                # Update the cmd with the username and password.
+                cmd = ["git", "clone", self.modifiedHost, path] + more
 
-		    	# Try again.
-            	(status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify_and_parse_progress, cancel=self.get_cancel).execute()
+                # Try again.
+                (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify_and_parse_progress, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
 
         # If we prompted for a username or password then it will now be written to the config. Remove it now before continuing.
         if isUsername == True or isPassword == True:
-	        # Load new config.
-	        self.repo = dulwich.repo.Repo(path)
-			self._load_config()
+            # Load new config.
+            self.repo = dulwich.repo.Repo(path)
+            self._load_config()
 
             # Write original url back to config.
             self.config.set("remote \"origin\"", "url", host)
@@ -975,19 +975,19 @@ class GittyupClient:
 
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
-			if stdout[0].find('could not read Username') > -1:
-		    	# Prompt for username if it does not exist in the url.
-				isUsername, originalRemoteUrl = self.promptUsername(remoteKey)
+            if stdout[0].find('could not read Username') > -1:
+                # Prompt for username if it does not exist in the url.
+                isUsername, originalRemoteUrl = self.promptUsername(remoteKey)
 
-		    	# Prompt for password if a username exists in the remote url without a password.
-		    	isPassword, originalRemoteUrl2 = self.promptPassword(remoteKey)
-		    elif stdout[0].find('could not read Password') > -1:
-		    	# Prompt for password if a username exists in the remote url without a password.
-		    	isPassword, originalRemoteUrl = self.promptPassword(remoteKey)
+                # Prompt for password if a username exists in the remote url without a password.
+                isPassword, originalRemoteUrl2 = self.promptPassword(remoteKey)
+            elif stdout[0].find('could not read Password') > -1:
+                # Prompt for password if a username exists in the remote url without a password.
+                isPassword, originalRemoteUrl = self.promptPassword(remoteKey)
 
-		    if isUsername == True or isPassword == True:
-		    	# Try again.
-	        	(status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
+            if isUsername == True or isPassword == True:
+                # Try again.
+                (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
 
@@ -1014,10 +1014,6 @@ class GittyupClient:
 
         cmd = ["git", "push", "--progress", repository, refspec]
 
-        #window = Tkinter.Tk()
-        #window.wm_withdraw()
-        #tkMessageBox.showinfo("debug", "msg", parent=window)
-
         # Setup the section name in the config for the remote target.
         remoteKey = "remote \"" + repository + "\""
         isUsername = False
@@ -1025,19 +1021,19 @@ class GittyupClient:
 
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
-			if stdout[0].find('could not read Username') > -1:
-		    	# Prompt for username if it does not exist in the url.
-				isUsername, originalRemoteUrl = self.promptUsername(remoteKey)
+            if stdout[0].find('could not read Username') > -1:
+                # Prompt for username if it does not exist in the url.
+                isUsername, originalRemoteUrl = self.promptUsername(remoteKey)
 
-		    	# Prompt for password if a username exists in the remote url without a password.
-		    	isPassword, originalRemoteUrl2 = self.promptPassword(remoteKey)
-		    elif stdout[0].find('could not read Password') > -1:
-		    	# Prompt for password if a username exists in the remote url without a password.
-		    	isPassword, originalRemoteUrl = self.promptPassword(remoteKey)
+                # Prompt for password if a username exists in the remote url without a password.
+                isPassword, originalRemoteUrl2 = self.promptPassword(remoteKey)
+            elif stdout[0].find('could not read Password') > -1:
+                # Prompt for password if a username exists in the remote url without a password.
+                isPassword, originalRemoteUrl = self.promptPassword(remoteKey)
 
-		    if isUsername == True or isPassword == True:
-		    	# Try again.
-	        	(status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
+            if isUsername == True or isPassword == True:
+                # Try again.
+                (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
 
@@ -1056,13 +1052,13 @@ class GittyupClient:
                 # Insert password into url.
                 newRemoteUrl = originalRemoteUrl.replace("://", "://" + username + "@")
 
-				if remoteKey.find("://") == -1:
-	                # Write url temporarily back to config.
-	                self.config.set(remoteKey, "url", newRemoteUrl)
-	                self.config.write()
+                if remoteKey.find("://") == -1:
+                    # Write url temporarily back to config.
+                    self.config.set(remoteKey, "url", newRemoteUrl)
+                    self.config.write()
                 else:
-                	# Change the url in memory, since we don't have a config yet.
-                	self.modifiedHost = newRemoteUrl
+                    # Change the url in memory, since we don't have a config yet.
+                    self.modifiedHost = newRemoteUrl
 
         # Close dialog.
         window.destroy()
@@ -1076,13 +1072,13 @@ class GittyupClient:
                 # Insert password into url.
                 newRemoteUrl = originalRemoteUrl.replace("@", ":" + password + "@")
 
-               	if remoteKey.find("://") == -1:
-                	# Write url temporarily back to config.
-                	self.config.set(remoteKey, "url", newRemoteUrl)
-                	self.config.write()
+                if remoteKey.find("://") == -1:
+                    # Write url temporarily back to config.
+                    self.config.set(remoteKey, "url", newRemoteUrl)
+                    self.config.write()
                 else:
-                	# Change the url in memory, since we don't have a config yet.
-                	self.modifiedHost = newRemoteUrl
+                    # Change the url in memory, since we don't have a config yet.
+                    self.modifiedHost = newRemoteUrl
 
         # Close dialog.
         window.destroy()
@@ -1094,15 +1090,15 @@ class GittyupClient:
         https://user@github.com/path/repositoryName.git
         """
         isUsername = False
-		originalRemoteUrl = remoteKey
-		self.modifiedHost = originalRemoteUrl
+        originalRemoteUrl = remoteKey
+        self.modifiedHost = originalRemoteUrl
 
         if remoteKey.find("://") == -1:
-	        # Get existing url from config, otherwise just use what was provided (the url from cloning, etc).
-	        originalRemoteUrl = self.config.get(remoteKey, "url")
+            # Get existing url from config, otherwise just use what was provided (the url from cloning, etc).
+            originalRemoteUrl = self.config.get(remoteKey, "url")
 
-		if originalRemoteUrl.find('@') == -1:
-			# No username or password. Prompt for both. Create dialog.
+        if originalRemoteUrl.find('@') == -1:
+            # No username or password. Prompt for both. Create dialog.
             window = Tkinter.Tk()
 
             window.title("Please enter your username")
@@ -1138,7 +1134,7 @@ class GittyupClient:
             window.mainloop()
 
             isUsername = True
-	
+    
         return isUsername, originalRemoteUrl
 
     def promptPassword(self, remoteKey):
@@ -1148,12 +1144,12 @@ class GittyupClient:
         https://user@github.com/path/repositoryName.git
         """
         isPassword = False
-		originalRemoteUrl = remoteKey
-		self.modifiedHost = originalRemoteUrl
+        originalRemoteUrl = remoteKey
+        self.modifiedHost = originalRemoteUrl
 
         if remoteKey.find("://") == -1:
-	        # Get existing url from config, otherwise just use what was provided (the url from cloning, etc).
-        	originalRemoteUrl = self.config.get(remoteKey, "url")
+            # Get existing url from config, otherwise just use what was provided (the url from cloning, etc).
+            originalRemoteUrl = self.config.get(remoteKey, "url")
 
         # If the url contains a username (@) without a password (:), then prompt for a password.
         if originalRemoteUrl.find('@') > -1 and originalRemoteUrl.rfind(':') <= 5:
