@@ -34,21 +34,21 @@ else:
     
     # Stage both files
     g.stage([DIR+"/test1.txt", DIR+"/test2.txt"])
-    st = g.status()
-    assert (st[0] == AddedStatus)
+    st = g.status(DIR)
+    assert (st[0] == AddedStatus), st
     assert (st[1] == AddedStatus)
     assert (st[0].is_staged)
     
     # Unstage both files
     g.unstage([DIR+"/test1.txt", DIR+"/test2.txt"])
-    st = g.status()
+    st = g.status(DIR)
     assert (st[0] == UntrackedStatus)
     assert (st[1] == UntrackedStatus)
     assert (not st[0].is_staged)
     
     # Untracked files should not be staged
     g.stage_all()
-    st = g.status()
+    st = g.status(DIR)
     assert (st[0] == UntrackedStatus)
     assert (st[1] == UntrackedStatus)
     
@@ -56,17 +56,17 @@ else:
     g.stage([DIR+"/test1.txt"])
     g.commit("Test commit")
     change(DIR+"/test1.txt")
-    st = g.status()
+    st = g.status(DIR)
     assert (st[0] == ModifiedStatus)
     g.stage_all()
-    st = g.status()
+    st = g.status(DIR)
     assert (st[0] == ModifiedStatus)
     assert (g.is_staged(DIR+"/" + st[0].path))
     assert (not g.is_staged(DIR+"/" + st[1].path))
 
     # Unstage all staged files
     g.unstage_all()
-    st = g.status()
+    st = g.status(DIR)
     assert (not g.is_staged(DIR+"/" + st[0].path))
     assert (not g.is_staged(DIR+"/" + st[1].path))
     assert (st[0] == ModifiedStatus)

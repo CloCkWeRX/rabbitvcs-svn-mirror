@@ -93,7 +93,7 @@ class GittyupClient:
             f.close()
 
     def _get_index(self):
-        if self.repo.has_index() == False:
+        if not self.repo.has_index():
             self._initialize_index()
         
         return self.repo.open_index()
@@ -352,17 +352,11 @@ class GittyupClient:
         if not os.path.isdir(path):
             os.mkdir(path)
 
-        cmd = ["git", "init"]
-        
         if bare:
-            cmd.append("--bare")
-        
-        cmd.append(path)
-
-        try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=path, notify=self.notify, cancel=self.get_cancel).execute()
-        except GittyupCommandError, e:
-            self.callback_notify(e)
+            dulwich.repo.Repo.init_bare(path)
+        else:
+            dulwich.repo.Repo.init(path)
+        self.set_repository(path)
 
     def set_repository(self, path):
         try:
@@ -419,8 +413,8 @@ class GittyupClient:
         @param  paths: A list of files
         
         """
-
         index = self._get_index()
+        to_stage = []
 
         if type(paths) in (str, unicode):
             paths = [paths]
@@ -428,26 +422,14 @@ class GittyupClient:
         for path in paths:
             relative_path = self.get_relative_path(path)
             absolute_path = self.get_absolute_path(path)
-            blob = self._get_blob_from_file(absolute_path)
-            
-            if relative_path in index:
-                (ctime, mtime, dev, ino, mode, uid, gid, size, blob_id, flags) = index[relative_path]
-            else:
-                flags = 0
-
-            # make sure mtime and ctime is updated every time a file is staged
-            (mode, ino, dev, nlink, uid, gid, size, atime, mtime, ctime) = os.stat(path)
-
-            index[relative_path] = (ctime, mtime, dev, ino, mode, uid, gid, size, blob.id, flags)
-            index.write()
 
             self.notify({
                 "action": "Staged",
                 "path": absolute_path,
                 "mime_type": guess_type(absolute_path)[0]
             })
-
-            self.repo.object_store.add_object(blob)
+            to_stage.append(path)
+        self.repo.stage(to_stage)
     
     def stage_all(self):
         """
@@ -590,7 +572,10 @@ class GittyupClient:
         cmd = ["git", "branch"]
         if track:
             cmd.append("-t")
-        
+
+        if commit_sha is None:
+            commit_sha = self.repo.head()
+
         cmd += [name, commit_sha]
 
         try:
