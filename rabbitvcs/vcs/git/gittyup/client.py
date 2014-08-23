@@ -1306,15 +1306,20 @@ class GittyupClient:
     def tag_list(self):
         """
         Return a list of Tag objects
-
+        
         """
-        for name, tag_sha in self.repo.refs.as_dict("refs/tags"):
-            if type(self.repo[tag_sha]) == dulwich.objects.Commit:
-                tag = CommitTag(name, tag_sha, self.repo[tag_sha])
-            else:
-                tag = Tag(tag_sha, self.repo[tag_sha])
-            tags.append(tag)
+    
+        refs = self.repo.get_refs()
 
+        tags = []
+        for ref,tag_sha in refs.items():
+            if ref.startswith("refs/tags"):
+                if type(self.repo[tag_sha]) == dulwich.objects.Commit:
+                    tag = CommitTag(ref[10:], tag_sha, self.repo[tag_sha])
+                else:
+                    tag = Tag(tag_sha, self.repo[tag_sha])
+                tags.append(tag)
+        
         return tags
 
     def status_porcelain(self, path):
