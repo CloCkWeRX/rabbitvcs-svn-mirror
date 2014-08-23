@@ -742,10 +742,41 @@ class GittyupClient:
     
         cmd = ["git", "clone", host, path] + more
         
+        isUsername = False
+        isPassword = False
+		self.modifiedHost = host
+
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify_and_parse_progress, cancel=self.get_cancel).execute()
+
+			if stdout[1].find('could not read Username') > -1:
+		    	# Prompt for username if it does not exist in the url.
+				isUsername, originalRemoteUrl = self.promptUsername(self.modifiedHost)
+
+		    	# Prompt for password if a username exists in the remote url without a password.
+		    	isPassword, originalRemoteUrl2 = self.promptPassword(self.modifiedHost)
+		    elif stdout[1].find('could not read Password') > -1:
+		    	# Prompt for password if a username exists in the remote url without a password.
+		    	isPassword, originalRemoteUrl = self.promptPassword(self.modifiedHost)
+
+		    if isUsername == True or isPassword == True:
+		    	# Update the cmd with the username and password.
+		    	cmd = ["git", "clone", self.modifiedHost, path] + more
+
+		    	# Try again.
+            	(status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify_and_parse_progress, cancel=self.get_cancel).execute()
         except GittyupCommandError, e:
             self.callback_notify(e)
+
+        # If we prompted for a username or password then it will now be written to the config. Remove it now before continuing.
+        if isUsername == True or isPassword == True:
+	        # Load new config.
+	        self.repo = dulwich.repo.Repo(path)
+			self._load_config()
+
+            # Write original url back to config.
+            self.config.set("remote \"origin\"", "url", host)
+            self.config.write()            
     
     def commit(self, message, parents=None, committer=None, commit_time=None, 
             commit_timezone=None, author=None, author_time=None, 
@@ -1025,9 +1056,13 @@ class GittyupClient:
                 # Insert password into url.
                 newRemoteUrl = originalRemoteUrl.replace("://", "://" + username + "@")
 
-                # Write url temporarily back to config.
-                self.config.set(remoteKey, "url", newRemoteUrl)
-                self.config.write()
+				if remoteKey.find("://") == -1:
+	                # Write url temporarily back to config.
+	                self.config.set(remoteKey, "url", newRemoteUrl)
+	                self.config.write()
+                else:
+                	# Change the url in memory, since we don't have a config yet.
+                	self.modifiedHost = newRemoteUrl
 
         # Close dialog.
         window.destroy()
@@ -1041,9 +1076,13 @@ class GittyupClient:
                 # Insert password into url.
                 newRemoteUrl = originalRemoteUrl.replace("@", ":" + password + "@")
 
-                # Write url temporarily back to config.
-                self.config.set(remoteKey, "url", newRemoteUrl)
-                self.config.write()
+               	if remoteKey.find("://") == -1:
+                	# Write url temporarily back to config.
+                	self.config.set(remoteKey, "url", newRemoteUrl)
+                	self.config.write()
+                else:
+                	# Change the url in memory, since we don't have a config yet.
+                	self.modifiedHost = newRemoteUrl
 
         # Close dialog.
         window.destroy()
@@ -1055,9 +1094,12 @@ class GittyupClient:
         https://user@github.com/path/repositoryName.git
         """
         isUsername = False
+		originalRemoteUrl = remoteKey
+		self.modifiedHost = originalRemoteUrl
 
-        # Get existing url from config.
-        originalRemoteUrl = self.config.get(remoteKey, "url")
+        if remoteKey.find("://") == -1:
+	        # Get existing url from config, otherwise just use what was provided (the url from cloning, etc).
+	        originalRemoteUrl = self.config.get(remoteKey, "url")
 
 		if originalRemoteUrl.find('@') == -1:
 			# No username or password. Prompt for both. Create dialog.
@@ -1106,9 +1148,12 @@ class GittyupClient:
         https://user@github.com/path/repositoryName.git
         """
         isPassword = False
+		originalRemoteUrl = remoteKey
+		self.modifiedHost = originalRemoteUrl
 
-        # Get existing url from config.
-        originalRemoteUrl = self.config.get(remoteKey, "url")
+        if remoteKey.find("://") == -1:
+	        # Get existing url from config, otherwise just use what was provided (the url from cloning, etc).
+        	originalRemoteUrl = self.config.get(remoteKey, "url")
 
         # If the url contains a username (@) without a password (:), then prompt for a password.
         if originalRemoteUrl.find('@') > -1 and originalRemoteUrl.rfind(':') <= 5:
