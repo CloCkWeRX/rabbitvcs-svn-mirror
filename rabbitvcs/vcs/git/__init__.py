@@ -576,7 +576,7 @@ class Git:
         
         return self.client.pull(repository, refspec, options)
 
-    def push(self, repository="origin", refspec="master"):
+    def push(self, repository="origin", refspec="master", tags=True):
         """
         Push objects from the local repository into the remote repository
             and merge them.
@@ -587,9 +587,12 @@ class Git:
         @type   refspec: string
         @param  refspec: The branch name to pull from
         
+        @type   tags: boolean
+        @param  tags: True to include tags in push, False to omit
+
         """
 
-        return self.client.push(repository, refspec)
+        return self.client.push(repository, refspec, tags)
 
     def fetch(self, host):
         """

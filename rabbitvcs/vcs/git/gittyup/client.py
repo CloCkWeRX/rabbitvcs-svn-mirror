@@ -916,7 +916,7 @@ class GittyupClient:
             self.config.set(remoteKey, "url", originalRemoteUrl)
             self.config.write()
 
-    def push(self, repository="origin", refspec="master"):
+    def push(self, repository="origin", refspec="master", tags=True):
         """
         Push objects from the local repository into the remote repository
             and merge them.
@@ -926,12 +926,18 @@ class GittyupClient:
         
         @type   refspec: string
         @param  refspec: The branch name to pull from
+
+        @type   tags: boolean
+        @param  tags: True to include tags in push, False to omit
         
         """
 
         self.numberOfCommandStages = 2
 
-        cmd = ["git", "push", "--progress", repository, refspec]
+        cmd = ["git", "push", "--progress"]
+        if tags:
+            cmd.extend(["--tags"])
+        cmd.extend([repository, refspec])
 
         # Setup the section name in the config for the remote target.
         remoteKey = "remote \"" + repository + "\""
