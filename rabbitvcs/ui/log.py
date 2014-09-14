@@ -703,7 +703,28 @@ class GitLog(Log):
         
         if not self.revision_items or len(self.revision_items) == 0:
             return
-        
+
+        # Load tags.
+        self.tagItems = []
+        for tag in self.tagAction.get_result(0):
+            name = tag.name
+
+            # Determine the type of tag, so we know which id to use.
+            if "Tag" in str([tag.obj]):
+                # Tag object, use the dereferenced id.
+                id = tag.obj.object[1]
+            else:
+                # Commit object, use the sha id.
+                id = tag.sha
+
+            # Add tags to list so we can match on id and display in the message.
+            self.tagItems.append({'id': id, 'name': name})
+
+        # Load branches.
+        self.branchItems = []
+        for branch in self.branchAction.get_result(0):
+            self.branchItems.append({'id': branch.revision, 'name': branch.name})
+
         self.set_start_revision(self.revision_items[0].revision.short())
         self.set_end_revision(self.revision_items[-1].revision.short())
 
@@ -749,6 +770,16 @@ class GitLog(Log):
             if not self.filter_text:
                 graph_render = (node, in_lines, out_lines)
 
+            # Check if a branch is available for this revision, and if so, insert it in the message description.
+            for branch in self.branchItems:
+                if branch['id'] == revision:
+                    msg = "<b>[" + branch['name'] + "]</b> " + msg
+
+            # Check if a tag is available for this revision, and if so, insert it in the message description.
+            for tag in self.tagItems:
+                if tag['id'] == revision:
+                    msg = "<i>[" + tag['name'] + "]</i> " + msg
+
             self.revisions_table.append([
                 graph_render,
                 revision,
@@ -766,6 +797,27 @@ class GitLog(Log):
     def load(self):
         self.set_loading(True)
 
+        # Load branches.
+        self.branchAction = GitAction(
+            self.git,
+            notification=False,
+            run_in_thread=True
+        )
+
+        self.branchAction.append(self.git.branch_list)
+        self.branchAction.start();
+
+        # Load tags.
+        self.tagAction = GitAction(
+            self.git,
+            notification=False,
+            run_in_thread=True
+        )
+
+        self.tagAction.append(self.git.tag_list)
+        self.tagAction.start()
+
+        # Load log.
         self.action = GitAction(
             self.git,
             notification=False,
