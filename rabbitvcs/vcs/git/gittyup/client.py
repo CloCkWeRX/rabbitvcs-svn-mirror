@@ -971,7 +971,7 @@ class GittyupClient:
     def onUsername(self, window, username, remoteKey, originalRemoteUrl, isOk):
         if isOk == True:
             if username == "":
-                tkMessageBox.showinfo("debug", "Please enter a username.", parent=window)
+                tkMessageBox.showinfo("Error", "Please enter a username.", parent=window)
                 return
             else:
                 # Insert password into url.
@@ -991,7 +991,7 @@ class GittyupClient:
     def onPassword(self, window, password, remoteKey, originalRemoteUrl, isOk):
         if isOk == True:
             if password == "":
-                tkMessageBox.showinfo("debug", "Please enter a password.", parent=window)
+                tkMessageBox.showinfo("Error", "Please enter a password.", parent=window)
                 return
             else:
                 # Insert password into url.
@@ -1055,6 +1055,9 @@ class GittyupClient:
             button = Tkinter.Button(window, width=5, text="Cancel", command = (lambda: self.onUsername(window, entryWidget.get(), remoteKey, originalRemoteUrl, False)))
             button.pack(side=Tkinter.RIGHT)
 
+            # Position window in center of screen.
+            self.center(window)
+
             # Show dialog.
             window.mainloop()
 
@@ -1110,6 +1113,9 @@ class GittyupClient:
             # Create Cancel button.
             button = Tkinter.Button(window, width=5, text="Cancel", command = (lambda: self.onPassword(window, entryWidget.get(), remoteKey, originalRemoteUrl, False)))
             button.pack(side=Tkinter.RIGHT)
+
+            # Position window in center of screen.
+            self.center(window)
 
             # Show dialog.
             window.mainloop()
@@ -2054,3 +2060,17 @@ class GittyupClient:
     
     def get_cancel(self):
         return self.callback_get_cancel
+
+    def center(self, window):
+        # Temporarily hide the window to avoid update_idletasks() drawing the window in the wrong position.
+        window.withdraw()
+
+        # Update "requested size" from geometry manager.
+        window.update_idletasks()
+
+        x = (window.winfo_screenwidth() - window.winfo_reqwidth()) / 2
+        y = (window.winfo_screenheight() - window.winfo_reqheight()) / 2
+        window.geometry("+%d+%d" % (x, y))
+
+        # Draw the window frame immediately after setting correct window position.
+        window.deiconify()
