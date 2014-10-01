@@ -45,7 +45,7 @@ log = Log("rabbitvcs.ui.createpatch")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gtk.gdk.threads_init()
+gobject.threads_init()
 
 class CreatePatch:
     """

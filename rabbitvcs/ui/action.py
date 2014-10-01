@@ -42,7 +42,7 @@ from rabbitvcs.util.decorators import gtk_unsafe
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gtk.gdk.threads_init()
+gobject.threads_init()
 
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.ui.action")
