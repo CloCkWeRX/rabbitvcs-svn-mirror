@@ -41,7 +41,7 @@ log = Log("rabbitvcs.ui.lock")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gtk.gdk.threads_init()
+gobject.threads_init()
 
 class SVNLock(InterfaceView, GtkContextMenuCaller):
     """

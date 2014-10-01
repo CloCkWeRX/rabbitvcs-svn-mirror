@@ -12,9 +12,10 @@ a Gedit plugin, and a command line utility.  All of these clients use the same
 python module as a back-end.
 
 Requires:
-    pygtk >= 2.12
-    python-gobject >= 2.14
-    python-configobj >= 4.4.0
+    pygtk             >= 2.12
+    python-configobj  >= 4.4.0
+    python-gobject    >= 2.14
+    python-simplejson >= 2.1.1
 
 For spell checking of commit messages:
     python-gtkspell
@@ -43,7 +44,10 @@ Install:
 Manual Upgrade:
     To upgrade an existing version manually, copy the contents of the
     repository to the rabbitvcs lib folder.
-    For example: /usr/lib/pymodules/python2.7/rabbitvcs
+    For example:
+      /usr/lib/pymodules/python2.7/rabbitvcs
+    Note: in case of Debian-based distros this path is most likely
+      /usr/lib/python2.7/dist-packages/rabbitvcs
 
 Homepage:
     http://www.rabbitvcs.org

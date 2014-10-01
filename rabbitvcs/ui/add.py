@@ -43,7 +43,7 @@ log = Log("rabbitvcs.ui.add")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gtk.gdk.threads_init()
+gobject.threads_init()
 
 class Add(InterfaceView, GtkContextMenuCaller):
     """

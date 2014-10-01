@@ -40,7 +40,7 @@ _ = gettext.gettext
 
 DATETIME_FORMAT = rabbitvcs.util.helper.DT_FORMAT_THISWEEK
 
-gtk.gdk.threads_init()
+gobject.threads_init()
 
 class Push(InterfaceView):
     def __init__(self, path):
