@@ -45,7 +45,7 @@ Manual Upgrade:
     To upgrade an existing version manually, copy the contents of the
     repository to the rabbitvcs lib folder.
     For example:
-	  /usr/lib/pymodules/python2.7/rabbitvcs
+      /usr/lib/pymodules/python2.7/rabbitvcs
     Note: in case of Debian-based distros this path is most likely
       /usr/lib/python2.7/dist-packages/rabbitvcs
 
