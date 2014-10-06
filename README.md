@@ -14,36 +14,39 @@ python module as a back-end.
 
 System Requirements
 -------------------
-pygtk             >= 2.12
-python-configobj  >= 4.4.0
-python-gobject    >= 2.14
-python-simplejson >= 2.1.1
-python-gtkspell             (for spell checking of commit messages)
-python-svn        >= 1.7.2  (for subversion)
-subversion        >= 1.4.6  (for subversion)
-dulwich           >= 0.9.7  (for git)
-git                         (for git)
+* pygtk             >= 2.12
+* python-configobj  >= 4.4.0
+* python-gobject    >= 2.14
+* python-simplejson >= 2.1.1
+* python-gtkspell             (for spell checking of commit messages)
+* python-svn        >= 1.7.2  (for subversion)
+* subversion        >= 1.4.6  (for subversion)
+* dulwich           >= 0.9.7  (for git)
+* git                         (for git)
 
 Recommends:
-meld (graphical diff tool)
+* meld (graphical diff tool)
 
 
 Installation
 ------------
-(as root or using sudo)
-$ python setup.py install
+Note that you will require superuser rights in order to install RabbitVCS.
+Execute the following as root or using sudo:
+```
+# python setup.py install
+```
 
 On Ubuntu or Debian-based distros, instead run:
-$ sudo python setup.py install --install-layout=deb
+```
+# python setup.py install --install-layout=deb
+```
 
 Each clients' README file contains details on their dependencies and installation.
 
-Manual Upgrade:
+Manual Upgrade
+--------------
 To upgrade an existing version manually, copy the contents of the repository to the rabbitvcs lib folder.
-For example:
-    /usr/lib/pymodules/python2.7/rabbitvcs
-Note: in case of Debian-based distros this path is most likely
-    /usr/lib/python2.7/dist-packages/rabbitvcs
+Most likely it is located at `/usr/lib/pymodules/python2.7/rabbitvcs`. In case of Debian-based distros this is will be `/usr/lib/python2.7/dist-packages/rabbitvcs`.
 
 References
 ----------
