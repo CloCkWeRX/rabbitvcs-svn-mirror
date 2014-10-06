@@ -18,11 +18,17 @@ System Requirements
 * python-configobj  >= 4.4.0
 * python-gobject    >= 2.14
 * python-simplejson >= 2.1.1
-* python-gtkspell             (for spell checking of commit messages)
-* python-svn        >= 1.7.2  (for subversion)
-* subversion        >= 1.4.6  (for subversion)
-* dulwich           >= 0.9.7  (for git)
-* git                         (for git)
+
+For spell checking of commit messages:
+* python-gtkspell
+
+For subversion:
+* python-svn >= 1.7.2
+* subversion >= 1.4.6
+
+For git:
+* dulwich >= 0.9.7
+* git
 
 Recommends:
 * meld (graphical diff tool)
