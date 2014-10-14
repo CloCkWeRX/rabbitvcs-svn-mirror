@@ -328,15 +328,6 @@ class GittyupClient:
         self.config.set(("user", ), "email", config_user_email)
         self.config.writable.write_to_path()
         return "%s <%s>" % (config_user_name, config_user_email)
-    
-    def _write_packed_refs(self, refs):
-        packed_refs_str = ""
-        for ref,sha in refs.items():
-            packed_refs_str = "%s %s\n" % (sha, ref)
-        
-        fd = open(os.path.join(self.repo.controldir(), "packed-refs"), "wb")
-        fd.write(packed_refs_str)
-        fd.close()
 
     #
     # Start Public Methods
@@ -392,13 +383,7 @@ class GittyupClient:
     
     def head(self):
         return self.repo.refs["HEAD"]
-    
-    def get_sha1_from_refspec(self, refspec):
-        if refspec in self.repo.refs:
-            return self.repo.refs[refspec]
-        else:
-            return None
-    
+
     def stage(self, paths):
         """
         Stage files to be committed or tracked
