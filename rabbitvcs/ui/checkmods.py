@@ -44,7 +44,7 @@ log = Log("rabbitvcs.ui.checkmods")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gtk.gdk.threads_init()
+gobject.threads_init()
 
 class SVNCheckForModifications(InterfaceView):
     """

@@ -41,7 +41,7 @@ log = Log("rabbitvcs.ui.diff")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gtk.gdk.threads_init()
+gobject.threads_init()
 
 class Diff(InterfaceNonView):
     def __init__(self, path1, revision1=None, path2=None, revision2=None, 

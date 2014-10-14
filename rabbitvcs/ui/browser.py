@@ -45,7 +45,7 @@ log = Log("rabbitvcs.ui.browser")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gtk.gdk.threads_init()
+gobject.threads_init()
 
 class SVNBrowser(InterfaceView, GtkContextMenuCaller):
     def __init__(self, url):

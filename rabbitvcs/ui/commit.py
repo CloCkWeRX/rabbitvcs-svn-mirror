@@ -44,7 +44,7 @@ log = Log("rabbitvcs.ui.commit")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gtk.gdk.threads_init()
+gobject.threads_init()
 
 class Commit(InterfaceView, GtkContextMenuCaller):
     """

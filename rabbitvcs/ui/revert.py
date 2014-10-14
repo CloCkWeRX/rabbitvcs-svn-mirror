@@ -43,8 +43,7 @@ log = Log("rabbitvcs.ui.revert")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gtk.gdk.threads_init()
-
+gobject.threads_init()
 
 import rabbitvcs.vcs
 

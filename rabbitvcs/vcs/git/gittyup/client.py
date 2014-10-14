@@ -943,7 +943,7 @@ class GittyupClient:
             self.config.set(remoteKey, "url", originalRemoteUrl)
             self.config.write()
 
-    def push(self, repository="origin", refspec="master"):
+    def push(self, repository="origin", refspec="master", tags=True):
         """
         Push objects from the local repository into the remote repository
             and merge them.
@@ -953,12 +953,18 @@ class GittyupClient:
         
         @type   refspec: string
         @param  refspec: The branch name to pull from
+
+        @type   tags: boolean
+        @param  tags: True to include tags in push, False to omit
         
         """
 
         self.numberOfCommandStages = 2
 
-        cmd = ["git", "push", "--progress", repository, refspec]
+        cmd = ["git", "push", "--progress"]
+        if tags:
+            cmd.extend(["--tags"])
+        cmd.extend([repository, refspec])
 
         # Setup the section name in the config for the remote target.
         remoteKey = "remote \"" + repository + "\""
@@ -992,7 +998,7 @@ class GittyupClient:
     def onUsername(self, window, username, remoteKey, originalRemoteUrl, isOk):
         if isOk == True:
             if username == "":
-                tkMessageBox.showinfo("debug", "Please enter a username.", parent=window)
+                tkMessageBox.showinfo("Error", "Please enter a username.", parent=window)
                 return
             else:
                 # Insert password into url.
@@ -1012,7 +1018,7 @@ class GittyupClient:
     def onPassword(self, window, password, remoteKey, originalRemoteUrl, isOk):
         if isOk == True:
             if password == "":
-                tkMessageBox.showinfo("debug", "Please enter a password.", parent=window)
+                tkMessageBox.showinfo("Error", "Please enter a password.", parent=window)
                 return
             else:
                 # Insert password into url.
@@ -1076,6 +1082,9 @@ class GittyupClient:
             button = Tkinter.Button(window, width=5, text="Cancel", command = (lambda: self.onUsername(window, entryWidget.get(), remoteKey, originalRemoteUrl, False)))
             button.pack(side=Tkinter.RIGHT)
 
+            # Position window in center of screen.
+            self.center(window)
+
             # Show dialog.
             window.mainloop()
 
@@ -1131,6 +1140,9 @@ class GittyupClient:
             # Create Cancel button.
             button = Tkinter.Button(window, width=5, text="Cancel", command = (lambda: self.onPassword(window, entryWidget.get(), remoteKey, originalRemoteUrl, False)))
             button.pack(side=Tkinter.RIGHT)
+
+            # Position window in center of screen.
+            self.center(window)
 
             # Show dialog.
             window.mainloop()
@@ -2083,3 +2095,17 @@ class GittyupClient:
     
     def get_cancel(self):
         return self.callback_get_cancel
+
+    def center(self, window):
+        # Temporarily hide the window to avoid update_idletasks() drawing the window in the wrong position.
+        window.withdraw()
+
+        # Update "requested size" from geometry manager.
+        window.update_idletasks()
+
+        x = (window.winfo_screenwidth() - window.winfo_reqwidth()) / 2
+        y = (window.winfo_screenheight() - window.winfo_reqheight()) / 2
+        window.geometry("+%d+%d" % (x, y))
+
+        # Draw the window frame immediately after setting correct window position.
+        window.deiconify()

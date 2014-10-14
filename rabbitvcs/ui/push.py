@@ -40,7 +40,7 @@ _ = gettext.gettext
 
 DATETIME_FORMAT = rabbitvcs.util.helper.DT_FORMAT_THISWEEK
 
-gtk.gdk.threads_init()
+gobject.threads_init()
 
 class Push(InterfaceView):
     def __init__(self, path):
@@ -79,6 +79,9 @@ class GitPush(Push):
             }
         )
         
+        # Set default for Include Tags checkbox.
+        self.get_widget("tags").set_active(True)
+
         self.initialize_logs()
 
     def on_ok_clicked(self, widget, data=None):
@@ -86,6 +89,7 @@ class GitPush(Push):
     
         repository = self.repository_selector.repository_opt.get_active_text()
         branch = self.repository_selector.branch_opt.get_active_text()
+        tags = self.get_widget("tags").get_active()
         
         self.action = rabbitvcs.ui.action.GitAction(
             self.git,
@@ -93,7 +97,7 @@ class GitPush(Push):
         )
         self.action.append(self.action.set_header, _("Push"))
         self.action.append(self.action.set_status, _("Running Push Command..."))
-        self.action.append(self.git.push, repository, branch)
+        self.action.append(self.git.push, repository, branch, tags)
         self.action.append(self.action.set_status, _("Completed Push"))
         self.action.append(self.action.finish)
         self.action.start()
