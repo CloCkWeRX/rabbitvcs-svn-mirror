@@ -4,7 +4,7 @@ ServiceTypes=KonqPopupMenu/Plugin,inode/directory
 X-KDE-Submenu=Subversion (RabbitVCS)
 
 X-KDE-GetActionMenu=org.kde.kded getActionMenu
-Actions=Log;Annotate;Add;ApplyPatch;CompareChanges;BranchTag;Browser;CheckMods;Checkout;
+Actions=Log;Annotate;Add;ApplyPatch;CompareChanges;BranchTag;Browser;CheckMods;Checkout;Clean;Commit;CreatePatch;Create;
 
 [Desktop Action Log]
 Name=Show log
@@ -77,4 +77,47 @@ Name[de]=Checke aus
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-checkout.svg
 Exec=rabbitvcs checkout %U
+
+
+
+[Desktop Action Clean]
+Name=Clean...
+Name[de]=Raeume auf...
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-cleanup.svg
+Exec=rabbitvcs clean %U
+
+
+
+[Desktop Action Commit]
+Name=Commit...
+Name[de]=Committe...
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-commit.svg
+Exec=rabbitvcs commit %U
+
+
+
+[Desktop Action CreatePatch]
+Name=Create Patch
+Name[de]=Erstelle Patch
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-createpatch.svg
+Exec=rabbitvcs createpatch %U
+
+
+
+[Desktop Action Create]
+Name=Create new SVN repository here
+Name[de]=Erstelle hier ein neues SVN Repository
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-about.svg
+Exec=rabbitvcs create --vcs=svn %U
+
+
+
+
+
+
+
 
