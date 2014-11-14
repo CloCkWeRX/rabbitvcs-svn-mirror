@@ -4,7 +4,7 @@ ServiceTypes=KonqPopupMenu/Plugin,inode/directory
 X-KDE-Submenu=Subversion (RabbitVCS)
 
 X-KDE-GetActionMenu=org.kde.kded getActionMenu
-Actions=Log;Annotate;Add;ApplyPatch;CompareChanges;BranchTag;Browser;CheckMods;Checkout;Clean;Commit;CreatePatch;Create;
+Actions=Log;Annotate;Add;ApplyPatch;CompareChanges;BranchTag;Browser;CheckMods;Checkout;Clean;Commit;CreatePatch;Create;Diff;
 
 [Desktop Action Log]
 Name=Show log
@@ -114,8 +114,15 @@ Name[de]=Erstelle hier ein neues SVN Repository
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-about.svg
 Exec=rabbitvcs create --vcs=svn %U
 
+# Skip delete because it has no confirmation dialog!
 
 
+[Desktop Action Diff]
+Name=Zeige Unterschiede
+Name[de]=Show differences
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-diff.svg
+Exec=rabbitvcs diff -s %U
 
 
 
