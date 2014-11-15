@@ -1,0 +1,22 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=KonqPopupMenu/Plugin,inode/directory,all/all,all/allfiles
+X-KDE-Priority=TopLevel
+
+X-KDE-GetActionMenu=org.kde.kded getTopLevelActionMenu
+Actions=Log;
+
+
+[Desktop Action Log]
+Name=Subversion Log (RabbitVCS)
+Name[de]=Subversion Log (RabbitVCS)
+Name[pl]=Subversion Log (RabbitVCS)
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-show_log.svg
+Exec=rabbitvcs log %U
+Comment=Displays the subversion log
+Comment[de]=Zeigt die Subversion Historie
+Comment[de]=Pokazuje Historje Subversion
+
+
+
