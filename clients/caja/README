@@ -17,7 +17,7 @@ To install:
     
     In both cases, you may need to create the caja-python/extensions folder.
     
-    Restart nemo with the following commands:
+    Restart caja with the following commands:
         $ caja -q
         $ nohup caja > /dev/null &
 
