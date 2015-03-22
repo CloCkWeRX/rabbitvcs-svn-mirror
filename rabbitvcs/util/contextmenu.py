@@ -898,7 +898,7 @@ class ContextMenuConditions:
         return False
 
     def rabbitvcs_svn(self, data=None):
-        return (self.path_dict["is_svn"] or 
+        return (self.path_dict["is_svn"] or
             not self.path_dict["is_in_a_or_a_working_copy"])
 
     def rabbitvcs_git(self, data=None):
@@ -1280,7 +1280,7 @@ class MainContextMenu:
             (MenuUpdate, None),
             (MenuCommit, None),
             (MenuPush, None),
-            (MenuRabbitVCSSvn, [
+            None if settings.get("HideItem", "svn") else (MenuRabbitVCSSvn, [
                 (MenuCheckout, None),
                 (MenuDiffMenu, [
                     (MenuDiff, None),
@@ -1326,7 +1326,7 @@ class MainContextMenu:
                 (MenuSettings, None),
                 (MenuAbout, None)
             ]),
-            (MenuRabbitVCSGit, [
+            None if settings.get("HideItem", "git") else (MenuRabbitVCSGit, [
                 (MenuClone, None),
                 (MenuInitializeRepository, None),
                 (MenuSeparator, None),
@@ -1366,12 +1366,12 @@ class MainContextMenu:
                 (MenuSettings, None),
                 (MenuAbout, None)
             ]),
-            (MenuRabbitVCSMercurial, [
+            None if settings.get("HideItem", "hg") else (MenuRabbitVCSMercurial, [
                 (MenuSettings, None),
                 (MenuAbout, None)
             ])
         ]
-        
+        self.structure = filter(None, self.structure)
     def get_menu(self):
         pass
 
