@@ -1237,11 +1237,7 @@ class SVN:
         @param  recurse: Whether or not to run a recursive checkout.
 
         """
-        if os.path.exists(dest_path):
-            if os.path.isdir(dest_path):
-                shutil.rmtree(dest_path)
-            else:
-                os.remove(dest_path)
+        revision=Revision("head")
 
 
 
