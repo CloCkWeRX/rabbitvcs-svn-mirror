@@ -34,6 +34,11 @@ Recommends:
 * meld (graphical diff tool)
 
 
+For debian based distros you can run: 
+```
+# apt-get install python-gtk2 python-configobj python-gobject  python-simplejson  python-gtkspell  python-svn  subversion python-dulwich git meld
+```
+
 Installation
 ------------
 Note that you will require superuser rights in order to install RabbitVCS.
