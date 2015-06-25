@@ -2,7 +2,7 @@
 # client.py
 #
 
-import os
+import os, errno
 import os.path
 import re
 import shutil
@@ -46,10 +46,18 @@ def callback_get_user():
 def callback_get_cancel():
     return False
 
+def mkdir_p(path):
+    # http://stackoverflow.com/questions/600268/mkdir-p-functionality-in-python
+    try:
+        os.makedirs(path)
+    except OSError as exc: # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else: raise
+
 def get_tmp_path(filename):
     tmpdir = "/tmp/rabbitvcs"
-    if not os.path.isdir(tmpdir):
-        os.mkdir(tmpdir)
+    mkdir_p(tmpdir)
     return os.path.join(tmpdir, filename)
 
 class GittyupClient:
@@ -335,8 +343,7 @@ class GittyupClient:
     #
     
     def initialize_repository(self, path, bare=False):
-        if not os.path.isdir(path):
-            os.mkdir(path)
+        mkdir_p(path)
 
         if bare:
             dulwich.repo.Repo.init_bare(path)
@@ -1778,8 +1785,7 @@ class GittyupClient:
         cmd1 = ["git", "archive", "--format", "tar", "-o", tmp_file, revision, path]
         cmd2 = ["tar", "-xf", tmp_file, "-C", dest_path]
         
-        if not os.path.isdir(dest_path):
-            os.mkdir(dest_path)
+        mkdir_p(dest_path)
 
         try:
             (status, stdout, stderr) = GittyupCommand(cmd1, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
