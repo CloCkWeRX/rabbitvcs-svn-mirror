@@ -50,6 +50,7 @@ def get_tmp_path(filename):
     tmpdir = "/tmp/rabbitvcs"
     if not os.path.isdir(tmpdir):
         os.mkdir(tmpdir)
+    return os.path.join(tmpdir, filename)
 
 class GittyupClient:
     def __init__(self, path=None, create=False):
