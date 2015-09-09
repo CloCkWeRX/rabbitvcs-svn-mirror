@@ -478,10 +478,20 @@ class NameEmailPrompt(InterfaceView):
         else:
             return (None, None)
             
+class MarkResolvedPrompt(InterfaceView):
+    def __init__(self):
+        InterfaceView.__init__(self, "dialogs/mark_resolved_prompt", "MarkResolvedPrompt")
+
+    def run(self):
+        self.dialog = self.get_widget("MarkResolvedPrompt")
+        result = self.dialog.run()
+        self.dialog.destroy()
+        return result
+
 class ConflictDecision(InterfaceView):
     """
     Provides a dialog to make conflict decisions with.  User can accept mine, 
-    accept theirs, or merge manually.
+    accept theirs, or edit conflicts.
     
     """
     
@@ -492,7 +502,6 @@ class ConflictDecision(InterfaceView):
         
     def run(self):
         """
-        Returns a tuple with two elements.
         
         The first has three possible values about how to resolve the conflict.
         
@@ -501,15 +510,13 @@ class ConflictDecision(InterfaceView):
             - 1   Accept Theirs
             - 2   Merge Manually
 
-        The second is whether to mark the conflict as resolved after the action
             
         """
         
         self.dialog = self.get_widget("ConflictDecision")
         result = self.dialog.run()
-        mark_resolved = self.get_widget("mark_resolved").get_active()
         self.dialog.destroy()
-        return (result, mark_resolved)
+        return result
 
 class Loading(InterfaceView):
     def __init__(self):
