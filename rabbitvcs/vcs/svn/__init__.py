@@ -1176,7 +1176,7 @@ class SVN:
         returner = []
         for item in log:
             revision = Revision(pysvn.opt_revision_kind.number, item.revision.number)
-            date = datetime.fromtimestamp(item.date)
+            date = datetime.fromtimestamp(item.date) if hasattr(item, "date") else datetime(1900, 1, 1)
             
             author = _("(no author)")
             if hasattr(item, "author"):

@@ -122,21 +122,24 @@ def format_datetime(dt, format=None):
     delta = now - dt
     
     returner = ""
-    if delta.days == 0:
-        if delta.seconds < 60:
-            returner = _("just now")
-        elif delta.seconds >= 60 and delta.seconds < 600:
-            returner = _("%d minute(s) ago") % (delta.seconds/60)
-        elif delta.seconds >= 600 and delta.seconds < 43200:
-            returner = dt.strftime("%I:%M%P")
-        else:
-            returner = dt.strftime(DT_FORMAT_THISWEEK)
-    elif delta.days > 0 and delta.days < 7:
-        returner = dt.strftime(DT_FORMAT_THISWEEK)
-    elif delta.days >= 7 and delta.days < 365:
-        returner = dt.strftime(DT_FORMAT_THISYEAR)
+    if dt.year == 1900:
+        returner = _("(no date)")
     else:
-        returner = dt.strftime(DT_FORMAT_ALL)
+        if delta.days == 0:
+            if delta.seconds < 60:
+                returner = _("just now")
+            elif delta.seconds >= 60 and delta.seconds < 600:
+                returner = _("%d minute(s) ago") % (delta.seconds/60)
+            elif delta.seconds >= 600 and delta.seconds < 43200:
+                returner = dt.strftime("%I:%M%P")
+            else:
+                returner = dt.strftime(DT_FORMAT_THISWEEK)
+        elif delta.days > 0 and delta.days < 7:
+            returner = dt.strftime(DT_FORMAT_THISWEEK)
+        elif delta.days >= 7 and delta.days < 365:
+            returner = dt.strftime(DT_FORMAT_THISYEAR)
+        else:
+            returner = dt.strftime(DT_FORMAT_ALL)
 
     enc = locale.getpreferredencoding(False)
     if enc is None or len(enc) == 0:
