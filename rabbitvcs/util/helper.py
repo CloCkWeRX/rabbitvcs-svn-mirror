@@ -25,6 +25,7 @@
 All sorts of helper functions.
 
 """
+from __future__ import absolute_import
 
 from collections import deque
 import locale
@@ -39,7 +40,8 @@ import shutil
 import hashlib
 
 import urllib
-import urlparse
+from six.moves import filter
+from six.moves import range
 
 try:
     from gi.repository import GObject as gobject
@@ -158,7 +160,7 @@ def in_rich_compare(item, list):
         for thing in list:
             try:
                 in_list = item == thing
-            except AttributeError, e:
+            except AttributeError as e:
                 pass
     
     return in_list
@@ -186,7 +188,7 @@ def get_home_folder():
     # Make sure the directories are there
     if not os.path.isdir(config_home):
         # FIXME: what if somebody places a file in there?
-        os.makedirs(config_home, 0700)
+        os.makedirs(config_home, 0o700)
 
     return config_home
     
@@ -645,7 +647,7 @@ def launch_ui_window(filename, args=[], block=False):
 
     if os.path.exists(path):
         executable = sys.executable
-        if "PYTHON" in os.environ.keys():
+        if "PYTHON" in list(os.environ.keys()):
             executable = os.environ["PYTHON"]
         proc = subprocess.Popen([executable, path] + args, env=env)
 
@@ -781,14 +783,14 @@ def url_join(path, *args):
     return "/".join([path.rstrip("/")] + list(args))
 
 def quote_url(url_text):
-    (scheme, netloc, path, params, query, fragment) = urlparse.urlparse(url_text)
+    (scheme, netloc, path, params, query, fragment) = urllib.parse.urlparse(url_text)
     # netloc_quoted = urllib.quote(netloc)
     path_quoted = urllib.quote(path)
     params_quoted = urllib.quote(query)
     query_quoted = urllib.quote_plus(query)
     fragment_quoted = urllib.quote(fragment)
     
-    url_quoted = urlparse.urlunparse(
+    url_quoted = urllib.parse.urlunparse(
                             (scheme,
                              netloc,
                              path_quoted,
@@ -799,14 +801,14 @@ def quote_url(url_text):
     return url_quoted
 
 def unquote_url(url_text):
-    (scheme, netloc, path, params, query, fragment) = urlparse.urlparse(url_text)
+    (scheme, netloc, path, params, query, fragment) = urllib.parse.urlparse(url_text)
     # netloc_unquoted = urllib.unquote(netloc)
     path_unquoted = urllib.unquote(path).decode('utf-8')
     params_unquoted = urllib.unquote(query)
     query_unquoted = urllib.unquote_plus(query)
     fragment_unquoted = urllib.unquote(fragment)
     
-    url_unquoted = urlparse.urlunparse(
+    url_unquoted = urllib.parse.urlunparse(
                             (scheme,
                              netloc,
                              path_unquoted,
@@ -892,7 +894,7 @@ def walk_tree_depth_first(tree, show_levels=False,
             else:
                 value = node
             
-            if filter and not filter(value):
+            if filter and not list(filter(value)):
                 continue
             
             if show_levels:
