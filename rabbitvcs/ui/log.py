@@ -1643,9 +1643,16 @@ dialogs_map = {
 }
 
 def log_factory(path, vcs):
+    # vcs option is allowed for URL only
+    if os.path.exists(path):
+        vcs = None
+
     if not vcs:
         guess = rabbitvcs.vcs.guess(path)
         vcs = guess["vcs"]
+        if not classes_map.has_key(vcs):
+            from rabbitvcs.ui import VCS_OPT_ERROR
+            raise SystemExit(VCS_OPT_ERROR)
 
     return classes_map[vcs](path)
 
