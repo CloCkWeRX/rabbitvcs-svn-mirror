@@ -647,7 +647,9 @@ def launch_ui_window(filename, args=[], block=False):
         executable = sys.executable
         if "PYTHON" in os.environ.keys():
             executable = os.environ["PYTHON"]
-        proc = subprocess.Popen([executable, path] + args, env=env)
+        # Give all subprocesses the name 'RabbitVCS' to give Ubuntu desktop files the possibility
+        # to group those windows in the launcher on WM_CLASS.
+        proc = subprocess.Popen([executable, path] + ['--name', 'RabbitVCS'] + args, env=env)
 
         if block:
             proc.wait()
