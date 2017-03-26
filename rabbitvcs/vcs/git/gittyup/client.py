@@ -1351,7 +1351,9 @@ class GittyupClient:
             if components:
                 status = components.group(1)
                 strip_status = status.strip()
-                path = components.group(2)
+                path = components.group(2).decode("string_escape")
+                if path[0] == '"' and path[-1] == '"':
+                    path = path[1:-1]
                
                 if status == " D":
                     statuses.append(MissingStatus(path))
@@ -1627,8 +1629,10 @@ class GittyupClient:
                     changed_file = {
                         "additions": file_line[0],
                         "removals": file_line[1],
-                        "path": file_line[2]
+                        "path": file_line[2].decode('string_escape')
                     }
+                    if changed_file['path'][0] == '"' and changed_file['path'][-1] == '"':
+                        changed_file['path'] = changed_file['path'][1:-1]
                     revision["changed_paths"].append(changed_file)
 
         if revision:
