@@ -723,6 +723,8 @@ class GitLog(Log):
         # Load branches.
         self.branchItems = []
         for branch in self.branchAction.get_result(0):
+            if branch.name.startswith("remotes/"):
+                branch.name = branch.name[len("remotes/"):]
             self.branchItems.append({'id': branch.revision, 'name': branch.name})
 
         self.set_start_revision(self.revision_items[0].revision.short())
