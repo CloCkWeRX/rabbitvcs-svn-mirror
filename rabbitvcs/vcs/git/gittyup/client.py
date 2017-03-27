@@ -624,7 +624,7 @@ class GittyupClient:
         
         return branches
         """
-        cmd = ["git", "branch", "-lv", "--no-abbrev"]
+        cmd = ["git", "branch", "-lv", "--no-abbrev", "-a"]
         if commit_sha:
             cmd += ["--contains", commit_sha]
 
