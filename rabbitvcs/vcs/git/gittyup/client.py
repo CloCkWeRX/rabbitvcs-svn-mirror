@@ -1569,7 +1569,10 @@ class GittyupClient:
         if skip:
             cmd.append("--skip=%s" % skip)
         if revision:
-            cmd.append(revision)
+            if showtype=="push":
+                cmd.append("%s.." % revision)
+            else:
+                cmd.append(revision)
 
         if path == self.repo.path:
             path = ""        
