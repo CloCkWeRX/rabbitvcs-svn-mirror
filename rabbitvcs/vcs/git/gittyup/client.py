@@ -25,10 +25,13 @@ import util
 from objects import *
 from command import GittyupCommand
 
+
 import Tkinter
 import tkMessageBox
 
 ENCODING = "UTF-8"
+
+
 
 def callback_notify_null(val):
     pass
@@ -1351,7 +1354,7 @@ class GittyupClient:
             if components:
                 status = components.group(1)
                 strip_status = status.strip()
-                path = components.group(2).decode("string_escape")
+                path = components.group(2).decode("string_escape").decode("UTF-8")
                 if path[0] == '"' and path[-1] == '"':
                     path = path[1:-1]
                
@@ -1440,7 +1443,7 @@ class GittyupClient:
 
             # Check if directory includes modified files
             for file in modified_files:
-                if file.startswith(d):
+                if file.startswith("%s/" % d): # fix, when file startwith same prefix as directory
                     d_status = ModifiedStatus(d)
                     break
 
@@ -1629,7 +1632,7 @@ class GittyupClient:
                     changed_file = {
                         "additions": file_line[0],
                         "removals": file_line[1],
-                        "path": file_line[2].decode('string_escape')
+                        "path": file_line[2].decode('string_escape').decode("UTF-8")
                     }
                     if changed_file['path'][0] == '"' and changed_file['path'][-1] == '"':
                         changed_file['path'] = changed_file['path'][1:-1]
