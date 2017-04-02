@@ -20,29 +20,29 @@
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os
 import os.path
 from time import sleep
 from collections import deque
+
+# Yes, * imports are bad. You write it out then.
+from contextmenuitems import *
+
+if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
+    from gi.repository import Gtk as gtk
+else:
+    import gtk
 
 try:
     from gi.repository import GObject as gobject
 except ImportError:
     import gobject
 
-import os
-if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
-    from gi.repository import Gtk as gtk
-else:
-    import gtk
-
 from rabbitvcs.vcs import create_vcs_instance, VCS_SVN, VCS_GIT, VCS_DUMMY, VCS_MERCURIAL
 from rabbitvcs.util.log import Log
 from rabbitvcs import gettext
 from rabbitvcs.util.settings import SettingsManager
 import rabbitvcs.util.helper
-
-# Yes, * imports are bad. You write it out then.
-from contextmenuitems import *
 
 log = Log("rabbitvcs.util.contextmenu")
 _ = gettext.gettext
