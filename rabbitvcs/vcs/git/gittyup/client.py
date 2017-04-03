@@ -1440,10 +1440,14 @@ class GittyupClient:
                 if untracked_path in d:
                     d_status = UntrackedStatus(d)
                     break
+            
+            dirPattern = "/%s/" % d
+            if len(d) == 0:
+                dirPattern = "/"
 
             # Check if directory includes modified files
             for file in modified_files:
-                if file.startswith("%s/" % d): # fix, when file startwith same prefix as directory
+                if ("/%s" % file).startswith(dirPattern): # fix, when file startwith same prefix as directory, fix status for root repo path ""
                     d_status = ModifiedStatus(d)
                     break
 
@@ -1453,7 +1457,6 @@ class GittyupClient:
                     d_status = IgnoredStatus(d)
                     break
             statuses.append(d_status)
-
 
         return statuses
 
