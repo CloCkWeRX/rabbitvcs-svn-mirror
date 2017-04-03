@@ -250,14 +250,12 @@ class StatusCheckerStub:
         self.session_bus = dbus.SessionBus()
         self.decoder = simplejson.JSONDecoder(object_hook=decode_status)
         self.status_checker = None
-        start()
         self._connect_to_checker()
 
     def _connect_to_checker(self):
-
         # Start the status checker, if it's not running this should start it up.
         # Otherwise it leaves it alone.
-        # start()
+        start()
 
         # Try to get a new checker
         try:
