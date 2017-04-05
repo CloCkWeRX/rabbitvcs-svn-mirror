@@ -336,6 +336,12 @@ class GitCommit(Commit):
 
         self.git = self.vcs.git(paths[0])
 
+        self.get_widget("commit_to_box").show()
+        
+        self.get_widget("to").set_text(
+            self.git.get_active_branch().name
+        )
+
         self.items = None
         if len(self.paths):
             self.initialize_items()
