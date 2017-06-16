@@ -1241,9 +1241,6 @@ class SVN:
         @param  recurse: Whether or not to run a recursive checkout.
 
         """
-        revision=Revision("head")
-
-
 
         return self.client.export(src_url_or_path, dest_path, force,
             revision.primitive(), native_eol, ignore_externals, recurse)
