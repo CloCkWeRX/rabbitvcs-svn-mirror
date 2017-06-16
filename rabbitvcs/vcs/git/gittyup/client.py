@@ -423,7 +423,7 @@ class GittyupClient:
                 "path": absolute_path,
                 "mime_type": guess_type(absolute_path)[0]
             })
-            to_stage.append(path)
+            to_stage.append(relative_path)
         self.repo.stage(to_stage)
     
     def stage_all(self):
@@ -436,8 +436,9 @@ class GittyupClient:
         for status in self.status():
             if status in [AddedStatus, RemovedStatus, ModifiedStatus]:
                 abs_path = self.get_absolute_path(status.path)
+                relative_path = self.get_relative_path(status.path)
                 if os.path.isfile(abs_path):
-                    self.stage(abs_path)
+                    self.stage(relative_path)
 
             if status == MissingStatus:
                 del index[status.path]
