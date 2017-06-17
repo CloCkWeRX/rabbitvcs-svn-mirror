@@ -896,7 +896,7 @@ def walk_tree_depth_first(tree, show_levels=False,
             else:
                 value = node
             
-            if filter and not list(filter(value)):
+            if filter and not filter(value):
                 continue
             
             if show_levels:
