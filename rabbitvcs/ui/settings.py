@@ -1,21 +1,22 @@
+from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -62,7 +63,7 @@ class Settings(InterfaceView):
             langs += language.split(":")
 
         self.language = rabbitvcs.ui.widget.ComboBox(
-            self.get_widget("language"), 
+            self.get_widget("language"),
             langs
         )
         self.language.set_active_from_value(
@@ -86,6 +87,9 @@ class Settings(InterfaceView):
         self.get_widget("diff_tool_swap").set_active(
             int(self.settings.get("external", "diff_tool_swap"))
         )
+        self.get_widget("merge_tool").set_text(
+            self.settings.get("external", "merge_tool")
+        )
         self.get_widget("cache_number_repositories").set_text(
             str(self.settings.get("cache", "number_repositories"))
         )
@@ -94,7 +98,7 @@ class Settings(InterfaceView):
         )
         
         self.logging_type = rabbitvcs.ui.widget.ComboBox(
-            self.get_widget("logging_type"), 
+            self.get_widget("logging_type"),
             ["None", "Console", "File", "Both"]
         )
         val = self.settings.get("logging", "type")
@@ -103,7 +107,7 @@ class Settings(InterfaceView):
         self.logging_type.set_active_from_value(val)
 
         self.logging_level = rabbitvcs.ui.widget.ComboBox(
-            self.get_widget("logging_level"), 
+            self.get_widget("logging_level"),
             ["Debug", "Info", "Warning", "Error", "Critical"]
         )
         val = self.settings.get("logging", "level")
@@ -144,7 +148,7 @@ class Settings(InterfaceView):
             checker_service = session_bus.get_object(
                                     rabbitvcs.services.checkerservice.SERVICE,
                                     rabbitvcs.services.checkerservice.OBJECT_PATH)
-        except dbus.DBusException, ex:
+        except dbus.DBusException as ex:
             if report_failure:
                 rabbitvcs.ui.dialog.MessageBox(CHECKER_SERVICE_ERROR)
         
@@ -251,7 +255,7 @@ class Settings(InterfaceView):
 
     def save(self):
         self.settings.set(
-            "general", "language", 
+            "general", "language",
             self.get_widget("language").get_active_text()
         )
         self.settings.set(
@@ -277,6 +281,10 @@ class Settings(InterfaceView):
         self.settings.set(
             "external", "diff_tool_swap",
             self.get_widget("diff_tool_swap").get_active()
+        )
+        self.settings.set(
+            "external", "merge_tool",
+            self.get_widget("merge_tool").get_text()
         )
         self.settings.set(
             "cache", "number_repositories",

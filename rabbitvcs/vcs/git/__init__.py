@@ -23,12 +23,13 @@
 """
 Concrete VCS implementation for Git functionality.
 """
+from __future__ import absolute_import
 
 import os.path
 from datetime import datetime
 
-from gittyup.client import GittyupClient
-import gittyup.objects
+from .gittyup.client import GittyupClient
+from .gittyup import objects
 
 import rabbitvcs.util.helper
 
@@ -37,6 +38,7 @@ import rabbitvcs.vcs.status
 import rabbitvcs.vcs.log
 from rabbitvcs.vcs.branch import BranchEntry
 from rabbitvcs.util.log import Log
+import six
 
 log = Log("rabbitvcs.vcs.git")
 
@@ -60,13 +62,13 @@ class Revision:
 
     def __unicode__(self):
         if self.value:
-            return unicode(self.value)
+            return six.text_type(self.value)
         else:
             return self.kind
             
     def short(self):
         if self.value:
-            return unicode(self.value)[0:7]
+            return six.text_type(self.value)[0:7]
         else:
             return self.kind
 
@@ -234,7 +236,7 @@ class Git:
         st = self.status(path)
         try:
             return st.is_versioned()
-        except Exception, e:
+        except Exception as e:
             log.error(e)
             return False
 
@@ -594,17 +596,30 @@ class Git:
 
         return self.client.push(repository, refspec, tags)
 
-    def fetch(self, host):
+    def fetch_all(self):
+        """
+        Fetch objects from all remote repositories.  This will not merge the files
+        into the local working copy, use pull for that.
+        """
+        
+        return self.client.fetch_all()
+
+    def fetch(self, repository, branch=None):
         """
         Fetch objects from a remote repository.  This will not merge the files
         into the local working copy, use pull for that.
+
+        If branch if provided, fetch only for that branch.
         
-        @type   host: string
-        @param  host: The git url from which to fetch
+        @type   repository: string
+        @param  repository: The git remote from which to fetch
+
+        @type   branch: string
+        @param  branch: The branch from which to fetch
         
         """
         
-        return self.client.fetch(host)
+        return self.client.fetch(repository, branch)
         
     def merge(self, branch):
         return self.client.merge(branch.primitive())
