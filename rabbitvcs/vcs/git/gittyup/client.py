@@ -1153,27 +1153,34 @@ class GittyupClient:
 
         return isPassword, originalRemoteUrl
 
-    def fetch(self, host):
+    def fetch(self, repository, branch=None):
         """
         Fetch objects from a remote repository.  This will not merge the files
             into the local working copy, use pull for that.
         
-        @type   host: string
-        @param  host: The git url from which to fetch
+        @type   repository: string
+        @param  repository: The git repository from which to fetch
         
+        @type   branch: string
+        @param  branch: The git branch from which to fetch
         """
         
-        client, host_path = util.get_transport_and_path(host)
+        cmd = ["git", "fetch", repository]
+        if branch:
+            cmd.append(branch)
 
-        graphwalker = self.repo.get_graph_walker()
-        f, commit = self.repo.object_store.add_pack()
-        refs = client.fetch_pack(host_path, self.repo.object_store.determine_wants_all, 
-                          graphwalker, f.write, self.callback_notify)
-
-        commit()
-        
-        return refs
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+        except GittyupCommandError as e:
+            self.callback_notify(e)
     
+    def fetch_all(self):
+        cmd = ["git", "fetch", "--all"]
+        try:
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+        except GittyupCommandError as e:
+            self.callback_notify(e)
+            
     def merge(self, branch):
         cmd = ["git", "merge", branch]
         try:

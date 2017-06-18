@@ -102,13 +102,7 @@ class GitUpdate(InterfaceView):
         self.action.append(self.action.set_header, _("Update"))
         self.action.append(self.action.set_status, _("Updating..."))
 
-        if not apply_changes:
-            if fetch_all:
-                self.action.append(self.git.fetch, "--all")
-            else:
-                self.action.append(self.git.fetch, repository, branch)
-
-        else:
+        if apply_changes:
             if rebase:
                 git_function_params.append ("rebase")
 
@@ -118,7 +112,12 @@ class GitUpdate(InterfaceView):
                 branch = ""
 
             self.action.append(self.git.pull, repository, branch, git_function_params)
-
+        else:
+            if fetch_all:
+                self.action.append(self.git.fetch_all)
+            else:
+                self.action.append(self.git.fetch, repository, branch)
+                
         self.action.append(self.action.set_status, _("Completed Update"))
         self.action.append(self.action.finish)
         self.action.start()

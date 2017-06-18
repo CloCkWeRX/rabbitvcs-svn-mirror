@@ -596,17 +596,30 @@ class Git:
 
         return self.client.push(repository, refspec, tags)
 
-    def fetch(self, host):
+    def fetch_all(self):
+        """
+        Fetch objects from all remote repositories.  This will not merge the files
+        into the local working copy, use pull for that.
+        """
+        
+        return self.client.fetch_all()
+
+    def fetch(self, repository, branch=None):
         """
         Fetch objects from a remote repository.  This will not merge the files
         into the local working copy, use pull for that.
+
+        If branch if provided, fetch only for that branch.
         
-        @type   host: string
-        @param  host: The git url from which to fetch
+        @type   repository: string
+        @param  repository: The git remote from which to fetch
+
+        @type   branch: string
+        @param  branch: The branch from which to fetch
         
         """
         
-        return self.client.fetch(host)
+        return self.client.fetch(repository, branch)
         
     def merge(self, branch):
         return self.client.merge(branch.primitive())

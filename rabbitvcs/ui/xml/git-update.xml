@@ -156,7 +156,7 @@
             <property name="visible">True</property>
             <child>
               <object class="GtkCheckButton" id="all">
-                <property name="label" translatable="yes">Fetch all</property>
+                <property name="label" translatable="yes">Fetch from all remotes</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
