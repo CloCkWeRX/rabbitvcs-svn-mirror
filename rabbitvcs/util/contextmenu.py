@@ -29,7 +29,7 @@ from collections import deque
 from six.moves import range
 
 # Yes, * imports are bad. You write it out then.
-from contextmenuitems import *
+from .contextmenuitems import *
 
 if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
     from gi.repository import Gtk as gtk
