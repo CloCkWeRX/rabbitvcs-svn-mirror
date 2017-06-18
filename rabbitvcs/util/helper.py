@@ -487,12 +487,23 @@ def open_item(path):
     
     if path == "" or path is None:
         return
-    
+
+    openers = []
+
     import platform
     if platform.system() == 'Darwin':
+        openers.append("open")
         subprocess.Popen(["open", os.path.abspath(path)])
     else:
-        subprocess.Popen(["gnome-open", os.path.abspath(path)])
+        openers.append("gvfs-open")
+        openers.append("xdg-open")
+        openers.append("gio open")
+
+    for o in openers:
+        for p in set(os.environ['PATH'].split(':')):
+            if os.path.exists("%s/%s" % (p, o)):
+                subprocess.Popen([o, os.path.abspath(path)])
+                return
     
 def browse_to_item(path):
     """
