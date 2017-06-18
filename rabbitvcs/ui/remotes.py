@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+from __future__ import print_function
 #
 # This is an extension to the Nautilus file manager to allow better 
 # integration with the Subversion source control system.
@@ -70,7 +72,7 @@ class GitRemotes(InterfaceView):
                 "cell-edited":   self.on_treeview_cell_edited_event
             },
             flags={
-                "sortable": True,
+                "sortable": False,
                 "sort_on": 0,
                 "editable": [0,1]
             }
@@ -87,9 +89,9 @@ class GitRemotes(InterfaceView):
 
     def save(self, row, column, data):
         row = int(row)
-        
+
         if row in self.remote_list:
-            remote = self.remote_list[int(row)]
+            remote = self.remote_list[row]
             
             name = remote["name"]
             if column == 0:
@@ -109,7 +111,6 @@ class GitRemotes(InterfaceView):
         else:
             (name, host) = self.items_treeview.get_row(row)
             if name and host:
-                print "Adding"
                 self.git.remote_add(name, host)
                 self.load()
 
@@ -151,7 +152,7 @@ class GitRemotes(InterfaceView):
         self.items_treeview.unselect_all()
         
         self.items_treeview.append(["", ""])
-        self.items_treeview.focus(1, 0)
+        self.items_treeview.focus(len(self.remote_list), 0)
     
     def show_edit(self, remote_name):
         self.state = STATE_EDIT

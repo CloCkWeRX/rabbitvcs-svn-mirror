@@ -1,21 +1,21 @@
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -25,6 +25,7 @@
 All sorts of helper functions.
 
 """
+from __future__ import absolute_import
 
 from collections import deque
 import locale
@@ -39,7 +40,8 @@ import shutil
 import hashlib
 
 import urllib
-import urlparse
+from six.moves import filter
+from six.moves import range
 
 try:
     from gi.repository import GObject as gobject
@@ -104,7 +106,7 @@ def format_long_text(text, cols=None):
     """ Nicely formats text containing linebreaks to display in a single line
     by replacing newlines with U+23CE. If the param "cols" is given, the text
     beyond cols is replaced by "...".
-    """    
+    """
     text = text.strip().replace(u"\n", LINE_BREAK_CHAR)
     if cols and len(text) > cols:
         text = u"%s..." % text[0:cols]
@@ -158,14 +160,14 @@ def in_rich_compare(item, list):
         for thing in list:
             try:
                 in_list = item == thing
-            except AttributeError, e:
+            except AttributeError as e:
                 pass
     
     return in_list
 
 # FIXME: this function is duplicated in settings.py
 def get_home_folder():
-    """ 
+    """
     Returns the location of the hidden folder we use in the home dir.
     This is used for storing things like previous commit messages and
     peviously used repositories.
@@ -175,10 +177,10 @@ def get_home_folder():
     
     """
     
-    # Make sure we adher to the freedesktop.org XDG Base Directory 
-    # Specifications. $XDG_CONFIG_HOME if set, by default ~/.config 
+    # Make sure we adher to the freedesktop.org XDG Base Directory
+    # Specifications. $XDG_CONFIG_HOME if set, by default ~/.config
     xdg_config_home = os.environ.get(
-        "XDG_CONFIG_HOME", 
+        "XDG_CONFIG_HOME",
         os.path.join(os.path.expanduser("~"), ".config")
     )
     config_home = os.path.join(xdg_config_home, "rabbitvcs")
@@ -186,7 +188,7 @@ def get_home_folder():
     # Make sure the directories are there
     if not os.path.isdir(config_home):
         # FIXME: what if somebody places a file in there?
-        os.makedirs(config_home, 0700)
+        os.makedirs(config_home, 0o700)
 
     return config_home
     
@@ -322,12 +324,12 @@ def encode_revisions(revision_array):
     if len(revision_array) == 1:
         return str(revision_array[0])
     
-    # Instead of repeating a set of statements we'll just define them as an 
+    # Instead of repeating a set of statements we'll just define them as an
     # inner function.
     def append(start, last, list):
         if start == last:
             result = "%s" % start
-        else: 
+        else:
             result = "%s-%s" % (start, last)
             
         list.append(result)
@@ -390,9 +392,20 @@ def get_diff_tool():
     diff_tool_swap = sm.get("external", "diff_tool_swap")
     
     return {
-        "path": diff_tool, 
+        "path": diff_tool,
         "swap": diff_tool_swap
     }
+
+def get_merge_tool():
+    """
+    Gets the path to the merge_tool.
+
+    @rtype:     string
+    @return:    A string with the path and arguments to launch the merge tool.
+    """
+
+    sm = rabbitvcs.util.settings.SettingsManager()
+    return  sm.get("external", "merge_tool")
     
 def launch_diff_tool(path1, path2=None):
     """
@@ -450,16 +463,27 @@ def launch_diff_tool(path1, path2=None):
         rhs
     )
     
-def launch_merge_tool(path1, path2=""):
-    diff = get_diff_tool()
+def launch_merge_tool(base="", mine="", theirs="", merged=""):
+    merge_tool = get_merge_tool()
     
-    if diff["path"] == "":
+    if(mine == None or mine == "" or not os.path.exists(mine) or
+       theirs == None or theirs == "" or not os.path.exists(theirs)):
         return
     
-    if not os.path.exists(diff["path"]):
-        return
+    if "%base" in merge_tool:
+        merge_tool = merge_tool.replace("%base", base)
 
-    os.popen("%s '%s' '%s'" % (diff["path"], path1, path2))
+    if "%mine" in merge_tool:
+        merge_tool = merge_tool.replace("%mine", mine)
+
+    if "%theirs" in merge_tool:
+        merge_tool = merge_tool.replace("%theirs", theirs)
+
+    if "%merged" in merge_tool:
+        merge_tool = merge_tool.replace("%merged", merged)
+
+    log.debug("merge_tool: %s"%merge_tool)
+    os.popen(merge_tool)
     
 def get_file_extension(path):
     """
@@ -485,12 +509,23 @@ def open_item(path):
     
     if path == "" or path is None:
         return
-    
+
+    openers = []
+
     import platform
     if platform.system() == 'Darwin':
+        openers.append("open")
         subprocess.Popen(["open", os.path.abspath(path)])
     else:
-        subprocess.Popen(["gnome-open", os.path.abspath(path)])
+        openers.append("gvfs-open")
+        openers.append("xdg-open")
+        openers.append("gio open")
+
+    for o in openers:
+        for p in set(os.environ['PATH'].split(':')):
+            if os.path.exists("%s/%s" % (p, o)):
+                subprocess.Popen([o, os.path.abspath(path)])
+                return
     
 def browse_to_item(path):
     """
@@ -508,13 +543,13 @@ def browse_to_item(path):
         ])
     else:
         subprocess.Popen([
-            "nautilus", "--no-desktop", "--browser", 
+            "nautilus", "--no-desktop", "--browser",
             os.path.dirname(os.path.abspath(path))
         ])
     
 def delete_item(path):
     """
-    Send an item to the trash. 
+    Send an item to the trash.
     
     @type   path: string
     @param  path: A file path.
@@ -530,7 +565,7 @@ def delete_item(path):
             if retcode:
                 permanent_delete = True
         else:
-            # If the gvfs-trash program is not found, an OSError exception will 
+            # If the gvfs-trash program is not found, an OSError exception will
             # be thrown, and rm will be used instead
             retcode = subprocess.call(["gvfs-trash", abspath])
             if retcode:
@@ -573,7 +608,7 @@ def save_log_message(message):
             messages.pop()
 
     t = time.strftime(DATETIME_FORMAT)
-    messages.insert(0, (t, message))    
+    messages.insert(0, (t, message))
     
     f = open(get_previous_messages_path(), "w")
     s = ""
@@ -645,9 +680,11 @@ def launch_ui_window(filename, args=[], block=False):
 
     if os.path.exists(path):
         executable = sys.executable
-        if "PYTHON" in os.environ.keys():
+        if "PYTHON" in list(os.environ.keys()):
             executable = os.environ["PYTHON"]
-        proc = subprocess.Popen([executable, path] + args, env=env)
+        # Give all subprocesses the name 'RabbitVCS' to give Ubuntu desktop files the possibility
+        # to group those windows in the launcher on WM_CLASS.
+        proc = subprocess.Popen([executable, path] + ['--name', 'RabbitVCS'] + args, env=env)
 
         if block:
             proc.wait()
@@ -699,7 +736,7 @@ def pretty_timedelta(time1, time2, resolution=None):
     if resolution and age_s < resolution:
         return ""
     
-    # I do not see a way to make this less repetitive - to make the 
+    # I do not see a way to make this less repetitive - to make the
     # strings fully translatable (i.e. also for languages that have more
     # or less than two plural forms) we have to state all the strings
     # explicitely within an ngettext call
@@ -710,7 +747,7 @@ def pretty_timedelta(time1, time2, resolution=None):
         return ngettext("%i minute", "%i minutes",r) % r
     elif age_s <= 3600 * 24 * 1.9:
         r = age_s / 3600
-        return ngettext("%i hour", "%i hours",r) % r        		
+        return ngettext("%i hour", "%i hours",r) % r
     elif age_s <= 3600 * 24 * 7 * 1.9:
         r = age_s / (3600 * 24)
         return ngettext("%i day", "%i days",r) % r
@@ -722,7 +759,7 @@ def pretty_timedelta(time1, time2, resolution=None):
         return ngettext("%i month", "%i months",r) % r
     else:
         r = age_s / (3600 * 24 * 365)
-        return ngettext("%i year", "%i years",r) % r        
+        return ngettext("%i year", "%i years",r) % r
 
 def _commonpath(l1, l2, common=[]):
     """
@@ -756,7 +793,7 @@ def launch_repo_browser(uri):
     
     if repo_browser is not None:
         subprocess.Popen([
-            repo_browser, 
+            repo_browser,
             uri
         ])
 
@@ -781,14 +818,14 @@ def url_join(path, *args):
     return "/".join([path.rstrip("/")] + list(args))
 
 def quote_url(url_text):
-    (scheme, netloc, path, params, query, fragment) = urlparse.urlparse(url_text)
+    (scheme, netloc, path, params, query, fragment) = urllib.parse.urlparse(url_text)
     # netloc_quoted = urllib.quote(netloc)
     path_quoted = urllib.quote(path)
     params_quoted = urllib.quote(query)
     query_quoted = urllib.quote_plus(query)
     fragment_quoted = urllib.quote(fragment)
     
-    url_quoted = urlparse.urlunparse(
+    url_quoted = urllib.parse.urlunparse(
                             (scheme,
                              netloc,
                              path_quoted,
@@ -799,14 +836,14 @@ def quote_url(url_text):
     return url_quoted
 
 def unquote_url(url_text):
-    (scheme, netloc, path, params, query, fragment) = urlparse.urlparse(url_text)
+    (scheme, netloc, path, params, query, fragment) = urllib.parse.urlparse(url_text)
     # netloc_unquoted = urllib.unquote(netloc)
     path_unquoted = urllib.unquote(path).decode('utf-8')
     params_unquoted = urllib.unquote(query)
     query_unquoted = urllib.unquote_plus(query)
     fragment_unquoted = urllib.unquote(fragment)
     
-    url_unquoted = urlparse.urlunparse(
+    url_unquoted = urllib.parse.urlunparse(
                             (scheme,
                              netloc,
                              path_unquoted,
@@ -865,7 +902,7 @@ def walk_tree_depth_first(tree, show_levels=False,
     will be skipped.
     
     If "start" is given, the walk will be applied only to that node and its
-    children. No preprocessing or filtering will be applied to other elements.    
+    children. No preprocessing or filtering will be applied to other elements.
     """
     annotated_tree = [(0, element) for element in tree]
     

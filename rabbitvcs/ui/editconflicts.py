@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 #
 # This is an extension to the Nautilus file manager to allow better 
 # integration with the Subversion source control system.
@@ -22,7 +23,7 @@
 
 import os
 import os.path
-import thread
+import six.moves._thread
 import shutil
 
 import pygtk
@@ -46,6 +47,7 @@ class SVNEditConflicts(InterfaceNonView):
     def __init__(self, path):
         InterfaceNonView.__init__(self)
 
+        log.debug("incoming path: %s"%path)
         self.path = path
         self.vcs = rabbitvcs.vcs.VCS()
         self.svn = self.vcs.svn()
@@ -59,7 +61,7 @@ class SVNEditConflicts(InterfaceNonView):
         filename = os.path.basename(path)
         
         dialog = rabbitvcs.ui.dialog.ConflictDecision(filename)
-        (action, mark_resolved) = dialog.run()
+        action = dialog.run()
         dialog.destroy()
         
         if action == -1:
@@ -70,28 +72,28 @@ class SVNEditConflicts(InterfaceNonView):
             #Accept Mine
             working = self.get_working_path(path)
             shutil.copyfile(working, path)
-
-            if mark_resolved:
-                self.svn.resolve(path)
+            self.svn.resolve(path)
                 
         elif action == 1:
             #Accept Theirs
-            head = self.get_head_path(path)
-            shutil.copyfile(head, path)
-
-            if mark_resolved:
-                self.svn.resolve(path)
+            ancestor, theirs = self.get_revisioned_paths(path)
+            shutil.copyfile(theirs, path)
+            self.svn.resolve(path)
                 
         elif action == 2:
             #Merge Manually
             
-            head = self.get_head_path(path)
             working = self.get_working_path(path)
-            shutil.copyfile(working, path)
+            ancestor, theirs = self.get_revisioned_paths(path)
             
-            rabbitvcs.util.helper.launch_merge_tool(path, head)
+            log.debug("launching merge tool with base: %s, mine: %s, theirs: %s, merged: %s"%(ancestor, working, theirs, path))
+            rabbitvcs.util.helper.launch_merge_tool(base=ancestor, mine=working, theirs=theirs, merged=path)
 
-            if mark_resolved:
+            dialog = rabbitvcs.ui.dialog.MarkResolvedPrompt()
+            mark_resolved = dialog.run()
+            dialog.destroy()
+
+            if mark_resolved == 1:
                 self.svn.resolve(path)
 
         self.close()
@@ -108,19 +110,34 @@ class SVNEditConflicts(InterfaceNonView):
 
         return path
 
-    def get_head_path(self, path):
-        # There might be a merge-right file if merging from a different branch
-        paths = os.listdir(os.path.dirname(path))
-        for head in paths:
-            if head.find(os.path.basename(path)) != -1 and head.find("merge-right") != -1:
-                return os.path.join(os.path.dirname(path), head)
+    def get_revisioned_paths(self, path):
+        """ Will return a tuple where the first element is the common ancestor's
+            path and the second is the path of the the file being merged in."""
+        ancestorPath = ""
+        theirsPath = ""
+        revisionPaths = []
+        baseDir, baseName = os.path.split(path)
+        log.debug("baseDir: %s, baseName: %s"%(baseDir, baseName))
+        for name in os.listdir(baseDir):
+            if baseName in name:
+                extension = name.split(".")[-1]
+                log.debug("extension: %s"%extension)
+                if extension.startswith("r"):
+                    revision = extension[1:]
+                    log.debug("revision: %s"%revision)
+                    revisionPaths.append((revision,name))
+        if len(revisionPaths) == 2:
+            if revisionPaths[0][0] < revisionPaths[1][0]:
+                ancestorPath = os.path.join(baseDir, revisionPaths[0][1])
+                theirsPath = os.path.join(baseDir, revisionPaths[1][1])
+            else:
+                ancestorPath = os.path.join(baseDir, revisionPaths[1][1])
+                theirsPath = os.path.join(baseDir, revisionPaths[0][1])
+            return (ancestorPath, theirsPath)
+        else:
+            log.error("Unexpected number (%d) of revision paths found"%len(revisionPaths))
+            return ("", "")
 
-        # If no merge-right file exists, merging is coming from head
-        # so export the file from head
-        tmppath = rabbitvcs.util.helper.get_tmp_path("%s.head" % os.path.basename(path))
-        self.svn.export(path, tmppath)
-
-        return tmppath
 
 class GitEditConflicts(InterfaceNonView):
     def __init__(self, path):
