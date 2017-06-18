@@ -1263,11 +1263,13 @@ class GitRepositorySelector:
         self.__update_host()
     
     def __update_host(self):
-        self.host.set_text(self.git.config.get(("remote", "origin"), "url"))
+        repo = self.repository_opt.get_active_text()
+        self.host.set_text(self.git.config.get(("remote", repo), "url"))
     
     def __repository_changed(self, repository_opt):
         if self.changed_callback:
             self.changed_callback(repository_opt.get_active_text(), self.branch_opt.get_active_text())
+        self.__update_host()
    
     def __branch_changed(self, branch_opt):
         if self.changed_callback:
