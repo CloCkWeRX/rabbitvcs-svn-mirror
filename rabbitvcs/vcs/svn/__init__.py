@@ -1242,7 +1242,10 @@ class SVN:
 
         """
 
-        return self.client.export(src_url_or_path, dest_path, force,
+        if os.path.exists(dest_path):
+            return
+        
+        self.client.export(src_url_or_path, dest_path, force,
             revision.primitive(), native_eol, ignore_externals, recurse)
 
     def import_(self, path, url, log_message, ignore=False):

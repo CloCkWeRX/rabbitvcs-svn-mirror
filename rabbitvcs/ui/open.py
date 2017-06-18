@@ -71,7 +71,8 @@ class SVNOpen(InterfaceNonView):
         self.svn.export(
             url,
             dest,
-            revision=revision_obj
+            revision=revision_obj,
+            force=True
         )
         
         rabbitvcs.util.helper.open_item(dest)
