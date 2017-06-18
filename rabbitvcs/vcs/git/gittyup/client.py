@@ -633,7 +633,7 @@ class GittyupClient:
         
         return branches
         """
-        cmd = ["git", "branch", "-lv", "--no-abbrev"]
+        cmd = ["git", "branch", "-lv", "--no-abbrev", "-a"]
         if commit_sha:
             cmd += ["--contains", commit_sha]
 
@@ -1573,7 +1573,7 @@ class GittyupClient:
     def log(self, path="", skip=0, limit=None, revision="", showtype="all"):
         
         cmd = ["git", "--no-pager", "log", "--numstat", "--parents", "--pretty=fuller", 
-            "--date-order", "--date=default"]
+            "--date-order", "--date=default", "-m"]
 
         if showtype == "all":
             cmd.append("--all")
@@ -1599,20 +1599,41 @@ class GittyupClient:
         revisions = []
         revision = {}
         changed_file = {}
+        pattern_from = re.compile(r' \(from (.*)\)')
+        last_commitId = ""
         for line in stdout:
             if line == "":
                 continue
             
             if line[0:6] == "commit":
+                match = pattern_from.search(line)
+                commit_line = re.sub(" \(from.*\)","", line).split(" ")
+                fromPath = ""                
+                if match:
+                    fromPath = match.group(1)
                 if revision:
                     if "changed_paths" not in revision:
-                        revision["changed_paths"] = {}
-                    revisions.append(revision)
-            
-                revision = {}
+                        revision["changed_paths"] = {}                
+                    if last_commitId != commit_line[1]:
+                        revisions.append(revision)
+                        revision = {}
+                    else:
+                        del revision["message"]
+
+                
+                if len(fromPath) > 0:
+                    if "changed_paths" not in revision:
+                        revision["changed_paths"] =[]  
+                    changed_file = {
+                        "additions": "-",
+                        "removals": "-",
+                        "path": "Diff with parent : %s " % fromPath
+                    }
+                    revision["changed_paths"].append(changed_file)
+                
                 changed_file = {}
-                commit_line = line.split(" ")
                 revision["commit"] = commit_line[1]
+                last_commitId = revision["commit"]
                 revision["parents"] = []
                 for parent in commit_line[2:]:
                     revision["parents"].append(parent)
@@ -1634,7 +1655,7 @@ class GittyupClient:
                 revision["message"] = revision["message"] + message
             elif line[0].isdigit() or line[0] in "-":
                 file_line = line.split("\t")
-                if not changed_file:
+                if "changed_paths" not in revision:
                     revision["changed_paths"] = []
 
                 if len(file_line) == 3:

@@ -679,8 +679,7 @@ class GitLog(Log):
                 "row-activated":    self.on_paths_table_row_activated
             },
             flags={
-                "sortable": True, 
-                "sort_on": 1
+                "sortable": False
             }
         )
         self.start_point = 0
@@ -726,6 +725,8 @@ class GitLog(Log):
         # Load branches.
         self.branchItems = []
         for branch in self.branchAction.get_result(0):
+            if branch.name.startswith("remotes/"):
+                branch.name = branch.name[len("remotes/"):]
             self.branchItems.append({'id': branch.revision, 'name': branch.name})
 
         self.set_start_revision(self.revision_items[0].revision.short())
@@ -874,7 +875,7 @@ class GitLog(Log):
                         subitem.path
                     ])
 
-        subitems.sort(lambda x, y: cmp(x[1],y[1]))
+#        subitems.sort(lambda x, y: cmp(x[1],y[1]))
         for subitem in subitems:
             self.paths_table.append([
                 subitem[0],
