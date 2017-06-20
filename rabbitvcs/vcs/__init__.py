@@ -29,6 +29,9 @@ from rabbitvcs.util.log import Log
 logger = Log("rabbitvcs.vcs")
 
 from rabbitvcs.util.helper import get_exclude_paths
+from rabbitvcs.util.settings import SettingsManager
+
+settings = SettingsManager()
 
 EXT_UTIL_ERROR = _("The output from '%s' was not able to be processed.\n%s")
 
@@ -37,14 +40,14 @@ VCS_GIT = 'git'
 VCS_MERCURIAL = 'mercurial'
 VCS_DUMMY = 'unknown'
 
-def guess(path):
+def _guess(path):
     # Determine the VCS instance based on the path
     if path:
         path_to_check = path
         folders = {
             ".svn": VCS_SVN,
             ".git": VCS_GIT,
-            ".hg": VCS_MERCURIAL,
+            ".hg": VCS_DUMMY, # Disable this for now
             ".bzr": VCS_DUMMY,
             ".CVS": VCS_DUMMY
         }
@@ -72,11 +75,19 @@ def guess(path):
                 return cache                
         path_to_check = os.path.split(path_to_check)[0]            
 
-
     return {
         "vcs": VCS_DUMMY,
         "repo_path": path
     }
+
+# Override the standard guessing method to ensure we
+# can return a dummy object if needed
+def guess(path):
+    obj = _guess(path)
+    if obj["vcs"] != VCS_DUMMY and settings.get("HideItem", obj["vcs"]):
+        return {"vcs": VCS_DUMMY, "repo_path": path}
+    else:
+        return obj
 
 class VCS:
     clients = {}
@@ -94,6 +105,9 @@ class VCS:
             return self.clients[VCS_DUMMY]
     
     def svn(self):
+        if settings.get("HideItem", "svn"):
+            return self.dummy()
+
         if VCS_SVN in self.clients:
             return self.clients[VCS_SVN]
         else:
@@ -108,8 +122,13 @@ class VCS:
                 return self.clients[VCS_SVN]
 
     def git(self, path=None, is_repo_path=False):
+        if settings.get("HideItem", "git"):
+            return self.dummy()
+
         if VCS_GIT in self.clients:
             git = self.clients[VCS_GIT]
+            if git.__class__.__name__ == "Dummy":
+                return self.dummy()
 
             if path:
                 if is_repo_path:
@@ -140,6 +159,9 @@ class VCS:
                 return self.clients[VCS_GIT]
 
     def mercurial(self, path=None, is_repo_path=False):
+        if settings.get("HideItem", "hg"):
+            return self.dummy()
+
         if VCS_MERCURIAL in self.clients:
             mercurial = self.clients[VCS_MERCURIAL]
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <!-- interface-requires gtk+ 2.10 -->
+  <requires lib="gtk+" version="2.18"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="Settings">
     <property name="width_request">550</property>
@@ -63,7 +63,6 @@
                                 <child>
                                   <object class="GtkCheckButton" id="enable_attributes">
                                     <property name="label" translatable="yes">Enable file attributes</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
@@ -79,7 +78,6 @@
                                 <child>
                                   <object class="GtkCheckButton" id="enable_recursive">
                                     <property name="label" translatable="yes">Enable recursive status checks</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
                                     <property name="active">True</property>
@@ -94,7 +92,6 @@
                                 <child>
                                   <object class="GtkCheckButton" id="enable_emblems">
                                     <property name="label" translatable="yes">Enable emblems</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
@@ -110,7 +107,6 @@
                                 <child>
                                   <object class="GtkCheckButton" id="show_debug">
                                     <property name="label" translatable="yes">Show RabbitVCS debugging tools</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
@@ -144,6 +140,81 @@
                     <property name="expand">False</property>
                     <property name="fill">False</property>
                     <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkVBox" id="vbox20">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="border_width">12</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkLabel" id="label10">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Version Control Systems&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkAlignment" id="alignment7">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="left_padding">12</property>
+                        <child>
+                          <object class="GtkVBox" id="vbox21">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkCheckButton" id="enable_subversion">
+                                <property name="label" translatable="yes">Enable Subversion</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="active">True</property>
+                                <property name="draw_indicator">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="enable_git">
+                                <property name="label" translatable="yes">Enable Git</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="active">True</property>
+                                <property name="draw_indicator">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
@@ -201,7 +272,7 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
@@ -272,7 +343,6 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="diff_tool_browse">
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
@@ -302,7 +372,6 @@
                             <child>
                               <object class="GtkCheckButton" id="diff_tool_swap">
                                 <property name="label" translatable="yes">Show new version on the left side</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -479,7 +548,6 @@
                             <child>
                               <object class="GtkButton" id="cache_clear_repositories">
                                 <property name="label">gtk-clear</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
@@ -554,7 +622,6 @@
                             <child>
                               <object class="GtkButton" id="cache_clear_messages">
                                 <property name="label">gtk-clear</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
@@ -645,7 +712,6 @@
                             <child>
                               <object class="GtkButton" id="cache_clear_authentication">
                                 <property name="label">gtk-clear</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
@@ -988,7 +1054,6 @@
                     <child>
                       <object class="GtkButton" id="refresh_info">
                         <property name="label" translatable="yes">Refresh Information</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -1003,7 +1068,6 @@
                     <child>
                       <object class="GtkButton" id="restart_checker">
                         <property name="label" translatable="yes">Restart Checker</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -1018,7 +1082,6 @@
                     <child>
                       <object class="GtkButton" id="stop_checker">
                         <property name="label" translatable="yes">Stop Checker</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -1121,7 +1184,6 @@
             <child>
               <object class="GtkButton" id="cancel">
                 <property name="label">gtk-cancel</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -1137,7 +1199,6 @@
             <child>
               <object class="GtkButton" id="ok">
                 <property name="label">gtk-ok</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>

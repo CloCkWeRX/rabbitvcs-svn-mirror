@@ -81,6 +81,12 @@ class Settings(InterfaceView):
         self.get_widget("show_debug").set_active(
             int(self.settings.get("general","show_debug"))
         )
+        self.get_widget("enable_subversion").set_active(
+            int(self.settings.get("HideItem", "svn")) == 0
+        )
+        self.get_widget("enable_git").set_active(
+            int(self.settings.get("HideItem", "git")) == 0
+        )
         self.get_widget("diff_tool").set_text(
             self.settings.get("external", "diff_tool")
         )
@@ -121,6 +127,7 @@ class Settings(InterfaceView):
         if base_dir:
             vcs = rabbitvcs.vcs.VCS()
             git_config_files = []
+            print(vcs.guess(base_dir))
             if vcs.is_in_a_or_a_working_copy(base_dir) and vcs.guess(base_dir)["vcs"] == rabbitvcs.vcs.VCS_GIT:
                 git = vcs.git(base_dir)
                 git_config_files = git.get_config_files(base_dir)
@@ -273,6 +280,14 @@ class Settings(InterfaceView):
         self.settings.set(
             "general", "show_debug",
             self.get_widget("show_debug").get_active()
+        )
+        self.settings.set(
+            "HideItem", "svn",
+            not self.get_widget("enable_subversion").get_active()
+        )
+        self.settings.set(
+            "HideItem", "git",
+            not self.get_widget("enable_git").get_active()
         )
         self.settings.set(
             "external", "diff_tool",
