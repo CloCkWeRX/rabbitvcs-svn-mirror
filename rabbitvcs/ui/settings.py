@@ -127,7 +127,6 @@ class Settings(InterfaceView):
         if base_dir:
             vcs = rabbitvcs.vcs.VCS()
             git_config_files = []
-            print(vcs.guess(base_dir))
             if vcs.is_in_a_or_a_working_copy(base_dir) and vcs.guess(base_dir)["vcs"] == rabbitvcs.vcs.VCS_GIT:
                 git = vcs.git(base_dir)
                 git_config_files = git.get_config_files(base_dir)
