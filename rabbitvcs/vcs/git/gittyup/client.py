@@ -1601,7 +1601,7 @@ class GittyupClient:
             cmd += ["--", path]
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
             return []
