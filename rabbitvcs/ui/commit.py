@@ -339,9 +339,13 @@ class GitCommit(Commit):
 
         self.get_widget("commit_to_box").show()
         
-        self.get_widget("to").set_text(
-            self.git.get_active_branch().name
-        )
+        active_branch = self.git.get_active_branch()
+        if active_branch:
+            self.get_widget("to").set_text(
+                active_branch.name
+            )
+        else:
+            self.get_widget("to").set_text("No active branch")
 
         self.items = None
         if len(self.paths):

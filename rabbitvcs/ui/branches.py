@@ -85,7 +85,10 @@ class GitBranchManager(InterfaceView):
         
         if self.revision:
             revision_branches = self.git.branch_list(self.revision)
-            self.show_edit(revision_branches[0].name)
+            if revision_branches:
+                self.show_edit(revision_branches[0].name)
+            else:
+                self.show_add()
         else:
             self.show_add()
         
@@ -269,7 +272,9 @@ class GitBranchManager(InterfaceView):
         
         revision = "HEAD"
         if self.revision:
-            revision = six.text_type(self.git.get_active_branch().name)
+            active_branch = self.git.get_active_branch()
+            if active_branch:
+                revision = six.text_type(active_branch.name)
 
         self.items_treeview.unselect_all()
         self.branch_entry.set_text("")

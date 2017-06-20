@@ -1264,7 +1264,10 @@ class GitRepositorySelector:
     
     def __update_host(self):
         repo = self.repository_opt.get_active_text()
-        self.host.set_text(self.git.config.get(("remote", repo), "url"))
+        try:
+            self.host.set_text(self.git.config.get(("remote", repo), "url"))
+        except KeyError as e:
+            log.error("Missing remote %s config key" % repo)
     
     def __repository_changed(self, repository_opt):
         if self.changed_callback:
