@@ -10,12 +10,12 @@ Requirements:
 
 To install:
     If you are running Thunar v1.1.0 or later, copy RabbitVCS.py to:
-        /usr/lib/thunarx-2/python.
+        /usr/lib/thunarx-2/python or /usr/lib64/thunarx-2/python
     
     If you are running Thunar < v1.1.0, copy RabbitVCS.py to:
-        /usr/lib/thunarx-1/python.
+        /usr/lib/thunarx-1/python or /usr/lib64/thunarx-2/python
         
-    In both cases, you may need to create the python folder.
+    In both cases, you may need to create the python folder.  Some systems like Fedora use /usr/lib64 on 64-bit systems.
 
 Troubleshooting:
 
