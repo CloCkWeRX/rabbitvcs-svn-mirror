@@ -1019,7 +1019,7 @@ class SVN:
         # Walk back up the tree...
         for tail in tails:
             head = os.path.join(head, tail)
-            self.add(head, depth=pysvn.depth.empty)
+            self.client.add(head, depth=pysvn.depth.empty)
 
     def copy(self, src, dest, revision=Revision("head")):
         """
