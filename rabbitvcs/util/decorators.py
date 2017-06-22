@@ -34,6 +34,9 @@ See:
 """
 from __future__ import absolute_import
 
+import gtk
+gtk.gdk.threads_init()
+
 import time
 import warnings
 import threading
