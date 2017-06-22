@@ -1,6 +1,8 @@
 RabbitVCS Thunar Extension
 
-This extension is meant to be used with the Thunar File Manager,
+This extension is meant to be used with the Thunar File Manager.  Bear in mind that
+Thunar's extension framework does not allow the setting of emblems so file statuses
+will not be overlayed like it does on Nautilus.
 
 Requirements:
     * thunar (>= v0.4.0)
