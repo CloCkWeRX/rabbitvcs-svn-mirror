@@ -222,7 +222,7 @@ class GittyupClient:
         files.append(excludefile)
         
         try:
-            core_excludesfile = self.config.get(("core", ), "excludesfile")
+            core_excludesfile = self._config_get(("core", ), "excludesfile")
             if core_excludesfile:
                 files.append(core_excludesfile)
         except KeyError:
@@ -327,12 +327,30 @@ class GittyupClient:
             file.close()
 
     def _load_config(self):
-        self.config = self.repo.get_config_stack()
+        self.config = self.repo.get_config()
+
+    def _config_normalize_section(self, section):
+        # If some old code is using string sections, convert to a tuple
+        if isinstance(section, six.string_types):
+            parts = section.split(" ")
+            s1 = parts.pop(0)
+            s2 = " ".join(parts).replace('"', "")
+            section = (s1, s2)
+
+        return section
+
+    def _config_set(self, section, key, value):
+        section = self._config_normalize_section(section)
+        return self.config.set(section, key, value)
+
+    def _config_get(self, section, key):
+        section = self._config_normalize_section(section)
+        return self.config.get(section, key)
 
     def _get_config_user(self):
         try:
-            config_user_name = self.config.get(("user", ), "name")
-            config_user_email = self.config.get(("user", ), "email")
+            config_user_name = self._config_get(("user", ), "name")
+            config_user_email = self._config_get(("user", ), "email")
             if config_user_name == "" or config_user_email == "":
                 raise KeyError()
         except KeyError:
@@ -341,9 +359,9 @@ class GittyupClient:
             if config_user_name == None and config_user_email == None:
                 return None
             
-        self.config.set(("user", ), "name", config_user_name)
-        self.config.set(("user", ), "email", config_user_email)
-        self.config.writable.write_to_path()
+        self._config_set(("user", ), "name", config_user_name)
+        self._config_set(("user", ), "email", config_user_email)
+        self.config.write_to_path()
         return "%s <%s>" % (config_user_name, config_user_email)
 
     #
@@ -753,8 +771,8 @@ class GittyupClient:
             self._load_config()
 
             # Write original url back to config.
-            self.config.set("remote \"origin\"", "url", host)
-            self.config.write()            
+            self._config_set("remote \"origin\"", "url", host)
+            self.config.write_to_path()            
     
     def commit(self, message, parents=None, committer=None, commit_time=None, 
             commit_timezone=None, author=None, author_time=None, 
@@ -942,8 +960,8 @@ class GittyupClient:
         # If we prompted for a password and write it to the config, remove it now before continuing.
         if isUsername == True or isPassword == True:
             # Write original url back to config.
-            self.config.set(remoteKey, "url", originalRemoteUrl)
-            self.config.write()
+            self._config_set(remoteKey, "url", originalRemoteUrl)
+            self.config.write_to_path()
 
     def push(self, repository="origin", refspec="master", tags=True):
         """
@@ -994,8 +1012,8 @@ class GittyupClient:
         # If we prompted for a password and write it to the config, remove it now before continuing.
         if isUsername == True or isPassword == True:
             # Write original url back to config.
-            self.config.set(remoteKey, "url", originalRemoteUrl)
-            self.config.write()
+            self._config_set(remoteKey, "url", originalRemoteUrl)
+            self.config.write_to_path()
 
     def onUsername(self, window, username, remoteKey, originalRemoteUrl, isOk):
         if isOk == True:
@@ -1008,8 +1026,8 @@ class GittyupClient:
 
                 if remoteKey.find("://") == -1:
                     # Write url temporarily back to config.
-                    self.config.set(remoteKey, "url", newRemoteUrl)
-                    self.config.write()
+                    self._config_set(remoteKey, "url", newRemoteUrl)
+                    self._config_seteable.write_to_path()
                 else:
                     # Change the url in memory, since we don't have a config yet.
                     self.modifiedHost = newRemoteUrl
@@ -1028,8 +1046,8 @@ class GittyupClient:
 
                 if remoteKey.find("://") == -1:
                     # Write url temporarily back to config.
-                    self.config.set(remoteKey, "url", newRemoteUrl)
-                    self.config.write()
+                    self._config_set(remoteKey, "url", newRemoteUrl)
+                    self.config.write_to_path()
                 else:
                     # Change the url in memory, since we don't have a config yet.
                     self.modifiedHost = newRemoteUrl
@@ -1049,7 +1067,7 @@ class GittyupClient:
 
         if remoteKey.find("://") == -1:
             # Get existing url from config, otherwise just use what was provided (the url from cloning, etc).
-            originalRemoteUrl = self.config.get(remoteKey, "url")
+            originalRemoteUrl = self._config_get(remoteKey, "url")
 
         if originalRemoteUrl.find('@') == -1:
             # No username or password. Prompt for both. Create dialog.
@@ -1106,7 +1124,7 @@ class GittyupClient:
 
         if remoteKey.find("://") == -1:
             # Get existing url from config, otherwise just use what was provided (the url from cloning, etc).
-            originalRemoteUrl = self.config.get(remoteKey, "url")
+            originalRemoteUrl = self._config_get(remoteKey, "url")
 
         # If the url contains a username (@) without a password (:), then prompt for a password.
         if originalRemoteUrl.find('@') > -1 and originalRemoteUrl.rfind(':') <= 5:
