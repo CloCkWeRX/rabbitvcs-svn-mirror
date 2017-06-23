@@ -4,6 +4,8 @@ This plugin is meant to be used with the Gedit Text Editor.  It provides the
 familiar RabbitVCS Context menu in the Tools menu as well as in various 
 context menus.
 
+Note: This is broken for recent versions of Gedit.
+
 Requirements:
     * gedit
     * (all other RabbitVCS requirements)
