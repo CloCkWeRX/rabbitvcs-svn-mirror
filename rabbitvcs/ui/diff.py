@@ -236,9 +236,10 @@ class GitDiff(Diff):
         
         file = open(path, "wb")
         try:
-            file.write(data)
-        except Exception as e:
-            log.exception(e)
+            try:
+                file.write(data)
+            except Exception as e:
+                log.exception(e)
         finally:
             file.close()
 

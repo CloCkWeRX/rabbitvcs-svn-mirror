@@ -106,8 +106,10 @@ class GittyupClient:
         try:
             f = SHA1Writer(f)
             write_index_dict(f, {})
-        finally:
-            f.close()
+        except:
+            pass
+
+        f.close()
 
     def _get_index(self):
         if not self.repo.has_index():
@@ -254,8 +256,10 @@ class GittyupClient:
                         continue
 
                     patterns.append(line.rstrip("\n"))
-            finally:
-                file.close()
+            except:
+                pass
+
+            file.close()
         
         return patterns
 

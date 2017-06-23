@@ -634,10 +634,11 @@ class VCSAction(threading.Thread):
 
     def run_single(self, func, *args, **kwargs):
         try:
-            returner = func(*args, **kwargs)
-        except Exception as e:
-            self.__queue_exception_callback(e)
-            returner = None
+            try:
+                returner = func(*args, **kwargs)
+            except Exception as e:
+                self.__queue_exception_callback(e)
+                returner = None
         finally:
             self.stop()
 
