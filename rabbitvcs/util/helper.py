@@ -39,8 +39,11 @@ import time
 import shutil
 import hashlib
 
-import urllib
-import urlparse
+try:
+    import urlparse
+except ImportError:
+    from urllib.parse import urlparse
+    
 from six.moves import filter
 from six.moves import range
 
