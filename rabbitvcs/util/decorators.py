@@ -34,8 +34,13 @@ See:
 """
 from __future__ import absolute_import
 
-import gtk
-gtk.gdk.threads_init()
+import os
+
+if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
+    from gi.repository import Gtk as gtk
+else:
+    import gtk
+    gtk.gdk.threads_init()
 
 import time
 import warnings
