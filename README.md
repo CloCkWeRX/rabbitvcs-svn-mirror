@@ -2,14 +2,8 @@ RabbitVCS
 =========
 
 RabbitVCS is a set of graphical tools written to provide simple and 
-straightforward access to the version control systems you use.
-
-RabbitVCS is now distributed in two parts.  The first part is the python module
-that is not connected to any file manager or text editor.  This is what is now 
-known as "rabbitvcs".  The second part is the series of front-ends or clients
-that we distribute.  These consist of a Nautilus extension, a Thunar extension,
-a Gedit plugin, and a command line utility.  All of these clients use the same
-python module as a back-end.
+straightforward access to the version control systems you use.  We currently support
+Subversion and Git on a variety of clients such as Nautilus, Thunar, Nemo, Caja, and on the command line.
 
 
 System Requirements
@@ -29,6 +23,7 @@ For subversion:
 For git:
 * dulwich >= 0.9.7
 * git
+* tkinter (for now)
 
 Recommends:
 * meld (graphical diff tool)
@@ -36,7 +31,7 @@ Recommends:
 
 For debian based distros you can run: 
 ```
-# apt-get install python-gtk2 python-configobj python-gobject  python-simplejson  python-gtkspell  python-svn  subversion python-dulwich git meld
+# apt-get install python-gtk2 python-configobj python-gobject  python-simplejson  python-gtkspell  python-svn  subversion python-dulwich git meld python-tk
 ```
 
 Installation
@@ -52,12 +47,23 @@ On Ubuntu or Debian-based distros, instead run:
 # python setup.py install --install-layout=deb
 ```
 
-Each clients' README file contains details on their dependencies and installation.
+Clients
+-------
+RabbitVCS is the core library and set of dialogs, but you interact with them through our clients.  Each client needs to be purposefully installed and has its own README.  Here is a list of our currently working clients:
+
+ * [Nautilus 3](https://github.com/rabbitvcs/rabbitvcs/tree/master/clients/nautilus-3.0)
+ * [Thunar](https://github.com/rabbitvcs/rabbitvcs/tree/master/clients/thunar)
+ * [Nemo](https://github.com/rabbitvcs/rabbitvcs/tree/master/clients/nemo)
+ * [Caja](https://github.com/rabbitvcs/rabbitvcs/tree/master/clients/caja)
+ * [Command Line](https://github.com/rabbitvcs/rabbitvcs/tree/master/clients/cli)
+
+We have some others as well that are either incomplete, experimental, or non-working.  [Check them out!](https://github.com/rabbitvcs/rabbitvcs/tree/master/clients)
+
 
 Manual Upgrade
 --------------
 To upgrade an existing version manually, copy the contents of the repository to the rabbitvcs lib folder.
-Most likely it is located at `/usr/lib/pymodules/python2.7/rabbitvcs`. In case of Debian-based distros this is will be `/usr/lib/python2.7/dist-packages/rabbitvcs`.
+Most likely it is located at `/usr/lib/pymodules/python2.7/rabbitvcs`. In case of Debian-based distros this is will be `/usr/lib/python2.7/dist-packages/rabbitvcs`.  For Fedora-based distros on 64-bit make sure to check `/usr/lib64`.
 
 References
 ----------
