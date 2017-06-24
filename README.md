@@ -31,7 +31,7 @@ Recommends:
 
 For Debian-based distros you can run: 
 ```
-# apt-get install python-gtk2 python-configobj python-gobject  python-simplejson  python-gtkspell  python-svn  subversion python-dulwich git meld tkinter
+# apt-get install python-gtk2 python-configobj python-gobject python-simplejson python-gtkspell python-svn subversion python-dulwich git meld tkinter
 ```
 
 For Fedora-based distros you can run:
@@ -39,7 +39,7 @@ For Fedora-based distros you can run:
 # dnf install nautilus-python pysvn python-configobj python-devel dbus-python python-dulwich tkinter subversion meld
 ```
 
-Installation
+Manual Installation
 ------------
 Note that you will require superuser rights in order to install RabbitVCS.
 Execute the following as root or using sudo:
@@ -51,6 +51,9 @@ On Ubuntu or Debian-based distros, instead run:
 ```
 # python setup.py install --install-layout=deb
 ```
+
+Once this is run, make sure you install one or more client below.
+
 
 Clients
 -------
@@ -65,10 +68,11 @@ RabbitVCS is the core library and set of dialogs, but you interact with them thr
 We have some others as well that are either incomplete, experimental, or non-working.  [Check them out!](https://github.com/rabbitvcs/rabbitvcs/tree/master/clients)
 
 
-Manual Upgrade
+Upgrade
 --------------
 To upgrade an existing version manually, copy the contents of the repository to the rabbitvcs lib folder.
 Most likely it is located at `/usr/lib/pymodules/python2.7/rabbitvcs`. In case of Debian-based distros this is will be `/usr/lib/python2.7/dist-packages/rabbitvcs`.  For Fedora-based distros on 64-bit make sure to check `/usr/lib64`.
+
 
 References
 ----------
