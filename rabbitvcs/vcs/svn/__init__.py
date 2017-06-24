@@ -259,8 +259,10 @@ class SVN:
         if not self.is_in_a_or_a_working_copy(path):
             return [on_error]
 
-        if recurse else pysvn.depth.empty:
+        if recurse:
             depth = pysvn.depth.infinity
+        else:
+            depth = pysvn.depth.empty
 
         try:
             pysvn_statuses = self.client.status(path,
