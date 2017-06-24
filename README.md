@@ -29,9 +29,14 @@ Recommends:
 * meld (graphical diff tool)
 
 
-For debian based distros you can run: 
+For Debian-based distros you can run: 
 ```
-# apt-get install python-gtk2 python-configobj python-gobject  python-simplejson  python-gtkspell  python-svn  subversion python-dulwich git meld python-tk
+# apt-get install python-gtk2 python-configobj python-gobject  python-simplejson  python-gtkspell  python-svn  subversion python-dulwich git meld tkinter
+```
+
+For Fedora-based distros you can run:
+```
+# dnf install nautilus-python pysvn python-configobj python-devel dbus-python python-dulwich tkinter subversion meld
 ```
 
 Installation
