@@ -50,11 +50,11 @@ for c in sys.argv:
 # This will eventually be passed to the setup function, but we already need them
 # for doing some other stuff so we have to declare them here.
 name                = "rabbitvcs"
-version             = "0.16.0"
+version             = "0.17.0"
 description         = "Easy version control"
 long_description    = """RabbitVCS is a set of graphical tools written to provide simple and straightforward access to the version control systems you use."""
-author              = "Bruce van der Kooij"
-author_email        = "brucevdkooij@gmail.com"
+author              = "Adam Plumb"
+author_email        = "adamplumb@gmail.com"
 url                 = "http://www.rabbitvcs.org"
 license             = "GNU General Public License version 2 or later"
 
