@@ -183,10 +183,17 @@ class Git:
                 # so we need to convert the path to an absolute path
                 st.path = self.client.get_absolute_path(st.path)
 
+                # If not recursing, only return the item in question (if a file)
+                # or items directly under the path (if a directory)
+                cmp_path = "%s/%s" % (path, os.path.basename(st.path))
+                if not recurse and cmp_path != st.path and st.path != path:
+                    continue
+
                 rabbitvcs_status = rabbitvcs.vcs.status.GitStatus(st)
                 self.cache[st.path] = rabbitvcs_status
                 
                 statuses.append(rabbitvcs_status)
+            
             return statuses
     
     def status(self, path, summarize=True, invalidate=False):
@@ -265,7 +272,7 @@ class Git:
         
         items = []
         for path in paths:
-            st = self.statuses(path, invalidate=True)
+            st = self.statuses(path, recurse=True, invalidate=True)
             for st_item in st:
                 if st_item.content == "modified" and os.path.isdir(st_item.path):
                     continue
