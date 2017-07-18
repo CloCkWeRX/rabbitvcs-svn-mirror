@@ -39,10 +39,13 @@ import time
 import shutil
 import hashlib
 
+# A hacky way to get this working with python2 or 3
 try:
-    import urlparse
+    from urlparse import urlparse, urlunparse
+    from urllib import quote, quote_plus, unquote, unquote_plus
 except ImportError:
-    from urllib.parse import urlparse
+    from urllib.parse import urlparse, urlunparse, quote, quote_plus, unquote, unquote_plus
+
     
 from six.moves import filter
 from six.moves import range
@@ -822,14 +825,14 @@ def url_join(path, *args):
     return "/".join([path.rstrip("/")] + list(args))
 
 def quote_url(url_text):
-    (scheme, netloc, path, params, query, fragment) = urlparse.urlparse(url_text)
-    # netloc_quoted = urllib.quote(netloc)
-    path_quoted = urllib.quote(path)
-    params_quoted = urllib.quote(query)
-    query_quoted = urllib.quote_plus(query)
-    fragment_quoted = urllib.quote(fragment)
+    (scheme, netloc, path, params, query, fragment) = urlparse(url_text)
+    # netloc_quoted = quote(netloc)
+    path_quoted = quote(path)
+    params_quoted = quote(query)
+    query_quoted = quote_plus(query)
+    fragment_quoted = quote(fragment)
     
-    url_quoted = urlparse.urlunparse(
+    url_quoted = urlunparse(
                             (scheme,
                              netloc,
                              path_quoted,
@@ -840,14 +843,14 @@ def quote_url(url_text):
     return url_quoted
 
 def unquote_url(url_text):
-    (scheme, netloc, path, params, query, fragment) = urlparse.urlparse(url_text)
-    # netloc_unquoted = urllib.unquote(netloc)
-    path_unquoted = urllib.unquote(path).decode('utf-8')
-    params_unquoted = urllib.unquote(query)
-    query_unquoted = urllib.unquote_plus(query)
-    fragment_unquoted = urllib.unquote(fragment)
+    (scheme, netloc, path, params, query, fragment) = urlparse(url_text)
+    # netloc_unquoted = unquote(netloc)
+    path_unquoted = unquote(path).decode('utf-8')
+    params_unquoted = unquote(query)
+    query_unquoted = unquote_plus(query)
+    fragment_unquoted = unquote(fragment)
     
-    url_unquoted = urlparse.urlunparse(
+    url_unquoted = urlunparse(
                             (scheme,
                              netloc,
                              path_unquoted,
