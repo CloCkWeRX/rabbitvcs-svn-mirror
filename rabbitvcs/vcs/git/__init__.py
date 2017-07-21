@@ -185,7 +185,7 @@ class Git:
 
                 # If not recursing, only return the item in question (if a file)
                 # or items directly under the path (if a directory)
-                cmp_path = "%s/%s" % (path, os.path.basename(st.path))
+                cmp_path = os.path.join(path, os.path.basename(st.path))
                 if not recurse and cmp_path != st.path and st.path != path:
                     continue
 

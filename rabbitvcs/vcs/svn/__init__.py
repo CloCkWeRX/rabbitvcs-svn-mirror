@@ -259,14 +259,9 @@ class SVN:
         if not self.is_in_a_or_a_working_copy(path):
             return [on_error]
 
-        if recurse:
-            depth = pysvn.depth.infinity
-        else:
-            depth = pysvn.depth.empty
-
         try:
             pysvn_statuses = self.client.status(path,
-                                                depth=depth,
+                                                depth=pysvn.depth.infinity,
                                                 update=update)
             if not len(pysvn_statuses):
                 # This is NOT in the PySVN documentation, but sometimes it
@@ -275,6 +270,12 @@ class SVN:
             else:
                 statuslist = []
                 for st in pysvn_statuses:
+                    # If not recursing, only return the item in question (if a file)
+                    # or items directly under the path (if a directory)
+                    cmp_path = os.path.join(path, os.path.basename(st.path))
+                    if not recurse and cmp_path != st.path and st.path != path:
+                        continue
+
                     rabbitvcs_status = rabbitvcs.vcs.status.SVNStatus(st)
                     self.cache[st.path] = rabbitvcs_status
                     statuslist.append(rabbitvcs_status)
