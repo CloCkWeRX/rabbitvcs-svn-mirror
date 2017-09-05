@@ -105,7 +105,7 @@ import rabbitvcs.services.service
 from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 
 class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
-                 Nemo.ColumnProvider, Nemo.PropertyPageProvider, Nemo.NameAndDescProvider, GObject.GObject):
+                Nemo.ColumnProvider, Nemo.PropertyPageProvider, Nemo.NameAndDescProvider, GObject.GObject):
     """
     This is the main class that implements all of our awesome features.
 
@@ -440,8 +440,8 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
                        "utf-8").replace("/", ":")
 
         profile_data_file = os.path.join(
-                               rabbitvcs.util.helper.get_home_folder(),
-                               "checkerservice_%s.stats" % path)
+            rabbitvcs.util.helper.get_home_folder(),
+            "checkerservice_%s.stats" % path)
 
         prof = cProfile.Profile()
         retval = prof.runcall(self.get_background_items_real, window, item)
@@ -637,8 +637,8 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
         page = rabbitvcs.ui.property_page.PropertyPage(paths, claim_domain=False).get_widget()
 
         ppage = Nemo.PropertyPage(name='RabbitVCS::PropertyPage',
-            label=label,
-            page=page)
+                                  label=label,
+                                  page=page)
 
         return [ppage]
 
