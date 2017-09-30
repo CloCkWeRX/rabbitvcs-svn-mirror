@@ -122,11 +122,11 @@ msgstr "Добавить иконку"
 
 #: util/contextmenuitems.py:312
 msgid "Checkout..."
-msgstr "Проверка..."
+msgstr "Извлечь..."
 
 #: util/contextmenuitems.py:313
 msgid "Check out a working copy"
-msgstr "Проверка рабочей копии"
+msgstr "Извлечение рабочей копии"
 
 #: util/contextmenuitems.py:318 ui/update.py:53 ui/update.py:97
 #: ui/glade/update.glade.h:6
