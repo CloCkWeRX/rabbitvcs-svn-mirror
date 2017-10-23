@@ -1,0 +1,169 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=KonqPopupMenu/Plugin,application/octet-stream
+Actions=Update;Commit;_SEPARATOR_;Log;Browser;CheckMods;_SEPARATOR_;Resolve;UpdateToRev;Rename;Delete;Revert;GetLock;ReleaseLock;_SEPARATOR_;BranchTag;Switch;Merge;_SEPARATOR_;CreatePatch;Properties;_SEPARATOR_;Add;Ignore;_SEPARATOR_;Settings;About;
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs.svg
+
+X-KDE-Priority=TopLevel
+X-KDE-Submenu=RabbitVCS (SVN)
+
+[Desktop Action Update]
+Name=Update
+Name[de]=Aktualisieren
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-update.svg
+Exec=rabbitvcs update %U
+
+[Desktop Action Commit]
+Name=Commit...
+Name[de]=Committen …
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-commit.svg
+Exec=rabbitvcs commit %U
+
+# SEPARATOR
+
+[Desktop Action Log]
+Name=Show log
+Name[de]=Historie anzeigen
+Name[pl]=Pokaz Log
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-show_log.svg
+Exec=rabbitvcs log %U
+
+[Desktop Action Browser]
+Name=Repo-browser
+Name[de]=Repository-Browser
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-drive.svg
+Exec=rabbitvcs browser %U
+
+[Desktop Action CheckMods]
+Name=Check for modifications
+Name[de]=Auf Änderungen prüfen
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-checkmods.svg
+Exec=rabbitvcs checkmods %U
+
+# SEPARATOR
+
+[Desktop Action Resolve]
+Name=Resolve...
+Name[de]=Konflikte lösen …
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-resolve.svg
+Exec=rabbitvcs editconflicts %U
+
+[Desktop Action UpdateToRev]
+Name=Update to revision...
+Name[de]=Auf Revision aktualisieren …
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-update.svg
+Exec=rabbitvcs updateto %U
+
+[Desktop Action Rename]
+Name=Rename...
+Name[de]=Umbenennen …
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-rename.svg
+Exec=rabbitvcs rename %U
+
+[Desktop Action Delete]
+Name=Delete
+Name[de]=Löschen
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-delete.svg
+Exec=rabbitvcs delete %U
+
+[Desktop Action Revert]
+Name=Revert...
+Name[de]=Rückgängig machen …
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-revert.svg
+Exec=rabbitvcs revert %U
+
+[Desktop Action GetLock]
+Name=Get lock...
+Name[de]=Sperren …
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-lock.svg
+Exec=rabbitvcs lock %U
+
+[Desktop Action ReleaseLock]
+Name=Release lock...
+Name[de]=Sperrung aufheben …
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-unlock.svg
+Exec=rabbitvcs unlock %U
+
+# SEPARATOR
+
+[Desktop Action BranchTag]
+Name=Branch/tag...
+Name[de]=Verzweigen/markieren …
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-branch.svg
+Exec=rabbitvcs branch %U
+
+[Desktop Action Switch]
+Name=Switch...
+Name[de]=Wechseln …
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-switch.svg
+Exec=rabbitvcs switch %U
+
+[Desktop Action Merge]
+Name=Merge...
+Name[de]=Zusammenführen …
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-merge.svg
+Exec=rabbitvcs merge %U
+
+# SEPARATOR
+
+[Desktop Action CreatePatch]
+Name=Create patch...
+Name[de]=Patch erstellen …
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-createpatch.svg
+Exec=rabbitvcs createpatch %U
+
+[Desktop Action Properties]
+Name=Properties
+Name[de]=Eigenschaften
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-properties.svg
+Exec=rabbitvcs properties %U
+
+# SEPARATOR
+
+[Desktop Action Add]
+Name=Add...
+Name[de]=Hinzufuegen …
+Name[pl]=Dodaj...
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-add.svg
+Exec=rabbitvcs add %U
+
+[Desktop Action Ignore]
+Name=Add to ignore list
+Name[de]=Zur Ignorierliste hinzufügen
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-ignore.svg
+Exec=rabbitvcs ignore %U
+
+# SEPARATOR
+
+[Desktop Action Settings]
+Name=Settings
+Name[de]=Einstellungen
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-settings.svg
+Exec=rabbitvcs settings
+
+[Desktop Action About]
+Name=About
+Name[de]=Über
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-about.svg
+Exec=rabbitvcs about
