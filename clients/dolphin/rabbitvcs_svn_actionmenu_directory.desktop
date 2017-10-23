@@ -1,10 +1,10 @@
 [Desktop Entry]
 Type=Service
 ServiceTypes=KonqPopupMenu/Plugin,inode/directory
-X-KDE-Submenu=RabbitVCS
-
-X-KDE-GetActionMenu=org.kde.kded getActionMenu
 Actions=Log;Annotate;Add;ApplyPatch;CompareChanges;BranchTag;Browser;CheckMods;Checkout;Clean;Commit;CreatePatch;Create;Diff;
+
+X-KDE-Priority=TopLevel
+X-KDE-Submenu=RabbitVCS
 
 [Desktop RabbitVCS Log]
 Name=Show log
@@ -25,7 +25,6 @@ Name[pl]=Dodaj to repository...
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-add.svg
 Exec=rabbitvcs add %U
 
-
 [Desktop Action ApplyPatch]
 Name=Apply patch...
 Name[de]=Patch anwenden...
@@ -33,7 +32,6 @@ Name[pl]=Zastosuj Patch...
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-applypatch.svg
 Exec=rabbitvcs applypatch %U
-
 
 [Desktop Action CompareChanges]
 Name=Compare changes
@@ -43,15 +41,12 @@ Name[pl]=Porownaj zmiany
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-compare.svg
 Exec=rabbitvcs changes %U
 
-
 [Desktop Action BranchTag]
 Name=Branch/tag
 Name[de]=Verzweige/markiere
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-branch.svg
 Exec=rabbitvcs branch %U
-
-
 
 [Desktop Action Browser]
 Name=Open Repository Browser
@@ -60,16 +55,12 @@ Name[de]=Oeffne Repository Browser
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-about.svg
 Exec=rabbitvcs browser %U
 
-
-
 [Desktop Action CheckMods]
 Name=Check for modifications
 Name[de]=Pruefe auf Aenderungen
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-checkmods.svg
 Exec=rabbitvcs checkmods %U
-
-
 
 [Desktop Action Checkout]
 Name=Checkout
@@ -78,16 +69,12 @@ Name[de]=Checke aus
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-checkout.svg
 Exec=rabbitvcs checkout %U
 
-
-
 [Desktop Action Clean]
 Name=Clean...
 Name[de]=Raeume auf...
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-cleanup.svg
 Exec=rabbitvcs clean %U
-
-
 
 [Desktop Action Commit]
 Name=Commit...
@@ -96,16 +83,12 @@ Name[de]=Committe...
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-commit.svg
 Exec=rabbitvcs commit %U
 
-
-
 [Desktop Action CreatePatch]
 Name=Create Patch
 Name[de]=Erstelle Patch
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-createpatch.svg
 Exec=rabbitvcs createpatch %U
-
-
 
 [Desktop Action Create]
 Name=Create new SVN repository here
@@ -115,7 +98,6 @@ Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-about.svg
 Exec=rabbitvcs create --vcs=svn %U
 
 # Skip delete because it has no confirmation dialog!
-
 
 [Desktop Action Diff]
 Name=Show differences
