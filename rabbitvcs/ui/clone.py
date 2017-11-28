@@ -27,6 +27,7 @@ import urllib
 import pygtk
 import gobject
 import gtk
+import Tkinter
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.checkout import Checkout
@@ -48,6 +49,7 @@ class GitClone(Checkout):
         self.get_widget("Checkout").set_title(_("Clone"))
         self.get_widget("repo_chooser").hide()
 
+        self.default_text()
         self.check_form()
 
     def on_ok_clicked(self, widget):
@@ -97,6 +99,15 @@ class GitClone(Checkout):
         )
         
         self.check_form()
+
+    def default_text(self):
+        # Use a repo url from the clipboard by default.
+        root = Tkinter.Tk()
+        root.withdraw()
+        
+        text = root.clipboard_get()
+        if ".git" in text:
+            self.repositories.set_child_text(text)
 
     def check_form(self):
         self.complete = True
