@@ -102,10 +102,10 @@ class GitClone(Checkout):
 
     def default_text(self):
         # Use a repo url from the clipboard by default.
-        root = Tkinter.Tk()
-        root.withdraw()
-        
-        text = root.clipboard_get()
+        clipboard = gtk.Clipboard()
+        clipboard.request_text(self.receive_clipboard_text)
+
+    def receive_clipboard_text(self, clipboard, text):
         if ".git" in text:
             self.repositories.set_child_text(text)
 
