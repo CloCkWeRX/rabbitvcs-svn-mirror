@@ -102,11 +102,9 @@ class GitClone(Checkout):
 
     def default_text(self):
         # Use a repo url from the clipboard by default.
-        clipboard = gtk.Clipboard()
-        clipboard.request_text(self.receive_clipboard_text)
-
-    def receive_clipboard_text(self, clipboard, text):
-        if ".git" in text:
+        clipboard = gtk.clipboard_get()
+        text = clipboard.wait_for_text()
+        if text.endswith(('.git', '.git/')):
             self.repositories.set_child_text(text)
 
     def check_form(self):
