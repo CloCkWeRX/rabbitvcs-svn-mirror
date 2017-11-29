@@ -27,7 +27,6 @@ import urllib
 import pygtk
 import gobject
 import gtk
-import Tkinter
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.checkout import Checkout
