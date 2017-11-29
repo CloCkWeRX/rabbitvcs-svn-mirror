@@ -103,7 +103,7 @@ class GitClone(Checkout):
         # Use a repo url from the clipboard by default.
         clipboard = gtk.clipboard_get()
         text = clipboard.wait_for_text()
-        if text.endswith(('.git', '.git/')):
+        if text and text.endswith(('.git', '.git/')):
             self.repositories.set_child_text(text)
 
     def check_form(self):
