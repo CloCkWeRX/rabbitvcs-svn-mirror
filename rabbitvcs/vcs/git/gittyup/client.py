@@ -1031,7 +1031,7 @@ class GittyupClient:
                 if remoteKey.find("://") == -1:
                     # Write url temporarily back to config.
                     self._config_set(remoteKey, "url", newRemoteUrl)
-                    self._config_seteable.write_to_path()
+                    self.config.write_to_path()
                 else:
                     # Change the url in memory, since we don't have a config yet.
                     self.modifiedHost = newRemoteUrl
