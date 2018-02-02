@@ -574,7 +574,7 @@ def delete_item(path):
         else:
             # If the gvfs-trash program is not found, an OSError exception will
             # be thrown, and rm will be used instead
-            retcode = subprocess.call(["gvfs-trash", abspath])
+            retcode = subprocess.call(["gio trash", abspath])
             if retcode:
                 permanent_delete = True
     except OSError:
@@ -675,8 +675,8 @@ def launch_ui_window(filename, args=[], block=False):
                             os.path.realpath(__file__)))
     
     env = os.environ
-    if "NAUTILUS_PYTHON_REQUIRE_GTK3" in env:
-        del env["NAUTILUS_PYTHON_REQUIRE_GTK3"]
+    if "REQUIRE_GTK3" in env:
+        del env["REQUIRE_GTK3"]
     
     if not head == "util":
         log.warning("Helper module (%s) not in \"util\" dir" % __file__)

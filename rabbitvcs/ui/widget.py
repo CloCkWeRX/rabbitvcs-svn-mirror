@@ -29,7 +29,7 @@ except ImportError:
     import gobject
 
 import os
-if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
+if "REQUIRE_GTK3" in os.environ and os.environ["REQUIRE_GTK3"]:
     from gi.repository import Gtk as gtk
     GTK_FILL = gtk.AttachOptions.FILL
     GTK_EXPAND = gtk.AttachOptions.EXPAND

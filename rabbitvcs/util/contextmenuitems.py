@@ -23,7 +23,7 @@ from __future__ import absolute_import
 import os.path
 
 import os
-if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
+if "REQUIRE_GTK3" in os.environ and os.environ["REQUIRE_GTK3"]:
     from gi.repository import Gtk as gtk
 else:
     import gtk
@@ -231,6 +231,22 @@ class MenuItem(object):
             
         return menuitem
     
+    def make_thunarx_menu_item(self, id_magic = None):
+        # WARNING: this import is here because it will fail if it is not done
+        # inside a thunar process and therefore can't be in the module proper.
+        # This should only be used for Thunarx-3
+        identifier = self.make_magic_id(id_magic)
+
+        from gi.repository import Thunarx
+        menuitem = Thunarx.MenuItem(
+            name=identifier,
+            label=self.make_label(),
+            tooltip=self.tooltip,
+            icon=self.icon
+        )
+            
+        return menuitem
+
     def make_nautilus_menu_item(self, id_magic = None):
         # WARNING: this import is here because it will fail if it is not done
         # inside a nautilus process and therefore can't be in the module proper.
@@ -255,7 +271,6 @@ class MenuItem(object):
                 icon=self.icon
             )
             
-                    
         return menuitem
 
     def make_label(self):
@@ -765,7 +780,8 @@ def get_ignore_list_items(paths):
 
 class RabbitVCSAction(gtk.Action):
     """
-    Sub-classes gtk.Action so that we can have submenus
+    Sub-classes gtk.Action so that we can have submenus.
+    This is needed for context menus that use gtk actions
     """
 
     __gtype_name__ = "RabbitVCSAction"

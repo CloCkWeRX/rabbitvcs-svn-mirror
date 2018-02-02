@@ -33,10 +33,17 @@ import datetime
 import time
 import threading
 import urllib
+
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import GObject, Gtk, Thunarx
+
 import pysvn
 
 from rabbitvcs.vcs.svn import SVN
+
+import os
+os.environ["REQUIRE_GTK3"] = "1"
 
 import rabbitvcs.ui
 import rabbitvcs.ui.property_page
@@ -44,7 +51,7 @@ from rabbitvcs.util.helper import launch_ui_window, launch_diff_tool
 from rabbitvcs.util.helper import get_file_extension, get_common_directory
 from rabbitvcs.util.helper import pretty_timedelta
 from rabbitvcs.util.decorators import timeit, disable
-from rabbitvcs.util.contextmenu import MainContextMenu, SEPARATOR
+from rabbitvcs.util.contextmenu import MenuBuilder, MainContextMenu, SEPARATOR
 
 from rabbitvcs.util.log import Log, reload_log_settings
 import six
@@ -153,7 +160,7 @@ class RabbitVCS(GObject.GObject, Thunarx.MenuProvider, Thunarx.PropertyPageProvi
 
     #~ @disable
     # @timeit
-    def get_file_actions(self, window, items):
+    def get_file_menu_items(self, window, items):
         """
         Menu activated with items selected. Nautilus also calls this function
         when rendering submenus, even though this is not needed since the entire
@@ -182,11 +189,11 @@ class RabbitVCS(GObject.GObject, Thunarx.MenuProvider, Thunarx.PropertyPageProvi
 
         if len(paths) == 0: return []
         
-        return ThunarxMainContextMenu(self, window.get_data("base_dir"), paths).get_menu()
+        return ThunarxMainContextMenu(self, window.base_dir, paths).get_menu()
     
     #~ @disable
     @timeit
-    def get_folder_actions(self, window, item):
+    def get_folder_menu_items(self, window, item):
         """
         Menu activated on entering a directory. Builds context menu for File
         menu and for window background.
@@ -208,7 +215,9 @@ class RabbitVCS(GObject.GObject, Thunarx.MenuProvider, Thunarx.PropertyPageProvi
         
         # log.debug("get_background_items() called")
         
-        window.set_data("base_dir", path)
+        window.base_dir = path
+
+        print(window.base_dir)
         
         return ThunarxMainContextMenu(self, path, [path]).get_menu()
             
@@ -324,21 +333,22 @@ class RabbitVCS(GObject.GObject, Thunarx.MenuProvider, Thunarx.PropertyPageProvi
 
 from rabbitvcs.util.contextmenuitems import *
 
-class ThunarxContextMenu(rabbitvcs.util.contextmenu.MenuBuilder):
+class ThunarxContextMenu(MenuBuilder):
     """
-    Provides a standard Gtk Context Menu class used for all context menus
-    in gtk dialogs/windows.
-    
+    Provides a standard Nautilus context menu (ie. a list of
+    "Thunarx.MenuItem"s).
     """
-    
+
     signal = "activate"
-        
+
     def make_menu_item(self, item, id_magic):
-        return item.make_thunar_action(id_magic)
-    
+        return item.make_thunarx_menu_item(id_magic)
+
     def attach_submenu(self, menu_node, submenu_list):
-		menu_node.set_sub_actions(submenu_list)
-    
+        submenu = Thunarx.Menu()
+        menu_node.set_menu(submenu)
+        [submenu.append_item(item) for item in submenu_list]
+
     def top_level_menu(self, items):
         return items
 

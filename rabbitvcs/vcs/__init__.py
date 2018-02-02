@@ -60,7 +60,7 @@ def _guess(path):
                     }
                     return cache                
             path_to_check = os.path.split(path_to_check)[0]
-  
+
     return {
         "vcs": VCS_DUMMY,
         "repo_path": path

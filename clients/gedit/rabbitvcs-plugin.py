@@ -26,7 +26,7 @@ import os
 try:
     from gi.repository import Gedit, GObject
     from gi.repository import Gtk as gtk
-    os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"] = "1"
+    os.environ["REQUIRE_GTK3"] = "1"
     GTK3 = True
 except ImportError:
     import gedit

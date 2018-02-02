@@ -23,7 +23,7 @@ import os.path
 
 import os
 import six
-if "NAUTILUS_PYTHON_REQUIRE_GTK3" in os.environ and os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"]:
+if "REQUIRE_GTK3" in os.environ and os.environ["REQUIRE_GTK3"]:
     from gi.repository import Gtk as gtk
     GTK3 = True
     ICON_SIZE_BUTTON = gtk.IconSize.BUTTON
