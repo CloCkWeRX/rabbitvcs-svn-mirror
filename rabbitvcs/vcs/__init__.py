@@ -40,20 +40,19 @@ VCS_GIT = 'git'
 VCS_MERCURIAL = 'mercurial'
 VCS_DUMMY = 'unknown'
 
+VCS_FOLDERS = {}
+if not settings.get("HideItem", "svn"):
+    VCS_FOLDERS[".svn"] = VCS_SVN
+if not settings.get("HideItem", "git"):
+    VCS_FOLDERS[".git"] = VCS_GIT
+
 def _guess(path):
     # Determine the VCS instance based on the path
     if path:
-        path_to_check = path
-        folders = {
-            ".svn": VCS_SVN,
-            ".git": VCS_GIT,
-            ".hg": VCS_DUMMY, # Disable this for now
-            ".bzr": VCS_DUMMY,
-            ".CVS": VCS_DUMMY
-        }
-        
+        path_to_check = path.split("@")[0]
+
         while path_to_check != "/" and path_to_check != "":
-            for folder, client in list(folders.items()):
+            for folder, client in list(VCS_FOLDERS.items()):
                 if os.path.isdir(os.path.join(path_to_check, folder)):
                     cache = {
                         "vcs": client,
@@ -61,20 +60,7 @@ def _guess(path):
                     }
                     return cache                
             path_to_check = os.path.split(path_to_check)[0]
-
-    # Attempt 2 - assume it's a path like "local.txt@1"
-    path_to_check = "./" + path.split("@")[0]
-
-    while path_to_check != "/" and path_to_check != "":
-        for folder, client in list(folders.items()):
-            if os.path.isdir(os.path.join(path_to_check, folder)):
-                cache = {
-                    "vcs": client,
-                    "repo_path": path_to_check
-                }
-                return cache                
-        path_to_check = os.path.split(path_to_check)[0]            
-
+  
     return {
         "vcs": VCS_DUMMY,
         "repo_path": path
