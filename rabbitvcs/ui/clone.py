@@ -48,6 +48,7 @@ class GitClone(Checkout):
         self.get_widget("Checkout").set_title(_("Clone"))
         self.get_widget("repo_chooser").hide()
 
+        self.default_text()
         self.check_form()
 
     def on_ok_clicked(self, widget):
@@ -97,6 +98,13 @@ class GitClone(Checkout):
         )
         
         self.check_form()
+
+    def default_text(self):
+        # Use a repo url from the clipboard by default.
+        clipboard = gtk.clipboard_get()
+        text = clipboard.wait_for_text()
+        if text and text.endswith(('.git', '.git/')):
+            self.repositories.set_child_text(text)
 
     def check_form(self):
         self.complete = True
