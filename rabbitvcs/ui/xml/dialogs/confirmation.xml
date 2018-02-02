@@ -13,11 +13,11 @@
     <property name="type_hint">dialog</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox7">
+      <object class="GtkBox" orientation="vertical" id="dialog-vbox7">
         <property name="visible">True</property>
         <property name="spacing">12</property>
         <child>
-          <object class="GtkHBox" id="hbox15">
+          <object class="GtkBox" orientation="horizontal" id="hbox15">
             <property name="visible">True</property>
             <child>
               <object class="GtkImage" id="image1">
@@ -54,7 +54,7 @@
           </packing>
         </child>
         <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area7">
+          <object class="GtkButtonBox" orientation="horizontal" id="dialog-action_area7">
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>

@@ -9,7 +9,7 @@
     <property name="icon_name">rabbitvcs-small</property>
     <signal handler="on_destroy" name="destroy"/>
     <child>
-      <object class="GtkVBox" id="vbox24">
+      <object class="GtkBox" orientation="vertical" id="vbox24">
         <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
@@ -42,7 +42,7 @@ Begin working copy cleanup?</property>
           </packing>
         </child>
         <child>
-          <object class="GtkHButtonBox" id="hbuttonbox15">
+          <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox15">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>

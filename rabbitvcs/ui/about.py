@@ -25,9 +25,9 @@ import os.path
 import string
 import re
 
-import pygtk
-import gobject
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject
 
 import rabbitvcs
 from rabbitvcs.ui import InterfaceView
@@ -47,17 +47,14 @@ class About:
 
     def __init__(self):
     
-        def url_hook(dialog, url):
-            rabbitvcs.util.helper.launch_url_in_webbrowser(url)
+        #def url_hook(dialog, url):
+        #    rabbitvcs.util.helper.launch_url_in_webbrowser(url)
     
-        gtk.about_dialog_set_url_hook(url_hook)
-        self.about = gtk.AboutDialog()
+        #Gtk.about_dialog_set_url_hook(url_hook)
+        self.about = Gtk.AboutDialog()
         self.about.set_name(rabbitvcs.APP_NAME)
 
-		# The set_program_name method was not added until PyGTK 2.12
-        if hasattr(self.about, "set_program_name"):
-	        self.about.set_program_name(rabbitvcs.APP_NAME)
-
+        self.about.set_program_name(rabbitvcs.APP_NAME)
         self.about.set_version(rabbitvcs.version)
         self.about.set_website("http://www.rabbitvcs.org")
         self.about.set_website_label("http://www.rabbitvcs.org")
@@ -67,11 +64,13 @@ class About:
         for dir in os.listdir(doc_path_root):
             if doc_path_regex.search(dir):
                 # Find all the doc directories containing "rabbitvcs"
-                authors_path = os.path.join(doc_path_root, dir, "AUTHORS")
-                if os.path.exists(authors_path):
+                tmp_authors_path = os.path.join(doc_path_root, dir, "AUTHORS")
+                if os.path.exists(tmp_authors_path):
+                    authors_path = tmp_authors_path
                     # At this point we have found a likely-looking AUTHORS
                     break
-        else:
+
+        if not authors_path:
             # Assumes the user is running RabbitVCS through an svn checkout
             # and the doc files are two directories up (from rabbitvcs/ui).
             doc_path = os.path.dirname(os.path.realpath(__file__)).split('/')
@@ -79,6 +78,7 @@ class About:
             authors_path = os.path.join(doc_path, "AUTHORS")
 
         authors = open(authors_path, "r").read()
+        print(authors.split("\n"))
 
         self.about.set_authors(authors.split("\n"))
         

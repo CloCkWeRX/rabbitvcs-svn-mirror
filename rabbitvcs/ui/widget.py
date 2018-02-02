@@ -23,56 +23,33 @@ from six.moves import range
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-try:
-    from gi.repository import GObject as gobject
-except ImportError:
-    import gobject
-
 import os
-if "REQUIRE_GTK3" in os.environ and os.environ["REQUIRE_GTK3"]:
-    from gi.repository import Gtk as gtk
-    GTK_FILL = gtk.AttachOptions.FILL
-    GTK_EXPAND = gtk.AttachOptions.EXPAND
-    GTK3 = True
-else:
-    import gtk
-    GTK_FILL = gtk.FILL
-    GTK_EXPAND = gtk.EXPAND
-    GTK3 = False
-
-# GI Pango is broken in some versions of pygobject 2.28.x, if that is the case
-# set HAS_PANGO to false and do without ellipsizing for now
-HAS_PANGO = True
-try:
-    from gi.repository import Pango as pango
-    PANGO_ELLIPSIZE_MIDDLE = pango.EllipsizeMode.MIDDLE
-    PANGO_ELLIPSIZE_END = pango.EllipsizeMode.END
-except ImportError:
-    import pango
-    PANGO_ELLIPSIZE_MIDDLE = pango.ELLIPSIZE_MIDDLE
-    PANGO_ELLIPSIZE_END = pango.ELLIPSIZE_END
-except AttributeError:
-    HAS_PANGO = False
-    pass
-
-
 import os.path
 
+import gi
+from gi.repository import Gtk, GObject, Pango
+GTK_FILL = Gtk.AttachOptions.FILL
+GTK_EXPAND = Gtk.AttachOptions.EXPAND
+GTK3 = True
+PANGO_ELLIPSIZE_MIDDLE = Pango.EllipsizeMode.MIDDLE
+PANGO_ELLIPSIZE_END = Pango.EllipsizeMode.END
+HAS_PANGO = True
+
 HAS_GTKSPELL = False
-if not GTK3:
-    try:
-        import gtkspell
-        HAS_GTKSPELL = True
-    except ImportError:
-        pass    
+try:
+    gi.require_version('GtkSpell', '3.0')
+    from gi.repository import GtkSpell
+    HAS_GTKSPELL = True
+except ImportError:
+    pass    
 
 HAS_GTKSOURCEVIEW = False
-if not GTK3:
-    try:
-        import gtksourceview
-        HAS_GTKSOURCEVIEW = True
-    except ImportError:
-        pass
+try:
+    gi.require_version('GtkSource', '3.0')
+    from gi.repository import GtkSource
+    HAS_GTKSOURCEVIEW = True
+except ImportError:
+    pass
 
 import rabbitvcs.util.helper
 
@@ -103,11 +80,11 @@ def filter_router(model, iter, column, filters):
     Route filter requests for a table's columns.  This function is called for
     each cell of the table that gets displayed.
     
-    @type   model: gtk.TreeModelFilter or gtk.TreeModelSort
-    @param  model: The TreeModelFilter or gtk.TreeModelSort instance for our
+    @type   model: Gtk.TreeModelFilter or Gtk.TreeModelSort
+    @param  model: The TreeModelFilter or Gtk.TreeModelSort instance for our
                    table
     
-    @type   iter: gtk.TreeIter
+    @type   iter: Gtk.TreeIter
     @param  iter: The TreeIter instance for the table row being filtered
     
     @type   column: int
@@ -152,7 +129,7 @@ def path_filter(row, column, user_data=None):
     A common filter function that is used in many tables.  Changes the displayed
     path to a path relative to the given base_dir (current working directory)
     
-    @type   row: gtk.TreeModelRow
+    @type   row: Gtk.TreeModelRow
     @param  row: The row that is being filtered
     
     @type   column: int
@@ -236,7 +213,7 @@ class TableBase:
     def __init__(self, treeview, coltypes, colnames, values=[], filters=None,
                  filter_types=None, callbacks={}, flags={}):
         """
-        @type   treeview: gtk.Treeview
+        @type   treeview: Gtk.Treeview
         @param  treeview: The treeview widget to use
         
         @type   coltypes: list
@@ -303,7 +280,7 @@ class TableBase:
         i = 0
         for name in colnames:
             if coltypes[i] == gobject.TYPE_BOOLEAN:
-                cell = gtk.CellRendererToggle()
+                cell = Gtk.CellRendererToggle()
                 cell.set_property('activatable', True)
                 cell.set_property('xalign', 0)
                 cell.connect("toggled", self.toggled_cb, i)
@@ -312,7 +289,7 @@ class TableBase:
                 if name != TOGGLE_BUTTON:
                     colname = name
                 
-                col = gtk.TreeViewColumn(colname, cell)
+                col = Gtk.TreeViewColumn(colname, cell)
                 col.set_attributes(cell, active=i)
             elif coltypes[i] == TYPE_PATH:
                 # The type should be str but we have to use TYPE_PATH to
@@ -322,9 +299,9 @@ class TableBase:
                 # First we create the column, then we create a CellRenderer 
                 # instance for the path icon and a CellRenderer instance for
                 # the path.  Each is packed into the treeview column
-                col = gtk.TreeViewColumn(name)
+                col = Gtk.TreeViewColumn(name)
 
-                cellpb = gtk.CellRendererPixbuf()
+                cellpb = Gtk.CellRendererPixbuf()
                 cellpb.set_property('xalign', 0)
                 cellpb.set_property('yalign', 0)
                 col.pack_start(cellpb, False)
@@ -341,7 +318,7 @@ class TableBase:
                     }
                 col.set_cell_data_func(cellpb, self.file_pixbuf, data)
                 
-                cell = gtk.CellRendererText()
+                cell = Gtk.CellRendererText()
                 cell.set_property('xalign', 0)
                 cell.set_property('yalign', 0)
                 col.pack_start(cell, False)
@@ -349,9 +326,9 @@ class TableBase:
             elif coltypes[i] == TYPE_STATUS:
                 # Same as for TYPE_PATH
                 coltypes[i] = str                
-                col = gtk.TreeViewColumn(name)
+                col = Gtk.TreeViewColumn(name)
                 
-                cellpb = gtk.CellRendererPixbuf()
+                cellpb = Gtk.CellRendererPixbuf()
                 cellpb.set_property('xalign', 0)
                 cellpb.set_property('yalign', 0)
                 
@@ -361,32 +338,32 @@ class TableBase:
                 
                 col.set_cell_data_func(cellpb, self.status_pixbuf, i)
                 
-                cell = gtk.CellRendererText()
+                cell = Gtk.CellRendererText()
                 cell.set_property('xalign', 0)
                 cell.set_property('yalign', 0)
                 col.pack_start(cell, False)
                 col.set_attributes(cell, text=i)
             elif coltypes[i] == TYPE_HIDDEN:
                 coltypes[i] = str
-                col = gtk.TreeViewColumn(name, cell)
+                col = Gtk.TreeViewColumn(name, cell)
                 col.set_visible(False)
             elif coltypes[i] == TYPE_ELLIPSIZED:
                 coltypes[i] = str
-                cell = gtk.CellRendererText()
+                cell = Gtk.CellRendererText()
                 cell.set_property('yalign', 0)
                 cell.set_property('xalign', 0)
                 if HAS_PANGO:
                     cell.set_property('ellipsize', PANGO_ELLIPSIZE_END)
                     cell.set_property('width-chars', ELLIPSIZE_COLUMN_CHARS)
-                col = gtk.TreeViewColumn(name, cell)
+                col = Gtk.TreeViewColumn(name, cell)
                 col.set_attributes(cell, text=i)
             elif coltypes[i] == TYPE_GRAPH:
                 coltypes[i] = gobject.TYPE_PYOBJECT
                 cell = CellRendererGraph()
-                col = gtk.TreeViewColumn(name, cell)
+                col = Gtk.TreeViewColumn(name, cell)
                 col.add_attribute(cell, "graph", i)
             else:
-                cell = gtk.CellRendererText()
+                cell = Gtk.CellRendererText()
                 cell.set_property('yalign', 0)
                 cell.set_property('xalign', 0)
                 if i in flags["editable"]:
@@ -394,9 +371,9 @@ class TableBase:
                     cell.connect("edited", self.__cell_edited, i)
                 
                 if coltypes[i] == TYPE_MARKUP:
-                    col = gtk.TreeViewColumn(name, cell, markup=i)
+                    col = Gtk.TreeViewColumn(name, cell, markup=i)
                 else:
-                    col = gtk.TreeViewColumn(name, cell, text=i)
+                    col = Gtk.TreeViewColumn(name, cell, text=i)
 
                 coltypes[i] = gobject.TYPE_STRING
 
@@ -427,7 +404,7 @@ class TableBase:
 		# This runs through the columns, and sets the "compare_items" comparator
         # as needed. Note that the user data tells which column to sort on.
         if flags["sortable"]:
-            self.sorted = gtk.TreeModelSort(self.filter)
+            self.sorted = Gtk.TreeModelSort(self.filter)
             
             self.sorted.set_default_sort_func(compare_items, None)
             
@@ -436,7 +413,7 @@ class TableBase:
                                           compare_items,
                                           (idx, coltypes[idx]))
                
-            self.sorted.set_sort_column_id(flags["sort_on"], gtk.SORT_ASCENDING)
+            self.sorted.set_sort_column_id(flags["sort_on"], Gtk.SORT_ASCENDING)
             
             self.treeview.set_model(self.sorted)
             
@@ -547,7 +524,7 @@ class TableBase:
         model[row][column] = val
     
     def allow_multiple(self):
-        self.treeview.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        self.treeview.get_selection().set_mode(Gtk.SELECTION_MULTIPLE)
 
     def get_activated_rows(self, column=None):
         returner = []
@@ -575,10 +552,10 @@ class TableBase:
     def set_column_width(self, column, width=None):
         col = self.treeview.get_column(column)
         if width is not None:
-            col.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+            col.set_sizing(Gtk.TREE_VIEW_COLUMN_FIXED)
             col.set_fixed_width(width)
         else:
-            col.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+            col.set_sizing(Gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 
     def update_selection(self):
         selection = self.treeview.get_selection()
@@ -729,9 +706,9 @@ class TableBase:
         if data:
             real_item = self.data[real_path][data["column"]]
             kind = data["callback"](real_item)
-            stock_id = gtk.STOCK_FILE
+            stock_id = Gtk.STOCK_FILE
             if kind == "dir":
-                stock_id = gtk.STOCK_DIRECTORY
+                stock_id = Gtk.STOCK_DIRECTORY
 
         if stock_id is not None:
             cell.set_property("stock_id", stock_id)
@@ -750,7 +727,7 @@ class Table(TableBase):
             filter_types, callbacks, flags)
     
     def get_store(self, coltypes):
-        return gtk.ListStore(*coltypes)
+        return Gtk.ListStore(*coltypes)
 
     def populate(self, values):
         for row in values:
@@ -783,7 +760,7 @@ class Tree(TableBase):
             filter_types, callbacks, flags={})
     
     def get_store(self, coltypes):
-        return gtk.TreeStore(*coltypes)
+        return Gtk.TreeStore(*coltypes)
 
     def populate(self, values, parent=None):
         for node in values:
@@ -797,17 +774,17 @@ class ComboBox:
     
         self.cb = cb
     
-        self.model = gtk.ListStore(str)
+        self.model = Gtk.ListStore(str)
         if items is not None:
             for i in items:
                 self.append(i)
 
         self.cb.set_model(self.model)
 
-        if type(self.cb) == gtk.ComboBoxEntry:
+        if type(self.cb) == Gtk.ComboBoxEntry:
             self.cb.set_text_column(0)
-        elif type(self.cb) == gtk.ComboBox:
-            cell = gtk.CellRendererText()
+        elif type(self.cb) == Gtk.ComboBox:
+            cell = Gtk.CellRendererText()
             self.cb.pack_start(cell, True)
             self.cb.add_attribute(cell, 'text', 0)
 
@@ -843,16 +820,16 @@ class ComboBox:
 class TextView:
     def __init__(self, widget=None, value="", spellcheck=True):
         if widget is None:
-            self.view = gtk.TextView()
+            self.view = Gtk.TextView()
         else:
             self.view = widget
-        self.buffer = gtk.TextBuffer()
+        self.buffer = Gtk.TextBuffer()
         self.view.set_buffer(self.buffer)
         self.buffer.set_text(value)
         
         if HAS_GTKSPELL and spellcheck:
             try:
-                gtkspell.Spell(self.view)
+                Gtkspell.Spell(self.view)
             except Exception as e:
                 log.exception(e)
         
@@ -872,14 +849,14 @@ class SourceView(TextView):
     def __init__(self, widget=None, value=""):
         if HAS_GTKSOURCEVIEW:
             if widget is None:
-                self.view = gtksourceview.SourceView(self.buffer)
+                self.view = Gtksourceview.SourceView(self.buffer)
             else:
                 self.view = widget
-            self.buffer = gtksourceview.SourceBuffer()
+            self.buffer = Gtksourceview.SourceBuffer()
             self.buffer.set_text(value)
 
             if HAS_GTKSPELL:
-                gtkspell.Spell(self.view)
+                Gtkspell.Spell(self.view)
 
             self.view.show()
         else:
@@ -888,7 +865,7 @@ class SourceView(TextView):
 class ProgressBar:
     def __init__(self, pbar):
         if pbar is None:
-            self.view = gtk.ProgressBar()
+            self.view = Gtk.ProgressBar()
         else:
             self.view = pbar
         
@@ -930,7 +907,7 @@ class RevisionSelector:
             url_combobox=None, url_entry=None, url=None, expand=False,
             revision_changed_callback=None):
         """
-        @type   container: A gtk container object (i.e. HBox, VBox, Box)
+        @type   container: A Gtk container object (i.e. HBox, VBox, Box)
         @param  container: The container that to add this widget
         
         @type   client: VCS client object
@@ -942,7 +919,7 @@ class RevisionSelector:
         @type   url_combobox: rabbitvcs.ui.widget.ComboBox
         @param  url_combobox: A repository url combobox
 
-        @type   url_entry: gtk.Entry
+        @type   url_entry: Gtk.Entry
         @param  url_entry: A repository url entry
         
         @type   url: str
@@ -960,7 +937,7 @@ class RevisionSelector:
         self.url = url
         self.revision_changed_callback = revision_changed_callback
         self.revision_change_inprogress = False
-        hbox = gtk.HBox(0, 4)
+        hbox = Gtk.HBox(0, 4)
         
         if self.url_combobox:
             self.url_combobox.cb.connect("changed", self.__on_url_combobox_changed)
@@ -979,12 +956,12 @@ class RevisionSelector:
             if not client.is_path_repository_url(self.get_url()):
                 self.OPTIONS.append(_("Working Copy"))
         
-        self.revision_kind_opt = ComboBox(gtk.ComboBox(), self.OPTIONS)
+        self.revision_kind_opt = ComboBox(Gtk.ComboBox(), self.OPTIONS)
         self.revision_kind_opt.set_active(0)
         self.revision_kind_opt.cb.connect("changed", self.__revision_kind_changed)
         hbox.pack_start(self.revision_kind_opt.cb, False, False, 0)
         
-        self.revision_entry = gtk.Entry()
+        self.revision_entry = Gtk.Entry()
         self.revision_entry.connect("changed", self.__revision_entry_changed)
         hbox.pack_start(self.revision_entry, expand, expand, 0)
         
@@ -994,9 +971,9 @@ class RevisionSelector:
             self.branch_selector.hide()
         
         
-        self.revision_browse = gtk.Button()
-        revision_browse_image = gtk.Image()
-        revision_browse_image.set_from_stock(gtk.STOCK_FIND, 1)
+        self.revision_browse = Gtk.Button()
+        revision_browse_image = Gtk.Image()
+        revision_browse_image.set_from_stock(Gtk.STOCK_FIND, 1)
         revision_browse_image.show()
         self.revision_browse.add(revision_browse_image)
         self.revision_browse.connect("clicked", self.__revision_browse_clicked)
@@ -1142,7 +1119,7 @@ class RevisionSelector:
     def __branch_selector_changed(self, branch):
         self.__revision_entry_changed(self.revision_entry)
 
-class KeyValueTable(gtk.Table):
+class KeyValueTable(Gtk.Table):
     """
     Simple extension of a GTK table to display a two-column table of information
     with labels.
@@ -1165,10 +1142,10 @@ class KeyValueTable(gtk.Table):
             row = 0
             
             for key, value in stuff:
-                label_key = gtk.Label("<b>%s:</b>" % key)
+                label_key = Gtk.Label("<b>%s:</b>" % key)
                 label_key.set_properties(xalign=0, use_markup=True)
                 
-                label_value = gtk.Label("%s" % value)
+                label_value = Gtk.Label("%s" % value)
                 if HAS_PANGO:
                     label_value.set_properties(xalign=0,                    \
                                            ellipsize=PANGO_ELLIPSIZE_MIDDLE, \
@@ -1199,31 +1176,31 @@ class GitRepositorySelector:
         self.git = git
         self.changed_callback = changed_callback
         
-        vbox = gtk.VBox(False, 4)
+        vbox = Gtk.VBox(False, 4)
         
         # Set up the Repository Line
-        label = gtk.Label(_("Repository:"))
+        label = Gtk.Label(_("Repository:"))
         label.set_size_request(90, -1)
-        label.set_justify(gtk.JUSTIFY_LEFT)
+        label.set_justify(Gtk.JUSTIFY_LEFT)
 
         tmp_repos = []
         for item in self.git.remote_list():
             tmp_repos.append(item["name"])
-        self.repository_opt = ComboBox(gtk.ComboBoxEntry(), tmp_repos)
+        self.repository_opt = ComboBox(Gtk.ComboBoxEntry(), tmp_repos)
         self.repository_opt.set_active(0)
         self.repository_opt.cb.connect("changed", self.__repository_changed)
         self.repository_opt.cb.set_size_request(175, -1)
         
-        hbox = gtk.HBox(False, 0)
+        hbox = Gtk.HBox(False, 0)
         hbox.pack_start(label, False, False, 0)
         hbox.pack_start(self.repository_opt.cb, False, False, 0)
         vbox.pack_start(hbox, False, False, 0)
 
 
         # Set up the Branch line
-        label = gtk.Label(_("Branch:"))
+        label = Gtk.Label(_("Branch:"))
         label.set_size_request(90, -1)
-        label.set_justify(gtk.JUSTIFY_LEFT)
+        label.set_justify(Gtk.JUSTIFY_LEFT)
 
         tmp_branches = []
         active_branch_index = 0
@@ -1236,23 +1213,23 @@ class GitRepositorySelector:
             
             index += 1
             
-        self.branch_opt = ComboBox(gtk.ComboBoxEntry(), tmp_branches)
+        self.branch_opt = ComboBox(Gtk.ComboBoxEntry(), tmp_branches)
         self.branch_opt.set_active(active_branch_index)
         self.branch_opt.cb.connect("changed", self.__branch_changed)
         self.branch_opt.cb.set_size_request(175, -1)
         
-        hbox = gtk.HBox(False, 0)
+        hbox = Gtk.HBox(False, 0)
         hbox.pack_start(label, False, False, 0)
         hbox.pack_start(self.branch_opt.cb, False, False, 0)
         vbox.pack_start(hbox, False, False, 0)
         
         # Set up the Host line
-        label = gtk.Label(_("Host:"))
-        label.set_justify(gtk.JUSTIFY_LEFT)
+        label = Gtk.Label(_("Host:"))
+        label.set_justify(Gtk.JUSTIFY_LEFT)
         label.set_size_request(90, -1)
-        self.host = gtk.Label()
-        self.host.set_justify(gtk.JUSTIFY_LEFT)
-        hbox = gtk.HBox(False, 0)
+        self.host = Gtk.Label()
+        self.host.set_justify(Gtk.JUSTIFY_LEFT)
+        hbox = Gtk.HBox(False, 0)
         hbox.pack_start(label, False, False, 0)
         hbox.pack_start(self.host, False, False, 0)
         vbox.pack_start(hbox, False, False, 4)
@@ -1283,7 +1260,7 @@ class GitBranchSelector:
         self.git = git
         self.changed_callback = changed_callback
         
-        self.vbox = gtk.VBox(False, 4)
+        self.vbox = Gtk.VBox(False, 4)
 
         tmp_branches = []
         active = 0
@@ -1294,12 +1271,12 @@ class GitBranchSelector:
                 active = index
             index += 1
 
-        self.branch_opt = ComboBox(gtk.ComboBoxEntry(), tmp_branches)
+        self.branch_opt = ComboBox(Gtk.ComboBoxEntry(), tmp_branches)
         self.branch_opt.set_active(active)
         self.branch_opt.cb.connect("changed", self.__branch_changed)
         self.branch_opt.cb.set_size_request(175, -1)
 
-        hbox = gtk.HBox(False, 0)
+        hbox = Gtk.HBox(False, 0)
         hbox.pack_start(self.branch_opt.cb, False, False, 0)
         self.vbox.pack_start(hbox, False, False, 0)
         
@@ -1336,22 +1313,22 @@ class MultiFileTextEditor:
         
         self.last_path = None
                 
-        self.combobox = ComboBox(gtk.ComboBox(), self.combobox_labels)
+        self.combobox = ComboBox(Gtk.ComboBox(), self.combobox_labels)
         self.combobox.cb.connect("changed", self.__combobox_changed)
         self.combobox.cb.set_size_request(175, -1)
         
-        self.textview = TextView(gtk.TextView())
+        self.textview = TextView(Gtk.TextView())
 
-        scrolled_window = gtk.ScrolledWindow()
-        scrolled_window.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        scrolled_window = Gtk.ScrolledWindow()
+        scrolled_window.set_shadow_type(Gtk.SHADOW_ETCHED_IN)
         scrolled_window.add(self.textview.view)
-        scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrolled_window.set_policy(Gtk.POLICY_AUTOMATIC, Gtk.POLICY_AUTOMATIC)
         scrolled_window.set_size_request(320, 150)
         
-        vbox = gtk.VBox(False, 6)
+        vbox = Gtk.VBox(False, 6)
         
-        hbox = gtk.HBox(False, 3)
-        combo_label = gtk.Label(label)
+        hbox = Gtk.HBox(False, 3)
+        combo_label = Gtk.Label(label)
         combo_label.set_alignment(0, 0.5)
         combo_label.set_size_request(130, -1)
         hbox.pack_start(combo_label, False, False, 0)
@@ -1359,13 +1336,13 @@ class MultiFileTextEditor:
         vbox.pack_start(hbox, False, False, 0)
         
         if show_add_line:
-            hbox = gtk.HBox(False, 3)
-            add_label = gtk.Label(_("Add line:"))
+            hbox = Gtk.HBox(False, 3)
+            add_label = Gtk.Label(_("Add line:"))
             add_label.set_alignment(0, 0.5)
             add_label.set_size_request(130, -1)
-            self.add_entry = gtk.Entry()
+            self.add_entry = Gtk.Entry()
             self.add_entry.set_text(line_content)
-            add_button = gtk.Button(_("Add"))
+            add_button = Gtk.Button(_("Add"))
             add_button.connect("clicked", self.__add_button_clicked)
             hbox.pack_start(add_label, False, False, 0)
             hbox.pack_start(self.add_entry, True, True, 0)

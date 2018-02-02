@@ -8,13 +8,13 @@
     <property name="window_position">center-always</property>
     <signal handler="on_destroy" name="destroy"/>
     <child>
-      <object class="GtkVBox" id="vbox1">
+      <object class="GtkBox" orientation="vertical" id="vbox1">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
-          <object class="GtkVBox" id="vbox6">
+          <object class="GtkBox" orientation="vertical" id="vbox6">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
@@ -49,7 +49,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="vbox7">
+          <object class="GtkBox" orientation="vertical" id="vbox7">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
@@ -69,7 +69,7 @@
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkHBox" id="hbox1">
+                  <object class="GtkBox" orientation="horizontal" id="hbox1">
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
@@ -117,7 +117,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="vboxa">
+          <object class="GtkBox" orientation="vertical" id="vboxa">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
@@ -150,12 +150,12 @@
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="vbox2">
+          <object class="GtkBox" orientation="vertical" id="vbox2">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkVBox" id="vbox3">
+              <object class="GtkBox" orientation="vertical" id="vbox3">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
@@ -175,7 +175,7 @@
                     <property name="visible">True</property>
                     <property name="left_padding">12</property>
                     <child>
-                      <object class="GtkVBox" id="vbox4">
+                      <object class="GtkBox" orientation="vertical" id="vbox4">
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
@@ -290,7 +290,7 @@ and the current commit in the working tree</property>
           </packing>
         </child>
         <child>
-          <object class="GtkHButtonBox" id="hbuttonbox1">
+          <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox1">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <property name="layout_style">end</property>

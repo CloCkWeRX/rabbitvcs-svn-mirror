@@ -12,13 +12,13 @@
     <signal handler="on_destroy" name="destroy"/>
     <signal handler="on_key_pressed" name="key_press_event"/>
     <child>
-      <object class="GtkVBox" id="vbox4">
+      <object class="GtkBox" orientation="vertical" id="vbox4">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="spacing">18</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkHBox" id="commit_to_box">
+          <object class="GtkBox" orientation="horizontal" id="commit_to_box">
             <property name="spacing">12</property>
             <child>
               <object class="GtkLabel" id="label7">
@@ -62,7 +62,7 @@
             <property name="can_focus">True</property>
             <property name="border_width">6</property>  
             <child>
-              <object class="GtkVBox" id="add_message_box">
+              <object class="GtkBox" orientation="vertical" id="add_message_box">
                 <property name="visible">True</property>
                 <property name="spacing">6</property>
                 <property name="orientation">vertical</property>
@@ -84,12 +84,12 @@
                     <property name="visible">True</property>
                     <property name="left_padding">12</property>
                     <child>
-                      <object class="GtkVBox" id="vbox6">
+                      <object class="GtkBox" orientation="vertical" id="vbox6">
                         <property name="visible">True</property>
                         <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <object class="GtkHButtonBox" id="hbuttonbox4">
+                          <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox4">
                             <property name="width_request">0</property>
                             <property name="visible">True</property>
                             <property name="layout_style">start</property>
@@ -150,7 +150,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox2">
+              <object class="GtkBox" orientation="vertical" id="vbox2">
                 <property name="visible">True</property>
                 <property name="spacing">6</property>
                 <property name="orientation">vertical</property>
@@ -172,7 +172,7 @@
                     <property name="visible">True</property>
                     <property name="left_padding">12</property>
                     <child>
-                      <object class="GtkVBox" id="vbox3">
+                      <object class="GtkBox" orientation="vertical" id="vbox3">
                         <property name="visible">True</property>
                         <property name="spacing">6</property>
                         <property name="orientation">vertical</property>
@@ -195,7 +195,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkVBox" id="options_box">
+                          <object class="GtkBox" orientation="vertical" id="options_box">
                             <property name="visible">True</property>
                             <property name="orientation">vertical</property>
                             <child>
@@ -253,7 +253,7 @@
           
         </child>
         <child>
-          <object class="GtkHBox" id="hbox1">
+          <object class="GtkBox" orientation="horizontal" id="hbox1">
             <property name="spacing">6</property>
             <property name="visible">True</property>
             <child>
@@ -289,7 +289,7 @@
               </packing>
             </child>            
             <child>
-              <object class="GtkHButtonBox" id="hbuttonbox3">
+              <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox3">
                 <property name="visible">True</property>
                 <property name="spacing">6</property>
                 <property name="layout_style">end</property>

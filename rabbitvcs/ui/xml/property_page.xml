@@ -2,7 +2,7 @@
 <interface>
   <!-- interface-requires gtk+ 2.16 -->
   <!-- interface-naming-policy project-wide -->
-  <object class="GtkHBox" id="property_page_label">
+  <object class="GtkBox" orientation="horizontal" id="property_page_label">
     <property name="visible">True</property>
     <child>
       <object class="GtkImage" id="rabbitvcs-icon">
@@ -38,7 +38,7 @@
       </object>
     </child>
   </object>
-  <object class="GtkVBox" id="file_info_table">
+  <object class="GtkBox" orientation="vertical" id="file_info_table">
     <property name="visible">True</property>
     <property name="border_width">12</property>
     <property name="orientation">vertical</property>
@@ -53,7 +53,7 @@
       </packing>
     </child>
     <child>
-      <object class="GtkHBox" id="icon_plus_table">
+      <object class="GtkBox" orientation="horizontal" id="icon_plus_table">
         <property name="visible">True</property>
         <child>
           <object class="GtkImage" id="vcs_icon">
@@ -151,7 +151,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHBox" id="prop_status_box">
+              <object class="GtkBox" orientation="horizontal" id="prop_status_box">
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkImage" id="prop_status_icon">
@@ -181,7 +181,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkHBox" id="content_status_box">
+              <object class="GtkBox" orientation="horizontal" id="content_status_box">
                 <property name="visible">True</property>
                 <child>
                   <object class="GtkImage" id="content_status_icon">
@@ -240,7 +240,7 @@
         <property name="visible">True</property>
         <property name="resize_mode">queue</property>
         <child>
-          <object class="GtkVBox" id="property_page">
+          <object class="GtkBox" orientation="vertical" id="property_page">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <child>

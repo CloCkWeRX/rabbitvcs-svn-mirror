@@ -9,16 +9,16 @@
     <signal name="destroy" handler="on_destroy"/>
     <signal handler="on_key_pressed" name="key_press_event"/>
     <child>
-      <object class="GtkVBox" id="vbox1">
+      <object class="GtkBox" orientation="vertical" id="vbox1">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="spacing">18</property>
         <child>
-          <object class="GtkHBox" id="hbox1">
+          <object class="GtkBox" orientation="horizontal" id="hbox1">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkVBox" id="vbox2">
+              <object class="GtkBox" orientation="vertical" id="vbox2">
                 <property name="visible">True</property>
                 <property name="spacing">6</property>
                 <child>
@@ -39,11 +39,11 @@
                     <property name="visible">True</property>
                     <property name="left_padding">12</property>
                     <child>
-                      <object class="GtkVBox" id="from_container">
+                      <object class="GtkBox" orientation="vertical" id="from_container">
                         <property name="visible">True</property>
                         <property name="spacing">6</property>
                         <child>
-                          <object class="GtkHBox" id="from_branch_container">
+                          <object class="GtkBox" orientation="horizontal" id="from_branch_container">
                             <property name="visible">True</property>
                             <child>
                               <placeholder/>
@@ -56,7 +56,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkVBox" id="from_branch_info">
+                          <object class="GtkBox" orientation="vertical" id="from_branch_info">
                             <property name="visible">True</property>
                             <property name="spacing">6</property>
                             <child>
@@ -87,7 +87,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="vbox3">
+          <object class="GtkBox" orientation="vertical" id="vbox3">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
@@ -128,7 +128,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHButtonBox" id="hbuttonbox1">
+          <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox1">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <property name="layout_style">end</property>

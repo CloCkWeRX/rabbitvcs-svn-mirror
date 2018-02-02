@@ -14,11 +14,11 @@
     <property name="type_hint">dialog</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox4">
+      <object class="GtkBox" orientation="vertical" id="dialog-vbox4">
         <property name="visible">True</property>
         <property name="spacing">12</property>
         <child>
-          <object class="GtkVBox" id="vbox1">
+          <object class="GtkBox" orientation="vertical" id="vbox1">
             <property name="visible">True</property>
             <property name="border_width">6</property>
             <property name="spacing">6</property>
@@ -40,11 +40,11 @@
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkVBox" id="vbox3">
+                  <object class="GtkBox" orientation="vertical" id="vbox3">
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkHBox" id="hbox2">
+                      <object class="GtkBox" orientation="horizontal" id="hbox2">
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkLabel" id="label3">
@@ -80,7 +80,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHBox" id="hbox3">
+                      <object class="GtkBox" orientation="horizontal" id="hbox3">
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkLabel" id="label4">
@@ -111,7 +111,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHBox" id="hbox4">
+                      <object class="GtkBox" orientation="horizontal" id="hbox4">
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkLabel" id="label5">
@@ -143,7 +143,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHBox" id="hbox5">
+                      <object class="GtkBox" orientation="horizontal" id="hbox5">
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkLabel" id="label6">
@@ -188,7 +188,7 @@
           </packing>
         </child>
         <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area4">
+          <object class="GtkButtonBox" orientation="horizontal" id="dialog-action_area4">
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>

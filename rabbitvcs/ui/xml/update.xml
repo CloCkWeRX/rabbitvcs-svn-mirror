@@ -11,12 +11,12 @@
     <signal name="destroy" handler="on_destroy"/>
     <signal handler="on_key_pressed" name="key_press_event"/>
     <child>
-      <object class="GtkVBox" id="vbox25">
+      <object class="GtkBox" orientation="vertical" id="vbox25">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="spacing">18</property>
         <child>
-          <object class="GtkVBox" id="revision_box">
+          <object class="GtkBox" orientation="vertical" id="revision_box">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
@@ -54,7 +54,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="options_box">
+          <object class="GtkBox" orientation="vertical" id="options_box">
             <property name="spacing">6</property>
             <child>
               <object class="GtkLabel" id="label2">
@@ -74,7 +74,7 @@
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkVBox" id="vbox26">
+                  <object class="GtkBox" orientation="vertical" id="vbox26">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkCheckButton" id="recursive">
@@ -135,7 +135,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkHButtonBox" id="hbuttonbox16">
+          <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox16">
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <property name="layout_style">end</property>

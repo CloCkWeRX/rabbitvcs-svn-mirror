@@ -26,13 +26,13 @@
       <placeholder/>
     </child>
     <child>
-      <object class="GtkVBox" id="page1">
+      <object class="GtkBox" orientation="vertical" id="page1">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
-          <object class="GtkVBox" id="vbox3">
+          <object class="GtkBox" orientation="vertical" id="vbox3">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <child>
@@ -71,7 +71,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="vbox5">
+          <object class="GtkBox" orientation="vertical" id="vbox5">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <child>
@@ -111,7 +111,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="vbox6">
+          <object class="GtkBox" orientation="vertical" id="vbox6">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <child>
@@ -156,13 +156,13 @@
       </packing>
     </child>
     <child>
-      <object class="GtkVBox" id="page2a">
+      <object class="GtkBox" orientation="vertical" id="page2a">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
-          <object class="GtkVBox" id="vbox8">
+          <object class="GtkBox" orientation="vertical" id="vbox8">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
@@ -204,7 +204,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="vbox9">
+          <object class="GtkBox" orientation="vertical" id="vbox9">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
@@ -226,12 +226,12 @@
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkVBox" id="vbox34">
+                  <object class="GtkBox" orientation="vertical" id="vbox34">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkHBox" id="hbox18">
+                      <object class="GtkBox" orientation="horizontal" id="hbox18">
                         <property name="visible">True</property>
                         <property name="spacing">6</property>
                         <child>
@@ -308,7 +308,7 @@ To merge all revisions, leave the box empty.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="vbox10">
+          <object class="GtkBox" orientation="vertical" id="vbox10">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
@@ -330,7 +330,7 @@ To merge all revisions, leave the box empty.</property>
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkHBox" id="hbox19">
+                  <object class="GtkBox" orientation="horizontal" id="hbox19">
                     <property name="visible">True</property>
                     <property name="spacing">12</property>
                     <child>
@@ -364,13 +364,13 @@ To merge all revisions, leave the box empty.</property>
       </packing>
     </child>
     <child>
-      <object class="GtkVBox" id="page2b">
+      <object class="GtkBox" orientation="vertical" id="page2b">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
-          <object class="GtkVBox" id="vbox11">
+          <object class="GtkBox" orientation="vertical" id="vbox11">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
@@ -392,12 +392,12 @@ To merge all revisions, leave the box empty.</property>
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkVBox" id="vbox7">
+                  <object class="GtkBox" orientation="vertical" id="vbox7">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkHBox" id="hbox1">
+                      <object class="GtkBox" orientation="horizontal" id="hbox1">
                         <property name="visible">True</property>
                         <property name="spacing">6</property>
                         <child>
@@ -470,7 +470,7 @@ To merge all revisions, leave the box empty.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="vbox12">
+          <object class="GtkBox" orientation="vertical" id="vbox12">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <child>
@@ -491,7 +491,7 @@ To merge all revisions, leave the box empty.</property>
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkHBox" id="hbox20">
+                  <object class="GtkBox" orientation="horizontal" id="hbox20">
                     <property name="visible">True</property>
                     <property name="spacing">12</property>
                     <child>
@@ -526,13 +526,13 @@ To merge all revisions, leave the box empty.</property>
       </packing>
     </child>
     <child>
-      <object class="GtkVBox" id="page2c">
+      <object class="GtkBox" orientation="vertical" id="page2c">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
-          <object class="GtkVBox" id="vbox13">
+          <object class="GtkBox" orientation="vertical" id="vbox13">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
@@ -554,7 +554,7 @@ To merge all revisions, leave the box empty.</property>
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkVBox" id="vbox38">
+                  <object class="GtkBox" orientation="vertical" id="vbox38">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
@@ -570,7 +570,7 @@ To merge all revisions, leave the box empty.</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkVBox" id="vbox2">
+                      <object class="GtkBox" orientation="vertical" id="vbox2">
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <child>
@@ -589,7 +589,7 @@ To merge all revisions, leave the box empty.</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkHBox" id="hbox22">
+                          <object class="GtkBox" orientation="horizontal" id="hbox22">
                             <property name="visible">True</property>
                             <property name="spacing">6</property>
                             <child>
@@ -671,7 +671,7 @@ To merge all revisions, leave the box empty.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="vbox14">
+          <object class="GtkBox" orientation="vertical" id="vbox14">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
@@ -693,7 +693,7 @@ To merge all revisions, leave the box empty.</property>
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkVBox" id="vbox39">
+                  <object class="GtkBox" orientation="vertical" id="vbox39">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
@@ -709,7 +709,7 @@ To merge all revisions, leave the box empty.</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkVBox" id="vbox4">
+                      <object class="GtkBox" orientation="vertical" id="vbox4">
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <child>
@@ -728,7 +728,7 @@ To merge all revisions, leave the box empty.</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkHBox" id="hbox23">
+                          <object class="GtkBox" orientation="horizontal" id="hbox23">
                             <property name="visible">True</property>
                             <property name="spacing">6</property>
                             <child>
@@ -810,7 +810,7 @@ To merge all revisions, leave the box empty.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkVBox" id="vbox15">
+          <object class="GtkBox" orientation="vertical" id="vbox15">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
@@ -832,7 +832,7 @@ To merge all revisions, leave the box empty.</property>
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkHBox" id="hbox21">
+                  <object class="GtkBox" orientation="horizontal" id="hbox21">
                     <property name="visible">True</property>
                     <property name="spacing">12</property>
                     <child>
@@ -866,13 +866,13 @@ To merge all revisions, leave the box empty.</property>
       </packing>
     </child>
     <child>
-      <object class="GtkVBox" id="page3">
+      <object class="GtkBox" orientation="vertical" id="page3">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
-          <object class="GtkVBox" id="vbox1">
+          <object class="GtkBox" orientation="vertical" id="vbox1">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
@@ -894,7 +894,7 @@ To merge all revisions, leave the box empty.</property>
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkVBox" id="vbox41">
+                  <object class="GtkBox" orientation="vertical" id="vbox41">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <child>
@@ -953,7 +953,7 @@ To merge all revisions, leave the box empty.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkHButtonBox" id="hbuttonbox24">
+          <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox24">
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
@@ -963,7 +963,7 @@ To merge all revisions, leave the box empty.</property>
                 <property name="receives_default">True</property>
                 <signal handler="on_test_clicked" name="clicked"/>
                 <child>
-                  <object class="GtkHBox" id="hbox2">
+                  <object class="GtkBox" orientation="horizontal" id="hbox2">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkImage" id="image5">
