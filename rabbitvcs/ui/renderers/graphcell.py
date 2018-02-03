@@ -15,16 +15,17 @@ __author__    = "Scott James Remnant <scott@ubuntu.com>"
 
 import math
 
-import gtk
-import gobject
-import pango
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject, Pango
+
 import cairo
 
 # Styles used when rendering revision graph edges
 style_SOLID = 0
 style_DASHED = 1
 
-class CellRendererGraph(gtk.GenericCellRenderer):
+class CellRendererGraph(Gtk.CellRenderer):
     """Cell renderer for directed graph.
 
     Properties:
@@ -36,9 +37,9 @@ class CellRendererGraph(gtk.GenericCellRenderer):
     columns_len = 0
 
     __gproperties__ = {
-        "graph":         ( gobject.TYPE_PYOBJECT, "graph",
+        "graph":         ( GObject.TYPE_PYOBJECT, "graph",
                           "revision node instruction",
-                          gobject.PARAM_WRITABLE
+                          GObject.PARAM_WRITABLE
                         )
         }
 
@@ -66,8 +67,8 @@ class CellRendererGraph(gtk.GenericCellRenderer):
             font_desc = widget.get_style().font_desc
             metrics = pango_ctx.get_metrics(font_desc)
 
-            ascent = pango.PIXELS(metrics.get_ascent())
-            descent = pango.PIXELS(metrics.get_descent())
+            ascent = Pango.PIXELS(metrics.get_ascent())
+            descent = Pango.PIXELS(metrics.get_descent())
 
             self._box_size = ascent + descent + 1
             return self._box_size
@@ -86,9 +87,9 @@ class CellRendererGraph(gtk.GenericCellRenderer):
             colour_rgb = int(r, 16) / 255., int(g, 16) / 255., int(b, 16) / 255.
         else:
             if colour == 0:
-                colour_rgb = gtklib.MAINLINE_COLOR
+                colour_rgb = Gtklib.MAINLINE_COLOR
             else:
-                colour_rgb = gtklib.LINE_COLORS[colour % len(gtklib.LINE_COLORS)]
+                colour_rgb = Gtklib.LINE_COLORS[colour % len(Gtklib.LINE_COLORS)]
 
         red   = (colour_rgb[0] * fg) or bg
         green = (colour_rgb[1] * fg) or bg

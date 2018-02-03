@@ -401,11 +401,11 @@ STATUS_TYPES = [
 ]
 
 class TestStatusObjects(unittest.TestCase):
-    
-    base = "/path/to/test"
+    def setUp(self):
+        self.base = "/path/to/test"
         
-    children = [
-        os.path.join(base, chr(x)) for x in range(97,123) 
+        self.children = [
+            os.path.join(self.base, chr(x)) for x in range(97,123) 
                 ]
     
     def testsingle_clean(self):

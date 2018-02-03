@@ -27,6 +27,7 @@ import os
 import os.path
 
 import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject, Pango
 GTK_FILL = Gtk.AttachOptions.FILL
 GTK_EXPAND = Gtk.AttachOptions.EXPAND
@@ -279,7 +280,7 @@ class TableBase:
         self._reassert_selection = False
         i = 0
         for name in colnames:
-            if coltypes[i] == gobject.TYPE_BOOLEAN:
+            if coltypes[i] == GObject.TYPE_BOOLEAN:
                 cell = Gtk.CellRendererToggle()
                 cell.set_property('activatable', True)
                 cell.set_property('xalign', 0)
@@ -358,7 +359,7 @@ class TableBase:
                 col = Gtk.TreeViewColumn(name, cell)
                 col.set_attributes(cell, text=i)
             elif coltypes[i] == TYPE_GRAPH:
-                coltypes[i] = gobject.TYPE_PYOBJECT
+                coltypes[i] = GObject.TYPE_PYOBJECT
                 cell = CellRendererGraph()
                 col = Gtk.TreeViewColumn(name, cell)
                 col.add_attribute(cell, "graph", i)
@@ -375,7 +376,7 @@ class TableBase:
                 else:
                     col = Gtk.TreeViewColumn(name, cell, text=i)
 
-                coltypes[i] = gobject.TYPE_STRING
+                coltypes[i] = GObject.TYPE_STRING
 
             if flags["sortable"]:
                 col.set_sort_column_id(i)
@@ -524,7 +525,7 @@ class TableBase:
         model[row][column] = val
     
     def allow_multiple(self):
-        self.treeview.get_selection().set_mode(Gtk.SELECTION_MULTIPLE)
+        self.treeview.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
 
     def get_activated_rows(self, column=None):
         returner = []
@@ -874,11 +875,11 @@ class ProgressBar:
     def start_pulsate(self):
         # Set up an interval to make the progress bar pulse
         # The timeout is removed after the log action finishes
-        self.timer = gobject.timeout_add(100, self.update)
+        self.timer = GObject.timeout_add(100, self.update)
     
     def stop_pulsate(self):
         if self.timer:
-            gobject.source_remove(self.timer)
+            GObject.source_remove(self.timer)
         self.timer = None
 
     def update(self, fraction=None):
@@ -1008,12 +1009,12 @@ class RevisionSelector:
         
         if self.revision_changed_callback:
             self.revision_change_inprogress = True
-            gobject.timeout_add(400, self.__revision_changed_callback, self)
+            GObject.timeout_add(400, self.__revision_changed_callback, self)
 
     def __revision_entry_changed(self, widget):
         if self.revision_changed_callback and not self.revision_change_inprogress:
             self.revision_change_inprogress = True
-            gobject.timeout_add(400, self.__revision_changed_callback, self)
+            GObject.timeout_add(400, self.__revision_changed_callback, self)
 
     def __revision_changed_callback(self, *args, **kwargs):
         self.revision_change_inprogress = False

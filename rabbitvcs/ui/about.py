@@ -78,13 +78,12 @@ class About:
             authors_path = os.path.join(doc_path, "AUTHORS")
 
         authors = open(authors_path, "r").read()
-        print(authors.split("\n"))
 
         self.about.set_authors(authors.split("\n"))
         
         versions = []
-        versions.append("Subversion - %s" % string.join(list(map(str,pysvn.svn_version)), "."))
-        versions.append("Pysvn - %s" % string.join(list(map(str,pysvn.version)), "."))
+        versions.append("Subversion - %s" % ".".join(list(map(str,pysvn.svn_version))))
+        versions.append("Pysvn - %s" % ".".join(list(map(str,pysvn.version))))
         versions.append("ConfigObj - %s" % str(configobj.__version__))
         
         self.about.set_comments("\n".join(versions))

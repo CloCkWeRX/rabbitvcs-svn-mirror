@@ -12,6 +12,7 @@ import fnmatch
 import time
 from datetime import datetime
 from mimetypes import guess_type
+import time
 
 import subprocess
 
@@ -27,8 +28,7 @@ from . import util
 from .objects import *
 from .command import GittyupCommand
 
-import Tkinter
-import tkMessageBox
+import tkinter
 
 import six.moves.tkinter
 import six.moves.tkinter_messagebox
@@ -69,6 +69,8 @@ def get_tmp_path(filename):
     return os.path.join(tmpdir, filename)
 
 class GittyupClient:
+    UTF8 = "utf-8"
+    
     def __init__(self, path=None, create=False):
         self.callback_notify = callback_notify_null
         self.callback_progress_update = None
@@ -135,7 +137,8 @@ class GittyupClient:
         tree_index = {}
         if tree:
             for item in self.repo.object_store.iter_tree_contents(tree.id):
-                tree_index[item[0]] = (item[1], item[2])
+                tree_index[item[0].decode(self.UTF8)] = (item[1], item[2].decode(self.UTF8))
+
         return tree_index
 
     def _get_git_version(self):
@@ -1389,7 +1392,7 @@ class GittyupClient:
             if components:
                 status = components.group(1)
                 strip_status = status.strip()
-                path = components.group(2).decode("string_escape").decode("UTF-8")
+                path = components.group(2)
                 if path[0] == '"' and path[-1] == '"':
                     path = path[1:-1]
                
@@ -1593,11 +1596,8 @@ class GittyupClient:
     def status(self, path):
         # TODO - simply get this from the status implementation / avoid global state
         self.ignored_paths = []
-        version = self._get_git_version()
-        if version and self._version_greater_than(version, [1,7,-1]):
-            return self.status_porcelain(path)
-        else:
-            return self.status_dulwich(path)
+
+        return self.status_porcelain(path)
 
     def log(self, path="", skip=0, limit=None, revision="", showtype="all"):
         

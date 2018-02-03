@@ -23,10 +23,7 @@ from __future__ import absolute_import
 import os.path
 
 import os
-if "REQUIRE_GTK3" in os.environ and os.environ["REQUIRE_GTK3"]:
-    from gi.repository import Gtk as gtk
-else:
-    import gtk
+from gi.repository import Gtk
     
 import rabbitvcs.util.helper
 
@@ -51,7 +48,7 @@ class MenuItem(object):
         identifier = "RabbitVCS::Perform_Magic"
         label = _("Perform Magic")
         tooltip = _("Put on your robe and wizard hat")
-        icon = "rabbitvcs-wand" # or, say, gtk.STOCK_OPEN
+        icon = "rabbitvcs-wand" # or, say, Gtk.STOCK_OPEN
     
     There is some introspection magic that goes on to associate the items
     themselves with certain methods of a ContextMenuCondition object or a
@@ -95,7 +92,7 @@ class MenuItem(object):
     tooltip = ""
     
     # The icon that will appear on the menu item. This can be, say,
-    # "rabbitvcs-something" or gtk.STOCK_SOMETHING
+    # "rabbitvcs-something" or Gtk.STOCK_SOMETHING
     icon = None
 
     # This is a string that holds the name of the function that is called when
@@ -192,7 +189,7 @@ class MenuItem(object):
         """
         identifier = self.make_magic_id(id_magic)
         
-        return gtk.Action(identifier, self.make_label(), None, None)
+        return Gtk.Action(identifier, self.make_label(), None, None)
 
     def make_thunar_action(self, id_magic = None):
         identifier = self.make_magic_id(id_magic)
@@ -206,26 +203,26 @@ class MenuItem(object):
             
         return action
 
-    def make_gtk_menu_item(self, id_magic = None):
+    def make_Gtk_menu_item(self, id_magic = None):
         action = self.make_action(id_magic)
             
         if self.icon:
-            # We use this instead of gtk.Action.set_icon_name because
-            # that method is not available until pygtk 2.16
-            action.set_menu_item_type(gtk.ImageMenuItem)
+            # We use this instead of Gtk.Action.set_icon_name because
+            # that method is not available until pyGtk 2.16
+            action.set_menu_item_type(Gtk.ImageMenuItem)
             menuitem = action.create_menu_item()
-            menuitem.set_image(gtk.image_new_from_icon_name(self.icon, gtk.ICON_SIZE_MENU))
+            menuitem.set_image(Gtk.image_new_from_icon_name(self.icon, Gtk.ICON_SIZE_MENU))
         else:
             menuitem = action.create_menu_item()
             
         return menuitem
         
-    def make_gtk3_menu_item(self, id_magic = None):
+    def make_Gtk3_menu_item(self, id_magic = None):
         action = self.make_action(id_magic)
         
         if self.icon:
             menuitem = action.create_menu_item()
-            menuitem.set_image(gtk.Image.new_from_icon_name(self.icon, gtk.IconSize.MENU))
+            menuitem.set_image(Gtk.Image.new_from_icon_name(self.icon, Gtk.IconSize.MENU))
         else:
             menuitem = action.create_menu_item()
             
@@ -304,8 +301,8 @@ class MenuSeparator(MenuItem):
         #~ return action
                
     # Make separators insensitive
-    def make_gtk_menu_item(self, id_magic = None):
-        menuitem = gtk.SeparatorMenuItem()
+    def make_Gtk_menu_item(self, id_magic = None):
+        menuitem = Gtk.SeparatorMenuItem()
         menuitem.show()
         return menuitem
     
@@ -398,7 +395,7 @@ class MenuRepoBrowser(MenuItem):
     identifier = "RabbitVCS::Repo_Browser"
     label = _("Repository Browser")
     tooltip = _("Browse a repository tree")
-    icon = gtk.STOCK_FIND
+    icon = Gtk.STOCK_FIND
 
 class MenuCheckForModifications(MenuItem):
     identifier = "RabbitVCS::Check_For_Modifications"
@@ -624,7 +621,7 @@ class MenuOpen(MenuItem):
     identifier = "RabbitVCS::Open"
     label = _("Open")
     tooltip = _("Open a file")
-    icon = gtk.STOCK_OPEN
+    icon = Gtk.STOCK_OPEN
     # Not sure why, but it was like this before...
     condition_name = "_open"
     callback_name = "_open"
@@ -633,7 +630,7 @@ class MenuBrowseTo(MenuItem):
     identifier = "RabbitVCS::Browse_To"
     label = _("Browse to")
     tooltip = _("Browse to a file or folder")
-    icon = gtk.STOCK_HARDDISK
+    icon = Gtk.STOCK_HARDDISK
 
 class PropMenuRevert(MenuItem):
     identifier = "RabbitVCS::Property_Revert"
@@ -664,7 +661,7 @@ class PropMenuDeleteRecursive(MenuItem):
 class PropMenuEdit(MenuItem):
     identifier = "RabbitVCS::Property_Edit"
     label = _("Edit details")
-    icon = gtk.STOCK_EDIT
+    icon = Gtk.STOCK_EDIT
     tooltip = _("Show and edit property details")
 
 class MenuInitializeRepository(MenuItem):
@@ -778,16 +775,16 @@ def get_ignore_list_items(paths):
 
     return ignore_items
 
-class RabbitVCSAction(gtk.Action):
+class RabbitVCSAction(Gtk.Action):
     """
-    Sub-classes gtk.Action so that we can have submenus.
-    This is needed for context menus that use gtk actions
+    Sub-classes Gtk.Action so that we can have submenus.
+    This is needed for context menus that use Gtk actions
     """
 
     __gtype_name__ = "RabbitVCSAction"
 
     def __init__(self, name, label, tooltip, stock_id):
-        gtk.Action.__init__(self, name, label, tooltip, stock_id)
+        Gtk.Action.__init__(self, name, label, tooltip, stock_id)
         self.sub_actions = None
         self.stock_id = stock_id
 
@@ -798,15 +795,15 @@ class RabbitVCSAction(gtk.Action):
         self.sub_actions = sub_actions
 
     def do_create_menu_item(self):
-        menu_item = gtk.ImageMenuItem()
+        menu_item = Gtk.ImageMenuItem()
         if self.stock_id:
             try:
                 self.set_icon_name(self.stock_id)
             except AttributeError as e:
-                menu_item.set_image(gtk.image_new_from_icon_name(self.stock_id, gtk.ICON_SIZE_MENU))
+                menu_item.set_image(Gtk.image_new_from_icon_name(self.stock_id, Gtk.ICON_SIZE_MENU))
 
         if self.sub_actions is not None:
-            menu = gtk.Menu()
+            menu = Gtk.Menu()
             menu_item.set_submenu(menu)
 
             for sub_action in self.sub_actions:
@@ -821,4 +818,4 @@ class RabbitVCSAction(gtk.Action):
 class ThunarSeparator(RabbitVCSAction):
 		
 	def do_create_menu_item(self):
-		return gtk.SeparatorMenuItem()
+		return Gtk.SeparatorMenuItem()

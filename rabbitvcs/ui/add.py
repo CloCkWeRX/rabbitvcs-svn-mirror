@@ -25,9 +25,9 @@ import os
 import six.moves._thread
 from time import sleep
 
-import pygtk
-import gobject
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.util.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
@@ -44,7 +44,7 @@ log = Log("rabbitvcs.ui.add")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gobject.threads_init()
+GObject.threads_init()
 
 class Add(InterfaceView, GtkContextMenuCaller):
     """
@@ -75,8 +75,8 @@ class Add(InterfaceView, GtkContextMenuCaller):
         self.statuses = self.vcs.statuses_for_add(paths)
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH,
-                gobject.TYPE_STRING],
+            [GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH,
+                GObject.TYPE_STRING],
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
             filters=[{
                 "callback": rabbitvcs.ui.widget.path_filter,
@@ -99,7 +99,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
     #
 
     def load(self):
-        gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
         self.items = self.vcs.get_items(self.paths, self.statuses)
         
@@ -123,7 +123,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
 
         self.populate_files_table()
         self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
-        gtk.gdk.threads_leave()
+        Gdk.threads_leave()
 
     def populate_files_table(self):
         self.files_table.clear()
@@ -175,7 +175,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
         rabbitvcs.util.helper.launch_diff_tool(*paths)
 
     def on_files_table_key_event(self, treeview, data=None):
-        if gtk.gdk.keyval_name(data.keyval) == "Delete":
+        if Gtk.gdk.keyval_name(data.keyval) == "Delete":
             self.delete_items(treeview, data)
 
     def on_files_table_mouse_event(self, treeview, data=None):
@@ -203,7 +203,7 @@ class SVNAdd(Add):
 
         self.action = rabbitvcs.ui.action.SVNAction(
             self.svn,
-            register_gtk_quit=self.gtk_quit_is_set()
+            register_Gtk_quit=self.Gtk_quit_is_set()
         )
         self.action.append(self.action.set_header, _("Add"))
         self.action.append(self.action.set_status, _("Running Add Command..."))
@@ -228,7 +228,7 @@ class GitAdd(Add):
 
         self.action = rabbitvcs.ui.action.GitAction(
             self.git,
-            register_gtk_quit=self.gtk_quit_is_set()
+            register_Gtk_quit=self.Gtk_quit_is_set()
         )
         self.action.append(self.action.set_header, _("Add"))
         self.action.append(self.action.set_status, _("Running Add Command..."))
@@ -269,5 +269,5 @@ if __name__ == "__main__":
         AddQuiet(paths)
     else:
         window = add_factory(paths,options.base_dir)#Add(paths, options.base_dir)
-        window.register_gtk_quit()
-        gtk.main()
+        window.register_Gtk_quit()
+        Gtk.main()

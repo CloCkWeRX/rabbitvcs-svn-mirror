@@ -36,13 +36,9 @@ from __future__ import absolute_import
 
 import os
 
-if "REQUIRE_GTK3" in os.environ and os.environ["REQUIRE_GTK3"]:
-    import gi
-    gi.require_version('Gtk', '3.0')
-    from gi.repository import Gtk as gtk
-else:
-    import gtk
-    gtk.gdk.threads_init()
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk as Gtk
 
 import time
 import warnings
@@ -125,16 +121,16 @@ def disable(func):
 def gtk_unsafe(func):
     """
     Used to wrap a function that makes calls to GTK from a thread in
-    gtk.gdk.threads_enter() and gtk.gdk.threads_leave().
+    Gtk.gdk.threads_enter() and Gtk.gdk.threads_leave().
     
     """
-    
-    import gtk
+
+    from gi.repository import Gdk
     
     def newfunc(*args, **kwargs):
-        gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         result = func(*args, **kwargs)
-        gtk.gdk.threads_leave()
+        Gdk.threads_leave()
         return result
         
     return update_func_meta(newfunc, func)
