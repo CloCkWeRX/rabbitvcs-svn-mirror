@@ -1,5 +1,5 @@
 #
-# This is an extension to the Nautilus file manager to allow better
+# This is an extension to the Nemo file manager to allow better
 # integration with the Subversion source control system.
 #
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
@@ -22,14 +22,16 @@
 
 """
 
-Our module for everything related to the Nautilus extension.
+Our module for everything related to the Nemo extension.
 
 """
+
+
 from __future__ import with_statement
+
 from __future__ import absolute_import
 import six
 from six.moves import range
-
 def log_all_exceptions(type, value, tb):
     import sys, traceback
     from rabbitvcs.util.log import Log
@@ -57,6 +59,7 @@ def log_all_exceptions(type, value, tb):
 import copy
 
 import os
+# Do NOT change this to "Nemo". RabbitVCS has an internal reference to this name.
 os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"] = "1"
 
 import os.path
@@ -102,21 +105,21 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
 
     """
 
-    #: This is our lookup table for C{NautilusVFSFile}s which we need for attaching
+    #: This is our lookup table for C{NemoVFSFile}s which we need for attaching
     #: emblems. This is mostly a workaround for not being able to turn a path/uri
-    #: into a C{NautilusVFSFile}. It looks like:::
+    #: into a C{NemoVFSFile}. It looks like:::
     #:
-    #:     nautilusVFSFile_table = {
-    #:        "/foo/bar/baz": <NautilusVFSFile>
+    #:     nemoVFSFile_table = {
+    #:        "/foo/bar/baz": <NemoVFSFile>
     #:
     #:     }
     #:
-    #: Keeping track of C{NautilusVFSFile}s is a little bit complicated because
+    #: Keeping track of C{NemoVFSFile}s is a little bit complicated because
     #: when an item is moved (renamed) C{update_file_info} doesn't get called. So
-    #: we also add C{NautilusVFSFile}s to this table from C{get_file_items} etc.
+    #: we also add C{NemoVFSFile}s to this table from C{get_file_items} etc.
     # FIXME: this may be the source of the memory hogging seen in the extension
     # script itself.
-    nautilusVFSFile_table = {}
+    nemoVFSFile_table = {}
 
     #: This is in case we want to permanently enable invalidation of the status
     #: checker info.
@@ -179,7 +182,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
             "scalable/apps/rabbitvcs-small.svg",
             "16x16/actions/rabbitvcs-push.png"
         ]
-        
+
         rabbitvcs_icon_path = get_icon_path()
         for rel_icon_path in rabbitvcs_icons:
             icon_path = "%s/%s" % (rabbitvcs_icon_path, rel_icon_path)
@@ -191,16 +194,16 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
             factory.add(root, iconset)
 
         factory.add_default()
-    
+
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = VCS()
 
         self.status_checker = StatusChecker()
-        
+
         self.status_checker.assert_version(EXT_VERSION)
-        
+
         self.items_cache = {}
-        
+
     def get_columns(self):
         """
         Return all the columns we support.
@@ -249,15 +252,15 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
           - You're not notified about items you don't see (which is needed to
             keep the emblem for the directories above the item up-to-date)
 
-        @type   item: NautilusVFSFile
+        @type   item: NemoVFSFile
         @param  item:
 
         """
         enable_emblems = bool(int(settings.get("general", "enable_emblems")))
         enable_attrs = bool(int(settings.get("general", "enable_attributes")))
-        
+
         if not (enable_emblems or enable_attrs): return Nemo.OperationResult.COMPLETE
-                
+
         if not self.valid_uri(item.get_uri()): return Nemo.OperationResult.FAILED
 
         path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
@@ -265,13 +268,13 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
         # log.debug("update_file_info() called for %s" % path)
 
         invalidate = False
-        if path in self.nautilusVFSFile_table:
+        if path in self.nemoVFSFile_table:
             invalidate = True
 
         # Always replace the item in the table with the one we receive, because
-        # for example if an item is deleted and recreated the NautilusVFSFile
+        # for example if an item is deleted and recreated the NemoVFSFile
         # we had before will be invalid (think pointers and such).
-        self.nautilusVFSFile_table[path] = item
+        self.nemoVFSFile_table[path] = item
 
         # This check should be pretty obvious :-)
         # TODO: how come the statuses for a few directories are incorrect
@@ -310,12 +313,12 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
         # FIXME: when did this get disabled?
         if enable_attrs: self.update_columns(item, path, status)
         if enable_emblems: self.update_status(item, path, status)
-        
+
         return Nemo.OperationResult.COMPLETE
 
     def update_columns(self, item, path, status):
         """
-        Update the columns (attributes) for a given Nautilus item,
+        Update the columns (attributes) for a given Nemo item,
         filling them in with information from the version control
         server.
 
@@ -343,7 +346,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
             "age": age
         }
 
-        for key, value in list(values.items()):
+        for key, value in values.items():
             item.add_string_attribute(key, value)
 
     def update_status(self, item, path, status):
@@ -356,17 +359,17 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
     # MainContextMenuConditions.
     def get_file_items_full(self, provider, window, items):
         """
-        Menu activated with items selected. Nautilus also calls this function
+        Menu activated with items selected. Nemo also calls this function
         when rendering submenus, even though this is not needed since the entire
         menu has already been returned.
 
-        Note that calling C{nautilusVFSFile.invalidate_extension_info()} will
+        Note that calling C{nemoVFSFile.invalidate_extension_info()} will
         also cause get_file_items to be called.
 
-        @type   window: NautilusNavigationWindow
+        @type   window: NemoNavigationWindow
         @param  window:
 
-        @type   items:  list of NautilusVFSFile
+        @type   items:  list of NemoVFSFile
         @param  items:
 
         @rtype:         list of MenuItems
@@ -379,26 +382,26 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
             if self.valid_uri(item.get_uri()):
                 path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
                 paths.append(path)
-                self.nautilusVFSFile_table[path] = item
+                self.nemoVFSFile_table[path] = item
 
         if len(paths) == 0: return []
-        
+
         # log.debug("get_file_items_full() called")
 
         paths_str = "-".join(paths)
-        
+
         conditions_dict = None
         if paths_str in self.items_cache:
             conditions_dict = self.items_cache[paths_str]
             if conditions_dict and conditions_dict != "in-progress":
-                conditions = NautilusMenuConditions(conditions_dict)
-                menu = NautilusMainContextMenu(self, window.base_dir, paths, conditions).get_menu()
+                conditions = NemoMenuConditions(conditions_dict)
+                menu = NemoMainContextMenu(self, window.base_dir, paths, conditions).get_menu()
                 return menu
-        
+
         if conditions_dict != "in-progress":
-            self.status_checker.generate_menu_conditions_async(provider, window.base_dir, paths, self.update_file_items)        
+            self.status_checker.generate_menu_conditions_async(provider, window.base_dir, paths, self.update_file_items)
             self.items_cache[path] = "in-progress"
-            
+
         return ()
 
     def get_file_items(self, window, items):
@@ -407,13 +410,13 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
             if self.valid_uri(item.get_uri()):
                 path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
                 paths.append(path)
-                self.nautilusVFSFile_table[path] = item
+                self.nemoVFSFile_table[path] = item
 
         if len(paths) == 0: return []
-        
+
         # log.debug("get_file_items() called")
-        
-        return NautilusMainContextMenu(self, window.base_dir, paths).get_menu()
+
+        return NemoMainContextMenu(self, window.base_dir, paths).get_menu()
 
     def update_file_items(self, provider, base_dir, paths, conditions_dict):
         paths_str = "-".join(paths)
@@ -422,33 +425,33 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
 
     #~ @disable
     # This is useful for profiling. Rename it to "get_background_items" and then
-    # rename the real function "get_background_items_real". 
+    # rename the real function "get_background_items_real".
     def get_background_items_profile(self, window, item):
         import cProfile
         import rabbitvcs.util.helper
-        
+
         path = six.text_type(gnomevfs.get_local_path_from_uri(item.get_uri()),
                        "utf-8").replace("/", ":")
-        
+
         profile_data_file = os.path.join(
                                rabbitvcs.util.helper.get_home_folder(),
                                "checkerservice_%s.stats" % path)
-        
+
         prof = cProfile.Profile()
         retval = prof.runcall(self.get_background_items_real, window, item)
         prof.dump_stats(profile_data_file)
         log.debug("Dumped: %s" % profile_data_file)
         return retval
-       
+
     def get_background_items_full(self, provider, window, item):
         """
         Menu activated on entering a directory. Builds context menu for File
         menu and for window background.
 
-        @type   window: NautilusNavigationWindow
+        @type   window: NemoNavigationWindow
         @param  window:
 
-        @type   item:   NautilusVFSFile
+        @type   item:   NemoVFSFile
         @param  item:
 
         @rtype:         list of MenuItems
@@ -458,7 +461,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
 
         if not self.valid_uri(item.get_uri()): return
         path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
-        self.nautilusVFSFile_table[path] = item
+        self.nemoVFSFile_table[path] = item
 
         # log.debug("get_background_items_full() called")
 
@@ -466,8 +469,8 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
         if path in self.items_cache:
             conditions_dict = self.items_cache[path]
             if conditions_dict and conditions_dict != "in-progress":
-                conditions = NautilusMenuConditions(conditions_dict)
-                menu = NautilusMainContextMenu(self, path, [path], conditions).get_menu()                
+                conditions = NemoMenuConditions(conditions_dict)
+                menu = NemoMainContextMenu(self, path, [path], conditions).get_menu()
                 return menu
 
         window.base_dir = path
@@ -475,23 +478,23 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
         if conditions_dict != "in-progress":
             self.status_checker.generate_menu_conditions_async(provider, path, [path], self.update_background_items)
             self.items_cache[path] = "in-progress"
-                    
+
         return ()
 
     def get_background_items(self, window, item):
         if not self.valid_uri(item.get_uri()): return
         path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
-        self.nautilusVFSFile_table[path] = item
+        self.nemoVFSFile_table[path] = item
 
         # log.debug("get_background_items() called")
-        
+
         window.base_dir = path
-        
-        return NautilusMainContextMenu(self, path, [path]).get_menu()
+
+        return NemoMainContextMenu(self, path, [path]).get_menu()
 
     def update_background_items(self, provider, base_dir, paths, conditions_dict):
         paths_str = "-".join(paths)
-        conditions = NautilusMenuConditions(conditions_dict)
+        conditions = NemoMenuConditions(conditions_dict)
         self.items_cache[paths_str] =  conditions_dict
         Nemo.MenuProvider.emit_items_updated_signal(provider)
 
@@ -504,7 +507,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
         Check whether or not it's a good idea to have RabbitVCS do
         its magic for this URI. Some examples of URI schemes:
 
-        x-nautilus-desktop:/// # e.g. mounted devices on the desktop
+        x-nemo-desktop:/// # e.g. mounted devices on the desktop
 
         """
 
@@ -571,7 +574,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
 
         def do_reload_settings():
             globals()["settings"] = SettingsManager()
-            globals()["log"] = reload_log_settings()("rabbitvcs.util.extensions.nautilus")
+            globals()["log"] = reload_log_settings()("rabbitvcs.util.extensions.nemo")
             log.debug("Re-scanning settings")
 
         self.execute_after_process_exit(proc, do_reload_settings)
@@ -591,11 +594,11 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
         @type   statuses: list of status objects
         @param  statuses: The statuses
         """
-        if status.path in self.nautilusVFSFile_table:
-            item = self.nautilusVFSFile_table[status.path]
+        if status.path in self.nemoVFSFile_table:
+            item = self.nemoVFSFile_table[status.path]
             # We need to invalidate the extension info for only one reason:
             #
-            # - Invalidating the extension info will cause Nautilus to remove all
+            # - Invalidating the extension info will cause Nemo to remove all
             #   temporary emblems we applied so we don't have overlay problems
             #   (with ourselves, we'd still have some with other extensions).
             #
@@ -617,10 +620,10 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
         for item in items:
             if self.valid_uri(item.get_uri()):
                 path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
-                
+
                 if self.vcs_client.is_in_a_or_a_working_copy(path):
                     paths.append(path)
-                    self.nautilusVFSFile_table[path] = item
+                    self.nemoVFSFile_table[path] = item
 
         if len(paths) == 0: return []
 
@@ -635,26 +638,21 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
 
 from rabbitvcs.util.contextmenuitems import *
 
-class NautilusContextMenu(MenuBuilder):
+class NemoContextMenu(MenuBuilder):
     """
-    Provides a standard Nautilus context menu (ie. a list of
+    Provides a standard Nemo context menu (ie. a list of
     "Nemo.MenuItem"s).
     """
 
     signal = "activate"
 
     def make_menu_item(self, item, id_magic):
-#        return item.make_nautilus_menu_item(id_magic)
-
         identifier = item.make_magic_id(id_magic)
+        menuitem = Nemo.MenuItem(name=identifier,
+                                 label=item.make_label(),
+                                 tip=item.tooltip,
+                                 icon=item.icon)
 
-        menuitem = Nemo.MenuItem(
-        name=identifier,
-        label=item.make_label(),
-        tip=item.tooltip,
-        icon=item.icon
-        )
-                    
         return menuitem
 
     def attach_submenu(self, menu_node, submenu_list):
@@ -665,10 +663,10 @@ class NautilusContextMenu(MenuBuilder):
     def top_level_menu(self, items):
         return items
 
-class NautilusMenuConditions(ContextMenuConditions):
+class NemoMenuConditions(ContextMenuConditions):
     def __init__(self, path_dict):
         self.path_dict = path_dict
 
-class NautilusMainContextMenu(MainContextMenu):
+class NemoMainContextMenu(MainContextMenu):
     def get_menu(self):
-        return NautilusContextMenu(self.structure, self.conditions, self.callbacks).menu
+        return NemoContextMenu(self.structure, self.conditions, self.callbacks).menu
