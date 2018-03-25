@@ -57,11 +57,11 @@ class ApplyPatch(InterfaceNonView):
         dialog = Gtk.FileChooserDialog(
             _("Apply Patch"),
             None,
-            Gtk.FILE_CHOOSER_ACTION_OPEN,(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL,
-                                          Gtk.STOCK_SAVE, Gtk.RESPONSE_OK))
-        dialog.set_default_response(Gtk.RESPONSE_OK)
+            Gtk.FILE_CHOOSER_ACTION_OPEN,(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                          Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+        dialog.set_default_response(Gtk.ResponseType.OK)
         response = dialog.run()
-        if response == Gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             path = dialog.get_filename()
         
         dialog.destroy()
@@ -78,13 +78,13 @@ class ApplyPatch(InterfaceNonView):
                     _("Apply Patch To Directory..."),
                     None,
                     Gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
-                    (Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL,
-                     Gtk.STOCK_SAVE, Gtk.RESPONSE_OK))
-        dialog.set_default_response(Gtk.RESPONSE_OK)
+                    (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                     Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+        dialog.set_default_response(Gtk.ResponseType.OK)
         
         response = dialog.run()
         
-        if response == Gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             dir = dialog.get_filename()
             
         dialog.destroy()

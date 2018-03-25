@@ -22,7 +22,6 @@ from __future__ import absolute_import
 #
 
 import os
-import six.moves._thread
 from time import sleep
 
 import gi
@@ -43,8 +42,6 @@ log = Log("rabbitvcs.ui.add")
 
 from rabbitvcs import gettext
 _ = gettext.gettext
-
-GObject.threads_init()
 
 class Add(InterfaceView, GtkContextMenuCaller):
     """
@@ -92,14 +89,13 @@ class Add(InterfaceView, GtkContextMenuCaller):
             }
         )
 
-        self.initialize_items()
+        self.load()
 
     #
     # Helpers
     #
 
     def load(self):
-        Gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
         self.items = self.vcs.get_items(self.paths, self.statuses)
         
@@ -123,7 +119,6 @@ class Add(InterfaceView, GtkContextMenuCaller):
 
         self.populate_files_table()
         self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
-        Gdk.threads_leave()
 
     def populate_files_table(self):
         self.files_table.clear()
@@ -136,21 +131,11 @@ class Add(InterfaceView, GtkContextMenuCaller):
 
     def toggle_ignored(self):
         self.show_ignored = not self.show_ignored
-        self.initialize_items()
+        self.load()
 
     # Overrides the GtkContextMenuCaller method
     def on_context_menu_command_finished(self):
-        self.initialize_items()
-
-    def initialize_items(self):
-        """
-        Initializes the activated cache and loads the file items in a new thread
-        """
-
-        try:
-            six.moves._thread.start_new_thread(self.load, ())
-        except Exception as e:
-            log.exception(e)
+        self.load()
 
     def delete_items(self, widget, data=None):
         paths = self.files_table.get_selected_row_items(1)
@@ -251,8 +236,7 @@ class AddQuiet:
         self.vcs = rabbitvcs.vcs.VCS()
         self.svn = self.vcs.svn()
         self.action = rabbitvcs.ui.action.SVNAction(
-            self.svn,
-            run_in_thread=False
+            self.svn
         )
 
         self.action.append(self.svn.add, paths)

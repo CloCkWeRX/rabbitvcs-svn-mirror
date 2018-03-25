@@ -214,7 +214,7 @@ class GitBranchManager(InterfaceView):
         confirm = rabbitvcs.ui.dialog.Confirmation(_("Are you sure you want to delete %s?" % ", ".join(selected)))
         result = confirm.run()
        
-        if result == Gtk.RESPONSE_OK or result == True:
+        if result == Gtk.ResponseType.OK or result == True:
             for branch in selected:
                 self.git.branch_delete(branch)
             

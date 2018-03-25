@@ -1324,7 +1324,7 @@ class LogTopContextMenuCallbacks:
         dialog = TextChange(_("Edit author"), author)
         (result, new_author) = dialog.run()
 
-        if result == Gtk.RESPONSE_OK:
+        if result == Gtk.ResponseType.OK:
             self.caller.edit_revprop("svn:author", new_author, self.caller.on_author_edited)
 
     def edit_log_message(self, widget, data=None):
@@ -1336,7 +1336,7 @@ class LogTopContextMenuCallbacks:
         dialog = TextChange(_("Edit log message"), message)
         (result, new_message) = dialog.run()
 
-        if result == Gtk.RESPONSE_OK:
+        if result == Gtk.ResponseType.OK:
             self.caller.edit_revprop("svn:log", new_message, self.caller.on_log_message_edited)
 
     def edit_revision_properties(self, widget, data=None):

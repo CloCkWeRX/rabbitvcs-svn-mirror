@@ -120,16 +120,16 @@ class CreatePatch:
         dialog = Gtk.FileChooserDialog(
             _("Create Patch"),
             None,
-            Gtk.FILE_CHOOSER_ACTION_SAVE,(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL,
-                                          Gtk.STOCK_SAVE, Gtk.RESPONSE_OK))
+            Gtk.FILE_CHOOSER_ACTION_SAVE,(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                          Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
         dialog.set_do_overwrite_confirmation(True)
-        dialog.set_default_response(Gtk.RESPONSE_OK)
+        dialog.set_default_response(Gtk.ResponseType.OK)
         dialog.set_current_folder_uri(
             get_common_directory(self.paths).replace("file://", "")
         )
         response = dialog.run()
         
-        if response == Gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             path = dialog.get_filename()
             
         dialog.destroy()

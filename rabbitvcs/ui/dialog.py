@@ -78,7 +78,7 @@ class PreviousMessages(InterfaceView):
         returner = None
         self.dialog = self.get_widget("PreviousMessages")
         result = self.dialog.run()
-        if result == Gtk.RESPONSE_OK:
+        if result == Gtk.ResponseType.OK:
             returner = self.message.get_text()
         
         self.dialog.destroy()
@@ -87,7 +87,7 @@ class PreviousMessages(InterfaceView):
         
     def on_prevmes_table_row_activated(self, treeview, data, col):
         self.update_message_table()
-        self.dialog.response(Gtk.RESPONSE_OK)
+        self.dialog.response(Gtk.ResponseType.OK)
     
     def on_prevmes_table_cursor_changed(self, treeview):
         self.update_message_table()
@@ -104,14 +104,14 @@ class FolderChooser:
         self.dialog = Gtk.FileChooserDialog(_("Select a Folder"), 
             None, 
             Gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER, 
-            (Gtk.STOCK_CANCEL,Gtk.RESPONSE_CANCEL,
-                Gtk.STOCK_OPEN,Gtk.RESPONSE_OK))
-        self.dialog.set_default_response(Gtk.RESPONSE_OK)
+            (Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,
+                Gtk.STOCK_OPEN,Gtk.ResponseType.OK))
+        self.dialog.set_default_response(Gtk.ResponseType.OK)
 
     def run(self):
         returner = None
         result = self.dialog.run()
-        if result == Gtk.RESPONSE_OK:
+        if result == Gtk.ResponseType.OK:
             # returner = self.dialog.get_uri()
             returner = self.dialog.get_file().get_path()
         self.dialog.destroy()
@@ -169,7 +169,7 @@ class Authentication(InterfaceView):
         save = self.get_widget("auth_save").get_active()
         self.dialog.destroy()
         
-        if result == Gtk.RESPONSE_OK:
+        if result == Gtk.ResponseType.OK:
             return (True, login, password, save)
         else:
             return (False, "", "", False)
@@ -189,7 +189,7 @@ class CertAuthentication(InterfaceView):
         save = self.get_widget("certauth_save").get_active()
         self.dialog.destroy()
         
-        if result == Gtk.RESPONSE_OK:
+        if result == Gtk.ResponseType.OK:
             return (True, password, save)
         else:
             return (False, "", False)
@@ -215,7 +215,7 @@ class SSLClientCertPrompt(InterfaceView):
         save = self.get_widget("sslclientcert_save").get_active()
         self.dialog.destroy()
         
-        if result == Gtk.RESPONSE_OK:
+        if result == Gtk.ResponseType.OK:
             return (True, cert, save)
         else:
             return (False, "", False)
@@ -259,7 +259,7 @@ class Property(InterfaceView):
         self.dialog = self.get_widget("Property")
         result = self.dialog.run()
         
-        if result == Gtk.RESPONSE_OK:
+        if result == Gtk.ResponseType.OK:
             self.save()
         
         self.dialog.destroy()
@@ -275,16 +275,16 @@ class FileChooser:
         self.dialog = Gtk.FileChooserDialog(title, 
             None, 
             Gtk.FILE_CHOOSER_ACTION_OPEN, 
-            (Gtk.STOCK_CANCEL,Gtk.RESPONSE_CANCEL,
-                Gtk.STOCK_OPEN,Gtk.RESPONSE_OK))
+            (Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,
+                Gtk.STOCK_OPEN,Gtk.ResponseType.OK))
         if folder is not None:
             self.dialog.set_current_folder(folder)
-        self.dialog.set_default_response(Gtk.RESPONSE_OK)
+        self.dialog.set_default_response(Gtk.ResponseType.OK)
 
     def run(self):
         returner = None
         result = self.dialog.run()
-        if result == Gtk.RESPONSE_OK:
+        if result == Gtk.ResponseType.OK:
             returner = self.dialog.get_file().get_path()
         self.dialog.destroy()
         return returner
@@ -294,16 +294,16 @@ class FileSaveAs:
         self.dialog = Gtk.FileChooserDialog(title, 
             None, 
             Gtk.FILE_CHOOSER_ACTION_SAVE, 
-            (Gtk.STOCK_CANCEL,Gtk.RESPONSE_CANCEL,
-                Gtk.STOCK_SAVE,Gtk.RESPONSE_OK))
+            (Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,
+                Gtk.STOCK_SAVE,Gtk.ResponseType.OK))
         if folder is not None:
             self.dialog.set_current_folder(folder)
-        self.dialog.set_default_response(Gtk.RESPONSE_OK)
+        self.dialog.set_default_response(Gtk.ResponseType.OK)
 
     def run(self):
         returner = None
         result = self.dialog.run()
-        if result == Gtk.RESPONSE_OK:
+        if result == Gtk.ResponseType.OK:
             returner = self.dialog.get_filename()
         self.dialog.destroy()
         return returner
@@ -391,7 +391,7 @@ class OneLineTextChange(InterfaceView):
         # which tells Gtk.Dialog.run() asyncronously to stop.  This allows the
         # user to press the "Return" button when done writing in the new text
         if Gtk.gdk.keyval_name(data.keyval) == "Return":
-            self.dialog.response(Gtk.RESPONSE_OK)
+            self.dialog.response(Gtk.ResponseType.OK)
     
     def run(self):
         result = self.dialog.run()
@@ -417,14 +417,14 @@ class NewFolder(InterfaceView):
 
     def run(self):
         dialog = self.get_widget("CreateFolder")
-        dialog.set_default_response(Gtk.RESPONSE_OK)
+        dialog.set_default_response(Gtk.ResponseType.OK)
         result = dialog.run()
 
         fields_text = (self.folder_name.get_text(), self.textview.get_text())
 
         dialog.destroy()
         
-        if result == Gtk.RESPONSE_OK:
+        if result == Gtk.ResponseType.OK:
             return fields_text
         else:
             return None
@@ -463,7 +463,7 @@ class NameEmailPrompt(InterfaceView):
         # which tells Gtk.Dialog.run() asyncronously to stop.  This allows the
         # user to press the "Return" button when done writing in the new text
         if Gtk.gdk.keyval_name(data.keyval) == "Return":
-            self.dialog.response(Gtk.RESPONSE_OK)
+            self.dialog.response(Gtk.ResponseType.OK)
     
     def run(self):
         result = self.dialog.run()
@@ -471,7 +471,7 @@ class NameEmailPrompt(InterfaceView):
         email = self.get_widget("email").get_text()
         self.dialog.destroy()
         
-        if result == Gtk.RESPONSE_OK:
+        if result == Gtk.ResponseType.OK:
             return (name, email)
         else:
             return (None, None)

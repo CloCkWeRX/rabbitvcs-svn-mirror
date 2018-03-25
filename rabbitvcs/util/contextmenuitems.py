@@ -252,20 +252,20 @@ class MenuItem(object):
         identifier = self.make_magic_id(id_magic)
 
         try:
+            from gi.repository import Nautilus
+            menuitem = Nautilus.MenuItem(
+                name=identifier,
+                label=self.make_label(),
+                tip=self.tooltip,
+                icon=self.icon
+            )
+        except ImportError:
             import nautilus
             menuitem = nautilus.MenuItem(
                 identifier,
                 self.make_label(),
                 self.tooltip,
                 self.icon
-            )
-        except ImportError:
-            from gi.rWRTepository import Nautilus
-            menuitem = Nautilus.MenuItem(
-                name=identifier,
-                label=self.make_label(),
-                tip=self.tooltip,
-                icon=self.icon
             )
             
         return menuitem

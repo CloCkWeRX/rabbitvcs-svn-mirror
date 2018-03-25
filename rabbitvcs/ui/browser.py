@@ -471,7 +471,7 @@ class BrowserContextMenuCallbacks:
         dialog = OneLineTextChange(_("Rename"), _("New Name:"), filename)
         (result, new_name) = dialog.run()
         
-        if result == Gtk.RESPONSE_CANCEL:
+        if result == Gtk.ResponseType.CANCEL:
             return
         
         new_url = base.rstrip("/") + "/" + new_name
@@ -538,7 +538,7 @@ class BrowserContextMenuCallbacks:
             return
 
         (response, new_url) = result
-        if response == Gtk.RESPONSE_CANCEL:
+        if response == Gtk.ResponseType.CANCEL:
             return
 
         sources = self.__generate_sources_list()
@@ -567,7 +567,7 @@ class BrowserContextMenuCallbacks:
             return
 
         (response, new_url) = result
-        if response == Gtk.RESPONSE_CANCEL:
+        if response == Gtk.ResponseType.CANCEL:
             return
 
         self.caller.action = rabbitvcs.ui.action.SVNAction(

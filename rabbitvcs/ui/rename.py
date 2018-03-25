@@ -54,7 +54,7 @@ class Rename(InterfaceNonView):
         dialog = OneLineTextChange(_("Rename"), _("New Name:"), self.path)
         (result, new_path) = dialog.run()
 
-        if result != Gtk.RESPONSE_OK:
+        if result != Gtk.ResponseType.OK:
             self.close()
             return
        

@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import os.path
 
-import pyGtk
-import GObject
-import Gtk
+from gi import require_version
+require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject
 
 from rabbitvcs.ui import InterfaceNonView
 from rabbitvcs.ui.action import SVNAction
@@ -71,7 +71,7 @@ class Delete(InterfaceNonView):
 
         # If the user wants to continue (or there are no unversioned files)
         # remove or delete the given files
-        if result == Gtk.RESPONSE_OK or result == True:
+        if result == Gtk.ResponseType.OK or result == True:
             if versioned:
                 try:
                     self.vcs_remove(versioned, force=True)
