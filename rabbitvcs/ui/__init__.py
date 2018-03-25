@@ -68,10 +68,10 @@ STATUS_EMBLEMS = {
 
 class GtkBuilderWidgetWrapper:
         
-    def __init__(self, Gtkbuilder_filename = None,
+    def __init__(self, gtkbuilder_filename = None,
                  gtkbuilder_id = None, claim_domain=True):
-        if Gtkbuilder_filename:
-            self.Gtkbuilder_filename = Gtkbuilder_filename
+        if gtkbuilder_filename:
+            self.gtkbuilder_filename = gtkbuilder_filename
         
         if gtkbuilder_id:
             self.gtkbuilder_id = gtkbuilder_id
@@ -84,7 +84,7 @@ class GtkBuilderWidgetWrapper:
     def get_tree(self):
         path = "%s/xml/%s.xml" % (
             os.path.dirname(os.path.realpath(__file__)), 
-            self.Gtkbuilder_filename
+            self.gtkbuilder_filename
         )
         
         tree = Gtk.Builder()
@@ -108,14 +108,14 @@ class InterfaceView(GtkBuilderWidgetWrapper):
     main window widget.
     
     When calling from the __main__ area (i.e. a window is opened via CLI,
-    call the register_Gtk_quit method to make sure the main app quits when
+    call the register_gtk_quit method to make sure the main app quits when
     the app is destroyed or finished.
     
     """
     
     def __init__(self, *args, **kwargs):
         GtkBuilderWidgetWrapper.__init__(self, *args, **kwargs)
-        self.do_Gtk_quit = False
+        self.do_gtk_quit = False
         
         # On OSX, there is a glitch where GTK applications do not always come to the front
         # when a launched (and methods like 'present()' don't appear to work correctly).
@@ -153,19 +153,19 @@ class InterfaceView(GtkBuilderWidgetWrapper):
             if threaded:
                 Gdk.threads_leave()
             
-        if self.do_Gtk_quit:
+        if self.do_gtk_quit:
             Gtk.main_quit()
             
-    def register_Gtk_quit(self):
+    def register_gtk_quit(self):
         window = self.get_widget(self.gtkbuilder_id)
-        self.do_Gtk_quit = True
+        self.do_gtk_quit = True
         
         # This means we've already been closed
         if window is None:
             GObject.idle_add(Gtk.main_quit)
     
-    def Gtk_quit_is_set(self):
-        return self.do_Gtk_quit
+    def gtk_quit_is_set(self):
+        return self.do_gtk_quit
 
     def on_destroy(self, widget):
         self.destroy()
@@ -180,21 +180,21 @@ class InterfaceView(GtkBuilderWidgetWrapper):
         return True
 
     def on_key_pressed(self, widget, data):
-        if (data.keyval == Gtk.keysyms.Escape):
+        if (data.keyval == Gdk.KEY_Escape):
             self.on_cancel_clicked(widget)
             return True
             
-        if (data.state & Gdk.CONTROL_MASK and 
+        if (data.state & Gdk.ModifierType.CONTROL_MASK and 
                 Gdk.keyval_name(data.keyval).lower() == "w"):
             self.on_cancel_clicked(widget)
             return True
 
-        if (data.state & Gdk.CONTROL_MASK and 
+        if (data.state & Gdk.ModifierType.CONTROL_MASK and 
                 Gdk.keyval_name(data.keyval).lower() == "q"):
             self.on_cancel_clicked(widget)
             return True
 
-        if (data.state & Gdk.CONTROL_MASK and 
+        if (data.state & Gdk.ModifierType.CONTROL_MASK and 
                 Gdk.keyval_name(data.keyval).lower() == "r"):
             self.on_refresh_clicked(widget)
             return True             
@@ -207,7 +207,7 @@ class InterfaceNonView:
     """
     
     def __init__(self):
-        self.do_Gtk_quit = False
+        self.do_gtk_quit = False
 
     def close(self):
         try:
@@ -215,11 +215,11 @@ class InterfaceNonView:
         except RuntimeError:
             raise SystemExit()
             
-    def register_Gtk_quit(self):
-        self.do_Gtk_quit = True
+    def register_gtk_quit(self):
+        self.do_gtk_quit = True
     
-    def Gtk_quit_is_set(self):
-        return self.do_Gtk_quit
+    def gtk_quit_is_set(self):
+        return self.do_gtk_quit
 
 class VCSNotSupportedError(Exception):
     """Indicates the desired VCS is not valid for a given action"""

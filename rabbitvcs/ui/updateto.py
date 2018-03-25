@@ -21,9 +21,9 @@ from __future__ import absolute_import
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.action
@@ -100,7 +100,7 @@ class SVNUpdateToRevision(UpdateToRevision):
             self.action.append(self.action.set_status, _("Completed Update"))
             
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
     def on_revision_changed(self, revision_selector):
         # Only allow rollback when a revision number is specified
@@ -144,7 +144,7 @@ class GitUpdateToRevision(UpdateToRevision):
         )
         self.action.append(self.action.set_status, _("Completed Checkout"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
     def on_revision_changed(self, revision_selector):
         pass
@@ -170,4 +170,4 @@ if __name__ == "__main__":
  
     window = updateto_factory(options.vcs, args[0], revision=options.revision)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

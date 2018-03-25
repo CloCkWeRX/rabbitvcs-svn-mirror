@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import os.path
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 import os
 import commands
 
@@ -54,14 +54,14 @@ class ApplyPatch(InterfaceNonView):
     def choose_patch_path(self):
         path = None
         
-        dialog = gtk.FileChooserDialog(
+        dialog = Gtk.FileChooserDialog(
             _("Apply Patch"),
             None,
-            gtk.FILE_CHOOSER_ACTION_OPEN,(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                                          gtk.STOCK_SAVE, gtk.RESPONSE_OK))
-        dialog.set_default_response(gtk.RESPONSE_OK)
+            Gtk.FILE_CHOOSER_ACTION_OPEN,(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL,
+                                          Gtk.STOCK_SAVE, Gtk.RESPONSE_OK))
+        dialog.set_default_response(Gtk.RESPONSE_OK)
         response = dialog.run()
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.RESPONSE_OK:
             path = dialog.get_filename()
         
         dialog.destroy()
@@ -74,17 +74,17 @@ class ApplyPatch(InterfaceNonView):
         
         dir = None
         
-        dialog = gtk.FileChooserDialog(
+        dialog = Gtk.FileChooserDialog(
                     _("Apply Patch To Directory..."),
                     None,
-                    gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
-                    (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                     gtk.STOCK_SAVE, gtk.RESPONSE_OK))
-        dialog.set_default_response(gtk.RESPONSE_OK)
+                    Gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
+                    (Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL,
+                     Gtk.STOCK_SAVE, Gtk.RESPONSE_OK))
+        dialog.set_default_response(Gtk.RESPONSE_OK)
         
         response = dialog.run()
         
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.RESPONSE_OK:
             dir = dialog.get_filename()
             
         dialog.destroy()
@@ -119,7 +119,7 @@ class SVNApplyPatch(ApplyPatch):
         self.action.append(self.svn.apply_patch, path, base_dir)
         self.action.append(self.action.set_status, _("Patch File Applied"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
 class GitApplyPatch(ApplyPatch):
     def __init__(self, paths):
@@ -149,7 +149,7 @@ class GitApplyPatch(ApplyPatch):
         self.action.append(self.git.apply_patch, path, base_dir)
         self.action.append(self.action.set_status, _("Patch File Applied"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNApplyPatch,
@@ -167,5 +167,5 @@ if __name__ == "__main__":
     window = applypatch_factory(paths)
     window.register_gtk_quit()
     window.start()
-    gtk.main()
+    Gtk.main()
     

@@ -21,9 +21,9 @@ from __future__ import absolute_import
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui.properties import PropertiesBase
 import rabbitvcs.ui.widget
@@ -112,4 +112,4 @@ if __name__ == "__main__":
     pathrev = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
     window = SVNRevisionProperties(pathrev[0], pathrev[1])
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import os
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 import pango
 
 from datetime import datetime
@@ -72,7 +72,7 @@ class GitTagManager(InterfaceView):
         self.selected_tag = None
         self.items_treeview = rabbitvcs.ui.widget.Table(
             self.get_widget("items_treeview"),
-            [gobject.TYPE_STRING], 
+            [GObject.TYPE_STRING], 
             [_("Tag")],
             callbacks={
                 "mouse-event":   self.on_treeview_mouse_event,
@@ -90,30 +90,30 @@ class GitTagManager(InterfaceView):
     def initialize_detail(self):
         self.detail_container = self.get_widget("detail_container")
 
-        vbox = gtk.VBox(False, 6)
+        vbox = Gtk.VBox(False, 6)
 
         # Set up the Tag line
-        label = gtk.Label(_("Name:"))
+        label = Gtk.Label(_("Name:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=.5)
-        self.tag_entry = gtk.Entry()
-        self.tag_name_container = gtk.HBox(False, 0)
+        self.tag_entry = Gtk.Entry()
+        self.tag_name_container = Gtk.HBox(False, 0)
         self.tag_name_container.pack_start(label, False, False, 0)
         self.tag_name_container.pack_start(self.tag_entry, False, False, 0)
         vbox.pack_start(self.tag_name_container, False, False, 0)
 
         # Set up the Commit-sha line
-        label = gtk.Label(_("Revision:"))
+        label = Gtk.Label(_("Revision:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=.5)
-        self.start_point_entry = gtk.Entry()
+        self.start_point_entry = Gtk.Entry()
         self.start_point_entry.set_size_request(300, -1)
-        self.start_point_container = gtk.HBox(False, 0)
+        self.start_point_container = Gtk.HBox(False, 0)
         if self.revision_obj.value:
             self.start_point_entry.set_text(six.text_type(self.revision_obj))
-        self.log_dialog_button = gtk.Button()
+        self.log_dialog_button = Gtk.Button()
         self.log_dialog_button.connect("clicked", self.on_log_dialog_button_clicked)
-        image = gtk.Image()
+        image = Gtk.Image()
         image.set_from_icon_name("rabbitvcs-show_log", 2)
         self.log_dialog_button.set_image(image)
         self.start_point_container.pack_start(label, False, False, 0)
@@ -122,74 +122,74 @@ class GitTagManager(InterfaceView):
         vbox.pack_start(self.start_point_container, False, False, 0)
 
         # Set up the Log Message Entry line
-        label = gtk.Label(_("Message:"))
+        label = Gtk.Label(_("Message:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=0)
         self.message_entry = rabbitvcs.ui.widget.TextView()
         self.message_entry.view.set_size_request(300, 75)
-        swin = gtk.ScrolledWindow()
-        swin.set_shadow_type(gtk.SHADOW_ETCHED_IN)
-        swin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        swin = Gtk.ScrolledWindow()
+        swin.set_shadow_type(Gtk.SHADOW_ETCHED_IN)
+        swin.set_policy(Gtk.POLICY_AUTOMATIC, Gtk.POLICY_AUTOMATIC)
         swin.add(self.message_entry.view)
-        self.message_entry_container = gtk.HBox(False, 0)
+        self.message_entry_container = Gtk.HBox(False, 0)
         self.message_entry_container.pack_start(label, False, False, 0)
         self.message_entry_container.pack_start(swin, False, False, 0)
         vbox.pack_start(self.message_entry_container, False, False, 0)
 
         # Set up Save button
-        label = gtk.Label("")
+        label = Gtk.Label("")
         label.set_size_request(90, -1)
-        self.save_button = gtk.Button(label=_("Save"))
+        self.save_button = Gtk.Button(label=_("Save"))
         self.save_button.connect("clicked", self.on_save_clicked)
-        self.save_container = gtk.HBox(False, 0)
+        self.save_container = Gtk.HBox(False, 0)
         self.save_container.pack_start(label, False, False, 0)
         self.save_container.pack_start(self.save_button, False, False, 0)
         vbox.pack_start(self.save_container, False, False, 0)
 
         # Set up the tagger line
-        label = gtk.Label(_("Tagger:"))
+        label = Gtk.Label(_("Tagger:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=0)
-        self.tagger_label = gtk.Label("")
+        self.tagger_label = Gtk.Label("")
         self.tagger_label.set_properties(xalign=0,yalign=0,selectable=True)
         self.tagger_label.set_line_wrap(True)
-        self.tagger_container = gtk.HBox(False, 0)
+        self.tagger_container = Gtk.HBox(False, 0)
         self.tagger_container.pack_start(label, False, False, 0)
         self.tagger_container.pack_start(self.tagger_label, False, False, 0)
         vbox.pack_start(self.tagger_container, False, False, 0)
 
         # Set up the Date line
-        label = gtk.Label(_("Date:"))
+        label = Gtk.Label(_("Date:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=0)
-        self.date_label = gtk.Label("")
+        self.date_label = Gtk.Label("")
         self.date_label.set_properties(xalign=0,yalign=0,selectable=True)
-        self.date_container = gtk.HBox(False, 0)
+        self.date_container = Gtk.HBox(False, 0)
         self.date_container.pack_start(label, False, False, 0)
         self.date_container.pack_start(self.date_label, False, False, 0)
         vbox.pack_start(self.date_container, False, False, 0)
 
         # Set up the Revision line
-        label = gtk.Label(_("Revision:"))
+        label = Gtk.Label(_("Revision:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=0)
-        self.revision_label = gtk.Label("")
+        self.revision_label = Gtk.Label("")
         self.revision_label.set_properties(xalign=0,selectable=True)
         self.revision_label.set_line_wrap(True)
-        self.revision_container = gtk.HBox(False, 0)
+        self.revision_container = Gtk.HBox(False, 0)
         self.revision_container.pack_start(label, False, False, 0)
         self.revision_container.pack_start(self.revision_label, False, False, 0)
         vbox.pack_start(self.revision_container, False, False, 0)
 
         # Set up the Log Message line
-        label = gtk.Label(_("Message:"))
+        label = Gtk.Label(_("Message:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=0)
-        self.message_label = gtk.Label("")
+        self.message_label = Gtk.Label("")
         self.message_label.set_properties(xalign=0,yalign=0,selectable=True)
         self.message_label.set_line_wrap(True)
         self.message_label.set_size_request(250, -1)
-        self.message_container = gtk.HBox(False, 0)
+        self.message_container = Gtk.HBox(False, 0)
         self.message_container.pack_start(label, False, False, 0)
         self.message_container.pack_start(self.message_label, False, False, 0)
         vbox.pack_start(self.message_container, False, False, 0)
@@ -227,7 +227,7 @@ class GitTagManager(InterfaceView):
         confirm = rabbitvcs.ui.dialog.Confirmation(_("Are you sure you want to delete %s?" % ", ".join(selected)))
         result = confirm.run()
         
-        if result == gtk.RESPONSE_OK or result == True:
+        if result == Gtk.RESPONSE_OK or result == True:
             for tag in selected:
                 self.git.tag_delete(tag)
             
@@ -242,7 +242,7 @@ class GitTagManager(InterfaceView):
         self.load(self.show_detail, tag_name)
 
     def on_treeview_key_event(self, treeview, data=None):
-        if gtk.gdk.keyval_name(data.keyval) in ("Up", "Down", "Return"):
+        if Gtk.gdk.keyval_name(data.keyval) in ("Up", "Down", "Return"):
             self.on_treeview_event(treeview, data)
 
     def on_treeview_mouse_event(self, treeview, data=None):
@@ -309,4 +309,4 @@ if __name__ == "__main__":
     
     window = GitTagManager(paths[0], options.revision)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

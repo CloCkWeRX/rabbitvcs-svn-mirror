@@ -33,9 +33,9 @@ from __future__ import print_function
 
 import os.path
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.util.contextmenu import GtkContextMenu, GtkContextMenuCaller
@@ -108,8 +108,8 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
                
         self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
-            [gobject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_ELLIPSIZED,
-             gobject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_STATUS], 
+            [GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_ELLIPSIZED,
+             GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_STATUS], 
             [_("Name"), _("Value"), _("Reserved"), _("Status")],
             
             filters=[
@@ -200,7 +200,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
             self.edit_property(name)
 
     def on_table_key_event(self, treeview, data=None):
-        if gtk.gdk.keyval_name(data.keyval) == "Delete":
+        if Gtk.gdk.keyval_name(data.keyval) == "Delete":
             names = self.table.get_selected_row_items(0)
             self.delete_properties(names)
 
@@ -286,4 +286,4 @@ if __name__ == "__main__":
     
     window = PropEditor(paths[0])
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

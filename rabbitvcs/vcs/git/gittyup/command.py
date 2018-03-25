@@ -43,6 +43,7 @@ class GittyupCommand:
     def execute(self):
         env = os.environ.copy()
         env["LANG"] = "C";
+        env["PYTHONIOENCODING"] = "UTF-8"
         proc = subprocess.Popen(self.command,
                                 cwd=self.cwd,
                                 stdin=None,
@@ -51,6 +52,7 @@ class GittyupCommand:
                                 env=env,
                                 close_fds=True,
                                 preexec_fn=os.setsid,
+                                encoding="utf-8",
                                 universal_newlines=True)
 
         stdout = []

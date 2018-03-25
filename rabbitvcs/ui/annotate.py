@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import os
 
-import pygtk
-import gobject
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject, Gdk
 
 from datetime import datetime
 import time
@@ -34,7 +34,7 @@ from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.log import log_dialog_factory
 from rabbitvcs.ui.action import SVNAction, GitAction
 import rabbitvcs.ui.widget
-from rabbitvcs.ui.dialog import MessageBox
+from rabbitvcs.ui.dialog import MessageBox, Loading
 import rabbitvcs.util.helper
 import rabbitvcs.vcs
 from rabbitvcs.util.decorators import gtk_unsafe
@@ -88,7 +88,6 @@ class Annotate(InterfaceView):
         if data is not None:
             self.get_widget("to").set_text(data)
 
-    @gtk_unsafe
     def enable_saveas(self):
         self.get_widget("save").set_sensitive(True)
 
@@ -121,18 +120,27 @@ class SVNAnnotate(Annotate):
 
         self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING, 
+                GObject.TYPE_STRING, GObject.TYPE_STRING], 
             [_("Line"), _("Revision"), _("Author"), 
                 _("Date"), _("Text")]
         )
         self.table.allow_multiple()
+
+        self.loading_dialog = None
         
         self.load()
 
     #
     # Helper methods
     #
+
+    def launch_loading(self):
+        self.loading_dialog = Loading()
+        GObject.idle_add(self.loading_dialog.run)
+
+    def kill_loading(self):
+        GObject.idle_add(self.loading_dialog.destroy)
     
     def load(self):
         from_rev_num = self.get_widget("from").get_text().lower()
@@ -147,7 +155,16 @@ class SVNAnnotate(Annotate):
         to_rev = self.svn.revision("head")
         if to_rev_num.isdigit():
             to_rev = self.svn.revision("number", number=int(to_rev_num))
+
+        self.launch_loading()
         
+        result = self.svn.annotate(self.path, from_rev, to_rev)
+        self.populate_table(result)
+        self.enable_saveas()
+
+        self.kill_loading()
+
+        """
         self.action = SVNAction(
             self.svn,
             notification=False
@@ -161,11 +178,11 @@ class SVNAnnotate(Annotate):
         )
         self.action.append(self.populate_table)
         self.action.append(self.enable_saveas)
-        self.action.start()
-
-    @gtk_unsafe
-    def populate_table(self):
-        blamedict = self.action.get_result(0)
+        self.action.run()
+        """
+        
+    def populate_table(self, blamedict):
+        #blamedict = self.action.get_result(0)
 
         self.table.clear()
         for item in blamedict:            
@@ -179,10 +196,9 @@ class SVNAnnotate(Annotate):
             #   so this workaround is required for now
             datestr = item["date"][0:-8]
             date = datetime(*time.strptime(datestr,"%Y-%m-%dT%H:%M:%S")[:-2])
-                
             self.table.append([
-                item["number"],
-                item["revision"].number,
+                str(item["number"]),
+                str(item["revision"].number),
                 item["author"],
                 rabbitvcs.util.helper.format_datetime(date),
                 item["line"]
@@ -216,14 +232,14 @@ class GitAnnotate(Annotate):
             revision = "HEAD"
         
         self.path = path
-        self.get_widget("from_revision_container").hide()
-        self.get_widget("to_show_log").hide()
+        #self.get_widget("from_revision_container").hide()
+        #self.get_widget("to_show_log").hide()
         self.get_widget("to").set_text(str(revision))
 
         self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING, 
+                GObject.TYPE_STRING, GObject.TYPE_STRING], 
             [_("Line"), _("Revision"), _("Author"), 
                 _("Date"), _("Text")]
         )
@@ -237,8 +253,12 @@ class GitAnnotate(Annotate):
     
     def load(self):
         to_rev = self.git.revision(self.get_widget("to").get_text())
-        
-        self.action = GitAction(
+
+        self.table.clear()
+        self.populate_table(self.git.annotate(self.path, to_rev))
+        self.enable_saveas()
+
+        """self.action = GitAction(
             self.git,
             notification=False
         )    
@@ -250,13 +270,15 @@ class GitAnnotate(Annotate):
         )
         self.action.append(self.populate_table)
         self.action.append(self.enable_saveas)
-        self.action.start()
-
-    @gtk_unsafe
-    def populate_table(self):
-        blamedict = self.action.get_result(0)
-
-        self.table.clear()
+        self.action.run()
+        """
+        
+    def populate_table(self, blamedict):
+        print("populate table start")
+        #blamedict = self.action.get_result(0)
+        print("initiate table clear")
+        #self.table.clear()
+        print("cleared")
         for item in blamedict:
             self.table.append([
                 item["number"],
@@ -302,4 +324,4 @@ if __name__ == "__main__":
 
     window = annotate_factory(options.vcs, paths[0], options.revision)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

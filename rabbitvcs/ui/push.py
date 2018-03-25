@@ -24,9 +24,9 @@ from __future__ import absolute_import
 import os.path
 import six.moves._thread
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 from datetime import datetime
 
 from rabbitvcs.ui import InterfaceView
@@ -42,7 +42,7 @@ _ = gettext.gettext
 
 DATETIME_FORMAT = rabbitvcs.util.helper.DT_FORMAT_THISWEEK
 
-gobject.threads_init()
+GObject.threads_init()
 
 class Push(InterfaceView):
     def __init__(self, path):
@@ -73,7 +73,7 @@ class GitPush(Push):
 
         self.log_table = rabbitvcs.ui.widget.Table(
             self.get_widget("log"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [GObject.TYPE_STRING, GObject.TYPE_STRING], 
             [_("Date"), _("Message")],
             flags={
                 "sortable": True, 
@@ -102,7 +102,7 @@ class GitPush(Push):
         self.action.append(self.git.push, repository, branch, tags)
         self.action.append(self.action.set_status, _("Completed Push"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
     def initialize_logs(self):
         """
@@ -115,17 +115,17 @@ class GitPush(Push):
             log.exception(e)
 
     def load_logs(self):
-        gtk.gdk.threads_enter()
+        Gtk.gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
 
-        gtk.gdk.threads_leave()
+        Gtk.gdk.threads_leave()
 
         self.load_push_log()
 
-        gtk.gdk.threads_enter()
+        Gtk.gdk.threads_enter()
         self.get_widget("status").set_text("")
         self.update_widgets()
-        gtk.gdk.threads_leave()
+        Gtk.gdk.threads_leave()
         
     def load_push_log(self):
         repository = self.repository_selector.repository_opt.get_active_text()
@@ -176,4 +176,4 @@ if __name__ == "__main__":
 
     window = push_factory(paths[0])
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

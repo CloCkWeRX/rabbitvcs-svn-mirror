@@ -22,9 +22,9 @@ from __future__ import absolute_import
 #
 
 import os.path
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
@@ -275,8 +275,8 @@ class SVNChanges(Changes):
 
         self.changes_table = rabbitvcs.ui.widget.Table(
             self.get_widget("changes_table"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING], 
+            [GObject.TYPE_STRING, GObject.TYPE_STRING, 
+                GObject.TYPE_STRING], 
             [_("Path"), _("Change"), _("Property Change")],
             flags={
                 "sortable": True,
@@ -314,7 +314,7 @@ class SVNChanges(Changes):
         self.action.append(rabbitvcs.util.helper.save_repository_path, second_url)
         self.action.append(self.populate_table)
         self.action.append(self.enable_more_actions)
-        self.action.start()
+        self.action.run()
 
     def populate_table(self):
         # returns a list of dicts(path, summarize_kind, node_kind, prop_changed)
@@ -377,7 +377,7 @@ class GitChanges(Changes):
 
         self.changes_table = rabbitvcs.ui.widget.Table(
             self.get_widget("changes_table"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [GObject.TYPE_STRING, GObject.TYPE_STRING], 
             [_("Path"), _("Change")]
         )
 
@@ -408,7 +408,7 @@ class GitChanges(Changes):
         self.action.append(rabbitvcs.util.helper.save_repository_path, second_url)
         self.action.append(self.populate_table)
         self.action.append(self.enable_more_actions)
-        self.action.start()
+        self.action.run()
 
     def populate_table(self):
         # returns a list of dicts(path, summarize_kind, node_kind, prop_changed)
@@ -425,12 +425,12 @@ class GitChanges(Changes):
 class MenuOpenFirst(MenuItem):
     identifier = "RabbitVCS::Open_First"
     label = _("Open from first revision")
-    icon = gtk.STOCK_OPEN
+    icon = Gtk.STOCK_OPEN
 
 class MenuOpenSecond(MenuItem):
     identifier = "RabbitVCS::Open_Second"
     label = _("Open from second revision") 
-    icon = gtk.STOCK_OPEN
+    icon = Gtk.STOCK_OPEN
     
 class MenuViewDiff(MenuItem):
     identifier = "RabbitVCS::View_Diff"
@@ -595,4 +595,4 @@ if __name__ == "__main__":
 
     window = changes_factory(options.vcs, pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

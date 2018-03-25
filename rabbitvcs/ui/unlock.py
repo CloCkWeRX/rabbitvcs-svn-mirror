@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import six.moves._thread
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView, InterfaceNonView
 from rabbitvcs.ui.add import Add
@@ -57,8 +57,8 @@ class SVNUnlock(Add):
         self.statuses = None
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"), 
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
-                gobject.TYPE_STRING], 
+            [GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
+                GObject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
             filters=[{
                 "callback": rabbitvcs.ui.widget.path_filter,
@@ -82,11 +82,11 @@ class SVNUnlock(Add):
     #
 
     def load(self):
-        gtk.gdk.threads_enter()
+        Gtk.gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
         self.items = self.vcs.get_items(self.paths, self.statuses)
         self.populate_files_table()
-        gtk.gdk.threads_leave()
+        Gtk.gdk.threads_leave()
     
     def populate_files_table(self):
         self.files_table.clear()
@@ -131,7 +131,7 @@ class SVNUnlock(Add):
             self.action.append(self.svn.unlock, item, force=True)
         self.action.append(self.action.set_status, _("Completed Unlock"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
 class SVNUnlockQuiet:
     """
@@ -171,4 +171,4 @@ if __name__ == "__main__":
     else:
         window = unlock_factory(classes_map, paths, options.base_dir)
         window.register_gtk_quit()
-        gtk.main()
+        Gtk.main()

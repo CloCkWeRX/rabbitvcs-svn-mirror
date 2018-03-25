@@ -24,9 +24,9 @@ from __future__ import absolute_import
 import os
 import six.moves._thread
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 from time import sleep
 
 from rabbitvcs.ui import InterfaceView
@@ -45,7 +45,7 @@ log = Log("rabbitvcs.ui.commit")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gobject.threads_init()
+GObject.threads_init()
 
 class Commit(InterfaceView, GtkContextMenuCaller):
     """
@@ -78,9 +78,9 @@ class Commit(InterfaceView, GtkContextMenuCaller):
 
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
-                gobject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_STATUS,
-                gobject.TYPE_STRING], 
+            [GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
+                GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_STATUS,
+                GObject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
                 _("Text Status"), _("Property Status")],
             filters=[{
@@ -126,15 +126,15 @@ class Commit(InterfaceView, GtkContextMenuCaller):
           - Populates the files table with the retrieved items
           - Updates the status area        
         """
-        gtk.gdk.threads_enter()
+        Gtk.gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
-        gtk.gdk.threads_leave()
+        Gtk.gdk.threads_leave()
 
         self.items = self.vcs.get_items(self.paths, self.vcs.statuses_for_commit(self.paths))
 
-        gtk.gdk.threads_enter()
+        Gtk.gdk.threads_enter()
         self.populate_files_table()
-        gtk.gdk.threads_leave()
+        Gtk.gdk.threads_leave()
 
     # Overrides the GtkContextMenuCaller method
     def on_context_menu_command_finished(self):
@@ -191,8 +191,8 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         if InterfaceView.on_key_pressed(self, widget, data):
             return True
 
-        if (data.state & (gtk.gdk.CONTROL_MASK) and 
-                gtk.gdk.keyval_name(data.keyval) == "Return"):
+        if (data.state & (Gtk.gdk.CONTROL_MASK) and 
+                Gtk.gdk.keyval_name(data.keyval) == "Return"):
             self.on_ok_clicked(widget)
             return True
             
@@ -225,7 +225,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         self.rescan_after_process_exit(proc, paths)
 
     def on_files_table_key_event(self, treeview, data=None):
-        if gtk.gdk.keyval_name(data.keyval) == "Delete":
+        if Gtk.gdk.keyval_name(data.keyval) == "Delete":
             self.delete_items(treeview, data)
 
     def on_files_table_mouse_event(self, treeview, data=None):
@@ -319,7 +319,7 @@ class SVNCommit(Commit):
         ),
         self.action.append(self.do_commit, items, recurse)
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
     def do_commit(self, items, recurse):
         # pysvn.Revision
@@ -391,7 +391,7 @@ class GitCommit(Commit):
         )
         self.action.append(self.action.set_status, _("Completed Commit"))
         self.action.append(self.action.finish)
-        self.action.start() 
+        self.action.run() 
 
     def on_files_table_toggle_event(self, row, col):
         # Adds path: True/False to the dict
@@ -406,7 +406,7 @@ class MercurialCommit(Commit):
 
         options_box = self.get_widget("options_box")
         
-        self.close_branch = gtk.CheckButton(_("Close Branch"))
+        self.close_branch = Gtk.CheckButton(_("Close Branch"))
         options_box.pack_start(self.close_branch, False, False, 0)
         self.close_branch.show()
 
@@ -454,7 +454,7 @@ class MercurialCommit(Commit):
         )
         self.action.append(self.action.set_status, _("Completed Commit"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
     def on_files_table_toggle_event(self, row, col):
         # Adds path: True/False to the dict
@@ -479,4 +479,4 @@ if __name__ == "__main__":
 
     window = commit_factory(paths, options.base_dir, message=options.message)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

@@ -61,6 +61,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="border_width">6</property>  
+            <property name="orientation">vertical</property>
             <child>
               <object class="GtkBox" orientation="vertical" id="add_message_box">
                 <property name="visible">True</property>

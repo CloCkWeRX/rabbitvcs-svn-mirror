@@ -24,9 +24,9 @@ from __future__ import absolute_import
 import os
 import six.moves._thread
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 import os
 import tempfile
 import shutil
@@ -46,7 +46,7 @@ log = Log("rabbitvcs.ui.createpatch")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gobject.threads_init()
+GObject.threads_init()
 
 class CreatePatch:
     """
@@ -84,8 +84,8 @@ class CreatePatch:
 
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
+                GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
                 _("Text Status"), _("Property Status")],
             filters=[{
@@ -117,19 +117,19 @@ class CreatePatch:
     def choose_patch_path(self):
         path = ""
         
-        dialog = gtk.FileChooserDialog(
+        dialog = Gtk.FileChooserDialog(
             _("Create Patch"),
             None,
-            gtk.FILE_CHOOSER_ACTION_SAVE,(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                                          gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+            Gtk.FILE_CHOOSER_ACTION_SAVE,(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL,
+                                          Gtk.STOCK_SAVE, Gtk.RESPONSE_OK))
         dialog.set_do_overwrite_confirmation(True)
-        dialog.set_default_response(gtk.RESPONSE_OK)
+        dialog.set_default_response(Gtk.RESPONSE_OK)
         dialog.set_current_folder_uri(
             get_common_directory(self.paths).replace("file://", "")
         )
         response = dialog.run()
         
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.RESPONSE_OK:
             path = dialog.get_filename()
             
         dialog.destroy()
@@ -198,7 +198,7 @@ class SVNCreatePatch(CreatePatch, SVNCommit):
         
         self.action.append(self.action.set_status, _("Patch File Created"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
         
         # TODO: Open the diff file (meld is going to add support in a future version :()
         # rabbitvcs.util.helper.launch_diff_tool(path)
@@ -264,7 +264,7 @@ class GitCreatePatch(CreatePatch, GitCommit):
         
         self.action.append(self.action.set_status, _("Patch File Created"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNCreatePatch,
@@ -284,4 +284,4 @@ if __name__ == "__main__":
         
     window = createpatch_factory(paths, options.base_dir)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import six.moves._thread
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.add import Add
@@ -57,8 +57,8 @@ class SVNMarkResolved(Add):
         self.statuses = self.svn.STATUSES_FOR_RESOLVE
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"), 
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH,
-                gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH,
+                GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
                 _("Text Status"), _("Property Status")],
             filters=[{
@@ -106,7 +106,7 @@ class SVNMarkResolved(Add):
             self.action.append(self.svn.resolve, item, recurse=True)
         self.action.append(self.action.set_status, _("Completed Mark as Resolved"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNMarkResolved
@@ -125,4 +125,4 @@ if __name__ == "__main__":
 
     window = markresolved_factory(paths, options.base_dir)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

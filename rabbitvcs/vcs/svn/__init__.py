@@ -194,6 +194,7 @@ class SVN:
         pysvn.wc_notify_action.skip:                    _("Skipped"),
         pysvn.wc_notify_action.update_delete:           _("Deleted"),
         pysvn.wc_notify_action.update_add:              _("Added"),
+        pysvn.wc_notify_action.update_started:          _("Updating"),
         pysvn.wc_notify_action.update_update:           _("Updated"),
         pysvn.wc_notify_action.update_completed:        _("Completed"),
         pysvn.wc_notify_action.update_external:         _("External"),

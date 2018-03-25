@@ -24,9 +24,9 @@ from __future__ import absolute_import
 import os
 import subprocess
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 import rabbitvcs.ui.dialog
 from rabbitvcs.ui.action import GitAction
@@ -70,7 +70,7 @@ class GitCreate:
         self.action.append(self.git.initialize_repository, self.path)
         self.action.append(self.action.set_status, _("Completed repository setup"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNCreate,
@@ -83,6 +83,6 @@ if __name__ == "__main__":
     if options.vcs:
         window = classes_map[options.vcs](paths[0])
         if options.vcs == rabbitvcs.vcs.VCS_GIT:
-            gtk.main()
+            Gtk.main()
     else:
         rabbitvcs.ui.dialog.MessageBox(VCS_OPT_ERROR)

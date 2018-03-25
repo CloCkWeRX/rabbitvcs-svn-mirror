@@ -24,9 +24,9 @@ from __future__ import absolute_import
 import six.moves._thread
 import threading
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.util.contextmenu import GtkFilesContextMenu, \
@@ -45,7 +45,7 @@ log = Log("rabbitvcs.ui.checkmods")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gobject.threads_init()
+GObject.threads_init()
 
 class SVNCheckForModifications(InterfaceView):
     """
@@ -105,7 +105,7 @@ class SVNCheckLocalModifications(GtkContextMenuCaller):
 
         self.files_table = rabbitvcs.ui.widget.Table(
             self.caller.get_widget("local_files_table"), 
-            [gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING], 
             [_("Path"), _("Status"), _("Extension")],
             filters=[{
                 "callback": rabbitvcs.ui.widget.path_filter,
@@ -136,7 +136,7 @@ class SVNCheckLocalModifications(GtkContextMenuCaller):
         )
         self.action.append(self.svn.get_items, self.paths, self.svn.STATUSES_FOR_CHECK)
         self.action.append(self.populate_files_table)
-        self.action.start()
+        self.action.run()
 
     @gtk_unsafe
     def populate_files_table(self):
@@ -166,9 +166,9 @@ class SVNCheckRemoteModifications(GtkContextMenuCaller):
 
         self.files_table = rabbitvcs.ui.widget.Table(
             self.caller.get_widget("remote_files_table"), 
-            [gobject.TYPE_STRING, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [GObject.TYPE_STRING, GObject.TYPE_STRING, 
+                GObject.TYPE_STRING, GObject.TYPE_STRING, 
+                GObject.TYPE_STRING, GObject.TYPE_STRING], 
             [_("Path"), _("Extension"), 
                 _("Text Status"), _("Property Status"), 
                 _("Revision"), _("Author")],
@@ -201,7 +201,7 @@ class SVNCheckRemoteModifications(GtkContextMenuCaller):
         )
         self.action.append(self.svn.get_remote_updates, self.paths)
         self.action.append(self.populate_files_table)
-        self.action.start()
+        self.action.run()
 
     @gtk_unsafe
     def populate_files_table(self):
@@ -242,7 +242,7 @@ class SVNCheckRemoteModifications(GtkContextMenuCaller):
             path_remote,
             "HEAD"
         )
-        self.action.start()
+        self.action.run()
 
     def on_context_menu_command_finished(self):
         self.refresh()
@@ -308,7 +308,7 @@ class CheckRemoteModsContextMenuCallbacks:
             "HEAD",
             sidebyside=True
         )
-        self.action.start()
+        self.action.run()
 
 class CheckRemoteModsContextMenu:
     def __init__(self, caller, event, base_dir, vcs, paths=[]):
@@ -358,4 +358,4 @@ if __name__ == "__main__":
 
     window = checkmods_factory(paths, options.base_dir)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

@@ -203,14 +203,14 @@ class SVNAdd(Add):
 
         self.action = rabbitvcs.ui.action.SVNAction(
             self.svn,
-            register_Gtk_quit=self.Gtk_quit_is_set()
+            register_gtk_quit=self.gtk_quit_is_set()
         )
         self.action.append(self.action.set_header, _("Add"))
         self.action.append(self.action.set_status, _("Running Add Command..."))
         self.action.append(self.svn.add, items)
         self.action.append(self.action.set_status, _("Completed Add"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
 class GitAdd(Add):
     def __init__(self, paths, base_dir=None):
@@ -228,14 +228,14 @@ class GitAdd(Add):
 
         self.action = rabbitvcs.ui.action.GitAction(
             self.git,
-            register_Gtk_quit=self.Gtk_quit_is_set()
+            register_gtk_quit=self.gtk_quit_is_set()
         )
         self.action.append(self.action.set_header, _("Add"))
         self.action.append(self.action.set_status, _("Running Add Command..."))
         self.action.append(self.git.add, items)
         self.action.append(self.action.set_status, _("Completed Add"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNAdd,
@@ -269,5 +269,5 @@ if __name__ == "__main__":
         AddQuiet(paths)
     else:
         window = add_factory(paths,options.base_dir)#Add(paths, options.base_dir)
-        window.register_Gtk_quit()
+        window.register_gtk_quit()
         Gtk.main()

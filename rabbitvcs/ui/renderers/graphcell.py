@@ -50,6 +50,9 @@ class CellRendererGraph(Gtk.CellRenderer):
             return
 
         if property.name == "graph":
+            print("GRAPH")
+            print(value)
+            raise SystemExit()
             (self.node, self.in_lines, self.out_lines) = value
         else:
             raise AttributeError("no such property: '%s'" % property.name)

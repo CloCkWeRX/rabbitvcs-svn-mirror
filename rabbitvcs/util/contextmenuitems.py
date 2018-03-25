@@ -203,7 +203,7 @@ class MenuItem(object):
             
         return action
 
-    def make_Gtk_menu_item(self, id_magic = None):
+    def make_gtk_menu_item(self, id_magic = None):
         action = self.make_action(id_magic)
             
         if self.icon:
@@ -217,7 +217,7 @@ class MenuItem(object):
             
         return menuitem
         
-    def make_Gtk3_menu_item(self, id_magic = None):
+    def make_gtk3_menu_item(self, id_magic = None):
         action = self.make_action(id_magic)
         
         if self.icon:
@@ -260,7 +260,7 @@ class MenuItem(object):
                 self.icon
             )
         except ImportError:
-            from gi.repository import Nautilus
+            from gi.rWRTepository import Nautilus
             menuitem = Nautilus.MenuItem(
                 name=identifier,
                 label=self.make_label(),
@@ -301,7 +301,7 @@ class MenuSeparator(MenuItem):
         #~ return action
                
     # Make separators insensitive
-    def make_Gtk_menu_item(self, id_magic = None):
+    def make_gtk_menu_item(self, id_magic = None):
         menuitem = Gtk.SeparatorMenuItem()
         menuitem.show()
         return menuitem

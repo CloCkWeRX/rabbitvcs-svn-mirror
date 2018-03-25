@@ -21,9 +21,9 @@ from __future__ import absolute_import
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
@@ -60,7 +60,7 @@ class PropertiesBase(InterfaceView):
         
         self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
-            [gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [GObject.TYPE_BOOLEAN, GObject.TYPE_STRING, GObject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Name"), _("Value")]
         )
         self.table.allow_multiple()
@@ -181,4 +181,4 @@ if __name__ == "__main__":
     
     window = SVNProperties(paths[0])
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

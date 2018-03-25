@@ -24,9 +24,9 @@ from __future__ import print_function
 
 import os
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 import pango
 
 from datetime import datetime
@@ -64,7 +64,7 @@ class GitRemotes(InterfaceView):
         self.selected_branch = None
         self.items_treeview = rabbitvcs.ui.widget.Table(
             self.get_widget("items_treeview"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [GObject.TYPE_STRING, GObject.TYPE_STRING], 
             [_("Name"), _("Host")],
             callbacks={
                 "mouse-event":   self.on_treeview_mouse_event,
@@ -123,14 +123,14 @@ class GitRemotes(InterfaceView):
         confirm = rabbitvcs.ui.dialog.Confirmation(_("Are you sure you want to delete %s?" % ", ".join(selected)))
         result = confirm.run()
         
-        if result == gtk.RESPONSE_OK or result == True:
+        if result == Gtk.RESPONSE_OK or result == True:
             for remote in selected:
                 self.git.remote_delete(remote)
             
             self.load()
 
     def on_treeview_key_event(self, treeview, data=None):
-        if gtk.gdk.keyval_name(data.keyval) in ("Up", "Down", "Return"):
+        if Gtk.gdk.keyval_name(data.keyval) in ("Up", "Down", "Return"):
             self.on_treeview_event(treeview, data)
 
     def on_treeview_mouse_event(self, treeview, data=None):
@@ -163,4 +163,4 @@ if __name__ == "__main__":
     
     window = GitRemotes(paths[0])
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

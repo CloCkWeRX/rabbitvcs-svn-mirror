@@ -24,9 +24,9 @@ from __future__ import absolute_import
 from os import getcwd
 import os.path
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceNonView
 from rabbitvcs.ui.action import SVNAction, GitAction
@@ -145,4 +145,4 @@ if __name__ == "__main__":
     
     window = open_factory(options.vcs, paths[0], options.revision)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

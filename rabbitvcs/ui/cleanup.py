@@ -21,9 +21,9 @@ from __future__ import absolute_import
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceNonView
 from rabbitvcs.ui.action import SVNAction
@@ -58,7 +58,7 @@ class SVNCleanup(InterfaceNonView):
         self.action.append(self.svn.cleanup, self.path)
         self.action.append(self.action.set_status, _("Completed Cleanup"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
         
 if __name__ == "__main__":
@@ -68,4 +68,4 @@ if __name__ == "__main__":
     window = SVNCleanup(paths[0])
     window.register_gtk_quit()
     window.start()
-    gtk.main()
+    Gtk.main()

@@ -26,9 +26,11 @@ import threading
 from datetime import datetime
 
 import os.path
-import pygtk
-import gobject
-import gtk
+
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject
+
 import cgi
 
 from rabbitvcs.ui import InterfaceView
@@ -39,7 +41,6 @@ from rabbitvcs.util.contextmenuitems import *
 import rabbitvcs.ui.widget
 import rabbitvcs.util.helper
 import rabbitvcs.vcs
-from rabbitvcs.util.decorators import gtk_unsafe
 
 from rabbitvcs import gettext
 import six
@@ -145,7 +146,7 @@ class Log(InterfaceView):
         )
 
         self.stop_on_copy = False
-        self.revision_clipboard = gtk.Clipboard()
+        self.revision_clipboard = Gtk.Clipboard()
 
     #
     # UI Signal Callback Methods
@@ -164,8 +165,8 @@ class Log(InterfaceView):
     
     def on_key_pressed(self, widget, data):
         InterfaceView.on_key_pressed(self, widget, data)
-        if (data.state & gtk.gdk.CONTROL_MASK and
-            gtk.gdk.keyval_name(data.keyval).lower() == "c"):
+        if (data.state & Gtk.gdk.CONTROL_MASK and
+            Gtk.gdk.keyval_name(data.keyval).lower() == "c"):
             if len(self.revisions_table.get_selected_rows()) > 0:
                 self.copy_revision_text()
 
@@ -367,8 +368,8 @@ class SVNLog(Log):
 
         self.revisions_table = rabbitvcs.ui.widget.Table(
             self.get_widget("revisions_table"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING,
+            [GObject.TYPE_STRING, GObject.TYPE_STRING, 
+                GObject.TYPE_STRING, GObject.TYPE_STRING,
                 rabbitvcs.ui.widget.TYPE_HIDDEN],
             [_("Revision"), _("Author"), 
                 _("Date"), _("Message"),
@@ -379,14 +380,14 @@ class SVNLog(Log):
         )
 
         for i in range(4):
-            column = self.revisions_table.get_column(i)
-            cell = column.get_cell_renderers()[0]
+            column = self.revisions_table.get_column(i)            
+            cell = column.get_cells()[0]
             column.add_attribute(cell, 'foreground', 4)
 
         self.paths_table = rabbitvcs.ui.widget.Table(
             self.get_widget("paths_table"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [GObject.TYPE_STRING, GObject.TYPE_STRING, 
+                GObject.TYPE_STRING, GObject.TYPE_STRING], 
             [_("Action"), _("Path"), 
                 _("Copy From Path"), _("Copy From Revision")],
             callbacks={
@@ -439,8 +440,8 @@ class SVNLog(Log):
             return
         
         # Get the starting/ending point from the actual returned revisions
-        self.rev_start = six.text_type(self.revision_items[0].revision)
-        self.rev_end = six.text_type(self.revision_items[-1].revision)
+        self.rev_start = int(six.text_type(self.revision_items[0].revision))
+        self.rev_end = int(six.text_type(self.revision_items[-1].revision))
 
         if not self.rev_first:
             self.rev_first = self.rev_start
@@ -522,7 +523,7 @@ class SVNLog(Log):
             discover_changed_paths=True
         )
         self.action.append(self.refresh)
-        self.action.start()
+        self.action.run()
 
     def edit_revprop(self, prop_name, prop_value, callback=None):
 
@@ -546,7 +547,7 @@ class SVNLog(Log):
             
             callback(row, prop_value)
         
-        self.action.start()
+        self.action.run()
 
     def on_log_message_edited(self, index, val):
         self.display_items[index].message = val
@@ -606,7 +607,7 @@ class SVNLog(Log):
                             subitem.copy_from_revision
                         ])
 
-        subitems.sort(lambda x, y: cmp(x[1],y[1]))
+        subitems.sort(key = lambda x: x[1])
         for subitem in subitems:
             self.paths_table.append([
                 subitem[0],
@@ -654,7 +655,7 @@ class GitLog(Log):
 
         self.revisions_table = rabbitvcs.ui.widget.Table(
             self.get_widget("revisions_table"),
-            [rabbitvcs.ui.widget.TYPE_GRAPH, gobject.TYPE_STRING, 
+            [rabbitvcs.ui.widget.TYPE_GRAPH, GObject.TYPE_STRING, 
                 rabbitvcs.ui.widget.TYPE_MARKUP, 
                 rabbitvcs.ui.widget.TYPE_MARKUP, rabbitvcs.ui.widget.TYPE_MARKUP], 
             [_("Graph"), _("Revision"), _("Author"), 
@@ -672,7 +673,7 @@ class GitLog(Log):
 
         self.paths_table = rabbitvcs.ui.widget.Table(
             self.get_widget("paths_table"),
-            [gobject.TYPE_STRING, gobject.TYPE_STRING], 
+            [GObject.TYPE_STRING, GObject.TYPE_STRING], 
             [_("Action"), _("Path")],
             callbacks={
                 "mouse-event":      self.on_paths_table_mouse_event,
@@ -754,7 +755,7 @@ class GitLog(Log):
 
         if not self.filter_text:
             graph_column = self.revisions_table.get_column(0)
-            cell = graph_column.get_cell_renderers()[0]
+            cell = graph_column.get_cells()[0]
             self.revisions_table.set_column_width(0, 16*max_columns)
 
         index = 0
@@ -809,7 +810,7 @@ class GitLog(Log):
         )
 
         self.branchAction.append(self.git.branch_list)
-        self.branchAction.start();
+        self.branchAction.run();
 
         # Load tags.
         self.tagAction = GitAction(
@@ -819,7 +820,7 @@ class GitLog(Log):
         )
 
         self.tagAction.append(self.git.tag_list)
-        self.tagAction.start()
+        self.tagAction.run()
 
         # Load log.
         self.action = GitAction(
@@ -835,7 +836,7 @@ class GitLog(Log):
             limit=self.limit+1
         )
         self.action.append(self.refresh)
-        self.action.start()
+        self.action.run()
 
     def copy_revision_text(self):
         text = ""
@@ -1041,7 +1042,7 @@ class MenuEditLogMessage(MenuItem):
 class MenuEditRevisionProperties(MenuItem):
     identifier = "RabbitVCS::Edit_Revision_Properties"
     label = _("Edit revision properties...")
-    icon = gtk.STOCK_EDIT
+    icon = Gtk.STOCK_EDIT
 
 class MenuSeparatorLast(MenuSeparator):
     identifier = "RabbitVCS::Separator_Last"
@@ -1323,7 +1324,7 @@ class LogTopContextMenuCallbacks:
         dialog = TextChange(_("Edit author"), author)
         (result, new_author) = dialog.run()
 
-        if result == gtk.RESPONSE_OK:
+        if result == Gtk.RESPONSE_OK:
             self.caller.edit_revprop("svn:author", new_author, self.caller.on_author_edited)
 
     def edit_log_message(self, widget, data=None):
@@ -1335,7 +1336,7 @@ class LogTopContextMenuCallbacks:
         dialog = TextChange(_("Edit log message"), message)
         (result, new_message) = dialog.run()
 
-        if result == gtk.RESPONSE_OK:
+        if result == Gtk.RESPONSE_OK:
             self.caller.edit_revprop("svn:log", new_message, self.caller.on_log_message_edited)
 
     def edit_revision_properties(self, widget, data=None):
@@ -1654,7 +1655,7 @@ def log_factory(path, vcs):
     if not vcs:
         guess = rabbitvcs.vcs.guess(path)
         vcs = guess["vcs"]
-        if not classes_map.has_key(vcs):
+        if not classes_map[vcs]:
             from rabbitvcs.ui import VCS_OPT_ERROR
             raise SystemExit(VCS_OPT_ERROR)
 
@@ -1676,4 +1677,4 @@ if __name__ == "__main__":
 
     window = log_factory(paths[0], vcs=options.vcs)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

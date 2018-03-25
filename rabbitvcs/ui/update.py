@@ -21,9 +21,9 @@ from __future__ import absolute_import
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import pygtk
-import gobject
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceNonView, InterfaceView
 from rabbitvcs.ui.action import SVNAction, GitAction
@@ -49,14 +49,15 @@ class SVNUpdate(InterfaceNonView):
     def start(self):
         self.action = SVNAction(
             self.svn,
-            register_gtk_quit=self.gtk_quit_is_set()
+            register_gtk_quit=self.gtk_quit_is_set(),
+            run_in_thread=False
         )
         self.action.append(self.action.set_header, _("Update"))
         self.action.append(self.action.set_status, _("Updating..."))
         self.action.append(self.svn.update, self.paths)
         self.action.append(self.action.set_status, _("Completed Update"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
 class GitUpdate(InterfaceView):
     """
@@ -97,7 +98,8 @@ class GitUpdate(InterfaceView):
 
         self.action = GitAction(
             self.git,
-            register_gtk_quit=self.gtk_quit_is_set()
+            register_gtk_quit=self.gtk_quit_is_set(),
+            run_in_thread=False
         )
         self.action.append(self.action.set_header, _("Update"))
         self.action.append(self.action.set_status, _("Updating..."))
@@ -120,7 +122,7 @@ class GitUpdate(InterfaceView):
                 
         self.action.append(self.action.set_status, _("Completed Update"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
 
 classes_map = {
@@ -140,4 +142,4 @@ if __name__ == "__main__":
     window.register_gtk_quit()
     if isinstance(window, SVNUpdate):
         window.start()
-    gtk.main()
+    Gtk.main()

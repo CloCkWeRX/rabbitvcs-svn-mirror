@@ -24,9 +24,9 @@ from __future__ import absolute_import
 import os.path
 import urllib
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.checkout import Checkout
@@ -74,7 +74,7 @@ class GitClone(Checkout):
         )
         self.action.append(self.action.set_status, _("Completed Clone"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
     def on_repositories_changed(self, widget, data=None):
         url = self.repositories.get_active_text()
@@ -101,7 +101,7 @@ class GitClone(Checkout):
 
     def default_text(self):
         # Use a repo url from the clipboard by default.
-        clipboard = gtk.clipboard_get()
+        clipboard = Gtk.clipboard_get()
         text = clipboard.wait_for_text()
         if text and text.endswith(('.git', '.git/')):
             self.repositories.set_child_text(text)
@@ -152,4 +152,4 @@ if __name__ == "__main__":
 
     window = clone_factory(classes_map, vcs, path=path, url=url)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

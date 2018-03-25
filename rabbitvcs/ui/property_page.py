@@ -24,15 +24,15 @@ import os.path
 import os
 import six
 if "REQUIRE_GTK3" in os.environ and os.environ["REQUIRE_GTK3"]:
-    from gi.repository import Gtk as gtk
+    from gi.repository import Gtk as Gtk
     GTK3 = True
-    ICON_SIZE_BUTTON = gtk.IconSize.BUTTON
-    ICON_SIZE_DIALOG = gtk.IconSize.DIALOG
+    ICON_SIZE_BUTTON = Gtk.IconSize.BUTTON
+    ICON_SIZE_DIALOG = Gtk.IconSize.DIALOG
 else:
-    import gtk
+    import Gtk
     GTK3 = False
-    ICON_SIZE_BUTTON = gtk.ICON_SIZE_BUTTON
-    ICON_SIZE_DIALOG = gtk.ICON_SIZE_DIALOG
+    ICON_SIZE_BUTTON = Gtk.ICON_SIZE_BUTTON
+    ICON_SIZE_DIALOG = Gtk.ICON_SIZE_DIALOG
     
 from collections import defaultdict
 import rabbitvcs.ui
@@ -168,7 +168,7 @@ class FileInfoExpander(rabbitvcs.ui.GtkBuilderWidgetWrapper):
         
         self.expander = self.get_widget()
         
-        # There seems to be no easy way to connect to this in gtkbuilder
+        # There seems to be no easy way to connect to this in Gtkbuilder
         self.expander.connect("notify::expanded", self.on_expand)
 
     def on_expand(self, param_spec, user_data):

@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import six.moves._thread
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 import os
 from shutil import rmtree
 import tempfile
@@ -42,7 +42,7 @@ log = Log("rabbitvcs.ui.diff")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gobject.threads_init()
+GObject.threads_init()
 
 class Diff(InterfaceNonView):
     def __init__(self, path1, revision1=None, path2=None, revision2=None, 

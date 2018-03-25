@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import os.path
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.checkout import SVNCheckout
@@ -104,7 +104,7 @@ class SVNExport(SVNCheckout):
         )
         self.action.append(self.action.set_status, _("Completed Export"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
 class GitExport(GitClone):
     def __init__(self, path=None, revision=None):
@@ -170,7 +170,7 @@ class GitExport(GitClone):
         )
         self.action.append(self.action.set_status, _("Completed Export"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
     def on_repositories_changed(self, widget, data=None):
         # Do not use quoting for this bit
@@ -218,4 +218,4 @@ if __name__ == "__main__":
             
     window = export_factory(options.vcs, paths[0], revision=options.revision)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

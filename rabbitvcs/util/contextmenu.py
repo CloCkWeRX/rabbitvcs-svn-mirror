@@ -31,15 +31,8 @@ from six.moves import range
 # Yes, * imports are bad. You write it out then.
 from .contextmenuitems import *
 
-if "REQUIRE_GTK3" in os.environ and os.environ["REQUIRE_GTK3"]:
-    from gi.repository import Gtk as gtk
-else:
-    import gtk
-
-try:
-    from gi.repository import GObject as gobject
-except ImportError:
-    import gobject
+from gi.repository import Gtk as gtk
+from gi.repository import GObject as gobject
 
 from rabbitvcs.vcs import create_vcs_instance, VCS_SVN, VCS_GIT, VCS_DUMMY, VCS_MERCURIAL
 from rabbitvcs.util.log import Log
@@ -198,7 +191,7 @@ class GtkContextMenu(MenuBuilder):
     signal = "button-press-event"
                             
     def make_menu_item(self, item, id_magic):
-        return item.make_gtk_menu_item(id_magic)
+        return item.make_gtk3_menu_item(id_magic)
     
     def attach_submenu(self, menu_node, submenu_list):
         submenu = gtk.Menu()
@@ -212,7 +205,7 @@ class GtkContextMenu(MenuBuilder):
         
     def show(self, event):        
         self.menu.show_all()
-        self.menu.popup(None, None, None, event.button, event.time)
+        self.menu.popup(None, None, None, None, event.button, event.time)
 
     def get_widget(self):
         return self.menu

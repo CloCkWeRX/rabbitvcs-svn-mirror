@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import os
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 import pango
 
 from datetime import datetime
@@ -104,7 +104,7 @@ class GitReset(InterfaceView):
         )
         self.action.append(self.action.set_status, _("Completed Reset"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
     def on_browse_clicked(self, widget, data=None):
         chooser = rabbitvcs.ui.dialog.FolderChooser()
@@ -130,4 +130,4 @@ if __name__ == "__main__":
     
     window = GitReset(paths[0], options.revision)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

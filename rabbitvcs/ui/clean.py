@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import os
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 import pango
 
 from datetime import datetime
@@ -77,7 +77,7 @@ class GitClean(InterfaceView):
         )
         self.action.append(self.action.set_status, _("Completed Clean"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
     def on_remove_ignored_too_toggled(self, widget):
         remove_ignored_too = self.get_widget("remove_ignored_too")
@@ -99,4 +99,4 @@ if __name__ == "__main__":
     
     window = GitClean(paths[0])
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

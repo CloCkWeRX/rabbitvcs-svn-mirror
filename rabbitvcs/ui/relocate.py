@@ -21,9 +21,9 @@ from __future__ import absolute_import
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import SVNAction
@@ -89,7 +89,7 @@ class Relocate(InterfaceView):
         )
         self.action.append(self.action.set_status, _("Completed Relocate"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main
@@ -97,4 +97,4 @@ if __name__ == "__main__":
             
     window = Relocate(paths[0])
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

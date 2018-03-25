@@ -423,7 +423,7 @@ class GittyupClient:
         return self.repo.refs.read_ref("HEAD")[5:]
     
     def head(self):
-        return self.repo.refs["HEAD"]
+        return self.repo.refs[b"HEAD"]
 
     def stage(self, paths):
         """
@@ -1359,7 +1359,7 @@ class GittyupClient:
 
         tags = []
         for ref,tag_sha in list(refs.items()):
-            if ref.startswith("refs/tags"):
+            if six.text_type(ref).startswith("refs/tags"):
                 if type(self.repo[tag_sha]) == dulwich.objects.Commit:
                     tag = CommitTag(ref[10:], tag_sha, self.repo[tag_sha])
                 else:
@@ -1694,7 +1694,7 @@ class GittyupClient:
                     changed_file = {
                         "additions": file_line[0],
                         "removals": file_line[1],
-                        "path": file_line[2].decode('string_escape').decode("UTF-8")
+                        "path": file_line[2]
                     }
                     if changed_file['path'][0] == '"' and changed_file['path'][-1] == '"':
                         changed_file['path'] = changed_file['path'][1:-1]

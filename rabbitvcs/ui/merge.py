@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import cgi
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.log import SVNLogDialog
@@ -236,7 +236,7 @@ class SVNMerge(InterfaceView):
                        
         action.append(action.set_status, endcmd)
         action.append(action.finish)
-        action.start()
+        action.run()
 
     def on_prepare(self, widget, page):
         self.page = page
@@ -484,49 +484,49 @@ class GitMerge(BranchMerge):
         from_container = self.get_widget("from_branch_info")
         
         # Set up the Author line
-        author = gtk.Label(_("Author:"))
+        author = Gtk.Label(_("Author:"))
         author.set_size_request(90, -1)
         author.set_properties(xalign=0,yalign=0)
-        self.info['from']['author'] = gtk.Label("")
+        self.info['from']['author'] = Gtk.Label("")
         self.info['from']['author'].set_properties(xalign=0,yalign=0,selectable=True)
         self.info['from']['author'].set_line_wrap(True)
-        author_container = gtk.HBox(False, 0)
+        author_container = Gtk.HBox(False, 0)
         author_container.pack_start(author, False, False, 0)
         author_container.pack_start(self.info['from']['author'], False, False, 0)
         from_container.pack_start(author_container, False, False, 0)
 
         # Set up the Date line
-        date = gtk.Label(_("Date:"))
+        date = Gtk.Label(_("Date:"))
         date.set_size_request(90, -1)
         date.set_properties(xalign=0,yalign=0)
-        self.info['from']['date'] = gtk.Label("")
+        self.info['from']['date'] = Gtk.Label("")
         self.info['from']['date'].set_properties(xalign=0,yalign=0,selectable=True)
-        date_container = gtk.HBox(False, 0)
+        date_container = Gtk.HBox(False, 0)
         date_container.pack_start(date, False, False, 0)
         date_container.pack_start(self.info['from']['date'], False, False, 0)
         from_container.pack_start(date_container, False, False, 0)
 
         # Set up the Revision line
-        revision = gtk.Label(_("Revision:"))
+        revision = Gtk.Label(_("Revision:"))
         revision.set_size_request(90, -1)
         revision.set_properties(xalign=0,yalign=0)
-        self.info['from']['revision'] = gtk.Label("")
+        self.info['from']['revision'] = Gtk.Label("")
         self.info['from']['revision'].set_properties(xalign=0,selectable=True)
         self.info['from']['revision'].set_line_wrap(True)
-        revision_container = gtk.HBox(False, 0)
+        revision_container = Gtk.HBox(False, 0)
         revision_container.pack_start(revision, False, False, 0)
         revision_container.pack_start(self.info['from']['revision'], False, False, 0)
         from_container.pack_start(revision_container, False, False, 0)
 
         # Set up the Log Message line
-        message = gtk.Label(_("Message:"))
+        message = Gtk.Label(_("Message:"))
         message.set_size_request(90, -1)
         message.set_properties(xalign=0,yalign=0)
-        self.info['from']['message'] = gtk.Label("")
+        self.info['from']['message'] = Gtk.Label("")
         self.info['from']['message'].set_properties(xalign=0,yalign=0,selectable=True)
         self.info['from']['message'].set_line_wrap(True)
         self.info['from']['message'].set_size_request(250, -1)
-        message_container = gtk.HBox(False, 0)
+        message_container = Gtk.HBox(False, 0)
         message_container.pack_start(message, False, False, 0)
         message_container.pack_start(self.info['from']['message'], False, False, 0)
         from_container.pack_start(message_container, False, False, 0)
@@ -567,7 +567,7 @@ class GitMerge(BranchMerge):
 
         self.action.append(self.action.set_status, _("Completed Merge"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
     def __revision_changed(self, widget):
         self.update_branch_info()
@@ -595,8 +595,8 @@ if __name__ == "__main__":
     if vcs_name == rabbitvcs.vcs.VCS_SVN:
         window = SVNMerge(path, revision_text)
         window.register_gtk_quit()
-        gtk.main()
+        Gtk.main()
     elif vcs_name == rabbitvcs.vcs.VCS_GIT:
         window = GitMerge(path, revision_text)
         window.register_gtk_quit()
-        gtk.main()
+        Gtk.main()

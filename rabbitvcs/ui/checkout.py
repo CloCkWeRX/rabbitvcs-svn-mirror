@@ -24,9 +24,9 @@ from __future__ import absolute_import
 import os.path
 import urllib
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
@@ -57,7 +57,7 @@ class Checkout(InterfaceView):
             rabbitvcs.util.helper.get_repository_paths()
         )
         
-        # We must set a signal handler for the gtk.Entry inside the combobox
+        # We must set a signal handler for the Gtk.Entry inside the combobox
         # Because glade will not retain that information
         self.repositories.set_child_signal(
             "key-release-event", 
@@ -95,7 +95,7 @@ class Checkout(InterfaceView):
             self.get_widget("destination").set_text(path)
 
     def on_repositories_key_released(self, widget, data, userdata=None):
-        if gtk.gdk.keyval_name(data.keyval) == "Return":
+        if Gtk.gdk.keyval_name(data.keyval) == "Return":
             if self.complete:
                 self.on_ok_clicked(widget)
 
@@ -103,7 +103,7 @@ class Checkout(InterfaceView):
         self.check_form()
 
     def on_destination_key_released(self, widget, data):
-        if gtk.gdk.keyval_name(data.keyval) == "Return":
+        if Gtk.gdk.keyval_name(data.keyval) == "Return":
             if self.complete:
                 self.on_ok_clicked(widget)
 
@@ -176,7 +176,7 @@ class SVNCheckout(Checkout):
         )
         self.action.append(self.action.set_status, _("Completed Checkout"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
     def on_repositories_changed(self, widget, data=None):
         # Do not use quoting for this bit
@@ -266,4 +266,4 @@ if __name__ == "__main__":
     else:
         window = checkout_factory(options.vcs, path=path, url=url, revision=options.revision, quiet=options.quiet)
         window.register_gtk_quit()
-        gtk.main()
+        Gtk.main()

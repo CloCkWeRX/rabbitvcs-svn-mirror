@@ -50,10 +50,7 @@ except ImportError:
 from six.moves import filter
 from six.moves import range
 
-try:
-    from gi.repository import GObject as gobject
-except ImportError:
-    import gobject
+from gi.repository import GObject as gobject
 
 import rabbitvcs.util.settings
 
@@ -150,10 +147,7 @@ def format_datetime(dt, format=None):
         else:
             returner = dt.strftime(DT_FORMAT_ALL)
 
-    enc = locale.getpreferredencoding(False)
-    if enc is None or len(enc) == 0:
-        enc = "UTF8"
-    return returner.decode(enc)
+    return returner
 
 def in_rich_compare(item, list):
     """ Tests whether the item is in the given list. This is mainly to work

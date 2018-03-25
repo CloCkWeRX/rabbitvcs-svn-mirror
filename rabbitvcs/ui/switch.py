@@ -21,9 +21,9 @@ from __future__ import absolute_import
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import SVNAction
@@ -83,7 +83,7 @@ class SVNSwitch(InterfaceView):
         )
         self.action.append(self.action.set_status, _("Completed Switch"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNSwitch
@@ -102,4 +102,4 @@ if __name__ == "__main__":
             
     window = switch_factory(args[0], revision=options.revision)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

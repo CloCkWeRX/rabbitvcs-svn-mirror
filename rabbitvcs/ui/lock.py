@@ -24,9 +24,9 @@ from __future__ import absolute_import
 import six.moves._thread
 
 import os
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import SVNAction
@@ -42,7 +42,7 @@ log = Log("rabbitvcs.ui.lock")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gobject.threads_init()
+GObject.threads_init()
 
 class SVNLock(InterfaceView, GtkContextMenuCaller):
     """
@@ -66,8 +66,8 @@ class SVNLock(InterfaceView, GtkContextMenuCaller):
 
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, gobject.TYPE_STRING, 
-                gobject.TYPE_STRING], 
+            [GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, GObject.TYPE_STRING, 
+                GObject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
                 _("Locked")],
             filters=[{
@@ -108,12 +108,12 @@ class SVNLock(InterfaceView, GtkContextMenuCaller):
             log.exception(e)
 
     def load(self):
-        gtk.gdk.threads_enter()
+        Gtk.gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
         self.items = self.vcs.get_items(self.paths)
         self.populate_files_table()
         self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
-        gtk.gdk.threads_leave()
+        Gtk.gdk.threads_leave()
 
     def populate_files_table(self):
         for item in self.items:
@@ -167,7 +167,7 @@ class SVNLock(InterfaceView, GtkContextMenuCaller):
             )
         self.action.append(self.action.set_status, _("Completed Lock"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
     def on_files_table_mouse_event(self, treeview, data=None):
         if data is not None and data.button == 3:
@@ -202,4 +202,4 @@ if __name__ == "__main__":
 
     window = lock_factory(paths, options.base_dir)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

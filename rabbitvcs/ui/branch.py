@@ -21,9 +21,9 @@ from __future__ import absolute_import
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
@@ -111,7 +111,7 @@ class SVNBranch(InterfaceView):
         self.action.append(self.svn.copy, src, dest, revision)
         self.action.append(self.action.set_status, _("Completed Branch/tag"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
     def on_previous_messages_clicked(self, widget, data=None):
         dialog = rabbitvcs.ui.dialog.PreviousMessages()
@@ -147,4 +147,4 @@ if __name__ == "__main__":
 
     window = branch_factory(options.vcs, args[0], options.revision)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

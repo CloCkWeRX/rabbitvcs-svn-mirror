@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import six.moves._thread
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.add import Add
@@ -59,8 +59,8 @@ class GitUnstage(Add):
         self.statuses = self.git.STATUSES_FOR_UNSTAGE
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"), 
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
-                gobject.TYPE_STRING], 
+            [GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
+                GObject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
             filters=[{
                 "callback": rabbitvcs.ui.widget.path_filter,
@@ -105,7 +105,7 @@ class GitUnstage(Add):
             self.action.append(self.git.unstage, item)
         self.action.append(self.action.set_status, _("Completed Unstage"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
 class GitUnstageQuiet:
     def __init__(self, paths, base_dir=None):
@@ -144,4 +144,4 @@ if __name__ == "__main__":
     else:
         window = unstage_factory(classes_map, paths, options.base_dir)
         window.register_gtk_quit()
-        gtk.main()
+        Gtk.main()

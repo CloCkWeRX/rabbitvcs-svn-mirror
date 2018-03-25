@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import os.path
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceNonView
 from rabbitvcs.ui.action import SVNAction
@@ -71,7 +71,7 @@ class Delete(InterfaceNonView):
 
         # If the user wants to continue (or there are no unversioned files)
         # remove or delete the given files
-        if result == gtk.RESPONSE_OK or result == True:
+        if result == Gtk.RESPONSE_OK or result == True:
             if versioned:
                 try:
                     self.vcs_remove(versioned, force=True)

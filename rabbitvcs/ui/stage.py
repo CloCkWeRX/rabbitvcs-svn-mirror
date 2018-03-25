@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import six.moves._thread
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.add import Add
@@ -60,8 +60,8 @@ class GitStage(Add):
         self.show_ignored = False
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"), 
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
-                gobject.TYPE_STRING], 
+            [GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
+                GObject.TYPE_STRING], 
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
             filters=[{
                 "callback": rabbitvcs.ui.widget.path_filter,
@@ -106,7 +106,7 @@ class GitStage(Add):
             self.action.append(self.git.stage, item)
         self.action.append(self.action.set_status, _("Completed Stage"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.run()
 
 class GitStageQuiet:
     def __init__(self, paths, base_dir=None):
@@ -145,4 +145,4 @@ if __name__ == "__main__":
     else:
         window = stage_factory(classes_map, paths, options.base_dir)
         window.register_gtk_quit()
-        gtk.main()
+        Gtk.main()

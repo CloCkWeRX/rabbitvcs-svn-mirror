@@ -26,9 +26,9 @@ import os.path
 import six.moves._thread
 import shutil
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceNonView
 from rabbitvcs.ui.action import SVNAction, GitAction
@@ -169,4 +169,4 @@ if __name__ == "__main__":
 
     window = editconflicts_factory(paths[0])
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

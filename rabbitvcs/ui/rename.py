@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import os.path
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 
 from rabbitvcs.ui import InterfaceNonView
 from rabbitvcs.ui.action import SVNAction
@@ -54,7 +54,7 @@ class Rename(InterfaceNonView):
         dialog = OneLineTextChange(_("Rename"), _("New Name:"), self.path)
         (result, new_path) = dialog.run()
 
-        if result != gtk.RESPONSE_OK:
+        if result != Gtk.RESPONSE_OK:
             self.close()
             return
        
@@ -93,7 +93,7 @@ class SVNRename(Rename):
         self.action.append(self.action.set_status, _("Completed Rename"))
         self.action.append(self.action.finish)
         self.action.append(self.close)
-        self.action.start()
+        self.action.run()
 
 class GitRename(Rename):
     def __init__(self, path):
@@ -122,7 +122,7 @@ class GitRename(Rename):
         self.action.append(self.action.set_status, _("Completed Rename"))
         self.action.append(self.action.finish)
         self.action.append(self.close)
-        self.action.start()
+        self.action.run()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNRename,
@@ -138,4 +138,4 @@ if __name__ == "__main__":
     (options, paths) = main(usage="Usage: rabbitvcs rename [path]")
             
     window = rename_factory(os.path.abspath(paths[0]))
-    gtk.main()
+    Gtk.main()

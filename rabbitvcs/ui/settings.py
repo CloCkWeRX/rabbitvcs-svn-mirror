@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import os
 
-import pygtk
-import gobject
-import gtk
+import pyGtk
+import GObject
+import Gtk
 import pango
 import dbus
 
@@ -167,19 +167,19 @@ class Settings(InterfaceView):
         checker_service = self._get_checker_service(report_failure)
         
         self.get_widget("restart_checker").set_image(
-                                        gtk.image_new_from_stock(
-                                            gtk.STOCK_EXECUTE,
-                                            gtk.ICON_SIZE_BUTTON))
+                                        Gtk.image_new_from_stock(
+                                            Gtk.STOCK_EXECUTE,
+                                            Gtk.ICON_SIZE_BUTTON))
 
         self.get_widget("refresh_info").set_image(
-                                        gtk.image_new_from_stock(
-                                            gtk.STOCK_REFRESH,
-                                            gtk.ICON_SIZE_BUTTON))
+                                        Gtk.image_new_from_stock(
+                                            Gtk.STOCK_REFRESH,
+                                            Gtk.ICON_SIZE_BUTTON))
 
         self.get_widget("stop_checker").set_image(
-                                        gtk.image_new_from_stock(
-                                            gtk.STOCK_STOP,
-                                            gtk.ICON_SIZE_BUTTON))
+                                        Gtk.image_new_from_stock(
+                                            Gtk.STOCK_STOP,
+                                            Gtk.ICON_SIZE_BUTTON))
 
         self.get_widget("stop_checker").set_sensitive(bool(checker_service))
 
@@ -247,14 +247,14 @@ class Settings(InterfaceView):
         self._populate_checker_tab(report_failure=False)
 
     def on_destroy(self, widget):
-        gtk.main_quit()
+        Gtk.main_quit()
 
     def on_cancel_clicked(self, widget):
-        gtk.main_quit()
+        Gtk.main_quit()
 
     def on_ok_clicked(self, widget):
         self.save()
-        gtk.main_quit()
+        Gtk.main_quit()
     
     def on_apply_clicked(self, widget):
         self.save()
@@ -334,7 +334,7 @@ class Settings(InterfaceView):
         confirmation = rabbitvcs.ui.dialog.Confirmation(
             _("Are you sure you want to clear your repository paths?")
         )
-        if confirmation.run() == gtk.RESPONSE_OK:
+        if confirmation.run() == Gtk.RESPONSE_OK:
             path = rabbitvcs.util.helper.get_repository_paths_path()
             fh = open(path, "w")
             fh.write("")
@@ -345,7 +345,7 @@ class Settings(InterfaceView):
         confirmation = rabbitvcs.ui.dialog.Confirmation(
             _("Are you sure you want to clear your previous messages?")
         )
-        if confirmation.run() == gtk.RESPONSE_OK:
+        if confirmation.run() == Gtk.RESPONSE_OK:
             path = rabbitvcs.util.helper.get_previous_messages_path()
             fh = open(path, "w")
             fh.write("")
@@ -356,7 +356,7 @@ class Settings(InterfaceView):
         confirmation = rabbitvcs.ui.dialog.Confirmation(
             _("Are you sure you want to clear your authentication information?")
         )
-        if confirmation.run() == gtk.RESPONSE_OK:
+        if confirmation.run() == Gtk.RESPONSE_OK:
             home_dir = rabbitvcs.util.helper.get_user_path()
             subpaths = [
                 '/.subversion/auth/svn.simple',
@@ -383,4 +383,4 @@ if __name__ == "__main__":
 
     window = Settings(options.base_dir)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

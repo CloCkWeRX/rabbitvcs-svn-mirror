@@ -22,7 +22,7 @@ from six.moves import range
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
-
+    
 import os
 import os.path
 
@@ -413,8 +413,8 @@ class TableBase:
                 self.sorted.set_sort_func(idx,
                                           compare_items,
                                           (idx, coltypes[idx]))
-               
-            self.sorted.set_sort_column_id(flags["sort_on"], Gtk.SORT_ASCENDING)
+
+            self.sorted.set_sort_column_id(flags["sort_on"], Gtk.SortType.ASCENDING)
             
             self.treeview.set_model(self.sorted)
             
@@ -553,10 +553,10 @@ class TableBase:
     def set_column_width(self, column, width=None):
         col = self.treeview.get_column(column)
         if width is not None:
-            col.set_sizing(Gtk.TREE_VIEW_COLUMN_FIXED)
+            col.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
             col.set_fixed_width(width)
         else:
-            col.set_sizing(Gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+            col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
     def update_selection(self):
         selection = self.treeview.get_selection()
@@ -782,12 +782,9 @@ class ComboBox:
 
         self.cb.set_model(self.model)
 
-        if type(self.cb) == Gtk.ComboBoxEntry:
-            self.cb.set_text_column(0)
-        elif type(self.cb) == Gtk.ComboBox:
-            cell = Gtk.CellRendererText()
-            self.cb.pack_start(cell, True)
-            self.cb.add_attribute(cell, 'text', 0)
+        cell = Gtk.CellRendererText()
+        self.cb.pack_start(cell, True)
+        self.cb.add_attribute(cell, 'text', 0)
 
     def append(self, item):
         self.model.append([item])
@@ -801,7 +798,8 @@ class ComboBox:
             index += 1
     
     def get_active_text(self):
-        return self.cb.get_active_text()
+        active = self.cb.get_active_iter()
+        return self.model[active][0]
     
     def get_active(self):
         return self.cb.get_active()
@@ -830,7 +828,7 @@ class TextView:
         
         if HAS_GTKSPELL and spellcheck:
             try:
-                Gtkspell.Spell(self.view)
+                GtkSpell.Checker().attach(self.view)
             except Exception as e:
                 log.exception(e)
         
@@ -850,14 +848,14 @@ class SourceView(TextView):
     def __init__(self, widget=None, value=""):
         if HAS_GTKSOURCEVIEW:
             if widget is None:
-                self.view = Gtksourceview.SourceView(self.buffer)
+                self.view = GtkSourceView.SourceView(self.buffer)
             else:
                 self.view = widget
-            self.buffer = Gtksourceview.SourceBuffer()
+            self.buffer = GtkSourceView.SourceBuffer()
             self.buffer.set_text(value)
 
             if HAS_GTKSPELL:
-                Gtkspell.Spell(self.view)
+                GtkSpell.Spell(self.view)
 
             self.view.show()
         else:
@@ -1182,12 +1180,12 @@ class GitRepositorySelector:
         # Set up the Repository Line
         label = Gtk.Label(_("Repository:"))
         label.set_size_request(90, -1)
-        label.set_justify(Gtk.JUSTIFY_LEFT)
+        label.set_justify(Gtk.Justification.LEFT)
 
         tmp_repos = []
         for item in self.git.remote_list():
             tmp_repos.append(item["name"])
-        self.repository_opt = ComboBox(Gtk.ComboBoxEntry(), tmp_repos)
+        self.repository_opt = ComboBox(Gtk.ComboBox.new_with_entry(), tmp_repos)
         self.repository_opt.set_active(0)
         self.repository_opt.cb.connect("changed", self.__repository_changed)
         self.repository_opt.cb.set_size_request(175, -1)
@@ -1201,7 +1199,7 @@ class GitRepositorySelector:
         # Set up the Branch line
         label = Gtk.Label(_("Branch:"))
         label.set_size_request(90, -1)
-        label.set_justify(Gtk.JUSTIFY_LEFT)
+        label.set_justify(Gtk.Justification.LEFT)
 
         tmp_branches = []
         active_branch_index = 0
@@ -1214,7 +1212,7 @@ class GitRepositorySelector:
             
             index += 1
             
-        self.branch_opt = ComboBox(Gtk.ComboBoxEntry(), tmp_branches)
+        self.branch_opt = ComboBox(Gtk.ComboBox.new_with_entry(), tmp_branches)
         self.branch_opt.set_active(active_branch_index)
         self.branch_opt.cb.connect("changed", self.__branch_changed)
         self.branch_opt.cb.set_size_request(175, -1)
@@ -1226,10 +1224,10 @@ class GitRepositorySelector:
         
         # Set up the Host line
         label = Gtk.Label(_("Host:"))
-        label.set_justify(Gtk.JUSTIFY_LEFT)
+        label.set_justify(Gtk.Justification.LEFT)
         label.set_size_request(90, -1)
         self.host = Gtk.Label()
-        self.host.set_justify(Gtk.JUSTIFY_LEFT)
+        self.host.set_justify(Gtk.Justification.LEFT)
         hbox = Gtk.HBox(False, 0)
         hbox.pack_start(label, False, False, 0)
         hbox.pack_start(self.host, False, False, 0)
@@ -1272,7 +1270,7 @@ class GitBranchSelector:
                 active = index
             index += 1
 
-        self.branch_opt = ComboBox(Gtk.ComboBoxEntry(), tmp_branches)
+        self.branch_opt = ComboBox(Gtk.ComboBox.new_with_entry(), tmp_branches)
         self.branch_opt.set_active(active)
         self.branch_opt.cb.connect("changed", self.__branch_changed)
         self.branch_opt.cb.set_size_request(175, -1)
