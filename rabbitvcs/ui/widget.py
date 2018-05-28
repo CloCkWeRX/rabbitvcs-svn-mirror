@@ -525,7 +525,7 @@ class TableBase:
         model[row][column] = val
     
     def allow_multiple(self):
-        self.treeview.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
+        self.treeview.get_selection().set_mode(3)
 
     def get_activated_rows(self, column=None):
         returner = []
@@ -835,7 +835,8 @@ class TextView:
     def get_text(self):
         return self.buffer.get_text(
             self.buffer.get_start_iter(), 
-            self.buffer.get_end_iter()
+            self.buffer.get_end_iter(),
+            False
         )
         
     def set_text(self, text):

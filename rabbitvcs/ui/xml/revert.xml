@@ -14,7 +14,7 @@
     <signal handler="on_destroy" name="destroy"/>
     <signal handler="on_key_pressed" name="key_press_event"/>
     <child>
-      <object class="GtkBox" orientation="vertical" id="vbox1">
+      <object class="GtkBox" id="vbox1">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="orientation">vertical</property>
@@ -55,8 +55,9 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" orientation="horizontal" id="hbox1">
+          <object class="GtkBox" id="hbox1">
             <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
             <child>
               <object class="GtkLabel" id="status">
                 <property name="visible">True</property>
@@ -69,8 +70,9 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox2">
+              <object class="GtkButtonBox" id="hbuttonbox2">
                 <property name="visible">True</property>
+                <property name="orientation">horizontal</property>
                 <property name="spacing">6</property>
                 <property name="layout_style">end</property>
                 <child>

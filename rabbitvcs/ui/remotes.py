@@ -24,10 +24,9 @@ from __future__ import print_function
 
 import os
 
-import pyGtk
-import GObject
-import Gtk
-import pango
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject, Gdk, Pango
 
 from datetime import datetime
 import time

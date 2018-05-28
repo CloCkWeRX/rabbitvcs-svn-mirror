@@ -12,13 +12,13 @@
     <signal handler="on_destroy" name="destroy"/>
     <signal handler="on_key_pressed" name="key_press_event"/>
     <child>
-      <object class="GtkBox" orientation="vertical" id="vbox2">
+      <object class="GtkBox" id="vbox2">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
-          <object class="GtkBox" orientation="vertical" id="vbox3">
+          <object class="GtkBox" id="vbox3">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
@@ -40,13 +40,14 @@
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkBox" orientation="vertical" id="vbox1">
+                  <object class="GtkBox" id="vbox1">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkBox" orientation="horizontal" id="hbox2">
+                      <object class="GtkBox" id="hbox2">
                         <property name="visible">True</property>
+                        <property name="orientation">horizontal</property>
                         <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label3">
@@ -62,7 +63,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBoxEntry" id="repositories">
+                          <object class="GtkComboBoxText" id="repositories">
                             <property name="visible">True</property>
                             <signal handler="on_repositories_changed" name="changed"/>
                           </object>
@@ -100,8 +101,9 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" orientation="horizontal" id="hbox3">
+                      <object class="GtkBox" id="hbox3">
                         <property name="visible">True</property>
+                        <property name="orientation">horizontal</property>
                         <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label4">
@@ -168,7 +170,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" orientation="vertical" id="options_box">
+          <object class="GtkBox" id="options_box">
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
@@ -187,7 +189,7 @@
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkBox" orientation="vertical" id="vbox4">
+                  <object class="GtkBox" id="vbox4">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
@@ -233,7 +235,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" orientation="vertical" id="revision_selector_box">
+          <object class="GtkBox" id="revision_selector_box">
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
@@ -271,8 +273,9 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox1">
+          <object class="GtkButtonBox" id="hbuttonbox1">
             <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
             <property name="spacing">6</property>
             <property name="layout_style">end</property>
             <child>
