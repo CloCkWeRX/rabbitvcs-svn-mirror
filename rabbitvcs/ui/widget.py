@@ -781,6 +781,7 @@ class ComboBox:
                 self.append(i)
 
         self.cb.set_model(self.model)
+        self.cb.set_entry_text_column(0)
 
         cell = Gtk.CellRendererText()
         self.cb.pack_start(cell, True)
