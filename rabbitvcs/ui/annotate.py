@@ -23,8 +23,8 @@ from __future__ import absolute_import
 
 import os
 
-import gi
-gi.require_version('Gtk', '3.0')
+from gi import require_version
+require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject, Gdk
 
 from datetime import datetime
@@ -63,7 +63,6 @@ class Annotate(InterfaceView):
 
         self.get_widget("Annotate").set_title(_("Annotate - %s") % path)
         self.vcs = rabbitvcs.vcs.VCS()
-        
        
     def on_close_clicked(self, widget):
         self.close()
@@ -105,6 +104,13 @@ class Annotate(InterfaceView):
             fh.write(self.generate_string_from_result())
             fh.close()
 
+    def launch_loading(self):
+        self.loading_dialog = Loading()
+        GObject.idle_add(self.loading_dialog.run)
+
+    def kill_loading(self):
+        GObject.idle_add(self.loading_dialog.destroy)
+        
 class SVNAnnotate(Annotate):
     def __init__(self, path, revision=None):
         Annotate.__init__(self, path, revision)
@@ -134,13 +140,6 @@ class SVNAnnotate(Annotate):
     #
     # Helper methods
     #
-
-    def launch_loading(self):
-        self.loading_dialog = Loading()
-        GObject.idle_add(self.loading_dialog.run)
-
-    def kill_loading(self):
-        GObject.idle_add(self.loading_dialog.destroy)
     
     def load(self):
         from_rev_num = self.get_widget("from").get_text().lower()
@@ -158,13 +157,6 @@ class SVNAnnotate(Annotate):
 
         self.launch_loading()
         
-        result = self.svn.annotate(self.path, from_rev, to_rev)
-        self.populate_table(result)
-        self.enable_saveas()
-
-        self.kill_loading()
-
-        """
         self.action = SVNAction(
             self.svn,
             notification=False
@@ -179,10 +171,11 @@ class SVNAnnotate(Annotate):
         self.action.append(self.populate_table)
         self.action.append(self.enable_saveas)
         self.action.run()
-        """
+
+        self.kill_loading()
         
-    def populate_table(self, blamedict):
-        #blamedict = self.action.get_result(0)
+    def populate_table(self):
+        blamedict = self.action.get_result(0)
 
         self.table.clear()
         for item in blamedict:            
@@ -250,15 +243,20 @@ class GitAnnotate(Annotate):
     #
     # Helper methods
     #
+
+    def launch_loading(self):
+        self.loading_dialog = Loading()
+        GObject.idle_add(self.loading_dialog.run)
+
+    def kill_loading(self):
+        GObject.idle_add(self.loading_dialog.destroy)
     
     def load(self):
         to_rev = self.git.revision(self.get_widget("to").get_text())
 
-        self.table.clear()
-        self.populate_table(self.git.annotate(self.path, to_rev))
-        self.enable_saveas()
-
-        """self.action = GitAction(
+        self.launch_loading()
+        
+        self.action = GitAction(
             self.git,
             notification=False
         )    
@@ -271,14 +269,13 @@ class GitAnnotate(Annotate):
         self.action.append(self.populate_table)
         self.action.append(self.enable_saveas)
         self.action.run()
-        """
+        self.kill_loading()
         
-    def populate_table(self, blamedict):
-        print("populate table start")
-        #blamedict = self.action.get_result(0)
-        print("initiate table clear")
-        #self.table.clear()
-        print("cleared")
+        
+    def populate_table(self):
+        blamedict = self.action.get_result(0)
+
+        self.table.clear()
         for item in blamedict:
             self.table.append([
                 item["number"],

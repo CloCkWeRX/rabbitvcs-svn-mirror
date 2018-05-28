@@ -475,7 +475,7 @@ class SVN:
         info = self.client_info(path)
         returner = ""
         try:
-            returner = info["url"].encode('latin1')
+            returner = info["url"].encode('latin1').decode('utf-8')
         except Exception as e:
             log.exception(e)
 

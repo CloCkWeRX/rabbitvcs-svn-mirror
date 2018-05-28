@@ -293,7 +293,7 @@ class FileSaveAs:
     def __init__(self, title=_("Save As..."), folder=None):
         self.dialog = Gtk.FileChooserDialog(title, 
             None, 
-            Gtk.FILE_CHOOSER_ACTION_SAVE, 
+            Gtk.FileChooserAction.SAVE, 
             (Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,
                 Gtk.STOCK_SAVE,Gtk.ResponseType.OK))
         if folder is not None:

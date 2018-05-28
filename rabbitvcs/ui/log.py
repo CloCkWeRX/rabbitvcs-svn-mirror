@@ -604,7 +604,7 @@ class SVNLog(Log):
                             subitem.action,
                             subitem.path,
                             subitem.copy_from_path,
-                            subitem.copy_from_revision
+                            six.text_type(subitem.copy_from_revision)
                         ])
 
         subitems.sort(key = lambda x: x[1])
@@ -613,7 +613,7 @@ class SVNLog(Log):
                 subitem[0],
                 subitem[1],
                 subitem[2],
-                subitem[3]
+                six.text_type(subitem[3])
             ])
 
     def on_previous_clicked(self, widget):

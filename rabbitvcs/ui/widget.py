@@ -835,7 +835,8 @@ class TextView:
     def get_text(self):
         return self.buffer.get_text(
             self.buffer.get_start_iter(), 
-            self.buffer.get_end_iter()
+            self.buffer.get_end_iter(),
+            True
         )
         
     def set_text(self, text):

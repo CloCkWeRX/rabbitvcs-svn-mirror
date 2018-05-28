@@ -24,9 +24,10 @@ from __future__ import absolute_import
 import os
 import six.moves._thread
 
-import pyGtk
-import GObject
-import Gtk
+from gi import require_version
+require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject, Gdk
+
 from time import sleep
 
 from rabbitvcs.ui import InterfaceView
@@ -126,15 +127,12 @@ class Commit(InterfaceView, GtkContextMenuCaller):
           - Populates the files table with the retrieved items
           - Updates the status area        
         """
-        Gtk.gdk.threads_enter()
+
         self.get_widget("status").set_text(_("Loading..."))
-        Gtk.gdk.threads_leave()
 
         self.items = self.vcs.get_items(self.paths, self.vcs.statuses_for_commit(self.paths))
 
-        Gtk.gdk.threads_enter()
         self.populate_files_table()
-        Gtk.gdk.threads_leave()
 
     # Overrides the GtkContextMenuCaller method
     def on_context_menu_command_finished(self):
@@ -166,10 +164,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         Initializes the activated cache and loads the file items in a new thread
         """
         
-        try:
-            six.moves._thread.start_new_thread(self.load, ())
-        except Exception as e:
-            log.exception(e)
+        GObject.idle_add(self.load)
 
     def show_files_table_popup_menu(self, treeview, data):
         paths = self.files_table.get_selected_row_items(1)
@@ -191,8 +186,8 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         if InterfaceView.on_key_pressed(self, widget, data):
             return True
 
-        if (data.state & (Gtk.gdk.CONTROL_MASK) and 
-                Gtk.gdk.keyval_name(data.keyval) == "Return"):
+        if (data.state & (Gdk.ModifierType.CONTROL_MASK) and 
+                Gdk.keyval_name(data.keyval) == "Return"):
             self.on_ok_clicked(widget)
             return True
             
@@ -271,7 +266,7 @@ class SVNCommit(Commit):
         Commit.__init__(self, paths, base_dir, message)
 
         self.get_widget("commit_to_box").show()
-        
+
         self.get_widget("to").set_text(
             self.vcs.svn().get_repo_url(self.base_dir)
         )
@@ -397,73 +392,9 @@ class GitCommit(Commit):
         # Adds path: True/False to the dict
         self.changes[row[1]] = row[col]
 
-
-class MercurialCommit(Commit):
-    def __init__(self, paths, base_dir=None, message=None):
-        Commit.__init__(self, paths, base_dir, message)
-
-        self.mercurial = self.vcs.mercurial(paths[0])
-
-        options_box = self.get_widget("options_box")
-        
-        self.close_branch = Gtk.CheckButton(_("Close Branch"))
-        options_box.pack_start(self.close_branch, False, False, 0)
-        self.close_branch.show()
-
-        self.items = None
-        if len(self.paths):
-            self.initialize_items()
-
-    def on_ok_clicked(self, widget, data=None):
-        items = self.files_table.get_activated_rows(1)
-        self.hide()
-
-        if len(items) == 0:
-            self.close()
-            return
-
-        staged = 0
-        for item in items:
-            try:
-                status = self.vcs.status(item, summarize=False).simple_content_status()
-                if status == rabbitvcs.vcs.status.status_missing:
-                    self.mercurial.revert([item])
-                    self.mercurial.remove(item)
-                else:
-                    self.mercurial.add(item)
-                    staged += 1
-            except Exception as e:
-                log.exception(e)
-
-        ticks = staged + len(items)*2
-
-        self.action = rabbitvcs.ui.action.MercurialAction(
-            self.mercurial,
-            register_gtk_quit=self.gtk_quit_is_set()
-        )
-        self.action.set_pbar_ticks(ticks)
-        self.action.append(self.action.set_header, _("Commit"))
-        self.action.append(self.action.set_status, _("Running Commit Command..."))
-        self.action.append(
-            rabbitvcs.util.helper.save_log_message, 
-            self.message.get_text()
-        )
-        self.action.append(
-            self.mercurial.commit, 
-            self.message.get_text()
-        )
-        self.action.append(self.action.set_status, _("Completed Commit"))
-        self.action.append(self.action.finish)
-        self.action.run()
-
-    def on_files_table_toggle_event(self, row, col):
-        # Adds path: True/False to the dict
-        self.changes[row[1]] = row[col]
-
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNCommit, 
-    rabbitvcs.vcs.VCS_GIT: GitCommit, 
-    rabbitvcs.vcs.VCS_MERCURIAL: MercurialCommit
+    rabbitvcs.vcs.VCS_GIT: GitCommit
 }
 
 def commit_factory(paths, base_dir=None, message=None):

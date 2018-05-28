@@ -620,7 +620,7 @@ def save_log_message(message):
 %s
 """%(m[0], m[1], s)
 
-    f.write(s.encode("utf-8"))
+    f.write(s)
     f.close()
 
 def save_repository_path(path):
