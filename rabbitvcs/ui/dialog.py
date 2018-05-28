@@ -23,7 +23,8 @@ from __future__ import absolute_import
 
 from gettext import gettext as _
 import os.path
-
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject, Pango
 
 from rabbitvcs.ui import InterfaceView

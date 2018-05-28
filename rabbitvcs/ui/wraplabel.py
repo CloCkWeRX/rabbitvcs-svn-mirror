@@ -24,7 +24,8 @@ from __future__ import absolute_import
 # SOFTWARE.
 
 # Python translation from wrapLabel.{cc|h} by Gian Mario Tagliaretti
-
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject, Pango
 
 class WrapLabel(Gtk.Label):

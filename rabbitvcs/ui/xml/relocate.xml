@@ -10,13 +10,13 @@
     <signal handler="on_destroy" name="destroy"/>
     <signal handler="on_key_pressed" name="key_press_event"/>
     <child>
-      <object class="GtkBox" orientation="vertical" id="vbox28">
+      <object class="GtkBox" id="vbox28">
         <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="spacing">18</property>
         <child>
-          <object class="GtkBox" orientation="vertical" id="vbox1">
+          <object class="GtkBox" id="vbox1">
             <property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="spacing">6</property>
@@ -37,13 +37,14 @@
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkBox" orientation="vertical" id="vbox29">
+                  <object class="GtkBox" id="vbox29">
                     <property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkBox" orientation="horizontal" id="hbox15">
+                      <object class="GtkBox" id="hbox15">
                         <property name="visible">True</property>
+                        <property name="orientation">horizontal</property>
                         <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label44">
@@ -73,8 +74,9 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" orientation="horizontal" id="hbox16">
+                      <object class="GtkBox" id="hbox16">
                         <property name="visible">True</property>
+                        <property name="orientation">horizontal</property>
                         <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="label46">
@@ -89,7 +91,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBoxEntry" id="to_urls">
+                          <object class="GtkComboBoxText" id="to_urls">
                             <property name="visible">True</property>
                             <child internal-child="entry">
                               <object class="GtkEntry" id="to_url">
@@ -125,8 +127,9 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox17">
+          <object class="GtkButtonBox" id="hbuttonbox17">
             <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
             <property name="spacing">6</property>
             <property name="layout_style">GTK_BUTTONBOX_END</property>
             <child>

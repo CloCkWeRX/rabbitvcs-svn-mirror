@@ -30,6 +30,8 @@ from __future__ import absolute_import
 import os
 from six.moves import range
 
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs import APP_NAME, LOCALE_DIR, gettext

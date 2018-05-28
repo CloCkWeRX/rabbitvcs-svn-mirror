@@ -11,13 +11,13 @@
     <signal handler="on_destroy" name="destroy"/>
     <signal handler="on_key_pressed" name="key_press_event"/>
     <child>
-      <object class="GtkBox" orientation="vertical" id="vbox1">
+      <object class="GtkBox" id="vbox1">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
-          <object class="GtkBox" orientation="vertical" id="vbox3">
+          <object class="GtkBox" id="vbox3">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
@@ -39,12 +39,12 @@
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkBox" orientation="vertical" id="vbox4">
+                  <object class="GtkBox" id="vbox4">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox2">
+                      <object class="GtkButtonBox" id="hbuttonbox2">
                         <property name="visible">True</property>
                         <property name="layout_style">start</property>
                         <child>
@@ -107,7 +107,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" orientation="vertical" id="vbox5">
+          <object class="GtkBox" id="vbox5">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
@@ -129,7 +129,7 @@
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkBox" orientation="vertical" id="vbox2">
+                  <object class="GtkBox" id="vbox2">
                     <property name="visible">True</property>
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
@@ -153,7 +153,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" orientation="vertical" id="vbox6">
+                      <object class="GtkBox" id="vbox6">
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <child>
@@ -209,7 +209,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" orientation="horizontal" id="hbox1">
+          <object class="GtkBox" id="hbox1">
             <property name="visible">True</property>
             <child>
               <object class="GtkLabel" id="status">
@@ -224,7 +224,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox1">
+              <object class="GtkButtonBox" id="hbuttonbox1">
                 <property name="visible">True</property>
                 <property name="spacing">6</property>
                 <property name="layout_style">end</property>

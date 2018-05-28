@@ -24,9 +24,9 @@ from __future__ import absolute_import
 import six.moves._thread
 
 import os
-import pyGtk
-import GObject
-import Gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import SVNAction
@@ -108,12 +108,10 @@ class SVNLock(InterfaceView, GtkContextMenuCaller):
             log.exception(e)
 
     def load(self):
-        Gtk.gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
         self.items = self.vcs.get_items(self.paths)
         self.populate_files_table()
         self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
-        Gtk.gdk.threads_leave()
 
     def populate_files_table(self):
         for item in self.items:

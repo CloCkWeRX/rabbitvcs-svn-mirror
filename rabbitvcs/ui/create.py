@@ -24,9 +24,9 @@ from __future__ import absolute_import
 import os
 import subprocess
 
-import pyGtk
-import GObject
-import Gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject, Gdk
 
 import rabbitvcs.ui.dialog
 from rabbitvcs.ui.action import GitAction

@@ -25,9 +25,9 @@ import os
 import six.moves._thread
 from time import sleep
 
-import pyGtk
-import GObject
-import Gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.util.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
@@ -103,13 +103,11 @@ class Revert(InterfaceView, GtkContextMenuCaller):
         return True
 
     def load(self):
-        Gtk.gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
         self.items = self.vcs.get_items(self.paths, self.statuses)
 
         self.populate_files_table()
         self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
-        Gtk.gdk.threads_leave()
 
     def populate_files_table(self):
         self.files_table.clear()
