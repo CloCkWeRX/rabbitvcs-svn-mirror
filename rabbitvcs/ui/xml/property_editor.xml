@@ -10,7 +10,7 @@
     <property name="icon_name">rabbitvcs-small</property>
     <signal handler="on_destroy" name="destroy"/>
     <child>
-      <object class="GtkBox" orientation="vertical" id="vbox1">
+      <object class="GtkBox" id="vbox1">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="orientation">vertical</property>
@@ -23,8 +23,9 @@
             <property name="column_spacing">20</property>
             <property name="row_spacing">6</property>
             <child>
-              <object class="GtkBox" orientation="horizontal" id="hbox1">
+              <object class="GtkBox" id="hbox1">
                 <property name="visible">True</property>
+                <property name="orientation">horizontal</property>
                 <child>
                   <object class="GtkLabel" id="wc_lbl">
                     <property name="visible">True</property>
@@ -45,8 +46,9 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox" orientation="horizontal" id="hbox2">
+              <object class="GtkBox" id="hbox2">
                 <property name="visible">True</property>
+                <property name="orientation">horizontal</property>
                 <child>
                   <object class="GtkLabel" id="remote_lbl">
                     <property name="visible">True</property>
@@ -69,8 +71,9 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox" orientation="horizontal" id="hbox3">
+              <object class="GtkBox" id="hbox3">
                 <property name="visible">True</property>
+                <property name="orientation">horizontal</property>
                 <child>
                   <object class="GtkLabel" id="remote_uri_text">
                     <property name="visible">True</property>
@@ -90,8 +93,9 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox" orientation="horizontal" id="hbox4">
+              <object class="GtkBox" id="hbox4">
                 <property name="visible">True</property>
+                <property name="orientation">horizontal</property>
                 <child>
                   <object class="GtkLabel" id="wc_text">
                     <property name="visible">True</property>
@@ -133,8 +137,9 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox2">
+          <object class="GtkButtonBox" id="hbuttonbox2">
             <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
             <property name="spacing">6</property>
             <property name="homogeneous">True</property>
             <property name="layout_style">center</property>
@@ -178,8 +183,9 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" orientation="horizontal" id="note_box">
+          <object class="GtkBox" id="note_box">
             <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
             <property name="homogeneous">True</property>
             <child>
               <placeholder/>
@@ -190,8 +196,9 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox1">
+          <object class="GtkButtonBox" id="hbuttonbox1">
             <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
             <property name="spacing">6</property>
             <property name="homogeneous">True</property>
             <property name="layout_style">end</property>

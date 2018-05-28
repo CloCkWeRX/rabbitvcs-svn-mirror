@@ -52,6 +52,7 @@ class About:
     
         #Gtk.about_dialog_set_url_hook(url_hook)
         self.about = Gtk.AboutDialog()
+        self.about.set_transient_for(window);
         self.about.set_name(rabbitvcs.APP_NAME)
 
         self.about.set_program_name(rabbitvcs.APP_NAME)

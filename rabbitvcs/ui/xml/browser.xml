@@ -12,24 +12,25 @@
     <signal handler="on_destroy" name="destroy"/>
     <signal handler="on_key_pressed" name="key_press_event"/>
     <child>
-      <object class="GtkBox" orientation="vertical" id="vbox1">
+      <object class="GtkBox" id="vbox1">
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
-          <object class="GtkBox" orientation="vertical" id="vbox2">
+          <object class="GtkBox" id="vbox2">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
             <property name="spacing">6</property>
             <child>
-              <object class="GtkBox" orientation="vertical" id="vbox3">
+              <object class="GtkBox" id="vbox3">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
                 <child>
-                  <object class="GtkBox" orientation="horizontal" id="hbox1">
+                  <object class="GtkBox" id="hbox1">
                     <property name="visible">True</property>
+                    <property name="orientation">horizontal</property>
                     <property name="spacing">6</property>
                     <child>
                       <object class="GtkLabel" id="label1">
@@ -45,7 +46,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkComboBoxEntry" id="urls">
+                      <object class="GtkComboBoxText" id="urls">
                         <property name="visible">True</property>
                       </object>
                       <packing>
@@ -60,8 +61,9 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" orientation="horizontal" id="hbox2">
+                  <object class="GtkBox" id="hbox2">
                     <property name="visible">True</property>
+                    <property name="orientation">horizontal</property>
                     <property name="spacing">6</property>
                     <child>
                       <object class="GtkLabel" id="label2">
@@ -77,8 +79,9 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" orientation="horizontal" id="revision_container">
+                      <object class="GtkBox" id="revision_container">
                         <property name="visible">True</property>
+                        <property name="orientation">horizontal</property>
                         <child>
                           <placeholder/>
                         </child>
@@ -125,11 +128,13 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" orientation="horizontal" id="hbox3">
+          <object class="GtkBox" id="hbox3">
             <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
             <child>
-              <object class="GtkBox" orientation="horizontal" id="hbox4">
+              <object class="GtkBox" id="hbox4">
                 <property name="visible">True</property>
+                <property name="orientation">horizontal</property>
                 <child>
                   <object class="GtkLabel" id="status">
                     <property name="visible">True</property>
@@ -147,8 +152,9 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox1">
+              <object class="GtkButtonBox" id="hbuttonbox1">
                 <property name="visible">True</property>
+                <property name="orientation">horizontal</property>
                 <property name="spacing">6</property>
                 <property name="layout_style">end</property>
                 <child>
@@ -158,8 +164,9 @@
                     <property name="receives_default">True</property>
                     <signal handler="on_refresh_clicked" name="clicked"/>
                     <child>
-                      <object class="GtkBox" orientation="horizontal" id="hbox5">
+                      <object class="GtkBox" id="hbox5">
                         <property name="visible">True</property>
+                        <property name="orientation">horizontal</property>
                         <child>
                           <object class="GtkImage" id="image1">
                             <property name="visible">True</property>

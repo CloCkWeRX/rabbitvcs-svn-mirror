@@ -23,9 +23,9 @@ from __future__ import absolute_import
 
 import six.moves._thread
 
-import pyGtk
-import GObject
-import Gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView, InterfaceNonView
 from rabbitvcs.ui.add import Add
@@ -80,13 +80,23 @@ class SVNUnlock(Add):
     #
     # Helpers
     #
+    def on_context_menu_command_finished(self):
+        self.initialize_items()
+
+    def initialize_items(self):
+        """
+        Initializes the activated cache and loads the file items in a new thread
+        """
+        
+        try:
+            six.moves._thread.start_new_thread(self.load, ())
+        except Exception as e:
+            log.exception(e)
 
     def load(self):
-        Gtk.gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
         self.items = self.vcs.get_items(self.paths, self.statuses)
         self.populate_files_table()
-        Gtk.gdk.threads_leave()
     
     def populate_files_table(self):
         self.files_table.clear()
