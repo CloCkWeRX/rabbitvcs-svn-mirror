@@ -146,6 +146,9 @@ class Git:
         self.client.set_repository(path)
         self.config = self.client.config
 
+    def config_get(self, key1, key2):
+        return self.client._config_get(key1, key2)
+
     def get_repository(self):
         return self.client.get_repository()
 

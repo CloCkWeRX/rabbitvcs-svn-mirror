@@ -1242,7 +1242,7 @@ class GitRepositorySelector:
     def __update_host(self):
         repo = self.repository_opt.get_active_text()
         try:
-            self.host.set_text(self.git.config.get(("remote", repo), "url"))
+            self.host.set_text(self.git.config_get(("remote", repo), "url").decode("utf-8"))
         except KeyError as e:
             log.error("Missing remote %s config key" % repo)
     
