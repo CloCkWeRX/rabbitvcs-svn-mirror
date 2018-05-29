@@ -753,10 +753,14 @@ class GitLog(Log):
             if max_columns < len(out_lines):
                 max_columns = len(out_lines)
 
+        # Set the graph column width
         if not self.filter_text:
+            graph_width = 21 * max_columns
+            if graph_width < 55:
+                graph_width = 55
+                
             graph_column = self.revisions_table.get_column(0)
-            cell = graph_column.get_cells()[0]
-            self.revisions_table.set_column_width(0, 16*max_columns)
+            graph_column.set_fixed_width(graph_width)
 
         index = 0
         for (item, node, in_lines, out_lines) in grapher:
@@ -771,9 +775,13 @@ class GitLog(Log):
                 author = "<b>%s</b>" % author
                 date = "<b>%s</b>" % date            
             
-            graph_render = ()
+            graph_render = {}
             if not self.filter_text:
-                graph_render = (node, in_lines, out_lines)
+                graph_render = {
+                    "node": node,
+                    "in_lines": in_lines,
+                    "out_lines": out_lines
+                }
 
             # Check if a branch is available for this revision, and if so, insert it in the message description.
             for branch in self.branchItems:
