@@ -783,9 +783,9 @@ class ComboBox:
         self.cb.set_model(self.model)
         self.cb.set_entry_text_column(0)
 
-        cell = Gtk.CellRendererText()
-        self.cb.pack_start(cell, True)
-        self.cb.add_attribute(cell, 'text', 0)
+        self.cell = Gtk.CellRendererText()
+        self.cb.pack_start(self.cell, True)
+        self.cb.add_attribute(self.cell, 'text', 0)
 
     def append(self, item):
         self.model.append([item])
@@ -799,8 +799,7 @@ class ComboBox:
             index += 1
     
     def get_active_text(self):
-        active = self.cb.get_active_iter()
-        return self.model[active][0]
+        return self.cb.get_active_text()
     
     def get_active(self):
         return self.cb.get_active()
@@ -809,13 +808,13 @@ class ComboBox:
         self.cb.set_active(index)
     
     def set_child_text(self, text):
-        self.cb.child.set_text(text)
+        self.cell.set_text(text)
     
     def set_sensitive(self, val):
         self.cb.set_sensitive(val)
 
     def set_child_signal(self, signal, callback, userdata=None):
-        self.cb.child.connect(signal, callback, userdata)
+        self.cb.connect(signal, callback, userdata)
         
 class TextView:
     def __init__(self, widget=None, value="", spellcheck=True):
@@ -1053,7 +1052,11 @@ class RevisionSelector:
     
     def get_url(self):
         if self.url_combobox:
-            return self.url_combobox.get_active_text()
+            url = self.url_combobox.get_active_text()
+            if url is None:
+                return ""
+            else:
+                return url
         elif self.url_entry:
             return self.url_entry.get_text()
         elif self.url:

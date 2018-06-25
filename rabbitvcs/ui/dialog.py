@@ -104,7 +104,7 @@ class FolderChooser:
     def __init__(self):
         self.dialog = Gtk.FileChooserDialog(_("Select a Folder"), 
             None, 
-            Gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER, 
+            Gtk.FileChooserAction.SELECT_FOLDER, 
             (Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,
                 Gtk.STOCK_OPEN,Gtk.ResponseType.OK))
         self.dialog.set_default_response(Gtk.ResponseType.OK)

@@ -21,11 +21,9 @@ from __future__ import absolute_import
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import six.moves._thread
-
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, GObject, Gdk, GLib
 import os
 from shutil import rmtree
 import tempfile
@@ -41,8 +39,6 @@ log = Log("rabbitvcs.ui.diff")
 
 from rabbitvcs import gettext
 _ = gettext.gettext
-
-GObject.threads_init()
 
 class Diff(InterfaceNonView):
     def __init__(self, path1, revision1=None, path2=None, revision2=None, 
@@ -63,13 +59,13 @@ class Diff(InterfaceNonView):
         self.dialog = None
         
     def launch(self):
-        
-        if self.sidebyside:
-            self.launch_sidebyside_diff()
-        else:
-            self.launch_unified_diff()
-        
-        self.stop_loading()
+        try:
+            if self.sidebyside:
+                self.launch_sidebyside_diff()
+            else:
+                self.launch_unified_diff()
+        finally:
+            self.stop_loading()
         
     def _build_export_path(self, index, revision, path):
         dest = rabbitvcs.util.helper.get_tmp_path("rabbitvcs-%s-%s-%s" % (str(index), str(revision)[:5], os.path.basename(path)))
@@ -106,11 +102,7 @@ class SVNDiff(Diff):
         self.revision1 = self.get_revision_object(revision1, "base")
         self.revision2 = self.get_revision_object(revision2, "working")
 
-        try:
-            six.moves._thread.start_new_thread(self.launch, ())
-        except Exception as e:
-            log.exception(e)
-        
+        GObject.idle_add(self.launch)
         self.start_loading()
 
     def get_revision_object(self, value, default):
@@ -155,7 +147,7 @@ class SVNDiff(Diff):
             diff_text = ""
 
         fh = tempfile.mkstemp("-rabbitvcs-" + str(self.revision1) + "-" + str(self.revision2) + ".diff")
-        os.write(fh[0], diff_text)
+        os.write(fh[0], diff_text.encode("utf-8"))
         os.close(fh[0])
         rabbitvcs.util.helper.open_item(fh[1])
         
@@ -207,11 +199,7 @@ class GitDiff(Diff):
         self.revision1 = self.get_revision_object(revision1, "HEAD")
         self.revision2 = self.get_revision_object(revision2, "WORKING")
 
-        try:
-            six.moves._thread.start_new_thread(self.launch, ())
-        except Exception as e:
-            log.exception(e)
-        
+        GObject.idle_add(self.launch)        
         self.start_loading()
 
     def get_revision_object(self, value, default):
@@ -237,7 +225,7 @@ class GitDiff(Diff):
         file = open(path, "wb")
         try:
             try:
-                file.write(data)
+                file.write(data.encode("utf-8"))
             except Exception as e:
                 log.exception(e)
         finally:
@@ -266,7 +254,7 @@ class GitDiff(Diff):
             diff_text = ""
 
         fh = tempfile.mkstemp("-rabbitvcs-" + str(self.revision1)[:5] + "-" + str(self.revision2)[:5] + ".diff")
-        os.write(fh[0], diff_text)
+        os.write(fh[0], diff_text.encode("utf-8"))
         os.close(fh[0])
         rabbitvcs.util.helper.open_item(fh[1])
 

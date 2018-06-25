@@ -74,7 +74,8 @@ _ = gettext.gettext
 
 def get_tmp_path(filename):
     day = datetime.datetime.now().day
-    m = hashlib.md5(str(day) + str(os.geteuid())).hexdigest()[0:10]
+    day_string = (str(day) + str(os.geteuid())).encode("utf-8")
+    m = hashlib.md5(day_string).hexdigest()[0:10]
     
     tmpdir = "/tmp/rabbitvcs-%s" %m
     if not os.path.isdir(tmpdir):
@@ -518,14 +519,19 @@ def open_item(path):
         openers.append("open")
         subprocess.Popen(["open", os.path.abspath(path)])
     else:
+        openers.append("gio")
         openers.append("gvfs-open")
         openers.append("xdg-open")
-        openers.append("gio open")
 
     for o in openers:
         for p in set(os.environ['PATH'].split(':')):
             if os.path.exists("%s/%s" % (p, o)):
-                subprocess.Popen([o, os.path.abspath(path)])
+                command = [o]
+                if o == "gio":
+                    command.append("open")
+                command.append(os.path.abspath(path))
+                
+                subprocess.Popen(command)
                 return
     
 def browse_to_item(path):

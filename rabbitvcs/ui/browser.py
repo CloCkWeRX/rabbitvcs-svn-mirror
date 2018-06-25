@@ -323,7 +323,8 @@ class SVNBrowserDialog(SVNBrowser):
         
         self.callback = callback
 
-        Gtk.stock_add([(Gtk.STOCK_CLOSE, _("Select"), 0, 0, "")])
+        # This has been deprecated but I'm not sure how to replace it yet
+        #Gtk.stock_add([(Gtk.STOCK_CLOSE, _("Select"), 0, 0, "")])
         
         SVNBrowser.__init__(self, path)
         
