@@ -100,7 +100,7 @@ icons += include_by_pattern("data/icons/hicolor", icon_theme_directory, ".png")
 # Config parsing specification
 config_spec = [(
     "share/rabbitvcs",
-    ["rabbitvcs/util/configspec/configspec.ini"]
+    ["util/configspec/configspec.ini"]
 )]
 
 # Documentation
