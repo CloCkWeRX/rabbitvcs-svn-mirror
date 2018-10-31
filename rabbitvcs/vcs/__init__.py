@@ -129,11 +129,13 @@ class VCS:
                 from rabbitvcs.vcs.git import Git
                 git = Git()
 
+                print("GITREPOCHECK",path,is_repo_path)
                 if path:
                     if is_repo_path:
                         git.set_repository(path)
                     else:
                         repo_path = git.find_repository_path(path)
+                        print("GOT REPO PATH",repo_path)
                         git.set_repository(repo_path)
                 
                 self.clients[VCS_GIT] = git

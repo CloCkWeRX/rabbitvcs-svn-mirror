@@ -398,7 +398,7 @@ class GittyupClient:
                 return path_to_check
             
             path_to_check = os.path.split(path_to_check)[0]
-        
+
         return None
 
     def get_relative_path(self, path):
@@ -1800,6 +1800,10 @@ class GittyupClient:
             relative_path2 = self.get_relative_path(path2)
 
         cmd = ["git", "diff"]
+
+        if summarize:
+            cmd.append("--name-status")
+
         if revision_obj1:
             cmd += [revision_obj1]
         if revision_obj2 and path2:
@@ -1808,9 +1812,6 @@ class GittyupClient:
             cmd += [relative_path1]
         if relative_path2 and relative_path2 != relative_path1:
             cmd += [relative_path2]
-
-        if summarize:
-            cmd.append("--name-status")
             
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
