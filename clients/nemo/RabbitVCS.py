@@ -64,7 +64,7 @@ import copy
 
 import os
 # Do NOT change this to "Nemo". RabbitVCS has an internal reference to this name.
-os.environ["NAUTILUS_PYTHON_REQUIRE_GTK3"] = "1"
+os.environ["REQUIRE_GTK3"] = "1"
 
 import os.path
 from os.path import isdir, isfile, realpath, basename
