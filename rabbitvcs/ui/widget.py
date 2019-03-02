@@ -797,25 +797,25 @@ class ComboBox:
                 self.cb.set_active(index)
                 return
             index += 1
-    
+
     def get_active_text(self):
-        return self.cb.get_active_text()
-    
+        return self.cb.get_child().get_text()
+
     def get_active(self):
         return self.cb.get_active()
     
     def set_active(self, index):
         self.cb.set_active(index)
-    
+
     def set_child_text(self, text):
         self.cb.get_child().set_text(text)
-    
+
     def set_sensitive(self, val):
         self.cb.set_sensitive(val)
 
     def set_child_signal(self, signal, callback, userdata=None):
         self.cb.get_child().connect(signal, callback, userdata)
-        
+
 class TextView:
     def __init__(self, widget=None, value="", spellcheck=True):
         if widget is None:
