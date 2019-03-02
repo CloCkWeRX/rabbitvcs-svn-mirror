@@ -39,18 +39,10 @@ import time
 import shutil
 import hashlib
 
-# A hacky way to get this working with python2 or 3
-try:
-    from urlparse import urlparse, urlunparse
-    from urllib import quote, quote_plus, unquote, unquote_plus
-except ImportError:
-    from urllib.parse import urlparse, urlunparse, quote, quote_plus, unquote, unquote_plus
-
-    
+import six
 from six.moves import filter
 from six.moves import range
-
-from gi.repository import GObject as gobject
+from six.moves.urllib.parse import urlparse, urlunparse, quote, quote_plus, unquote, unquote_plus
 
 import rabbitvcs.util.settings
 
@@ -59,6 +51,14 @@ log = Log("rabbitvcs.util.helper")
 
 from rabbitvcs import gettext
 ngettext = gettext.ngettext
+
+try:
+    from html import escape as html_escape
+except ImportError:
+    from cgi import escape as html_escape
+
+import gi
+from gi.repository import GObject
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M" # for log files
 LOCAL_DATETIME_FORMAT = locale.nl_langinfo(locale.D_T_FMT) # for UIs
@@ -650,7 +650,7 @@ def save_repository_path(path):
         paths.pop()
     
     f = open(get_repository_paths_path(), "w")
-    f.write("\n".join(paths).encode("utf-8"))
+    f.write(six.text_type("\n".join(paths).encode("utf-8")))
     f.close()
     
 def launch_ui_window(filename, args=[], block=False):
@@ -863,11 +863,11 @@ def unquote_url(url_text):
 
 def pretty_filesize(bytes):
     if bytes >= 1073741824:
-        return str(bytes / 1073741824) + ' GB'
+        return str(int(bytes / 1073741824)) + ' GB'
     elif bytes >= 1048576:
-        return str(bytes / 1048576) + ' MB'
+        return str(int(bytes / 1048576)) + ' MB'
     elif bytes >= 1024:
-        return str(bytes / 1024) + ' KB'
+        return str(int(bytes / 1024)) + ' KB'
     elif bytes < 1024:
         return str(bytes) + ' bytes'
 
