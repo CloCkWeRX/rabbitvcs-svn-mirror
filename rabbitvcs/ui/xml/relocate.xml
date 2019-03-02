@@ -93,6 +93,7 @@
                         <child>
                           <object class="GtkComboBoxText" id="to_urls">
                             <property name="visible">True</property>
+                            <property name="has-entry">True</property>
                             <child internal-child="entry">
                               <object class="GtkEntry" id="to_url">
                                 <property name="visible">True</property>

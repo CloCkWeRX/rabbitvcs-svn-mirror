@@ -48,6 +48,7 @@
                     <child>
                       <object class="GtkComboBoxText" id="urls">
                         <property name="visible">True</property>
+                        <property name="has-entry">True</property>
                       </object>
                       <packing>
                         <property name="position">1</property>

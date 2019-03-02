@@ -13,11 +13,13 @@
     <property name="type_hint">normal</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
-      <object class="GtkBox" orientation="vertical" id="dialog-vbox15">
+      <object class="GtkBox" id="dialog-vbox15">
+        <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="spacing">6</property>
         <child>
-          <object class="GtkBox" orientation="horizontal" id="hbox1">
+          <object class="GtkBox" id="hbox1">
+	    <property name="orientation">horizontal</property>
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
@@ -48,7 +50,8 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" orientation="horizontal" id="notice_box">
+          <object class="GtkBox" id="notice_box">
+	    <property name="orientation">horizontal</property>
             <property name="visible">True</property>
             <child>
               <placeholder/>
@@ -80,7 +83,8 @@
           </packing>
         </child>
         <child internal-child="action_area">
-          <object class="GtkButtonBox" orientation="horizontal" id="dialog-action_area15">
+          <object class="GtkButtonBox" id="dialog-action_area15">
+	    <property name="orientation">horizontal</property>
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>

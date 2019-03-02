@@ -62,8 +62,9 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBoxEntry" id="from_urls">
+                          <object class="GtkComboBoxText" id="from_urls">
                             <property name="visible">True</property>
+                            <property name="has-entry">True</property>
                           </object>
                           <packing>
                             <property name="position">1</property>
@@ -113,8 +114,9 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBoxEntry" id="to_urls">
+                          <object class="GtkComboBoxText" id="to_urls">
                             <property name="visible">True</property>
+                            <property name="has-entry">True</property>
                           </object>
                           <packing>
                             <property name="position">1</property>

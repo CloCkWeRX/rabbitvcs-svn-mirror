@@ -8,12 +8,14 @@
     <property name="window_position">center-always</property>
     <signal handler="on_destroy" name="destroy"/>
     <child>
-      <object class="GtkBox" orientation="vertical" id="vbox1">
+      <object class="GtkBox" id="vbox1">
+        <property name="orientation">vertical</property>
         <property name="visible">True</property>
         <property name="border_width">12</property>
         <property name="spacing">18</property>
         <child>
-          <object class="GtkBox" orientation="vertical" id="vbox3">
+          <object class="GtkBox" id="vbox3">
+            <property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <child>
@@ -50,7 +52,8 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" orientation="horizontal" id="hbox1">
+          <object class="GtkBox" id="hbox1">
+	    <property name="orientation">horizontal</property>
             <property name="visible">True</property>
             <child>
               <object class="GtkLabel" id="label2">
@@ -86,7 +89,8 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButtonBox" orientation="horizontal" id="hbuttonbox1">
+          <object class="GtkButtonBox" id="hbuttonbox1">
+	    <property name="orientation">horizontal</property>
             <property name="visible">True</property>
             <property name="spacing">6</property>
             <property name="layout_style">end</property>

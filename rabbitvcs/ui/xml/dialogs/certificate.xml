@@ -13,12 +13,14 @@
     <property name="type_hint">dialog</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
-      <object class="GtkBox" orientation="vertical" id="dialog-vbox3">
+      <object class="GtkBox" id="dialog-vbox3">
+        <property name="orientation">vertical</property>
         <property name="width_request">400</property>
         <property name="visible">True</property>
         <property name="spacing">12</property>
         <child>
-          <object class="GtkBox" orientation="vertical" id="vbox4">
+          <object class="GtkBox" id="vbox4">
+            <property name="orientation">vertical</property>
             <property name="visible">True</property>
             <property name="border_width">6</property>
             <property name="spacing">6</property>
@@ -40,11 +42,13 @@
                 <property name="visible">True</property>
                 <property name="left_padding">12</property>
                 <child>
-                  <object class="GtkBox" orientation="vertical" id="vbox5">
+                  <object class="GtkBox" id="vbox5">
+                    <property name="orientation">vertical</property>
                     <property name="visible">True</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkBox" orientation="horizontal" id="hbox6">
+                      <object class="GtkBox" id="hbox6">
+                        <property name="orientation">horizontal</property>
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkLabel" id="label7">
@@ -80,7 +84,8 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" orientation="horizontal" id="hbox7">
+                      <object class="GtkBox" id="hbox7">
+                        <property name="orientation">horizontal</property>
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkLabel" id="label8">
@@ -116,7 +121,8 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" orientation="horizontal" id="hbox8">
+                      <object class="GtkBox" id="hbox8">
+                        <property name="orientation">horizontal</property>
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkLabel" id="label9">
@@ -152,7 +158,8 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" orientation="horizontal" id="hbox9">
+                      <object class="GtkBox" id="hbox9">
+                        <property name="orientation">horizontal</property>
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkLabel" id="label10">
@@ -188,7 +195,8 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" orientation="horizontal" id="hbox10">
+                      <object class="GtkBox" id="hbox10">
+                        <property name="orientation">horizontal</property>
                         <property name="visible">True</property>
                         <child>
                           <object class="GtkLabel" id="label11">
@@ -240,7 +248,8 @@
           </packing>
         </child>
         <child internal-child="action_area">
-          <object class="GtkButtonBox" orientation="horizontal" id="dialog-action_area3">
+          <object class="GtkButtonBox" id="dialog-action_area3">
+	    <property name="orientation">horizontal</property>
             <property name="visible">True</property>
             <property name="layout_style">spread</property>
             <child>
