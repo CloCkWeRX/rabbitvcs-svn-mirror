@@ -1532,6 +1532,7 @@ class LogBottomContextMenuCallbacks:
 
     def show_changes_previous_revision(self, widget, data=None):
         rev_first = six.text_type(self.revisions[0]["revision"])
+        rev_last = six.text_type(self.revisions[-1]["revision"])
         
         parent = self.find_parent(self.revisions[0])
 
