@@ -10,6 +10,7 @@ import re
 import shutil
 import fnmatch
 import time
+import struct
 from datetime import datetime
 from mimetypes import guess_type
 import time
@@ -27,8 +28,6 @@ from .exceptions import *
 from . import util
 from .objects import *
 from .command import GittyupCommand
-
-import tkinter
 
 import six.moves.tkinter
 import six.moves.tkinter_messagebox
@@ -150,9 +149,11 @@ class GittyupClient:
             return self.git_version
         else:
             try:
-                proc = subprocess.Popen(["git", "--version"], stdout=subprocess.PIPE)
+                proc = subprocess.Popen(["git", "--version"],
+                                        stdout=subprocess.PIPE,
+                                        universal_newlines=True)
                 response = proc.communicate()[0].split()
-                version = response[2].split(".")
+                version = [int(x) for x in response[2].split(".")]
                 self.git_version = version
                 return self.git_version
             except Exception as e:
@@ -356,8 +357,8 @@ class GittyupClient:
 
     def _get_config_user(self):
         try:
-            config_user_name = self._config_get(("user", ), "name")
-            config_user_email = self._config_get(("user", ), "email")
+            config_user_name = six.text_type(self._config_get(("user", ), "name"))
+            config_user_email = six.text_type(self._config_get(("user", ), "email"))
             if config_user_name == "" or config_user_email == "":
                 raise KeyError()
         except KeyError:
@@ -370,6 +371,10 @@ class GittyupClient:
         self._config_set(("user", ), "email", config_user_email)
         self.config.write_to_path()
         return "%s <%s>" % (config_user_name, config_user_email)
+
+    def string_unescape(self, s):
+        # Portable utf-8 string unescape.
+        return b"".join([struct.pack("B", ord(x)) for x in s.encode("ascii").decode("unicode_escape")]).decode("utf-8")
 
     #
     # Start Public Methods
@@ -401,7 +406,7 @@ class GittyupClient:
                 return path_to_check
             
             path_to_check = os.path.split(path_to_check)[0]
-        
+
         return None
 
     def get_relative_path(self, path):
@@ -414,13 +419,13 @@ class GittyupClient:
         return os.path.join(self.repo.path, path).rstrip("/")
 
     def track(self, name):
-        self.repo.refs.set_symbolic_ref("HEAD", name)
+        self.repo.refs.set_symbolic_ref(b"HEAD", name)
 
     def is_tracking(self, name):
-        return (self.repo.refs.read_ref("HEAD")[5:] == name)
+        return (self.repo.refs.read_ref(b"HEAD")[5:] == name)
 
     def tracking(self):
-        return self.repo.refs.read_ref("HEAD")[5:]
+        return self.repo.refs.read_ref(b"HEAD")[5:]
     
     def head(self):
         return self.repo.refs[b"HEAD"]
@@ -836,7 +841,7 @@ class GittyupClient:
                 author_timezone=author_timezone, encoding=encoding,
                 merge_heads=parents)
 
-        branch_full = self.repo.refs.read_ref("HEAD")
+        branch_full = self.repo.refs.read_ref(b"HEAD")
 
         if branch_full is not None:
             branch_components = re.search("refs/heads/(.+)", branch_full)
@@ -1074,7 +1079,7 @@ class GittyupClient:
 
         if remoteKey.find("://") == -1:
             # Get existing url from config, otherwise just use what was provided (the url from cloning, etc).
-            originalRemoteUrl = self._config_get(remoteKey, "url")
+            originalRemoteUrl = six.text_type(self._config_get(remoteKey, "url"))
 
         if originalRemoteUrl.find('@') == -1:
             # No username or password. Prompt for both. Create dialog.
@@ -1131,7 +1136,7 @@ class GittyupClient:
 
         if remoteKey.find("://") == -1:
             # Get existing url from config, otherwise just use what was provided (the url from cloning, etc).
-            originalRemoteUrl = self._config_get(remoteKey, "url")
+            originalRemoteUrl = six.text_type(self._config_get(remoteKey, "url"))
 
         # If the url contains a username (@) without a password (:), then prompt for a password.
         if originalRemoteUrl.find('@') > -1 and originalRemoteUrl.rfind(':') <= 5:
@@ -1392,7 +1397,7 @@ class GittyupClient:
             if components:
                 status = components.group(1)
                 strip_status = status.strip()
-                path = components.group(2)
+                path = self.string_unescape(components.group(2))
                 if path[0] == '"' and path[-1] == '"':
                     path = path[1:-1]
                
@@ -1694,7 +1699,7 @@ class GittyupClient:
                     changed_file = {
                         "additions": file_line[0],
                         "removals": file_line[1],
-                        "path": file_line[2]
+                        "path": self.string_unescape(file_line[2])
                     }
                     if changed_file['path'][0] == '"' and changed_file['path'][-1] == '"':
                         changed_file['path'] = changed_file['path'][1:-1]
@@ -1800,6 +1805,10 @@ class GittyupClient:
             relative_path2 = self.get_relative_path(path2)
 
         cmd = ["git", "diff"]
+
+        if summarize:
+            cmd.append("--name-status")
+
         if revision_obj1:
             cmd += [revision_obj1]
         if revision_obj2 and path2:
@@ -1808,9 +1817,6 @@ class GittyupClient:
             cmd += [relative_path1]
         if relative_path2 and relative_path2 != relative_path1:
             cmd += [relative_path2]
-
-        if summarize:
-            cmd.append("--name-status")
             
         try:
             (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
