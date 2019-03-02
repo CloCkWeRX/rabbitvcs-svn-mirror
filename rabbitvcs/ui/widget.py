@@ -808,13 +808,13 @@ class ComboBox:
         self.cb.set_active(index)
     
     def set_child_text(self, text):
-        self.cell.set_text(text)
+        self.cb.get_child().set_text(text)
     
     def set_sensitive(self, val):
         self.cb.set_sensitive(val)
 
     def set_child_signal(self, signal, callback, userdata=None):
-        self.cb.connect(signal, callback, userdata)
+        self.cb.get_child().connect(signal, callback, userdata)
         
 class TextView:
     def __init__(self, widget=None, value="", spellcheck=True):
