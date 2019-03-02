@@ -21,8 +21,6 @@ from __future__ import absolute_import
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import cgi
-
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject, Gdk
@@ -543,7 +541,7 @@ class GitMerge(BranchMerge):
                 self.info['from']['author'].set_text(from_info.author)
                 self.info['from']['date'].set_text(rabbitvcs.util.helper.format_datetime(from_info.date))
                 self.info['from']['revision'].set_text(six.text_type(from_info.revision)[0:7])
-                self.info['from']['message'].set_text(cgi.escape(rabbitvcs.util.helper.format_long_text(from_info.message, 500)))
+                self.info['from']['message'].set_text(rabbitvcs.util.helper.html_escape(rabbitvcs.util.helper.format_long_text(from_info.message, 500)))
 
     def on_from_branches_changed(self, widget):
         self.update_branch_info()

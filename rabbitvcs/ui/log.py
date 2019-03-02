@@ -31,8 +31,6 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject
 
-import cgi
-
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import SVNAction, GitAction, vcs_action_factory
 from rabbitvcs.ui.dialog import MessageBox
@@ -456,7 +454,7 @@ class SVNLog(Log):
         self.display_items = []
 
         for item in self.revision_items:
-            msg = cgi.escape(item.message).lower()
+            msg = rabbitvcs.util.helper.html_escape(item.message).lower()
 
             should_add = not self.filter_text
             should_add = should_add or msg.find(self.filter_text) > -1
@@ -474,7 +472,7 @@ class SVNLog(Log):
         self.check_next_sensitive()
 
         for item in self.display_items:
-            msg = cgi.escape(rabbitvcs.util.helper.format_long_text(item.message, 80))
+            msg = rabbitvcs.util.helper.html_escape(rabbitvcs.util.helper.format_long_text(item.message, 80))
             rev = item.revision
             color = "#000000"
             if (self.merge_candidate_revisions != None and
@@ -736,7 +734,7 @@ class GitLog(Log):
         self.display_items = []
 
         for item in self.revision_items:
-            msg = cgi.escape(item.message).lower()
+            msg = rabbitvcs.util.helper.html_escape(item.message).lower()
 
             should_add = not self.filter_text
             should_add = should_add or msg.find(self.filter_text) > -1
@@ -765,7 +763,7 @@ class GitLog(Log):
         index = 0
         for (item, node, in_lines, out_lines) in grapher:
             revision = six.text_type(item.revision)
-            msg = cgi.escape(rabbitvcs.util.helper.format_long_text(item.message, 80))
+            msg = rabbitvcs.util.helper.html_escape(rabbitvcs.util.helper.format_long_text(item.message, 80))
             author = item.author
             date = rabbitvcs.util.helper.format_datetime(item.date)
             
