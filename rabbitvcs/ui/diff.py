@@ -23,7 +23,7 @@ from __future__ import absolute_import
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GObject, Gdk, GLib
+from gi.repository import Gtk, Gdk, GLib
 import os
 from shutil import rmtree
 import tempfile
@@ -102,7 +102,7 @@ class SVNDiff(Diff):
         self.revision1 = self.get_revision_object(revision1, "base")
         self.revision2 = self.get_revision_object(revision2, "working")
 
-        GObject.idle_add(self.launch)
+        GLib.idle_add(self.launch)
         self.start_loading()
 
     def get_revision_object(self, value, default):
@@ -199,7 +199,7 @@ class GitDiff(Diff):
         self.revision1 = self.get_revision_object(revision1, "HEAD")
         self.revision2 = self.get_revision_object(revision2, "WORKING")
 
-        GObject.idle_add(self.launch)        
+        GLib.idle_add(self.launch)        
         self.start_loading()
 
     def get_revision_object(self, value, default):
