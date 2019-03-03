@@ -401,13 +401,14 @@ STATUS_TYPES = [
 ]
 
 class TestStatusObjects(unittest.TestCase):
-    def setUp(self):
+    
+    @classmethod
+    def __initclass__(self):
         self.base = "/path/to/test"
-        
         self.children = [
             os.path.join(self.base, chr(x)) for x in range(97,123) 
-                ]
-    
+        ]
+
     def testsingle_clean(self):
         status = Status(self.base, status_normal)
         self.assertEqual(status.single, status_normal)
@@ -487,6 +488,9 @@ class TestStatusObjects(unittest.TestCase):
         
         top_status.make_summary(child_sts)
         self.assertEqual(top_status.summary, status_added)
+
+TestStatusObjects.__initclass__()
+
 
 if __name__ == "__main__":
     unittest.main()
