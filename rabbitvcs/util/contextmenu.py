@@ -754,6 +754,7 @@ class ContextMenuConditions:
     def rename(self, data=None):
         return (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
+                not self.path_dict["is_working_copy"] and
                 self.path_dict["is_versioned"])
         
     def delete(self, data=None):
