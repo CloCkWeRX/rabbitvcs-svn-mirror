@@ -200,7 +200,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
             self.edit_property(name)
 
     def on_table_key_event(self, treeview, data=None):
-        if Gtk.gdk.keyval_name(data.keyval) == "Delete":
+        if Gdk.keyval_name(data.keyval) == "Delete":
             names = self.table.get_selected_row_items(0)
             self.delete_properties(names)
 

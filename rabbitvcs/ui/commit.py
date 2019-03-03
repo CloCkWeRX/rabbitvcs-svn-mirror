@@ -220,7 +220,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         self.rescan_after_process_exit(proc, paths)
 
     def on_files_table_key_event(self, treeview, data=None):
-        if Gtk.gdk.keyval_name(data.keyval) == "Delete":
+        if Gdk.keyval_name(data.keyval) == "Delete":
             self.delete_items(treeview, data)
 
     def on_files_table_mouse_event(self, treeview, data=None):

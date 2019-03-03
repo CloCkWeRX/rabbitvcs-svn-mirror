@@ -121,7 +121,7 @@ def disable(func):
 def gtk_unsafe(func):
     """
     Used to wrap a function that makes calls to GTK from a thread in
-    Gtk.gdk.threads_enter() and Gtk.gdk.threads_leave().
+    Gdk.threads_enter() and Gdk.threads_leave().
     
     """
 

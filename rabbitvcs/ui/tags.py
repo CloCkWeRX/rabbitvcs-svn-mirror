@@ -241,7 +241,7 @@ class GitTagManager(InterfaceView):
         self.load(self.show_detail, tag_name)
 
     def on_treeview_key_event(self, treeview, data=None):
-        if Gtk.gdk.keyval_name(data.keyval) in ("Up", "Down", "Return"):
+        if Gdk.keyval_name(data.keyval) in ("Up", "Down", "Return"):
             self.on_treeview_event(treeview, data)
 
     def on_treeview_mouse_event(self, treeview, data=None):

@@ -25,7 +25,7 @@ from gettext import gettext as _
 import os.path
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GObject, Pango
+from gi.repository import Gtk, GObject, Gdk, Pango
 
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
@@ -391,7 +391,7 @@ class OneLineTextChange(InterfaceView):
         # The Gtk.Dialog.response() method emits the "response" signal,
         # which tells Gtk.Dialog.run() asyncronously to stop.  This allows the
         # user to press the "Return" button when done writing in the new text
-        if Gtk.gdk.keyval_name(data.keyval) == "Return":
+        if Gdk.keyval_name(data.keyval) == "Return":
             self.dialog.response(Gtk.ResponseType.OK)
     
     def run(self):
@@ -463,7 +463,7 @@ class NameEmailPrompt(InterfaceView):
         # The Gtk.Dialog.response() method emits the "response" signal,
         # which tells Gtk.Dialog.run() asyncronously to stop.  This allows the
         # user to press the "Return" button when done writing in the new text
-        if Gtk.gdk.keyval_name(data.keyval) == "Return":
+        if Gdk.keyval_name(data.keyval) == "Return":
             self.dialog.response(Gtk.ResponseType.OK)
     
     def run(self):

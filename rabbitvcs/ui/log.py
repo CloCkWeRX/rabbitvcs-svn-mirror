@@ -29,7 +29,7 @@ import os.path
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import SVNAction, GitAction, vcs_action_factory
@@ -163,8 +163,8 @@ class Log(InterfaceView):
     
     def on_key_pressed(self, widget, data):
         InterfaceView.on_key_pressed(self, widget, data)
-        if (data.state & Gtk.gdk.CONTROL_MASK and
-            Gtk.gdk.keyval_name(data.keyval).lower() == "c"):
+        if (data.state & Gdk.CONTROL_MASK and
+            Gdk.keyval_name(data.keyval).lower() == "c"):
             if len(self.revisions_table.get_selected_rows()) > 0:
                 self.copy_revision_text()
 

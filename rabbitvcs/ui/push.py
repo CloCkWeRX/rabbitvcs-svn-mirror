@@ -115,17 +115,17 @@ class GitPush(Push):
             log.exception(e)
 
     def load_logs(self):
-        Gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
 
-        Gtk.gdk.threads_leave()
+        Gdk.threads_leave()
 
         self.load_push_log()
 
-        Gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         self.get_widget("status").set_text("")
         self.update_widgets()
-        Gtk.gdk.threads_leave()
+        Gdk.threads_leave()
         
     def load_push_log(self):
         repository = self.repository_selector.repository_opt.get_active_text()

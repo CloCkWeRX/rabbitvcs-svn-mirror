@@ -184,7 +184,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
             self._open([self.url])
 
     def on_urls_key_released(self, widget, data, userdata):
-        if Gtk.gdk.keyval_name(data.keyval) == "Return":
+        if Gdk.keyval_name(data.keyval) == "Return":
             rabbitvcs.util.helper.save_repository_path(self.urls.get_active_text())
             self.load()
 
