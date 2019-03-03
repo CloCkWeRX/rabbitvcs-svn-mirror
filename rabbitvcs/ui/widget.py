@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-import six
 from six.moves import range
 #
 # This is an extension to the Nautilus file manager to allow better 
@@ -29,12 +28,6 @@ import os.path
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, GObject, Pango
-GTK_FILL = Gtk.AttachOptions.FILL
-GTK_EXPAND = Gtk.AttachOptions.EXPAND
-GTK3 = True
-PANGO_ELLIPSIZE_MIDDLE = Pango.EllipsizeMode.MIDDLE
-PANGO_ELLIPSIZE_END = Pango.EllipsizeMode.END
-HAS_PANGO = True
 
 HAS_GTKSPELL = False
 try:
@@ -52,7 +45,8 @@ try:
 except ImportError:
     pass
 
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
+import rabbitvcs.vcs
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -146,7 +140,7 @@ def path_filter(row, column, user_data=None):
     base_dir = user_data["base_dir"]
 
     if row[column]:
-        relpath = rabbitvcs.util.helper.get_relative_path(base_dir, row[column])
+        relpath = helper.get_relative_path(base_dir, row[column])
         if relpath == "":
             relpath = os.path.basename(row[column])
         return relpath
@@ -163,13 +157,13 @@ def long_text_filter(row, column, user_data=None):
     
     
     if text:
-        text = rabbitvcs.util.helper.format_long_text(text, cols)
+        text = helper.format_long_text(text, cols)
         
     return text
 
 def git_revision_filter(row, column, user_data=None):
     """
-    Only show the first six characters of a git revision hash
+    Only show the first seven characters of a git revision hash
     """
     
     text = row[column]
@@ -314,7 +308,7 @@ class TableBase:
                     }
                 else:
                     data = {
-                        "callback": rabbitvcs.util.helper.get_node_kind,
+                        "callback": helper.get_node_kind,
                         "column": i
                     }
                 col.set_cell_data_func(cellpb, self.file_pixbuf, data)
@@ -353,9 +347,8 @@ class TableBase:
                 cell = Gtk.CellRendererText()
                 cell.set_property('yalign', 0)
                 cell.set_property('xalign', 0)
-                if HAS_PANGO:
-                    cell.set_property('ellipsize', PANGO_ELLIPSIZE_END)
-                    cell.set_property('width-chars', ELLIPSIZE_COLUMN_CHARS)
+                cell.set_property('ellipsize', Pango.EllipsizeMode.END)
+                cell.set_property('width-chars', ELLIPSIZE_COLUMN_CHARS)
                 col = Gtk.TreeViewColumn(name, cell)
                 col.set_attributes(cell, text=i)
             elif coltypes[i] == TYPE_GRAPH:
@@ -596,7 +589,7 @@ class TableBase:
         for row in self.data:
             line = []
             for cell in row:
-                line.append(six.text_type(cell))
+                line.append(helper.to_text(cell))
             lines.append("\t".join(line))
         
         return "\n".join(lines)
@@ -1150,22 +1143,19 @@ class KeyValueTable(Gtk.Table):
                 label_key.set_properties(xalign=0, use_markup=True)
                 
                 label_value = Gtk.Label("%s" % value)
-                if HAS_PANGO:
-                    label_value.set_properties(xalign=0,                    \
-                                           ellipsize=PANGO_ELLIPSIZE_MIDDLE, \
+                label_value.set_properties(xalign=0,                    \
+                                           ellipsize=Pango.EllipsizeMode.MIDDLE, \
                                            selectable=True)
-                else:
-                    label_value.set_properties(xalign=0,selectable=True)
-                    
+
                 self.attach(label_key,
                              0,1,
                              row, row+1,
-                             xoptions=GTK_FILL)
+                             xoptions=Gtk.AttachOptions.FILL)
     
                 self.attach(label_value,
                              1,2,
                              row, row+1,
-                             xoptions=GTK_FILL|GTK_EXPAND)
+                             xoptions=Gtk.AttachOptions.FILL|Gtk.AttachOptions.EXPAND)
                         
                 label_key.show()
                 label_value.show()

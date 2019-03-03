@@ -47,7 +47,6 @@ from __future__ import absolute_import
 import os, os.path
 import sys
 import simplejson
-import six
 
 from gi.repository import GObject
 from gi.repository import GLib
@@ -168,7 +167,7 @@ class StatusCheckerService(dbus.service.Object):
                       summary=False):
         """ Requests a status check from the underlying status checker.
         """
-        status = self.status_checker.check_status(six.text_type(path),
+        status = self.status_checker.check_status(helper.to_text(path),
                                                   recurse=recurse,
                                                   summary=summary,
                                                   invalidate=invalidate)
@@ -179,7 +178,7 @@ class StatusCheckerService(dbus.service.Object):
     def GenerateMenuConditions(self, paths):
         upaths = []
         for path in paths:
-            upaths.append(six.text_type(path))
+            upaths.append(helper.to_text(path))
     
         path_dict = self.status_checker.generate_menu_conditions(upaths)
         return simplejson.dumps(path_dict)

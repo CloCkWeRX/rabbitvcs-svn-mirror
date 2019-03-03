@@ -30,7 +30,7 @@ from datetime import datetime
 
 from mercurial import commands, ui, hg
 
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 
 import rabbitvcs.vcs
 import rabbitvcs.vcs.status
@@ -38,7 +38,6 @@ import rabbitvcs.vcs.log
 import rabbitvcs.vcs.mercurial.util
 from rabbitvcs.vcs.branch import BranchEntry
 from rabbitvcs.util.log import Log
-import six
 
 log = Log("rabbitvcs.vcs.mercurial")
 
@@ -62,13 +61,13 @@ class Revision:
 
     def __unicode__(self):
         if self.value:
-            return six.text_type(self.value)
+            return helper.to_text(self.value)
         else:
             return self.kind
             
     def short(self):
         if self.value:
-            return six.text_type(self.value)[0:7]
+            return helper.to_text(self.value)[0:7]
         else:
             return self.kind
 

@@ -29,6 +29,8 @@ from . import util
 from .objects import *
 from .command import GittyupCommand
 
+from rabbitvcs.util import helper
+
 import six.moves.tkinter
 import six.moves.tkinter_messagebox
 import six
@@ -357,8 +359,8 @@ class GittyupClient:
 
     def _get_config_user(self):
         try:
-            config_user_name = six.text_type(self._config_get(("user", ), "name"))
-            config_user_email = six.text_type(self._config_get(("user", ), "email"))
+            config_user_name = helper.to_text(self._config_get(("user", ), "name"))
+            config_user_email = helper.to_text(self._config_get(("user", ), "email"))
             if config_user_name == "" or config_user_email == "":
                 raise KeyError()
         except KeyError:
@@ -1080,7 +1082,7 @@ class GittyupClient:
 
         if remoteKey.find("://") == -1:
             # Get existing url from config, otherwise just use what was provided (the url from cloning, etc).
-            originalRemoteUrl = six.text_type(self._config_get(remoteKey, "url"))
+            originalRemoteUrl = helper.to_text(self._config_get(remoteKey, "url"))
 
         if originalRemoteUrl.find('@') == -1:
             # No username or password. Prompt for both. Create dialog.
@@ -1137,7 +1139,7 @@ class GittyupClient:
 
         if remoteKey.find("://") == -1:
             # Get existing url from config, otherwise just use what was provided (the url from cloning, etc).
-            originalRemoteUrl = six.text_type(self._config_get(remoteKey, "url"))
+            originalRemoteUrl = helper.to_text(self._config_get(remoteKey, "url"))
 
         # If the url contains a username (@) without a password (:), then prompt for a password.
         if originalRemoteUrl.find('@') > -1 and originalRemoteUrl.rfind(':') <= 5:
@@ -1365,7 +1367,7 @@ class GittyupClient:
 
         tags = []
         for ref,tag_sha in list(refs.items()):
-            if six.text_type(ref).startswith("refs/tags"):
+            if helper.to_text(ref).startswith("refs/tags"):
                 if type(self.repo[tag_sha]) == dulwich.objects.Commit:
                     tag = CommitTag(ref[10:], tag_sha, self.repo[tag_sha])
                 else:

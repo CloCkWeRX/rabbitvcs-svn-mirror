@@ -30,10 +30,9 @@ from rabbitvcs.ui.log import SVNLogDialog
 from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.vcs
 import rabbitvcs.ui.widget
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 
 from rabbitvcs import gettext
-import six
 _ = gettext.gettext
 
 class SVNMerge(InterfaceView):
@@ -64,7 +63,7 @@ class SVNMerge(InterfaceView):
         self.assistant.set_page_complete(self.page, True)
         self.assistant.set_forward_page_func(self.on_forward_clicked)
         
-        self.repo_paths = rabbitvcs.util.helper.get_repository_paths()
+        self.repo_paths = helper.get_repository_paths()
 
         # Keeps track of which stages should be marked as complete
         self.type = None
@@ -159,7 +158,7 @@ class SVNMerge(InterfaceView):
                         self.svn.revision("number", number=high).primitive(),
                     ))
 
-            action.append(rabbitvcs.util.helper.save_repository_path, url)
+            action.append(helper.save_repository_path, url)
             
             # Build up args and kwargs because some args are not supported
             # with older versions of pysvn/svn
@@ -181,7 +180,7 @@ class SVNMerge(InterfaceView):
             url = self.merge_reintegrate_repos.get_active_text()
             revision = self.merge_reintegrate_revision.get_revision_object()
 
-            action.append(rabbitvcs.util.helper.save_repository_path, url)
+            action.append(helper.save_repository_path, url)
             
             # Build up args and kwargs because some args are not supported
             # with older versions of pysvn/svn
@@ -211,8 +210,8 @@ class SVNMerge(InterfaceView):
                     number=int(self.get_widget("mergetree_to_revision_number").get_text())
                 )
 
-            action.append(rabbitvcs.util.helper.save_repository_path, from_url)
-            action.append(rabbitvcs.util.helper.save_repository_path, to_url)
+            action.append(helper.save_repository_path, from_url)
+            action.append(helper.save_repository_path, to_url)
 
             # Build up args and kwargs because some args are not supported
             # with older versions of pysvn/svn
@@ -539,9 +538,9 @@ class GitMerge(BranchMerge):
             if log:
                 from_info = log[0]
                 self.info['from']['author'].set_text(from_info.author)
-                self.info['from']['date'].set_text(rabbitvcs.util.helper.format_datetime(from_info.date))
-                self.info['from']['revision'].set_text(six.text_type(from_info.revision)[0:7])
-                self.info['from']['message'].set_text(rabbitvcs.util.helper.html_escape(rabbitvcs.util.helper.format_long_text(from_info.message, 500)))
+                self.info['from']['date'].set_text(helper.format_datetime(from_info.date))
+                self.info['from']['revision'].set_text(helper.to_text(from_info.revision)[0:7])
+                self.info['from']['message'].set_text(helper.html_escape(helper.format_long_text(from_info.message, 500)))
 
     def on_from_branches_changed(self, widget):
         self.update_branch_info()

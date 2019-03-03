@@ -32,10 +32,12 @@ from rabbitvcs.ui import InterfaceNonView
 from rabbitvcs.ui.action import SVNAction, GitAction
 
 import rabbitvcs.vcs
+from rabbitvcs.util import helper
 
 from rabbitvcs import gettext
-import six
 _ = gettext.gettext
+
+import six
 
 class SVNOpen(InterfaceNonView):
     """
@@ -66,7 +68,7 @@ class SVNOpen(InterfaceNonView):
         url = path
         if not self.svn.is_path_repository_url(path):
             url = self.svn.get_repo_root_url(path) + '/' + path
-        dest = rabbitvcs.util.helper.get_tmp_path("rabbitvcs-" + revision + "-" + os.path.basename(path))
+        dest = helper.get_tmp_path("rabbitvcs-" + revision + "-" + os.path.basename(path))
         
         self.svn.export(
             url,
@@ -75,7 +77,7 @@ class SVNOpen(InterfaceNonView):
             force=True
         )
         
-        rabbitvcs.util.helper.open_item(dest)
+        helper.open_item(dest)
 
         raise SystemExit()
 
@@ -105,7 +107,7 @@ class GitOpen(InterfaceNonView):
         else:
             revision_obj = self.git.revision("HEAD")
 
-        dest_dir = rabbitvcs.util.helper.get_tmp_path("rabbitvcs-" + six.text_type(revision))
+        dest_dir = helper.get_tmp_path("rabbitvcs-" + helper.to_text(revision))
         
         self.git.export(
             path,
@@ -120,7 +122,7 @@ class GitOpen(InterfaceNonView):
         
         dest_path = "%s/%s" % (dest_dir, relative_path)
         
-        rabbitvcs.util.helper.open_item(dest_path)
+        helper.open_item(dest_path)
 
         raise SystemExit()
 

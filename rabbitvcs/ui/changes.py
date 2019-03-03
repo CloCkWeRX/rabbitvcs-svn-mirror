@@ -28,13 +28,13 @@ from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 from rabbitvcs.util.contextmenu import GtkContextMenu
 from rabbitvcs.util.contextmenuitems import *
 import rabbitvcs.ui.action
 from rabbitvcs.ui.dialog import MessageBox
+
 from rabbitvcs import gettext
-import six
 _ = gettext.gettext
 
 class Changes(InterfaceView):
@@ -68,7 +68,7 @@ class Changes(InterfaceView):
         )
         self.more_actions.set_active(0)
 
-        repo_paths = rabbitvcs.util.helper.get_repository_paths()
+        repo_paths = helper.get_repository_paths()
         self.first_urls = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("first_urls"), 
             repo_paths
@@ -207,14 +207,14 @@ class Changes(InterfaceView):
                 url1 = ""
                 url2 = ""
 
-            url1 = rabbitvcs.util.helper.url_join(self.first_urls.get_active_text(), url1)
-            url2 = rabbitvcs.util.helper.url_join(self.second_urls.get_active_text(), url2)
+            url1 = helper.url_join(self.first_urls.get_active_text(), url1)
+            url2 = helper.url_join(self.second_urls.get_active_text(), url2)
             rev1 = self.get_first_revision()
             rev2 = self.get_second_revision()
             
-            rabbitvcs.util.helper.launch_ui_window("diff", [
-                "%s@%s" % (url1, six.text_type(rev1)),
-                "%s@%s" % (url2, six.text_type(rev2)),
+            helper.launch_ui_window("diff", [
+                "%s@%s" % (url1, helper.to_text(rev1)),
+                "%s@%s" % (url2, helper.to_text(rev2)),
                 "%s" % (sidebyside and "-s" or ""),
                 "--vcs=%s" % self.get_vcs_name()
             ])
@@ -230,9 +230,9 @@ class Changes(InterfaceView):
         rev2 = self.get_second_revision()        
         url2 = self.second_urls.get_active_text()
 
-        rabbitvcs.util.helper.launch_ui_window("diff", [
-            "%s@%s" % (url1, six.text_type(rev1)),
-            "%s@%s" % (url2, six.text_type(rev2)),
+        helper.launch_ui_window("diff", [
+            "%s@%s" % (url1, helper.to_text(rev1)),
+            "%s@%s" % (url2, helper.to_text(rev2)),
             "--vcs=%s" % self.get_vcs_name()
         ])
 
@@ -310,8 +310,8 @@ class SVNChanges(Changes):
             second_url,
             second_rev
         )
-        self.action.append(rabbitvcs.util.helper.save_repository_path, first_url)
-        self.action.append(rabbitvcs.util.helper.save_repository_path, second_url)
+        self.action.append(helper.save_repository_path, first_url)
+        self.action.append(helper.save_repository_path, second_url)
         self.action.append(self.populate_table)
         self.action.append(self.enable_more_actions)
         self.action.run()
@@ -404,8 +404,8 @@ class GitChanges(Changes):
             second_url,
             second_rev
         )
-        self.action.append(rabbitvcs.util.helper.save_repository_path, first_url)
-        self.action.append(rabbitvcs.util.helper.save_repository_path, second_url)
+        self.action.append(helper.save_repository_path, first_url)
+        self.action.append(helper.save_repository_path, second_url)
         self.action.append(self.populate_table)
         self.action.append(self.enable_more_actions)
         self.action.run()
@@ -481,13 +481,13 @@ class ChangesContextMenuCallbacks:
         if path == ".":
             path = ""
 
-        url = rabbitvcs.util.helper.url_join(self.caller.first_urls.get_active_text(), path)
+        url = helper.url_join(self.caller.first_urls.get_active_text(), path)
         rev = self.caller.get_first_revision()
 
-        rabbitvcs.util.helper.launch_ui_window("open", [
+        helper.launch_ui_window("open", [
             "--vcs=%s" % self.caller.get_vcs_name(),
             url,
-            "-r%s" % six.text_type(rev)            
+            "-r%s" % helper.to_text(rev)            
         ])
 
     def open_second(self, widget, data=None):
@@ -495,12 +495,12 @@ class ChangesContextMenuCallbacks:
         if path == ".":
             path = ""
 
-        url = rabbitvcs.util.helper.url_join(self.caller.second_urls.get_active_text(), path)
+        url = helper.url_join(self.caller.second_urls.get_active_text(), path)
         rev = self.caller.get_second_revision()
-        rabbitvcs.util.helper.launch_ui_window("open", [
+        helper.launch_ui_window("open", [
             "--vcs=%s" % self.caller.get_vcs_name(),
             url,
-            "-r%s" % six.text_type(rev)            
+            "-r%s" % helper.to_text(rev)            
         ])
 
     def view_diff(self, widget, data=None):
@@ -514,14 +514,14 @@ class ChangesContextMenuCallbacks:
                 url1 = ""
                 url2 = ""
 
-            url1 = rabbitvcs.util.helper.url_join(self.caller.first_urls.get_active_text(), url1)
-            url2 = rabbitvcs.util.helper.url_join(self.caller.second_urls.get_active_text(), url2)
+            url1 = helper.url_join(self.caller.first_urls.get_active_text(), url1)
+            url2 = helper.url_join(self.caller.second_urls.get_active_text(), url2)
             rev1 = self.caller.get_first_revision()
             rev2 = self.caller.get_second_revision()
             
-            rabbitvcs.util.helper.launch_ui_window("diff", [
-                "%s@%s" % (url1, six.text_type(rev1)), 
-                "%s@%s" % (url2, six.text_type(rev2)), 
+            helper.launch_ui_window("diff", [
+                "%s@%s" % (url1, helper.to_text(rev1)), 
+                "%s@%s" % (url2, helper.to_text(rev2)), 
                 "-s",
                 "--vcs=%s" % self.caller.get_vcs_name()
             ])
@@ -588,10 +588,10 @@ if __name__ == "__main__":
         usage="Usage: rabbitvcs changes [url1@rev1] [url2@rev2]"
     )
     
-    pathrev1 = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
+    pathrev1 = helper.parse_path_revision_string(args.pop(0))
     pathrev2 = (None, None)
     if len(args) > 0:
-        pathrev2 = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
+        pathrev2 = helper.parse_path_revision_string(args.pop(0))
 
     window = changes_factory(options.vcs, pathrev1[0], pathrev1[1], pathrev2[0], pathrev2[1])
     window.register_gtk_quit()

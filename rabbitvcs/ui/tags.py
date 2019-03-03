@@ -35,11 +35,10 @@ from rabbitvcs.ui.action import GitAction
 import rabbitvcs.ui.widget
 from rabbitvcs.ui.dialog import DeleteConfirmation
 from rabbitvcs.ui.log import log_dialog_factory
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 import rabbitvcs.vcs
 
 from rabbitvcs import gettext
-import six
 _ = gettext.gettext
 
 STATE_ADD = 0
@@ -109,7 +108,7 @@ class GitTagManager(InterfaceView):
         self.start_point_entry.set_size_request(300, -1)
         self.start_point_container = Gtk.HBox(False, 0)
         if self.revision_obj.value:
-            self.start_point_entry.set_text(six.text_type(self.revision_obj))
+            self.start_point_entry.set_text(helper.to_text(self.revision_obj))
         self.log_dialog_button = Gtk.Button()
         self.log_dialog_button.connect("clicked", self.on_log_dialog_button_clicked)
         image = Gtk.Image()
@@ -283,7 +282,7 @@ class GitTagManager(InterfaceView):
             self.revision_label.set_text(self.selected_tag.sha)
             self.message_label.set_text(self.selected_tag.message.rstrip("\n"))
             self.tagger_label.set_text(self.selected_tag.tagger)
-            self.date_label.set_text(rabbitvcs.util.helper.format_datetime(datetime.fromtimestamp(self.selected_tag.tag_time)))
+            self.date_label.set_text(helper.format_datetime(datetime.fromtimestamp(self.selected_tag.tag_time)))
 
             self.show_containers(self.view_containers)
             self.get_widget("detail_label").set_markup(_("<b>Tag Detail</b>"))

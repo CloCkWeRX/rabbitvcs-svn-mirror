@@ -88,6 +88,18 @@ def gobject_threads_init():
     if compare_version(GObject.pygobject_version, [3, 10, 2]) < 0:
         GObject.threads_init()
 
+def to_text(s):
+    # We cannot use a six.text_type() constructor alone as a bytes to text
+    # converter because it uses the str() function that stores the bytes type
+    # mark in the result under Python 3.
+    # Instead, decode it as UTF-8.
+    if isinstance(s, bytearray):
+        s = bytes(s)
+    if not isinstance(s, six.text_type):
+        if isinstance(s, bytes):
+            s = s.decode("utf-8")
+    return six.text_type(s)
+
 def get_tmp_path(filename):
     day = datetime.datetime.now().day
     day_string = (str(day) + str(os.geteuid())).encode("utf-8")
@@ -666,7 +678,7 @@ def save_repository_path(path):
         paths.pop()
     
     f = open(get_repository_paths_path(), "w")
-    f.write(six.text_type("\n".join(paths).encode("utf-8")))
+    f.write(to_text("\n".join(paths).encode("utf-8")))
     f.close()
     
 def launch_ui_window(filename, args=[], block=False):

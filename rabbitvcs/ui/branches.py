@@ -35,13 +35,12 @@ from rabbitvcs.ui.action import GitAction
 from rabbitvcs.ui.log import log_dialog_factory
 import rabbitvcs.ui.widget
 from rabbitvcs.ui.dialog import DeleteConfirmation
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 import rabbitvcs.vcs
 
 from xml.sax import saxutils
 
 from rabbitvcs import gettext
-import six
 _ = gettext.gettext
 
 STATE_ADD = 0
@@ -273,7 +272,7 @@ class GitBranchManager(InterfaceView):
         if self.revision:
             active_branch = self.git.get_active_branch()
             if active_branch:
-                revision = six.text_type(active_branch.name)
+                revision = helper.to_text(active_branch.name)
 
         self.items_treeview.unselect_all()
         self.branch_entry.set_text("")
@@ -298,7 +297,7 @@ class GitBranchManager(InterfaceView):
 
         if self.selected_branch:
             self.branch_entry.set_text(self.selected_branch.name)
-            self.revision_label.set_text(six.text_type(self.selected_branch.revision))
+            self.revision_label.set_text(helper.to_text(self.selected_branch.revision))
             self.message_label.set_text(self.selected_branch.message.rstrip("\n"))
             if self.selected_branch.tracking:
                 self.checkout_checkbox.set_active(True)
