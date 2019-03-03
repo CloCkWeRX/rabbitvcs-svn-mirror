@@ -163,7 +163,7 @@ class Log(InterfaceView):
     
     def on_key_pressed(self, widget, data):
         InterfaceView.on_key_pressed(self, widget, data)
-        if (data.state & Gdk.CONTROL_MASK and
+        if (data.state & Gdk.ModifierType.CONTROL_MASK and
             Gdk.keyval_name(data.keyval).lower() == "c"):
             if len(self.revisions_table.get_selected_rows()) > 0:
                 self.copy_revision_text()

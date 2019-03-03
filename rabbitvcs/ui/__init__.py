@@ -182,10 +182,10 @@ class InterfaceView(GtkBuilderWidgetWrapper):
         return True
 
     def on_key_pressed(self, widget, data):
-        if (data.keyval == Gdk.KEY_Escape):
+        if data.keyval == Gdk.keyval_from_name('Escape'):
             self.on_cancel_clicked(widget)
             return True
-            
+
         if (data.state & Gdk.ModifierType.CONTROL_MASK and 
                 Gdk.keyval_name(data.keyval).lower() == "w"):
             self.on_cancel_clicked(widget)
