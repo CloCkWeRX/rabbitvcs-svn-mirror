@@ -36,7 +36,7 @@ from rabbitvcs.util.contextmenuitems import MenuItem, MenuUpdate, \
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 from rabbitvcs.util.log import Log
 from rabbitvcs.util.decorators import gtk_unsafe
 
@@ -45,7 +45,7 @@ log = Log("rabbitvcs.ui.checkmods")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-GObject.threads_init()
+helper.gobject_threads_init()
 
 class SVNCheckForModifications(InterfaceView):
     """
@@ -146,11 +146,11 @@ class SVNCheckLocalModifications(GtkContextMenuCaller):
             self.files_table.append([
                 item.path, 
                 item.simple_content_status(),
-                rabbitvcs.util.helper.get_file_extension(item.path)
+                helper.get_file_extension(item.path)
             ])
 
     def diff_local(self, path):
-        rabbitvcs.util.helper.launch_diff_tool(path)
+        helper.launch_diff_tool(path)
 
     def on_context_menu_command_finished(self):
         self.refresh()
@@ -218,7 +218,7 @@ class SVNCheckRemoteModifications(GtkContextMenuCaller):
 
             self.files_table.append([
                 item.path, 
-                rabbitvcs.util.helper.get_file_extension(item.path),
+                helper.get_file_extension(item.path),
                 item.remote_content,
                 item.remote_metadata,
                 str(revision),
@@ -281,7 +281,7 @@ class CheckRemoteModsContextMenuCallbacks:
         self.paths = paths
 
     def update(self, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window(
+        proc = helper.launch_ui_window(
             "update", 
             self.paths
         )

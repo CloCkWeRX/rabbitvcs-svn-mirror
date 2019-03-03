@@ -32,7 +32,7 @@ from six.moves import range
 
 import gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, Gdk, GLib
 
 from rabbitvcs import APP_NAME, LOCALE_DIR, gettext
 _ = gettext.gettext
@@ -164,7 +164,7 @@ class InterfaceView(GtkBuilderWidgetWrapper):
         
         # This means we've already been closed
         if window is None:
-            GObject.idle_add(Gtk.main_quit)
+            GLib.idle_add(Gtk.main_quit)
     
     def gtk_quit_is_set(self):
         return self.do_gtk_quit

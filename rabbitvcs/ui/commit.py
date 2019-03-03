@@ -26,7 +26,7 @@ import six.moves._thread
 
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, GObject, Gdk, GLib
 
 from time import sleep
 
@@ -36,7 +36,7 @@ import rabbitvcs.ui.action
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.util
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 from rabbitvcs.util.log import Log
 from rabbitvcs.util.decorators import gtk_unsafe
 import rabbitvcs.vcs.status
@@ -46,7 +46,7 @@ log = Log("rabbitvcs.ui.commit")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-GObject.threads_init()
+helper.gobject_threads_init()
 
 class Commit(InterfaceView, GtkContextMenuCaller):
     """
@@ -164,7 +164,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         Initializes the activated cache and loads the file items in a new thread
         """
         
-        GObject.idle_add(self.load)
+        GLib.idle_add(self.load)
 
     def show_files_table_popup_menu(self, treeview, data):
         paths = self.files_table.get_selected_row_items(1)
@@ -173,7 +173,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
     def delete_items(self, widget, data=None):
         paths = self.files_table.get_selected_row_items(1)
         if len(paths) > 0:
-            proc = rabbitvcs.util.helper.launch_ui_window("delete", paths)
+            proc = helper.launch_ui_window("delete", paths)
             self.rescan_after_process_exit(proc, paths)
             
     #
@@ -214,9 +214,9 @@ class Commit(InterfaceView, GtkContextMenuCaller):
 
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
-        pathrev1 = rabbitvcs.util.helper.create_path_revision_string(paths[0], "base")
-        pathrev2 = rabbitvcs.util.helper.create_path_revision_string(paths[0], "working")
-        proc = rabbitvcs.util.helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
+        pathrev1 = helper.create_path_revision_string(paths[0], "base")
+        pathrev2 = helper.create_path_revision_string(paths[0], "working")
+        proc = helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
         self.rescan_after_process_exit(proc, paths)
 
     def on_files_table_key_event(self, treeview, data=None):
@@ -255,7 +255,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             self.files_table.append([
                 checked,
                 item.path, 
-                rabbitvcs.util.helper.get_file_extension(item.path),
+                helper.get_file_extension(item.path),
                 item.simple_content_status(),
                 item.simple_metadata_status()
             ])
@@ -309,7 +309,7 @@ class SVNCommit(Commit):
         self.action.append(self.action.set_header, _("Commit"))
         self.action.append(self.action.set_status, _("Running Commit Command..."))
         self.action.append(
-            rabbitvcs.util.helper.save_log_message, 
+            helper.save_log_message, 
             self.message.get_text()
         ),
         self.action.append(self.do_commit, items, recurse)
@@ -377,7 +377,7 @@ class GitCommit(Commit):
         self.action.append(self.action.set_header, _("Commit"))
         self.action.append(self.action.set_status, _("Running Commit Command..."))
         self.action.append(
-            rabbitvcs.util.helper.save_log_message,
+            helper.save_log_message,
             self.message.get_text()
         )
         self.action.append(

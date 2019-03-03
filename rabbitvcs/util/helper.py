@@ -72,6 +72,22 @@ LINE_BREAK_CHAR = u'\u23CE'
 from rabbitvcs import gettext
 _ = gettext.gettext
 
+def compare_version(version1, version2, length = None):
+    if not length:
+        length = max(len(version1), len(version2))
+    for i in range(length):
+        x = int(version1[i]) if i in version1 else 0
+        y = int(version2[i]) if i in version2 else 0
+        r = x - y
+        if r:
+            return r
+    return 0
+
+def gobject_threads_init():
+    # Wrap to avoid deprecated call.
+    if compare_version(GObject.pygobject_version, [3, 10, 2]) < 0:
+        GObject.threads_init()
+
 def get_tmp_path(filename):
     day = datetime.datetime.now().day
     day_string = (str(day) + str(os.geteuid())).encode("utf-8")

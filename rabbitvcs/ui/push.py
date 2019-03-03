@@ -33,16 +33,16 @@ from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 import rabbitvcs.vcs
 
 from rabbitvcs import gettext
 import six
 _ = gettext.gettext
 
-DATETIME_FORMAT = rabbitvcs.util.helper.DT_FORMAT_THISWEEK
+DATETIME_FORMAT = helper.DT_FORMAT_THISWEEK
 
-GObject.threads_init()
+helper.gobject_threads_init()
 
 class Push(InterfaceView):
     def __init__(self, path):
@@ -151,8 +151,8 @@ class GitPush(Push):
         has_commits = False
         for item in self.push_log:
             self.log_table.append([
-                rabbitvcs.util.helper.format_datetime(item.date),
-                rabbitvcs.util.helper.format_long_text(item.message.rstrip("\n"))
+                helper.format_datetime(item.date),
+                helper.format_long_text(item.message.rstrip("\n"))
             ])
             has_commits = True
 

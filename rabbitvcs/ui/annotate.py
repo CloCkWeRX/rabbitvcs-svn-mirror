@@ -25,7 +25,7 @@ import os
 
 from gi import require_version
 require_version('Gtk', '3.0')
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, GObject, Gdk, GLib
 
 from datetime import datetime
 import time
@@ -106,10 +106,10 @@ class Annotate(InterfaceView):
 
     def launch_loading(self):
         self.loading_dialog = Loading()
-        GObject.idle_add(self.loading_dialog.run)
+        GLib.idle_add(self.loading_dialog.run)
 
     def kill_loading(self):
-        GObject.idle_add(self.loading_dialog.destroy)
+        GLib.idle_add(self.loading_dialog.destroy)
         
 class SVNAnnotate(Annotate):
     def __init__(self, path, revision=None):
@@ -246,10 +246,10 @@ class GitAnnotate(Annotate):
 
     def launch_loading(self):
         self.loading_dialog = Loading()
-        GObject.idle_add(self.loading_dialog.run)
+        GLib.idle_add(self.loading_dialog.run)
 
     def kill_loading(self):
-        GObject.idle_add(self.loading_dialog.destroy)
+        GLib.idle_add(self.loading_dialog.destroy)
     
     def load(self):
         to_rev = self.git.revision(self.get_widget("to").get_text())

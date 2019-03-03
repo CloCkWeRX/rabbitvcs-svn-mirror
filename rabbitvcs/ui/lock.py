@@ -34,7 +34,7 @@ from rabbitvcs.util.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.vcs
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 from rabbitvcs.util.log import Log
 
 log = Log("rabbitvcs.ui.lock")
@@ -42,7 +42,7 @@ log = Log("rabbitvcs.ui.lock")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-GObject.threads_init()
+helper.gobject_threads_init()
 
 class SVNLock(InterfaceView, GtkContextMenuCaller):
     """
@@ -125,7 +125,7 @@ class SVNLock(InterfaceView, GtkContextMenuCaller):
             self.files_table.append([
                 True, 
                 item.path, 
-                rabbitvcs.util.helper.get_file_extension(item.path),
+                helper.get_file_extension(item.path),
                 locked
             ])
 
@@ -155,7 +155,7 @@ class SVNLock(InterfaceView, GtkContextMenuCaller):
         
         self.action.append(self.action.set_header, _("Get Lock"))
         self.action.append(self.action.set_status, _("Running Lock Command..."))
-        self.action.append(rabbitvcs.util.helper.save_log_message, message)
+        self.action.append(helper.save_log_message, message)
         for path in items:
             self.action.append(
                 self.svn.lock, 

@@ -31,8 +31,10 @@ from six.moves import range
 # Yes, * imports are bad. You write it out then.
 from .contextmenuitems import *
 
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
-from gi.repository import GObject as gobject
+from gi.repository import GLib as glib
 
 from rabbitvcs.vcs import create_vcs_instance, VCS_SVN, VCS_GIT, VCS_DUMMY, VCS_MERCURIAL
 from rabbitvcs.util.log import Log
@@ -246,7 +248,7 @@ class GtkContextMenuCaller:
             return still_going
 
         # Add our callback function on a 1 second timeout
-        gobject.timeout_add_seconds(1, is_process_still_alive)
+        glib.timeout_add_seconds(1, is_process_still_alive)
         
 class ContextMenuCallbacks:
     """
@@ -332,7 +334,7 @@ class ContextMenuCallbacks:
                     nautilusVFSFile_table[path].add_emblem(emblem)
             return False
             
-        gobject.idle_add(add_emblem_dialog)
+        glib.idle_add(add_emblem_dialog)
     
     # End debugging callbacks
 

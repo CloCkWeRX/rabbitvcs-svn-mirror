@@ -36,13 +36,13 @@ import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.util
 import rabbitvcs.vcs
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 from rabbitvcs.ui.dialog import MessageBox
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-GObject.threads_init()
+helper.gobject_threads_init()
 
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.ui.action")
@@ -695,7 +695,7 @@ class SVNAction(VCSAction):
             self.queue.insert(position+1, self.edit_conflict, data)
 
     def edit_conflict(self, data):
-        rabbitvcs.util.helper.launch_ui_window("editconflicts", [data["path"]], block=True)
+        helper.launch_ui_window("editconflicts", [data["path"]], block=True)
 
 class GitAction(VCSAction):
     def __init__(self, client, register_gtk_quit=False, notification=True,
@@ -737,7 +737,7 @@ class GitAction(VCSAction):
     def conflict_filter(self, data):
         if str(data).startswith("ERROR:"):
             path = data[27:]
-            rabbitvcs.util.helper.launch_ui_window("editconflicts", [path], block=True)
+            helper.launch_ui_window("editconflicts", [path], block=True)
 
 class MercurialAction(VCSAction):
     def __init__(self, client, register_gtk_quit=False, notification=True,
@@ -777,7 +777,7 @@ class MercurialAction(VCSAction):
     def conflict_filter(self, data):
         if str(data).startswith("ERROR:"):
             path = data[27:]
-            rabbitvcs.util.helper.launch_ui_window("editconflicts", [path], block=True)
+            helper.launch_ui_window("editconflicts", [path], block=True)
 
 def vcs_action_factory(client, register_gtk_quit=False, notification=True,
         run_in_thread=True):

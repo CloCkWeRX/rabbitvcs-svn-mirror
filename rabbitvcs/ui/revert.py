@@ -34,8 +34,8 @@ from rabbitvcs.util.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.util.helper
 import rabbitvcs.vcs
+from rabbitvcs.util import helper
 from rabbitvcs.util.log import Log
 from rabbitvcs.vcs.status import Status
 
@@ -44,7 +44,7 @@ log = Log("rabbitvcs.ui.revert")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-GObject.threads_init()
+helper.gobject_threads_init()
 
 import rabbitvcs.vcs
 
@@ -94,7 +94,7 @@ class Revert(InterfaceView, GtkContextMenuCaller):
             self.files_table.append([
                 True, 
                 item.path, 
-                rabbitvcs.util.helper.get_file_extension(item.path),
+                helper.get_file_extension(item.path),
                 item.simple_content_status(),
                 item.simple_metadata_status()
             ])
@@ -115,7 +115,7 @@ class Revert(InterfaceView, GtkContextMenuCaller):
             self.files_table.append([
                 True,
                 item.path,
-                rabbitvcs.util.helper.get_file_extension(item.path)
+                helper.get_file_extension(item.path)
             ])
 
     # Overrides the GtkContextMenuCaller method
@@ -139,7 +139,7 @@ class Revert(InterfaceView, GtkContextMenuCaller):
 
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
-        rabbitvcs.util.helper.launch_diff_tool(*paths)
+        helper.launch_diff_tool(*paths)
 
     def on_files_table_key_event(self, treeview, data=None):
         if Gdk.keyval_name(data.keyval) == "Delete":
