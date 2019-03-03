@@ -882,17 +882,16 @@ class GittyupClient:
     def move(self, source, dest):
         """
         Move a file within the repository
-        
+
         @type   source: string
         @param  source: The source file
-        
+
         @type   dest: string
         @param  dest: The destination.  If dest exists as a directory, source
             will be added as a child.  Otherwise, source will be renamed to
             dest.
-            
         """
-        
+
         index = self._get_index()
         relative_source = self.get_relative_path(source)
         relative_dest = self.get_relative_path(dest)
@@ -901,22 +900,24 @@ class GittyupClient:
         source_files = []
         if os.path.isdir(source):
             for name in index:
+                name = name.decode(self.UTF8)
                 if name.startswith(relative_source):
                     source_files.append(name)
         else:
-            source_files.append(self.get_relative_path(source))
+            source_files.append(relative_source)
 
         # Rename the affected index entries
         for source_file in source_files:
-            new_path = source_file.replace(relative_source, relative_dest)            
+            new_path = source_file.replace(relative_source, relative_dest)
             if os.path.isdir(dest):
                 new_path = os.path.join(new_path, os.path.basename(source_file))
 
-            index[new_path] = index[source_file]
+            source_file = source_file.encode(self.UTF8)
+            index[new_path.encode(self.UTF8)] = index[source_file]
             del index[source_file]
 
         index.write()
-        
+
         # Actually move the file/folder
         shutil.move(source, dest)
 
@@ -1832,13 +1833,13 @@ class GittyupClient:
         for line in results.split("\n"):
             if not line:
                 continue
-                
-            (action, path) = line.split("\t")
+
+            (action, path) = (line + "\t").split("\t")[:2]
             summary.append({
                 "action": action,
                 "path": path
             })
-        
+
         return summary
 
     def export(self, path, dest_path, revision):
