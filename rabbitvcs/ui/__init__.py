@@ -38,6 +38,7 @@ from rabbitvcs import APP_NAME, LOCALE_DIR, gettext
 _ = gettext.gettext
 
 import rabbitvcs.vcs.status
+from rabbitvcs.util import helper
 
 REVISION_OPT = (["-r", "--revision"], {"help":"specify the revision number"})
 BASEDIR_OPT = (["-b", "--base-dir"], {})
@@ -148,16 +149,13 @@ class InterfaceView(GtkBuilderWidgetWrapper):
         window = self.get_widget(self.gtkbuilder_id)
         if window is not None:
             if threaded:
-                Gdk.threads_enter()
+                helper.run_in_main_thread(window.destroy)
+            else:
+                window.destroy()
 
-            window.destroy()
-
-            if threaded:
-                Gdk.threads_leave()
-            
         if self.do_gtk_quit:
             Gtk.main_quit()
-            
+
     def register_gtk_quit(self):
         window = self.get_widget(self.gtkbuilder_id)
         self.do_gtk_quit = True

@@ -114,19 +114,16 @@ class GitPush(Push):
         except Exception as e:
             log.exception(e)
 
-    def load_logs(self):
-        Gdk.threads_enter()
-        self.get_widget("status").set_text(_("Loading..."))
-
-        Gdk.threads_leave()
-
-        self.load_push_log()
-
-        Gdk.threads_enter()
+    def load_logs_exit(self):
         self.get_widget("status").set_text("")
         self.update_widgets()
-        Gdk.threads_leave()
-        
+
+    def load_logs(self):
+        helper.run_in_main_thread(self.get_widget("status").set_text, _("Loading..."))
+
+        self.load_push_log()
+        helper.run_in_main_thread(self.load_logs_exit)
+
     def load_push_log(self):
         repository = self.repository_selector.repository_opt.get_active_text()
         branch = self.repository_selector.branch_opt.get_active_text()

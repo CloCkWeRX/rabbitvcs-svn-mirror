@@ -298,12 +298,9 @@ class VCSAction(threading.Thread):
         
         if self.has_notifier:
             if not self.client_in_same_thread:
-                Gdk.threads_enter()
-    
-            self.notification.pbar.update(fraction)
-    
-            if not self.client_in_same_thread:
-                Gdk.threads_leave()
+                helper.run_in_main_thread(self.notification.pbar.set_fraction, fraction)
+            else:
+                self.notification.pbar.set_fraction(fraction)
 
     def set_header(self, header):
         self.notification.set_header(header)
@@ -370,11 +367,7 @@ class VCSAction(threading.Thread):
         """
 
         if self.message is None:
-            Gdk.threads_enter()
-            dialog = rabbitvcs.ui.dialog.TextChange(_("Log Message"))
-            result = dialog.run()
-            Gdk.threads_leave()
-
+            result = helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.TextChange(_("Log Message")).run)
             should_continue = (result[0] == Gtk.ResponseType.OK)
             return should_continue, result[1].encode("utf-8")
         else:
@@ -403,19 +396,12 @@ class VCSAction(threading.Thread):
 
         @rtype:             (boolean, string, string, boolean)
         @return:            (True=continue/False=cancel, username,password, may_save)
-
         """
 
         if self.login_tries >= 3:
             return (False, "", "", False)
 
-        Gdk.threads_enter()
-        dialog = rabbitvcs.ui.dialog.Authentication(
-            realm,
-            may_save
-        )
-        result = dialog.run()
-        Gdk.threads_leave()
+        result = helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.Authentication(realm, may_save).run)
 
         if result is not None:
             self.login_tries += 1
@@ -437,24 +423,18 @@ class VCSAction(threading.Thread):
 
         @rtype:         (boolean, int, boolean)
         @return:        (True=Accept/False=Deny, number of accepted failures, remember)
-
         """
 
-        Gdk.threads_enter()
-
-        if not data:
-            return (False, 0, False)
-
-        dialog = rabbitvcs.ui.dialog.Certificate(
-            data["realm"],
-            data["hostname"],
-            data["issuer_dname"],
-            data["valid_from"],
-            data["valid_until"],
-            data["finger_print"]
-        )
-        result = dialog.run()
-        Gdk.threads_leave()
+        result = 0
+        if data:
+            result = helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.Certificate(
+                data["realm"],
+                data["hostname"],
+                data["issuer_dname"],
+                data["valid_from"],
+                data["valid_until"],
+                data["finger_print"]
+            ).run)
 
         if result == 0:
             #Deny
@@ -481,18 +461,12 @@ class VCSAction(threading.Thread):
 
         @rtype:             (boolean, string, boolean)
         @return:            (True=continue/False=cancel, password, may save)
-
         """
 
-        Gdk.threads_enter()
-        dialog = rabbitvcs.ui.dialog.CertAuthentication(
-            realm,
-            may_save
-        )
-        result = dialog.run()
-        Gdk.threads_leave()
-
-        return result
+        return helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.CertAuthentication(
+                realm,
+                may_save
+            ).run)
 
     def get_client_cert(self, realm, may_save):
         """
@@ -509,18 +483,12 @@ class VCSAction(threading.Thread):
 
         @rtype:             (boolean, string, boolean)
         @return:            (True=continue/False=cancel, password, may save)
-
         """
 
-        Gdk.threads_enter()
-        dialog = rabbitvcs.ui.dialog.SSLClientCertPrompt(
-            realm,
-            may_save
-        )
-        result = dialog.run()
-        Gdk.threads_leave()
-
-        return result
+        return helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.SSLClientCertPrompt(
+                realm,
+                may_save
+            ).run)
 
     def set_log_message(self, message):
         """
@@ -529,7 +497,6 @@ class VCSAction(threading.Thread):
 
         @type   message: string
         @param  message: Set a log message.
-
         """
 
         self.message = message
@@ -544,7 +511,6 @@ class VCSAction(threading.Thread):
 
         @type   message: string
         @param  message: A status message.
-
         """
 
         if message is not None:
@@ -727,12 +693,7 @@ class GitAction(VCSAction):
                     self.notification.append(["", data, ""])
 
     def get_user(self):
-        Gdk.threads_enter()
-        dialog = rabbitvcs.ui.dialog.NameEmailPrompt()
-        result = dialog.run()
-        Gdk.threads_leave()
-
-        return result
+        return helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.NameEmailPrompt().run)
 
     def conflict_filter(self, data):
         if str(data).startswith("ERROR:"):
@@ -767,12 +728,7 @@ class MercurialAction(VCSAction):
                     self.notification.append(["", data, ""])
 
     def get_user(self):
-        Gdk.threads_enter()
-        dialog = rabbitvcs.ui.dialog.NameEmailPrompt()
-        result = dialog.run()
-        Gdk.threads_leave()
-
-        return result
+        return helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.NameEmailPrompt().run)
 
     def conflict_filter(self, data):
         if str(data).startswith("ERROR:"):

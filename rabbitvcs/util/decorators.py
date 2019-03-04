@@ -36,13 +36,13 @@ from __future__ import absolute_import
 
 import os
 
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk as Gtk
+from gi.repository import GLib
 
 import time
 import warnings
 import threading
+
+from rabbitvcs.util import helper
 
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.util.decorators")
@@ -121,18 +121,12 @@ def disable(func):
 def gtk_unsafe(func):
     """
     Used to wrap a function that makes calls to GTK from a thread in
-    Gdk.threads_enter() and Gdk.threads_leave().
-    
+    the main thread's idle loop.
     """
 
-    from gi.repository import Gdk
-    
     def newfunc(*args, **kwargs):
-        Gdk.threads_enter()
-        result = func(*args, **kwargs)
-        Gdk.threads_leave()
-        return result
-        
+        return helper.run_in_main_thread(func, *args, **kwargs)
+
     return update_func_meta(newfunc, func)
 
 def debug_calls(caller_log, show_caller=False):

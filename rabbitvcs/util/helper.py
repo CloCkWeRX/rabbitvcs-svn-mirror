@@ -38,6 +38,9 @@ import datetime
 import time
 import shutil
 import hashlib
+import threading
+
+from gi.repository import GLib
 
 import six
 from six.moves import filter
@@ -84,21 +87,50 @@ def compare_version(version1, version2, length = None):
     return 0
 
 def gobject_threads_init():
-    # Wrap to avoid deprecated call.
+    """
+    Call GObject.threads_init() only if not deprecated.
+    """
+
     if compare_version(GObject.pygobject_version, [3, 10, 2]) < 0:
         GObject.threads_init()
 
 def to_text(s):
-    # We cannot use a six.text_type() constructor alone as a bytes to text
-    # converter because it uses the str() function that stores the bytes type
-    # mark in the result under Python 3.
-    # Instead, decode it as UTF-8.
+    """
+    We cannot use a six.text_type() constructor alone as a bytes to text
+    converter because it uses the str() function that stores the bytes type
+    mark in the result under Python 3.
+    Instead, decode it as UTF-8.
+    """
+
     if isinstance(s, bytearray):
         s = bytes(s)
     if not isinstance(s, six.text_type):
         if isinstance(s, bytes):
             s = s.decode("utf-8")
     return six.text_type(s)
+
+def run_in_main_thread(func, *args, **kwargs):
+    """
+    Execute function in main thread's idle loop.
+    """
+    
+    def dofunc(event, func, args, kwargs):
+        try:
+            event.result = func(*args, **kwargs)
+        except Exception as e:
+            event.exception = e
+        event.set()
+
+    if isinstance(threading.current_thread(), threading._MainThread):
+        return func(*args, **kwargs)
+    event = threading.Event()
+    event.result = None
+    event.exception = None
+    GLib.idle_add(dofunc, event, func, args, kwargs)
+    event.wait()
+    if event.exception:
+        raise event.exception
+    return event.result
 
 def get_tmp_path(filename):
     day = datetime.datetime.now().day
