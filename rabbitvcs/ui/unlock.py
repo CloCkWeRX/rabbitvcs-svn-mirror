@@ -42,9 +42,6 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 class SVNUnlock(Add):
-    def __init__(self, paths, base_dir):
-        Add.__init__(self, paths, base_dir)
-
     def setup(self, window, columns):
         window.set_title(_("Unlock"))
         self.svn = self.vcs.svn()

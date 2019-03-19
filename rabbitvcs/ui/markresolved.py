@@ -41,9 +41,6 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 class SVNMarkResolved(Add):
-    def __init__(self, paths, base_dir):
-        Add.__init__(self, paths, base_dir)
-
     def setup(self, window, columns):
         window.set_title(_("Mark as Resolved"))
         self.svn = self.vcs.svn()

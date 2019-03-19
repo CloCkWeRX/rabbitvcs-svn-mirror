@@ -44,9 +44,6 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 class GitStage(Add):
-    def __init__(self, paths, base_dir=None):
-        Add.__init__(self, paths, base_dir)
-
     def setup(self, window, columns):
         window.set_title(_("Stage"))
         self.git = self.vcs.git(self.paths[0])
