@@ -26,12 +26,12 @@ import os
 import os.path
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Pango
 
 HAS_GTKSPELL = False
 try:
-    gi.require_version('GtkSpell', '3.0')
+    gi.require_version("GtkSpell", "3.0")
     from gi.repository import GtkSpell
     HAS_GTKSPELL = True
 except ImportError:
@@ -39,12 +39,13 @@ except ImportError:
 
 HAS_GTKSOURCEVIEW = False
 try:
-    gi.require_version('GtkSource', '3.0')
+    gi.require_version("GtkSource", "3.0")
     from gi.repository import GtkSource
     HAS_GTKSOURCEVIEW = True
 except ImportError:
     pass
 
+from rabbitvcs.util.decorators import gtk_unsafe
 from rabbitvcs.util import helper
 import rabbitvcs.vcs
 
@@ -377,6 +378,7 @@ class TableBase:
             self.treeview.append_column(col)
             i += 1
 
+        self.coltypes = coltypes
         self.data = self.get_store(coltypes)
 
         self.sorted = None
@@ -481,9 +483,12 @@ class TableBase:
                     self.callbacks["row-toggled"](model[selPath], column)
             self._reassert_selection = True
 
+    @gtk_unsafe
     def append(self, row):
-        self.data.append(row)
+        # Python 3 needs type conversions.
+        self.data.append([item if coltype != GObject.TYPE_STRING else helper.to_text(item) for coltype, item in zip(self.coltypes, row)])
 
+    @gtk_unsafe
     def remove(self, index):
         model = self.data
         del model[index]
@@ -494,25 +499,28 @@ class TableBase:
             rm_index = row
             if i > 0:
                 rm_index -= 1
-            
+
             self.remove(rm_index)
             i += 1     
 
     def get_items(self):
         return self.data
 
+    @gtk_unsafe
     def clear(self):
         self.data.clear()
         self.reset_selection()
-        
+
     def get_row(self, index):
         model = self.data
         return model[index]
-    
+
+    @gtk_unsafe
     def set_row(self, index, row):
         model = self.data
         model[index] = row
-    
+
+    @gtk_unsafe
     def set_row_item(self, row, column, val):
         model = self.data
         model[row][column] = val
@@ -594,6 +602,7 @@ class TableBase:
         
         return "\n".join(lines)
         
+    @gtk_unsafe
     def unselect_all(self):
         self.treeview.get_selection().unselect_all()
 
@@ -687,11 +696,11 @@ class TableBase:
              
         icon = "emblem-" + STATUS_EMBLEMS[status]
         
-        cell.set_property("icon_name", icon)
+        cell.set_property("icon-name", icon)
         
 
     def file_pixbuf(self, column, cell, model, iter, data=None):
-        stock_id = None
+        icon_name = None
         
         path = model.get_path(iter)
     
@@ -700,12 +709,12 @@ class TableBase:
         if data:
             real_item = self.data[real_path][data["column"]]
             kind = data["callback"](real_item)
-            stock_id = Gtk.STOCK_FILE
+            icon_name = "text-x-generic"
             if kind == "dir":
-                stock_id = Gtk.STOCK_DIRECTORY
+                icon_name = "folder"
 
-        if stock_id is not None:
-            cell.set_property("stock_id", stock_id)
+        if not icon_name is None:
+            cell.set_property("icon-name", icon_name)
 
 class Table(TableBase):
     """
@@ -725,7 +734,7 @@ class Table(TableBase):
 
     def populate(self, values):
         for row in values:
-            self.data.append(row)
+            self.append(row)
 
 class Tree(TableBase):
     """
@@ -759,20 +768,21 @@ class Tree(TableBase):
     def populate(self, values, parent=None):
         for node in values:
             root = node[0]
-            new_root = self.data.append(parent, root)
+            new_root = self.append(parent, root)
             if len(node) > 1 and node[1] is not None:
                 self.populate(node[1], new_root)
         
 class ComboBox:
     def __init__(self, cb, items=None):
-    
+
         self.cb = cb
-    
+
         self.model = Gtk.ListStore(str)
-        if items is not None:
+        if not items is None:
             for i in items:
                 self.append(i)
 
+        self.cb.clear()
         self.cb.set_model(self.model)
         self.cb.set_entry_text_column(0)
 
@@ -782,7 +792,7 @@ class ComboBox:
 
     def append(self, item):
         self.model.append([item])
-        
+
     def set_active_from_value(self, value):
         index = 0
         for entry in self.model:
@@ -874,6 +884,7 @@ class ProgressBar:
             GObject.source_remove(self.timer)
         self.timer = None
 
+    @gtk_unsafe
     def update(self, fraction=None):
         if fraction:
             if self.timer is not None:
@@ -887,6 +898,7 @@ class ProgressBar:
             self.view.pulse()
             return True
 
+    @gtk_unsafe
     def set_text(self, text):
         self.view.set_text(text)
 
@@ -966,7 +978,7 @@ class RevisionSelector:
         
         self.revision_browse = Gtk.Button()
         revision_browse_image = Gtk.Image()
-        revision_browse_image.set_from_stock(Gtk.STOCK_FIND, 1)
+        revision_browse_image.set_from_icon_name("edit-find", Gtk.IconSize.MENU)
         revision_browse_image.show()
         self.revision_browse.add(revision_browse_image)
         self.revision_browse.connect("clicked", self.__revision_browse_clicked)
@@ -1139,10 +1151,10 @@ class KeyValueTable(Gtk.Table):
             row = 0
             
             for key, value in stuff:
-                label_key = Gtk.Label("<b>%s:</b>" % key)
+                label_key = Gtk.Label(label = "<b>%s:</b>" % key)
                 label_key.set_properties(xalign=0, use_markup=True)
                 
-                label_value = Gtk.Label("%s" % value)
+                label_value = Gtk.Label(label = "%s" % value)
                 label_value.set_properties(xalign=0,                    \
                                            ellipsize=Pango.EllipsizeMode.MIDDLE, \
                                            selectable=True)
@@ -1170,29 +1182,29 @@ class GitRepositorySelector:
         self.git = git
         self.changed_callback = changed_callback
         
-        vbox = Gtk.VBox(False, 4)
+        vbox = Gtk.VBox(homogeneous = False, spacing = 4)
         
         # Set up the Repository Line
-        label = Gtk.Label(_("Repository:"))
+        label = Gtk.Label(label = _("Repository:"))
         label.set_size_request(90, -1)
         label.set_justify(Gtk.Justification.LEFT)
 
         tmp_repos = []
         for item in self.git.remote_list():
             tmp_repos.append(item["name"])
-        self.repository_opt = ComboBox(Gtk.ComboBox.new_with_entry(), tmp_repos)
+        self.repository_opt = ComboBox(Gtk.ComboBoxText.new_with_entry(), tmp_repos)
         self.repository_opt.set_active(0)
         self.repository_opt.cb.connect("changed", self.__repository_changed)
         self.repository_opt.cb.set_size_request(175, -1)
         
-        hbox = Gtk.HBox(False, 0)
+        hbox = Gtk.HBox(homogeneous = False, spacing = 0)
         hbox.pack_start(label, False, False, 0)
-        hbox.pack_start(self.repository_opt.cb, False, False, 0)
+        hbox.pack_start(self.repository_opt.cb, True, True, 0)
         vbox.pack_start(hbox, False, False, 0)
 
 
         # Set up the Branch line
-        label = Gtk.Label(_("Branch:"))
+        label = Gtk.Label(label = _("Branch:"))
         label.set_size_request(90, -1)
         label.set_justify(Gtk.Justification.LEFT)
 
@@ -1207,25 +1219,26 @@ class GitRepositorySelector:
             
             index += 1
             
-        self.branch_opt = ComboBox(Gtk.ComboBox.new_with_entry(), tmp_branches)
+        self.branch_opt = ComboBox(Gtk.ComboBoxText.new_with_entry(), tmp_branches)
         self.branch_opt.set_active(active_branch_index)
         self.branch_opt.cb.connect("changed", self.__branch_changed)
         self.branch_opt.cb.set_size_request(175, -1)
         
-        hbox = Gtk.HBox(False, 0)
+        hbox = Gtk.HBox(homogeneous = False, spacing = 0)
         hbox.pack_start(label, False, False, 0)
-        hbox.pack_start(self.branch_opt.cb, False, False, 0)
+        hbox.pack_start(self.branch_opt.cb, True, True, 0)
         vbox.pack_start(hbox, False, False, 0)
         
         # Set up the Host line
-        label = Gtk.Label(_("Host:"))
+        label = Gtk.Label(label = _("Host:"))
         label.set_justify(Gtk.Justification.LEFT)
         label.set_size_request(90, -1)
         self.host = Gtk.Label()
         self.host.set_justify(Gtk.Justification.LEFT)
-        hbox = Gtk.HBox(False, 0)
+        self.host.set_halign(Gtk.Align.START)
+        hbox = Gtk.HBox(homogeneous = False, spacing = 0)
         hbox.pack_start(label, False, False, 0)
-        hbox.pack_start(self.host, False, False, 0)
+        hbox.pack_start(self.host, True, True, 0)
         vbox.pack_start(hbox, False, False, 4)
 
         vbox.show_all()
@@ -1254,7 +1267,7 @@ class GitBranchSelector:
         self.git = git
         self.changed_callback = changed_callback
         
-        self.vbox = Gtk.VBox(False, 4)
+        self.vbox = Gtk.VBox(homogeneous = False, spacing = 4)
 
         tmp_branches = []
         active = 0
@@ -1265,12 +1278,12 @@ class GitBranchSelector:
                 active = index
             index += 1
 
-        self.branch_opt = ComboBox(Gtk.ComboBox.new_with_entry(), tmp_branches)
+        self.branch_opt = ComboBox(Gtk.ComboBoxText.new_with_entry(), tmp_branches)
         self.branch_opt.set_active(active)
         self.branch_opt.cb.connect("changed", self.__branch_changed)
         self.branch_opt.cb.set_size_request(175, -1)
 
-        hbox = Gtk.HBox(False, 0)
+        hbox = Gtk.HBox(homogeneous = False, spacing = 0)
         hbox.pack_start(self.branch_opt.cb, False, False, 0)
         self.vbox.pack_start(hbox, False, False, 0)
         
@@ -1314,15 +1327,15 @@ class MultiFileTextEditor:
         self.textview = TextView(Gtk.TextView())
 
         scrolled_window = Gtk.ScrolledWindow()
-        scrolled_window.set_shadow_type(Gtk.SHADOW_ETCHED_IN)
+        scrolled_window.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         scrolled_window.add(self.textview.view)
-        scrolled_window.set_policy(Gtk.POLICY_AUTOMATIC, Gtk.POLICY_AUTOMATIC)
+        scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         scrolled_window.set_size_request(320, 150)
         
-        vbox = Gtk.VBox(False, 6)
+        vbox = Gtk.VBox(homogeneous = False, spacing = 6)
         
-        hbox = Gtk.HBox(False, 3)
-        combo_label = Gtk.Label(label)
+        hbox = Gtk.HBox(homogeneous = False, spacing = 3)
+        combo_label = Gtk.Label(label = label)
         combo_label.set_alignment(0, 0.5)
         combo_label.set_size_request(130, -1)
         hbox.pack_start(combo_label, False, False, 0)
@@ -1330,8 +1343,8 @@ class MultiFileTextEditor:
         vbox.pack_start(hbox, False, False, 0)
         
         if show_add_line:
-            hbox = Gtk.HBox(False, 3)
-            add_label = Gtk.Label(_("Add line:"))
+            hbox = Gtk.HBox(homogeneous = False, spacing = 3)
+            add_label = Gtk.Label(label = _("Add line:"))
             add_label.set_alignment(0, 0.5)
             add_label.set_size_request(130, -1)
             self.add_entry = Gtk.Entry()

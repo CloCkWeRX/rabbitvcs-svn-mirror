@@ -24,7 +24,7 @@ from __future__ import absolute_import
 import os.path
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -104,7 +104,7 @@ class SVNExport(SVNCheckout):
         )
         self.action.append(self.action.set_status, _("Completed Export"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 class GitExport(GitClone):
     def __init__(self, path=None, revision=None):
@@ -170,7 +170,7 @@ class GitExport(GitClone):
         )
         self.action.append(self.action.set_status, _("Completed Export"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
     def on_repositories_changed(self, widget, data=None):
         # Do not use quoting for this bit

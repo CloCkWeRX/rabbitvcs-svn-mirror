@@ -31,7 +31,7 @@ import os
 from six.moves import range
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk, GLib
 
 from rabbitvcs import APP_NAME, LOCALE_DIR, gettext
@@ -198,6 +198,18 @@ class InterfaceView(GtkBuilderWidgetWrapper):
                 Gdk.keyval_name(data.keyval).lower() == "r"):
             self.on_refresh_clicked(widget)
             return True             
+
+    def change_button(self, id, label = None, icon = None):
+        """
+         Replace label and/or icon of the named button.
+        """
+
+        button = self.get_widget(id)
+        if label:
+            button.set_label(label)
+        if icon:
+            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
+            button.set_image(image)
 
 class InterfaceNonView:
     """

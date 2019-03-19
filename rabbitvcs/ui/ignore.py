@@ -25,7 +25,7 @@ from os import getcwd
 import os.path
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceNonView, InterfaceView

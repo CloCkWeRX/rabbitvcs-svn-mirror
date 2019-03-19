@@ -22,10 +22,9 @@ from __future__ import absolute_import
 #
 
 import os.path
-import urllib
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -74,7 +73,7 @@ class GitClone(Checkout):
         )
         self.action.append(self.action.set_status, _("Completed Clone"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
     def on_repositories_changed(self, widget, data=None):
         url = self.repositories.get_active_text()
@@ -101,7 +100,7 @@ class GitClone(Checkout):
 
     def default_text(self):
         # Use a repo url from the clipboard by default.
-        clipboard = Gtk.clipboard_get()
+        clipboard = Gtk.Clipboard.get(Gdk.Atom.intern("CLIPBOARD", False))
         text = clipboard.wait_for_text()
         if text and text.endswith(('.git', '.git/')):
             self.repositories.set_child_text(text)

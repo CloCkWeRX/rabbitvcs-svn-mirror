@@ -62,7 +62,7 @@ import os
 os.environ["REQUIRE_GTK3"] = "1"
 
 import os.path
-from os.path import isdir, isfile, realpath, basename
+from os.path import isdir, isfile, realpath, basename, dirname
 import datetime
 
 #import matevfs
@@ -137,9 +137,14 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         factory = Gtk.IconFactory()
 
         rabbitvcs_icons = [
+            "scalable/actions/rabbitvcs-cancel.svg",
+            "scalable/actions/rabbitvcs-ok.svg",
+            "scalable/actions/rabbitvcs-no.svg",
+            "scalable/actions/rabbitvcs-yes.svg",
             "scalable/actions/rabbitvcs-settings.svg",
             "scalable/actions/rabbitvcs-export.svg",
             "scalable/actions/rabbitvcs-properties.svg",
+            "scalable/actions/rabbitvcs-editprops.svg",
             "scalable/actions/rabbitvcs-show_log.svg",
             "scalable/actions/rabbitvcs-delete.svg",
             "scalable/actions/rabbitvcs-run.svg",
@@ -348,7 +353,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         }
 
         for key, value in list(values.items()):
-            item.add_string_attribute(key, value)
+            item.add_string_attribute(key, value if not value is None else "")
 
     def update_status(self, item, path, status):
         if status.summary in rabbitvcs.ui.STATUS_EMBLEMS:
@@ -390,17 +395,18 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         # log.debug("get_file_items_full() called")
 
         paths_str = "-".join(paths)
+        base_dir = dirname(paths[0])
         
         conditions_dict = None
         if paths_str in self.items_cache:
             conditions_dict = self.items_cache[paths_str]
             if conditions_dict and conditions_dict != "in-progress":
                 conditions = CajaMenuConditions(conditions_dict)
-                menu = CajaMainContextMenu(self, window.base_dir, paths, conditions).get_menu()
+                menu = CajaMainContextMenu(self, base_dir, paths, conditions).get_menu()
                 return menu
         
         if conditions_dict != "in-progress":
-            self.status_checker.generate_menu_conditions_async(provider, window.base_dir, paths, self.update_file_items)        
+            self.status_checker.generate_menu_conditions_async(provider, base_dir, paths, self.update_file_items)
             self.items_cache[path] = "in-progress"
             
         return ()
@@ -416,8 +422,9 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         if len(paths) == 0: return []
         
         # log.debug("get_file_items() called")
-        
-        return CajaMainContextMenu(self, window.base_dir, paths).get_menu()
+
+        base_dir = dirname(paths[0])
+        return CajaMainContextMenu(self, base_dir, paths).get_menu()
 
     def update_file_items(self, provider, base_dir, paths, conditions_dict):
         paths_str = "-".join(paths)
@@ -474,8 +481,6 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
                 menu = CajaMainContextMenu(self, path, [path], conditions).get_menu()                
                 return menu
 
-        window.base_dir = path
-
         if conditions_dict != "in-progress":
             self.status_checker.generate_menu_conditions_async(provider, path, [path], self.update_background_items)
             self.items_cache[path] = "in-progress"
@@ -488,8 +493,6 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         self.nautilusVFSFile_table[path] = item
 
         # log.debug("get_background_items() called")
-        
-        window.base_dir = path
         
         return CajaMainContextMenu(self, path, [path]).get_menu()
 

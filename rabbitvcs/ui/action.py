@@ -28,7 +28,7 @@ from os.path import basename
 
 import shutil
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -38,6 +38,7 @@ import rabbitvcs.util
 import rabbitvcs.vcs
 from rabbitvcs.util import helper
 from rabbitvcs.ui.dialog import MessageBox
+from rabbitvcs.util.decorators import gtk_unsafe
 
 from rabbitvcs import gettext
 _ = gettext.gettext
@@ -85,6 +86,7 @@ class DummyNotifier:
     def set_canceled_by_user(self, was_canceled_by_user):
         pass
 
+    @gtk_unsafe
     def exception_callback(self, e):
         log.exception(e)
         MessageBox(str(e))
@@ -144,11 +146,13 @@ class MessageCallbackNotifier(VCSNotifier):
     def on_ok_clicked(self, widget):
         self.close()
 
+    @gtk_unsafe
     def toggle_ok_button(self, sensitive):
         self.finished = True
         self.get_widget("ok").set_sensitive(sensitive)
         self.get_widget("saveas").set_sensitive(sensitive)
 
+    @gtk_unsafe
     def append(self, entry):
         self.table.append(entry)
         self.table.scroll_to_bottom()
@@ -156,9 +160,11 @@ class MessageCallbackNotifier(VCSNotifier):
     def get_title(self):
         return self.get_widget("Notification").get_title()
 
+    @gtk_unsafe
     def set_title(self, title):
         self.get_widget("Notification").set_title(title)
 
+    @gtk_unsafe
     def set_header(self, header):
         self.set_title(header)
 
@@ -166,6 +172,7 @@ class MessageCallbackNotifier(VCSNotifier):
             "<span size=\"xx-large\"><b>%s</b></span>" % header
         )
 
+    @gtk_unsafe
     def focus_on_ok_button(self):
         self.get_widget("ok").grab_focus()
 
@@ -175,9 +182,11 @@ class MessageCallbackNotifier(VCSNotifier):
     def on_saveas_clicked(self, widget):
         self.saveas()
 
+    @gtk_unsafe
     def enable_saveas(self):
         self.get_widget("saveas").set_sensitive(True)
 
+    @gtk_unsafe
     def disable_saveas(self):
         self.get_widget("saveas").set_sensitive(False)
 
@@ -219,12 +228,14 @@ class LoadingNotifier(VCSNotifier):
     def get_title(self):
         return self.get_widget("Loading").get_title()
 
+    @gtk_unsafe
     def set_title(self, title):
         self.get_widget("Loading").set_title(title)
 
     def set_header(self, header):
         self.set_title(header)
 
+    @gtk_unsafe
     def exception_callback(self, e):
         if not self.was_canceled_by_user:
             log.exception(e)
@@ -240,7 +251,7 @@ class VCSAction(threading.Thread):
     def __init__(self, client, register_gtk_quit=False, notification=True,
             run_in_thread=True):
 
-        run_in_thread = False
+        self.run_in_thread = run_in_thread
 
         if run_in_thread is True:
             threading.Thread.__init__(self)
@@ -262,10 +273,12 @@ class VCSAction(threading.Thread):
                 client_in_same_thread=self.client_in_same_thread
             )
             self.has_notifier = True
-        else:
+        elif run_in_thread:
             visible = run_in_thread
             self.notification = LoadingNotifier(self.set_cancel, visible=visible)
             self.has_loader = True
+        else:
+            self.notification = DummyNotifier()
 
         self.pbar_ticks = None
         self.pbar_ticks_current = -1
@@ -274,6 +287,12 @@ class VCSAction(threading.Thread):
         # Is used when the script is run from a command line
         if register_gtk_quit:
             self.notification.register_gtk_quit()
+
+    def schedule(self):
+        if self.run_in_thread:
+            self.start()
+        else:
+            self.run()
 
     def set_pbar_ticks(self, num):
         """
@@ -297,10 +316,7 @@ class VCSAction(threading.Thread):
         """
         
         if self.has_notifier:
-            if not self.client_in_same_thread:
-                helper.run_in_main_thread(self.notification.pbar.set_fraction, fraction)
-            else:
-                self.notification.pbar.set_fraction(fraction)
+            self.notification.pbar.update(fraction)
 
     def set_header(self, header):
         self.notification.set_header(header)
@@ -501,6 +517,7 @@ class VCSAction(threading.Thread):
 
         self.message = message
 
+    @gtk_unsafe
     def set_status(self, message):
         """
         Set the current status of the VCS action.  Currently, this method
@@ -585,11 +602,9 @@ class VCSAction(threading.Thread):
 
 class SVNAction(VCSAction):
     def __init__(self, client, register_gtk_quit=False, notification=True,
-            run_in_thread=False):
+            run_in_thread=True):
 
-        run_in_thread = False
-
-        self.client_in_same_thread = not run_in_thread
+        self.client_in_same_thread = False
 
         self.client = client
         self.client.set_callback_cancel(self.cancel)

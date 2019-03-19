@@ -39,6 +39,7 @@ import time
 import shutil
 import hashlib
 import threading
+import encodings
 
 from gi.repository import GLib
 
@@ -108,6 +109,20 @@ def to_text(s):
         if isinstance(s, bytes):
             s = s.decode("utf-8")
     return six.text_type(s)
+
+def to_bytes(s, encoding = "utf-8"):
+    """
+    Convert string in arguments to bytes in the given encoding.
+    """
+    if isinstance(s, str):
+        return s.encode(encoding)
+    if isinstance(s, list):
+        return [to_bytes(x, encoding) for x in s]
+    if isinstance(s, set):
+        return {to_bytes(x, encoding) for x in s}
+    if isinstance(s, dict):
+        return {x: to_bytes(s[x], encoding) for x in s}
+    return s
 
 def run_in_main_thread(func, *args, **kwargs):
     """
@@ -1046,11 +1061,12 @@ def parse_patch_output(patch_file, base_dir, strip=0):
     p = "-p%s" % strip
     patch_proc = subprocess.Popen(["patch", "-N", "-t", p, "-i", str(patch_file), "--directory", base_dir],
                                       stdout = subprocess.PIPE,
-                                      stderr = subprocess.PIPE,
+                                      stderr = subprocess.STDOUT,
                                       env = env)
 
     # Intialise things...
-    line = patch_proc.stdout.readline()
+    out = encodings.utf_8.StreamReader(patch_proc.stdout)
+    line = out.readline()
     patch_match = PATCHING_RE.match(line)
 
     current_file = None
@@ -1060,7 +1076,7 @@ def parse_patch_output(patch_file, base_dir, strip=0):
         # There was output, but unexpected. Almost certainly an error of some
         # sort.
         patch_proc.wait()
-        output = line + patch_proc.stdout.read()
+        output = line + out.read()
         raise rabbitvcs.vcs.ExternalUtilError("patch", output)
         # Note the excluded case: empty line. This falls through, skips the loop
         # and returns.
@@ -1070,9 +1086,9 @@ def parse_patch_output(patch_file, base_dir, strip=0):
 
     while current_file:
 
-        line = patch_proc.stdout.readline()
+        line = out.readline().rstrip(" \t\r\n")
         while not line and patch_proc.poll() is None:
-            line = patch_proc.stdout.readline()
+            line = out.readline().rstrip(" \t\r\n")
 
         # Does patch tell us we're starting a new file?
         patch_match = PATCHING_RE.match(line)

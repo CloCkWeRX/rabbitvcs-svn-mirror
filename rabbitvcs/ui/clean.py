@@ -24,7 +24,7 @@ from __future__ import absolute_import
 import os
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk, Pango
 
 from datetime import datetime
@@ -76,7 +76,7 @@ class GitClean(InterfaceView):
         )
         self.action.append(self.action.set_status, _("Completed Clean"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
     def on_remove_ignored_too_toggled(self, widget):
         remove_ignored_too = self.get_widget("remove_ignored_too")

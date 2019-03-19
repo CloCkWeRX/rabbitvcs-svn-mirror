@@ -25,7 +25,7 @@ import six.moves._thread
 
 import os
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -165,7 +165,7 @@ class SVNLock(InterfaceView, GtkContextMenuCaller):
             )
         self.action.append(self.action.set_status, _("Completed Lock"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
     def on_files_table_mouse_event(self, treeview, data=None):
         if data is not None and data.button == 3:

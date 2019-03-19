@@ -6,6 +6,7 @@ from __future__ import absolute_import
 import subprocess
 import fcntl
 import select
+import encodings
 import os
 
 from .exceptions import GittyupCommandError
@@ -51,18 +52,17 @@ class GittyupCommand:
                                 stdout=subprocess.PIPE,
                                 env=env,
                                 close_fds=True,
-                                preexec_fn=os.setsid,
-                                encoding="utf-8",
-                                universal_newlines=True)
+                                preexec_fn=os.setsid)
 
+        out = encodings.utf_8.StreamReader(proc.stdout)
         stdout = []
 
         while True:
-            line = proc.stdout.readline()
+            line = out.readline()
 
             if line == '':
                 break
-            line = line.rstrip('\n') # Strip trailing newline.
+            line = line.rstrip("\r\n") # Strip trailing newline.
             self.notify(line)
             stdout.append(line)
 

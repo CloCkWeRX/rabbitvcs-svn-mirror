@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.2 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkImage" id="window-close">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">window-close</property>
+  </object>
   <object class="GtkWindow" id="Manager">
     <property name="width_request">450</property>
     <property name="visible">True</property>
@@ -10,6 +15,9 @@
     <property name="icon_name">rabbitvcs-small</property>
     <signal name="destroy" handler="on_destroy" swapped="no"/>
     <signal name="key-press-event" handler="on_key_pressed" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox" id="vbox1">
         <property name="visible">True</property>
@@ -41,86 +49,76 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkAlignment" id="alignment1">
+                  <object class="GtkBox" id="hbox2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="xalign">0</property>
-                    <property name="left_padding">12</property>
+                    <property name="margin_left">12</property>
+                    <property name="spacing">6</property>
                     <child>
-                      <object class="GtkBox" id="hbox2">
+                      <object class="GtkScrolledWindow" id="scrolledwindow1">
+                        <property name="width_request">200</property>
+                        <property name="height_request">150</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="spacing">6</property>
+                        <property name="can_focus">True</property>
+                        <property name="shadow_type">etched-in</property>
                         <child>
-                          <object class="GtkScrolledWindow" id="scrolledwindow1">
-                            <property name="width_request">200</property>
-                            <property name="height_request">150</property>
+                          <object class="GtkTreeView" id="items_treeview">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="shadow_type">etched-in</property>
+                            <child internal-child="selection">
+                              <object class="GtkTreeSelection"/>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="vbox4">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="orientation">vertical</property>
+                        <property name="spacing">6</property>
+                        <child>
+                          <object class="GtkButton" id="add">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <signal name="clicked" handler="on_add_clicked" swapped="no"/>
                             <child>
-                              <object class="GtkTreeView" id="items_treeview">
+                              <object class="GtkImage" id="image3">
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <child internal-child="selection">
-                                  <object class="GtkTreeSelection"/>
-                                </child>
+                                <property name="can_focus">False</property>
+                                <property name="icon_name">list-add</property>
                               </object>
                             </child>
+                            <accelerator key="a" signal="clicked" modifiers="GDK_MOD1_MASK"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
-                            <property name="fill">True</property>
+                            <property name="fill">False</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkBox" id="vbox4">
+                          <object class="GtkButton" id="delete">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="orientation">vertical</property>
-                            <property name="spacing">6</property>
+                            <property name="sensitive">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <signal name="clicked" handler="on_delete_clicked" swapped="no"/>
                             <child>
-                              <object class="GtkButton" id="add">
+                              <object class="GtkImage" id="image4">
                                 <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <signal name="clicked" handler="on_add_clicked" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="image3">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="stock">gtk-add</property>
-                                  </object>
-                                </child>
+                                <property name="can_focus">False</property>
+                                <property name="icon_name">edit-delete</property>
                               </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
                             </child>
-                            <child>
-                              <object class="GtkButton" id="delete">
-                                <property name="visible">True</property>
-                                <property name="sensitive">False</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">True</property>
-                                <signal name="clicked" handler="on_delete_clicked" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage" id="image4">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="stock">gtk-delete</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
+                            <accelerator key="d" signal="clicked" modifiers="GDK_MOD1_MASK"/>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -129,63 +127,62 @@
                           </packing>
                         </child>
                       </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="fill">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <object class="GtkAlignment" id="right_side">
+              <object class="GtkBox" id="right_side">
                 <property name="can_focus">False</property>
-                <property name="left_padding">25</property>
+                <property name="margin_left">20</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkBox" id="vbox3">
+                  <object class="GtkLabel" id="detail_label">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="detail_container">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkLabel" id="detail_label">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">label</property>
-                        <property name="xalign">0</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkAlignment" id="detail_container">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <placeholder/>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
+                      <placeholder/>
                     </child>
                   </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -204,11 +201,12 @@
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="close">
-                <property name="label">gtk-close</property>
+                <property name="label" translatable="yes">_Close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
+                <property name="image">window-close</property>
+                <property name="use_underline">True</property>
                 <signal name="clicked" handler="on_close_clicked" swapped="no"/>
               </object>
               <packing>
@@ -226,9 +224,6 @@
           </packing>
         </child>
       </object>
-    </child>
-    <child type="titlebar">
-      <placeholder/>
     </child>
   </object>
 </interface>

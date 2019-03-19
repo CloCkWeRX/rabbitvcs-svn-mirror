@@ -25,7 +25,7 @@ import six.moves._thread
 import threading
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -136,7 +136,7 @@ class SVNCheckLocalModifications(GtkContextMenuCaller):
         )
         self.action.append(self.svn.get_items, self.paths, self.svn.STATUSES_FOR_CHECK)
         self.action.append(self.populate_files_table)
-        self.action.run()
+        self.action.schedule()
 
     @gtk_unsafe
     def populate_files_table(self):
@@ -201,7 +201,7 @@ class SVNCheckRemoteModifications(GtkContextMenuCaller):
         )
         self.action.append(self.svn.get_remote_updates, self.paths)
         self.action.append(self.populate_files_table)
-        self.action.run()
+        self.action.schedule()
 
     @gtk_unsafe
     def populate_files_table(self):
@@ -242,7 +242,7 @@ class SVNCheckRemoteModifications(GtkContextMenuCaller):
             path_remote,
             "HEAD"
         )
-        self.action.run()
+        self.action.schedule()
 
     def on_context_menu_command_finished(self):
         self.refresh()
@@ -308,7 +308,7 @@ class CheckRemoteModsContextMenuCallbacks:
             "HEAD",
             sidebyside=True
         )
-        self.action.run()
+        self.action.schedule()
 
 class CheckRemoteModsContextMenu:
     def __init__(self, caller, event, base_dir, vcs, paths=[]):

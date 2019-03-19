@@ -24,7 +24,7 @@ from __future__ import absolute_import
 import os
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk, Pango
 
 from datetime import datetime
@@ -88,25 +88,25 @@ class GitTagManager(InterfaceView):
     def initialize_detail(self):
         self.detail_container = self.get_widget("detail_container")
 
-        vbox = Gtk.VBox(False, 6)
+        vbox = Gtk.VBox(homogeneous = False, spacing = 6)
 
         # Set up the Tag line
-        label = Gtk.Label(_("Name:"))
+        label = Gtk.Label(label = _("Name:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=.5)
         self.tag_entry = Gtk.Entry()
-        self.tag_name_container = Gtk.HBox(False, 0)
+        self.tag_name_container = Gtk.HBox(homogeneous = False, spacing = 0)
         self.tag_name_container.pack_start(label, False, False, 0)
         self.tag_name_container.pack_start(self.tag_entry, False, False, 0)
         vbox.pack_start(self.tag_name_container, False, False, 0)
 
         # Set up the Commit-sha line
-        label = Gtk.Label(_("Revision:"))
+        label = Gtk.Label(label = _("Revision:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=.5)
         self.start_point_entry = Gtk.Entry()
         self.start_point_entry.set_size_request(300, -1)
-        self.start_point_container = Gtk.HBox(False, 0)
+        self.start_point_container = Gtk.HBox(homogeneous = False, spacing = 0)
         if self.revision_obj.value:
             self.start_point_entry.set_text(helper.to_text(self.revision_obj))
         self.log_dialog_button = Gtk.Button()
@@ -120,74 +120,74 @@ class GitTagManager(InterfaceView):
         vbox.pack_start(self.start_point_container, False, False, 0)
 
         # Set up the Log Message Entry line
-        label = Gtk.Label(_("Message:"))
+        label = Gtk.Label(label = _("Message:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=0)
         self.message_entry = rabbitvcs.ui.widget.TextView()
         self.message_entry.view.set_size_request(300, 75)
         swin = Gtk.ScrolledWindow()
-        swin.set_shadow_type(Gtk.SHADOW_ETCHED_IN)
-        swin.set_policy(Gtk.POLICY_AUTOMATIC, Gtk.POLICY_AUTOMATIC)
+        swin.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
+        swin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         swin.add(self.message_entry.view)
-        self.message_entry_container = Gtk.HBox(False, 0)
+        self.message_entry_container = Gtk.HBox(homogeneous = False, spacing = 0)
         self.message_entry_container.pack_start(label, False, False, 0)
         self.message_entry_container.pack_start(swin, False, False, 0)
         vbox.pack_start(self.message_entry_container, False, False, 0)
 
         # Set up Save button
-        label = Gtk.Label("")
+        label = Gtk.Label(label = "")
         label.set_size_request(90, -1)
         self.save_button = Gtk.Button(label=_("Save"))
         self.save_button.connect("clicked", self.on_save_clicked)
-        self.save_container = Gtk.HBox(False, 0)
+        self.save_container = Gtk.HBox(homogeneous = False, spacing = 0)
         self.save_container.pack_start(label, False, False, 0)
         self.save_container.pack_start(self.save_button, False, False, 0)
         vbox.pack_start(self.save_container, False, False, 0)
 
         # Set up the tagger line
-        label = Gtk.Label(_("Tagger:"))
+        label = Gtk.Label(label = _("Tagger:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=0)
-        self.tagger_label = Gtk.Label("")
+        self.tagger_label = Gtk.Label(label = "")
         self.tagger_label.set_properties(xalign=0,yalign=0,selectable=True)
         self.tagger_label.set_line_wrap(True)
-        self.tagger_container = Gtk.HBox(False, 0)
+        self.tagger_container = Gtk.HBox(homogeneous = False, spacing = 0)
         self.tagger_container.pack_start(label, False, False, 0)
         self.tagger_container.pack_start(self.tagger_label, False, False, 0)
         vbox.pack_start(self.tagger_container, False, False, 0)
 
         # Set up the Date line
-        label = Gtk.Label(_("Date:"))
+        label = Gtk.Label(label = _("Date:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=0)
-        self.date_label = Gtk.Label("")
+        self.date_label = Gtk.Label(label = "")
         self.date_label.set_properties(xalign=0,yalign=0,selectable=True)
-        self.date_container = Gtk.HBox(False, 0)
+        self.date_container = Gtk.HBox(homogeneous = False, spacing = 0)
         self.date_container.pack_start(label, False, False, 0)
         self.date_container.pack_start(self.date_label, False, False, 0)
         vbox.pack_start(self.date_container, False, False, 0)
 
         # Set up the Revision line
-        label = Gtk.Label(_("Revision:"))
+        label = Gtk.Label(label = _("Revision:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=0)
-        self.revision_label = Gtk.Label("")
+        self.revision_label = Gtk.Label(label = "")
         self.revision_label.set_properties(xalign=0,selectable=True)
         self.revision_label.set_line_wrap(True)
-        self.revision_container = Gtk.HBox(False, 0)
+        self.revision_container = Gtk.HBox(homogeneous = False, spacing = 0)
         self.revision_container.pack_start(label, False, False, 0)
         self.revision_container.pack_start(self.revision_label, False, False, 0)
         vbox.pack_start(self.revision_container, False, False, 0)
 
         # Set up the Log Message line
-        label = Gtk.Label(_("Message:"))
+        label = Gtk.Label(label = _("Message:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=0)
-        self.message_label = Gtk.Label("")
+        self.message_label = Gtk.Label(label = "")
         self.message_label.set_properties(xalign=0,yalign=0,selectable=True)
         self.message_label.set_line_wrap(True)
         self.message_label.set_size_request(250, -1)
-        self.message_container = Gtk.HBox(False, 0)
+        self.message_container = Gtk.HBox(homogeneous = False, spacing = 0)
         self.message_container.pack_start(label, False, False, 0)
         self.message_container.pack_start(self.message_label, False, False, 0)
         vbox.pack_start(self.message_container, False, False, 0)

@@ -24,7 +24,7 @@ from __future__ import absolute_import
 from gettext import gettext as _
 import os.path
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk, Pango
 
 from rabbitvcs.ui import InterfaceView
@@ -102,11 +102,12 @@ class PreviousMessages(InterfaceView):
         
 class FolderChooser:
     def __init__(self):
-        self.dialog = Gtk.FileChooserDialog(_("Select a Folder"), 
-            None, 
-            Gtk.FileChooserAction.SELECT_FOLDER, 
-            (Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,
-                Gtk.STOCK_OPEN,Gtk.ResponseType.OK))
+        self.dialog = Gtk.FileChooserDialog(
+            title = _("Select a Folder"), 
+            parent = None, 
+            action = Gtk.FileChooserAction.SELECT_FOLDER)
+        self.dialog.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.dialog.add_button(_("_Select"), Gtk.ResponseType.OK)
         self.dialog.set_default_response(Gtk.ResponseType.OK)
 
     def run(self):
@@ -273,11 +274,12 @@ class Property(InterfaceView):
 
 class FileChooser:
     def __init__(self, title=_("Select a File"), folder=None):
-        self.dialog = Gtk.FileChooserDialog(title, 
-            None, 
-            Gtk.FILE_CHOOSER_ACTION_OPEN, 
-            (Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,
-                Gtk.STOCK_OPEN,Gtk.ResponseType.OK))
+        self.dialog = Gtk.FileChooserDialog(
+            title = title, 
+            parent = None, 
+            action = Gtk.FileChooserAction.OPEN)
+        self.dialog.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.dialog.add_button(_("_Open"),   Gtk.ResponseType.OK)
         if folder is not None:
             self.dialog.set_current_folder(folder)
         self.dialog.set_default_response(Gtk.ResponseType.OK)
@@ -292,11 +294,12 @@ class FileChooser:
 
 class FileSaveAs:
     def __init__(self, title=_("Save As..."), folder=None):
-        self.dialog = Gtk.FileChooserDialog(title, 
-            None, 
-            Gtk.FileChooserAction.SAVE, 
-            (Gtk.STOCK_CANCEL,Gtk.ResponseType.CANCEL,
-                Gtk.STOCK_SAVE,Gtk.ResponseType.OK))
+        self.dialog = Gtk.FileChooserDialog(
+            title = title, 
+            parent = None, 
+            action = Gtk.FileChooserAction.SAVE)
+        self.dialog.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.dialog.add_button(_("_Save"),   Gtk.ResponseType.OK)
         if folder is not None:
             self.dialog.set_current_folder(folder)
         self.dialog.set_default_response(Gtk.ResponseType.OK)

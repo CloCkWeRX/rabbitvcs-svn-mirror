@@ -492,7 +492,7 @@ class GittyupClient:
             paths = [paths]
 
         for path in paths:
-            relative_path = self.get_relative_path(path)
+            relative_path = self.get_relative_path(path).encode("utf-8")
             if relative_path in index:
                 if relative_path in tree:
                     (ctime, mtime, dev, ino, mode, uid, gid, size, blob_id, flags) = index[relative_path]
@@ -787,7 +787,7 @@ class GittyupClient:
             # Write original url back to config.
             self._config_set("remote \"origin\"", "url", host)
             self.config.write_to_path()            
-    
+
     def commit(self, message, parents=None, committer=None, commit_time=None, 
             commit_timezone=None, author=None, author_time=None, 
             author_timezone=None, encoding=None, commit_all=False):
@@ -837,22 +837,28 @@ class GittyupClient:
         if encoding is None:
             encoding = ENCODING
 
-        commit_id = self.repo.do_commit(message=message, committer=committer,
-                commit_timestamp=commit_time, commit_timezone=commit_timezone,
-                author=author, author_timestamp=author_time,
-                author_timezone=author_timezone, encoding=encoding,
-                merge_heads=parents)
+        commit_id = self.repo.do_commit(**helper.to_bytes({
+                    "message": message,
+                    "committer": committer,
+                    "commit_timestamp": commit_time,
+                    "commit_timezone": commit_timezone,
+                    "author": author,
+                    "author_timestamp": author_time,
+                    "author_timezone": author_timezone,
+                    "encoding": encoding,
+                    "merge_heads": parents}, encoding))
 
         branch_full = self.repo.refs.read_ref(b"HEAD")
 
         if branch_full is not None:
-            branch_components = re.search("refs/heads/(.+)", branch_full)
+            branch_components = re.search(b"refs/heads/(.+)", branch_full)
 
             if (branch_components != None):
                 branch = branch_components.group(1)
 
-                self.notify("[" + commit_id + "] -> " + branch)
-                self.notify("To branch: " + branch)
+                self.notify("[%s] -> %s" % (helper.to_text(commit_id),
+                                            helper.to_text(branch)))
+                self.notify("To branch: " + helper.to_text(branch))
 
         #Print tree changes.
         #dulwich.patch.write_tree_diff(sys.stdout, self.repo.object_store, commit.tree, commit.id)
@@ -1352,7 +1358,7 @@ class GittyupClient:
         
         """
         
-        ref_name = "refs/tags/%s" % name
+        ref_name = helper.to_bytes("refs/tags/%s" % name)
         refs = self.repo.get_refs()
         if ref_name in refs:
             del self.repo.refs[ref_name]

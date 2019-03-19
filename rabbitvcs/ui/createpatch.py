@@ -25,7 +25,7 @@ import os
 import six.moves._thread
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 import os
 import tempfile
@@ -117,10 +117,11 @@ class CreatePatch:
         path = ""
         
         dialog = Gtk.FileChooserDialog(
-            _("Create Patch"),
-            None,
-            Gtk.FILE_CHOOSER_ACTION_SAVE,(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                                          Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+            title = _("Create Patch"),
+            parent = None,
+            action = Gtk.FileChooserAction.SAVE)
+        dialog.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        dialog.add_button(_("_Create"), Gtk.ResponseType.OK)
         dialog.set_do_overwrite_confirmation(True)
         dialog.set_default_response(Gtk.ResponseType.OK)
         dialog.set_current_folder_uri(
@@ -197,7 +198,7 @@ class SVNCreatePatch(CreatePatch, SVNCommit):
         
         self.action.append(self.action.set_status, _("Patch File Created"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
         
         # TODO: Open the diff file (meld is going to add support in a future version :()
         # helper.launch_diff_tool(path)
@@ -263,7 +264,7 @@ class GitCreatePatch(CreatePatch, GitCommit):
         
         self.action.append(self.action.set_status, _("Patch File Created"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNCreatePatch,

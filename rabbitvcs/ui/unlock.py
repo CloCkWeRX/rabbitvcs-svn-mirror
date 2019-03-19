@@ -24,7 +24,7 @@ from __future__ import absolute_import
 import six.moves._thread
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView, InterfaceNonView
@@ -43,40 +43,13 @@ _ = gettext.gettext
 
 class SVNUnlock(Add):
     def __init__(self, paths, base_dir):
-        InterfaceView.__init__(self, "add", "Add")
+        Add.__init__(self, paths, base_dir)
 
-        self.window = self.get_widget("Add")
-        self.window.set_title(_("Unlock"))
-
-        self.paths = paths
-        self.base_dir = base_dir
-        self.last_row_clicked = None
-        self.vcs = rabbitvcs.vcs.VCS()
+    def setup(self, window, columns):
+        window.set_title(_("Unlock"))
         self.svn = self.vcs.svn()
-        self.items = None
         self.statuses = None
-        self.files_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("files_table"), 
-            [GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
-                GObject.TYPE_STRING], 
-            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
-            filters=[{
-                "callback": rabbitvcs.ui.widget.path_filter,
-                "user_data": {
-                    "base_dir": base_dir,
-                    "column": 1
-                }
-            }],
-            callbacks={
-                "row-activated":  self.on_files_table_row_activated,
-                "mouse-event":   self.on_files_table_mouse_event,
-                "key-event":     self.on_files_table_key_event
-            }
-        )
 
-        self.initialize_items()
-        
-        
     #
     # Helpers
     #
@@ -141,7 +114,7 @@ class SVNUnlock(Add):
             self.action.append(self.svn.unlock, item, force=True)
         self.action.append(self.action.set_status, _("Completed Unlock"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 class SVNUnlockQuiet:
     """

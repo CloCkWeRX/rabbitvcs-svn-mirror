@@ -24,7 +24,7 @@ from __future__ import absolute_import
 import os.path
 
 from gi import require_version
-require_version('Gtk', '3.0')
+require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject
 
 from rabbitvcs.ui import InterfaceNonView

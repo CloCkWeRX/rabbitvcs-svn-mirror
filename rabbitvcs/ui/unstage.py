@@ -24,7 +24,7 @@ from __future__ import absolute_import
 import six.moves._thread
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -45,38 +45,12 @@ _ = gettext.gettext
 
 class GitUnstage(Add):
     def __init__(self, paths, base_dir=None):
-        InterfaceView.__init__(self, "add", "Add")
+        Add.__init__(self, paths, base_dir)
 
-        self.window = self.get_widget("Add")
-        self.window.set_title(_("Unstage"))
-
-        self.paths = paths
-        self.base_dir = base_dir
-        self.last_row_clicked = None
-        self.vcs = rabbitvcs.vcs.VCS()
+    def setup(self, window, columns):
+        window.set_title(_("Unstage"))
         self.git = self.vcs.git(self.paths[0])
-        self.items = None
         self.statuses = self.git.STATUSES_FOR_UNSTAGE
-        self.files_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("files_table"), 
-            [GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
-                GObject.TYPE_STRING], 
-            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
-            filters=[{
-                "callback": rabbitvcs.ui.widget.path_filter,
-                "user_data": {
-                    "base_dir": base_dir,
-                    "column": 1
-                }
-            }],
-            callbacks={
-                "row-activated":  self.on_files_table_row_activated,
-                "mouse-event":   self.on_files_table_mouse_event,
-                "key-event":     self.on_files_table_key_event
-            }
-        )
-
-        self.initialize_items()
 
     def populate_files_table(self):
         self.files_table.clear()
@@ -105,7 +79,7 @@ class GitUnstage(Add):
             self.action.append(self.git.unstage, item)
         self.action.append(self.action.set_status, _("Completed Unstage"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 class GitUnstageQuiet:
     def __init__(self, paths, base_dir=None):
@@ -118,7 +92,7 @@ class GitUnstageQuiet:
         
         for path in paths:
             self.action.append(self.git.unstage, path)
-        self.action.run()
+        self.action.schedule()
 
 classes_map = {
     rabbitvcs.vcs.VCS_GIT: GitUnstage

@@ -27,7 +27,7 @@ import string
 import re
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, GdkPixbuf
 
 import rabbitvcs
@@ -78,7 +78,7 @@ class About:
         self.about.set_authors(authors.split("\n"))
 
         pixbuf = GdkPixbuf.Pixbuf.new_from_file(rabbitvcs.get_icon_path() +
-                                                '/scalable/apps/rabbitvcs.svg')
+                                                "/scalable/apps/rabbitvcs.svg")
         self.about.set_logo(pixbuf)
 
         versions = []

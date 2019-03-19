@@ -25,7 +25,7 @@ import os
 import subprocess
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 import rabbitvcs.ui.dialog
@@ -70,7 +70,7 @@ class GitCreate:
         self.action.append(self.git.initialize_repository, self.path)
         self.action.append(self.action.set_status, _("Completed repository setup"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNCreate,

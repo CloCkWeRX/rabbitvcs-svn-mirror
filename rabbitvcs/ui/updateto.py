@@ -22,7 +22,7 @@ from __future__ import absolute_import
 #
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -100,7 +100,7 @@ class SVNUpdateToRevision(UpdateToRevision):
             self.action.append(self.action.set_status, _("Completed Update"))
             
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
     def on_revision_changed(self, revision_selector):
         # Only allow rollback when a revision number is specified
@@ -144,7 +144,7 @@ class GitUpdateToRevision(UpdateToRevision):
         )
         self.action.append(self.action.set_status, _("Completed Checkout"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
     def on_revision_changed(self, revision_selector):
         pass

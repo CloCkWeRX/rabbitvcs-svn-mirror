@@ -28,7 +28,7 @@ from datetime import datetime
 import os.path
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -36,6 +36,7 @@ from rabbitvcs.ui.action import SVNAction, GitAction, vcs_action_factory
 from rabbitvcs.ui.dialog import MessageBox
 from rabbitvcs.util.contextmenu import GtkContextMenu
 from rabbitvcs.util.contextmenuitems import *
+from rabbitvcs.util.decorators import gtk_unsafe
 import rabbitvcs.ui.widget
 from rabbitvcs.util import helper
 import rabbitvcs.vcs
@@ -294,9 +295,11 @@ class Log(InterfaceView):
         else:
             return ""
     
+    @gtk_unsafe
     def set_start_revision(self, rev):
         self.get_widget("start").set_text(str(rev))
 
+    @gtk_unsafe
     def set_end_revision(self, rev):
         self.get_widget("end").set_text(str(rev))
 
@@ -521,7 +524,7 @@ class SVNLog(Log):
             discover_changed_paths=True
         )
         self.action.append(self.refresh)
-        self.action.run()
+        self.action.schedule()
 
     def edit_revprop(self, prop_name, prop_value, callback=None):
 
@@ -545,7 +548,7 @@ class SVNLog(Log):
             
             callback(row, prop_value)
         
-        self.action.run()
+        self.action.schedule()
 
     def on_log_message_edited(self, index, val):
         self.display_items[index].message = val
@@ -696,7 +699,7 @@ class GitLog(Log):
         """
         
         self.revisions_table.clear()
-        self.message.set_text("")
+        helper.run_in_main_thread(self.message.set_text, "")
         self.paths_table.clear()
         
         # Make sure the int passed is the order the log call was made
@@ -816,7 +819,7 @@ class GitLog(Log):
         )
 
         self.branchAction.append(self.git.branch_list)
-        self.branchAction.run();
+        self.branchAction.schedule();
 
         # Load tags.
         self.tagAction = GitAction(
@@ -826,7 +829,7 @@ class GitLog(Log):
         )
 
         self.tagAction.append(self.git.tag_list)
-        self.tagAction.run()
+        self.tagAction.schedule()
 
         # Load log.
         self.action = GitAction(
@@ -842,7 +845,7 @@ class GitLog(Log):
             limit=self.limit+1
         )
         self.action.append(self.refresh)
-        self.action.run()
+        self.action.schedule()
 
     def copy_revision_text(self):
         text = ""
@@ -882,7 +885,7 @@ class GitLog(Log):
                         subitem.path
                     ])
 
-#        subitems.sort(lambda x, y: cmp(x[1],y[1]))
+#        subitems.sort(key = lambda x: x[1])
         for subitem in subitems:
             self.paths_table.append([
                 subitem[0],
@@ -923,6 +926,7 @@ class SVNLogDialog(SVNLog):
         SVNLog.__init__(self, path, merge_candidate_revisions)
         self.ok_callback = ok_callback
         self.multiple = multiple
+        self.change_button("close", _("_Select"), "rabbitvcs-ok")
         
     def on_destroy(self, widget):
         pass
@@ -1048,7 +1052,7 @@ class MenuEditLogMessage(MenuItem):
 class MenuEditRevisionProperties(MenuItem):
     identifier = "RabbitVCS::Edit_Revision_Properties"
     label = _("Edit revision properties...")
-    icon = Gtk.STOCK_EDIT
+    icon = "rabbitvcs-editprops"
 
 class MenuSeparatorLast(MenuSeparator):
     identifier = "RabbitVCS::Separator_Last"
@@ -1662,7 +1666,7 @@ def log_factory(path, vcs):
     if not vcs:
         guess = rabbitvcs.vcs.guess(path)
         vcs = guess["vcs"]
-        if not classes_map[vcs]:
+        if not vcs in classes_map:
             from rabbitvcs.ui import VCS_OPT_ERROR
             raise SystemExit(VCS_OPT_ERROR)
 

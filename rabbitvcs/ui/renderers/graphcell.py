@@ -16,7 +16,7 @@ __author__    = "Scott James Remnant <scott@ubuntu.com>"
 import math
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Pango
 
 import cairo

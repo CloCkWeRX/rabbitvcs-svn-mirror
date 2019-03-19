@@ -1,7 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.20.2 -->
+<!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkImage" id="document-save-as">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">document-save-as</property>
+  </object>
+  <object class="GtkImage" id="rabbitvcs-cancel">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">rabbitvcs-cancel</property>
+  </object>
+  <object class="GtkImage" id="rabbitvcs-ok">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">rabbitvcs-ok</property>
+  </object>
   <object class="GtkWindow" id="Notification">
     <property name="width_request">740</property>
     <property name="can_focus">True</property>
@@ -10,6 +25,9 @@
     <property name="icon_name">rabbitvcs-small</property>
     <property name="gravity">center</property>
     <signal name="destroy" handler="on_destroy" swapped="no"/>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox" id="vbox14">
         <property name="visible">True</property>
@@ -114,12 +132,13 @@
                 <property name="layout_style">start</property>
                 <child>
                   <object class="GtkButton" id="saveas">
-                    <property name="label">gtk-save-as</property>
+                    <property name="label" translatable="yes">Save _As</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
+                    <property name="image">document-save-as</property>
+                    <property name="use_underline">True</property>
                     <signal name="clicked" handler="on_saveas_clicked" swapped="no"/>
                   </object>
                   <packing>
@@ -143,11 +162,12 @@
                 <property name="layout_style">end</property>
                 <child>
                   <object class="GtkButton" id="cancel">
-                    <property name="label">gtk-cancel</property>
+                    <property name="label" translatable="yes">_Cancel</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
+                    <property name="image">rabbitvcs-cancel</property>
+                    <property name="use_underline">True</property>
                     <signal name="clicked" handler="on_cancel_clicked" swapped="no"/>
                   </object>
                   <packing>
@@ -158,14 +178,15 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="ok">
-                    <property name="label">gtk-ok</property>
+                    <property name="label" translatable="yes">_OK</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="can_default">True</property>
                     <property name="has_default">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
+                    <property name="image">rabbitvcs-ok</property>
+                    <property name="use_underline">True</property>
                     <signal name="clicked" handler="on_ok_clicked" swapped="no"/>
                   </object>
                   <packing>
@@ -191,9 +212,6 @@
           </packing>
         </child>
       </object>
-    </child>
-    <child type="titlebar">
-      <placeholder/>
     </child>
   </object>
 </interface>

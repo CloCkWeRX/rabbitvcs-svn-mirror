@@ -25,7 +25,7 @@ from __future__ import absolute_import
 
 # Python translation from wrapLabel.{cc|h} by Gian Mario Tagliaretti
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Pango
 
 class WrapLabel(Gtk.Label):
@@ -36,7 +36,7 @@ class WrapLabel(Gtk.Label):
 
         self.__wrap_width = 0
         self.layout = self.get_layout()
-        self.layout.set_wrap(Pango.WRAP_WORD_CHAR)
+        self.layout.set_wrap(Pango.WrapMode.WORD_CHAR)
 
         if str != None:
             self.set_text(str)

@@ -25,7 +25,7 @@ import os
 import six.moves._thread
 
 from gi import require_version
-require_version('Gtk', '3.0')
+require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk, GLib
 
 from time import sleep
@@ -314,7 +314,7 @@ class SVNCommit(Commit):
         ),
         self.action.append(self.do_commit, items, recurse)
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
     def do_commit(self, items, recurse):
         # pysvn.Revision
@@ -386,7 +386,7 @@ class GitCommit(Commit):
         )
         self.action.append(self.action.set_status, _("Completed Commit"))
         self.action.append(self.action.finish)
-        self.action.run() 
+        self.action.schedule() 
 
     def on_files_table_toggle_event(self, row, col):
         # Adds path: True/False to the dict

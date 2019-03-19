@@ -133,9 +133,14 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
         factory = Gtk.IconFactory()
 
         rabbitvcs_icons = [
+            "scalable/actions/rabbitvcs-cancel.svg",
+            "scalable/actions/rabbitvcs-ok.svg",
+            "scalable/actions/rabbitvcs-no.svg",
+            "scalable/actions/rabbitvcs-yes.svg",
             "scalable/actions/rabbitvcs-settings.svg",
             "scalable/actions/rabbitvcs-export.svg",
             "scalable/actions/rabbitvcs-properties.svg",
+            "scalable/actions/rabbitvcs-editprops.svg",
             "scalable/actions/rabbitvcs-show_log.svg",
             "scalable/actions/rabbitvcs-delete.svg",
             "scalable/actions/rabbitvcs-run.svg",

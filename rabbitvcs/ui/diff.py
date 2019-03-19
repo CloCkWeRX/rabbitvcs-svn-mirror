@@ -22,7 +22,7 @@ from __future__ import absolute_import
 #
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Gdk, GLib
 import os
 from shutil import rmtree

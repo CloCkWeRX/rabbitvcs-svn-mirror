@@ -50,7 +50,7 @@ class MenuItem(object):
         identifier = "RabbitVCS::Perform_Magic"
         label = _("Perform Magic")
         tooltip = _("Put on your robe and wizard hat")
-        icon = "rabbitvcs-wand" # or, say, Gtk.STOCK_OPEN
+        icon = "rabbitvcs-wand"
     
     There is some introspection magic that goes on to associate the items
     themselves with certain methods of a ContextMenuCondition object or a
@@ -94,7 +94,7 @@ class MenuItem(object):
     tooltip = ""
     
     # The icon that will appear on the menu item. This can be, say,
-    # "rabbitvcs-something" or Gtk.STOCK_SOMETHING
+    # "rabbitvcs-something"
     icon = None
 
     # This is a string that holds the name of the function that is called when
@@ -213,7 +213,7 @@ class MenuItem(object):
             # that method is not available until pyGtk 2.16
             action.set_menu_item_type(Gtk.ImageMenuItem)
             menuitem = action.create_menu_item()
-            menuitem.set_image(Gtk.image_new_from_icon_name(self.icon, Gtk.ICON_SIZE_MENU))
+            menuitem.set_image(Gtk.image_new_from_icon_name(self.icon, Gtk.IconSize.MENU))
         else:
             menuitem = action.create_menu_item()
             
@@ -397,7 +397,7 @@ class MenuRepoBrowser(MenuItem):
     identifier = "RabbitVCS::Repo_Browser"
     label = _("Repository Browser")
     tooltip = _("Browse a repository tree")
-    icon = Gtk.STOCK_FIND
+    icon = "edit-find"
 
 class MenuCheckForModifications(MenuItem):
     identifier = "RabbitVCS::Check_For_Modifications"
@@ -623,7 +623,7 @@ class MenuOpen(MenuItem):
     identifier = "RabbitVCS::Open"
     label = _("Open")
     tooltip = _("Open a file")
-    icon = Gtk.STOCK_OPEN
+    icon = "document-open"
     # Not sure why, but it was like this before...
     condition_name = "_open"
     callback_name = "_open"
@@ -632,7 +632,7 @@ class MenuBrowseTo(MenuItem):
     identifier = "RabbitVCS::Browse_To"
     label = _("Browse to")
     tooltip = _("Browse to a file or folder")
-    icon = Gtk.STOCK_HARDDISK
+    icon = "drive-harddisk"
 
 class PropMenuRevert(MenuItem):
     identifier = "RabbitVCS::Property_Revert"
@@ -663,7 +663,7 @@ class PropMenuDeleteRecursive(MenuItem):
 class PropMenuEdit(MenuItem):
     identifier = "RabbitVCS::Property_Edit"
     label = _("Edit details")
-    icon = Gtk.STOCK_EDIT
+    icon = "rabbitvcs-editprops"
     tooltip = _("Show and edit property details")
 
 class MenuInitializeRepository(MenuItem):
@@ -802,7 +802,7 @@ class RabbitVCSAction(Gtk.Action):
             try:
                 self.set_icon_name(self.stock_id)
             except AttributeError as e:
-                menu_item.set_image(Gtk.image_new_from_icon_name(self.stock_id, Gtk.ICON_SIZE_MENU))
+                menu_item.set_image(Gtk.image_new_from_icon_name(self.stock_id, Gtk.IconSize.MENU))
 
         if self.sub_actions is not None:
             menu = Gtk.Menu()

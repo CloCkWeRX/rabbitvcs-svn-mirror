@@ -22,7 +22,7 @@ from __future__ import absolute_import
 #
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceNonView
@@ -58,7 +58,7 @@ class SVNCleanup(InterfaceNonView):
         self.action.append(self.svn.cleanup, self.path)
         self.action.append(self.action.set_status, _("Completed Cleanup"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
         
 if __name__ == "__main__":

@@ -25,7 +25,7 @@ import os.path
 import six.moves._thread
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 from datetime import datetime
 
@@ -102,7 +102,7 @@ class GitPush(Push):
         self.action.append(self.git.push, repository, branch, tags)
         self.action.append(self.action.set_status, _("Completed Push"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
     def initialize_logs(self):
         """

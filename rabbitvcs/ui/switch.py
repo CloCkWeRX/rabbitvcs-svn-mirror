@@ -22,7 +22,7 @@ from __future__ import absolute_import
 #
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -83,7 +83,7 @@ class SVNSwitch(InterfaceView):
         )
         self.action.append(self.action.set_status, _("Completed Switch"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNSwitch

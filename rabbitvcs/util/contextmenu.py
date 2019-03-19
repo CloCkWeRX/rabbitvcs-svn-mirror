@@ -32,7 +32,7 @@ from six.moves import range
 from .contextmenuitems import *
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk as gtk
 from gi.repository import GLib as glib
 
@@ -291,7 +291,7 @@ class ContextMenuCallbacks:
         window.set_resizable(True)
         window.set_position(gtk.WIN_POS_CENTER)
         scrolled_window = gtk.ScrolledWindow()
-        scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrolled_window.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
         ipython_view = IPythonView()
         ipython_view.updateNamespace(locals())
         ipython_view.set_wrap_mode(gtk.WRAP_CHAR)

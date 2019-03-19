@@ -23,7 +23,7 @@ from __future__ import absolute_import
 
 import os.path
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -314,7 +314,7 @@ class SVNChanges(Changes):
         self.action.append(helper.save_repository_path, second_url)
         self.action.append(self.populate_table)
         self.action.append(self.enable_more_actions)
-        self.action.run()
+        self.action.schedule()
 
     def populate_table(self):
         # returns a list of dicts(path, summarize_kind, node_kind, prop_changed)
@@ -330,7 +330,7 @@ class SVNChanges(Changes):
                 
             self.changes_table.append([
                 path,
-                item["summarize_kind"],
+                str(item["summarize_kind"]),
                 prop_changed
             ])
 
@@ -408,7 +408,7 @@ class GitChanges(Changes):
         self.action.append(helper.save_repository_path, second_url)
         self.action.append(self.populate_table)
         self.action.append(self.enable_more_actions)
-        self.action.run()
+        self.action.schedule()
 
     def populate_table(self):
         # returns a list of dicts(path, summarize_kind, node_kind, prop_changed)
@@ -425,12 +425,12 @@ class GitChanges(Changes):
 class MenuOpenFirst(MenuItem):
     identifier = "RabbitVCS::Open_First"
     label = _("Open from first revision")
-    icon = Gtk.STOCK_OPEN
+    icon = "document-open"
 
 class MenuOpenSecond(MenuItem):
     identifier = "RabbitVCS::Open_Second"
     label = _("Open from second revision") 
-    icon = Gtk.STOCK_OPEN
+    icon = "document-open"
     
 class MenuViewDiff(MenuItem):
     identifier = "RabbitVCS::View_Diff"

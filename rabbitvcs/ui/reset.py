@@ -24,7 +24,7 @@ from __future__ import absolute_import
 import os
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk, Pango
 
 from datetime import datetime
@@ -103,7 +103,7 @@ class GitReset(InterfaceView):
         )
         self.action.append(self.action.set_status, _("Completed Reset"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
     def on_browse_clicked(self, widget, data=None):
         chooser = rabbitvcs.ui.dialog.FolderChooser()

@@ -34,7 +34,7 @@ from __future__ import print_function
 import os.path
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -89,7 +89,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         note = rabbitvcs.ui.wraplabel.WrapLabel(PROP_EDITOR_NOTE)
         note.set_use_markup(True)
         
-        self.get_widget("note_box").pack_start(note)        
+        self.get_widget("note_box").pack_start(note, True, True, 0)        
         self.get_widget("note_box").show_all()
                 
         self.path = path

@@ -1,46 +1,56 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
 <interface>
-  <!-- interface-requires gtk+ 2.6 -->
-  <!-- interface-naming-policy toplevel-contextual -->
+  <requires lib="gtk+" version="3.0"/>
+  <object class="GtkImage" id="window-close">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">window-close</property>
+  </object>
   <object class="GtkWindow" id="Changes">
     <property name="width_request">640</property>
     <property name="height_request">500</property>
     <property name="visible">True</property>
+    <property name="can_focus">False</property>
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="title" translatable="yes">Changes</property>
     <property name="window_position">center</property>
     <property name="icon_name">rabbitvcs-small</property>
-    <signal handler="on_destroy" name="destroy"/>
-    <signal handler="on_key_pressed" name="key_press_event"/>
+    <signal name="destroy" handler="on_destroy" swapped="no"/>
+    <signal name="key-press-event" handler="on_key_pressed" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
     <child>
       <object class="GtkBox" id="vbox1">
-        <property name="orientation">vertical</property>
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
         <property name="border_width">12</property>
         <property name="orientation">vertical</property>
         <property name="spacing">18</property>
         <child>
           <object class="GtkBox" id="vbox2">
-            <property name="orientation">vertical</property>
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
             <property name="orientation">vertical</property>
             <property name="spacing">12</property>
             <child>
               <object class="GtkBox" id="vbox3">
-                <property name="orientation">vertical</property>
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel" id="label1">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">&lt;b&gt;First:&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
+                    <property name="xalign">0</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -49,80 +59,26 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkAlignment" id="alignment1">
+                  <object class="GtkBox" id="vbox4">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                    <property name="left_padding">12</property>
+                    <property name="margin_left">12</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">6</property>
                     <child>
-                      <object class="GtkBox" id="vbox4">
-                        <property name="orientation">vertical</property>
+                      <object class="GtkBox" id="hbox1">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                        <property name="orientation">vertical</property>
-                        <property name="spacing">6</property>
                         <child>
-                          <object class="GtkBox" id="hbox1">
-                            <property name="orientation">horizontal</property>
+                          <object class="GtkLabel" id="label2">
+                            <property name="width_request">100</property>
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                            <child>
-                              <object class="GtkLabel" id="label2">
-                                <property name="width_request">100</property>
-                                <property name="visible">True</property>
-                                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                <property name="xalign">0</property>
-                                <property name="label" translatable="yes">URL</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkBox" id="hbox12">
-                                <property name="orientation">horizontal</property>
-                                <property name="visible">True</property>
-                                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                <property name="spacing">4</property>
-                                <child>
-                                  <object class="GtkComboBoxText" id="first_urls">
-                                    <property name="visible">True</property>
-                                    <property name="has-entry">True</property>
-                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                    <signal handler="on_first_urls_changed" name="changed"/>
-                                  </object>
-                                  <packing>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkButton" id="first_urls_browse">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                    <signal handler="on_first_urls_browse_clicked" name="clicked"/>
-                                    <child>
-                                      <object class="GtkImage" id="image5">
-                                        <property name="visible">True</property>
-                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                        <property name="stock">gtk-zoom-fit</property>
-                                        <property name="icon-size">1</property>
-                                      </object>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
+                            <property name="label" translatable="yes">URL</property>
+                            <property name="xalign">0</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -131,49 +87,114 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkBox" id="hbox2">
-                            <property name="orientation">horizontal</property>
+                          <object class="GtkBox" id="hbox12">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                            <property name="spacing">4</property>
                             <child>
-                              <object class="GtkLabel" id="label3">
-                                <property name="width_request">100</property>
+                              <object class="GtkComboBoxText" id="first_urls">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Revision</property>
+                                <property name="has_entry">True</property>
+                                <signal name="changed" handler="on_first_urls_changed" swapped="no"/>
+                                <child internal-child="entry">
+                                  <object class="GtkEntry">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                  </object>
+                                </child>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkBox" id="first_revision_container">
-                                <property name="orientation">horizontal</property>
+                              <object class="GtkButton" id="first_urls_browse">
                                 <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                                <signal name="clicked" handler="on_first_urls_browse_clicked" swapped="no"/>
                                 <child>
-                                  <placeholder/>
+                                  <object class="GtkImage" id="image5">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                                    <property name="icon_name">zoom-fit-best</property>
+                                    <property name="icon_size">1</property>
+                                  </object>
                                 </child>
+                                <accelerator key="f" signal="clicked" modifiers="GDK_MOD1_MASK"/>
                               </object>
                               <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
                           </object>
                           <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
                       </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="hbox2">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                        <child>
+                          <object class="GtkLabel" id="label3">
+                            <property name="width_request">100</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                            <property name="label" translatable="yes">Revision</property>
+                            <property name="xalign">0</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="first_revision_container">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="fill">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -186,18 +207,19 @@
             </child>
             <child>
               <object class="GtkBox" id="vbox7">
-                <property name="orientation">vertical</property>
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkLabel" id="label6">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                    <property name="xalign">0</property>
                     <property name="label" translatable="yes">&lt;b&gt;Second:&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
+                    <property name="xalign">0</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -206,80 +228,26 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkAlignment" id="alignment3">
+                  <object class="GtkBox" id="vbox8">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                    <property name="left_padding">12</property>
+                    <property name="margin_left">12</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">6</property>
                     <child>
-                      <object class="GtkBox" id="vbox8">
-                        <property name="orientation">vertical</property>
+                      <object class="GtkBox" id="hbox7">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                        <property name="orientation">vertical</property>
-                        <property name="spacing">6</property>
                         <child>
-                          <object class="GtkBox" id="hbox7">
-                            <property name="orientation">horizontal</property>
+                          <object class="GtkLabel" id="label7">
+                            <property name="width_request">100</property>
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                            <child>
-                              <object class="GtkLabel" id="label7">
-                                <property name="width_request">100</property>
-                                <property name="visible">True</property>
-                                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                <property name="xalign">0</property>
-                                <property name="label" translatable="yes">URL</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkBox" id="hbox14">
-                                <property name="orientation">horizontal</property>
-                                <property name="visible">True</property>
-                                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                <property name="spacing">4</property>
-                                <child>
-                                  <object class="GtkComboBoxText" id="second_urls">
-                                    <property name="visible">True</property>
-                                    <property name="has-entry">True</property>
-                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                    <signal handler="on_second_urls_changed" name="changed"/>
-                                  </object>
-                                  <packing>
-                                    <property name="position">0</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkButton" id="second_urls_browse">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">True</property>
-                                    <property name="receives_default">True</property>
-                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                    <signal handler="on_second_urls_browse_clicked" name="clicked"/>
-                                    <child>
-                                      <object class="GtkImage" id="image7">
-                                        <property name="visible">True</property>
-                                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                        <property name="stock">gtk-zoom-fit</property>
-                                        <property name="icon-size">1</property>
-                                      </object>
-                                    </child>
-                                  </object>
-                                  <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">1</property>
-                                  </packing>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
+                            <property name="label" translatable="yes">URL</property>
+                            <property name="xalign">0</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -288,49 +256,114 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkBox" id="hbox17">
-                            <property name="orientation">horizontal</property>
+                          <object class="GtkBox" id="hbox14">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                            <property name="spacing">4</property>
                             <child>
-                              <object class="GtkLabel" id="label11">
-                                <property name="width_request">100</property>
+                              <object class="GtkComboBoxText" id="second_urls">
                                 <property name="visible">True</property>
+                                <property name="can_focus">False</property>
                                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                                <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Revision</property>
+                                <property name="has_entry">True</property>
+                                <signal name="changed" handler="on_second_urls_changed" swapped="no"/>
+                                <child internal-child="entry">
+                                  <object class="GtkEntry">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                  </object>
+                                </child>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
+                                <property name="expand">True</property>
+                                <property name="fill">True</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkBox" id="second_revision_container">
-                                <property name="orientation">horizontal</property>
+                              <object class="GtkButton" id="second_urls_browse">
                                 <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                                <signal name="clicked" handler="on_second_urls_browse_clicked" swapped="no"/>
                                 <child>
-                                  <placeholder/>
+                                  <object class="GtkImage" id="image7">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                                    <property name="icon_name">zoom-fit-best</property>
+                                    <property name="icon_size">1</property>
+                                  </object>
                                 </child>
+                                <accelerator key="s" signal="clicked" modifiers="GDK_MOD1_MASK"/>
                               </object>
                               <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
                           </object>
                           <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
                       </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkBox" id="hbox17">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                        <child>
+                          <object class="GtkLabel" id="label11">
+                            <property name="width_request">100</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+                            <property name="label" translatable="yes">Revision</property>
+                            <property name="xalign">0</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkBox" id="second_revision_container">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
-                    <property name="fill">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -343,20 +376,21 @@
             </child>
             <child>
               <object class="GtkBox" id="vbox5">
-                <property name="orientation">vertical</property>
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkBox" id="hbox5">
-                    <property name="orientation">horizontal</property>
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkLabel" id="label4">
                         <property name="visible">True</property>
-                        <property name="xalign">0</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">&lt;b&gt;Differences&lt;/b&gt; (double-click to compare with base)</property>
                         <property name="use_markup">True</property>
+                        <property name="xalign">0</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -373,8 +407,8 @@
                 </child>
                 <child>
                   <object class="GtkBox" id="hbox19">
-                    <property name="orientation">horizontal</property>
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                     <property name="spacing">4</property>
                     <child>
@@ -382,50 +416,59 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                        <property name="hscrollbar_policy">automatic</property>
-                        <property name="vscrollbar_policy">automatic</property>
                         <property name="shadow_type">etched-in</property>
+                        <property name="propagate_natural_height">True</property>
                         <child>
                           <object class="GtkTreeView" id="changes_table">
+                            <property name="height_request">200</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                            <!--<signal handler="on_changes_table_button_pressed" name="button_press_event"/>-->
-                            <signal handler="on_changes_table_cursor_changed" name="cursor_changed"/>
-                            <signal handler="on_changes_table_row_doubleclicked" name="row_activated"/>
-                            <!--<signal handler="on_changes_table_key_released" name="key_release_event"/>-->
+                            <signal name="cursor-changed" handler="on_changes_table_cursor_changed" swapped="no"/>
+                            <signal name="row-activated" handler="on_changes_table_row_doubleclicked" swapped="no"/>
+                            <child internal-child="selection">
+                              <object class="GtkTreeSelection"/>
+                            </child>
                           </object>
                         </child>
                       </object>
                       <packing>
                         <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
               </object>
               <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">2</property>
               </packing>
             </child>
           </object>
           <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
           <object class="GtkBox" id="hbox4">
-            <property name="orientation">horizontal</property>
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
               <object class="GtkComboBox" id="more_actions">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
-                <signal handler="on_more_actions_changed" name="changed"/>
+                <property name="can_focus">False</property>
+                <signal name="changed" handler="on_more_actions_changed" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -435,8 +478,8 @@
             </child>
             <child>
               <object class="GtkButtonBox" id="hbuttonbox1">
-                <property name="orientation">horizontal</property>
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                 <property name="spacing">6</property>
                 <property name="layout_style">end</property>
@@ -445,34 +488,41 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <signal handler="on_refresh_clicked" name="clicked"/>
+                    <signal name="clicked" handler="on_refresh_clicked" swapped="no"/>
                     <child>
                       <object class="GtkBox" id="hbox6">
-                        <property name="orientation">horizontal</property>
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                         <child>
                           <object class="GtkImage" id="image2">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                            <property name="stock">gtk-refresh</property>
+                            <property name="icon_name">view-refresh</property>
                           </object>
                           <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
                         <child>
                           <object class="GtkLabel" id="label5">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
                             <property name="label" translatable="yes">Load/Refresh</property>
                           </object>
                           <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
                       </object>
                     </child>
+                    <accelerator key="r" signal="clicked" modifiers="GDK_MOD1_MASK"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -482,13 +532,13 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="close">
-                    <property name="label">gtk-close</property>
+                    <property name="label" translatable="yes">_Close</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
-                    <property name="use_stock">True</property>
-                    <signal handler="on_close_clicked" name="clicked"/>
+                    <property name="image">window-close</property>
+                    <signal name="clicked" handler="on_close_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>

@@ -24,7 +24,7 @@ from __future__ import absolute_import
 import os
 
 from gi import require_version
-require_version('Gtk', '3.0')
+require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk, GLib
 
 from datetime import datetime
@@ -170,10 +170,11 @@ class SVNAnnotate(Annotate):
         )
         self.action.append(self.populate_table)
         self.action.append(self.enable_saveas)
-        self.action.run()
+        self.action.schedule()
 
         self.kill_loading()
-        
+
+    @gtk_unsafe
     def populate_table(self):
         blamedict = self.action.get_result(0)
 
@@ -268,10 +269,10 @@ class GitAnnotate(Annotate):
         )
         self.action.append(self.populate_table)
         self.action.append(self.enable_saveas)
-        self.action.run()
+        self.action.schedule()
         self.kill_loading()
-        
-        
+
+    @gtk_unsafe
     def populate_table(self):
         blamedict = self.action.get_result(0)
 

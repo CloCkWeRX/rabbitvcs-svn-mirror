@@ -22,7 +22,7 @@ from __future__ import absolute_import
 #
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -233,7 +233,7 @@ class SVNMerge(InterfaceView):
                        
         action.append(action.set_status, endcmd)
         action.append(action.finish)
-        action.run()
+        action.schedule()
 
     def on_prepare(self, widget, page):
         self.page = page
@@ -481,49 +481,49 @@ class GitMerge(BranchMerge):
         from_container = self.get_widget("from_branch_info")
         
         # Set up the Author line
-        author = Gtk.Label(_("Author:"))
+        author = Gtk.Label(label = _("Author:"))
         author.set_size_request(90, -1)
         author.set_properties(xalign=0,yalign=0)
-        self.info['from']['author'] = Gtk.Label("")
+        self.info['from']['author'] = Gtk.Label(label = "")
         self.info['from']['author'].set_properties(xalign=0,yalign=0,selectable=True)
         self.info['from']['author'].set_line_wrap(True)
-        author_container = Gtk.HBox(False, 0)
+        author_container = Gtk.HBox(homogeneous = False, spacing = 0)
         author_container.pack_start(author, False, False, 0)
         author_container.pack_start(self.info['from']['author'], False, False, 0)
         from_container.pack_start(author_container, False, False, 0)
 
         # Set up the Date line
-        date = Gtk.Label(_("Date:"))
+        date = Gtk.Label(label = _("Date:"))
         date.set_size_request(90, -1)
         date.set_properties(xalign=0,yalign=0)
-        self.info['from']['date'] = Gtk.Label("")
+        self.info['from']['date'] = Gtk.Label(label = "")
         self.info['from']['date'].set_properties(xalign=0,yalign=0,selectable=True)
-        date_container = Gtk.HBox(False, 0)
+        date_container = Gtk.HBox(homogeneous = False, spacing = 0)
         date_container.pack_start(date, False, False, 0)
         date_container.pack_start(self.info['from']['date'], False, False, 0)
         from_container.pack_start(date_container, False, False, 0)
 
         # Set up the Revision line
-        revision = Gtk.Label(_("Revision:"))
+        revision = Gtk.Label(label = _("Revision:"))
         revision.set_size_request(90, -1)
         revision.set_properties(xalign=0,yalign=0)
-        self.info['from']['revision'] = Gtk.Label("")
+        self.info['from']['revision'] = Gtk.Label(label = "")
         self.info['from']['revision'].set_properties(xalign=0,selectable=True)
         self.info['from']['revision'].set_line_wrap(True)
-        revision_container = Gtk.HBox(False, 0)
+        revision_container = Gtk.HBox(homogeneous = False, spacing = 0)
         revision_container.pack_start(revision, False, False, 0)
         revision_container.pack_start(self.info['from']['revision'], False, False, 0)
         from_container.pack_start(revision_container, False, False, 0)
 
         # Set up the Log Message line
-        message = Gtk.Label(_("Message:"))
+        message = Gtk.Label(label = _("Message:"))
         message.set_size_request(90, -1)
         message.set_properties(xalign=0,yalign=0)
-        self.info['from']['message'] = Gtk.Label("")
+        self.info['from']['message'] = Gtk.Label(label = "")
         self.info['from']['message'].set_properties(xalign=0,yalign=0,selectable=True)
         self.info['from']['message'].set_line_wrap(True)
         self.info['from']['message'].set_size_request(250, -1)
-        message_container = Gtk.HBox(False, 0)
+        message_container = Gtk.HBox(homogeneous = False, spacing = 0)
         message_container.pack_start(message, False, False, 0)
         message_container.pack_start(self.info['from']['message'], False, False, 0)
         from_container.pack_start(message_container, False, False, 0)
@@ -564,7 +564,7 @@ class GitMerge(BranchMerge):
 
         self.action.append(self.action.set_status, _("Completed Merge"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
     def __revision_changed(self, widget):
         self.update_branch_info()

@@ -24,9 +24,8 @@ from __future__ import absolute_import
 import os.path
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
-import commands
 
 from rabbitvcs.ui import InterfaceNonView
 from rabbitvcs.ui.action import SVNAction
@@ -54,10 +53,11 @@ class ApplyPatch(InterfaceNonView):
         path = None
         
         dialog = Gtk.FileChooserDialog(
-            _("Apply Patch"),
-            None,
-            Gtk.FILE_CHOOSER_ACTION_OPEN,(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                                          Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+            title = _("Apply Patch"),
+            parent = None,
+            action = Gtk.FileChooserAction.OPEN)
+        dialog.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        dialog.add_button(_("_Open"), Gtk.ResponseType.OK)
         dialog.set_default_response(Gtk.ResponseType.OK)
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
@@ -74,11 +74,11 @@ class ApplyPatch(InterfaceNonView):
         dir = None
         
         dialog = Gtk.FileChooserDialog(
-                    _("Apply Patch To Directory..."),
-                    None,
-                    Gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,
-                    (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                     Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+                title = _("Apply Patch To Directory..."),
+                parent = None,
+                action = Gtk.FileChooserAction.SELECT_FOLDER)
+        dialog.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        dialog.add_button(_("_Select"), Gtk.ResponseType.OK)
         dialog.set_default_response(Gtk.ResponseType.OK)
         
         response = dialog.run()
@@ -118,7 +118,7 @@ class SVNApplyPatch(ApplyPatch):
         self.action.append(self.svn.apply_patch, path, base_dir)
         self.action.append(self.action.set_status, _("Patch File Applied"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 class GitApplyPatch(ApplyPatch):
     def __init__(self, paths):
@@ -148,7 +148,7 @@ class GitApplyPatch(ApplyPatch):
         self.action.append(self.git.apply_patch, path, base_dir)
         self.action.append(self.action.set_status, _("Patch File Applied"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNApplyPatch,

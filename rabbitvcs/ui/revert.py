@@ -26,7 +26,7 @@ import six.moves._thread
 from time import sleep
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -177,7 +177,7 @@ class SVNRevert(Revert):
         self.action.append(self.vcs.svn().revert, items, recurse=True)
         self.action.append(self.action.set_status, _("Completed Revert"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 
 class GitRevert(Revert):
@@ -203,7 +203,7 @@ class GitRevert(Revert):
         self.action.append(self.git.checkout, items)
         self.action.append(self.action.set_status, _("Completed Revert"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 class SVNRevertQuiet:
     def __init__(self, paths, base_dir=None):
@@ -214,7 +214,7 @@ class SVNRevertQuiet:
         )
         
         self.action.append(self.vcs.svn().revert, paths)
-        self.action.run()
+        self.action.schedule()
 
 class GitRevertQuiet:
     def __init__(self, paths, base_dir=None):
@@ -226,7 +226,7 @@ class GitRevertQuiet:
         )
         
         self.action.append(self.git.checkout, paths)
-        self.action.run()
+        self.action.schedule()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNRevert, 
