@@ -244,7 +244,7 @@ class Settings(InterfaceView):
     def save(self):
         self.settings.set(
             "general", "language",
-            self.get_widget("language").get_active_text()
+            self.language.get_active_text()
         )
         self.settings.set(
             "general", "enable_attributes",

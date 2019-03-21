@@ -122,7 +122,7 @@ class SVNMerge(InterfaceView):
         kwargs = {}
         
         if self.type == "range":
-            url = self.get_widget("mergerange_from_urls").get_active_text()
+            url = self.mergerange_repos.get_active_text()
             head_revision = self.svn.get_head(self.path)
             revisions = self.get_widget("mergerange_revisions").get_text()
             if revisions == "":
@@ -195,14 +195,14 @@ class SVNMerge(InterfaceView):
             }
 
         elif self.type == "tree":
-            from_url = self.get_widget("mergetree_from_urls").get_active_text()
+            from_url = self.mergetree_from_repos.get_active_text()
             from_revision = self.svn.revision("head")
             if self.get_widget("mergetree_from_revision_number_opt").get_active():
                 from_revision = self.svn.revision(
                     "number",
                     number=int(self.get_widget("mergetree_from_revision_number").get_text())
                 )
-            to_url = self.get_widget("mergetree_to_urls").get_active_text()
+            to_url = self.mergetree_to_repos.get_active_text()
             to_revision = self.svn.revision("head")
             if self.get_widget("mergetree_to_revision_number_opt").get_active():
                 to_revision = self.svn.revision(
@@ -286,11 +286,11 @@ class SVNMerge(InterfaceView):
         
     def on_mergerange_show_log1_clicked(self, widget):
         merge_candidate_revisions = self.svn.find_merge_candidate_revisions(
-            self.get_widget("mergerange_from_urls").get_active_text(),
+            self.mergerange_repos.get_active_text(),
             self.path
         )
         SVNLogDialog(
-            self.get_widget("mergerange_from_urls").get_active_text(),
+            self.mergerange_repos.get_active_text(),
             ok_callback=self.on_mergerange_log1_closed, 
             multiple=True,
             merge_candidate_revisions=merge_candidate_revisions
@@ -307,13 +307,13 @@ class SVNMerge(InterfaceView):
 
     def mergerange_check_ready(self):
         ready = True
-        if self.get_widget("mergerange_from_urls").get_active_text() == "":
+        if self.mergerange_repos.get_active_text() == "":
             ready = False
 
         self.assistant.set_page_complete(self.page, ready)
 
         allow_log = False
-        if self.get_widget("mergerange_from_urls").get_active_text():
+        if self.mergerange_repos.get_active_text():
             allow_log = True        
         self.get_widget("mergerange_show_log1").set_sensitive(allow_log)
 
@@ -351,7 +351,7 @@ class SVNMerge(InterfaceView):
     
     def merge_reintegrate_check_ready(self):
         ready = True
-        if self.get_widget("merge_reintegrate_repos").get_active_text() == "":
+        if self.merge_reintegrate_repos.get_active_text() == "":
             ready = False
 
         self.assistant.set_page_complete(self.page, ready)
@@ -411,9 +411,9 @@ class SVNMerge(InterfaceView):
 
     def mergetree_check_ready(self):
         ready = True
-        if self.get_widget("mergetree_from_urls").get_active_text() == "":
+        if self.mergetree_from_repos.get_active_text() == "":
             ready = False
-        if self.get_widget("mergetree_to_urls").get_active_text() == "":
+        if self.mergetree_to_repos.get_active_text() == "":
             ready = False
 
         self.assistant.set_page_complete(self.page, ready)

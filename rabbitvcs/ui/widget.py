@@ -802,7 +802,13 @@ class ComboBox:
             index += 1
 
     def get_active_text(self):
-        return self.cb.get_child().get_text()
+        child = self.cb.get_child()
+        if isinstance(child, Gtk.Entry):
+            return child.get_text()
+        index = self.cb.get_active()
+        if index < 0:
+            return ""
+        return self.model[index][0]
 
     def get_active(self):
         return self.cb.get_active()
