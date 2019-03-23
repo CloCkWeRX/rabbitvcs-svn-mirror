@@ -1575,10 +1575,7 @@ class LogBottomContextMenuCallbacks:
             ])
 
     def annotate(self, widget, data=None):
-        url = self.paths[0]
-        if self.vcs_name == rabbitvcs.vcs.VCS_SVN:
-            url = self.caller.root_url + self.paths[0]
-
+        url = self.caller.root_url + self.paths[0]
         helper.launch_ui_window("annotate", [
             url, 
             "--vcs=%s" % self.vcs_name, 
