@@ -185,13 +185,13 @@ class MenuItem(object):
       
     def make_action(self, id_magic = None):
         """
-        Creates the GTK Action for the menu item. To avoid GTK "helpfully"
+        Creates the Action for the menu item. To avoid GTK "helpfully"
         preventing us from adding duplicates (eg. separators), you can pass in
         a string that will be appended and separated from the actual identifier.
         """
         identifier = self.make_magic_id(id_magic)
         
-        return Gtk.Action(identifier, self.make_label(), None, None)
+        return Action(identifier, self.make_label(), None, None)
 
     def make_thunar_action(self, id_magic = None):
         identifier = self.make_magic_id(id_magic)
@@ -221,13 +221,11 @@ class MenuItem(object):
         
     def make_gtk3_menu_item(self, id_magic = None):
         action = self.make_action(id_magic)
-        
+        menuitem = action.create_menu_item()
+
         if self.icon:
-            menuitem = action.create_menu_item()
             menuitem.set_image(Gtk.Image.new_from_icon_name(self.icon, Gtk.IconSize.MENU))
-        else:
-            menuitem = action.create_menu_item()
-            
+
         return menuitem
     
     def make_thunarx_menu_item(self, id_magic = None):
@@ -293,7 +291,7 @@ class MenuSeparator(MenuItem):
         # I thought
         #~ identifier = self.make_magic_id(id_magic)
         #~ # This information is not actually used, but is necessary for
-        #~ # the required subclassing of GtkAction.
+        #~ # the required subclassing of Action.
         #~ action = ThunarSeparator(
             #~ identifier,
             #~ self.label,
@@ -307,7 +305,12 @@ class MenuSeparator(MenuItem):
         menuitem = Gtk.SeparatorMenuItem()
         menuitem.show()
         return menuitem
-    
+
+    def make_gtk3_menu_item(self, id_magic = None):
+        menuitem = Gtk.SeparatorMenuItem()
+        menuitem.show()
+        return menuitem
+
     def make_nautilus_menu_item(self, id_magic = None):
         menuitem = super(MenuSeparator, self).make_nautilus_menu_item(id_magic)
         self.make_insensitive(menuitem)
@@ -777,33 +780,43 @@ def get_ignore_list_items(paths):
 
     return ignore_items
 
-class RabbitVCSAction(Gtk.Action):
+class Action(object):
+    def __init__(self, name, label, tooltip, icon_name):
+        self.name = name
+        self.label = label
+        self.tooltip = tooltip
+        self.icon_name = icon_name
+
+    def __repr__(self):
+        return self.get_name()
+
+    def create_menu_item(self):
+        item = Gtk.ImageMenuItem()
+        if self.label:
+            item.set_label(self.label)
+        if self.tooltip:
+            item.set_tooltip_text(self.tooltip)
+        if self.icon_name:
+            item.set_image(Gtk.image_new_from_icon_name(self.icon_name, Gtk.IconSize.MENU))
+        return item
+
+class RabbitVCSAction(Action):
     """
-    Sub-classes Gtk.Action so that we can have submenus.
+    Sub-classes Action so that we can have submenus.
     This is needed for context menus that use Gtk actions
     """
 
     __gtype_name__ = "RabbitVCSAction"
 
-    def __init__(self, name, label, tooltip, stock_id):
-        Gtk.Action.__init__(self, name, label, tooltip, stock_id)
+    def __init__(self, name, label, tooltip, icon_name):
+        Action.__init__(self, name, label, tooltip, icon_name)
         self.sub_actions = None
-        self.stock_id = stock_id
-
-    def __repr__(self):
-        return self.get_name()
 
     def set_sub_actions(self, sub_actions):
         self.sub_actions = sub_actions
 
-    def do_create_menu_item(self):
-        menu_item = Gtk.ImageMenuItem()
-        if self.stock_id:
-            try:
-                self.set_icon_name(self.stock_id)
-            except AttributeError as e:
-                menu_item.set_image(Gtk.image_new_from_icon_name(self.stock_id, Gtk.IconSize.MENU))
-
+    def create_menu_item(self):
+        menu_item = super().create_menu_item()
         if self.sub_actions is not None:
             menu = Gtk.Menu()
             menu_item.set_submenu(menu)
@@ -819,5 +832,5 @@ class RabbitVCSAction(Gtk.Action):
 # menu, but this doesn't seem to work.
 class ThunarSeparator(RabbitVCSAction):
 		
-	def do_create_menu_item(self):
+	def create_menu_item(self):
 		return Gtk.SeparatorMenuItem()
