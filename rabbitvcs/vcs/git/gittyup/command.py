@@ -25,9 +25,9 @@ class GittyupCommand:
         if notify:
             self.notify = notify
 
-        self.get_cancel = cancel_func
+        self.cancel = cancel_func
         if cancel:
-            self.get_cancel = cancel
+            self.cancel = cancel
 
         self.cwd = cwd
         if not self.cwd:
@@ -66,7 +66,7 @@ class GittyupCommand:
             self.notify(line)
             stdout.append(line)
 
-            if self.get_cancel():
+            if self.cancel():
                 proc.kill()
 
         return (0, stdout, None)

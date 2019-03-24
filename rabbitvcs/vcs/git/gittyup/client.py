@@ -607,7 +607,7 @@ class GittyupClient:
         cmd += [name, commit_sha]
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
 
@@ -670,7 +670,7 @@ class GittyupClient:
             cmd += ["--contains", commit_sha]
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
 
@@ -719,7 +719,7 @@ class GittyupClient:
         cmd = ["git", "checkout", "-m", revision] + paths
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
         
@@ -757,7 +757,7 @@ class GittyupClient:
         self.modifiedHost = host
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify_and_parse_progress, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify_and_parse_progress, cancel=self.get_cancel()).execute()
 
             if stdout[1].find('could not read Username') > -1:
                 # Prompt for username if it does not exist in the url.
@@ -774,7 +774,7 @@ class GittyupClient:
                 cmd = ["git", "clone", self.modifiedHost, path] + more
 
                 # Try again.
-                (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify_and_parse_progress, cancel=self.get_cancel).execute()
+                (status, stdout, stderr) = GittyupCommand(cmd, cwd=base_dir, notify=self.notify_and_parse_progress, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
 
@@ -961,7 +961,7 @@ class GittyupClient:
         isPassword = False
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel()).execute()
             if stdout[0].find('could not read Username') > -1:
                 # Prompt for username if it does not exist in the url.
                 isUsername, originalRemoteUrl = self.promptUsername(remoteKey)
@@ -974,7 +974,7 @@ class GittyupClient:
 
             if isUsername == True or isPassword == True:
                 # Try again.
-                (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
+                (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
 
@@ -1013,7 +1013,7 @@ class GittyupClient:
         isPassword = False
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel()).execute()
             if stdout[0].find('could not read Username') > -1:
                 # Prompt for username if it does not exist in the url.
                 isUsername, originalRemoteUrl = self.promptUsername(remoteKey)
@@ -1026,7 +1026,7 @@ class GittyupClient:
 
             if isUsername == True or isPassword == True:
                 # Try again.
-                (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel).execute()
+                (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify_and_parse_git_push, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
 
@@ -1209,21 +1209,21 @@ class GittyupClient:
             cmd.append(branch)
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
     
     def fetch_all(self):
         cmd = ["git", "fetch", "--all"]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
             
     def merge(self, branch):
         cmd = ["git", "merge", branch]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
     
@@ -1241,7 +1241,7 @@ class GittyupClient:
         
         cmd = ["git", "remote", "add", name, host]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
     
@@ -1259,7 +1259,7 @@ class GittyupClient:
         
         cmd = ["git", "remote", "rename", current_name, new_name]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
     
@@ -1277,7 +1277,7 @@ class GittyupClient:
         
         cmd = ["git", "remote", "set-url", name, url]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
     
@@ -1292,7 +1292,7 @@ class GittyupClient:
         
         cmd = ["git", "remote", "rm", name]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
     
@@ -1308,7 +1308,7 @@ class GittyupClient:
         cmd = ["git", "remote", "-v"]
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
             stdout = []
@@ -1736,7 +1736,7 @@ class GittyupClient:
         cmd = ["git", "annotate", "-l", revision_obj, relative_path]
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
             stdout = []
@@ -1782,7 +1782,7 @@ class GittyupClient:
 
         cmd = ["git", "show", "%s:%s" % (revision_obj, relative_path)]
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
             stdout = []
@@ -1828,7 +1828,7 @@ class GittyupClient:
             cmd += [relative_path2]
             
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
             stdout = []
@@ -1872,8 +1872,8 @@ class GittyupClient:
         mkdir_p(dest_path)
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd1, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
-            (status, stdout, stderr) = GittyupCommand(cmd2, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd1, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd2, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
             stdout = []
@@ -1904,7 +1904,7 @@ class GittyupClient:
         cmd.append(relative_path)
         
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
             return
@@ -1921,7 +1921,7 @@ class GittyupClient:
             cmd.append(relative_path)
 
         try:
-            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel).execute()
+            (status, stdout, stderr) = GittyupCommand(cmd, cwd=self.repo.path, notify=self.notify, cancel=self.get_cancel()).execute()
         except GittyupCommandError as e:
             self.callback_notify(e)
             return
