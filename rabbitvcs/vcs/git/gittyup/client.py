@@ -685,6 +685,8 @@ class GittyupClient:
             tracking = components.pop(0) == "*" and True or False
             if components[0] == "(no":
                 name = components.pop(0) + " " + components.pop(0)
+            elif components[0] == "(HEAD":
+                continue            # Detached head is not a branch.
             else:
                name = components.pop(0)
             revision = components.pop(0)
