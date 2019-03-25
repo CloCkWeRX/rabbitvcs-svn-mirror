@@ -25,7 +25,7 @@ import os.path
 import six.moves._thread
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 from datetime import datetime
 
@@ -33,16 +33,16 @@ from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 import rabbitvcs.vcs
 
 from rabbitvcs import gettext
 import six
 _ = gettext.gettext
 
-DATETIME_FORMAT = rabbitvcs.util.helper.DT_FORMAT_THISWEEK
+DATETIME_FORMAT = helper.DT_FORMAT_THISWEEK
 
-GObject.threads_init()
+helper.gobject_threads_init()
 
 class Push(InterfaceView):
     def __init__(self, path):
@@ -102,7 +102,7 @@ class GitPush(Push):
         self.action.append(self.git.push, repository, branch, tags)
         self.action.append(self.action.set_status, _("Completed Push"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
     def initialize_logs(self):
         """
@@ -114,19 +114,16 @@ class GitPush(Push):
         except Exception as e:
             log.exception(e)
 
-    def load_logs(self):
-        Gtk.gdk.threads_enter()
-        self.get_widget("status").set_text(_("Loading..."))
-
-        Gtk.gdk.threads_leave()
-
-        self.load_push_log()
-
-        Gtk.gdk.threads_enter()
+    def load_logs_exit(self):
         self.get_widget("status").set_text("")
         self.update_widgets()
-        Gtk.gdk.threads_leave()
-        
+
+    def load_logs(self):
+        helper.run_in_main_thread(self.get_widget("status").set_text, _("Loading..."))
+
+        self.load_push_log()
+        helper.run_in_main_thread(self.load_logs_exit)
+
     def load_push_log(self):
         repository = self.repository_selector.repository_opt.get_active_text()
         branch = self.repository_selector.branch_opt.get_active_text()
@@ -151,8 +148,8 @@ class GitPush(Push):
         has_commits = False
         for item in self.push_log:
             self.log_table.append([
-                rabbitvcs.util.helper.format_datetime(item.date),
-                rabbitvcs.util.helper.format_long_text(item.message.rstrip("\n"))
+                helper.format_datetime(item.date),
+                helper.format_long_text(item.message.rstrip("\n"))
             ])
             has_commits = True
 

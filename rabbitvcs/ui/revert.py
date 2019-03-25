@@ -26,7 +26,7 @@ import six.moves._thread
 from time import sleep
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -34,8 +34,8 @@ from rabbitvcs.util.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.util.helper
 import rabbitvcs.vcs
+from rabbitvcs.util import helper
 from rabbitvcs.util.log import Log
 from rabbitvcs.vcs.status import Status
 
@@ -44,7 +44,7 @@ log = Log("rabbitvcs.ui.revert")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-GObject.threads_init()
+helper.gobject_threads_init()
 
 import rabbitvcs.vcs
 
@@ -94,7 +94,7 @@ class Revert(InterfaceView, GtkContextMenuCaller):
             self.files_table.append([
                 True, 
                 item.path, 
-                rabbitvcs.util.helper.get_file_extension(item.path),
+                helper.get_file_extension(item.path),
                 item.simple_content_status(),
                 item.simple_metadata_status()
             ])
@@ -115,7 +115,7 @@ class Revert(InterfaceView, GtkContextMenuCaller):
             self.files_table.append([
                 True,
                 item.path,
-                rabbitvcs.util.helper.get_file_extension(item.path)
+                helper.get_file_extension(item.path)
             ])
 
     # Overrides the GtkContextMenuCaller method
@@ -139,10 +139,10 @@ class Revert(InterfaceView, GtkContextMenuCaller):
 
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
-        rabbitvcs.util.helper.launch_diff_tool(*paths)
+        helper.launch_diff_tool(*paths)
 
     def on_files_table_key_event(self, treeview, data=None):
-        if Gtk.gdk.keyval_name(data.keyval) == "Delete":
+        if Gdk.keyval_name(data.keyval) == "Delete":
             self.delete_items(treeview, data)
 
     def on_files_table_mouse_event(self, treeview, data=None):
@@ -177,7 +177,7 @@ class SVNRevert(Revert):
         self.action.append(self.vcs.svn().revert, items, recurse=True)
         self.action.append(self.action.set_status, _("Completed Revert"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 
 class GitRevert(Revert):
@@ -203,7 +203,7 @@ class GitRevert(Revert):
         self.action.append(self.git.checkout, items)
         self.action.append(self.action.set_status, _("Completed Revert"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 class SVNRevertQuiet:
     def __init__(self, paths, base_dir=None):
@@ -214,7 +214,7 @@ class SVNRevertQuiet:
         )
         
         self.action.append(self.vcs.svn().revert, paths)
-        self.action.run()
+        self.action.schedule()
 
 class GitRevertQuiet:
     def __init__(self, paths, base_dir=None):
@@ -226,7 +226,7 @@ class GitRevertQuiet:
         )
         
         self.action.append(self.git.checkout, paths)
-        self.action.run()
+        self.action.schedule()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNRevert, 

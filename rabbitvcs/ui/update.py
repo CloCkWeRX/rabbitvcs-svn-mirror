@@ -22,7 +22,7 @@ from __future__ import absolute_import
 #
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceNonView, InterfaceView
@@ -57,7 +57,7 @@ class SVNUpdate(InterfaceNonView):
         self.action.append(self.svn.update, self.paths)
         self.action.append(self.action.set_status, _("Completed Update"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 class GitUpdate(InterfaceView):
     """
@@ -122,7 +122,7 @@ class GitUpdate(InterfaceView):
                 
         self.action.append(self.action.set_status, _("Completed Update"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 
 classes_map = {

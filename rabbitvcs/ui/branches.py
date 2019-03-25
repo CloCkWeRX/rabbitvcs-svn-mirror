@@ -24,7 +24,7 @@ from __future__ import absolute_import
 import os
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk, Pango
 
 from datetime import datetime
@@ -35,13 +35,12 @@ from rabbitvcs.ui.action import GitAction
 from rabbitvcs.ui.log import log_dialog_factory
 import rabbitvcs.ui.widget
 from rabbitvcs.ui.dialog import DeleteConfirmation
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 import rabbitvcs.vcs
 
 from xml.sax import saxutils
 
 from rabbitvcs import gettext
-import six
 _ = gettext.gettext
 
 STATE_ADD = 0
@@ -94,25 +93,25 @@ class GitBranchManager(InterfaceView):
     def initialize_detail(self):
         self.detail_container = self.get_widget("detail_container")
 
-        vbox = Gtk.VBox(False, 6)
+        vbox = Gtk.VBox(homogeneous = False, spacing = 6)
 
         # Set up the Branch line
-        label = Gtk.Label(_("Name:"))
+        label = Gtk.Label(label = _("Name:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=.5)
         self.branch_entry = Gtk.Entry()
-        self.branch_name_container = Gtk.HBox(False, 0)
+        self.branch_name_container = Gtk.HBox(homogeneous = False, spacing = 0)
         self.branch_name_container.pack_start(label, False, False, 0)
         self.branch_name_container.pack_start(self.branch_entry, False, False, 0)
         vbox.pack_start(self.branch_name_container, False, False, 0)
 
         # Set up the Commit-sha line
-        label = Gtk.Label(_("Start Point:"))
+        label = Gtk.Label(label = _("Start Point:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=.5)
         self.start_point_entry = Gtk.Entry()
         self.start_point_entry.set_size_request(300, -1)
-        self.start_point_container = Gtk.HBox(False, 0)
+        self.start_point_container = Gtk.HBox(homogeneous = False, spacing = 0)
         self.log_dialog_button = Gtk.Button()
         self.log_dialog_button.connect("clicked", self.on_log_dialog_button_clicked)
         image = Gtk.Image()
@@ -124,54 +123,54 @@ class GitBranchManager(InterfaceView):
         vbox.pack_start(self.start_point_container, False, False, 0)
 
         # Set up the Track line
-        label = Gtk.Label("")
+        label = Gtk.Label(label = "")
         label.set_size_request(90, -1)
-        self.track_checkbox = Gtk.CheckButton(_("Keep old branch's history"))
-        self.track_container = Gtk.HBox(False, 0)
+        self.track_checkbox = Gtk.CheckButton(label = _("Keep old branch's history"))
+        self.track_container = Gtk.HBox(homogeneous = False, spacing = 0)
         self.track_container.pack_start(label, False, False, 0)
         self.track_container.pack_start(self.track_checkbox, False, False, 0)
         vbox.pack_start(self.track_container, False, False, 0)
 
         # Set up the checkout line
-        label = Gtk.Label("")
+        label = Gtk.Label(label = "")
         label.set_size_request(90, -1)
-        self.checkout_checkbox = Gtk.CheckButton(_("Set as active branch"))
-        self.checkout_container = Gtk.HBox(False, 0)
+        self.checkout_checkbox = Gtk.CheckButton(label = _("Set as active branch"))
+        self.checkout_container = Gtk.HBox(homogeneous = False, spacing = 0)
         self.checkout_container.pack_start(label, False, False, 0)
         self.checkout_container.pack_start(self.checkout_checkbox, False, False, 0)
         vbox.pack_start(self.checkout_container, False, False, 0)
         
         # Set up Save button
-        label = Gtk.Label("")
+        label = Gtk.Label(label = "")
         label.set_size_request(90, -1)
         self.save_button = Gtk.Button(label=_("Save"))
         self.save_button.connect("clicked", self.on_save_clicked)
-        self.save_container = Gtk.HBox(False, 0)
+        self.save_container = Gtk.HBox(homogeneous = False, spacing = 0)
         self.save_container.pack_start(label, False, False, 0)
         self.save_container.pack_start(self.save_button, False, False, 0)
         vbox.pack_start(self.save_container, False, False, 0)
 
         # Set up the Revision line
-        label = Gtk.Label(_("Revision:"))
+        label = Gtk.Label(label = _("Revision:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=0)
-        self.revision_label = Gtk.Label("")
+        self.revision_label = Gtk.Label(label = "")
         self.revision_label.set_properties(xalign=0,selectable=True)
         self.revision_label.set_line_wrap(True)
-        self.revision_container = Gtk.HBox(False, 0)
+        self.revision_container = Gtk.HBox(homogeneous = False, spacing = 0)
         self.revision_container.pack_start(label, False, False, 0)
         self.revision_container.pack_start(self.revision_label, False, False, 0)
         vbox.pack_start(self.revision_container, False, False, 0)
 
         # Set up the Log Message line
-        label = Gtk.Label(_("Message:"))
+        label = Gtk.Label(label = _("Message:"))
         label.set_size_request(90, -1)
         label.set_properties(xalign=0,yalign=0)
-        self.message_label = Gtk.Label("")
+        self.message_label = Gtk.Label(label = "")
         self.message_label.set_properties(xalign=0,yalign=0,selectable=True)
         self.message_label.set_line_wrap(True)
         self.message_label.set_size_request(250, -1)
-        self.message_container = Gtk.HBox(False, 0)
+        self.message_container = Gtk.HBox(homogeneous = False, spacing = 0)
         self.message_container.pack_start(label, False, False, 0)
         self.message_container.pack_start(self.message_label, False, False, 0)
         vbox.pack_start(self.message_container, False, False, 0)
@@ -241,7 +240,7 @@ class GitBranchManager(InterfaceView):
         self.show_edit(branch_name)
 
     def on_treeview_key_event(self, treeview, data=None):
-        if Gtk.gdk.keyval_name(data.keyval) in ("Up", "Down", "Return"):
+        if Gdk.keyval_name(data.keyval) in ("Up", "Down", "Return"):
             self.on_treeview_event(treeview, data)
 
     def on_treeview_mouse_event(self, treeview, data=None):
@@ -273,7 +272,7 @@ class GitBranchManager(InterfaceView):
         if self.revision:
             active_branch = self.git.get_active_branch()
             if active_branch:
-                revision = six.text_type(active_branch.name)
+                revision = helper.to_text(active_branch.name)
 
         self.items_treeview.unselect_all()
         self.branch_entry.set_text("")
@@ -298,7 +297,7 @@ class GitBranchManager(InterfaceView):
 
         if self.selected_branch:
             self.branch_entry.set_text(self.selected_branch.name)
-            self.revision_label.set_text(six.text_type(self.selected_branch.revision))
+            self.revision_label.set_text(helper.to_text(self.selected_branch.revision))
             self.message_label.set_text(self.selected_branch.message.rstrip("\n"))
             if self.selected_branch.tracking:
                 self.checkout_checkbox.set_active(True)

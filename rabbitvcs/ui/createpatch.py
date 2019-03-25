@@ -25,7 +25,7 @@ import os
 import six.moves._thread
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 import os
 import tempfile
@@ -36,8 +36,7 @@ from rabbitvcs.ui.action import SVNAction, GitAction
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.util
-import rabbitvcs.util.helper
-from rabbitvcs.util.helper import get_common_directory
+from rabbitvcs.util import helper
 from rabbitvcs.util.log import Log
 from rabbitvcs.ui.commit import SVNCommit, GitCommit
 
@@ -46,7 +45,7 @@ log = Log("rabbitvcs.ui.createpatch")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-GObject.threads_init()
+helper.gobject_threads_init()
 
 class CreatePatch:
     """
@@ -76,7 +75,7 @@ class CreatePatch:
         self.vcs = rabbitvcs.vcs.VCS()
         self.activated_cache = {}
         
-        self.common = rabbitvcs.util.helper.get_common_directory(paths)
+        self.common = helper.get_common_directory(paths)
 
         if not self.vcs.is_versioned(self.common):
             rabbitvcs.ui.dialog.MessageBox(_("The given path is not a working copy"))
@@ -118,14 +117,15 @@ class CreatePatch:
         path = ""
         
         dialog = Gtk.FileChooserDialog(
-            _("Create Patch"),
-            None,
-            Gtk.FILE_CHOOSER_ACTION_SAVE,(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                                          Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+            title = _("Create Patch"),
+            parent = None,
+            action = Gtk.FileChooserAction.SAVE)
+        dialog.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        dialog.add_button(_("_Create"), Gtk.ResponseType.OK)
         dialog.set_do_overwrite_confirmation(True)
         dialog.set_default_response(Gtk.ResponseType.OK)
         dialog.set_current_folder_uri(
-            get_common_directory(self.paths).replace("file://", "")
+            helper.get_common_directory(self.paths).replace("file://", "")
         )
         response = dialog.run()
         
@@ -178,7 +178,7 @@ class SVNCreatePatch(CreatePatch, SVNCommit):
            
             # Add to the Patch file only the selected items
             for item in patch_items:
-                rel_path = rabbitvcs.util.helper.get_relative_path(base_dir, item)
+                rel_path = helper.get_relative_path(base_dir, item)
                 diff_text = self.svn.diff(
                     temp_dir, 
                     rel_path, 
@@ -198,10 +198,10 @@ class SVNCreatePatch(CreatePatch, SVNCommit):
         
         self.action.append(self.action.set_status, _("Patch File Created"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
         
         # TODO: Open the diff file (meld is going to add support in a future version :()
-        # rabbitvcs.util.helper.launch_diff_tool(path)
+        # helper.launch_diff_tool(path)
 
 class GitCreatePatch(CreatePatch, GitCommit):
     def __init__(self, paths, base_dir=None):
@@ -245,7 +245,7 @@ class GitCreatePatch(CreatePatch, GitCommit):
            
             # Add to the Patch file only the selected items
             for item in patch_items:
-                rel_path = rabbitvcs.util.helper.get_relative_path(base_dir, item)
+                rel_path = helper.get_relative_path(base_dir, item)
                 diff_text = self.git.diff(
                     rel_path, 
                     self.git.revision("HEAD"), 
@@ -264,7 +264,7 @@ class GitCreatePatch(CreatePatch, GitCommit):
         
         self.action.append(self.action.set_status, _("Patch File Created"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNCreatePatch,

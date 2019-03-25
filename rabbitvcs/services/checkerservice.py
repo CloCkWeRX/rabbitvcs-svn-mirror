@@ -47,23 +47,17 @@ from __future__ import absolute_import
 import os, os.path
 import sys
 import simplejson
-import six
 
-if "REQUIRE_GTK3" in os.environ and os.environ["REQUIRE_GTK3"]:
-    from gi.repository import GObject as gobject
-    from gi.repository import GLib as glib
-else:
-    import gobject
-    import glib
-    
+from gi.repository import GObject
+from gi.repository import GLib
+
 import dbus
-import dbus.glib # FIXME: this might actually already set the default loop
 import dbus.mainloop.glib
 import dbus.service
 
 import rabbitvcs.util.decorators
 import rabbitvcs.util._locale
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 import rabbitvcs.services.service
 from rabbitvcs.services.statuschecker import StatusChecker
 
@@ -111,6 +105,11 @@ def decode_status(json_dict):
         raise TypeError("RabbitVCS status object has no path")
     return st
 
+def output_and_flush(*args):
+    # Idle output function.
+    sys.stdout.write(*args)
+    sys.stdout.flush()
+
 class StatusCheckerService(dbus.service.Object):
     """ StatusCheckerService objects wrap a StatusCheckerPlus instance,
     exporting methods that can be called via DBUS.
@@ -150,7 +149,7 @@ class StatusCheckerService(dbus.service.Object):
 
     @dbus.service.method(INTERFACE)
     def MemoryUsage(self):
-        own_mem = rabbitvcs.util.helper.process_memory(os.getpid())
+        own_mem = helper.process_memory(os.getpid())
         checker_mem = self.status_checker.get_memory_usage()
 
         return own_mem + checker_mem
@@ -168,7 +167,7 @@ class StatusCheckerService(dbus.service.Object):
                       summary=False):
         """ Requests a status check from the underlying status checker.
         """
-        status = self.status_checker.check_status(six.text_type(path),
+        status = self.status_checker.check_status(helper.to_text(path),
                                                   recurse=recurse,
                                                   summary=summary,
                                                   invalidate=invalidate)
@@ -179,7 +178,7 @@ class StatusCheckerService(dbus.service.Object):
     def GenerateMenuConditions(self, paths):
         upaths = []
         for path in paths:
-            upaths.append(six.text_type(path))
+            upaths.append(helper.to_text(path))
     
         path_dict = self.status_checker.generate_menu_conditions(upaths)
         return simplejson.dumps(path_dict)
@@ -335,7 +334,7 @@ class StatusCheckerStub:
         def reply_handler(*args, **kwargs):
             # The callback should be performed as a low priority task, so we
             # keep Nautilus as responsive as possible.
-            gobject.idle_add(real_reply_handler, *args, **kwargs)
+            GLib.idle_add(real_reply_handler, *args, **kwargs)
         
         def error_handler(dbus_ex):
             log.exception(dbus_ex)
@@ -366,7 +365,7 @@ class StatusCheckerStub:
         service (which is, in turn, a wrapper around the real status checker).
         """
         if callback:
-            gobject.idle_add(self.check_status_later,
+            GLib.idle_add(self.check_status_later,
                      path, callback, recurse, invalidate, summary)
             return rabbitvcs.vcs.status.Status.status_calc(path)
         else:
@@ -383,7 +382,7 @@ class StatusCheckerStub:
         def reply_handler(*args, **kwargs):
             # The callback should be performed as a low priority task, so we
             # keep Nautilus as responsive as possible.
-            gobject.idle_add(real_reply_handler, *args, **kwargs)
+            GLib.idle_add(real_reply_handler, *args, **kwargs)
         
         def error_handler(dbus_ex):
             log.exception(dbus_ex)
@@ -403,7 +402,7 @@ class StatusCheckerStub:
             self._connect_to_checker()
 
     def generate_menu_conditions_async(self, provider, base_dir, paths, callback):
-        gobject.idle_add(self.generate_menu_conditions, provider, base_dir, paths, callback)
+        GLib.idle_add(self.generate_menu_conditions, provider, base_dir, paths, callback)
         return {}
 
 def start():
@@ -426,19 +425,18 @@ def Main():
 
     # The following calls are required to make DBus thread-aware and therefore
     # support the ability run threads.
-    gobject.threads_init()
-    dbus.glib.threads_init()
+    helper.gobject_threads_init()
+    dbus.mainloop.glib.threads_init()
 
     # This registers our service name with the bus
     session_bus = dbus.SessionBus()
     service_name = dbus.service.BusName(SERVICE, session_bus)
 
-    mainloop = gobject.MainLoop()
+    mainloop = GLib.MainLoop()
 
     checker_service = StatusCheckerService(session_bus, mainloop)
 
-    gobject.idle_add(sys.stdout.write, "Started status checker service\n")
-    gobject.idle_add(sys.stdout.flush)
+    GLib.idle_add(output_and_flush, "Started status checker service\n")
 
     mainloop.run()
 

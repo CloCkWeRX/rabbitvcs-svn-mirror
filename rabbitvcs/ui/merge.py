@@ -21,10 +21,8 @@ from __future__ import absolute_import
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import cgi
-
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -32,10 +30,9 @@ from rabbitvcs.ui.log import SVNLogDialog
 from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.vcs
 import rabbitvcs.ui.widget
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 
 from rabbitvcs import gettext
-import six
 _ = gettext.gettext
 
 class SVNMerge(InterfaceView):
@@ -66,7 +63,7 @@ class SVNMerge(InterfaceView):
         self.assistant.set_page_complete(self.page, True)
         self.assistant.set_forward_page_func(self.on_forward_clicked)
         
-        self.repo_paths = rabbitvcs.util.helper.get_repository_paths()
+        self.repo_paths = helper.get_repository_paths()
 
         # Keeps track of which stages should be marked as complete
         self.type = None
@@ -125,7 +122,7 @@ class SVNMerge(InterfaceView):
         kwargs = {}
         
         if self.type == "range":
-            url = self.get_widget("mergerange_from_urls").get_active_text()
+            url = self.mergerange_repos.get_active_text()
             head_revision = self.svn.get_head(self.path)
             revisions = self.get_widget("mergerange_revisions").get_text()
             if revisions == "":
@@ -161,7 +158,7 @@ class SVNMerge(InterfaceView):
                         self.svn.revision("number", number=high).primitive(),
                     ))
 
-            action.append(rabbitvcs.util.helper.save_repository_path, url)
+            action.append(helper.save_repository_path, url)
             
             # Build up args and kwargs because some args are not supported
             # with older versions of pysvn/svn
@@ -183,7 +180,7 @@ class SVNMerge(InterfaceView):
             url = self.merge_reintegrate_repos.get_active_text()
             revision = self.merge_reintegrate_revision.get_revision_object()
 
-            action.append(rabbitvcs.util.helper.save_repository_path, url)
+            action.append(helper.save_repository_path, url)
             
             # Build up args and kwargs because some args are not supported
             # with older versions of pysvn/svn
@@ -198,14 +195,14 @@ class SVNMerge(InterfaceView):
             }
 
         elif self.type == "tree":
-            from_url = self.get_widget("mergetree_from_urls").get_active_text()
+            from_url = self.mergetree_from_repos.get_active_text()
             from_revision = self.svn.revision("head")
             if self.get_widget("mergetree_from_revision_number_opt").get_active():
                 from_revision = self.svn.revision(
                     "number",
                     number=int(self.get_widget("mergetree_from_revision_number").get_text())
                 )
-            to_url = self.get_widget("mergetree_to_urls").get_active_text()
+            to_url = self.mergetree_to_repos.get_active_text()
             to_revision = self.svn.revision("head")
             if self.get_widget("mergetree_to_revision_number_opt").get_active():
                 to_revision = self.svn.revision(
@@ -213,8 +210,8 @@ class SVNMerge(InterfaceView):
                     number=int(self.get_widget("mergetree_to_revision_number").get_text())
                 )
 
-            action.append(rabbitvcs.util.helper.save_repository_path, from_url)
-            action.append(rabbitvcs.util.helper.save_repository_path, to_url)
+            action.append(helper.save_repository_path, from_url)
+            action.append(helper.save_repository_path, to_url)
 
             # Build up args and kwargs because some args are not supported
             # with older versions of pysvn/svn
@@ -236,7 +233,7 @@ class SVNMerge(InterfaceView):
                        
         action.append(action.set_status, endcmd)
         action.append(action.finish)
-        action.run()
+        action.schedule()
 
     def on_prepare(self, widget, page):
         self.page = page
@@ -289,11 +286,11 @@ class SVNMerge(InterfaceView):
         
     def on_mergerange_show_log1_clicked(self, widget):
         merge_candidate_revisions = self.svn.find_merge_candidate_revisions(
-            self.get_widget("mergerange_from_urls").get_active_text(),
+            self.mergerange_repos.get_active_text(),
             self.path
         )
         SVNLogDialog(
-            self.get_widget("mergerange_from_urls").get_active_text(),
+            self.mergerange_repos.get_active_text(),
             ok_callback=self.on_mergerange_log1_closed, 
             multiple=True,
             merge_candidate_revisions=merge_candidate_revisions
@@ -310,13 +307,13 @@ class SVNMerge(InterfaceView):
 
     def mergerange_check_ready(self):
         ready = True
-        if self.get_widget("mergerange_from_urls").get_active_text() == "":
+        if self.mergerange_repos.get_active_text() == "":
             ready = False
 
         self.assistant.set_page_complete(self.page, ready)
 
         allow_log = False
-        if self.get_widget("mergerange_from_urls").get_active_text():
+        if self.mergerange_repos.get_active_text():
             allow_log = True        
         self.get_widget("mergerange_show_log1").set_sensitive(allow_log)
 
@@ -354,7 +351,7 @@ class SVNMerge(InterfaceView):
     
     def merge_reintegrate_check_ready(self):
         ready = True
-        if self.get_widget("merge_reintegrate_repos").get_active_text() == "":
+        if self.merge_reintegrate_repos.get_active_text() == "":
             ready = False
 
         self.assistant.set_page_complete(self.page, ready)
@@ -414,9 +411,9 @@ class SVNMerge(InterfaceView):
 
     def mergetree_check_ready(self):
         ready = True
-        if self.get_widget("mergetree_from_urls").get_active_text() == "":
+        if self.mergetree_from_repos.get_active_text() == "":
             ready = False
-        if self.get_widget("mergetree_to_urls").get_active_text() == "":
+        if self.mergetree_to_repos.get_active_text() == "":
             ready = False
 
         self.assistant.set_page_complete(self.page, ready)
@@ -484,49 +481,49 @@ class GitMerge(BranchMerge):
         from_container = self.get_widget("from_branch_info")
         
         # Set up the Author line
-        author = Gtk.Label(_("Author:"))
+        author = Gtk.Label(label = _("Author:"))
         author.set_size_request(90, -1)
         author.set_properties(xalign=0,yalign=0)
-        self.info['from']['author'] = Gtk.Label("")
+        self.info['from']['author'] = Gtk.Label(label = "")
         self.info['from']['author'].set_properties(xalign=0,yalign=0,selectable=True)
         self.info['from']['author'].set_line_wrap(True)
-        author_container = Gtk.HBox(False, 0)
+        author_container = Gtk.HBox(homogeneous = False, spacing = 0)
         author_container.pack_start(author, False, False, 0)
         author_container.pack_start(self.info['from']['author'], False, False, 0)
         from_container.pack_start(author_container, False, False, 0)
 
         # Set up the Date line
-        date = Gtk.Label(_("Date:"))
+        date = Gtk.Label(label = _("Date:"))
         date.set_size_request(90, -1)
         date.set_properties(xalign=0,yalign=0)
-        self.info['from']['date'] = Gtk.Label("")
+        self.info['from']['date'] = Gtk.Label(label = "")
         self.info['from']['date'].set_properties(xalign=0,yalign=0,selectable=True)
-        date_container = Gtk.HBox(False, 0)
+        date_container = Gtk.HBox(homogeneous = False, spacing = 0)
         date_container.pack_start(date, False, False, 0)
         date_container.pack_start(self.info['from']['date'], False, False, 0)
         from_container.pack_start(date_container, False, False, 0)
 
         # Set up the Revision line
-        revision = Gtk.Label(_("Revision:"))
+        revision = Gtk.Label(label = _("Revision:"))
         revision.set_size_request(90, -1)
         revision.set_properties(xalign=0,yalign=0)
-        self.info['from']['revision'] = Gtk.Label("")
+        self.info['from']['revision'] = Gtk.Label(label = "")
         self.info['from']['revision'].set_properties(xalign=0,selectable=True)
         self.info['from']['revision'].set_line_wrap(True)
-        revision_container = Gtk.HBox(False, 0)
+        revision_container = Gtk.HBox(homogeneous = False, spacing = 0)
         revision_container.pack_start(revision, False, False, 0)
         revision_container.pack_start(self.info['from']['revision'], False, False, 0)
         from_container.pack_start(revision_container, False, False, 0)
 
         # Set up the Log Message line
-        message = Gtk.Label(_("Message:"))
+        message = Gtk.Label(label = _("Message:"))
         message.set_size_request(90, -1)
         message.set_properties(xalign=0,yalign=0)
-        self.info['from']['message'] = Gtk.Label("")
+        self.info['from']['message'] = Gtk.Label(label = "")
         self.info['from']['message'].set_properties(xalign=0,yalign=0,selectable=True)
         self.info['from']['message'].set_line_wrap(True)
         self.info['from']['message'].set_size_request(250, -1)
-        message_container = Gtk.HBox(False, 0)
+        message_container = Gtk.HBox(homogeneous = False, spacing = 0)
         message_container.pack_start(message, False, False, 0)
         message_container.pack_start(self.info['from']['message'], False, False, 0)
         from_container.pack_start(message_container, False, False, 0)
@@ -541,9 +538,9 @@ class GitMerge(BranchMerge):
             if log:
                 from_info = log[0]
                 self.info['from']['author'].set_text(from_info.author)
-                self.info['from']['date'].set_text(rabbitvcs.util.helper.format_datetime(from_info.date))
-                self.info['from']['revision'].set_text(six.text_type(from_info.revision)[0:7])
-                self.info['from']['message'].set_text(cgi.escape(rabbitvcs.util.helper.format_long_text(from_info.message, 500)))
+                self.info['from']['date'].set_text(helper.format_datetime(from_info.date))
+                self.info['from']['revision'].set_text(helper.to_text(from_info.revision)[0:7])
+                self.info['from']['message'].set_text(helper.html_escape(helper.format_long_text(from_info.message, 500)))
 
     def on_from_branches_changed(self, widget):
         self.update_branch_info()
@@ -567,7 +564,7 @@ class GitMerge(BranchMerge):
 
         self.action.append(self.action.set_status, _("Completed Merge"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
     def __revision_changed(self, widget):
         self.update_branch_info()

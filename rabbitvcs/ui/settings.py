@@ -24,7 +24,7 @@ from __future__ import absolute_import
 import os
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk, Pango
 import dbus
 
@@ -164,21 +164,6 @@ class Settings(InterfaceView):
         # GTK2 Builder
 
         checker_service = self._get_checker_service(report_failure)
-        
-        self.get_widget("restart_checker").set_image(
-                                        Gtk.image_new_from_stock(
-                                            Gtk.STOCK_EXECUTE,
-                                            Gtk.ICON_SIZE_BUTTON))
-
-        self.get_widget("refresh_info").set_image(
-                                        Gtk.image_new_from_stock(
-                                            Gtk.STOCK_REFRESH,
-                                            Gtk.ICON_SIZE_BUTTON))
-
-        self.get_widget("stop_checker").set_image(
-                                        Gtk.image_new_from_stock(
-                                            Gtk.STOCK_STOP,
-                                            Gtk.ICON_SIZE_BUTTON))
 
         self.get_widget("stop_checker").set_sensitive(bool(checker_service))
 
@@ -202,9 +187,7 @@ class Settings(InterfaceView):
             self._clear_info_table()
 
     def _clear_info_table(self):
-        info_table = self.get_widget("info_table_area").get_child()
-        
-        if info_table:
+        for info_table in self.get_widget("info_table_area").get_children():
             info_table.destroy()
 
     def _populate_info_table(self, info):
@@ -261,7 +244,7 @@ class Settings(InterfaceView):
     def save(self):
         self.settings.set(
             "general", "language",
-            self.get_widget("language").get_active_text()
+            self.language.get_active_text()
         )
         self.settings.set(
             "general", "enable_attributes",

@@ -31,13 +31,14 @@ import os
 from six.moves import range
 
 import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GObject, Gdk
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, Gdk, GLib
 
 from rabbitvcs import APP_NAME, LOCALE_DIR, gettext
 _ = gettext.gettext
 
 import rabbitvcs.vcs.status
+from rabbitvcs.util import helper
 
 REVISION_OPT = (["-r", "--revision"], {"help":"specify the revision number"})
 BASEDIR_OPT = (["-b", "--base-dir"], {})
@@ -148,23 +149,20 @@ class InterfaceView(GtkBuilderWidgetWrapper):
         window = self.get_widget(self.gtkbuilder_id)
         if window is not None:
             if threaded:
-                Gdk.threads_enter()
+                helper.run_in_main_thread(window.destroy)
+            else:
+                window.destroy()
 
-            window.destroy()
-
-            if threaded:
-                Gdk.threads_leave()
-            
         if self.do_gtk_quit:
             Gtk.main_quit()
-            
+
     def register_gtk_quit(self):
         window = self.get_widget(self.gtkbuilder_id)
         self.do_gtk_quit = True
         
         # This means we've already been closed
         if window is None:
-            GObject.idle_add(Gtk.main_quit)
+            GLib.idle_add(Gtk.main_quit)
     
     def gtk_quit_is_set(self):
         return self.do_gtk_quit
@@ -182,10 +180,10 @@ class InterfaceView(GtkBuilderWidgetWrapper):
         return True
 
     def on_key_pressed(self, widget, data):
-        if (data.keyval == Gdk.KEY_Escape):
+        if data.keyval == Gdk.keyval_from_name('Escape'):
             self.on_cancel_clicked(widget)
             return True
-            
+
         if (data.state & Gdk.ModifierType.CONTROL_MASK and 
                 Gdk.keyval_name(data.keyval).lower() == "w"):
             self.on_cancel_clicked(widget)
@@ -200,6 +198,18 @@ class InterfaceView(GtkBuilderWidgetWrapper):
                 Gdk.keyval_name(data.keyval).lower() == "r"):
             self.on_refresh_clicked(widget)
             return True             
+
+    def change_button(self, id, label = None, icon = None):
+        """
+         Replace label and/or icon of the named button.
+        """
+
+        button = self.get_widget(id)
+        if label:
+            button.set_label(label)
+        if icon:
+            image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
+            button.set_image(image)
 
 class InterfaceNonView:
     """

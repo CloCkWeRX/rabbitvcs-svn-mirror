@@ -25,7 +25,7 @@ import six.moves._thread
 import threading
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -36,7 +36,7 @@ from rabbitvcs.util.contextmenuitems import MenuItem, MenuUpdate, \
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 from rabbitvcs.util.log import Log
 from rabbitvcs.util.decorators import gtk_unsafe
 
@@ -45,7 +45,7 @@ log = Log("rabbitvcs.ui.checkmods")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-GObject.threads_init()
+helper.gobject_threads_init()
 
 class SVNCheckForModifications(InterfaceView):
     """
@@ -136,7 +136,7 @@ class SVNCheckLocalModifications(GtkContextMenuCaller):
         )
         self.action.append(self.svn.get_items, self.paths, self.svn.STATUSES_FOR_CHECK)
         self.action.append(self.populate_files_table)
-        self.action.run()
+        self.action.schedule()
 
     @gtk_unsafe
     def populate_files_table(self):
@@ -146,11 +146,11 @@ class SVNCheckLocalModifications(GtkContextMenuCaller):
             self.files_table.append([
                 item.path, 
                 item.simple_content_status(),
-                rabbitvcs.util.helper.get_file_extension(item.path)
+                helper.get_file_extension(item.path)
             ])
 
     def diff_local(self, path):
-        rabbitvcs.util.helper.launch_diff_tool(path)
+        helper.launch_diff_tool(path)
 
     def on_context_menu_command_finished(self):
         self.refresh()
@@ -201,7 +201,7 @@ class SVNCheckRemoteModifications(GtkContextMenuCaller):
         )
         self.action.append(self.svn.get_remote_updates, self.paths)
         self.action.append(self.populate_files_table)
-        self.action.run()
+        self.action.schedule()
 
     @gtk_unsafe
     def populate_files_table(self):
@@ -218,7 +218,7 @@ class SVNCheckRemoteModifications(GtkContextMenuCaller):
 
             self.files_table.append([
                 item.path, 
-                rabbitvcs.util.helper.get_file_extension(item.path),
+                helper.get_file_extension(item.path),
                 item.remote_content,
                 item.remote_metadata,
                 str(revision),
@@ -242,7 +242,7 @@ class SVNCheckRemoteModifications(GtkContextMenuCaller):
             path_remote,
             "HEAD"
         )
-        self.action.run()
+        self.action.schedule()
 
     def on_context_menu_command_finished(self):
         self.refresh()
@@ -281,7 +281,7 @@ class CheckRemoteModsContextMenuCallbacks:
         self.paths = paths
 
     def update(self, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window(
+        proc = helper.launch_ui_window(
             "update", 
             self.paths
         )
@@ -308,7 +308,7 @@ class CheckRemoteModsContextMenuCallbacks:
             "HEAD",
             sidebyside=True
         )
-        self.action.run()
+        self.action.schedule()
 
 class CheckRemoteModsContextMenu:
     def __init__(self, caller, event, base_dir, vcs, paths=[]):

@@ -36,10 +36,9 @@ import pysvn
 import rabbitvcs.vcs
 import rabbitvcs.vcs.status
 import rabbitvcs.vcs.log
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 from rabbitvcs.util.log import Log
 from six.moves import map
-import six
 from six.moves import range
 
 log = Log("rabbitvcs.vcs.svn")
@@ -68,7 +67,7 @@ class Revision:
     }
 
     def __init__(self, kind, value=None):
-        self.kind = six.text_type(kind).lower()
+        self.kind = helper.to_text(kind).lower()
         self.value = value
         self.is_revision_object = True
 
@@ -95,7 +94,7 @@ class Revision:
 
     def __unicode__(self):
         if self.value:
-            return six.text_type(self.value)
+            return helper.to_text(self.value)
         else:
             return self.kind
 
@@ -1041,8 +1040,8 @@ class SVN:
         @param  revision: A pysvn.Revision object.
 
         """
-        src = rabbitvcs.util.helper.urlize(src)
-        dest = rabbitvcs.util.helper.urlize(dest)
+        src = helper.urlize(src)
+        dest = helper.urlize(dest)
         return self.client.copy(src, dest, revision.primitive())
 
     def copy_all(self, sources, dest_url_or_path, copy_as_child=False,
@@ -1094,7 +1093,7 @@ class SVN:
 
         """
 
-        url = rabbitvcs.util.helper.urlize(url)
+        url = helper.urlize(url)
 
         return self.client.checkout(url, path, recurse=recurse,
             revision=revision.primitive(), ignore_externals=ignore_externals)
@@ -1269,7 +1268,7 @@ class SVN:
 
         """
 
-        url = rabbitvcs.util.helper.urlize(url)
+        url = helper.urlize(url)
         return self.client.import_(path, url, log_message, ignore)
 
     def lock(self, url_or_path, lock_comment, force=False):
@@ -1306,8 +1305,8 @@ class SVN:
 
         """
         
-        from_url = rabbitvcs.util.helper.urlize(from_url)
-        to_url = rabbitvcs.util.helper.urlize(to_url)
+        from_url = helper.urlize(from_url)
+        to_url = helper.urlize(to_url)
         return self.client.relocate(from_url, to_url, path, recurse)
 
     def move(self, src_url_or_path, dest_url_or_path):
@@ -1413,7 +1412,7 @@ class SVN:
 
         """
 
-        url = rabbitvcs.util.helper.urlize(url)
+        url = helper.urlize(url)
         return self.client.switch(path, url, revision.primitive())
 
     def unlock(self, path, force=False):
@@ -1553,8 +1552,8 @@ class SVN:
 
         """
 
-        url_or_path1 = rabbitvcs.util.helper.urlize(url_or_path1)
-        url_or_path2 = rabbitvcs.util.helper.urlize(url_or_path2)
+        url_or_path1 = helper.urlize(url_or_path1)
+        url_or_path2 = helper.urlize(url_or_path2)
         return self.client.merge(url_or_path1, revision1.primitive(),
             url_or_path2, revision2.primitive(), local_path, force, recurse,
             record_only)
@@ -1659,7 +1658,7 @@ class SVN:
             url_or_path2, revision2.primitive(), recurse, ignore_ancestry)
 
     def list(self, url_or_path, revision=Revision("HEAD"), recurse=True):
-        url_or_path = rabbitvcs.util.helper.urlize(url_or_path)
+        url_or_path = helper.urlize(url_or_path)
         return self.client.list(url_or_path, revision=revision.primitive(),
             recurse=recurse)
 
@@ -1691,7 +1690,7 @@ class SVN:
 
         any_failures = False
 
-        for file, success, rej_file in rabbitvcs.util.helper.parse_patch_output(patch_file, base_dir):
+        for file, success, rej_file in helper.parse_patch_output(patch_file, base_dir):
 
             fullpath = os.path.join(base_dir, file)
 

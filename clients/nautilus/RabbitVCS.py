@@ -27,7 +27,6 @@ Our module for everything related to the Nautilus extension.
 """
 from __future__ import with_statement
 from __future__ import absolute_import
-import six
 from six.moves import range
 
 def log_all_exceptions(type, value, tb):
@@ -71,6 +70,7 @@ import rabbitvcs.vcs.status
 from rabbitvcs.util.helper import launch_ui_window, launch_diff_tool
 from rabbitvcs.util.helper import get_file_extension, get_common_directory
 from rabbitvcs.util.helper import pretty_timedelta
+from rabbitvcs.util.helper import to_text
 from rabbitvcs.util.decorators import timeit, disable
 from rabbitvcs.util.contextmenu import MenuBuilder, MainContextMenu, SEPARATOR, ContextMenuConditions
 
@@ -191,7 +191,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
                 
         if not self.valid_uri(item.get_uri()): return nautilus.OPERATION_FAILED
         
-        path = six.text_type(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+        path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
 
         # log.debug("update_file_info() called for %s" % path)
 
@@ -309,7 +309,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         paths = []
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = six.text_type(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+                path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
                 paths.append(path)
                 self.nautilusVFSFile_table[path] = item
 
@@ -337,7 +337,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         paths = []
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = six.text_type(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+                path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
                 paths.append(path)
                 self.nautilusVFSFile_table[path] = item
 
@@ -359,7 +359,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         import cProfile
         import rabbitvcs.util.helper
         
-        path = six.text_type(gnomevfs.get_local_path_from_uri(item.get_uri()),
+        path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()),
                        "utf-8").replace("/", ":")
         
         profile_data_file = os.path.join(
@@ -389,7 +389,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         """
 
         if not self.valid_uri(item.get_uri()): return
-        path = six.text_type(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+        path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
         self.nautilusVFSFile_table[path] = item
 
         # log.debug("get_background_items_full() called")
@@ -412,7 +412,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
 
     def get_background_items(self, window, item):
         if not self.valid_uri(item.get_uri()): return
-        path = six.text_type(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+        path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
         self.nautilusVFSFile_table[path] = item
 
         # log.debug("get_background_items() called")
@@ -549,7 +549,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
 
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = six.text_type(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+                path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
                 
                 if self.vcs_client.is_in_a_or_a_working_copy(path):
                     paths.append(path)

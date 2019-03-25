@@ -19,21 +19,13 @@ from __future__ import absolute_import
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import os
 import os.path
 
-import os
-import six
-if "REQUIRE_GTK3" in os.environ and os.environ["REQUIRE_GTK3"]:
-    from gi.repository import Gtk as Gtk
-    GTK3 = True
-    ICON_SIZE_BUTTON = Gtk.IconSize.BUTTON
-    ICON_SIZE_DIALOG = Gtk.IconSize.DIALOG
-else:
-    import Gtk
-    GTK3 = False
-    ICON_SIZE_BUTTON = Gtk.ICON_SIZE_BUTTON
-    ICON_SIZE_DIALOG = Gtk.ICON_SIZE_DIALOG
-    
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
+
 from collections import defaultdict
 import rabbitvcs.ui
 import rabbitvcs.ui.widget
@@ -42,6 +34,7 @@ import rabbitvcs.vcs
 from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 from rabbitvcs.ui import STATUS_EMBLEMS
 
+from rabbitvcs.util import helper
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.ui.property_page")
 
@@ -103,8 +96,8 @@ class FileInfoPane(rabbitvcs.ui.GtkBuilderWidgetWrapper):
 
         self.get_widget("vcs_type").set_text(self.status.vcs_type)
         
-        self.get_widget("content_status").set_text(six.text_type(self.status.simple_content_status()))
-        self.get_widget("prop_status").set_text(six.text_type(self.status.simple_metadata_status()))
+        self.get_widget("content_status").set_text(helper.to_text(self.status.simple_content_status()))
+        self.get_widget("prop_status").set_text(helper.to_text(self.status.simple_metadata_status()))
         
 
         self.set_icon_from_status(self.get_widget("content_status_icon"),
@@ -116,7 +109,7 @@ class FileInfoPane(rabbitvcs.ui.GtkBuilderWidgetWrapper):
         
 
         self.set_icon_from_status(self.get_widget("vcs_icon"),
-                                  self.status.single, ICON_SIZE_DIALOG)
+                                  self.status.single, Gtk.IconSize.DIALOG)
         
         additional_props_table = rabbitvcs.ui.widget.KeyValueTable(
                                     self.get_additional_info())
@@ -128,7 +121,7 @@ class FileInfoPane(rabbitvcs.ui.GtkBuilderWidgetWrapper):
                                                         fill=False,
                                                         padding=0)
                         
-    def set_icon_from_status(self, icon, status, size=ICON_SIZE_BUTTON):
+    def set_icon_from_status(self, icon, status, size=Gtk.IconSize.BUTTON):
         if status in rabbitvcs.ui.STATUS_EMBLEMS:
             icon.set_from_icon_name("emblem-" + STATUS_EMBLEMS[status], size)
 

@@ -38,19 +38,15 @@ import datetime
 import time
 import shutil
 import hashlib
+import threading
+import encodings
 
-# A hacky way to get this working with python2 or 3
-try:
-    from urlparse import urlparse, urlunparse
-    from urllib import quote, quote_plus, unquote, unquote_plus
-except ImportError:
-    from urllib.parse import urlparse, urlunparse, quote, quote_plus, unquote, unquote_plus
+from gi.repository import GLib
 
-    
+import six
 from six.moves import filter
 from six.moves import range
-
-from gi.repository import GObject as gobject
+from six.moves.urllib.parse import urlparse, urlunparse, quote, quote_plus, unquote, unquote_plus
 
 import rabbitvcs.util.settings
 
@@ -59,6 +55,14 @@ log = Log("rabbitvcs.util.helper")
 
 from rabbitvcs import gettext
 ngettext = gettext.ngettext
+
+try:
+    from html import escape as html_escape
+except ImportError:
+    from cgi import escape as html_escape
+
+import gi
+from gi.repository import GObject
 
 DATETIME_FORMAT = "%Y-%m-%d %H:%M" # for log files
 LOCAL_DATETIME_FORMAT = locale.nl_langinfo(locale.D_T_FMT) # for UIs
@@ -71,6 +75,77 @@ LINE_BREAK_CHAR = u'\u23CE'
 
 from rabbitvcs import gettext
 _ = gettext.gettext
+
+def compare_version(version1, version2, length = None):
+    if not length:
+        length = max(len(version1), len(version2))
+    for i in range(length):
+        x = int(version1[i]) if i in version1 else 0
+        y = int(version2[i]) if i in version2 else 0
+        r = x - y
+        if r:
+            return r
+    return 0
+
+def gobject_threads_init():
+    """
+    Call GObject.threads_init() only if not deprecated.
+    """
+
+    if compare_version(GObject.pygobject_version, [3, 10, 2]) < 0:
+        GObject.threads_init()
+
+def to_text(s):
+    """
+    We cannot use a six.text_type() constructor alone as a bytes to text
+    converter because it uses the str() function that stores the bytes type
+    mark in the result under Python 3.
+    Instead, decode it as UTF-8.
+    """
+
+    if isinstance(s, bytearray):
+        s = bytes(s)
+    if not isinstance(s, six.text_type):
+        if isinstance(s, bytes):
+            s = s.decode("utf-8")
+    return six.text_type(s)
+
+def to_bytes(s, encoding = "utf-8"):
+    """
+    Convert string in arguments to bytes in the given encoding.
+    """
+    if isinstance(s, str):
+        return s.encode(encoding)
+    if isinstance(s, list):
+        return [to_bytes(x, encoding) for x in s]
+    if isinstance(s, set):
+        return {to_bytes(x, encoding) for x in s}
+    if isinstance(s, dict):
+        return {x: to_bytes(s[x], encoding) for x in s}
+    return s
+
+def run_in_main_thread(func, *args, **kwargs):
+    """
+    Execute function in main thread's idle loop.
+    """
+    
+    def dofunc(event, func, args, kwargs):
+        try:
+            event.result = func(*args, **kwargs)
+        except Exception as e:
+            event.exception = e
+        event.set()
+
+    if isinstance(threading.current_thread(), threading._MainThread):
+        return func(*args, **kwargs)
+    event = threading.Event()
+    event.result = None
+    event.exception = None
+    GLib.idle_add(dofunc, event, func, args, kwargs)
+    event.wait()
+    if event.exception:
+        raise event.exception
+    return event.result
 
 def get_tmp_path(filename):
     day = datetime.datetime.now().day
@@ -650,7 +725,7 @@ def save_repository_path(path):
         paths.pop()
     
     f = open(get_repository_paths_path(), "w")
-    f.write("\n".join(paths).encode("utf-8"))
+    f.write(to_text("\n".join(paths).encode("utf-8")))
     f.close()
     
 def launch_ui_window(filename, args=[], block=False):
@@ -863,11 +938,11 @@ def unquote_url(url_text):
 
 def pretty_filesize(bytes):
     if bytes >= 1073741824:
-        return str(bytes / 1073741824) + ' GB'
+        return str(int(bytes / 1073741824)) + ' GB'
     elif bytes >= 1048576:
-        return str(bytes / 1048576) + ' MB'
+        return str(int(bytes / 1048576)) + ' MB'
     elif bytes >= 1024:
-        return str(bytes / 1024) + ' KB'
+        return str(int(bytes / 1024)) + ' KB'
     elif bytes < 1024:
         return str(bytes) + ' bytes'
 
@@ -986,11 +1061,12 @@ def parse_patch_output(patch_file, base_dir, strip=0):
     p = "-p%s" % strip
     patch_proc = subprocess.Popen(["patch", "-N", "-t", p, "-i", str(patch_file), "--directory", base_dir],
                                       stdout = subprocess.PIPE,
-                                      stderr = subprocess.PIPE,
+                                      stderr = subprocess.STDOUT,
                                       env = env)
 
     # Intialise things...
-    line = patch_proc.stdout.readline()
+    out = encodings.utf_8.StreamReader(patch_proc.stdout)
+    line = out.readline()
     patch_match = PATCHING_RE.match(line)
 
     current_file = None
@@ -1000,7 +1076,7 @@ def parse_patch_output(patch_file, base_dir, strip=0):
         # There was output, but unexpected. Almost certainly an error of some
         # sort.
         patch_proc.wait()
-        output = line + patch_proc.stdout.read()
+        output = line + out.read()
         raise rabbitvcs.vcs.ExternalUtilError("patch", output)
         # Note the excluded case: empty line. This falls through, skips the loop
         # and returns.
@@ -1010,9 +1086,9 @@ def parse_patch_output(patch_file, base_dir, strip=0):
 
     while current_file:
 
-        line = patch_proc.stdout.readline()
+        line = out.readline().rstrip(" \t\r\n")
         while not line and patch_proc.poll() is None:
-            line = patch_proc.stdout.readline()
+            line = out.readline().rstrip(" \t\r\n")
 
         # Does patch tell us we're starting a new file?
         patch_match = PATCHING_RE.match(line)

@@ -24,7 +24,7 @@ from __future__ import absolute_import
 import os.path
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceNonView
@@ -93,7 +93,7 @@ class SVNRename(Rename):
         self.action.append(self.action.set_status, _("Completed Rename"))
         self.action.append(self.action.finish)
         self.action.append(self.close)
-        self.action.run()
+        self.action.schedule()
 
 class GitRename(Rename):
     def __init__(self, path):
@@ -122,7 +122,7 @@ class GitRename(Rename):
         self.action.append(self.action.set_status, _("Completed Rename"))
         self.action.append(self.action.finish)
         self.action.append(self.close)
-        self.action.run()
+        self.action.schedule()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNRename,

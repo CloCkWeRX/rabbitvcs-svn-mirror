@@ -31,14 +31,13 @@ from datetime import datetime
 from .gittyup.client import GittyupClient
 from .gittyup import objects
 
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 
 import rabbitvcs.vcs
 import rabbitvcs.vcs.status
 import rabbitvcs.vcs.log
 from rabbitvcs.vcs.branch import BranchEntry
 from rabbitvcs.util.log import Log
-import six
 
 log = Log("rabbitvcs.vcs.git")
 
@@ -62,13 +61,13 @@ class Revision:
 
     def __unicode__(self):
         if self.value:
-            return six.text_type(self.value)
+            return helper.to_text(self.value)
         else:
             return self.kind
             
     def short(self):
         if self.value:
-            return six.text_type(self.value)[0:7]
+            return helper.to_text(self.value)[0:7]
         else:
             return self.kind
 
@@ -912,7 +911,7 @@ class Git:
 
         any_failures = False
 
-        for file, success, rej_file in rabbitvcs.util.helper.parse_patch_output(patch_file, base_dir, 1):
+        for file, success, rej_file in helper.parse_patch_output(patch_file, base_dir, 1):
 
             fullpath = os.path.join(base_dir, file)
 

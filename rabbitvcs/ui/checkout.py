@@ -22,17 +22,16 @@ from __future__ import absolute_import
 #
 
 import os.path
-import urllib
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 import rabbitvcs.vcs
 from rabbitvcs.ui.updateto import GitUpdateToRevision
 from rabbitvcs import gettext
@@ -54,7 +53,7 @@ class Checkout(InterfaceView):
 
         self.repositories = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("repositories"), 
-            rabbitvcs.util.helper.get_repository_paths()
+            helper.get_repository_paths()
         )
         
         # We must set a signal handler for the Gtk.Entry inside the combobox
@@ -64,7 +63,7 @@ class Checkout(InterfaceView):
             self.on_repositories_key_released
         )
 
-        self.destination = rabbitvcs.util.helper.get_user_path()
+        self.destination = helper.get_user_path()
         if path is not None:
             self.destination = path
             self.get_widget("destination").set_text(path)
@@ -80,7 +79,7 @@ class Checkout(InterfaceView):
 
     def _parse_path(self, path):
         if path.startswith("file://"):
-            path = urllib.unquote(path)
+            path = helper.unquote(path)
             path = path[7:]
         return path
             
@@ -165,10 +164,10 @@ class SVNCheckout(Checkout):
         )
         self.action.append(self.action.set_header, _("Checkout"))
         self.action.append(self.action.set_status, _("Running Checkout Command..."))
-        self.action.append(rabbitvcs.util.helper.save_repository_path, url)
+        self.action.append(helper.save_repository_path, url)
         self.action.append(
             self.svn.checkout,
-            rabbitvcs.util.helper.quote_url(url),
+            helper.quote_url(url),
             path,
             recurse=recursive,
             revision=revision,
@@ -176,7 +175,7 @@ class SVNCheckout(Checkout):
         )
         self.action.append(self.action.set_status, _("Completed Checkout"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
     def on_repositories_changed(self, widget, data=None):
         # Do not use quoting for this bit
@@ -216,7 +215,7 @@ class GitCheckoutQuiet:
         )
 
         self.action.append(self.git.checkout, [path])
-        self.action.run()
+        self.action.schedule()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNCheckout,

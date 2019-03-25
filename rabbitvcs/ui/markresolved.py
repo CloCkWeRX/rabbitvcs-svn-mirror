@@ -24,7 +24,7 @@ from __future__ import absolute_import
 import six.moves._thread
 
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.add import Add
@@ -41,40 +41,14 @@ from rabbitvcs import gettext
 _ = gettext.gettext
 
 class SVNMarkResolved(Add):
-    def __init__(self, paths, base_dir):
-        InterfaceView.__init__(self, "add", "Add")
-
-        self.window = self.get_widget("Add")
-        self.window.set_title(_("Mark as Resolved"))
-
-        self.paths = paths
-        self.base_dir = base_dir
-        self.last_row_clicked = None
-        self.vcs = rabbitvcs.vcs.VCS()
+    def setup(self, window, columns):
+        window.set_title(_("Mark as Resolved"))
         self.svn = self.vcs.svn()
-        self.items = None
         self.statuses = self.svn.STATUSES_FOR_RESOLVE
-        self.files_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("files_table"), 
-            [GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH,
-                GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING], 
-            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
-                _("Text Status"), _("Property Status")],
-            filters=[{
-                "callback": rabbitvcs.ui.widget.path_filter,
-                "user_data": {
-                    "base_dir": base_dir,
-                    "column": 1
-                }
-            }],
-            callbacks={
-                "row-activated":  self.on_files_table_row_activated,
-                "mouse-event":   self.on_files_table_mouse_event,
-                "key-event":     self.on_files_table_key_event
-            }
-        )
-
-        self.initialize_items()
+        columns[0] = [GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH,
+                GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING],
+        columns[1] = [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"),
+                _("Extension"), _("Text Status"), _("Property Status")]
 
     def populate_files_table(self):
         self.files_table.clear()
@@ -105,7 +79,7 @@ class SVNMarkResolved(Add):
             self.action.append(self.svn.resolve, item, recurse=True)
         self.action.append(self.action.set_status, _("Completed Mark as Resolved"))
         self.action.append(self.action.finish)
-        self.action.run()
+        self.action.schedule()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNMarkResolved

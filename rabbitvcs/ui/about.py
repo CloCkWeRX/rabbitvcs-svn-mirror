@@ -7,27 +7,28 @@ from __future__ import absolute_import
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
 # 
-# RabbitVCS is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-# 
-# RabbitVCS is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License
-# along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
-#
+license = """\
+RabbitVCS is free software; you can redistribute it and/or modify  
+it under the terms of the GNU General Public License as published by  
+the Free Software Foundation; either version 2 of the License, or  
+(at your option) any later version.  
+
+RabbitVCS is distributed in the hope that it will be useful,  
+but WITHOUT ANY WARRANTY; without even the implied warranty of  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  
+GNU General Public License for more details.  
+
+You should have received a copy of the GNU General Public License  
+along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.  """
+
 
 import os.path
 import string
 import re
 
 import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, GObject
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GObject, GdkPixbuf
 
 import rabbitvcs
 from rabbitvcs.ui import InterfaceView
@@ -46,13 +47,7 @@ class About:
     """
 
     def __init__(self):
-    
-        #def url_hook(dialog, url):
-        #    rabbitvcs.util.helper.launch_url_in_webbrowser(url)
-    
-        #Gtk.about_dialog_set_url_hook(url_hook)
         self.about = Gtk.AboutDialog()
-        self.about.set_transient_for(window);
         self.about.set_name(rabbitvcs.APP_NAME)
 
         self.about.set_program_name(rabbitvcs.APP_NAME)
@@ -81,13 +76,19 @@ class About:
         authors = open(authors_path, "r").read()
 
         self.about.set_authors(authors.split("\n"))
-        
+
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(rabbitvcs.get_icon_path() +
+                                                "/scalable/apps/rabbitvcs.svg")
+        self.about.set_logo(pixbuf)
+
         versions = []
         versions.append("Subversion - %s" % ".".join(list(map(str,pysvn.svn_version))))
         versions.append("Pysvn - %s" % ".".join(list(map(str,pysvn.version))))
         versions.append("ConfigObj - %s" % str(configobj.__version__))
         
         self.about.set_comments("\n".join(versions))
+
+        self.about.set_license(license)
     
     def run(self):
         self.about.show_all()

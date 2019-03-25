@@ -129,7 +129,7 @@ class Tag(GittyupObject):
 
 class CommitTag(Commit):
     def __init__(self, name, sha, obj):
-        self.name = name
+        self._name = name
         self.sha = sha
         self.obj = obj
 
@@ -138,8 +138,8 @@ class CommitTag(Commit):
 
     @property
     def name(self):
-        return self.name
-    
+        return self._name
+
     def __eq__(self, other):
         return (self.name == other)
 
@@ -150,7 +150,7 @@ class CommitTag(Commit):
     @property
     def message(self):
         return self.obj.message
-    
+
     @property
     def tagger(self):
         return self.obj.committer
@@ -158,7 +158,7 @@ class CommitTag(Commit):
     @property
     def tag_time(self):
         return self.obj.commit_time
-    
+
     @property
     def tag_timezone(self):
         return self.obj.commit_timezone
@@ -169,7 +169,7 @@ class Tree(GittyupObject):
 
 class Branch(Commit):
     def __init__(self, name, sha, obj):
-        self.name = name
+        self._name = name
         self.sha = sha
         self.obj = obj
 
@@ -178,7 +178,7 @@ class Branch(Commit):
 
     @property
     def name(self):
-        return self.obj.name
-    
+        return self._name
+
     def __eq__(self, other):
         return (self.name == other)

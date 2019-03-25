@@ -28,7 +28,7 @@ from os.path import basename
 
 import shutil
 import gi
-gi.require_version('Gtk', '3.0')
+gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
@@ -36,13 +36,14 @@ import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.util
 import rabbitvcs.vcs
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 from rabbitvcs.ui.dialog import MessageBox
+from rabbitvcs.util.decorators import gtk_unsafe
 
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-GObject.threads_init()
+helper.gobject_threads_init()
 
 from rabbitvcs.util.log import Log
 log = Log("rabbitvcs.ui.action")
@@ -85,6 +86,7 @@ class DummyNotifier:
     def set_canceled_by_user(self, was_canceled_by_user):
         pass
 
+    @gtk_unsafe
     def exception_callback(self, e):
         log.exception(e)
         MessageBox(str(e))
@@ -144,11 +146,13 @@ class MessageCallbackNotifier(VCSNotifier):
     def on_ok_clicked(self, widget):
         self.close()
 
+    @gtk_unsafe
     def toggle_ok_button(self, sensitive):
         self.finished = True
         self.get_widget("ok").set_sensitive(sensitive)
         self.get_widget("saveas").set_sensitive(sensitive)
 
+    @gtk_unsafe
     def append(self, entry):
         self.table.append(entry)
         self.table.scroll_to_bottom()
@@ -156,9 +160,11 @@ class MessageCallbackNotifier(VCSNotifier):
     def get_title(self):
         return self.get_widget("Notification").get_title()
 
+    @gtk_unsafe
     def set_title(self, title):
         self.get_widget("Notification").set_title(title)
 
+    @gtk_unsafe
     def set_header(self, header):
         self.set_title(header)
 
@@ -166,6 +172,7 @@ class MessageCallbackNotifier(VCSNotifier):
             "<span size=\"xx-large\"><b>%s</b></span>" % header
         )
 
+    @gtk_unsafe
     def focus_on_ok_button(self):
         self.get_widget("ok").grab_focus()
 
@@ -175,9 +182,11 @@ class MessageCallbackNotifier(VCSNotifier):
     def on_saveas_clicked(self, widget):
         self.saveas()
 
+    @gtk_unsafe
     def enable_saveas(self):
         self.get_widget("saveas").set_sensitive(True)
 
+    @gtk_unsafe
     def disable_saveas(self):
         self.get_widget("saveas").set_sensitive(False)
 
@@ -219,12 +228,14 @@ class LoadingNotifier(VCSNotifier):
     def get_title(self):
         return self.get_widget("Loading").get_title()
 
+    @gtk_unsafe
     def set_title(self, title):
         self.get_widget("Loading").set_title(title)
 
     def set_header(self, header):
         self.set_title(header)
 
+    @gtk_unsafe
     def exception_callback(self, e):
         if not self.was_canceled_by_user:
             log.exception(e)
@@ -240,7 +251,7 @@ class VCSAction(threading.Thread):
     def __init__(self, client, register_gtk_quit=False, notification=True,
             run_in_thread=True):
 
-        run_in_thread = False
+        self.run_in_thread = run_in_thread
 
         if run_in_thread is True:
             threading.Thread.__init__(self)
@@ -262,10 +273,12 @@ class VCSAction(threading.Thread):
                 client_in_same_thread=self.client_in_same_thread
             )
             self.has_notifier = True
-        else:
+        elif run_in_thread:
             visible = run_in_thread
             self.notification = LoadingNotifier(self.set_cancel, visible=visible)
             self.has_loader = True
+        else:
+            self.notification = DummyNotifier()
 
         self.pbar_ticks = None
         self.pbar_ticks_current = -1
@@ -274,6 +287,12 @@ class VCSAction(threading.Thread):
         # Is used when the script is run from a command line
         if register_gtk_quit:
             self.notification.register_gtk_quit()
+
+    def schedule(self):
+        if self.run_in_thread:
+            self.start()
+        else:
+            self.run()
 
     def set_pbar_ticks(self, num):
         """
@@ -297,13 +316,7 @@ class VCSAction(threading.Thread):
         """
         
         if self.has_notifier:
-            if not self.client_in_same_thread:
-                Gdk.threads_enter()
-    
             self.notification.pbar.update(fraction)
-    
-            if not self.client_in_same_thread:
-                Gdk.threads_leave()
 
     def set_header(self, header):
         self.notification.set_header(header)
@@ -370,11 +383,7 @@ class VCSAction(threading.Thread):
         """
 
         if self.message is None:
-            Gdk.threads_enter()
-            dialog = rabbitvcs.ui.dialog.TextChange(_("Log Message"))
-            result = dialog.run()
-            Gdk.threads_leave()
-
+            result = helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.TextChange(_("Log Message")).run)
             should_continue = (result[0] == Gtk.ResponseType.OK)
             return should_continue, result[1].encode("utf-8")
         else:
@@ -403,19 +412,12 @@ class VCSAction(threading.Thread):
 
         @rtype:             (boolean, string, string, boolean)
         @return:            (True=continue/False=cancel, username,password, may_save)
-
         """
 
         if self.login_tries >= 3:
             return (False, "", "", False)
 
-        Gdk.threads_enter()
-        dialog = rabbitvcs.ui.dialog.Authentication(
-            realm,
-            may_save
-        )
-        result = dialog.run()
-        Gdk.threads_leave()
+        result = helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.Authentication(realm, may_save).run)
 
         if result is not None:
             self.login_tries += 1
@@ -437,24 +439,18 @@ class VCSAction(threading.Thread):
 
         @rtype:         (boolean, int, boolean)
         @return:        (True=Accept/False=Deny, number of accepted failures, remember)
-
         """
 
-        Gdk.threads_enter()
-
-        if not data:
-            return (False, 0, False)
-
-        dialog = rabbitvcs.ui.dialog.Certificate(
-            data["realm"],
-            data["hostname"],
-            data["issuer_dname"],
-            data["valid_from"],
-            data["valid_until"],
-            data["finger_print"]
-        )
-        result = dialog.run()
-        Gdk.threads_leave()
+        result = 0
+        if data:
+            result = helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.Certificate(
+                data["realm"],
+                data["hostname"],
+                data["issuer_dname"],
+                data["valid_from"],
+                data["valid_until"],
+                data["finger_print"]
+            ).run)
 
         if result == 0:
             #Deny
@@ -481,18 +477,12 @@ class VCSAction(threading.Thread):
 
         @rtype:             (boolean, string, boolean)
         @return:            (True=continue/False=cancel, password, may save)
-
         """
 
-        Gdk.threads_enter()
-        dialog = rabbitvcs.ui.dialog.CertAuthentication(
-            realm,
-            may_save
-        )
-        result = dialog.run()
-        Gdk.threads_leave()
-
-        return result
+        return helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.CertAuthentication(
+                realm,
+                may_save
+            ).run)
 
     def get_client_cert(self, realm, may_save):
         """
@@ -509,18 +499,12 @@ class VCSAction(threading.Thread):
 
         @rtype:             (boolean, string, boolean)
         @return:            (True=continue/False=cancel, password, may save)
-
         """
 
-        Gdk.threads_enter()
-        dialog = rabbitvcs.ui.dialog.SSLClientCertPrompt(
-            realm,
-            may_save
-        )
-        result = dialog.run()
-        Gdk.threads_leave()
-
-        return result
+        return helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.SSLClientCertPrompt(
+                realm,
+                may_save
+            ).run)
 
     def set_log_message(self, message):
         """
@@ -529,11 +513,11 @@ class VCSAction(threading.Thread):
 
         @type   message: string
         @param  message: Set a log message.
-
         """
 
         self.message = message
 
+    @gtk_unsafe
     def set_status(self, message):
         """
         Set the current status of the VCS action.  Currently, this method
@@ -544,7 +528,6 @@ class VCSAction(threading.Thread):
 
         @type   message: string
         @param  message: A status message.
-
         """
 
         if message is not None:
@@ -619,11 +602,9 @@ class VCSAction(threading.Thread):
 
 class SVNAction(VCSAction):
     def __init__(self, client, register_gtk_quit=False, notification=True,
-            run_in_thread=False):
+            run_in_thread=True):
 
-        run_in_thread = False
-
-        self.client_in_same_thread = not run_in_thread
+        self.client_in_same_thread = False
 
         self.client = client
         self.client.set_callback_cancel(self.cancel)
@@ -695,7 +676,7 @@ class SVNAction(VCSAction):
             self.queue.insert(position+1, self.edit_conflict, data)
 
     def edit_conflict(self, data):
-        rabbitvcs.util.helper.launch_ui_window("editconflicts", [data["path"]], block=True)
+        helper.launch_ui_window("editconflicts", [data["path"]], block=True)
 
 class GitAction(VCSAction):
     def __init__(self, client, register_gtk_quit=False, notification=True,
@@ -727,17 +708,12 @@ class GitAction(VCSAction):
                     self.notification.append(["", data, ""])
 
     def get_user(self):
-        Gdk.threads_enter()
-        dialog = rabbitvcs.ui.dialog.NameEmailPrompt()
-        result = dialog.run()
-        Gdk.threads_leave()
-
-        return result
+        return helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.NameEmailPrompt().run)
 
     def conflict_filter(self, data):
         if str(data).startswith("ERROR:"):
             path = data[27:]
-            rabbitvcs.util.helper.launch_ui_window("editconflicts", [path], block=True)
+            helper.launch_ui_window("editconflicts", [path], block=True)
 
 class MercurialAction(VCSAction):
     def __init__(self, client, register_gtk_quit=False, notification=True,
@@ -767,17 +743,12 @@ class MercurialAction(VCSAction):
                     self.notification.append(["", data, ""])
 
     def get_user(self):
-        Gdk.threads_enter()
-        dialog = rabbitvcs.ui.dialog.NameEmailPrompt()
-        result = dialog.run()
-        Gdk.threads_leave()
-
-        return result
+        return helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.NameEmailPrompt().run)
 
     def conflict_filter(self, data):
         if str(data).startswith("ERROR:"):
             path = data[27:]
-            rabbitvcs.util.helper.launch_ui_window("editconflicts", [path], block=True)
+            helper.launch_ui_window("editconflicts", [path], block=True)
 
 def vcs_action_factory(client, register_gtk_quit=False, notification=True,
         run_in_thread=True):
