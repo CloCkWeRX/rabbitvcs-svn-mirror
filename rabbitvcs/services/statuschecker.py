@@ -24,8 +24,6 @@ from __future__ import absolute_import
 import rabbitvcs.vcs
 import rabbitvcs.vcs.status
 
-import simplejson
-
 from rabbitvcs import gettext
 _ = gettext.gettext
 

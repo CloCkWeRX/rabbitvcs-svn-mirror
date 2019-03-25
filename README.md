@@ -11,7 +11,6 @@ System Requirements
 * pygtk             >= 2.12
 * python-configobj  >= 4.4.0
 * python-gobject    >= 2.14
-* python-simplejson >= 2.1.1
 
 For spell checking of commit messages:
 * python-gtkspell

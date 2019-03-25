@@ -46,7 +46,7 @@ from __future__ import absolute_import
 
 import os, os.path
 import sys
-import simplejson
+import json
 
 from gi.repository import GObject
 from gi.repository import GLib
@@ -134,7 +134,7 @@ class StatusCheckerService(dbus.service.Object):
         """
         dbus.service.Object.__init__(self, connection, OBJECT_PATH)
         
-        self.encoder = simplejson.JSONEncoder(default=encode_status,
+        self.encoder = json.JSONEncoder(default=encode_status,
                                               separators=(',', ':'))
         
         self.mainloop = mainloop
@@ -181,7 +181,7 @@ class StatusCheckerService(dbus.service.Object):
             upaths.append(helper.to_text(path))
     
         path_dict = self.status_checker.generate_menu_conditions(upaths)
-        return simplejson.dumps(path_dict)
+        return json.dumps(path_dict)
 
     @dbus.service.method(INTERFACE)
     def CheckVersionOrDie(self, version):
@@ -246,7 +246,7 @@ class StatusCheckerStub:
         # We need this to for the client to be able to do asynchronous calls
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         self.session_bus = dbus.SessionBus()
-        self.decoder = simplejson.JSONDecoder(object_hook=decode_status)
+        self.decoder = json.JSONDecoder(object_hook=decode_status)
         self.status_checker = None
         self._connect_to_checker()
 
@@ -373,10 +373,10 @@ class StatusCheckerStub:
 
     def generate_menu_conditions(self, provider, base_dir, paths, callback):
     
-        def real_reply_handler(json):
+        def real_reply_handler(obj):
             # Note that this a closure referring to the outer functions callback
             # parameter
-            path_dict = simplejson.loads(json)
+            path_dict = json.loads(obj)
             callback(provider, base_dir, paths, path_dict)
         
         def reply_handler(*args, **kwargs):
