@@ -30,7 +30,7 @@ Recommends:
 
 For Debian-based distros you can run: 
 ```
-# apt-get install python-gtk2 python-configobj python-gobject python-simplejson python-gtkspell python-svn subversion python-dulwich git meld tkinter
+# apt-get install python-gtk2 python-configobj python-gobject python-gtkspell python-svn subversion python-dulwich git meld tkinter
 ```
 
 For Fedora-based distros you can run:
