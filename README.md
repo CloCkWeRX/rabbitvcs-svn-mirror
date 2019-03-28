@@ -53,6 +53,11 @@ On Ubuntu or Debian-based distros, instead run:
 
 Once this is run, make sure you install one or more client below.
 
+Note
+---------
+
+Please note that if there is a `PYTHON` environment variable it will be used as a Runtime environtment for the rabbitvcs module. For example, if `PYTHON` points to Python3, then the code in the rabbitvcs module will not work because pygtk is not available outside of Python2.
+
 
 Clients
 -------

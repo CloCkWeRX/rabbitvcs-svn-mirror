@@ -1537,26 +1537,22 @@ class LogBottomContextMenuCallbacks:
     def show_changes_previous_revision(self, widget, data=None):
         rev_first = helper.to_text(self.revisions[0]["revision"])
         rev_last = helper.to_text(self.revisions[-1]["revision"])
-        
+
         parent = self.find_parent(self.revisions[0])
 
-        url = self.paths[0]
-        if self.vcs_name == rabbitvcs.vcs.VCS_SVN:
-            url = self.caller.root_url + self.paths[0]
+        url = self.caller.root_url + self.paths[0]
 
         helper.launch_ui_window("changes", [
             "%s@%s" % (url, parent),
             "%s@%s" % (url, rev_last),
             "--vcs=%s" % self.caller.get_vcs_name()
         ])
-    
+
     def show_changes_revisions(self, widget, data=None):
         rev_first = helper.to_text(self.revisions[0]["revision"])
         rev_last = helper.to_text(self.revisions[-1]["revision"])
 
-        url = self.paths[0]
-        if self.vcs_name == rabbitvcs.vcs.VCS_SVN:
-            url = self.caller.root_url + self.paths[0]
+        url = self.caller.root_url + self.paths[0]
         
         helper.launch_ui_window("changes", [
             "%s@%s" % (url, rev_first),
