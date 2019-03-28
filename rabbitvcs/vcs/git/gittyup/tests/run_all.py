@@ -10,7 +10,7 @@ def cleanup(modules):
         subprocess.call(["python", module, "--cleanup"])
 
 modules = [
-    "branch.py", 
+    "branch.py",
     "stage.py",
     "commit.py",
     "tag.py",

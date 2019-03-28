@@ -1,27 +1,27 @@
 from __future__ import absolute_import
 from six.moves import range
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
-    
+
 import os
 import os.path
 
@@ -35,7 +35,7 @@ try:
     from gi.repository import GtkSpell
     HAS_GTKSPELL = True
 except ImportError:
-    pass    
+    pass
 
 HAS_GTKSOURCEVIEW = False
 try:
@@ -75,24 +75,24 @@ def filter_router(model, iter, column, filters):
     """
     Route filter requests for a table's columns.  This function is called for
     each cell of the table that gets displayed.
-    
+
     @type   model: Gtk.TreeModelFilter or Gtk.TreeModelSort
     @param  model: The TreeModelFilter or Gtk.TreeModelSort instance for our
                    table
-    
+
     @type   iter: Gtk.TreeIter
     @param  iter: The TreeIter instance for the table row being filtered
-    
+
     @type   column: int
     @param  column: The column index of the current item being filtered
-    
+
     @type   filters: list
     @param  filters: A list of dicts used to define how a column should be
         filtered
-        
+
         Note for filters:  Each dict consists of a callback function and user
         data like so:
-        
+
             {
                 "callback": self.file_filter,
                 "user_data": {
@@ -100,14 +100,14 @@ def filter_router(model, iter, column, filters):
                     "base_dir": "/home/workingcopy"
                 }
             }
-    
+
     @return    The filtered output defined for the given column
-    
+
     """
     real_model = model.get_model()
-    
+
     real_iter = model.convert_iter_to_child_iter(iter)
-    
+
     row = real_model[real_model.get_path(real_iter)]
 
     if not filters:
@@ -124,19 +124,19 @@ def path_filter(row, column, user_data=None):
     """
     A common filter function that is used in many tables.  Changes the displayed
     path to a path relative to the given base_dir (current working directory)
-    
+
     @type   row: Gtk.TreeModelRow
     @param  row: The row that is being filtered
-    
+
     @type   column: int
     @param  column: The column that is being filtered
-    
+
     @type   user_data: dict
     @param  user_data: A dictionary of user_data useful to this function
-    
+
     @rtype  str
     @return A relative path
-    
+
     """
     base_dir = user_data["base_dir"]
 
@@ -146,27 +146,27 @@ def path_filter(row, column, user_data=None):
             relpath = os.path.basename(row[column])
         return relpath
     else:
-        return row[column] 
+        return row[column]
 
 def long_text_filter(row, column, user_data=None):
     """
     Uses the format_long_text helper function to trim and prettify some text.
     """
     text = row[column]
-    
+
     cols = user_data["cols"]
-    
-    
+
+
     if text:
         text = helper.format_long_text(text, cols)
-        
+
     return text
 
 def git_revision_filter(row, column, user_data=None):
     """
     Only show the first seven characters of a git revision hash
     """
-    
+
     text = row[column]
     if text:
         if text.startswith("<b>"):
@@ -182,7 +182,7 @@ def translate_filter(row, column, user_data=None):
     """
     text = row[column]
     if text: return _(text)
-    
+
 def compare_items(model, iter1, iter2, user_data=None):
 
     if not user_data:
@@ -190,44 +190,44 @@ def compare_items(model, iter1, iter2, user_data=None):
         return 0
 
     colnum, coltype = user_data
-    
+
     real_model = model.get_model()
     real_iter1 = model.convert_iter_to_child_iter(iter1)
     real_iter2 = model.convert_iter_to_child_iter(iter2)
-    
+
     value1 = real_model.get_value(real_iter1, colnum)
     value2 = real_model.get_value(real_iter2, colnum)
-    
+
     if value1 == value2:
         return 0
     elif value1 < value2:
         return -1
     else:
         return 1
-    
+
 class TableBase:
     def __init__(self, treeview, coltypes, colnames, values=[], filters=None,
                  filter_types=None, callbacks={}, flags={}):
         """
         @type   treeview: Gtk.Treeview
         @param  treeview: The treeview widget to use
-        
+
         @type   coltypes: list
         @param  coltypes: Contains the "type" of each column (i.e. str or int)
-        
+
         @type   colnames: list
         @param  colnames: Contains the name string for each column
-        
+
         @type   values: list
         @param  values: Contains the data to be inserted into the table
-        
+
         @type   filters: list
         @param  filters: A list of dicts used to define how a column should be
             filtered
-            
+
             Note for filters:  Each dict consists of a callback function and user
             data like so:
-            
+
                 {
                     "callback": self.file_filter,
                     "user_data": {
@@ -235,29 +235,29 @@ class TableBase:
                         "base_dir": "/home/workingcopy"
                     }
                 }
-        
+
         @type   filter_types: list
         @param  filter_types: Contains the filtered "type" of each column.
-        
+
         @type   callbacks: dict
         @param  callbacks: A dict of callbacks to be used.  Some are for signal
             handling while others are useful for other things.
-            
+
         @type   flags: dict
         @param  flags: A dict of flags
-        
+
         FLAGS:
             @type   sortable: boolean
             @param  sortable: whether the columns can be sorted
-            
+
             @type   sort_on: int
             @param  sort_on: the column number to initially sort by
-            
+
             @type   editable: list
             @param  editable: A list of which columns are editable
-        
+
         """
-        
+
         from .renderers.graphcell import CellRendererGraph
 
         if "sortable" not in flags:
@@ -266,7 +266,7 @@ class TableBase:
             flags["sort_on"] = -1
         if "editable" not in flags:
             flags["editable"] = ()
-    
+
         self.treeview = treeview
         self.selected_rows = []
 
@@ -280,19 +280,19 @@ class TableBase:
                 cell.set_property('activatable', True)
                 cell.set_property('xalign', 0)
                 cell.connect("toggled", self.toggled_cb, i)
-                
+
                 colname = ""
                 if name != TOGGLE_BUTTON:
                     colname = name
-                
+
                 col = Gtk.TreeViewColumn(colname, cell)
                 col.set_attributes(cell, active=i)
             elif coltypes[i] == TYPE_PATH:
                 # The type should be str but we have to use TYPE_PATH to
                 # distinguish from a regular str column
                 coltypes[i] = str
-                
-                # First we create the column, then we create a CellRenderer 
+
+                # First we create the column, then we create a CellRenderer
                 # instance for the path icon and a CellRenderer instance for
                 # the path.  Each is packed into the treeview column
                 col = Gtk.TreeViewColumn(name)
@@ -313,7 +313,7 @@ class TableBase:
                         "column": i
                     }
                 col.set_cell_data_func(cellpb, self.file_pixbuf, data)
-                
+
                 cell = Gtk.CellRendererText()
                 cell.set_property('xalign', 0)
                 cell.set_property('yalign', 0)
@@ -321,19 +321,19 @@ class TableBase:
                 col.set_attributes(cell, text=i)
             elif coltypes[i] == TYPE_STATUS:
                 # Same as for TYPE_PATH
-                coltypes[i] = str                
+                coltypes[i] = str
                 col = Gtk.TreeViewColumn(name)
-                
+
                 cellpb = Gtk.CellRendererPixbuf()
                 cellpb.set_property('xalign', 0)
                 cellpb.set_property('yalign', 0)
-                
+
                 col.pack_start(cellpb, False)
-                
+
                 data = None
-                
+
                 col.set_cell_data_func(cellpb, self.status_pixbuf, i)
-                
+
                 cell = Gtk.CellRendererText()
                 cell.set_property('xalign', 0)
                 cell.set_property('yalign', 0)
@@ -364,7 +364,7 @@ class TableBase:
                 if i in flags["editable"]:
                     cell.set_property('editable', True)
                     cell.connect("edited", self.__cell_edited, i)
-                
+
                 if coltypes[i] == TYPE_MARKUP:
                     col = Gtk.TreeViewColumn(name, cell, markup=i)
                 else:
@@ -397,31 +397,31 @@ class TableBase:
                         filters)
 
 
-		# This runs through the columns, and sets the "compare_items" comparator
+        # This runs through the columns, and sets the "compare_items" comparator
         # as needed. Note that the user data tells which column to sort on.
         if flags["sortable"]:
             self.sorted = Gtk.TreeModelSort(self.filter)
-            
+
             self.sorted.set_default_sort_func(compare_items, None)
-            
+
             for idx in range(0, i):
                 self.sorted.set_sort_func(idx,
                                           compare_items,
                                           (idx, coltypes[idx]))
 
             self.sorted.set_sort_column_id(flags["sort_on"], Gtk.SortType.ASCENDING)
-            
+
             self.treeview.set_model(self.sorted)
-            
+
         elif filters:
             self.treeview.set_model(self.filter)
         else:
             self.treeview.set_model(self.data)
 
-        
+
         if len(values) > 0:
             self.populate(values)
-    
+
         self.set_resizable()
 
         # Set up some callbacks for all tables to deal with row clicking and
@@ -501,7 +501,7 @@ class TableBase:
                 rm_index -= 1
 
             self.remove(rm_index)
-            i += 1     
+            i += 1
 
     def get_items(self):
         return self.data
@@ -524,7 +524,7 @@ class TableBase:
     def set_row_item(self, row, column, val):
         model = self.data
         model[row][column] = val
-    
+
     def allow_multiple(self):
         self.treeview.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
 
@@ -535,11 +535,11 @@ class TableBase:
                 item = row
                 if column is not None:
                     item = row[column]
-                
+
                 returner.append(item)
-                
+
         return returner
-    
+
     def scroll_to_bottom(self):
         bottom = len(self.get_items()) - 1
         self.treeview.scroll_to_cell(bottom)
@@ -586,12 +586,12 @@ class TableBase:
         items = []
         for row in self.selected_rows:
             items.append(self.data[row][col])
-        
+
         return items
 
     def get_selected_rows(self):
         return self.selected_rows
-        
+
     def generate_string_from_data(self):
         lines = []
         for row in self.data:
@@ -599,9 +599,9 @@ class TableBase:
             for cell in row:
                 line.append(helper.to_text(cell))
             lines.append("\t".join(line))
-        
+
         return "\n".join(lines)
-        
+
     @gtk_unsafe
     def unselect_all(self):
         self.treeview.get_selection().unselect_all()
@@ -614,18 +614,18 @@ class TableBase:
     def __button_press_event(self, treeview, data):
         info = treeview.get_path_at_pos(int(data.x), int(data.y))
         selection = treeview.get_selection()
-        
+
         # If info is none, that means the user is clicking the empty space
         # In that case, unselect everything and update the selected_rows
         if info is None:
             selection.unselect_all()
             self.update_selection()
             return
-            
+
         # this allows us to retain multiple selections with a right-click
         if data.button == 3:
             (liststore, indexes) = selection.get_selected_rows()
-            
+
             # If the mouse click is one of the currently selected rows
             # keep the selection, otherwise, use the new selection
             for index in indexes:
@@ -638,7 +638,7 @@ class TableBase:
         self.update_selection()
         if "row-activated" in self.callbacks:
             self.callbacks["row-activated"](treeview, data, col)
-    
+
     def __row_selected(self, treeview, started_editing):
         self.update_selection()
         if "row-selected" in self.callbacks:
@@ -657,7 +657,7 @@ class TableBase:
         self.update_selection()
         if "all-unselected" in self.callbacks:
             self.callbacks["all-unselected"](treeview, started_editing)
-        
+
     def __key_press_event(self, treeview, data):
         self.update_selection()
         if "key-event" in self.callbacks:
@@ -684,28 +684,28 @@ class TableBase:
 #        self.data.set_sort_column_id(column_idx, )
 
     def status_pixbuf(self, column, cell, model, iter, colnum):
-        
+
         path = model.get_path(iter)
-    
+
         real_path = model.convert_path_to_child_path(path)
-        
+
         status = self.data[real_path][colnum]
-        
+
         if status not in list(STATUS_EMBLEMS.keys()):
             status = "error"
-             
+
         icon = "emblem-" + STATUS_EMBLEMS[status]
-        
+
         cell.set_property("icon-name", icon)
-        
+
 
     def file_pixbuf(self, column, cell, model, iter, data=None):
         icon_name = None
-        
+
         path = model.get_path(iter)
-    
+
         real_path = model.convert_path_to_child_path(path)
-            
+
         if data:
             real_item = self.data[real_path][data["column"]]
             kind = data["callback"](real_item)
@@ -719,16 +719,16 @@ class TableBase:
 class Table(TableBase):
     """
     Generate a flat tree view.
-        
+
     See the TableBase documentation for parameter information
 
     """
-    
-    def __init__(self, treeview, coltypes, colnames, values=[], filters=None, 
+
+    def __init__(self, treeview, coltypes, colnames, values=[], filters=None,
             filter_types=None, callbacks={}, flags={}):
-        TableBase.__init__(self, treeview, coltypes, colnames, values, filters, 
+        TableBase.__init__(self, treeview, coltypes, colnames, values, filters,
             filter_types, callbacks, flags)
-    
+
     def get_store(self, coltypes):
         return Gtk.ListStore(*coltypes)
 
@@ -750,18 +750,18 @@ class Tree(TableBase):
                 ])
             ])
         ]
-        
+
         Note that with multiple columns, you add to the list in the first element
         of each tuple.  (i.e. ["A"] becomes ["A", "Z", ... ]
-        
+
     See the TableBase documentation for parameter information
 
     """
-    def __init__(self, treeview, coltypes, colnames, values=[], filters=None, 
+    def __init__(self, treeview, coltypes, colnames, values=[], filters=None,
             filter_types=None, callbacks={}, flags={}):
-        TableBase.__init__(self, treeview, coltypes, colnames, values, filters, 
+        TableBase.__init__(self, treeview, coltypes, colnames, values, filters,
             filter_types, callbacks, flags={})
-    
+
     def get_store(self, coltypes):
         return Gtk.TreeStore(*coltypes)
 
@@ -771,7 +771,7 @@ class Tree(TableBase):
             new_root = self.append(parent, root)
             if len(node) > 1 and node[1] is not None:
                 self.populate(node[1], new_root)
-        
+
 class ComboBox:
     def __init__(self, cb, items=None):
 
@@ -812,7 +812,7 @@ class ComboBox:
 
     def get_active(self):
         return self.cb.get_active()
-    
+
     def set_active(self, index):
         self.cb.set_active(index)
 
@@ -834,20 +834,20 @@ class TextView:
         self.buffer = Gtk.TextBuffer()
         self.view.set_buffer(self.buffer)
         self.buffer.set_text(value)
-        
+
         if HAS_GTKSPELL and spellcheck:
             try:
                 GtkSpell.Checker().attach(self.view)
             except Exception as e:
                 log.exception(e)
-        
+
     def get_text(self):
         return self.buffer.get_text(
-            self.buffer.get_start_iter(), 
+            self.buffer.get_start_iter(),
             self.buffer.get_end_iter(),
             True
         )
-        
+
     def set_text(self, text):
         self.buffer.set_text(text)
 
@@ -877,14 +877,14 @@ class ProgressBar:
             self.view = Gtk.ProgressBar()
         else:
             self.view = pbar
-        
+
         self.timer = None
-        
+
     def start_pulsate(self):
         # Set up an interval to make the progress bar pulse
         # The timeout is removed after the log action finishes
         self.timer = GObject.timeout_add(100, self.update)
-    
+
     def stop_pulsate(self):
         if self.timer:
             GObject.source_remove(self.timer)
@@ -895,7 +895,7 @@ class ProgressBar:
         if fraction:
             if self.timer is not None:
                 self.stop_pulsate()
-                 
+
             if fraction > 1:
                 fraction = 1
             self.view.set_fraction(fraction)
@@ -911,36 +911,36 @@ class ProgressBar:
 class RevisionSelector:
     """
     Provides a standard way to generate a revision object from the UI.
-    
+
     """
 
-    def __init__(self, container, client, revision=None, 
+    def __init__(self, container, client, revision=None,
             url_combobox=None, url_entry=None, url=None, expand=False,
             revision_changed_callback=None):
         """
         @type   container: A Gtk container object (i.e. HBox, VBox, Box)
         @param  container: The container that to add this widget
-        
+
         @type   client: VCS client object
         @param  client: A vcs client instance (i.e. rabbitvcs.vcs.VCS())
-        
+
         @type   revision: int
         @param  revision: A revision number to start with
-        
+
         @type   url_combobox: rabbitvcs.ui.widget.ComboBox
         @param  url_combobox: A repository url combobox
 
         @type   url_entry: Gtk.Entry
         @param  url_entry: A repository url entry
-        
+
         @type   url: str
         @param  url: A repository url string
-        
+
         Note: The url fields are required for use with the log browser.  It can
                 be excluded.
 
         """
-        
+
         self.client = client
         self.revision = revision
         self.url_combobox = url_combobox
@@ -949,7 +949,7 @@ class RevisionSelector:
         self.revision_changed_callback = revision_changed_callback
         self.revision_change_inprogress = False
         hbox = Gtk.HBox(0, 4)
-        
+
         if self.url_combobox:
             self.url_combobox.cb.connect("changed", self.__on_url_combobox_changed)
 
@@ -966,22 +966,22 @@ class RevisionSelector:
             ]
             if not client.is_path_repository_url(self.get_url()):
                 self.OPTIONS.append(_("Working Copy"))
-        
+
         self.revision_kind_opt = ComboBox(Gtk.ComboBox(), self.OPTIONS)
         self.revision_kind_opt.set_active(0)
         self.revision_kind_opt.cb.connect("changed", self.__revision_kind_changed)
         hbox.pack_start(self.revision_kind_opt.cb, False, False, 0)
-        
+
         self.revision_entry = Gtk.Entry()
         self.revision_entry.connect("changed", self.__revision_entry_changed)
         hbox.pack_start(self.revision_entry, expand, expand, 0)
-        
+
         self.branch_selector = None
         if client.vcs == rabbitvcs.vcs.VCS_GIT:
             self.branch_selector = GitBranchSelector(hbox, client, self.__branch_selector_changed)
             self.branch_selector.hide()
-        
-        
+
+
         self.revision_browse = Gtk.Button()
         revision_browse_image = Gtk.Image()
         revision_browse_image.set_from_icon_name("edit-find", Gtk.IconSize.MENU)
@@ -994,21 +994,21 @@ class RevisionSelector:
             self.set_kind_number(revision)
         else:
             self.set_kind_head()
-        
+
         self.revision_kind_opt.cb.show()
         self.revision_entry.show()
         self.revision_browse.show()
         hbox.show()
-        
+
         container.add(hbox)
-    
+
     def __revision_browse_clicked(self, widget):
         from rabbitvcs.ui.log import SVNLogDialog, GitLogDialog
         if self.client.vcs == rabbitvcs.vcs.VCS_GIT:
             GitLogDialog(self.get_url(), ok_callback=self.__log_closed)
         elif self.client.vcs == rabbitvcs.vcs.VCS_SVN:
             SVNLogDialog(self.get_url(), ok_callback=self.__log_closed)
-    
+
     def __log_closed(self, data):
         if data is not None:
             self.revision_kind_opt.set_active(1)
@@ -1016,7 +1016,7 @@ class RevisionSelector:
 
     def __revision_kind_changed(self, widget):
         self.determine_widget_sensitivity()
-        
+
         if self.revision_changed_callback:
             self.revision_change_inprogress = True
             GObject.timeout_add(400, self.__revision_changed_callback, self)
@@ -1035,12 +1035,12 @@ class RevisionSelector:
 
     def determine_widget_sensitivity(self):
         index = self.revision_kind_opt.get_active()
-        
+
         allow_revision_browse = True
 
         # Default to showing the revision entry
         self.hide_branch_selector()
-        
+
         # Only allow number entry if "Number" is selected
         if index == 1:
             self.revision_entry.set_sensitive(True)
@@ -1060,7 +1060,7 @@ class RevisionSelector:
             self.revision_browse.set_sensitive(True)
         else:
             self.revision_browse.set_sensitive(False)
-    
+
     def get_url(self):
         if self.url_combobox:
             url = self.url_combobox.get_active_text()
@@ -1082,16 +1082,16 @@ class RevisionSelector:
         """
         @rtype  rabbitvcs.vcs.###.Revision
         @return A rabbitvcs revision object
-        
+
         index=0     HEAD
         index=1     Revision Number
         index=2
             SVN     Working Copy
             Git     Branch Selector
-        
+
         """
         index = self.revision_kind_opt.get_active()
-        
+
         if index == 0:
             return self.client.revision("head")
         elif index == 1:
@@ -1139,10 +1139,10 @@ class KeyValueTable(Gtk.Table):
     Simple extension of a GTK table to display a two-column table of information
     with labels.
     """
-    
+
     default_col_spacing = 12
     default_row_spacing = 6
-        
+
     def __init__(self, stuff):
         """
         @param stuff: a list of two-element tuples - the first element of the
@@ -1153,13 +1153,13 @@ class KeyValueTable(Gtk.Table):
             super(KeyValueTable, self).__init__()
         else:
             super(KeyValueTable, self).__init__(len(stuff), 2)
-            
+
             row = 0
-            
+
             for key, value in stuff:
                 label_key = Gtk.Label(label = "<b>%s:</b>" % key)
                 label_key.set_properties(xalign=0, use_markup=True)
-                
+
                 label_value = Gtk.Label(label = "%s" % value)
                 label_value.set_properties(xalign=0,                    \
                                            ellipsize=Pango.EllipsizeMode.MIDDLE, \
@@ -1169,17 +1169,17 @@ class KeyValueTable(Gtk.Table):
                              0,1,
                              row, row+1,
                              xoptions=Gtk.AttachOptions.FILL)
-    
+
                 self.attach(label_value,
                              1,2,
                              row, row+1,
                              xoptions=Gtk.AttachOptions.FILL|Gtk.AttachOptions.EXPAND)
-                        
+
                 label_key.show()
                 label_value.show()
-                
+
                 row += 1
-        
+
         self.set_col_spacings(self.default_col_spacing)
         self.set_row_spacings(self.default_row_spacing)
 
@@ -1187,9 +1187,9 @@ class GitRepositorySelector:
     def __init__(self, container, git, changed_callback=None):
         self.git = git
         self.changed_callback = changed_callback
-        
+
         vbox = Gtk.VBox(homogeneous = False, spacing = 4)
-        
+
         # Set up the Repository Line
         label = Gtk.Label(label = _("Repository:"))
         label.set_size_request(90, -1)
@@ -1202,7 +1202,7 @@ class GitRepositorySelector:
         self.repository_opt.set_active(0)
         self.repository_opt.cb.connect("changed", self.__repository_changed)
         self.repository_opt.cb.set_size_request(175, -1)
-        
+
         hbox = Gtk.HBox(homogeneous = False, spacing = 0)
         hbox.pack_start(label, False, False, 0)
         hbox.pack_start(self.repository_opt.cb, True, True, 0)
@@ -1219,22 +1219,22 @@ class GitRepositorySelector:
         index = 0
         for item in self.git.branch_list():
             tmp_branches.append(item.name)
-            
+
             if item.tracking:
                 active_branch_index = index
-            
+
             index += 1
-            
+
         self.branch_opt = ComboBox(Gtk.ComboBoxText.new_with_entry(), tmp_branches)
         self.branch_opt.set_active(active_branch_index)
         self.branch_opt.cb.connect("changed", self.__branch_changed)
         self.branch_opt.cb.set_size_request(175, -1)
-        
+
         hbox = Gtk.HBox(homogeneous = False, spacing = 0)
         hbox.pack_start(label, False, False, 0)
         hbox.pack_start(self.branch_opt.cb, True, True, 0)
         vbox.pack_start(hbox, False, False, 0)
-        
+
         # Set up the Host line
         label = Gtk.Label(label = _("Host:"))
         label.set_justify(Gtk.Justification.LEFT)
@@ -1249,21 +1249,21 @@ class GitRepositorySelector:
 
         vbox.show_all()
         container.add(vbox)
-        
+
         self.__update_host()
-    
+
     def __update_host(self):
         repo = self.repository_opt.get_active_text()
         try:
             self.host.set_text(self.git.config_get(("remote", repo), "url").decode("utf-8"))
         except KeyError as e:
             log.error("Missing remote %s config key" % repo)
-    
+
     def __repository_changed(self, repository_opt):
         if self.changed_callback:
             self.changed_callback(repository_opt.get_active_text(), self.branch_opt.get_active_text())
         self.__update_host()
-   
+
     def __branch_changed(self, branch_opt):
         if self.changed_callback:
             self.changed_callback(self.repository_opt.get_active_text(), self.branch_opt.get_active_text())
@@ -1272,7 +1272,7 @@ class GitBranchSelector:
     def __init__(self, container, git, changed_callback=None):
         self.git = git
         self.changed_callback = changed_callback
-        
+
         self.vbox = Gtk.VBox(homogeneous = False, spacing = 4)
 
         tmp_branches = []
@@ -1292,7 +1292,7 @@ class GitBranchSelector:
         hbox = Gtk.HBox(homogeneous = False, spacing = 0)
         hbox.pack_start(self.branch_opt.cb, False, False, 0)
         self.vbox.pack_start(hbox, False, False, 0)
-        
+
         self.vbox.show_all()
         container.add(self.vbox)
 
@@ -1304,10 +1304,10 @@ class GitBranchSelector:
 
     def __branch_changed(self, branch_opt):
         pass
-    
+
     def show(self):
         self.vbox.show_all()
-    
+
     def hide(self):
         self.vbox.hide()
 
@@ -1315,21 +1315,21 @@ class MultiFileTextEditor:
     """
     Edit a set of text/config/ignore files
     """
-    
+
     def __init__(self, container, label, combobox_labels, combobox_paths, show_add_line=True, line_content=""):
         self.container = container
         self.label = label
         self.combobox_labels = combobox_labels
         self.combobox_paths = combobox_paths
-        
+
         self.cache = {}
-        
+
         self.last_path = None
-                
+
         self.combobox = ComboBox(Gtk.ComboBox(), self.combobox_labels)
         self.combobox.cb.connect("changed", self.__combobox_changed)
         self.combobox.cb.set_size_request(175, -1)
-        
+
         self.textview = TextView(Gtk.TextView())
 
         scrolled_window = Gtk.ScrolledWindow()
@@ -1337,9 +1337,9 @@ class MultiFileTextEditor:
         scrolled_window.add(self.textview.view)
         scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         scrolled_window.set_size_request(320, 150)
-        
+
         vbox = Gtk.VBox(homogeneous = False, spacing = 6)
-        
+
         hbox = Gtk.HBox(homogeneous = False, spacing = 3)
         combo_label = Gtk.Label(label = label)
         combo_label.set_alignment(0, 0.5)
@@ -1347,7 +1347,7 @@ class MultiFileTextEditor:
         hbox.pack_start(combo_label, False, False, 0)
         hbox.pack_start(self.combobox.cb, True, True, 0)
         vbox.pack_start(hbox, False, False, 0)
-        
+
         if show_add_line:
             hbox = Gtk.HBox(homogeneous = False, spacing = 3)
             add_label = Gtk.Label(label = _("Add line:"))
@@ -1361,40 +1361,40 @@ class MultiFileTextEditor:
             hbox.pack_start(self.add_entry, True, True, 0)
             hbox.pack_start(add_button, False, False, 0)
             vbox.pack_start(hbox, False, False, 0)
-        
+
         vbox.pack_start(scrolled_window, True, True, 0)
         vbox.show_all()
 
         self.combobox.set_active(0)
 
         container.add(vbox)
-        
+
     def __combobox_changed(self, widget):
         index = self.combobox.get_active()
         path = self.combobox_paths[index]
 
         if not self.last_path:
             self.last_path = path
-        
+
         self.cache[self.last_path] = self.textview.get_text()
         self.last_path = path
-        
+
         self.load_file(path)
-    
+
     def __add_button_clicked(self, widget):
         text = self.add_entry.get_text()
         self.add_line(text)
         self.add_entry.set_text("")
-    
+
     def add_line(self, text):
         current_text = self.textview.get_text()
         if current_text:
             current_text += "\n" + text
         else:
             current_text = text
-        
+
         self.textview.set_text(current_text)
-    
+
     def load_file(self, path):
         if os.path.exists(path):
             fh = open(path, "r")
@@ -1412,7 +1412,7 @@ class MultiFileTextEditor:
         index = self.combobox.get_active()
         current_path = self.combobox_paths[index]
         self.cache[current_path] = self.textview.get_text()
-        
+
         for tmppath in paths:
             if tmppath in self.cache:
                 if not os.path.exists(os.path.dirname(tmppath)):

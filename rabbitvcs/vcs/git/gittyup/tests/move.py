@@ -28,13 +28,13 @@ else:
         raise SystemExit("This test script has already been run.  Please call this script with --cleanup to start again")
 
     g = GittyupClient(DIR, create=True)
-    
+
     touch(DIR + "/test.txt")
-    
+
     # Stage and commit the file
     g.stage([DIR+"/test.txt"])
     g.commit("Adding test.txt")
-    
+
     st = g.status()
 
     # Move file explicity test

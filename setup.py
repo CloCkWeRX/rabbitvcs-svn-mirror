@@ -13,7 +13,7 @@ from __future__ import print_function
 # For more information see: http://docs.python.org/dist/dist.html
 #
 
-# TODO: this all feels just a little too shell scripty, refactoring it later 
+# TODO: this all feels just a little too shell scripty, refactoring it later
 # might be a good idea.
 
 # NOTES:
@@ -122,8 +122,8 @@ fh.close()
 # Ready to install
 #==============================================================================
 
-# Calling the setup function will actually install RabbitVCS and also creates 
-# an .egg-info file in /usr/lib/python<version>/site-packages/ or 
+# Calling the setup function will actually install RabbitVCS and also creates
+# an .egg-info file in /usr/lib/python<version>/site-packages/ or
 # /usr/share/python-support/rabbitvcs when generating a Debian package.
 dist = setup(
     # The following arguments will be included in the .egg.info file,
@@ -163,8 +163,8 @@ if sys.argv[1] == "install":
 
     if os.uname()[0] != 'Darwin':
         print("Running gtk-update-icon-cache")
-        
+
         subprocess.Popen(
-            ["gtk-update-icon-cache", os.path.join(PREFIX, icon_theme_directory)], 
+            ["gtk-update-icon-cache", os.path.join(PREFIX, icon_theme_directory)],
             stdout=subprocess.PIPE
         ).communicate()[0]

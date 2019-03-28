@@ -1,22 +1,22 @@
 from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -47,30 +47,30 @@ STATE_EDIT = 1
 class GitTagManager(InterfaceView):
     """
     Provides a UI interface to manage items
-    
+
     """
-    
+
     state = STATE_ADD
-    
+
     def __init__(self, path, revision=None):
         InterfaceView.__init__(self, "manager", "Manager")
-        
+
         self.path = path
-        
-        self.get_widget("right_side").show()        
+
+        self.get_widget("right_side").show()
         self.get_widget("Manager").set_size_request(695, -1)
         self.get_widget("Manager").set_title(_("Tag Manager"))
         self.get_widget("items_label").set_markup(_("<b>Tags</b>"))
-                
+
         self.vcs = rabbitvcs.vcs.VCS()
         self.git = self.vcs.git(path)
 
         self.revision_obj = self.git.revision(revision)
-        
+
         self.selected_tag = None
         self.items_treeview = rabbitvcs.ui.widget.Table(
             self.get_widget("items_treeview"),
-            [GObject.TYPE_STRING], 
+            [GObject.TYPE_STRING],
             [_("Tag")],
             callbacks={
                 "mouse-event":   self.on_treeview_mouse_event,
@@ -83,7 +83,7 @@ class GitTagManager(InterfaceView):
         )
         self.initialize_detail()
         self.load(self.show_add)
-        
+
 
     def initialize_detail(self):
         self.detail_container = self.get_widget("detail_container")
@@ -191,20 +191,20 @@ class GitTagManager(InterfaceView):
         self.message_container.pack_start(label, False, False, 0)
         self.message_container.pack_start(self.message_label, False, False, 0)
         vbox.pack_start(self.message_container, False, False, 0)
-        
+
         self.add_containers = [self.tag_name_container, self.message_entry_container,
             self.start_point_container, self.save_container]
-            
+
         self.view_containers = [self.tag_name_container, self.tagger_container,
             self.date_container, self.revision_container, self.message_container]
 
-        self.all_containers = [self.tag_name_container,  self.tagger_container, 
-            self.date_container, self.revision_container, self.message_container, 
+        self.all_containers = [self.tag_name_container,  self.tagger_container,
+            self.date_container, self.revision_container, self.message_container,
             self.message_entry_container, self.save_container, self.start_point_container]
 
         vbox.show()
         self.detail_container.add(vbox)
-        
+
     def load(self, callback, *args, **kwargs):
         self.items_treeview.clear()
 
@@ -221,14 +221,14 @@ class GitTagManager(InterfaceView):
 
     def on_delete_clicked(self, widget):
         selected = self.items_treeview.get_selected_row_items(0)
-    
+
         confirm = rabbitvcs.ui.dialog.Confirmation(_("Are you sure you want to delete %s?" % ", ".join(selected)))
         result = confirm.run()
-        
+
         if result == Gtk.ResponseType.OK or result == True:
             for tag in selected:
                 self.git.tag_delete(tag)
-            
+
             self.load(self.show_add)
 
     def on_save_clicked(self, widget):
@@ -268,7 +268,7 @@ class GitTagManager(InterfaceView):
         self.save_button.set_label(_("Add"))
         self.show_containers(self.add_containers)
         self.get_widget("detail_label").set_markup(_("<b>Add Tag</b>"))
-    
+
     def show_detail(self, tag_name):
         self.selected_tag = None
         for item in self.tag_list:
@@ -293,7 +293,7 @@ class GitTagManager(InterfaceView):
             self.path,
             ok_callback=self.on_log_dialog_closed
         )
-    
+
     def on_log_dialog_closed(self, data):
         if data:
             self.start_point_entry.set_text(data)
@@ -304,7 +304,7 @@ if __name__ == "__main__":
         [REVISION_OPT, VCS_OPT],
         usage="Usage: rabbitvcs tag-manager path"
     )
-    
+
     window = GitTagManager(paths[0], options.revision)
     window.register_gtk_quit()
     Gtk.main()

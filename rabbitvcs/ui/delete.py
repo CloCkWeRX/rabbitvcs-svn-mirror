@@ -1,22 +1,22 @@
 from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -40,7 +40,7 @@ _ = gettext.gettext
 class Delete(InterfaceNonView):
     """
     This class provides a handler to Delete functionality.
-    
+
     """
 
     def __init__(self, paths):
@@ -49,7 +49,7 @@ class Delete(InterfaceNonView):
         self.vcs = rabbitvcs.vcs.VCS()
 
     def start(self):
-    
+
         # From the given paths, determine which are versioned and which are not
         versioned = []
         unversioned = []
@@ -58,7 +58,7 @@ class Delete(InterfaceNonView):
                 versioned.append(path)
             elif os.path.exists(path):
                 unversioned.append(path)
-        
+
         # If there are unversioned files, confirm that the user wants to
         # delete those.  Default to true.
         result = True
@@ -78,7 +78,7 @@ class Delete(InterfaceNonView):
                 except Exception as e:
                     log.exception()
                     return
-            
+
             if unversioned:
                 for path in unversioned:
                     rabbitvcs.util.helper.delete_item(path)
@@ -86,7 +86,7 @@ class Delete(InterfaceNonView):
 class SVNDelete(Delete):
     def __init__(self, paths):
         Delete.__init__(self, paths)
-    
+
     def vcs_remove(self, paths, **kwargs):
         if rabbitvcs.vcs.guess(paths[0])["vcs"] == rabbitvcs.vcs.VCS_SVN:
             self.vcs.svn().remove(paths, **kwargs)
@@ -94,7 +94,7 @@ class SVNDelete(Delete):
 class GitDelete(Delete):
     def __init__(self, paths):
         Delete.__init__(self, paths)
-    
+
     def vcs_remove(self, paths, **kwargs):
         if rabbitvcs.vcs.guess(paths[0])["vcs"] == rabbitvcs.vcs.VCS_GIT:
             self.vcs.git(paths[0]).remove(paths)

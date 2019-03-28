@@ -30,15 +30,15 @@ else:
     os.mkdir(DIR)
     g = GittyupClient()
     g.initialize_repository(DIR)
-    
+
     touch(DIR + "/test1.txt")
     touch(DIR + "/test2.txt")
-    
+
     g.stage([DIR+"/test1.txt", DIR+"/test2.txt"])
     g.commit("First commit", commit_all=True)
-    
+
     change(DIR + "/test1.txt")
     g.stage([DIR+"/test1.txt"])
     g.commit("Second commit", author="Alex Plumb <alexplumb@gmail.com>")
-    
+
     print("commit.py pass")

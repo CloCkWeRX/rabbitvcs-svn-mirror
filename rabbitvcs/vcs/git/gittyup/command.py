@@ -20,7 +20,7 @@ def cancel_func():
 class GittyupCommand:
     def __init__(self, command, cwd=None, notify=None, cancel=None):
         self.command = command
-        
+
         self.notify = notify_func
         if notify:
             self.notify = notify
@@ -32,14 +32,14 @@ class GittyupCommand:
         self.cwd = cwd
         if not self.cwd:
             self.cwd = os.getcwd()
-    
+
     def get_lines(self, val):
         returner = []
         lines = val.rstrip("\n").split("\n")
         for line in lines:
             returner.append(line.rstrip("\x1b[K\n"))
-        
-        return returner 
+
+        return returner
 
     def execute(self):
         env = os.environ.copy()

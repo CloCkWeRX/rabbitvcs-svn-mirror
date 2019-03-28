@@ -128,7 +128,7 @@ def run_in_main_thread(func, *args, **kwargs):
     """
     Execute function in main thread's idle loop.
     """
-    
+
     def dofunc(event, func, args, kwargs):
         try:
             event.result = func(*args, **kwargs)
@@ -151,11 +151,11 @@ def get_tmp_path(filename):
     day = datetime.datetime.now().day
     day_string = (str(day) + str(os.geteuid())).encode("utf-8")
     m = hashlib.md5(day_string).hexdigest()[0:10]
-    
+
     tmpdir = "/tmp/rabbitvcs-%s" %m
     if not os.path.isdir(tmpdir):
         os.mkdir(tmpdir)
-    
+
     return "%s/%s" % (tmpdir, filename)
 
 def process_memory(pid):
@@ -170,9 +170,9 @@ def process_memory(pid):
                              stdout=subprocess.PIPE)
 
     (output, stdin) = psproc.communicate()
-    
+
     mem_in_kb = 0
-    
+
     try:
         mem_in_kb = int(output)
     except ValueError:
@@ -202,7 +202,7 @@ def format_datetime(dt, format=None):
 
     now = datetime.datetime.now()
     delta = now - dt
-    
+
     returner = ""
     if dt.year == 1900:
         returner = _("(no date)")
@@ -230,16 +230,16 @@ def in_rich_compare(item, list):
     around the rich-compare bug in pysvn. This is not identical to the "in"
     operator when used for substring testing.
     """
-    
+
     in_list = False
-    
+
     if list is not None:
         for thing in list:
             try:
                 in_list = item == thing
             except AttributeError as e:
                 pass
-    
+
     return in_list
 
 # FIXME: this function is duplicated in settings.py
@@ -248,12 +248,12 @@ def get_home_folder():
     Returns the location of the hidden folder we use in the home dir.
     This is used for storing things like previous commit messages and
     peviously used repositories.
-    
+
     @rtype:     string
     @return:    The location of our main user storage folder.
-    
+
     """
-    
+
     # Make sure we adher to the freedesktop.org XDG Base Directory
     # Specifications. $XDG_CONFIG_HOME if set, by default ~/.config
     xdg_config_home = os.environ.get(
@@ -261,76 +261,76 @@ def get_home_folder():
         os.path.join(os.path.expanduser("~"), ".config")
     )
     config_home = os.path.join(xdg_config_home, "rabbitvcs")
-    
+
     # Make sure the directories are there
     if not os.path.isdir(config_home):
         # FIXME: what if somebody places a file in there?
         os.makedirs(config_home, 0o700)
 
     return config_home
-    
+
 def get_user_path():
     """
     Returns the location of the user's home directory.
     /home/$USER
-    
+
     @rtype:     string
     @return:    The location of the user's home directory.
-    
+
     """
-    
+
     return os.path.abspath(os.path.expanduser("~"))
 
 def get_repository_paths_path():
     """
     Returns a valid URI for the repository paths file
-    
+
     @rtype:     string
     @return:    The location of the repository paths file.
-    
+
     """
     return os.path.join(get_home_folder(), "repos_paths")
 
 def get_repository_paths():
     """
     Gets all previous repository paths stored in the user's home folder
-    
+
     @rtype:     list
     @return:    A list of previously used repository paths.
-    
+
     """
-    
+
     returner = []
     paths_file = get_repository_paths_path()
     if os.path.exists(paths_file):
         returner = [x.strip() for x in open(paths_file, "r").readlines()]
-        
+
     return returner
 
 def get_previous_messages_path():
     """
     Returns a valid URI for the previous messages file
-    
+
     @rtype:     string
     @return:    The location of the previous messages file.
-    
+
     """
-    
+
     return os.path.join(get_home_folder(), "previous_log_messages")
 
 def get_previous_messages():
     """
     Gets all previous messages stored in the user's home folder
-    
+
     @rtype:     list
     @return:    A list of previous used messages.
-    
+
     """
-    
+
     path = get_previous_messages_path()
     if not os.path.exists(path):
         return
-        
+
     lines = open(path, "r").readlines()
 
     cur_entry = ""
@@ -353,7 +353,7 @@ def get_previous_messages():
         returner.append((date, msg.rstrip()))
 
     returner.reverse()
-    
+
     return returner
 
 def get_exclude_paths_path():
@@ -363,13 +363,13 @@ def get_exclude_paths():
     path = get_exclude_paths_path()
     if not os.path.exists(path):
         return []
-        
+
     f = open(path, "r")
     paths = []
     for l in f:
         paths.append(l.strip())
     f.close()
-    
+
     return paths
 
 def encode_revisions(revision_array):
@@ -377,30 +377,30 @@ def encode_revisions(revision_array):
     Takes a list of integer revision numbers and converts to a TortoiseSVN-like
     format. This means we have to determine what numbers are consecutives and
     collapse them into a single element (see doctest below for an example).
-    
+
     @type revision_array:   list of integers
     @param revision_array:  A list of revision numbers.
-    
+
     @rtype:                 string
     @return                 A string of revision numbers in TortoiseSVN-like format.
-    
+
     >>> encode_revisions([4,5,7,9,10,11,12])
     '4-5,7,9-12'
-    
+
     >>> encode_revisions([])
     ''
-    
+
     >>> encode_revisions([1])
     '1'
     """
-    
+
     # Let's get a couple of cases out of the way
     if len(revision_array) == 0:
         return ""
-        
+
     if len(revision_array) == 1:
         return str(revision_array[0])
-    
+
     # Instead of repeating a set of statements we'll just define them as an
     # inner function.
     def append(start, last, list):
@@ -408,38 +408,38 @@ def encode_revisions(revision_array):
             result = "%s" % start
         else:
             result = "%s-%s" % (start, last)
-            
+
         list.append(result)
-    
+
     # We need a couple of variables outside of the loop
     start = revision_array[0]
     last = revision_array[0]
     current_position = 0
     returner = []
-    
+
     while True:
         if current_position + 1 >= len(revision_array):
             append(start, last, returner)
             break;
-        
+
         current = revision_array[current_position]
         next = revision_array[current_position + 1]
-        
+
         if not current + 1 == next:
             append(start, last, returner)
             start = next
             last = next
-        
+
         last = next
         current_position += 1
-        
+
     return ",".join(returner)
 
 def decode_revisions(string, head):
     """
     Takes a TortoiseSVN-like revision string and returns a list of integers.
     EX. 4-5,7,9-12 -> [4,5,7,9,10,11,12]
-    
+
     TODO: This function is a first draft.  It may not be production-worthy.
     """
     returner = []
@@ -453,21 +453,21 @@ def decode_revisions(string, head):
                 returner.append(subel)
         else:
             returner.append(int(el))
-            
+
     return returner
 
 def get_diff_tool():
     """
     Gets the path to the diff_tool, and whether or not to swap lhs/rhs.
-    
+
     @rtype:     dictionary
     @return:    A dictionary with the diff tool path and swap boolean value.
     """
-    
+
     sm = rabbitvcs.util.settings.SettingsManager()
     diff_tool = sm.get("external", "diff_tool")
     diff_tool_swap = sm.get("external", "diff_tool_swap")
-    
+
     return {
         "path": diff_tool,
         "swap": diff_tool_swap
@@ -483,27 +483,27 @@ def get_merge_tool():
 
     sm = rabbitvcs.util.settings.SettingsManager()
     return  sm.get("external", "merge_tool")
-    
+
 def launch_diff_tool(path1, path2=None):
     """
     Launches the diff tool of choice.
-    
+
       1.  Generate a standard diff between the path and the latest revision.
       2.  Write the diff text to a tmp file
       3.  Copy the given file (path) to the tmp directory
       4.  Do a reverse patch to get a version of the file that is in the repo.
       5.  Now you have two files and you can send them to the diff tool.
-    
+
     @type   paths: list
     @param  paths: Paths to the given files
 
     """
-    
+
     diff = get_diff_tool()
-    
+
     if diff["path"] == "":
         return
-    
+
     if not os.path.exists(diff["path"]):
         return
 
@@ -512,10 +512,10 @@ def launch_diff_tool(path1, path2=None):
         (lhs, rhs) = (path1, path2)
     else:
         patch = os.popen("svn diff --diff-cmd 'diff' '%s'" % path1).read()
-        
+
         tmp_file = get_tmp_path("tmp.patch")
         open(tmp_file, "w").write(patch)
-        
+
         tmp_path = get_tmp_path(os.path.split(path1)[-1])
         if os.path.isfile(path1):
             shutil.copy(path1, tmp_path)
@@ -528,10 +528,10 @@ def launch_diff_tool(path1, path2=None):
             "patch --reverse '%s' < %s" % (tmp_path, tmp_file)
         )
         (lhs, rhs) = (tmp_path, path1)
-        
+
     if diff["swap"]:
         (lhs, rhs) = (rhs, lhs)
-    
+
     os.spawnl(
         os.P_NOWAIT,
         diff["path"],
@@ -539,14 +539,14 @@ def launch_diff_tool(path1, path2=None):
         lhs,
         rhs
     )
-    
+
 def launch_merge_tool(base="", mine="", theirs="", merged=""):
     merge_tool = get_merge_tool()
-    
+
     if(mine == None or mine == "" or not os.path.exists(mine) or
        theirs == None or theirs == "" or not os.path.exists(theirs)):
         return
-    
+
     if "%base" in merge_tool:
         merge_tool = merge_tool.replace("%base", base)
 
@@ -561,29 +561,29 @@ def launch_merge_tool(base="", mine="", theirs="", merged=""):
 
     log.debug("merge_tool: %s"%merge_tool)
     os.popen(merge_tool)
-    
+
 def get_file_extension(path):
     """
     Wrapper that retrieves a file path's extension.
-    
+
     @type   path:   string
     @param  path:   A filename or path.
-    
+
     @rtype:         string
     @return:        A file extension.
-    
+
     """
     return os.path.splitext(path)[1]
-    
+
 def open_item(path):
     """
     Use GNOME default opener to handle file opening.
-    
+
     @type   path: string
     @param  path: A file path.
-    
+
     """
-    
+
     if path == "" or path is None:
         return
 
@@ -605,17 +605,17 @@ def open_item(path):
                 if o == "gio":
                     command.append("open")
                 command.append(os.path.abspath(path))
-                
+
                 subprocess.Popen(command)
                 return
-    
+
 def browse_to_item(path):
     """
     Browse to the specified path in the file manager
-    
+
     @type   path: string
     @param  path: A file path.
-    
+
     """
 
     import platform
@@ -628,19 +628,19 @@ def browse_to_item(path):
             "nautilus", "--no-desktop", "--browser",
             os.path.dirname(os.path.abspath(path))
         ])
-    
+
 def delete_item(path):
     """
     Send an item to the trash.
-    
+
     @type   path: string
     @param  path: A file path.
     """
-    
+
     abspath = os.path.abspath(path)
     permanent_delete = False
     try:
-        
+
         import platform
         if platform.system() == 'Darwin':
             retcode = subprocess.call(["mv", abspath, os.getenv("HOME") + "/.Trash"])
@@ -654,22 +654,22 @@ def delete_item(path):
                 permanent_delete = True
     except OSError:
         permanent_delete = True
-    
+
     if permanent_delete:
         if os.path.isdir(abspath):
             shutil.rmtree(abspath, True)
         else:
             os.remove(abspath)
-    
+
 def save_log_message(message):
     """
     Saves a log message to the user's home folder for later usage
-    
+
     @type   message: string
     @param  message: A log message.
-    
+
     """
-    
+
     messages = []
     path = get_previous_messages_path()
     if os.path.exists(path):
@@ -682,16 +682,16 @@ def save_log_message(message):
         for i, m in enumerate(messages):
             if message != m[1]:
                 tmp.append(m)
-        
+
         messages = tmp
-             
+
         # Don't allow the number of messages to pile up past the limit
         while len(messages) > limit:
             messages.pop()
 
     t = time.strftime(DATETIME_FORMAT)
     messages.insert(0, (t, message))
-    
+
     f = open(get_previous_messages_path(), "w")
     s = ""
     for m in messages:
@@ -709,50 +709,50 @@ def save_repository_path(path):
     Saves a repository path to the user's home folder for later usage
     If the given path has already been saved, remove the old one from the list
     and append the new one to the end.
-    
+
     @type   path: string
     @param  path: A repository path.
-    
+
     """
-    
+
     paths = get_repository_paths()
     if path in paths:
         paths.pop(paths.index(path))
     paths.insert(0, path)
-    
+
     limit = get_repository_paths_limit()
     while len(paths) > limit:
         paths.pop()
-    
+
     f = open(get_repository_paths_path(), "w")
     f.write(to_text("\n".join(paths).encode("utf-8")))
     f.close()
-    
+
 def launch_ui_window(filename, args=[], block=False):
     """
     Launches a UI window in a new process, so that we don't have to worry about
     nautilus and threading.
-    
+
     @type   filename:   string
     @param  filename:   The filename of the window, without the extension
-    
+
     @type   args:       list
     @param  args:       A list of arguments to be passed to the window.
-    
+
     @rtype:             integer
     @return:            The pid of the process (if launched)
     """
-    
+
     # Hackish.  Get's the helper module's path, then assumes it is in
     # the lib folder.  Removes the /lib part of the path.
     basedir, head = os.path.split(
                         os.path.dirname(
                             os.path.realpath(__file__)))
-    
+
     env = os.environ
     if "REQUIRE_GTK3" in env:
         del env["REQUIRE_GTK3"]
-    
+
     if not head == "util":
         log.warning("Helper module (%s) not in \"util\" dir" % __file__)
 
@@ -785,13 +785,13 @@ def get_repository_paths_limit():
 
 def get_common_directory(paths):
     common = os.path.commonprefix(abspaths(paths))
-    
+
     while not os.path.exists(common) or os.path.isfile(common):
         common = os.path.split(common)[0]
-        
+
         if common == "":
             break
-        
+
     return common
 
 def abspaths(paths):
@@ -799,25 +799,25 @@ def abspaths(paths):
     for path in paths:
         paths[index] = os.path.realpath(os.path.abspath(path))
         index += 1
-    
+
     return paths
 
 def pretty_timedelta(time1, time2, resolution=None):
     """
     Calculate time delta between two C{datetime} objects.
     (the result is somewhat imprecise, only use for prettyprinting).
-    
+
     Was originally based on the function pretty_timedelta from:
-	http://trac.edgewall.org/browser/trunk/trac/util/datefmt.py
+        http://trac.edgewall.org/browser/trunk/trac/util/datefmt.py
     """
-    
+
     if time1 > time2:
         time2, time1 = time1, time2
     diff = time2 - time1
     age_s = int(diff.days * 86400 + diff.seconds)
     if resolution and age_s < resolution:
         return ""
-    
+
     # I do not see a way to make this less repetitive - to make the
     # strings fully translatable (i.e. also for languages that have more
     # or less than two plural forms) we have to state all the strings
@@ -851,28 +851,28 @@ def _commonpath(l1, l2, common=[]):
     if len(l2) < 1: return (common, l1, l2)
     if l1[0] != l2[0]: return (common, l1, l2)
     return _commonpath(l1[1:], l2[1:], common+[l1[0]])
-    
+
 def get_relative_path(from_path, to_path):
     """
     Method that returns the relative path between the specified paths
     """
-    
+
     nice_path1 = from_path.rstrip(os.path.sep).split(os.path.sep)
     nice_path2 = to_path.rstrip(os.path.sep).split(os.path.sep)
-    
+
     (common,l1,l2) = _commonpath(nice_path1, nice_path2)
-    
+
     p = []
     if len(l1) > 0:
         p = ['..'] * len(l1)
     p = p + l2
-    
+
     return os.sep.join(p)
 
 def launch_repo_browser(uri):
     sm = rabbitvcs.util.settings.SettingsManager()
     repo_browser = sm.get("external", "repo_browser")
-    
+
     if repo_browser is not None:
         subprocess.Popen([
             repo_browser,
@@ -895,7 +895,7 @@ def create_path_revision_string(path, revision=None):
         return path + "@" + str(revision)
     else:
         return path
-        
+
 def url_join(path, *args):
     return "/".join([path.rstrip("/")] + list(args))
 
@@ -906,7 +906,7 @@ def quote_url(url_text):
     params_quoted = quote(query)
     query_quoted = quote_plus(query)
     fragment_quoted = quote(fragment)
-    
+
     url_quoted = urlunparse(
                             (scheme,
                              netloc,
@@ -924,7 +924,7 @@ def unquote_url(url_text):
     params_unquoted = unquote(query)
     query_unquoted = unquote_plus(query)
     fragment_unquoted = unquote(fragment)
-    
+
     url_unquoted = urlunparse(
                             (scheme,
                              netloc,
@@ -960,7 +960,7 @@ def walk_tree_depth_first(tree, show_levels=False,
     """
     A non-recursive generator function that walks through a tree (and all
     children) yielding results.
-    
+
     The tree should be of the form:
       [(NodeOne, None),
        (NodeTwo,
@@ -971,31 +971,31 @@ def walk_tree_depth_first(tree, show_levels=False,
          ]
        (NodeThree, None),
         etc...]
-    
+
     If show_levels is True, the values returned are (level, value) where level
     is zero for the top level items in the tree. Otherwise, just "value" is
     returned.
-    
+
     If a callable "preprocess" is supplied, it is applied BEFORE the filter,
     as each element is encountered.
-    
+
     If a callable "filter" is supplied, it is applied to whatever "preprocess"
     returned, and if it returns False for an item, the item and its children
     will be skipped.
-    
+
     If "start" is given, the walk will be applied only to that node and its
     children. No preprocessing or filtering will be applied to other elements.
     """
     annotated_tree = [(0, element) for element in tree]
-    
+
     to_process = deque(annotated_tree)
-    
+
     # If we're not given a starting point, the top is the start
     found_starting_point = not start
-    
+
     while to_process:
         (level, (node, children)) = to_process.popleft()
-        
+
         if not found_starting_point and (node == start):
             # If we're given a starting point and we've found it, clear the list
             # and start from here
@@ -1010,10 +1010,10 @@ def walk_tree_depth_first(tree, show_levels=False,
                 value = preprocess(node)
             else:
                 value = node
-            
+
             if filter and not filter(value):
                 continue
-            
+
             if show_levels:
                 yield (level, value)
             else:
@@ -1028,7 +1028,7 @@ def urlize(path):
     if path.startswith("/"):
         return "file://%s" % path
     return path
-    
+
 def parse_patch_output(patch_file, base_dir, strip=0):
     """ Runs the GNU 'patch' utility, parsing the output. This is actually a
     generator which yields values as each section of the patch is applied.

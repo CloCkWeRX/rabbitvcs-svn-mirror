@@ -1,22 +1,22 @@
 from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -52,7 +52,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
     """
     Provides a user interface for the user to commit working copy
     changes to a repository.  Pass it a list of local paths to commit.
-    
+
     """
     SETTINGS = rabbitvcs.util.settings.SettingsManager()
 
@@ -65,10 +65,10 @@ class Commit(InterfaceView, GtkContextMenuCaller):
 
     def __init__(self, paths, base_dir=None, message=None):
         """
-        
+
         @type  paths:   list of strings
         @param paths:   A list of local paths.
-        
+
         """
         InterfaceView.__init__(self, "commit", "Commit")
 
@@ -79,10 +79,10 @@ class Commit(InterfaceView, GtkContextMenuCaller):
 
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
-            [GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH, 
+            [GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH,
                 GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_STATUS,
-                GObject.TYPE_STRING], 
-            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"), 
+                GObject.TYPE_STRING],
+            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension"),
                 _("Text Status"), _("Property Status")],
             filters=[{
                 "callback": rabbitvcs.ui.widget.path_filter,
@@ -98,7 +98,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
                 "row-toggled":   self.on_files_table_toggle_event
             },
             flags={
-                "sortable": True, 
+                "sortable": True,
                 "sort_on": 1
             }
         )
@@ -118,14 +118,14 @@ class Commit(InterfaceView, GtkContextMenuCaller):
 
     #
     # Helper functions
-    # 
+    #
 
     def load(self):
         """
           - Gets a listing of file items that are valid for the commit window.
           - Determines which items should be "activated" by default
           - Populates the files table with the retrieved items
-          - Updates the status area        
+          - Updates the status area
         """
 
         self.get_widget("status").set_text(_("Loading..."))
@@ -152,18 +152,18 @@ class Commit(InterfaceView, GtkContextMenuCaller):
 
     def should_item_be_visible(self, item):
         show_unversioned = self.SHOW_UNVERSIONED
-        
+
         if not show_unversioned:
             if not item.is_versioned():
                return False
-       
+
         return True
 
     def initialize_items(self):
         """
         Initializes the activated cache and loads the file items in a new thread
         """
-        
+
         GLib.idle_add(self.load)
 
     def show_files_table_popup_menu(self, treeview, data):
@@ -175,33 +175,33 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         if len(paths) > 0:
             proc = helper.launch_ui_window("delete", paths)
             self.rescan_after_process_exit(proc, paths)
-            
+
     #
     # Event handlers
     #
     def on_refresh_clicked(self, widget):
-        self.initialize_items()        
+        self.initialize_items()
 
     def on_key_pressed(self, widget, data):
         if InterfaceView.on_key_pressed(self, widget, data):
             return True
 
-        if (data.state & (Gdk.ModifierType.CONTROL_MASK) and 
+        if (data.state & (Gdk.ModifierType.CONTROL_MASK) and
                 Gdk.keyval_name(data.keyval) == "Return"):
             self.on_ok_clicked(widget)
             return True
-            
+
     def on_toggle_show_all_toggled(self, widget, data=None):
         self.TOGGLE_ALL = not self.TOGGLE_ALL
         self.changes.clear()
         for row in self.files_table.get_items():
             row[0] = self.TOGGLE_ALL
             self.changes[row[1]] = self.TOGGLE_ALL
-            
+
     def on_toggle_show_unversioned_toggled(self, widget, data=None):
         if self.isInitDone:
             self.SHOW_UNVERSIONED = not self.SHOW_UNVERSIONED
-            
+
         self.populate_files_table()
 
         # Save this preference for future commits.
@@ -237,9 +237,9 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         """
         First clears and then populates the files table based on the items
         retrieved in self.load()
-        
+
         """
-        
+
         self.files_table.clear()
         n = 0
         for item in self.items:
@@ -254,7 +254,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             n += 1
             self.files_table.append([
                 checked,
-                item.path, 
+                item.path,
                 helper.get_file_extension(item.path),
                 item.simple_content_status(),
                 item.simple_metadata_status()
@@ -309,7 +309,7 @@ class SVNCommit(Commit):
         self.action.append(self.action.set_header, _("Commit"))
         self.action.append(self.action.set_status, _("Running Commit Command..."))
         self.action.append(
-            helper.save_log_message, 
+            helper.save_log_message,
             self.message.get_text()
         ),
         self.action.append(self.do_commit, items, recurse)
@@ -319,7 +319,7 @@ class SVNCommit(Commit):
     def do_commit(self, items, recurse):
         # pysvn.Revision
         revision = self.vcs.svn().commit(items, self.message.get_text(), recurse=recurse)
-        
+
         self.action.set_status(_("Completed Commit") + " at Revision: " + str(revision.number))
 
     def on_files_table_toggle_event(self, row, col):
@@ -333,7 +333,7 @@ class GitCommit(Commit):
         self.git = self.vcs.git(paths[0])
 
         self.get_widget("commit_to_box").show()
-        
+
         active_branch = self.git.get_active_branch()
         if active_branch:
             self.get_widget("to").set_text(
@@ -381,19 +381,19 @@ class GitCommit(Commit):
             self.message.get_text()
         )
         self.action.append(
-            self.git.commit, 
+            self.git.commit,
             self.message.get_text()
         )
         self.action.append(self.action.set_status, _("Completed Commit"))
         self.action.append(self.action.finish)
-        self.action.schedule() 
+        self.action.schedule()
 
     def on_files_table_toggle_event(self, row, col):
         # Adds path: True/False to the dict
         self.changes[row[1]] = row[col]
 
 classes_map = {
-    rabbitvcs.vcs.VCS_SVN: SVNCommit, 
+    rabbitvcs.vcs.VCS_SVN: SVNCommit,
     rabbitvcs.vcs.VCS_GIT: GitCommit
 }
 

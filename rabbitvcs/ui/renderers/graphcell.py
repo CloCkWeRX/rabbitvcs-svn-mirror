@@ -66,7 +66,7 @@ class CellRendererGraph(Gtk.CellRenderer):
         Cache this as it's probably expensive to get.  It ensures that we
         draw the graph at least as large as the text.
         """
-        
+
         return 20
 
     def set_colour(self, ctx, colour, bg, fg):
@@ -127,18 +127,18 @@ class CellRendererGraph(Gtk.CellRenderer):
 
         ctx.rectangle(bg_area.x, bg_area.y, bg_area.width, bg_area.height)
         ctx.clip()
-        
+
         box_size = self.box_size(widget)
 
         # Maybe draw branch head highlight under revision node
         if self.node:
             (column, colour) = self.node
-            arc_start_position_x = cell_area.x + box_size * column + box_size / 2; 
+            arc_start_position_x = cell_area.x + box_size * column + box_size / 2;
             arc_start_position_y = cell_area.y + cell_area.height / 2;
 
         ctx.set_line_width(box_size / 8)
         ctx.set_line_cap(cairo.LINE_CAP_ROUND)
-        
+
         # Draw lines into the cell
         if self.in_lines:
             for start, end, lcolour in self.in_lines:

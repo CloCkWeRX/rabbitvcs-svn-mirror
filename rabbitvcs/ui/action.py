@@ -309,12 +309,12 @@ class VCSAction(threading.Thread):
     def set_progress_fraction(self, fraction):
         """
         An alternative method to access the progress bar directly.
-        
+
         @type   percentage: int
         @param  percentage: The percentage value to set the progress bar.
 
         """
-        
+
         if self.has_notifier:
             self.notification.pbar.update(fraction)
 
@@ -658,7 +658,7 @@ class SVNAction(VCSAction):
 
             if (is_known_action
                     and is_complete_action
-                    and "revision" in data 
+                    and "revision" in data
                     and data["revision"]):
                 self.notification.append(
                     ["", "Revision %s" % data["revision"].number, ""]

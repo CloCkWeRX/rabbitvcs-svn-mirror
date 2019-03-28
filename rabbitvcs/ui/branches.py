@@ -1,22 +1,22 @@
 from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -49,16 +49,16 @@ STATE_EDIT = 1
 class GitBranchManager(InterfaceView):
     """
     Provides a UI interface to manage items
-    
+
     """
-    
+
     state = STATE_ADD
-    
+
     def __init__(self, path, revision=""):
         InterfaceView.__init__(self, "manager", "Manager")
 
         self.path = path
-        
+
         self.get_widget("right_side").show()
         self.get_widget("Manager").set_size_request(695, -1)
         self.get_widget("Manager").set_title(_("Branch Manager"))
@@ -67,11 +67,11 @@ class GitBranchManager(InterfaceView):
         self.vcs = rabbitvcs.vcs.VCS()
         self.git = self.vcs.git(path)
         self.revision = self.git.revision(revision)
-        
+
         self.selected_branch = None
         self.items_treeview = rabbitvcs.ui.widget.Table(
             self.get_widget("items_treeview"),
-            [rabbitvcs.ui.widget.TYPE_MARKUP], 
+            [rabbitvcs.ui.widget.TYPE_MARKUP],
             [_("Branch")],
             callbacks={
                 "mouse-event":   self.on_treeview_mouse_event,
@@ -80,7 +80,7 @@ class GitBranchManager(InterfaceView):
         )
         self.initialize_detail()
         self.load()
-        
+
         if self.revision:
             revision_branches = self.git.branch_list(self.revision)
             if revision_branches:
@@ -89,7 +89,7 @@ class GitBranchManager(InterfaceView):
                 self.show_add()
         else:
             self.show_add()
-        
+
     def initialize_detail(self):
         self.detail_container = self.get_widget("detail_container")
 
@@ -139,7 +139,7 @@ class GitBranchManager(InterfaceView):
         self.checkout_container.pack_start(label, False, False, 0)
         self.checkout_container.pack_start(self.checkout_checkbox, False, False, 0)
         vbox.pack_start(self.checkout_container, False, False, 0)
-        
+
         # Set up Save button
         label = Gtk.Label(label = "")
         label.set_size_request(90, -1)
@@ -174,21 +174,21 @@ class GitBranchManager(InterfaceView):
         self.message_container.pack_start(label, False, False, 0)
         self.message_container.pack_start(self.message_label, False, False, 0)
         vbox.pack_start(self.message_container, False, False, 0)
-        
-        self.add_containers = [self.branch_name_container, self.track_container, 
+
+        self.add_containers = [self.branch_name_container, self.track_container,
             self.save_container, self.start_point_container,
             self.checkout_container]
-            
-        self.view_containers = [self.branch_name_container, self.revision_container, 
+
+        self.view_containers = [self.branch_name_container, self.revision_container,
             self.message_container, self.save_container,  self.checkout_container]
 
         self.all_containers = [self.branch_name_container, self.track_container,
-            self.revision_container, self.message_container, self.save_container, 
+            self.revision_container, self.message_container, self.save_container,
             self.start_point_container, self.checkout_container]
 
         vbox.show()
         self.detail_container.add(vbox)
-        
+
     def load(self):
         self.items_treeview.clear()
 
@@ -196,8 +196,8 @@ class GitBranchManager(InterfaceView):
         for item in self.branch_list:
             name = saxutils.escape(item.name)
             if item.tracking:
-                name = "<b>%s</b>" % name            
-            self.items_treeview.append([name])            
+                name = "<b>%s</b>" % name
+            self.items_treeview.append([name])
 
     def on_add_clicked(self, widget):
         self.show_add()
@@ -208,14 +208,14 @@ class GitBranchManager(InterfaceView):
         selected = []
         for branch in items:
             selected.append(saxutils.unescape(branch).replace("<b>", "").replace("</b>", ""))
-    
+
         confirm = rabbitvcs.ui.dialog.Confirmation(_("Are you sure you want to delete %s?" % ", ".join(selected)))
         result = confirm.run()
-       
+
         if result == Gtk.ResponseType.OK or result == True:
             for branch in selected:
                 self.git.branch_delete(branch)
-            
+
             self.load()
             self.show_add()
 
@@ -229,10 +229,10 @@ class GitBranchManager(InterfaceView):
         elif self.state == STATE_EDIT:
             branch_name = self.branch_entry.get_text()
             branch_track = self.track_checkbox.get_active()
-            
+
             if self.selected_branch.name != branch_name:
                 self.git.branch_rename(self.selected_branch.name, branch_name)
-    
+
         if self.checkout_checkbox.get_active():
             self.git.checkout([], self.git.revision(branch_name))
 
@@ -253,7 +253,7 @@ class GitBranchManager(InterfaceView):
                 branch_name = selected[0]
                 if branch_name.startswith("<b>"):
                     branch_name = branch_name[3:-4]
-            
+
                 self.show_edit(branch_name)
             self.get_widget("delete").set_sensitive(True)
         else:
@@ -267,7 +267,7 @@ class GitBranchManager(InterfaceView):
 
     def show_add(self):
         self.state = STATE_ADD
-        
+
         revision = "HEAD"
         if self.revision:
             active_branch = self.git.get_active_branch()
@@ -283,7 +283,7 @@ class GitBranchManager(InterfaceView):
         self.checkout_checkbox.set_active(False)
         self.show_containers(self.add_containers)
         self.get_widget("detail_label").set_markup(_("<b>Add Branch</b>"))
-    
+
     def show_edit(self, branch_name):
         self.state = STATE_EDIT
         branch_name = saxutils.unescape(branch_name)
@@ -314,7 +314,7 @@ class GitBranchManager(InterfaceView):
             self.path,
             ok_callback=self.on_log_dialog_closed
         )
-    
+
     def on_log_dialog_closed(self, data):
         if data:
             self.start_point_entry.set_text(data)
@@ -322,10 +322,10 @@ class GitBranchManager(InterfaceView):
 if __name__ == "__main__":
     from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT
     (options, paths) = main(
-        [REVISION_OPT, VCS_OPT], 
+        [REVISION_OPT, VCS_OPT],
         usage="Usage: rabbitvcs branch-manager path [-r revision]"
     )
-    
+
     window = GitBranchManager(paths[0], revision=options.revision)
     window.register_gtk_quit()
     Gtk.main()

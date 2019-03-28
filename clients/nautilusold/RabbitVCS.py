@@ -1,21 +1,21 @@
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2008 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -48,11 +48,11 @@ import sys
 # to strip the 'c' from the extension to find the actual file.
 sys.path.append(os.path.dirname(os.path.realpath(__file__.rstrip("c"))))
 
-# FIXME: this (and other) should be moved into a rabbitvcs module to prevent 
+# FIXME: this (and other) should be moved into a rabbitvcs module to prevent
 # collisions with other modules on the path.
 import rabbitvcs.util.helper
 
-#============================================================================== 
+#==============================================================================
 
 ENABLE_ATTRIBUTES = True
 RECURSIVE_STATUS = True
@@ -61,7 +61,7 @@ ENABLE_EMBLEMS = True
 class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnProvider):
     """ This is the main class that implements all of our awesome features.
     """
-    
+
     #: Maps statuses to emblems.
     #: TODO: should probably be possible to create this dynamically
     EMBLEMS = {
@@ -74,7 +74,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         pysvn.wc_status_kind.obstructed:   "rabbitvcs-obstructed"
     }
 
-    #-------------------------------------------------------------------------- 
+    #--------------------------------------------------------------------------
     def __init__(self):
         """ Constructor - initialise our required storage
         """
@@ -99,7 +99,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         else:
             return False
 
-    #-------------------------------------------------------------------------- 
+    #--------------------------------------------------------------------------
     def get_columns(self):
         """ This is the function called by Nautilus to find out what extra
             columns we can supply to it.
@@ -115,7 +115,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
 
                 )
 
-    #-------------------------------------------------------------------------- 
+    #--------------------------------------------------------------------------
     def update_file_info (self, file):
         """ Callback from Nautilus to get the file status.
         """
@@ -195,8 +195,8 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                     file.add_emblem(self.EMBLEMS[st.text_status])
 
                 # Keep a note of this file object in case we have commits etc.
-                t = [ pysvn.wc_status_kind.modified, 
-                      pysvn.wc_status_kind.added, 
+                t = [ pysvn.wc_status_kind.modified,
+                      pysvn.wc_status_kind.added,
                       pysvn.wc_status_kind.deleted]
                 if st.text_status in t:
                     if file not in self.monitoredFiles:
@@ -207,7 +207,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                     except:
                         pass
 
-    #-------------------------------------------------------------------------- 
+    #--------------------------------------------------------------------------
     def get_file_items(self, window, files):
         """ Menu activated with files selected
         """
@@ -223,7 +223,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         path = gnomevfs.get_local_path_from_uri(file.get_uri())
 
         items = [ ('NautilusPython::svndelete_file_item', 'Delete' , 'Remove files from the repository.', self.OnDelete, "rabbitvcs-delete"),
-		          ('NautilusPython::svnrename_file_item', 'Rename' , 'Rename a file in the repository', self.OnRename, "rabbitvcs-rename"),
+                  ('NautilusPython::svnrename_file_item', 'Rename' , 'Rename a file in the repository', self.OnRename, "rabbitvcs-rename"),
                   ('NautilusPython::svnrefreshstatus_file_item', 'Refresh Status', 'Refresh the display status of the selected files.', self.OnRefreshStatus, "rabbitvcs-refresh"),
                   ('NautilusPython::svnrepo_file_item', 'Repository Browser' , 'View Repository Sources', self.OnRepoBrowser, gtk.STOCK_FIND)
         ]
@@ -246,7 +246,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                             pysvn.wc_status_kind.deleted])
                 if len( t & statuses ):
                     # If so, add some useful menu items
-                    items += [    ('NautilusPython::svnmkdiff_file_item', 'Patch', 'Create a patch of %s from the repository version'%file.get_name(), self.OnMkDiff, "rabbitvcs-diff"), 
+                    items += [    ('NautilusPython::svnmkdiff_file_item', 'Patch', 'Create a patch of %s from the repository version'%file.get_name(), self.OnMkDiff, "rabbitvcs-diff"),
                                 ('NautilusPython::svnrevert_file_item', 'Revert' , 'Revert %s back to the repository version.'%file.get_name(), self.OnRevert, "rabbitvcs-revert")]
 
                 items += [
@@ -259,7 +259,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                 if os.path.isdir(os.path.join(os.path.split(path)[0], ".svn")):
                     items = [('NautilusPython::svnadd_file_item', 'Add' , 'Add %s to the repository.'%file.get_name(), self.OnAdd, "rabbitvcs-add")]
                 else:
-		            items = [('NautilusPython::svncheckout_file_item', 'Checkout' , 'Checkout code from an SVN repository', self.OnCheckout, "rabbitvcs-checkout")]
+                    items = [('NautilusPython::svncheckout_file_item', 'Checkout' , 'Checkout code from an SVN repository', self.OnCheckout, "rabbitvcs-checkout")]
 
         else:
             # We're a file, so lets check if we're in a versioned folder
@@ -278,8 +278,8 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                     if len(files) == 1:
                         items += [    ('NautilusPython::svncommit_file_item', 'Commit' , 'Commit %s to the repository.' % file.get_name(), self.OnCommit, "rabbitvcs-commit"),
                                     ('NautilusPython::svndiff_file_item', 'Diff' , 'Diff %s against the repository version' % file.get_name(), self.OnShowDiff, "rabbitvcs-diff"),
-                                    ('NautilusPython::svnmkdiff_file_item', 'Patch', 'Create a patch of %s from the repository version'%file.get_name(), self.OnMkDiff, "rabbitvcs-createpatch"), 
-	            ]
+                                    ('NautilusPython::svnmkdiff_file_item', 'Patch', 'Create a patch of %s from the repository version'%file.get_name(), self.OnMkDiff, "rabbitvcs-createpatch"),
+                        ]
 
                 # Add the conflict resolution menu items
                 if st.text_status in [pysvn.wc_status_kind.conflicted]:
@@ -298,7 +298,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
 
         return self.create_menu(window, items, files)
 
-    #-------------------------------------------------------------------------- 
+    #--------------------------------------------------------------------------
     def get_background_items(self, window, file):
         """ Menu activated on window background
         """
@@ -329,7 +329,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """
         While I can add submenu items in nautilus-python 0.5.0, I can't get
         the submenu item activate signal to connect to a callback method
-        
+
         menuitem = nautilus.MenuItem('NautilusPython::Svn', 'RabbitVCS', '', "rabbitvcs")
         if hasattr(menuitem, "set_submenu"):
             submenu = nautilus.Menu()
@@ -340,8 +340,8 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                 submenu.append_item( i )
 
             return menuitem,
-		"""
-		
+        """
+
         menuitems = []
         for item in items:
             i = nautilus.MenuItem( item[0], item[1], item[2], item[4] )
@@ -349,7 +349,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
             menuitems.append(i)
 
         return menuitems
-            
+
     #--------------------------------------------------------------------------
     def RescanFilesAfterProcess(self, pid):
         """ Rescans all of the files on our *monitoredFiles* list after the
@@ -368,7 +368,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
                 # Return true to get another callback after the next timeout
                 return True
             else:
-                # The process has completed, so we now want to rescan the 
+                # The process has completed, so we now want to rescan the
                 # files we're monitoring to see if their status has changed. We
                 # need to make a copy of monitoredFiles as the rescanning process
                 # will affect it.
@@ -386,12 +386,12 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
     def OnEditConflicts(self, menuitem, window, files):
         """ Edit Conflicts menu handler.
         """
-        file = files[0]    
+        file = files[0]
 
         path = gnomevfs.get_local_path_from_uri(file.get_uri())
         rabbitvcs.util.helper.launch_diff_tool(path + ".mine", path)
 
-    #-------------------------------------------------------------------------- 
+    #--------------------------------------------------------------------------
     def OnResolveConflicts(self, menuitem, window, files):
         """ Resolve Conflicts menu handler.
         """
@@ -427,12 +427,12 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
     def OnShowLog(self, menuitem, window, files):
         """ Show Log menu handler.
         """
-        
+
         paths = self.get_paths_from_files(files)
         pid = rabbitvcs.util.helper.launch_ui_window("log", paths)
         self.RescanFilesAfterProcess(pid)
 
-    #-------------------------------------------------------------------------- 
+    #--------------------------------------------------------------------------
     def OnCommit(self, menuitem, window, files):
         """ Commit menu handler.
         """
@@ -456,7 +456,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         pid = rabbitvcs.util.helper.launch_ui_window("add", paths)
         self.RescanFilesAfterProcess(pid)
 
-    #-------------------------------------------------------------------------- 
+    #--------------------------------------------------------------------------
     def OnDelete(self, menuitem, window, files):
         """ Delete menu handler.
         """
@@ -465,7 +465,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         pid = rabbitvcs.util.helper.launch_ui_window("delete", paths)
         self.RescanFilesAfterProcess(pid)
 
-    #-------------------------------------------------------------------------- 
+    #--------------------------------------------------------------------------
     def OnRename(self, menuitem, window, files):
         """ Delete menu handler.
         """
@@ -474,7 +474,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         pid = rabbitvcs.util.helper.launch_ui_window("rename", paths)
         self.RescanFilesAfterProcess(pid)
 
-    #-------------------------------------------------------------------------- 
+    #--------------------------------------------------------------------------
     def OnRepoBrowser(self, menuitem, window, files):
         """ Repository Browser menu handler.
         """
@@ -482,7 +482,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         paths = self.get_paths_from_files(files)
         pid = rabbitvcs.util.helper.launch_ui_window("browser", [paths[0]])
         self.RescanFilesAfterProcess(pid)
-        
+
     #--------------------------------------------------------------------------
     def OnRefreshStatus(self, menuitem, window, files):
         """ Refresh status menu handler. Invalidates the status of all of the selected files.
@@ -504,7 +504,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         """ MkDiff menu handler.
         """
 
-        paths = self.get_paths_from_files(files)	    
+        paths = self.get_paths_from_files(files)
         proc = launch_ui_window("createpatch", paths)
         self.rabbitvcs_extension.execute_after_process_exit(proc)
 
@@ -521,7 +521,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider, nautilus.ColumnPro
         paths = []
         for file in files:
             paths.append(gnomevfs.get_local_path_from_uri(file.get_uri()))
-        
+
         return paths
 
-#============================================================================== 
+#==============================================================================

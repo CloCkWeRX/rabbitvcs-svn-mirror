@@ -127,11 +127,11 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         self.vcs_client = VCS()
 
         self.status_checker = StatusChecker()
-        
+
         self.status_checker.assert_version(EXT_VERSION)
-        
+
         self.items_cache = {}
-        
+
     def get_columns(self):
         """
         Return all the columns we support.
@@ -186,11 +186,11 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         """
         enable_emblems = bool(int(settings.get("general", "enable_emblems")))
         enable_attrs = bool(int(settings.get("general", "enable_attributes")))
-        
+
         if not (enable_emblems or enable_attrs): return nautilus.OPERATION_COMPLETE
-                
+
         if not self.valid_uri(item.get_uri()): return nautilus.OPERATION_FAILED
-        
+
         path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
 
         # log.debug("update_file_info() called for %s" % path)
@@ -241,7 +241,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         # FIXME: when did this get disabled?
         if enable_attrs: self.update_columns(item, path, status)
         if enable_emblems: self.update_status(item, path, status)
-        
+
         return nautilus.OPERATION_COMPLETE
 
     def update_columns(self, item, path, status):
@@ -314,11 +314,11 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
                 self.nautilusVFSFile_table[path] = item
 
         if len(paths) == 0: return []
-        
+
         # log.debug("get_file_items_full() called")
 
         paths_str = "-".join(paths)
-        
+
         conditions_dict = None
         if paths_str in self.items_cache:
             conditions_dict = self.items_cache[paths_str]
@@ -326,11 +326,11 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
                 conditions = NautilusMenuConditions(conditions_dict)
                 menu = NautilusMainContextMenu(self, window.get_data("base_dir"), paths, conditions).get_menu()
                 return menu
-        
+
         if conditions_dict != "in-progress":
-            self.status_checker.generate_menu_conditions_async(provider, window.get_data("base_dir"), paths, self.update_file_items)        
+            self.status_checker.generate_menu_conditions_async(provider, window.get_data("base_dir"), paths, self.update_file_items)
             self.items_cache[path] = "in-progress"
-            
+
         return ()
 
     def get_file_items(self, window, items):
@@ -342,9 +342,9 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
                 self.nautilusVFSFile_table[path] = item
 
         if len(paths) == 0: return []
-        
+
         # log.debug("get_file_items() called")
-        
+
         return NautilusMainContextMenu(self, window.get_data("base_dir"), paths).get_menu()
 
     def update_file_items(self, provider, base_dir, paths, conditions_dict):
@@ -354,24 +354,24 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
 
     #~ @disable
     # This is useful for profiling. Rename it to "get_background_items" and then
-    # rename the real function "get_background_items_real". 
+    # rename the real function "get_background_items_real".
     def get_background_items_profile(self, window, item):
         import cProfile
         import rabbitvcs.util.helper
-        
+
         path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()),
                        "utf-8").replace("/", ":")
-        
+
         profile_data_file = os.path.join(
                                rabbitvcs.util.helper.get_home_folder(),
                                "checkerservice_%s.stats" % path)
-        
+
         prof = cProfile.Profile()
         retval = prof.runcall(self.get_background_items_real, window, item)
         prof.dump_stats(profile_data_file)
         log.debug("Dumped: %s" % profile_data_file)
         return retval
-       
+
     def get_background_items_full(self, provider, window, item):
         """
         Menu activated on entering a directory. Builds context menu for File
@@ -399,7 +399,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
             conditions_dict = self.items_cache[path]
             if conditions_dict and conditions_dict != "in-progress":
                 conditions = NautilusMenuConditions(conditions_dict)
-                menu = NautilusMainContextMenu(self, path, [path], conditions).get_menu()                
+                menu = NautilusMainContextMenu(self, path, [path], conditions).get_menu()
                 return menu
 
         window.set_data("base_dir", path)
@@ -407,7 +407,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         if conditions_dict != "in-progress":
             self.status_checker.generate_menu_conditions_async(provider, path, [path], self.update_background_items)
             self.items_cache[path] = "in-progress"
-                    
+
         return ()
 
     def get_background_items(self, window, item):
@@ -416,9 +416,9 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         self.nautilusVFSFile_table[path] = item
 
         # log.debug("get_background_items() called")
-        
+
         window.set_data("base_dir", path)
-        
+
         return NautilusMainContextMenu(self, path, [path]).get_menu()
 
     def update_background_items(self, provider, base_dir, paths, conditions_dict):
@@ -550,7 +550,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         for item in items:
             if self.valid_uri(item.get_uri()):
                 path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
-                
+
                 if self.vcs_client.is_in_a_or_a_working_copy(path):
                     paths.append(path)
                     self.nautilusVFSFile_table[path] = item

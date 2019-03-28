@@ -110,7 +110,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
         status = self.get_widget("status")
         helper.run_in_main_thread(status.set_text, _("Loading..."))
         self.items = self.vcs.get_items(self.paths, self.statuses)
-        
+
         if self.show_ignored:
             for path in self.paths:
                 # TODO Refactor
@@ -126,7 +126,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
 
                         if should_add:
                             self.items.append(Status(os.path.realpath(ignored_path), 'unversioned'))
-                     
+
 
 
         self.populate_files_table()
@@ -175,7 +175,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
             row[0] = self.TOGGLE_ALL
 
     def on_show_ignored_toggled(self, widget):
-        self.toggle_ignored()                  
+        self.toggle_ignored()
 
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
@@ -197,7 +197,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
 class SVNAdd(Add):
     def __init__(self, paths, base_dir=None):
         Add.__init__(self, paths, base_dir)
-        
+
         self.svn = self.vcs.svn()
 
     def on_ok_clicked(self, widget):
@@ -222,9 +222,9 @@ class SVNAdd(Add):
 class GitAdd(Add):
     def __init__(self, paths, base_dir=None):
         Add.__init__(self, paths, base_dir)
-        
+
         self.git = self.vcs.git(paths[0])
-    
+
     def on_ok_clicked(self, widget):
         items = self.files_table.get_activated_rows(1)
         if not items:

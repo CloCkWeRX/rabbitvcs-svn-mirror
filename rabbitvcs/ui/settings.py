@@ -51,11 +51,11 @@ class Settings(InterfaceView):
         """
         Provides an interface to the settings library.
         """
-    
+
         InterfaceView.__init__(self, "settings", "Settings")
 
         self.settings = rabbitvcs.util.settings.SettingsManager()
-        
+
         langs = []
         language = os.environ.get('LANGUAGE', None)
         if language:
@@ -101,7 +101,7 @@ class Settings(InterfaceView):
         self.get_widget("cache_number_messages").set_text(
             str(self.settings.get("cache", "number_messages"))
         )
-        
+
         self.logging_type = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("logging_type"),
             ["None", "Console", "File", "Both"]
@@ -119,7 +119,7 @@ class Settings(InterfaceView):
         if not val:
             val = "Debug"
         self.logging_level.set_active_from_value(val)
-        
+
         # Git Configuration Editor
         show_git = False
         self.file_editor = None
@@ -129,7 +129,7 @@ class Settings(InterfaceView):
             if vcs.is_in_a_or_a_working_copy(base_dir) and vcs.guess(base_dir)["vcs"] == rabbitvcs.vcs.VCS_GIT:
                 git = vcs.git(base_dir)
                 git_config_files = git.get_config_files(base_dir)
-        
+
                 self.file_editor = rabbitvcs.ui.widget.MultiFileTextEditor(
                     self.get_widget("git_config_container"),
                     _("Config file:"),
@@ -156,7 +156,7 @@ class Settings(InterfaceView):
         except dbus.DBusException as ex:
             if report_failure:
                 rabbitvcs.ui.dialog.MessageBox(CHECKER_SERVICE_ERROR)
-        
+
         return checker_service
 
     def _populate_checker_tab(self, report_failure=True):
@@ -170,16 +170,16 @@ class Settings(InterfaceView):
         if(checker_service):
             self.get_widget("checker_type").set_text(checker_service.CheckerType())
             self.get_widget("pid").set_text(str(checker_service.PID()))
-            
+
             memory = checker_service.MemoryUsage()
-                        
+
             if memory:
                 self.get_widget("memory_usage").set_text("%s KB" % memory)
             else:
                 self.get_widget("memory_usage").set_text(CHECKER_UNKNOWN_INFO)
-            
+
             self._populate_info_table(checker_service.ExtraInformation())
-            
+
         else:
             self.get_widget("checker_type").set_text(CHECKER_UNKNOWN_INFO)
             self.get_widget("pid").set_text(CHECKER_UNKNOWN_INFO)
@@ -192,17 +192,17 @@ class Settings(InterfaceView):
 
     def _populate_info_table(self, info):
         self._clear_info_table()
-        
+
         table_place = self.get_widget("info_table_area")
-        
+
         table = rabbitvcs.ui.widget.KeyValueTable(info)
         table_place.add(table)
         table.show()
-        
-    
+
+
     def on_refresh_info_clicked(self, widget):
         self._populate_checker_tab()
-    
+
     def _stop_checker(self):
         checker_service = self._get_checker_service(False)
         pid = None
@@ -218,12 +218,12 @@ class Settings(InterfaceView):
             except OSError:
                 # This occurs if the process is already gone.
                 pass
-    
+
     def on_restart_checker_clicked(self, widget):
         self._stop_checker()
         rabbitvcs.services.checkerservice.start()
         self._populate_checker_tab()
-    
+
     def on_stop_checker_clicked(self, widget):
         self._stop_checker()
         self._populate_checker_tab(report_failure=False)
@@ -237,7 +237,7 @@ class Settings(InterfaceView):
     def on_ok_clicked(self, widget):
         self.save()
         Gtk.main_quit()
-    
+
     def on_apply_clicked(self, widget):
         self.save()
 
@@ -299,7 +299,7 @@ class Settings(InterfaceView):
             self.logging_level.get_active_text()
         )
         self.settings.write()
-        
+
         if self.file_editor:
             self.file_editor.save()
 
@@ -354,7 +354,7 @@ class Settings(InterfaceView):
                         os.remove(filepath)
 
             rabbitvcs.ui.dialog.MessageBox(_("Authentication information cleared"))
-            
+
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main, BASEDIR_OPT

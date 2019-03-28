@@ -1,22 +1,22 @@
 from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -41,9 +41,9 @@ _ = gettext.gettext
 class GitClone(Checkout):
     def __init__(self, path=None, url=None):
         Checkout.__init__(self, path, url)
-        
+
         self.git = self.vcs.git()
-        
+
         self.get_widget("Checkout").set_title(_("Clone"))
         self.get_widget("repo_chooser").hide()
 
@@ -53,11 +53,11 @@ class GitClone(Checkout):
     def on_ok_clicked(self, widget):
         url = self.repositories.get_active_text().strip()
         path = self._get_path().strip()
-        
+
         if not url or not path:
             rabbitvcs.ui.dialog.MessageBox(_("The repository URL and destination path are both required fields."))
             return
-    
+
         self.hide()
         self.action = rabbitvcs.ui.action.GitAction(
             self.git,
@@ -101,7 +101,7 @@ class GitClone(Checkout):
             self.complete = False
         if self.get_widget("destination").get_text() == "":
             self.complete = False
-        
+
         self.get_widget("ok").set_sensitive(self.complete)
 
 classes_map = {
@@ -117,12 +117,12 @@ if __name__ == "__main__":
         [VCS_OPT],
         usage="Usage: rabbitvcs clone --vcs=git [url] [path]"
     )
-    
+
     # Default to using git
     vcs = rabbitvcs.vcs.VCS_GIT
     if options.vcs:
         vcs = options.vcs
-    
+
     # If two arguments are passed:
     #   The first argument is expected to be a url
     #   The second argument is expected to be a path

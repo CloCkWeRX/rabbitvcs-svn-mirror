@@ -26,9 +26,9 @@ def initialize_locale():
         # pick a default which might not be available. It seems to pick
         # ISO8859-1 (latin1), but UTF8 is a better idea on GNU/Linux.
         log.warning("Could not set default locale (LANG: %s)" % os.environ.get("LANG"))
-        
+
         (loc, enc) = sane_default
-        
+
         # We should only try this if we have a region to set as well.
         if loc and enc != "UTF8":
             try:

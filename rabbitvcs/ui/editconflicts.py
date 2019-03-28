@@ -1,22 +1,22 @@
 from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -51,41 +51,41 @@ class SVNEditConflicts(InterfaceNonView):
         self.path = path
         self.vcs = rabbitvcs.vcs.VCS()
         self.svn = self.vcs.svn()
-        
+
         status = self.svn.status(self.path)
         if status.simple_content_status() != rabbitvcs.vcs.status.status_complicated:
             log.debug("The specified file is not conflicted.  There is nothing to do.")
             self.close()
             return
-        
+
         filename = os.path.basename(path)
-        
+
         dialog = rabbitvcs.ui.dialog.ConflictDecision(filename)
         action = dialog.run()
         dialog.destroy()
-        
+
         if action == -1:
             #Cancel
             pass
-            
+
         elif action == 0:
             #Accept Mine
             working = self.get_working_path(path)
             shutil.copyfile(working, path)
             self.svn.resolve(path)
-                
+
         elif action == 1:
             #Accept Theirs
             ancestor, theirs = self.get_revisioned_paths(path)
             shutil.copyfile(theirs, path)
             self.svn.resolve(path)
-                
+
         elif action == 2:
             #Merge Manually
-            
+
             working = self.get_working_path(path)
             ancestor, theirs = self.get_revisioned_paths(path)
-            
+
             log.debug("launching merge tool with base: %s, mine: %s, theirs: %s, merged: %s"%(ancestor, working, theirs, path))
             rabbitvcs.util.helper.launch_merge_tool(base=ancestor, mine=working, theirs=theirs, merged=path)
 
@@ -103,7 +103,7 @@ class SVNEditConflicts(InterfaceNonView):
             "%s.mine" % path,
             "%s.working" % path
         ]
-        
+
         for working in paths:
             if os.path.exists(working):
                 return working
@@ -148,7 +148,7 @@ class GitEditConflicts(InterfaceNonView):
         self.git = self.vcs.git(path)
 
         rabbitvcs.util.helper.launch_merge_tool(self.path)
-        
+
         self.close()
 
 classes_map = {
@@ -159,7 +159,7 @@ classes_map = {
 def editconflicts_factory(path):
     guess = rabbitvcs.vcs.guess(path)
     return classes_map[guess["vcs"]](path)
-        
+
 if __name__ == "__main__":
     from rabbitvcs.ui import main, BASEDIR_OPT
     (options, paths) = main(
