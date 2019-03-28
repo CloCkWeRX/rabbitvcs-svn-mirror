@@ -32,7 +32,7 @@ from rabbitvcs.ui.checkout import Checkout
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 import rabbitvcs.vcs
 
 from rabbitvcs import gettext
@@ -65,7 +65,7 @@ class GitClone(Checkout):
         )
         self.action.append(self.action.set_header, _("Clone"))
         self.action.append(self.action.set_status, _("Running Clone Command..."))
-        self.action.append(rabbitvcs.util.helper.save_repository_path, url)
+        self.action.append(helper.save_repository_path, url)
         self.action.append(
             self.git.clone,
             url,
@@ -77,25 +77,15 @@ class GitClone(Checkout):
 
     def on_repositories_changed(self, widget, data=None):
         url = self.repositories.get_active_text()
-        tmp = url.replace("//", "/").split("/")[1:]
-        append = ""
-        prev = ""
-        while len(tmp):
-            prev = append
-            append = tmp.pop()
-                
-            if append in ("http:", "https:", "file:", "git:"):
-                append = ""
-                break
+        tmp = [x.strip() for x in url.split("/") if x.strip()]
+        if tmp and tmp[0].lower() in ("http:", "https:", "file:", "git:"):
+            del tmp[0]
+        append = tmp[-1] if tmp else ""
+        if append.endswith(".git"):
+            append = append[:-4]
 
-            if append.endswith(".git"):
-                append = append[:-4]
-                break
-
-        self.get_widget("destination").set_text(
-            os.path.join(self.destination, append)
-        )
-        
+        helper.run_in_main_thread(self.get_widget("destination").set_text,
+                                  os.path.join(self.destination, append))
         self.check_form()
 
     def default_text(self):
