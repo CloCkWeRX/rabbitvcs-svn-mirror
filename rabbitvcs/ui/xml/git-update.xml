@@ -175,6 +175,7 @@
                     <property name="relief">none</property>
                     <property name="active">True</property>
                     <property name="draw_indicator">True</property>
+                    <property name="group">merge</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>

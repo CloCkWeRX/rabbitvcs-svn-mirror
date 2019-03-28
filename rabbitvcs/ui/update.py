@@ -106,10 +106,10 @@ class GitUpdate(InterfaceView):
 
         if apply_changes:
             if rebase:
-                git_function_params.append ("rebase")
+                git_function_params.append("rebase")
 
             if fetch_all:
-                git_function_params.append ("all")
+                git_function_params.append("all")
                 repository = ""
                 branch = ""
 
