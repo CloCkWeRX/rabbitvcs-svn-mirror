@@ -948,7 +948,7 @@ class RevisionSelector:
         self.url = url
         self.revision_changed_callback = revision_changed_callback
         self.revision_change_inprogress = False
-        hbox = Gtk.HBox(0, 4)
+        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 4)
 
         if self.url_combobox:
             self.url_combobox.cb.connect("changed", self.__on_url_combobox_changed)
@@ -1188,7 +1188,7 @@ class GitRepositorySelector:
         self.git = git
         self.changed_callback = changed_callback
 
-        vbox = Gtk.VBox(homogeneous = False, spacing = 4)
+        vbox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 4)
 
         # Set up the Repository Line
         label = Gtk.Label(label = _("Repository:"))
@@ -1203,7 +1203,7 @@ class GitRepositorySelector:
         self.repository_opt.cb.connect("changed", self.__repository_changed)
         self.repository_opt.cb.set_size_request(175, -1)
 
-        hbox = Gtk.HBox(homogeneous = False, spacing = 0)
+        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
         hbox.pack_start(label, False, False, 0)
         hbox.pack_start(self.repository_opt.cb, True, True, 0)
         vbox.pack_start(hbox, False, False, 0)
@@ -1230,7 +1230,7 @@ class GitRepositorySelector:
         self.branch_opt.cb.connect("changed", self.__branch_changed)
         self.branch_opt.cb.set_size_request(175, -1)
 
-        hbox = Gtk.HBox(homogeneous = False, spacing = 0)
+        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
         hbox.pack_start(label, False, False, 0)
         hbox.pack_start(self.branch_opt.cb, True, True, 0)
         vbox.pack_start(hbox, False, False, 0)
@@ -1242,7 +1242,7 @@ class GitRepositorySelector:
         self.host = Gtk.Label()
         self.host.set_justify(Gtk.Justification.LEFT)
         self.host.set_halign(Gtk.Align.START)
-        hbox = Gtk.HBox(homogeneous = False, spacing = 0)
+        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
         hbox.pack_start(label, False, False, 0)
         hbox.pack_start(self.host, True, True, 0)
         vbox.pack_start(hbox, False, False, 4)
@@ -1273,7 +1273,7 @@ class GitBranchSelector:
         self.git = git
         self.changed_callback = changed_callback
 
-        self.vbox = Gtk.VBox(homogeneous = False, spacing = 4)
+        self.vbox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 4)
 
         tmp_branches = []
         active = 0
@@ -1289,7 +1289,7 @@ class GitBranchSelector:
         self.branch_opt.cb.connect("changed", self.__branch_changed)
         self.branch_opt.cb.set_size_request(175, -1)
 
-        hbox = Gtk.HBox(homogeneous = False, spacing = 0)
+        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
         hbox.pack_start(self.branch_opt.cb, False, False, 0)
         self.vbox.pack_start(hbox, False, False, 0)
 
@@ -1338,9 +1338,9 @@ class MultiFileTextEditor:
         scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         scrolled_window.set_size_request(320, 150)
 
-        vbox = Gtk.VBox(homogeneous = False, spacing = 6)
+        vbox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 6)
 
-        hbox = Gtk.HBox(homogeneous = False, spacing = 3)
+        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 3)
         combo_label = Gtk.Label(label = label)
         combo_label.set_alignment(0, 0.5)
         combo_label.set_size_request(130, -1)
@@ -1349,7 +1349,7 @@ class MultiFileTextEditor:
         vbox.pack_start(hbox, False, False, 0)
 
         if show_add_line:
-            hbox = Gtk.HBox(homogeneous = False, spacing = 3)
+            hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 3)
             add_label = Gtk.Label(label = _("Add line:"))
             add_label.set_alignment(0, 0.5)
             add_label.set_size_request(130, -1)
