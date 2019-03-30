@@ -272,16 +272,16 @@ class GitTagManager(InterfaceView):
     def show_detail(self, tag_name):
         self.selected_tag = None
         for item in self.tag_list:
-            if item.name == tag_name:
+            if helper.to_text(item.name) == tag_name:
                 self.selected_tag = item
                 break
 
         self.save_button.set_label(_("Save"))
         if self.selected_tag:
-            self.tag_entry.set_text(self.selected_tag.name)
-            self.revision_label.set_text(self.selected_tag.sha)
-            self.message_label.set_text(self.selected_tag.message.rstrip("\n"))
-            self.tagger_label.set_text(self.selected_tag.tagger)
+            self.tag_entry.set_text(helper.to_text(self.selected_tag.name))
+            self.revision_label.set_text(helper.to_text(self.selected_tag.sha))
+            self.message_label.set_text(helper.to_text(self.selected_tag.message).rstrip("\n"))
+            self.tagger_label.set_text(helper.to_text(self.selected_tag.tagger))
             self.date_label.set_text(helper.format_datetime(datetime.fromtimestamp(self.selected_tag.tag_time)))
 
             self.show_containers(self.view_containers)
