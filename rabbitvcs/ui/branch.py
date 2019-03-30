@@ -120,8 +120,8 @@ class SVNBranch(InterfaceView):
             self.message.set_text(message)
 
     def on_repo_browser_clicked(self, widget, data=None):
-        from rabbitvcs.ui.browser import BrowserDialog
-        BrowserDialog(self.from_urls.get_active_text(),
+        from rabbitvcs.ui.browser import SVNBrowserDialog
+        SVNBrowserDialog(self.from_urls.get_active_text(),
             callback=self.on_repo_browser_closed)
 
     def on_repo_browser_closed(self, new_url):
