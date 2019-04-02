@@ -105,6 +105,7 @@ class StatusCache(object):
                 revision_index = len(self.revisions) -1
 
             self.cache[path] = (
+                status.__class__,
                 content_index,
                 metadata_index,
                 revision_index,
@@ -116,15 +117,17 @@ class StatusCache(object):
 
     def __getitem__(self, path):
         try:
-            (content_index, metadata_index, revision_index, author_index, date) = self.cache[path]
+            (statusclass, content_index, metadata_index, revision_index, author_index, date) = self.cache[path]
 
             content = self.keys[content_index]
             metadata = self.keys[metadata_index]
             revision = self.revisions[revision_index]
             author = self.authors[author_index]
 
-            return Status(path, content, metadata, revision=revision,
+            status = Status(path, content, metadata, revision=revision,
                 author=author, date=date)
+            status.__class__ = statusclass
+            return status
         except Exception as e:
             log.debug(e)
 
