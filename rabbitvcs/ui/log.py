@@ -475,7 +475,7 @@ class SVNLog(Log):
         self.check_next_sensitive()
 
         for item in self.display_items:
-            msg = helper.html_escape(helper.format_long_text(item.message, 80))
+            msg = helper.format_long_text(item.message, 80)
             rev = item.revision
             color = "#000000"
             if (self.merge_candidate_revisions != None and

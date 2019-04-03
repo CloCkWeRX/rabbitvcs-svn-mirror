@@ -57,6 +57,7 @@ class GitRemotes(InterfaceView):
         self.vcs = rabbitvcs.vcs.VCS()
         self.git = self.vcs.git(path)
 
+        self.get_widget("right_side").hide()
         self.get_widget("Manager").set_title(_("Remote Repository Manager"))
         self.get_widget("items_label").set_markup(_("<b>Remote Repositories</b>"))
 

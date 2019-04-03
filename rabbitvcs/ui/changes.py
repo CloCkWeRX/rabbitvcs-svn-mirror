@@ -263,14 +263,16 @@ class SVNChanges(Changes):
             self.get_widget("first_revision_container"),
             self.svn,
             revision=revision1,
-            url_combobox=self.first_urls
+            url_combobox=self.first_urls,
+            expand=True
         )
 
         self.second_revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("second_revision_container"),
             self.svn,
             revision=revision2,
-            url_combobox=self.second_urls
+            url_combobox=self.second_urls,
+            expand=True
         )
 
         self.changes_table = rabbitvcs.ui.widget.Table(

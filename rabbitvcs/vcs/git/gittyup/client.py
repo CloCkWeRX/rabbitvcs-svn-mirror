@@ -413,11 +413,12 @@ class GittyupClient:
 
     def get_relative_path(self, path):
         if path == self.repo.path:
-            return ""
-
+            return "."
         return util.relativepath(self.repo.path, path)
 
     def get_absolute_path(self, path):
+        if path == ".":
+            return self.repo.path
         return os.path.join(self.repo.path, path).rstrip("/")
 
     def track(self, name):

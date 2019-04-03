@@ -23,11 +23,14 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">12</property>
+        <property name="spacing">18</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox" id="dialog-action_area8">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="halign">end</property>
+            <property name="valign">end</property>
+            <property name="hexpand">True</property>
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="messagebox_ok">
@@ -54,10 +57,13 @@
         </child>
         <child>
           <object class="GtkLabel" id="messagebox_message">
+            <property name="width_request">175</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="xpad">6</property>
-            <property name="ypad">6</property>
+            <property name="margin_left">6</property>
+            <property name="margin_right">6</property>
+            <property name="margin_top">6</property>
+            <property name="margin_bottom">6</property>
             <property name="selectable">True</property>
             <property name="xalign">0</property>
           </object>

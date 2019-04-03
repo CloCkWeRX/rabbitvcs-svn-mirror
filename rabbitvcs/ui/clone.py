@@ -46,6 +46,8 @@ class GitClone(Checkout):
 
         self.get_widget("Checkout").set_title(_("Clone"))
         self.get_widget("repo_chooser").hide()
+        self.get_widget("options_box").hide()
+        self.get_widget("revision_selector_box").hide()
 
         self.default_text()
         self.check_form()

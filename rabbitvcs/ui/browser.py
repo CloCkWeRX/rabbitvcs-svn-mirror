@@ -79,7 +79,8 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
         self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("revision_container"),
             self.svn,
-            url_combobox=self.urls
+            url_combobox=self.urls,
+            expand=True
         )
 
         self.items = []

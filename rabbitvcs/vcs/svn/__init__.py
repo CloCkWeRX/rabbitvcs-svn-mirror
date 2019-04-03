@@ -352,8 +352,9 @@ class SVN:
     def is_in_a_or_a_working_copy(self, path):
         if self.is_working_copy(path):
             return True
-
-        return (self.find_repository_path(os.path.split(path)[0]) != "")
+        if self.find_repository_path(os.path.split(path)[0]):
+            return True
+        return False
 
     def is_versioned(self, path):
         if self.is_working_copy(path):
@@ -1520,7 +1521,7 @@ class SVN:
         return hasattr(self.client, "merge_peg2")
 
     def merge_trees(self, url_or_path1, revision1, url_or_path2, revision2,
-            local_path, force=False, recurse=True, record_only=False):
+            local_path, force=False, recurse=True, dry_run=False, record_only=False):
         """
         Merge two trees into one.
 
@@ -1545,6 +1546,9 @@ class SVN:
         @type   recurse: boolean
         @param  recurse: Merge children recursively
 
+        @type   dry_run: boolean
+        @param  dry_run: Do a test/dry run or not
+
         @type   record_only: boolean
         @param  record_only: unsure
 
@@ -1554,9 +1558,15 @@ class SVN:
 
         url_or_path1 = helper.urlize(url_or_path1)
         url_or_path2 = helper.urlize(url_or_path2)
-        return self.client.merge(url_or_path1, revision1.primitive(),
-            url_or_path2, revision2.primitive(), local_path, force, recurse,
-            record_only)
+        return self.client.merge(url_or_path1,
+                                 revision1.primitive(),
+                                 url_or_path2,
+                                 revision2.primitive(),
+                                 local_path,
+                                 force = force,
+                                 recurse = recurse,
+                                 dry_run = dry_run,
+                                 record_only = record_only)
 
     def has_merge_reintegrate(self):
         """
@@ -1583,8 +1593,10 @@ class SVN:
 
         """
 
-        return self.client.merge_reintegrate(url_or_path, revision.primitive(),
-            local_path, dry_run)
+        return self.client.merge_reintegrate(url_or_path,
+                                             revision.primitive(),
+                                             local_path,
+                                             dry_run = dry_run)
 
 
     def diff(self, tmp_path, url_or_path, revision1, url_or_path2, revision2,

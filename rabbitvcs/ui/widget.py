@@ -772,6 +772,77 @@ class Tree(TableBase):
             if len(node) > 1 and node[1] is not None:
                 self.populate(node[1], new_root)
 
+class Box:
+    def __init__(self, box=None, vertical=False, spacing=-1):
+        if not box:
+            box = Gtk.Grid()
+        self.box = box
+        if spacing >= 0:
+            box.set_row_spacing(spacing)
+            box.set_column_spacing(spacing)
+        self.middle = 0
+        # Determine pack start/end indexes.
+        ch = [(box.child_get_property(c, "left-attach"),
+               box.child_get_property(c, "width")) for c in box.get_children()]
+        cv = [(box.child_get_property(c, "top-attach"),
+              box.child_get_property(c, "height")) for c in box.get_children()]
+        if ch:
+            ch.sort(key = lambda x: x[0])
+            cv.sort(key = lambda x: x[0])
+            if ch[-1][0] - ch[0][0] > 0:
+                vertical = False
+            elif cv[-1][0] - cv[0][0] > 0:
+                vertical = True
+            c = cv if vertical else ch
+            last = c.pop()
+            self.middle = last[0] + last[1]
+            while c:
+                prev = c.pop()
+                next = prev[0] + prev[1]
+                if next < last[0]:
+                    self.middle = next
+                    break
+                last = prev
+
+        self.insert = self.box.insert_column
+        self.attach = lambda child, pos: self.box.attach(child, pos, 0, 1, 1)
+        self.set_expand = lambda child, expand: child.set_hexpand(expand)
+        self.set_align = lambda child, align: child.set_halign(align)
+        self.set_padding = lambda child, padding: (child.set_margin_start(padding), child.set_margin_end(padding))
+        if vertical:
+            self.insert = self.box.insert_row
+            self.attach = lambda child, pos: self.box.attach(child, 0, pos, 1, 1)
+            self.set_expand = lambda child, expand: child.set_vexpand(expand)
+            self.set_align = lambda child, align: child.set_valign(align)
+            self.set_padding = lambda child, padding: (child.set_margin_top(padding), child.set_margin_bottom(padding))
+
+    def add(self, child):
+        if isinstance(child, Box):
+            child = child.box
+        self.insert(self.middle)
+        self.attach(child, self.middle)
+        self.middle = self.middle + 1
+
+    def pack_start(self, child, expand, fill, padding):
+        if isinstance(child, Box):
+            child = child.box
+        self.set_expand(child, expand)
+        self.set_align(child, Gtk.Align.FILL if fill else Gtk.Align.START)
+        self.set_padding(child, padding)
+        self.add(child)
+
+    def pack_end(self, child, expand, fill, padding):
+        if isinstance(child, Box):
+            child = child.box
+        self.set_expand(child, expand)
+        self.set_align(child, Gtk.Align.FILL if fill else Gtk.Align.END)
+        self.set_padding(child, padding)
+        self.insert(self.middle)
+        self.attach(child, self.middle + 1)
+
+    def __getattr__(self, name):
+        return getattr(self.box, name)
+
 class ComboBox:
     def __init__(self, cb, items=None):
 
@@ -948,7 +1019,7 @@ class RevisionSelector:
         self.url = url
         self.revision_changed_callback = revision_changed_callback
         self.revision_change_inprogress = False
-        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 4)
+        hbox = Box(spacing = 4)
 
         if self.url_combobox:
             self.url_combobox.cb.connect("changed", self.__on_url_combobox_changed)
@@ -1000,7 +1071,7 @@ class RevisionSelector:
         self.revision_browse.show()
         hbox.show()
 
-        container.add(hbox)
+        container.add(hbox.box)
 
     def __revision_browse_clicked(self, widget):
         from rabbitvcs.ui.log import SVNLogDialog, GitLogDialog
@@ -1134,9 +1205,9 @@ class RevisionSelector:
     def __branch_selector_changed(self, branch):
         self.__revision_entry_changed(self.revision_entry)
 
-class KeyValueTable(Gtk.Table):
+class KeyValueTable(Gtk.Grid):
     """
-    Simple extension of a GTK table to display a two-column table of information
+    Simple extension of a GTK grid to display a two-column table of information
     with labels.
     """
 
@@ -1149,11 +1220,8 @@ class KeyValueTable(Gtk.Table):
                       tuple is the key/label, and the second element is the
                       information
         """
-        if not stuff or len(stuff) == 0:
-            super(KeyValueTable, self).__init__()
-        else:
-            super(KeyValueTable, self).__init__(len(stuff), 2)
-
+        super(KeyValueTable, self).__init__()
+        if stuff and len(stuff):
             row = 0
 
             for key, value in stuff:
@@ -1164,36 +1232,34 @@ class KeyValueTable(Gtk.Table):
                 label_value.set_properties(xalign=0,                    \
                                            ellipsize=Pango.EllipsizeMode.MIDDLE, \
                                            selectable=True)
+                label_value.set_hexpand(True)
+                label_value.set_halign(Gtk.Align.START)
 
-                self.attach(label_key,
-                             0,1,
-                             row, row+1,
-                             xoptions=Gtk.AttachOptions.FILL)
-
-                self.attach(label_value,
-                             1,2,
-                             row, row+1,
-                             xoptions=Gtk.AttachOptions.FILL|Gtk.AttachOptions.EXPAND)
+                self.attach(label_key, 0, row, 1, 1)
+                self.attach(label_value, 1, row, 1, 1)
 
                 label_key.show()
                 label_value.show()
 
                 row += 1
 
-        self.set_col_spacings(self.default_col_spacing)
-        self.set_row_spacings(self.default_row_spacing)
+        self.set_column_spacing(self.default_col_spacing)
+        self.set_row_spacing(self.default_row_spacing)
 
 class GitRepositorySelector:
     def __init__(self, container, git, changed_callback=None):
         self.git = git
         self.changed_callback = changed_callback
 
-        vbox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 4)
+        grid = Gtk.Grid()
+        grid.set_row_spacing(4)
+        grid.set_column_spacing(6)
+        grid.set_hexpand(True)
 
         # Set up the Repository Line
         label = Gtk.Label(label = _("Repository:"))
-        label.set_size_request(90, -1)
         label.set_justify(Gtk.Justification.LEFT)
+        label.set_halign(Gtk.Align.START)
 
         tmp_repos = []
         for item in self.git.remote_list():
@@ -1202,17 +1268,15 @@ class GitRepositorySelector:
         self.repository_opt.set_active(0)
         self.repository_opt.cb.connect("changed", self.__repository_changed)
         self.repository_opt.cb.set_size_request(175, -1)
+        self.repository_opt.cb.set_hexpand(True)
 
-        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
-        hbox.pack_start(label, False, False, 0)
-        hbox.pack_start(self.repository_opt.cb, True, True, 0)
-        vbox.pack_start(hbox, False, False, 0)
-
+        grid.attach(label, 0, 0, 1, 1)
+        grid.attach(self.repository_opt.cb, 1, 0, 1, 1)
 
         # Set up the Branch line
         label = Gtk.Label(label = _("Branch:"))
-        label.set_size_request(90, -1)
         label.set_justify(Gtk.Justification.LEFT)
+        label.set_halign(Gtk.Align.START)
 
         tmp_branches = []
         active_branch_index = 0
@@ -1229,26 +1293,25 @@ class GitRepositorySelector:
         self.branch_opt.set_active(active_branch_index)
         self.branch_opt.cb.connect("changed", self.__branch_changed)
         self.branch_opt.cb.set_size_request(175, -1)
+        self.branch_opt.cb.set_hexpand(True)
 
-        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
-        hbox.pack_start(label, False, False, 0)
-        hbox.pack_start(self.branch_opt.cb, True, True, 0)
-        vbox.pack_start(hbox, False, False, 0)
+        grid.attach(label, 0, 1, 1, 1)
+        grid.attach(self.branch_opt.cb, 1, 1, 1, 1)
 
         # Set up the Host line
         label = Gtk.Label(label = _("Host:"))
         label.set_justify(Gtk.Justification.LEFT)
-        label.set_size_request(90, -1)
+        label.set_halign(Gtk.Align.START)
         self.host = Gtk.Label()
         self.host.set_justify(Gtk.Justification.LEFT)
+        self.host.set_hexpand(True)
         self.host.set_halign(Gtk.Align.START)
-        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
-        hbox.pack_start(label, False, False, 0)
-        hbox.pack_start(self.host, True, True, 0)
-        vbox.pack_start(hbox, False, False, 4)
 
-        vbox.show_all()
-        container.add(vbox)
+        grid.attach(label, 0, 2, 1, 1)
+        grid.attach(self.host, 1, 2, 1, 1)
+
+        grid.show_all()
+        container.add(grid)
 
         self.__update_host()
 
@@ -1273,7 +1336,7 @@ class GitBranchSelector:
         self.git = git
         self.changed_callback = changed_callback
 
-        self.vbox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 4)
+        self.vbox = Box(vertical = True, spacing = 4)
 
         tmp_branches = []
         active = 0
@@ -1289,12 +1352,12 @@ class GitBranchSelector:
         self.branch_opt.cb.connect("changed", self.__branch_changed)
         self.branch_opt.cb.set_size_request(175, -1)
 
-        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
-        hbox.pack_start(self.branch_opt.cb, False, False, 0)
+        hbox = Box()
+        hbox.pack_start(self.branch_opt.cb, True, False, 0)
         self.vbox.pack_start(hbox, False, False, 0)
 
         self.vbox.show_all()
-        container.add(self.vbox)
+        container.add(self.vbox.box)
 
     def append(self, widget):
         self.vbox.pack_start(widget, False, False, 0)
@@ -1332,42 +1395,43 @@ class MultiFileTextEditor:
 
         self.textview = TextView(Gtk.TextView())
 
+        grid = Gtk.Grid()
+        grid.set_row_spacing(6)
+        grid.set_column_spacing(3)
+        grid.set_hexpand(True)
+        grid.set_vexpand(True)
+
+        combo_label = Gtk.Label(label = label)
+        combo_label.set_alignment(0, 0.5)
         scrolled_window = Gtk.ScrolledWindow()
         scrolled_window.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         scrolled_window.add(self.textview.view)
         scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         scrolled_window.set_size_request(320, 150)
+        scrolled_window.set_hexpand(True)
+        scrolled_window.set_vexpand(True)
 
-        vbox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 6)
-
-        hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 3)
-        combo_label = Gtk.Label(label = label)
-        combo_label.set_alignment(0, 0.5)
-        combo_label.set_size_request(130, -1)
-        hbox.pack_start(combo_label, False, False, 0)
-        hbox.pack_start(self.combobox.cb, True, True, 0)
-        vbox.pack_start(hbox, False, False, 0)
+        grid.attach(combo_label, 0, 0, 1, 1)
+        grid.attach(self.combobox.cb, 1, 0, 2, 1)
 
         if show_add_line:
-            hbox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 3)
             add_label = Gtk.Label(label = _("Add line:"))
             add_label.set_alignment(0, 0.5)
-            add_label.set_size_request(130, -1)
             self.add_entry = Gtk.Entry()
             self.add_entry.set_text(line_content)
+            self.add_entry.set_hexpand(True)
             add_button = Gtk.Button(_("Add"))
             add_button.connect("clicked", self.__add_button_clicked)
-            hbox.pack_start(add_label, False, False, 0)
-            hbox.pack_start(self.add_entry, True, True, 0)
-            hbox.pack_start(add_button, False, False, 0)
-            vbox.pack_start(hbox, False, False, 0)
+            grid.attach(add_label, 0, 1, 1, 1)
+            grid.attach(self.add_entry, 1, 1, 1, 1)
+            grid.attach(add_button, 2, 1, 1, 1)
 
-        vbox.pack_start(scrolled_window, True, True, 0)
-        vbox.show_all()
+        grid.attach(scrolled_window, 0, 2, 3, 1)
+        grid.show_all()
 
         self.combobox.set_active(0)
 
-        container.add(vbox)
+        container.add(grid)
 
     def __combobox_changed(self, widget):
         index = self.combobox.get_active()

@@ -226,8 +226,6 @@ class GitAnnotate(Annotate):
             revision = "HEAD"
 
         self.path = path
-        #self.get_widget("from_revision_container").hide()
-        #self.get_widget("to_show_log").hide()
         self.get_widget("to").set_text(str(revision))
 
         self.table = rabbitvcs.ui.widget.Table(

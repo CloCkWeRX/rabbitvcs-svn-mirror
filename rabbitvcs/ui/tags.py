@@ -88,122 +88,123 @@ class GitTagManager(InterfaceView):
     def initialize_detail(self):
         self.detail_container = self.get_widget("detail_container")
 
-        vbox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 6)
+        self.detail_grid = Gtk.Grid()
+        self.detail_grid.set_row_spacing(4)
+        self.detail_grid.set_column_spacing(6)
+        self.detail_grid.set_hexpand(True)
+        row = 0
 
         # Set up the Tag line
         label = Gtk.Label(label = _("Name:"))
-        label.set_size_request(90, -1)
-        label.set_properties(xalign=0,yalign=.5)
+        label.set_properties(xalign=0, yalign=.5)
         self.tag_entry = Gtk.Entry()
-        self.tag_name_container = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
-        self.tag_name_container.pack_start(label, False, False, 0)
-        self.tag_name_container.pack_start(self.tag_entry, False, False, 0)
-        vbox.pack_start(self.tag_name_container, False, False, 0)
+        self.tag_entry.set_hexpand(True)
+        self.detail_grid.attach(label, 0, row, 1, 1)
+        self.detail_grid.attach(self.tag_entry, 1, row, 2, 1)
+        tag_name_row = row
+        row = row + 1
 
         # Set up the Commit-sha line
         label = Gtk.Label(label = _("Revision:"))
-        label.set_size_request(90, -1)
-        label.set_properties(xalign=0,yalign=.5)
+        label.set_properties(xalign=0, yalign=.5)
         self.start_point_entry = Gtk.Entry()
         self.start_point_entry.set_size_request(300, -1)
-        self.start_point_container = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
+        self.start_point_entry.set_hexpand(True)
         if self.revision_obj.value:
             self.start_point_entry.set_text(helper.to_text(self.revision_obj))
         self.log_dialog_button = Gtk.Button()
         self.log_dialog_button.connect("clicked", self.on_log_dialog_button_clicked)
         image = Gtk.Image()
-        image.set_from_icon_name("rabbitvcs-show_log", 2)
+        image.set_from_icon_name("rabbitvcs-show_log", Gtk.IconSize.SMALL_TOOLBAR)
         self.log_dialog_button.set_image(image)
-        self.start_point_container.pack_start(label, False, False, 0)
-        self.start_point_container.pack_start(self.start_point_entry, False, False, 0)
-        self.start_point_container.pack_start(self.log_dialog_button, False, False, 0)
-        vbox.pack_start(self.start_point_container, False, False, 0)
+        self.detail_grid.attach(label, 0, row, 1, 1)
+        self.detail_grid.attach(self.start_point_entry, 1, row, 1, 1)
+        self.detail_grid.attach(self.log_dialog_button, 2, row, 1, 1)
+        start_point_row = row
+        row = row + 1
 
         # Set up the Log Message Entry line
         label = Gtk.Label(label = _("Message:"))
-        label.set_size_request(90, -1)
-        label.set_properties(xalign=0,yalign=0)
+        label.set_properties(xalign=0, yalign=0)
         self.message_entry = rabbitvcs.ui.widget.TextView()
         self.message_entry.view.set_size_request(300, 75)
+        self.message_entry.view.set_hexpand(True)
+        self.message_entry.view.set_vexpand(True)
         swin = Gtk.ScrolledWindow()
         swin.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
         swin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        swin.set_hexpand(True)
+        swin.set_vexpand(True)
         swin.add(self.message_entry.view)
-        self.message_entry_container = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
-        self.message_entry_container.pack_start(label, False, False, 0)
-        self.message_entry_container.pack_start(swin, False, False, 0)
-        vbox.pack_start(self.message_entry_container, False, False, 0)
+        self.detail_grid.attach(label, 0, row, 1, 1)
+        self.detail_grid.attach(swin, 1, row, 2, 1)
+        message_entry_row = row
+        row = row + 1
 
         # Set up Save button
-        label = Gtk.Label(label = "")
-        label.set_size_request(90, -1)
         self.save_button = Gtk.Button(label=_("Save"))
+        self.save_button.set_halign(Gtk.Align.START)
         self.save_button.connect("clicked", self.on_save_clicked)
-        self.save_container = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
-        self.save_container.pack_start(label, False, False, 0)
-        self.save_container.pack_start(self.save_button, False, False, 0)
-        vbox.pack_start(self.save_container, False, False, 0)
+        self.detail_grid.attach(self.save_button, 1, row, 1, 1)
+        save_row = row
+        row = row + 1
 
         # Set up the tagger line
         label = Gtk.Label(label = _("Tagger:"))
-        label.set_size_request(90, -1)
-        label.set_properties(xalign=0,yalign=0)
+        label.set_properties(xalign=0, yalign=0)
         self.tagger_label = Gtk.Label(label = "")
-        self.tagger_label.set_properties(xalign=0,yalign=0,selectable=True)
+        self.tagger_label.set_properties(xalign=0, yalign=0, selectable=True)
+        self.tagger_label.set_hexpand(True)
         self.tagger_label.set_line_wrap(True)
-        self.tagger_container = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
-        self.tagger_container.pack_start(label, False, False, 0)
-        self.tagger_container.pack_start(self.tagger_label, False, False, 0)
-        vbox.pack_start(self.tagger_container, False, False, 0)
+        self.detail_grid.attach(label, 0, row, 1, 1)
+        self.detail_grid.attach(self.tagger_label, 1, row, 2, 1)
+        tagger_row = row
+        row = row + 1
 
         # Set up the Date line
         label = Gtk.Label(label = _("Date:"))
-        label.set_size_request(90, -1)
-        label.set_properties(xalign=0,yalign=0)
+        label.set_properties(xalign=0, yalign=0)
         self.date_label = Gtk.Label(label = "")
-        self.date_label.set_properties(xalign=0,yalign=0,selectable=True)
-        self.date_container = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
-        self.date_container.pack_start(label, False, False, 0)
-        self.date_container.pack_start(self.date_label, False, False, 0)
-        vbox.pack_start(self.date_container, False, False, 0)
+        self.date_label.set_properties(xalign=0, yalign=0, selectable=True)
+        self.date_label.set_hexpand(True)
+        self.detail_grid.attach(label, 0, row, 1, 1)
+        self.detail_grid.attach(self.date_label, 1, row, 2, 1)
+        date_row = row
+        row = row + 1
 
         # Set up the Revision line
         label = Gtk.Label(label = _("Revision:"))
-        label.set_size_request(90, -1)
-        label.set_properties(xalign=0,yalign=0)
+        label.set_properties(xalign=0, yalign=0)
         self.revision_label = Gtk.Label(label = "")
-        self.revision_label.set_properties(xalign=0,selectable=True)
+        self.revision_label.set_properties(xalign=0, selectable=True)
+        self.revision_label.set_hexpand(True)
         self.revision_label.set_line_wrap(True)
-        self.revision_container = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
-        self.revision_container.pack_start(label, False, False, 0)
-        self.revision_container.pack_start(self.revision_label, False, False, 0)
-        vbox.pack_start(self.revision_container, False, False, 0)
+        self.detail_grid.attach(label, 0, row, 1, 1)
+        self.detail_grid.attach(self.revision_label, 1, row, 2, 1)
+        revision_row = row
+        row = row + 1
 
         # Set up the Log Message line
         label = Gtk.Label(label = _("Message:"))
-        label.set_size_request(90, -1)
-        label.set_properties(xalign=0,yalign=0)
+        label.set_properties(xalign=0, yalign=0)
         self.message_label = Gtk.Label(label = "")
-        self.message_label.set_properties(xalign=0,yalign=0,selectable=True)
+        self.message_label.set_properties(xalign=0, yalign=0, selectable=True)
+        self.message_label.set_hexpand(True)
         self.message_label.set_line_wrap(True)
         self.message_label.set_size_request(250, -1)
-        self.message_container = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
-        self.message_container.pack_start(label, False, False, 0)
-        self.message_container.pack_start(self.message_label, False, False, 0)
-        vbox.pack_start(self.message_container, False, False, 0)
+        self.detail_grid.attach(label, 0, row, 1, 1)
+        self.detail_grid.attach(self.message_label, 1, row, 2, 1)
+        message_row = row
+        row = row + 1
 
-        self.add_containers = [self.tag_name_container, self.message_entry_container,
-            self.start_point_container, self.save_container]
+        self.add_rows = [tag_name_row, message_entry_row,
+            start_point_row, save_row]
 
-        self.view_containers = [self.tag_name_container, self.tagger_container,
-            self.date_container, self.revision_container, self.message_container]
+        self.view_rows = [tag_name_row, tagger_row,
+            date_row, revision_row, message_row]
 
-        self.all_containers = [self.tag_name_container,  self.tagger_container,
-            self.date_container, self.revision_container, self.message_container,
-            self.message_entry_container, self.save_container, self.start_point_container]
-
-        vbox.show()
-        self.detail_container.add(vbox)
+        self.detail_grid.show()
+        self.detail_container.add(self.detail_grid)
 
     def load(self, callback, *args, **kwargs):
         self.items_treeview.clear()
@@ -255,18 +256,21 @@ class GitTagManager(InterfaceView):
         else:
             self.show_add()
 
-    def show_containers(self, containers):
-        for container in self.all_containers:
-            container.hide()
-        for container in containers:
-            container.show_all()
+    def show_rows(self, rows):
+        self.detail_grid.hide()
+        for w in self.detail_grid.get_children():
+            if self.detail_grid.child_get_property(w, "top-attach") in rows:
+                w.show_all()
+            else:
+                w.hide()
+        self.detail_grid.show()
 
     def show_add(self):
         self.items_treeview.unselect_all()
         self.tag_entry.set_text("")
         self.message_entry.set_text("")
         self.save_button.set_label(_("Add"))
-        self.show_containers(self.add_containers)
+        self.show_rows(self.add_rows)
         self.get_widget("detail_label").set_markup(_("<b>Add Tag</b>"))
 
     def show_detail(self, tag_name):
@@ -284,7 +288,7 @@ class GitTagManager(InterfaceView):
             self.tagger_label.set_text(helper.to_text(self.selected_tag.tagger))
             self.date_label.set_text(helper.format_datetime(datetime.fromtimestamp(self.selected_tag.tag_time)))
 
-            self.show_containers(self.view_containers)
+            self.show_rows(self.view_rows)
             self.get_widget("detail_label").set_markup(_("<b>Tag Detail</b>"))
 
 

@@ -87,9 +87,10 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         InterfaceView.__init__(self, "property_editor", "PropertyEditor")
 
         note = rabbitvcs.ui.wraplabel.WrapLabel(PROP_EDITOR_NOTE)
+        note.set_hexpand(True)
         note.set_use_markup(True)
 
-        self.get_widget("note_box").pack_start(note, True, True, 0)
+        self.get_widget("note_box").add(note)
         self.get_widget("note_box").show_all()
 
         self.path = path

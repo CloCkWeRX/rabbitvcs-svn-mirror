@@ -308,8 +308,8 @@ class Settings(InterfaceView):
             _("Select a program"), "/usr/bin"
         )
         path = chooser.run()
-        path = path.replace("file://", "")
-        if path is not None:
+        if not path is None:
+            path = path.replace("file://", "")
             self.get_widget("diff_tool").set_text(path)
 
     def on_cache_clear_repositories_clicked(self, widget):

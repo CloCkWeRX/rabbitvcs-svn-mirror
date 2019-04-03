@@ -242,9 +242,9 @@ class SVNMerge(InterfaceView):
         if current == 1:
             self.on_mergerange_prepare()
         elif current == 2:
-            self.on_merge_reintegrate_prepare()
-        elif current == 3:
             self.on_mergetree_prepare()
+        elif current == 3:
+            self.on_merge_reintegrate_prepare()
         elif current == 4:
             self.on_mergeoptions_prepare()
 
@@ -258,12 +258,12 @@ class SVNMerge(InterfaceView):
                 self.type = "range"
                 if self.revision_range:
                     self.get_widget("mergerange_revisions").set_text(self.revision_range)
-            elif self.get_widget("mergetype_reintegrate_opt").get_active():
-                next = 2
-                self.type = "reintegrate"
             elif self.get_widget("mergetype_tree_opt").get_active():
-                next = 3
+                next = 2
                 self.type = "tree"
+            elif self.get_widget("mergetype_reintegrate_opt").get_active():
+                next = 3
+                self.type = "reintegrate"
         else:
             next = 4
 
@@ -297,7 +297,8 @@ class SVNMerge(InterfaceView):
         )
 
     def on_mergerange_log1_closed(self, data):
-        self.get_widget("mergerange_revisions").set_text(data)
+        if not data is None:
+            self.get_widget("mergerange_revisions").set_text(data)
 
     def on_mergerange_from_urls_changed(self, widget):
         self.mergerange_check_ready()
@@ -423,7 +424,7 @@ class SVNMerge(InterfaceView):
     #
 
     def on_mergeoptions_prepare(self):
-        if self.last_page == 2:
+        if self.last_page == 3:
             self.get_widget("mergeoptions_recursive").hide()
             self.get_widget("mergeoptions_ignore_ancestry").hide()
             self.get_widget("mergeoptions_only_record").hide()
@@ -478,7 +479,7 @@ class GitMerge(BranchMerge):
         self.info = {"from":{}, "to":{}}
 
         # FROM BRANCH INFO #
-        from_container = self.get_widget("from_branch_info")
+        from_container = rabbitvcs.ui.widget.Box(self.get_widget("from_branch_info"), vertical = True)
 
         # Set up the Author line
         author = Gtk.Label(label = _("Author:"))
@@ -487,7 +488,7 @@ class GitMerge(BranchMerge):
         self.info['from']['author'] = Gtk.Label(label = "")
         self.info['from']['author'].set_properties(xalign=0,yalign=0,selectable=True)
         self.info['from']['author'].set_line_wrap(True)
-        author_container = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
+        author_container = rabbitvcs.ui.widget.Box()
         author_container.pack_start(author, False, False, 0)
         author_container.pack_start(self.info['from']['author'], False, False, 0)
         from_container.pack_start(author_container, False, False, 0)
@@ -498,7 +499,7 @@ class GitMerge(BranchMerge):
         date.set_properties(xalign=0,yalign=0)
         self.info['from']['date'] = Gtk.Label(label = "")
         self.info['from']['date'].set_properties(xalign=0,yalign=0,selectable=True)
-        date_container = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
+        date_container = rabbitvcs.ui.widget.Box()
         date_container.pack_start(date, False, False, 0)
         date_container.pack_start(self.info['from']['date'], False, False, 0)
         from_container.pack_start(date_container, False, False, 0)
@@ -510,7 +511,7 @@ class GitMerge(BranchMerge):
         self.info['from']['revision'] = Gtk.Label(label = "")
         self.info['from']['revision'].set_properties(xalign=0,selectable=True)
         self.info['from']['revision'].set_line_wrap(True)
-        revision_container = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
+        revision_container = rabbitvcs.ui.widget.Box()
         revision_container.pack_start(revision, False, False, 0)
         revision_container.pack_start(self.info['from']['revision'], False, False, 0)
         from_container.pack_start(revision_container, False, False, 0)
@@ -523,7 +524,7 @@ class GitMerge(BranchMerge):
         self.info['from']['message'].set_properties(xalign=0,yalign=0,selectable=True)
         self.info['from']['message'].set_line_wrap(True)
         self.info['from']['message'].set_size_request(250, -1)
-        message_container = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
+        message_container = rabbitvcs.ui.widget.Box()
         message_container.pack_start(message, False, False, 0)
         message_container.pack_start(self.info['from']['message'], False, False, 0)
         from_container.pack_start(message_container, False, False, 0)
