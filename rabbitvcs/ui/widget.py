@@ -24,6 +24,7 @@ from six.moves import range
 
 import os
 import os.path
+from locale import getlocale, LC_MESSAGES
 
 import gi
 gi.require_version("Gtk", "3.0")
@@ -908,7 +909,13 @@ class TextView:
 
         if HAS_GTKSPELL and spellcheck:
             try:
-                GtkSpell.Checker().attach(self.view)
+                checker = GtkSpell.Checker()
+                try:
+                    checker.set_language(getlocale(LC_MESSAGES)[0])
+                except:
+                    checker = None          # Language not available.
+                if checker:
+                    checker.attach(self.view)
             except Exception as e:
                 log.exception(e)
 
