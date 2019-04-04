@@ -44,7 +44,7 @@ CHECKER_UNKNOWN_INFO = _("Unknown")
 CHECKER_SERVICE_ERROR = _(
 "There was an error communicating with the status checker service.")
 
-from locale import getdefaultlocale
+from locale import getdefaultlocale, getlocale, LC_MESSAGES
 
 class Settings(InterfaceView):
     def __init__(self, base_dir=None):
@@ -54,20 +54,9 @@ class Settings(InterfaceView):
 
         InterfaceView.__init__(self, "settings", "Settings")
 
+        self.checker_service = None
         self.settings = rabbitvcs.util.settings.SettingsManager()
 
-        langs = []
-        language = os.environ.get('LANGUAGE', None)
-        if language:
-            langs += language.split(":")
-
-        self.language = rabbitvcs.ui.widget.ComboBox(
-            self.get_widget("language"),
-            langs
-        )
-        self.language.set_active_from_value(
-            self.settings.get("general", "language")
-        )
         self.get_widget("enable_attributes").set_active(
             int(self.settings.get("general", "enable_attributes"))
         )
@@ -147,23 +136,27 @@ class Settings(InterfaceView):
         self._populate_checker_tab()
 
     def _get_checker_service(self, report_failure=True):
-        checker_service = None
-        try:
-            session_bus = dbus.SessionBus()
-            checker_service = session_bus.get_object(
+        if not self.checker_service:
+            try:
+                session_bus = dbus.SessionBus()
+                self.checker_service = session_bus.get_object(
                                     rabbitvcs.services.checkerservice.SERVICE,
                                     rabbitvcs.services.checkerservice.OBJECT_PATH)
-        except dbus.DBusException as ex:
-            if report_failure:
-                rabbitvcs.ui.dialog.MessageBox(CHECKER_SERVICE_ERROR)
+                # Initialize service locale in case it just started.
+                self.checker_service.SetLocale(*getlocale(LC_MESSAGES))
+            except dbus.DBusException as ex:
+                if report_failure:
+                    rabbitvcs.ui.dialog.MessageBox(CHECKER_SERVICE_ERROR)
 
-        return checker_service
+        return self.checker_service
 
-    def _populate_checker_tab(self, report_failure=True):
+    def _populate_checker_tab(self, report_failure = True, connect = True):
         # This is a limitation of GLADE, and can be removed when we migrate to
         # GTK2 Builder
 
-        checker_service = self._get_checker_service(report_failure)
+        checker_service = self.checker_service
+        if not checker_service and connect:
+            checker_service = self._get_checker_service(report_failure)
 
         self.get_widget("stop_checker").set_sensitive(bool(checker_service))
 
@@ -178,12 +171,15 @@ class Settings(InterfaceView):
             else:
                 self.get_widget("memory_usage").set_text(CHECKER_UNKNOWN_INFO)
 
+            self.get_widget("locale").set_text(".".join(checker_service.SetLocale()))
+
             self._populate_info_table(checker_service.ExtraInformation())
 
         else:
             self.get_widget("checker_type").set_text(CHECKER_UNKNOWN_INFO)
             self.get_widget("pid").set_text(CHECKER_UNKNOWN_INFO)
             self.get_widget("memory_usage").set_text(CHECKER_UNKNOWN_INFO)
+            self.get_widget("locale").set_text(CHECKER_UNKNOWN_INFO)
             self._clear_info_table()
 
     def _clear_info_table(self):
@@ -204,14 +200,14 @@ class Settings(InterfaceView):
         self._populate_checker_tab()
 
     def _stop_checker(self):
-        checker_service = self._get_checker_service(False)
         pid = None
-        if(checker_service):
+        if self.checker_service:
             try:
-                pid = checker_service.Quit()
+                pid = self.checker_service.Quit()
             except dbus.exceptions.DBusException:
                 # Ignore it, it will necessarily happen when we kill the service
                 pass
+        self.checker_service = None
         if pid:
             try:
                 os.waitpid(pid, 0)
@@ -226,7 +222,7 @@ class Settings(InterfaceView):
 
     def on_stop_checker_clicked(self, widget):
         self._stop_checker()
-        self._populate_checker_tab(report_failure=False)
+        self._populate_checker_tab(report_failure = False, connect = False)
 
     def on_destroy(self, widget):
         Gtk.main_quit()
@@ -242,10 +238,6 @@ class Settings(InterfaceView):
         self.save()
 
     def save(self):
-        self.settings.set(
-            "general", "language",
-            self.language.get_active_text()
-        )
         self.settings.set(
             "general", "enable_attributes",
             self.get_widget("enable_attributes").get_active()

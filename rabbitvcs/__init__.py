@@ -23,7 +23,7 @@ from __future__ import absolute_import
 
 import os
 import gettext as _gettext
-from locale import getdefaultlocale
+from locale import getdefaultlocale, getlocale, LC_MESSAGES
 
 # Hack to make RabbitVCS win in the battle against TortoiseHg
 try:
@@ -50,8 +50,27 @@ if getdefaultlocale()[0] != None:
 
 _gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
 _gettext.textdomain(APP_NAME)
+current_translation = None
 
-gettext = _gettext.translation(APP_NAME, LOCALE_DIR, languages=langs, fallback=True)
+class gettext():
+    @staticmethod
+    def set_language(langs):
+        global current_translation
+        current_translation = _gettext.translation(APP_NAME,
+                                                   LOCALE_DIR,
+                                                   languages = langs,
+                                                   fallback = True)
+    @staticmethod
+    def gettext(message):
+        if not current_translation:
+            return message
+        return current_translation.gettext(message)
+
+    @staticmethod
+    def ngettext(msgid1, msgid2, n):
+        return gettext.gettext(msgid1 if n == 1 else msgid2)
+
+gettext.set_language(langs)
 
 def package_name():
     """

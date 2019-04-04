@@ -47,6 +47,7 @@ from __future__ import absolute_import
 import os, os.path
 import sys
 import json
+import locale
 
 from gi.repository import GObject
 from gi.repository import GLib
@@ -151,8 +152,11 @@ class StatusCheckerService(dbus.service.Object):
     def MemoryUsage(self):
         own_mem = helper.process_memory(os.getpid())
         checker_mem = self.status_checker.get_memory_usage()
-
         return own_mem + checker_mem
+
+    @dbus.service.method(INTERFACE)
+    def SetLocale(self, language = None, encoding = None):
+        return rabbitvcs.util._locale.set_locale(language, encoding)
 
     @dbus.service.method(INTERFACE)
     def PID(self):
@@ -259,6 +263,8 @@ class StatusCheckerStub:
         try:
             self.status_checker = self.session_bus.get_object(SERVICE,
                                                               OBJECT_PATH)
+            # Sets the checker locale.
+            self.status_checker.SetLocale(*locale.getlocale(locale.LC_MESSAGES))
         except dbus.DBusException as ex:
             # There is not much we should do about this...
             log.exception(ex)

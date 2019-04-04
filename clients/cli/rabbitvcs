@@ -26,7 +26,12 @@ from optparse import OptionParser
 
 from rabbitvcs.util.helper import launch_ui_window
 
-usage = """Usage: rabbitvcs <module> [path1] [path2] ...
+from rabbitvcs.util._locale import initialize_locale
+from rabbitvcs import gettext
+_ = gettext.gettext
+
+initialize_locale()
+usage = _("""Usage: rabbitvcs <module> [path1] [path2] ...
 
 Available Modules
 ------------------
@@ -34,8 +39,8 @@ Available Modules
 SVN:
     about, add, annotate, applypatch, branch, browser, changes, checkmods, 
     checkout, cleanup, commit, createpatch, create, delete, diff, editconflicts,
-    export, ignore, import, lock, log, merge, properties, open, relocate, rename, 
-    markresolved, revert, settings, switch, unlock, update, updateto
+    export, ignore, import, lock, log, merge, properties, open, relocate,
+    rename, markresolved, revert, settings, switch, unlock, update, updateto
 
 Git:
     about, add, annotate, applybranch, branches, changes, checkout, clean, 
@@ -44,7 +49,7 @@ Git:
     tags, update
 
 For module specific help type: rabbitvcs <module> -h
-"""
+""")
 
 args = sys.argv
 
