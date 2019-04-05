@@ -475,7 +475,7 @@ class SVNLog(Log):
         self.check_next_sensitive()
 
         for item in self.display_items:
-            msg = helper.format_long_text(item.message, 80)
+            msg = helper.format_long_text(item.message, cols = 80, line1only = True)
             rev = item.revision
             color = "#000000"
             if (self.merge_candidate_revisions != None and
@@ -737,7 +737,7 @@ class GitLog(Log):
         self.display_items = []
 
         for item in self.revision_items:
-            msg = helper.html_escape(item.message).lower()
+            msg = item.message.lower()
 
             should_add = not self.filter_text
             should_add = should_add or msg.find(self.filter_text) > -1
@@ -766,7 +766,7 @@ class GitLog(Log):
         index = 0
         for (item, node, in_lines, out_lines) in grapher:
             revision = helper.to_text(item.revision)
-            msg = helper.html_escape(helper.format_long_text(item.message, 80))
+            msg = helper.html_escape(helper.format_long_text(item.message, cols = 80, line1only = True))
             author = item.author
             date = helper.format_datetime(item.date)
 
