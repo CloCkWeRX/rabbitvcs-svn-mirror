@@ -816,7 +816,7 @@ class RabbitVCSAction(Action):
         self.sub_actions = sub_actions
 
     def create_menu_item(self):
-        menu_item = super().create_menu_item()
+        menu_item = super(RabbitVCSAction, self).create_menu_item()
         if self.sub_actions is not None:
             menu = Gtk.Menu()
             menu_item.set_submenu(menu)

@@ -38,8 +38,6 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import GObject, Gtk, Thunarx
 
-import pysvn
-
 from rabbitvcs.vcs.svn import SVN
 
 import os
@@ -50,7 +48,7 @@ import rabbitvcs.ui.property_page
 from rabbitvcs.util.helper import launch_ui_window, launch_diff_tool
 from rabbitvcs.util.helper import get_file_extension, get_common_directory
 from rabbitvcs.util.helper import pretty_timedelta
-from rabbitvcs.util.helper import to_text unquote
+from rabbitvcs.util.helper import to_text, unquote
 from rabbitvcs.util.decorators import timeit, disable
 from rabbitvcs.util.contextmenu import MenuBuilder, MainContextMenu, SEPARATOR
 
@@ -183,7 +181,7 @@ class RabbitVCS(GObject.GObject, Thunarx.MenuProvider, Thunarx.PropertyPageProvi
         paths = []
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = realpath(to_text(self.get_local_path(item), "utf-8"))
+                path = realpath(to_text(self.get_local_path(item)))
                 paths.append(path)
                 self.nautilusVFSFile_table[path] = item
 
@@ -210,14 +208,12 @@ class RabbitVCS(GObject.GObject, Thunarx.MenuProvider, Thunarx.PropertyPageProvi
         """
 
         if not self.valid_uri(item.get_uri()): return
-        path = realpath(to_text(self.get_local_path(item), "utf-8"))
+        path = realpath(to_text(self.get_local_path(item)))
         self.nautilusVFSFile_table[path] = item
 
         # log.debug("get_background_items() called")
 
         window.base_dir = path
-
-        print(window.base_dir)
 
         return ThunarxMainContextMenu(self, path, [path]).get_menu()
 
@@ -316,7 +312,7 @@ class RabbitVCS(GObject.GObject, Thunarx.MenuProvider, Thunarx.PropertyPageProvi
         paths = []
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = realpath(to_text(self.get_local_path(item), "utf-8"))
+                path = realpath(to_text(self.get_local_path(item)))
                 paths.append(path)
                 self.nautilusVFSFile_table[path] = item
 
@@ -325,7 +321,7 @@ class RabbitVCS(GObject.GObject, Thunarx.MenuProvider, Thunarx.PropertyPageProvi
         label = rabbitvcs.ui.property_page.PropertyPageLabel().get_widget()
         page = rabbitvcs.ui.property_page.PropertyPage(paths).get_widget()
 
-        ppage = thunarx.PropertyPage("")
+        ppage = Thunarx.PropertyPage.new("")
         ppage.set_label_widget(label)
         ppage.add(page)
 
@@ -335,7 +331,7 @@ from rabbitvcs.util.contextmenuitems import *
 
 class ThunarxContextMenu(MenuBuilder):
     """
-    Provides a standard Nautilus context menu (ie. a list of
+    Provides a standard Thunar context menu (ie. a list of
     "Thunarx.MenuItem"s).
     """
 
