@@ -1027,6 +1027,7 @@ class RevisionSelector:
         self.revision_changed_callback = revision_changed_callback
         self.revision_change_inprogress = False
         hbox = Box(spacing = 4)
+        hbox.set_hexpand(expand)
 
         if self.url_combobox:
             self.url_combobox.cb.connect("changed", self.__on_url_combobox_changed)
