@@ -638,7 +638,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
 
         if len(paths) == 0: return []
 
-        label = rabbitvcs.ui.property_page.PropertyPageLabel(claim_domain=False).get_widget()
+        label = rabbitvcs.ui.property_page.PropertyPageLabel(claim_domain=False).get_widget("rabbitvcs-title")
         page = rabbitvcs.ui.property_page.PropertyPage(paths, claim_domain=False).get_widget()
 
         ppage = Nemo.PropertyPage(name='RabbitVCS::PropertyPage',
