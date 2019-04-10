@@ -406,20 +406,6 @@ class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
 
         return ()
 
-    def get_file_items(self, window, items):
-        paths = []
-        for item in items:
-            if self.valid_uri(item.get_uri()):
-                path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
-                paths.append(path)
-                self.nautilusVFSFile_table[path] = item
-
-        if len(paths) == 0: return []
-
-        # log.debug("get_file_items() called")
-
-        return NautilusMainContextMenu(self, window.base_dir, paths).get_menu()
-
     def update_file_items(self, provider, base_dir, paths, conditions_dict):
         paths_str = "-".join(paths)
         self.items_cache[paths_str] =  conditions_dict
@@ -467,6 +453,13 @@ class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
 
         # log.debug("get_background_items_full() called")
 
+        # Schedule menu conditions computation for directory contents.
+        for file in os.listdir(path):
+            subpath = os.path.join(path, file)
+            if not subpath in self.items_cache:
+                self.items_cache[subpath] = "in-progress"
+                self.status_checker.generate_menu_conditions_async(provider, path, [subpath], self.update_background_items)
+
         conditions_dict = None
         if path in self.items_cache:
             conditions_dict = self.items_cache[path]
@@ -482,17 +475,6 @@ class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
             self.items_cache[path] = "in-progress"
 
         return ()
-
-    def get_background_items(self, window, item):
-        if not self.valid_uri(item.get_uri()): return
-        path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
-        self.nautilusVFSFile_table[path] = item
-
-        # log.debug("get_background_items() called")
-
-        window.base_dir = path
-
-        return NautilusMainContextMenu(self, path, [path]).get_menu()
 
     def update_background_items(self, provider, base_dir, paths, conditions_dict):
         paths_str = "-".join(paths)
