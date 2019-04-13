@@ -70,7 +70,7 @@ RabbitVCS is the core library and set of dialogs, but you interact with them
 through our clients. Each client needs to be purposefully installed and has
 its own README. Here is a list of our currently working clients:
 
- * [Nautilus 3](https://github.com/rabbitvcs/rabbitvcs/tree/master/clients/nautilus-3.0)
+ * [Nautilus](https://github.com/rabbitvcs/rabbitvcs/tree/master/clients/nautilus)
  * [Thunar](https://github.com/rabbitvcs/rabbitvcs/tree/master/clients/thunar)
  * [Nemo](https://github.com/rabbitvcs/rabbitvcs/tree/master/clients/nemo)
  * [Caja](https://github.com/rabbitvcs/rabbitvcs/tree/master/clients/caja)
