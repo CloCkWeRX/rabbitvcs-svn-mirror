@@ -1,22 +1,22 @@
 from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -40,26 +40,26 @@ _ = gettext.gettext
 class Checkout(InterfaceView):
     """
     Provides an interface to check out a working copy.
-    
+
     Pass it the destination path.
-    
+
     """
 
     def __init__(self, path=None, url=None, revision=None):
         InterfaceView.__init__(self, "checkout", "Checkout")
-        
+
         self.path = path
         self.vcs = rabbitvcs.vcs.VCS()
 
         self.repositories = rabbitvcs.ui.widget.ComboBox(
-            self.get_widget("repositories"), 
+            self.get_widget("repositories"),
             helper.get_repository_paths()
         )
-        
+
         # We must set a signal handler for the Gtk.Entry inside the combobox
         # Because glade will not retain that information
         self.repositories.set_child_signal(
-            "key-release-event", 
+            "key-release-event",
             self.on_repositories_key_released
         )
 
@@ -70,9 +70,9 @@ class Checkout(InterfaceView):
 
         if url is not None:
             self.repositories.set_child_text(url)
-        
+
         self.complete = False
-        
+
     #
     # UI Signal Callback Methods
     #
@@ -82,7 +82,7 @@ class Checkout(InterfaceView):
             path = helper.unquote(path)
             path = path[7:]
         return path
-            
+
     def _get_path(self):
         path = self._parse_path(self.get_widget("destination").get_text())
         return os.path.normpath(path)
@@ -108,7 +108,7 @@ class Checkout(InterfaceView):
 
     def on_repo_chooser_clicked(self, widget, data=None):
         from rabbitvcs.ui.browser import SVNBrowserDialog
-        SVNBrowserDialog(self.repositories.get_active_text(), 
+        SVNBrowserDialog(self.repositories.get_active_text(),
             callback=self.on_repo_chooser_closed)
 
     def on_repo_chooser_closed(self, new_url):
@@ -121,7 +121,7 @@ class Checkout(InterfaceView):
             self.complete = False
         if self.get_widget("destination").get_text() == "":
             self.complete = False
-        
+
         self.get_widget("ok").set_sensitive(self.complete)
 
 
@@ -150,13 +150,13 @@ class SVNCheckout(Checkout):
         path = self._get_path()
         omit_externals = self.get_widget("omit_externals").get_active()
         recursive = self.get_widget("recursive").get_active()
-        
+
         if not url or not path:
             rabbitvcs.ui.dialog.MessageBox(_("The repository URL and destination path are both required fields."))
             return
-        
+
         revision = self.revision_selector.get_revision_object()
-    
+
         self.hide()
         self.action = rabbitvcs.ui.action.SVNAction(
             self.svn,
@@ -188,15 +188,15 @@ class SVNCheckout(Checkout):
             append = tmp.pop()
             if append not in ("trunk", "branches", "tags"):
                 break
-                
+
             if append in ("http:", "https:", "file:", "svn:", "svn+ssh:"):
                 append = ""
                 break
-        
+
         self.get_widget("destination").set_text(
             os.path.join(self.destination, append)
         )
-        
+
         self.check_form()
 
 class GitCheckout(GitUpdateToRevision):
@@ -234,7 +234,7 @@ def checkout_factory(vcs, path=None, url=None, revision=None, quiet=False):
             return GitCheckoutQuiet(path)
         else:
             return GitCheckout(path, url, revision)
-    
+
     return classes_map[vcs](path, url, revision)
 
 if __name__ == "__main__":
@@ -243,7 +243,7 @@ if __name__ == "__main__":
         [REVISION_OPT, VCS_OPT, QUIET_OPT],
         usage="Usage: rabbitvcs checkout --vcs=[git|svn] [url] [path]"
     )
-    
+
     # If two arguments are passed:
     #   The first argument is expected to be a url
     #   The second argument is expected to be a path

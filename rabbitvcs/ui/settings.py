@@ -44,30 +44,19 @@ CHECKER_UNKNOWN_INFO = _("Unknown")
 CHECKER_SERVICE_ERROR = _(
 "There was an error communicating with the status checker service.")
 
-from locale import getdefaultlocale
+from locale import getdefaultlocale, getlocale, LC_MESSAGES
 
 class Settings(InterfaceView):
     def __init__(self, base_dir=None):
         """
         Provides an interface to the settings library.
         """
-    
+
         InterfaceView.__init__(self, "settings", "Settings")
 
+        self.checker_service = None
         self.settings = rabbitvcs.util.settings.SettingsManager()
-        
-        langs = []
-        language = os.environ.get('LANGUAGE', None)
-        if language:
-            langs += language.split(":")
 
-        self.language = rabbitvcs.ui.widget.ComboBox(
-            self.get_widget("language"),
-            langs
-        )
-        self.language.set_active_from_value(
-            self.settings.get("general", "language")
-        )
         self.get_widget("enable_attributes").set_active(
             int(self.settings.get("general", "enable_attributes"))
         )
@@ -101,7 +90,7 @@ class Settings(InterfaceView):
         self.get_widget("cache_number_messages").set_text(
             str(self.settings.get("cache", "number_messages"))
         )
-        
+
         self.logging_type = rabbitvcs.ui.widget.ComboBox(
             self.get_widget("logging_type"),
             ["None", "Console", "File", "Both"]
@@ -119,7 +108,7 @@ class Settings(InterfaceView):
         if not val:
             val = "Debug"
         self.logging_level.set_active_from_value(val)
-        
+
         # Git Configuration Editor
         show_git = False
         self.file_editor = None
@@ -129,7 +118,7 @@ class Settings(InterfaceView):
             if vcs.is_in_a_or_a_working_copy(base_dir) and vcs.guess(base_dir)["vcs"] == rabbitvcs.vcs.VCS_GIT:
                 git = vcs.git(base_dir)
                 git_config_files = git.get_config_files(base_dir)
-        
+
                 self.file_editor = rabbitvcs.ui.widget.MultiFileTextEditor(
                     self.get_widget("git_config_container"),
                     _("Config file:"),
@@ -147,43 +136,50 @@ class Settings(InterfaceView):
         self._populate_checker_tab()
 
     def _get_checker_service(self, report_failure=True):
-        checker_service = None
-        try:
-            session_bus = dbus.SessionBus()
-            checker_service = session_bus.get_object(
+        if not self.checker_service:
+            try:
+                session_bus = dbus.SessionBus()
+                self.checker_service = session_bus.get_object(
                                     rabbitvcs.services.checkerservice.SERVICE,
                                     rabbitvcs.services.checkerservice.OBJECT_PATH)
-        except dbus.DBusException as ex:
-            if report_failure:
-                rabbitvcs.ui.dialog.MessageBox(CHECKER_SERVICE_ERROR)
-        
-        return checker_service
+                # Initialize service locale in case it just started.
+                self.checker_service.SetLocale(*getlocale(LC_MESSAGES))
+            except dbus.DBusException as ex:
+                if report_failure:
+                    rabbitvcs.ui.dialog.MessageBox(CHECKER_SERVICE_ERROR)
 
-    def _populate_checker_tab(self, report_failure=True):
+        return self.checker_service
+
+    def _populate_checker_tab(self, report_failure = True, connect = True):
         # This is a limitation of GLADE, and can be removed when we migrate to
         # GTK2 Builder
 
-        checker_service = self._get_checker_service(report_failure)
+        checker_service = self.checker_service
+        if not checker_service and connect:
+            checker_service = self._get_checker_service(report_failure)
 
         self.get_widget("stop_checker").set_sensitive(bool(checker_service))
 
         if(checker_service):
             self.get_widget("checker_type").set_text(checker_service.CheckerType())
             self.get_widget("pid").set_text(str(checker_service.PID()))
-            
+
             memory = checker_service.MemoryUsage()
-                        
+
             if memory:
                 self.get_widget("memory_usage").set_text("%s KB" % memory)
             else:
                 self.get_widget("memory_usage").set_text(CHECKER_UNKNOWN_INFO)
-            
+
+            self.get_widget("locale").set_text(".".join(checker_service.SetLocale()))
+
             self._populate_info_table(checker_service.ExtraInformation())
-            
+
         else:
             self.get_widget("checker_type").set_text(CHECKER_UNKNOWN_INFO)
             self.get_widget("pid").set_text(CHECKER_UNKNOWN_INFO)
             self.get_widget("memory_usage").set_text(CHECKER_UNKNOWN_INFO)
+            self.get_widget("locale").set_text(CHECKER_UNKNOWN_INFO)
             self._clear_info_table()
 
     def _clear_info_table(self):
@@ -192,41 +188,41 @@ class Settings(InterfaceView):
 
     def _populate_info_table(self, info):
         self._clear_info_table()
-        
+
         table_place = self.get_widget("info_table_area")
-        
+
         table = rabbitvcs.ui.widget.KeyValueTable(info)
         table_place.add(table)
         table.show()
-        
-    
+
+
     def on_refresh_info_clicked(self, widget):
         self._populate_checker_tab()
-    
+
     def _stop_checker(self):
-        checker_service = self._get_checker_service(False)
         pid = None
-        if(checker_service):
+        if self.checker_service:
             try:
-                pid = checker_service.Quit()
+                pid = self.checker_service.Quit()
             except dbus.exceptions.DBusException:
                 # Ignore it, it will necessarily happen when we kill the service
                 pass
+        self.checker_service = None
         if pid:
             try:
                 os.waitpid(pid, 0)
             except OSError:
                 # This occurs if the process is already gone.
                 pass
-    
+
     def on_restart_checker_clicked(self, widget):
         self._stop_checker()
         rabbitvcs.services.checkerservice.start()
         self._populate_checker_tab()
-    
+
     def on_stop_checker_clicked(self, widget):
         self._stop_checker()
-        self._populate_checker_tab(report_failure=False)
+        self._populate_checker_tab(report_failure = False, connect = False)
 
     def on_destroy(self, widget):
         Gtk.main_quit()
@@ -237,15 +233,11 @@ class Settings(InterfaceView):
     def on_ok_clicked(self, widget):
         self.save()
         Gtk.main_quit()
-    
+
     def on_apply_clicked(self, widget):
         self.save()
 
     def save(self):
-        self.settings.set(
-            "general", "language",
-            self.language.get_active_text()
-        )
         self.settings.set(
             "general", "enable_attributes",
             self.get_widget("enable_attributes").get_active()
@@ -299,7 +291,7 @@ class Settings(InterfaceView):
             self.logging_level.get_active_text()
         )
         self.settings.write()
-        
+
         if self.file_editor:
             self.file_editor.save()
 
@@ -308,8 +300,8 @@ class Settings(InterfaceView):
             _("Select a program"), "/usr/bin"
         )
         path = chooser.run()
-        path = path.replace("file://", "")
-        if path is not None:
+        if not path is None:
+            path = path.replace("file://", "")
             self.get_widget("diff_tool").set_text(path)
 
     def on_cache_clear_repositories_clicked(self, widget):
@@ -354,7 +346,7 @@ class Settings(InterfaceView):
                         os.remove(filepath)
 
             rabbitvcs.ui.dialog.MessageBox(_("Authentication information cleared"))
-            
+
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main, BASEDIR_OPT

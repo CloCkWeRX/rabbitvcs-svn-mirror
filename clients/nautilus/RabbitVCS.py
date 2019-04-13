@@ -32,7 +32,7 @@ from six.moves import range
 def log_all_exceptions(type, value, tb):
     import sys, traceback
     from rabbitvcs.util.log import Log
-    log = Log("rabbitvcs.util.extensions.nautilus.RabbitVCS")
+    log = Log("rabbitvcs.util.extensions.Nautilus.RabbitVCS")
     log.exception_info("Error caught by master exception hook!",
                        (type, value, tb))
 
@@ -54,15 +54,17 @@ def log_all_exceptions(type, value, tb):
 # sys.excepthook = log_all_exceptions
 
 import copy
+
+import os
+os.environ["REQUIRE_GTK3"] = "1"
+
 import os.path
 from os.path import isdir, isfile, realpath, basename
 import datetime
 
-import gnomevfs
-import nautilus
+from gi.repository import Nautilus, GObject, Gtk, GdkPixbuf
+
 import pysvn
-import gobject
-import gtk
 
 from rabbitvcs.vcs import VCS
 import rabbitvcs.vcs.status
@@ -71,16 +73,18 @@ from rabbitvcs.util.helper import launch_ui_window, launch_diff_tool
 from rabbitvcs.util.helper import get_file_extension, get_common_directory
 from rabbitvcs.util.helper import pretty_timedelta
 from rabbitvcs.util.helper import to_text
+
 from rabbitvcs.util.decorators import timeit, disable
+
 from rabbitvcs.util.contextmenu import MenuBuilder, MainContextMenu, SEPARATOR, ContextMenuConditions
 
 import rabbitvcs.ui
 import rabbitvcs.ui.property_page
 
 from rabbitvcs.util.log import Log, reload_log_settings
-log = Log("rabbitvcs.util.extensions.nautilus.RabbitVCS")
+log = Log("rabbitvcs.util.extensions.Nautilus.RabbitVCS")
 
-from rabbitvcs import gettext
+from rabbitvcs import gettext, get_icon_path
 _ = gettext.gettext
 
 from rabbitvcs import version as EXT_VERSION
@@ -91,8 +95,8 @@ settings = SettingsManager()
 import rabbitvcs.services.service
 from rabbitvcs.services.checkerservice import StatusCheckerStub as StatusChecker
 
-class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
-                 nautilus.ColumnProvider, nautilus.PropertyPageProvider):
+class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
+                 Nautilus.ColumnProvider, Nautilus.PropertyPageProvider, GObject.GObject):
     """
     This is the main class that implements all of our awesome features.
 
@@ -122,16 +126,86 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
     #: use. This is of the form: [("path/to", {...status dict...}), ...]
     statuses_from_callback = []
 
+    def get_local_path(self, path):
+        return path.replace("file://", "")
+
     def __init__(self):
+        factory = Gtk.IconFactory()
+
+        rabbitvcs_icons = [
+            "scalable/actions/rabbitvcs-cancel.svg",
+            "scalable/actions/rabbitvcs-ok.svg",
+            "scalable/actions/rabbitvcs-no.svg",
+            "scalable/actions/rabbitvcs-yes.svg",
+            "scalable/actions/rabbitvcs-settings.svg",
+            "scalable/actions/rabbitvcs-export.svg",
+            "scalable/actions/rabbitvcs-properties.svg",
+            "scalable/actions/rabbitvcs-editprops.svg",
+            "scalable/actions/rabbitvcs-show_log.svg",
+            "scalable/actions/rabbitvcs-delete.svg",
+            "scalable/actions/rabbitvcs-run.svg",
+            "scalable/actions/rabbitvcs-unlock.svg",
+            "scalable/actions/rabbitvcs-dbus.svg",
+            "scalable/actions/rabbitvcs-rename.svg",
+            "scalable/actions/rabbitvcs-help.svg",
+            "scalable/actions/rabbitvcs-update.svg",
+            "scalable/actions/rabbitvcs-diff.svg",
+            "scalable/actions/rabbitvcs-resolve.svg",
+            "scalable/actions/rabbitvcs-about.svg",
+            "scalable/actions/rabbitvcs-add.svg",
+            "scalable/actions/rabbitvcs-changes.svg",
+            "scalable/actions/rabbitvcs-createpatch.svg",
+            "scalable/actions/rabbitvcs-merge.svg",
+            "scalable/actions/rabbitvcs-drive.svg",
+            "scalable/actions/rabbitvcs-stop.svg",
+            "scalable/actions/rabbitvcs-checkout.svg",
+            "scalable/actions/rabbitvcs-import.svg",
+            "scalable/actions/rabbitvcs-branch.svg",
+            "scalable/actions/rabbitvcs-refresh.svg",
+            "scalable/actions/rabbitvcs-editconflicts.svg",
+            "scalable/actions/rabbitvcs-monkey.svg",
+            "scalable/actions/rabbitvcs-applypatch.svg",
+            "scalable/actions/rabbitvcs-switch.svg",
+            "scalable/actions/rabbitvcs-lock.svg",
+            "scalable/actions/rabbitvcs-annotate.svg",
+            "scalable/actions/rabbitvcs-compare.svg",
+            "scalable/actions/rabbitvcs-revert.svg",
+            "scalable/actions/rabbitvcs-bug.svg",
+            "scalable/actions/rabbitvcs-cleanup.svg",
+            "scalable/actions/rabbitvcs-clear.svg",
+            "scalable/actions/rabbitvcs-unstage.svg",
+            "scalable/actions/rabbitvcs-emblems.svg",
+            "scalable/actions/rabbitvcs-relocate.svg",
+            "scalable/actions/rabbitvcs-reset.svg",
+            "scalable/actions/rabbitvcs-asynchronous.svg",
+            "scalable/actions/rabbitvcs-commit.svg",
+            "scalable/actions/rabbitvcs-checkmods.svg",
+            "scalable/apps/rabbitvcs.svg",
+            "scalable/apps/rabbitvcs-small.svg",
+            "16x16/actions/rabbitvcs-push.png"
+        ]
+
+        rabbitvcs_icon_path = get_icon_path()
+        for rel_icon_path in rabbitvcs_icons:
+            icon_path = "%s/%s" % (rabbitvcs_icon_path, rel_icon_path)
+            file = os.path.basename(rel_icon_path)
+            (root, ext) = os.path.splitext(file)
+
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(icon_path)
+            iconset = Gtk.IconSet.new_from_pixbuf(pixbuf)
+            factory.add(root, iconset)
+
+        factory.add_default()
+
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = VCS()
 
         self.status_checker = StatusChecker()
-        
+
         self.status_checker.assert_version(EXT_VERSION)
-        
+
         self.items_cache = {}
-        
+
     def get_columns(self):
         """
         Return all the columns we support.
@@ -139,29 +213,29 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         """
 
         return (
-            nautilus.Column(
-                "RabbitVCS::status_column",
-                "status",
-                _("RVCS Status"),
-                ""
+            Nautilus.Column(
+                name="RabbitVCS::status_column",
+                attribute="status",
+                label=_("RVCS Status"),
+                description=""
             ),
-            nautilus.Column(
-                "RabbitVCS::revision_column",
-                "revision",
-                _("RVCS Revision"),
-                ""
+            Nautilus.Column(
+                name="RabbitVCS::revision_column",
+                attribute="revision",
+                label=_("RVCS Revision"),
+                description=""
             ),
-            nautilus.Column(
-                "RabbitVCS::author_column",
-                "author",
-                _("RVCS Author"),
-                ""
+            Nautilus.Column(
+                name="RabbitVCS::author_column",
+                attribute="author",
+                label=_("RVCS Author"),
+                description=""
             ),
-            nautilus.Column(
-                "RabbitVCS::age_column",
-                "age",
-                _("RVCS Age"),
-                ""
+            Nautilus.Column(
+                name="RabbitVCS::age_column",
+                attribute="age",
+                label=_("RVCS Age"),
+                description=""
             )
         )
 
@@ -186,12 +260,12 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         """
         enable_emblems = bool(int(settings.get("general", "enable_emblems")))
         enable_attrs = bool(int(settings.get("general", "enable_attributes")))
-        
-        if not (enable_emblems or enable_attrs): return nautilus.OPERATION_COMPLETE
-                
-        if not self.valid_uri(item.get_uri()): return nautilus.OPERATION_FAILED
-        
-        path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+
+        if not (enable_emblems or enable_attrs): return Nautilus.OperationResult.COMPLETE
+
+        if not self.valid_uri(item.get_uri()): return Nautilus.OperationResult.FAILED
+
+        path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
 
         # log.debug("update_file_info() called for %s" % path)
 
@@ -209,7 +283,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         # when we remove this line (detected as working copies, even though
         # they are not)? That shouldn't happen.
         is_in_a_or_a_working_copy = self.vcs_client.is_in_a_or_a_working_copy(path)
-        if not is_in_a_or_a_working_copy: return nautilus.OPERATION_COMPLETE
+        if not is_in_a_or_a_working_copy: return Nautilus.OperationResult.COMPLETE
 
         # Do our magic...
 
@@ -241,8 +315,8 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         # FIXME: when did this get disabled?
         if enable_attrs: self.update_columns(item, path, status)
         if enable_emblems: self.update_status(item, path, status)
-        
-        return nautilus.OPERATION_COMPLETE
+
+        return Nautilus.OperationResult.COMPLETE
 
     def update_columns(self, item, path, status):
         """
@@ -278,7 +352,6 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
             item.add_string_attribute(key, value)
 
     def update_status(self, item, path, status):
-        import rabbitvcs.ui
         if status.summary in rabbitvcs.ui.STATUS_EMBLEMS:
             item.add_emblem(rabbitvcs.ui.STATUS_EMBLEMS[status.summary])
 
@@ -309,69 +382,55 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         paths = []
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+                path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
                 paths.append(path)
                 self.nautilusVFSFile_table[path] = item
 
         if len(paths) == 0: return []
-        
+
         # log.debug("get_file_items_full() called")
 
         paths_str = "-".join(paths)
-        
+
         conditions_dict = None
         if paths_str in self.items_cache:
             conditions_dict = self.items_cache[paths_str]
             if conditions_dict and conditions_dict != "in-progress":
                 conditions = NautilusMenuConditions(conditions_dict)
-                menu = NautilusMainContextMenu(self, window.get_data("base_dir"), paths, conditions).get_menu()
+                menu = NautilusMainContextMenu(self, window.base_dir, paths, conditions).get_menu()
                 return menu
-        
+
         if conditions_dict != "in-progress":
-            self.status_checker.generate_menu_conditions_async(provider, window.get_data("base_dir"), paths, self.update_file_items)        
+            self.status_checker.generate_menu_conditions_async(provider, window.base_dir, paths, self.update_file_items)
             self.items_cache[path] = "in-progress"
-            
+
         return ()
-
-    def get_file_items(self, window, items):
-        paths = []
-        for item in items:
-            if self.valid_uri(item.get_uri()):
-                path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
-                paths.append(path)
-                self.nautilusVFSFile_table[path] = item
-
-        if len(paths) == 0: return []
-        
-        # log.debug("get_file_items() called")
-        
-        return NautilusMainContextMenu(self, window.get_data("base_dir"), paths).get_menu()
 
     def update_file_items(self, provider, base_dir, paths, conditions_dict):
         paths_str = "-".join(paths)
         self.items_cache[paths_str] =  conditions_dict
-        self.emit_items_updated_signal(provider)
+        Nautilus.MenuProvider.emit_items_updated_signal(provider)
 
     #~ @disable
     # This is useful for profiling. Rename it to "get_background_items" and then
-    # rename the real function "get_background_items_real". 
+    # rename the real function "get_background_items_real".
     def get_background_items_profile(self, window, item):
         import cProfile
         import rabbitvcs.util.helper
-        
+
         path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()),
                        "utf-8").replace("/", ":")
-        
+
         profile_data_file = os.path.join(
                                rabbitvcs.util.helper.get_home_folder(),
                                "checkerservice_%s.stats" % path)
-        
+
         prof = cProfile.Profile()
         retval = prof.runcall(self.get_background_items_real, window, item)
         prof.dump_stats(profile_data_file)
         log.debug("Dumped: %s" % profile_data_file)
         return retval
-       
+
     def get_background_items_full(self, provider, window, item):
         """
         Menu activated on entering a directory. Builds context menu for File
@@ -389,43 +448,39 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         """
 
         if not self.valid_uri(item.get_uri()): return
-        path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
+        path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
         self.nautilusVFSFile_table[path] = item
 
         # log.debug("get_background_items_full() called")
+
+        # Schedule menu conditions computation for directory contents.
+        for file in os.listdir(path):
+            subpath = os.path.join(path, file)
+            if not subpath in self.items_cache:
+                self.items_cache[subpath] = "in-progress"
+                self.status_checker.generate_menu_conditions_async(provider, path, [subpath], self.update_background_items)
 
         conditions_dict = None
         if path in self.items_cache:
             conditions_dict = self.items_cache[path]
             if conditions_dict and conditions_dict != "in-progress":
                 conditions = NautilusMenuConditions(conditions_dict)
-                menu = NautilusMainContextMenu(self, path, [path], conditions).get_menu()                
+                menu = NautilusMainContextMenu(self, path, [path], conditions).get_menu()
                 return menu
 
-        window.set_data("base_dir", path)
+        window.base_dir = path
 
         if conditions_dict != "in-progress":
             self.status_checker.generate_menu_conditions_async(provider, path, [path], self.update_background_items)
             self.items_cache[path] = "in-progress"
-                    
+
         return ()
-
-    def get_background_items(self, window, item):
-        if not self.valid_uri(item.get_uri()): return
-        path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
-        self.nautilusVFSFile_table[path] = item
-
-        # log.debug("get_background_items() called")
-        
-        window.set_data("base_dir", path)
-        
-        return NautilusMainContextMenu(self, path, [path]).get_menu()
 
     def update_background_items(self, provider, base_dir, paths, conditions_dict):
         paths_str = "-".join(paths)
         conditions = NautilusMenuConditions(conditions_dict)
         self.items_cache[paths_str] =  conditions_dict
-        self.emit_items_updated_signal(provider)
+        Nautilus.MenuProvider.emit_items_updated_signal(provider)
 
     #
     # Helper functions
@@ -486,7 +541,7 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
             return still_going
 
         # Add our callback function on a 1 second timeout
-        gobject.timeout_add_seconds(1, is_process_still_alive)
+        GObject.timeout_add_seconds(1, is_process_still_alive)
 
     #
     # Some other methods
@@ -544,13 +599,12 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
             log.debug("Path [%s] not found in file table" % status.path)
 
     def get_property_pages(self, items):
-
         paths = []
 
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()), "utf-8")
-                
+                path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
+
                 if self.vcs_client.is_in_a_or_a_working_copy(path):
                     paths.append(path)
                     self.nautilusVFSFile_table[path] = item
@@ -560,19 +614,18 @@ class RabbitVCS(nautilus.InfoProvider, nautilus.MenuProvider,
         label = rabbitvcs.ui.property_page.PropertyPageLabel(claim_domain=False).get_widget()
         page = rabbitvcs.ui.property_page.PropertyPage(paths, claim_domain=False).get_widget()
 
-        ppage = nautilus.PropertyPage('RabbitVCS::PropertyPage',
-            label,
-            page)
+        ppage = Nautilus.PropertyPage(name='RabbitVCS::PropertyPage',
+            label=label,
+            page=page)
 
         return [ppage]
-
 
 from rabbitvcs.util.contextmenuitems import *
 
 class NautilusContextMenu(MenuBuilder):
     """
     Provides a standard Nautilus context menu (ie. a list of
-    "nautilus.MenuItem"s).
+    "Nautilus.MenuItem"s).
     """
 
     signal = "activate"
@@ -581,7 +634,7 @@ class NautilusContextMenu(MenuBuilder):
         return item.make_nautilus_menu_item(id_magic)
 
     def attach_submenu(self, menu_node, submenu_list):
-        submenu = nautilus.Menu()
+        submenu = Nautilus.Menu()
         menu_node.set_submenu(submenu)
         [submenu.append_item(item) for item in submenu_list]
 

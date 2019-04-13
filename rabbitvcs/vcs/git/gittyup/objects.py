@@ -30,7 +30,7 @@ class ModifiedStatus(GittyupStatus):
     identifier = "modified"
 
 class KilledStatus(GittyupStatus):
-    identifier = "killed"    
+    identifier = "killed"
 
 class UntrackedStatus(GittyupStatus):
     identifier = "untracked"
@@ -114,7 +114,7 @@ class Tag(GittyupObject):
     @property
     def message(self):
         return self.obj.message
-    
+
     @property
     def tagger(self):
         return self.obj.tagger
@@ -122,7 +122,7 @@ class Tag(GittyupObject):
     @property
     def tag_time(self):
         return self.obj.tag_time
-    
+
     @property
     def tag_timezone(self):
         return self.obj.tag_timezone

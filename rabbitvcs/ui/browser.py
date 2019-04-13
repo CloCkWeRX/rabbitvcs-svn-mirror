@@ -1,22 +1,22 @@
 from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -63,7 +63,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
             self.url = url
 
         self.urls = rabbitvcs.ui.widget.ComboBox(
-            self.get_widget("urls"), 
+            self.get_widget("urls"),
             helper.get_repository_paths()
         )
         if self.url:
@@ -72,21 +72,22 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
         # We must set a signal handler for the Gtk.Entry inside the combobox
         # Because glade will not retain that information
         self.urls.set_child_signal(
-            "key-release-event", 
+            "key-release-event",
             self.on_urls_key_released
         )
 
         self.revision_selector = rabbitvcs.ui.widget.RevisionSelector(
             self.get_widget("revision_container"),
             self.svn,
-            url_combobox=self.urls
+            url_combobox=self.urls,
+            expand=True
         )
 
         self.items = []
         self.list_table = rabbitvcs.ui.widget.Table(
-            self.get_widget("list"), 
-            [rabbitvcs.ui.widget.TYPE_PATH, GObject.TYPE_INT, 
-                GObject.TYPE_INT, GObject.TYPE_STRING, GObject.TYPE_FLOAT], 
+            self.get_widget("list"),
+            [rabbitvcs.ui.widget.TYPE_PATH, GObject.TYPE_INT,
+                GObject.TYPE_INT, GObject.TYPE_STRING, GObject.TYPE_FLOAT],
             [_("Path"), _("Revision"), _("Size"), _("Author"), _("Date")],
             filters=[{
                 "callback": self.file_filter,
@@ -109,8 +110,8 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
                     "column": 4
                 }
             }],
-            filter_types=[GObject.TYPE_STRING, GObject.TYPE_STRING, 
-                GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING], 
+            filter_types=[GObject.TYPE_STRING, GObject.TYPE_STRING,
+                GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING],
             callbacks={
                 "file-column-callback": self.file_column_callback,
                 "row-activated": self.on_row_activated,
@@ -120,7 +121,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
                 "sortable": True
             }
         )
-        
+
         self.clipboard = None
         self.url_clipboard = Gtk.Clipboard()
         self.repo_root_url = None
@@ -138,7 +139,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
         revision = self.revision_selector.get_revision_object()
         self.action.append(
                         self.svn.list,
-                        helper.quote_url(self.url), 
+                        helper.quote_url(self.url),
                         revision=revision, recurse=False)
         self.action.append(self.init_repo_root_url)
         self.action.append(self.populate_table, 0)
@@ -149,7 +150,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
         self.list_table.clear()
         self.items = self.action.get_result(item_index)
         self.items.sort(key = self.sort_files_key)
-        
+
         self.list_table.append(["..", 0, 0, "", 0])
         for item,locked in self.items[1:]:
             self.list_table.append([
@@ -159,7 +160,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
                 item.last_author,
                 item.time
             ])
-    
+
     def init_repo_root_url(self):
         if self.repo_root_url is None and self.svn.is_in_a_or_a_working_copy(self.url):
             action = rabbitvcs.ui.action.SVNAction(self.svn, notification=False, run_in_thread=False)
@@ -216,7 +217,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
 
         if row[column]:
             return os.path.basename(row[column])
-            
+
         return row[column]
 
     def size_filter(self, row, column, user_data=None):
@@ -233,24 +234,24 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
         """
         Table filter to convert revision to a desired format
         """
-        
+
         if row[0] == "..":
             return ""
-        
+
         return row[column]
 
     def date_filter(self, row, column, user_data=None):
         """
         Table filter to convert the item date to something readable
         """
-        
+
         if row[0] == "..":
             return ""
-        
+
         if row[column]:
             change_time = datetime.fromtimestamp(float(row[column]))
             return helper.format_datetime(change_time)
-        
+
         return str(row[column])
 
     def on_list_table_mouse_event(self, treeview, data=None):
@@ -261,7 +262,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
         paths = self.list_table.get_selected_row_items(0)
         if len(paths) == 0:
             paths.append(self.url)
-        
+
         BrowserContextMenu(self, data, None, self.vcs, paths).show()
 
     def update_clipboard(self, action, urls):
@@ -278,10 +279,10 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
 
     def empty_clipboard(self):
         self.clipboard = None
-    
+
     def set_url_clipboard(self, url):
         self.url_clipboard.set_text(url)
-    
+
     def get_repo_root_url(self):
         return self.repo_root_url
 
@@ -293,12 +294,12 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
             self.svn,
             notification=False
         )
-        
+
         exported_paths = []
         for path in paths:
             export_path = helper.get_tmp_path(os.path.basename(paths[0]))
             exported_paths.append(export_path)
-            self.action.append(self.svn.export, paths[0], 
+            self.action.append(self.svn.export, paths[0],
                 export_path, revision=self.revision_selector.get_revision_object())
 
         for path in exported_paths:
@@ -363,26 +364,26 @@ class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
 
     def _open(self, data1=None, data2=None):
         return True
-    
+
     def show_log(self, data1=None, data2=None):
         return True
-    
+
     def annotate(self, data1=None, data2=None):
         if self.path_dict["length"] == 1:
             return (self.caller.file_column_callback(self.paths[0]) == "file")
 
         return False
-    
+
     def checkout(self, data1=None, data2=None):
         return True
-    
+
     def export(self, data1=None, data2=None):
         return True
-        
+
     def rename(self, data1=None):
         revision = self.caller.revision_selector.get_revision_object()
         return (revision.kind == "head")
-    
+
     def delete(self, data1=None, data2=None):
         revision = self.caller.revision_selector.get_revision_object()
         return (revision.kind == "head")
@@ -432,41 +433,41 @@ class BrowserContextMenuCallbacks:
 
     def _open(self, data=None, user_data=None):
         self.caller._open(self.paths)
-    
+
     def show_log(self, data=None, user_data=None):
         helper.launch_ui_window("log", ["--vcs=%s" % self.guess, self.paths[0]])
-    
+
     def annotate(self, data=None, user_data=None):
         urlrev = self.paths[0]
         revision = self.__get_browser_revision()
         if revision.kind == "number":
             urlrev += "@" + revision.value
         helper.launch_ui_window("annotate", [urlrev])
-    
+
     def checkout(self, data=None, user_data=None):
         args = [self.paths[0]]
         revision = self.__get_browser_revision()
         if revision.kind == "number":
             args = ["-r", revision.value] + args
         helper.launch_ui_window("checkout", args)
-    
+
     def export(self, data=None, user_data=None):
         args = [self.paths[0]]
         revision = self.__get_browser_revision()
         if revision.kind == "number":
             args = ["-r", revision.value] + args
         helper.launch_ui_window("export", args)
-        
+
     def rename(self, data=None, user_data=None):
         (base, filename) = os.path.split(self.paths[0])
-    
+
         from rabbitvcs.ui.dialog import OneLineTextChange
         dialog = OneLineTextChange(_("Rename"), _("New Name:"), filename)
         (result, new_name) = dialog.run()
-        
+
         if result == Gtk.ResponseType.CANCEL:
             return
-        
+
         new_url = base.rstrip("/") + "/" + new_name
         path_to_refresh = self.caller.get_url()
         if self.paths[0] == path_to_refresh:
@@ -481,16 +482,16 @@ class BrowserContextMenuCallbacks:
         self.caller.action.append(self.svn.list, path_to_refresh, recurse=False)
         self.caller.action.append(self.caller.populate_table, 1)
         self.caller.action.schedule()
-    
+
     def delete(self, data=None, user_data=None):
-        path_to_refresh = self.caller.get_url() 
-        if self.paths[0] == path_to_refresh:            
+        path_to_refresh = self.caller.get_url()
+        if self.paths[0] == path_to_refresh:
             # If the deleted path is the same as the current path, go to the parent
             path_to_refresh = path_to_refresh.split("/")[0:-1]
             path_to_refresh = "/".join(path_to_refresh)
-        
+
             self.__update_browser_url(path_to_refresh)
-        
+
         self.caller.action = rabbitvcs.ui.action.SVNAction(
             self.svn,
             notification=False
@@ -498,7 +499,7 @@ class BrowserContextMenuCallbacks:
         self.caller.action.append(self.svn.remove, self.paths)
         self.caller.action.append(self.svn.list, path_to_refresh, recurse=False)
         self.caller.action.append(self.caller.populate_table, 1)
-        self.caller.action.schedule()  
+        self.caller.action.schedule()
 
     def create_repository_folder(self, data=None, user_data=None):
         from rabbitvcs.ui.dialog import NewFolder
@@ -506,7 +507,7 @@ class BrowserContextMenuCallbacks:
         result = dialog.run()
         if result is None:
             return
-            
+
         (folder_name, log_message) = result
         new_url = self.paths[0].rstrip("/") + "/" + folder_name
 
@@ -517,12 +518,12 @@ class BrowserContextMenuCallbacks:
         self.caller.action.append(self.svn.mkdir, new_url, log_message)
         self.caller.action.append(self.svn.list, self.paths[0], recurse=False)
         self.caller.action.append(self.caller.populate_table, 1)
-        self.caller.action.schedule()        
+        self.caller.action.schedule()
 
     def browser_copy_to(self, data=None, user_data=None):
         from rabbitvcs.ui.dialog import OneLineTextChange
         dialog = OneLineTextChange(
-            _("Where do you want to copy the selection?"), 
+            _("Where do you want to copy the selection?"),
             _("New Location:"),
             self.caller.get_url()
         )
@@ -551,7 +552,7 @@ class BrowserContextMenuCallbacks:
     def browser_move_to(self, data=None, user_data=None):
         from rabbitvcs.ui.dialog import OneLineTextChange
         dialog = OneLineTextChange(
-            _("Where do you want to move the selection?"), 
+            _("Where do you want to move the selection?"),
             _("New Location:"),
             self.caller.get_url()
         )
@@ -574,23 +575,23 @@ class BrowserContextMenuCallbacks:
 
 class BrowserContextMenu:
     def __init__(self, caller, event, base_dir, vcs, paths=[]):
-        
+
         self.caller = caller
         self.event = event
         self.paths = paths
         self.base_dir = base_dir
         self.vcs = vcs
         self.svn = self.vcs.svn()
-        
+
         self.conditions = BrowserContextMenuConditions(
-            self.vcs, 
+            self.vcs,
             paths,
             self.caller
         )
         self.callbacks = BrowserContextMenuCallbacks(
-            self.caller, 
+            self.caller,
             self.base_dir,
-            self.vcs, 
+            self.vcs,
             paths
         )
 

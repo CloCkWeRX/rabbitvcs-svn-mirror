@@ -1,22 +1,22 @@
 from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -80,7 +80,7 @@ class StatusCache(object):
         status_calculating,
         status_error
     ]
-    
+
     authors = []
     revisions = []
 
@@ -103,8 +103,9 @@ class StatusCache(object):
             except ValueError as e:
                 self.revisions.append(status.revision)
                 revision_index = len(self.revisions) -1
-            
+
             self.cache[path] = (
+                status.__class__,
                 content_index,
                 metadata_index,
                 revision_index,
@@ -113,18 +114,20 @@ class StatusCache(object):
             )
         except Exception as e:
             log.debug(e)
-            
+
     def __getitem__(self, path):
         try:
-            (content_index, metadata_index, revision_index, author_index, date) = self.cache[path]
-            
+            (statusclass, content_index, metadata_index, revision_index, author_index, date) = self.cache[path]
+
             content = self.keys[content_index]
             metadata = self.keys[metadata_index]
             revision = self.revisions[revision_index]
             author = self.authors[author_index]
-            
-            return Status(path, content, metadata, revision=revision, 
+
+            status = Status(path, content, metadata, revision=revision,
                 author=author, date=date)
+            status.__class__ = statusclass
+            return status
         except Exception as e:
             log.debug(e)
 
@@ -134,7 +137,7 @@ class StatusCache(object):
         except KeyError as e:
             log.debug(e)
 
-            
+
     def __contains__(self, path):
         return path in self.cache
 
@@ -146,7 +149,7 @@ class StatusCache(object):
                     statuses.append(self.__getitem__(key))
         else:
             statuses.append(self.__getitem__(path))
-            
+
         return statuses
 
 class Status(object):
@@ -154,49 +157,49 @@ class Status(object):
     @staticmethod
     def status_unknown(path):
         return Status(path, status_unknown, summary = status_unknown)
-    
+
     @staticmethod
     def status_error(path):
         return Status(path, status_error, summary = status_error)
-    
+
     @staticmethod
     def status_calc(path):
         return Status(path, status_calculating, summary = status_calculating)
-    
+
     vcs_type = rabbitvcs.vcs.VCS_DUMMY
- 
+
     clean_statuses = ['unchanged']
-    
+
     content_status_map = None
     metadata_status_map = None
-    
-    def __init__(self, path, content, metadata=None, summary=None, 
+
+    def __init__(self, path, content, metadata=None, summary=None,
             revision=None, author=None, date=None):
 
         """
         The status objects accepts the following items
-        
+
         @type   path: string
         @param  path: The path to the item
-        
+
         @type   content: string
         @param  content: The content status
-        
+
         @type   metadata: string
         @param  metadata: The property status
 
         @type   summary: string
         @param  summary: The summary status
-        
+
         @type   revision: string or int
         @param  revision: The last commit revision of the item
-        
+
         @type   author: string
         @param  author: The commit author
-        
+
         @type   date: int
         @param  date: The timestamp of the commit time
-        
+
         """
 
         self.path = path
@@ -215,7 +218,7 @@ class Status(object):
         Given our text_status and a prop_status, simplify to a single "simple"
         status. If we don't know how to simplify our particular combination of
         status, call it an error.
-        """     
+        """
         # Content status dominates
         single = self.simple_content_status() or status_error
         if single in Status.clean_statuses:
@@ -228,7 +231,7 @@ class Status(object):
             return self.content_status_map.get(self.content)
         else:
             return self.content
-        
+
     def simple_metadata_status(self):
         if self.metadata and self.metadata_status_map:
             return self.metadata_status_map.get(self.metadata)
@@ -237,38 +240,38 @@ class Status(object):
 
     def make_summary(self, child_statuses = []):
         """ Summarises statuses for directories.
-        """    
+        """
         summary = status_unknown
-        
+
         status_set = set([st.single for st in child_statuses])
-        
+
         if not status_set:
             self.summary = self.single
-        
+
         if status_complicated in status_set:
             self.summary = status_complicated
         elif self.single in ["added", "modified", "deleted"]:
             # These take priority over child statuses
-            self.summary = self.single        
+            self.summary = self.single
         elif len(set(MODIFIED_CHILD_STATUSES) & status_set):
             self.summary = status_modified
         else:
             self.summary = self.single
-        
+
         return summary
-    
+
     def is_versioned(self):
         return self.single is not status_unversioned
-            
+
     def is_modified(self):
         # This may need to be more sophisticated... eg. is read-only modified?
-        # Unknown? etc... 
+        # Unknown? etc...
         return self.single is not status_normal
-    
+
     def has_modified(self):
         # Includes self being modified!
-        return self.summary is not status_normal    
-    
+        return self.summary is not status_normal
+
     def __repr__(self):
         return "<%s %s (%s) %s/%s>" % (_("RabbitVCS status for"),
                                         self.path,
@@ -281,7 +284,7 @@ class Status(object):
         attrs['__type__'] = type(self).__name__
         attrs['__module__'] = type(self).__module__
         return attrs
-        
+
     def __setstate__(self, state_dict):
         del state_dict['__type__']
         del state_dict['__module__']
@@ -290,7 +293,7 @@ class Status(object):
 class SVNStatus(Status):
 
     vcs_type = rabbitvcs.vcs.VCS_SVN
-    
+
     content_status_map = {
         'normal': status_normal,
         'added': status_added,
@@ -307,16 +310,16 @@ class SVNStatus(Status):
         'external': status_normal,
         'incomplete': status_complicated
     }
-    
+
     metadata_status_map = {
         'normal': status_normal,
         'none': status_normal,
         'modified': status_modified
         }
-    
+
 #external - an unversioned path populated by an svn:external property
 #incomplete - a directory doesn't contain a complete entries list
-    
+
     def __init__(self, pysvn_status):
         revision = author = date = None
         if pysvn_status.entry:
@@ -346,7 +349,7 @@ class SVNStatus(Status):
 class GitStatus(Status):
 
     vcs_type = 'git'
-    
+
     content_status_map = {
         'normal': status_normal,
         'added': status_added,
@@ -357,7 +360,7 @@ class GitStatus(Status):
         'renamed': status_modified,
         'ignored': status_ignored
     }
-    
+
     metadata_status_map = {
         'normal': status_normal,
         None: status_normal
@@ -371,7 +374,7 @@ class GitStatus(Status):
 
 class MercurialStatus(Status):
     vcs_type = 'mercurial'
-    
+
     content_status_map = {
         'clean': status_normal,
         'added': status_added,
@@ -381,7 +384,7 @@ class MercurialStatus(Status):
         'modified': status_modified,
         'ignored': status_ignored
     }
-    
+
     metadata_status_map = {
         'normal': status_normal,
         None: status_normal
@@ -401,22 +404,22 @@ STATUS_TYPES = [
 ]
 
 class TestStatusObjects(unittest.TestCase):
-    
+
     @classmethod
     def __initclass__(self):
         self.base = "/path/to/test"
         self.children = [
-            os.path.join(self.base, chr(x)) for x in range(97,123) 
+            os.path.join(self.base, chr(x)) for x in range(97,123)
         ]
 
     def testsingle_clean(self):
         status = Status(self.base, status_normal)
         self.assertEqual(status.single, status_normal)
-        
+
     def testsingle_changed(self):
         status = Status(self.base, status_modified)
         self.assertEqual(status.single, status_modified)
-        
+
     def testsingle_propclean(self):
         status = Status(self.base, status_normal, status_normal)
         self.assertEqual(status.single, status_normal)
@@ -424,7 +427,7 @@ class TestStatusObjects(unittest.TestCase):
     def testsingle_propchanged(self):
         status = Status(self.base, status_normal, status_modified)
         self.assertEqual(status.single, status_modified)
-        
+
     def testsummary_clean(self):
         top_status = Status(self.base, status_normal)
         child_sts = [Status(path, status_normal) for path in self.children]
@@ -434,58 +437,58 @@ class TestStatusObjects(unittest.TestCase):
     def testsummary_changed(self):
         top_status = Status(self.base, status_normal)
         child_sts = [Status(path, status_normal) for path in self.children]
-        
+
         child_sts[1] = Status(child_sts[1].path, status_modified)
-        
+
         top_status.make_summary(child_sts)
         self.assertEqual(top_status.summary, status_modified)
 
     def testsummary_added(self):
         top_status = Status(self.base, status_normal)
         child_sts = [Status(path, status_normal) for path in self.children]
-        
+
         child_sts[1] = Status(child_sts[1].path, status_added)
-        
+
         top_status.make_summary(child_sts)
         self.assertEqual(top_status.summary, status_modified)
 
     def testsummary_complicated(self):
         top_status = Status(self.base, status_normal)
         child_sts = [Status(path, status_normal) for path in self.children]
-        
+
         child_sts[1] = Status(child_sts[1].path, status_complicated)
-        
+
         top_status.make_summary(child_sts)
         self.assertEqual(top_status.summary, status_complicated)
 
     def testsummary_propchange(self):
         top_status = Status(self.base, status_normal)
         child_sts = [Status(path, status_normal) for path in self.children]
-        
+
         child_sts[1] = Status(child_sts[1].path,
                               status_normal,
                               status_modified)
-        
+
         top_status.make_summary(child_sts)
         self.assertEqual(top_status.summary, status_modified)
 
     def testsummary_bothchange(self):
         top_status = Status(self.base, status_normal)
         child_sts = [Status(path, status_normal) for path in self.children]
-        
+
         child_sts[1] = Status(child_sts[1].path,
                               status_complicated,
                               status_modified)
-        
+
         top_status.make_summary(child_sts)
         self.assertEqual(top_status.summary, status_complicated)
 
     def testsummary_topadded(self):
         top_status = Status(self.base, status_added)
         child_sts = [Status(path, status_normal) for path in self.children]
-        
+
         child_sts[1] = Status(child_sts[1].path, status_modified, status_modified)
-        
+
         top_status.make_summary(child_sts)
         self.assertEqual(top_status.summary, status_added)
 

@@ -247,7 +247,7 @@ class SVN:
         Look up the status for path.
 
         """
-        
+
         if path in self.cache:
             if invalidate:
                 del self.cache[path]
@@ -279,7 +279,7 @@ class SVN:
                     rabbitvcs_status = rabbitvcs.vcs.status.SVNStatus(st)
                     self.cache[st.path] = rabbitvcs_status
                     statuslist.append(rabbitvcs_status)
-                    
+
                 return statuslist
         except pysvn.ClientError as ex:
             # TODO: uncommenting these might not be a good idea
@@ -298,9 +298,9 @@ class SVN:
         while path_to_check != "/" and path_to_check != "":
             if os.path.isdir(os.path.join(path_to_check, ".svn")):
                 return path_to_check
-            
+
             path_to_check = os.path.split(path_to_check)[0]
-        
+
         return None
 
     def status(self, path, summarize=True, invalidate=False):
@@ -321,7 +321,7 @@ class SVN:
                 if st.path == path:
                     path_status = st
                     break
-            
+
             path_status.make_summary(all_statuses)
         else:
             path_status = all_statuses[0]
@@ -352,8 +352,9 @@ class SVN:
     def is_in_a_or_a_working_copy(self, path):
         if self.is_working_copy(path):
             return True
-
-        return (self.find_repository_path(os.path.split(path)[0]) != "")
+        if self.find_repository_path(os.path.split(path)[0]):
+            return True
+        return False
 
     def is_versioned(self, path):
         if self.is_working_copy(path):
@@ -366,7 +367,7 @@ class SVN:
                     return True
             except Exception as e:
                 log.exception("is_versioned exception for %s" % path)
-                
+
             return False
 
     def is_status(self, path, status_kind):
@@ -412,7 +413,7 @@ class SVN:
         @return:            A list of statuses
 
         """
-        
+
         items = []
 
         for path in paths:
@@ -427,7 +428,7 @@ class SVN:
     def get_remote_updates(self, paths):
         if paths is None:
             return []
-        
+
         items = []
         for path in paths:
             try:
@@ -437,7 +438,7 @@ class SVN:
                 continue
 
             for st in sts:
-                        
+
                 if st.remote_content is None and st.remote_metadata is None:
                     continue
 
@@ -1066,7 +1067,7 @@ class SVN:
         @param  ignore_externals: Omit externals
 
         """
-        
+
         return self.client.copy2(sources, dest_url_or_path, copy_as_child,
             make_parents, None, ignore_externals)
 
@@ -1137,7 +1138,7 @@ class SVN:
         @param  keep_locks: Whether or not to keep locks on commit.
 
         """
-        
+
         kwargs = {"keep_locks": keep_locks}
         try:
             # Simply setting recurse=False will not stop child files from getting
@@ -1147,7 +1148,7 @@ class SVN:
             kwargs["depth"] = (recurse and pysvn.depth.infinity or pysvn.depth.empty)
         except AttributeError:
             kwargs["recurse"] = recurse
-        
+
         retval = self.client.checkin(paths, log_message, **kwargs)
         dummy_commit_dict = {
             "revision": retval,
@@ -1185,32 +1186,32 @@ class SVN:
         for item in log:
             revision = Revision(pysvn.opt_revision_kind.number, item.revision.number)
             date = datetime.fromtimestamp(item.date) if hasattr(item, "date") else datetime(1900, 1, 1)
-            
+
             author = _("(no author)")
             if hasattr(item, "author"):
-                author = item["author"]        
+                author = item["author"]
 
             message = ""
             if hasattr(item, "message"):
                 message = item["message"]
-        
+
             changed_paths = []
             for changed_path in item.changed_paths:
                 copy_from_rev = ""
                 if hasattr(changed_path.copyfrom_revision, "number"):
                     copy_from_rev = self.revision("number", changed_path.copyfrom_revision.number)
-            
+
                 copy_from_path = ""
                 if hasattr(changed_path, "copy_from_path"):
                     copy_from_path = changed_path.copy_from_path
-                    
+
                 changed_paths.append(rabbitvcs.vcs.log.LogChangedPath(
                     changed_path.path,
                     changed_path.action,
                     copy_from_path,
-                    copy_from_rev                    
+                    copy_from_rev
                 ))
-        
+
             returner.append(rabbitvcs.vcs.log.Log(
                 date,
                 revision,
@@ -1219,7 +1220,7 @@ class SVN:
                 changed_paths,
                 None
             ))
-        
+
         return returner
 
     def export(self, src_url_or_path, dest_path, revision=Revision("head"),
@@ -1304,7 +1305,7 @@ class SVN:
         @param  path: The path of the local working copy
 
         """
-        
+
         from_url = helper.urlize(from_url)
         to_url = helper.urlize(to_url)
         return self.client.relocate(from_url, to_url, path, recurse)
@@ -1520,7 +1521,7 @@ class SVN:
         return hasattr(self.client, "merge_peg2")
 
     def merge_trees(self, url_or_path1, revision1, url_or_path2, revision2,
-            local_path, force=False, recurse=True, record_only=False):
+            local_path, force=False, recurse=True, dry_run=False, record_only=False):
         """
         Merge two trees into one.
 
@@ -1545,6 +1546,9 @@ class SVN:
         @type   recurse: boolean
         @param  recurse: Merge children recursively
 
+        @type   dry_run: boolean
+        @param  dry_run: Do a test/dry run or not
+
         @type   record_only: boolean
         @param  record_only: unsure
 
@@ -1554,9 +1558,15 @@ class SVN:
 
         url_or_path1 = helper.urlize(url_or_path1)
         url_or_path2 = helper.urlize(url_or_path2)
-        return self.client.merge(url_or_path1, revision1.primitive(),
-            url_or_path2, revision2.primitive(), local_path, force, recurse,
-            record_only)
+        return self.client.merge(url_or_path1,
+                                 revision1.primitive(),
+                                 url_or_path2,
+                                 revision2.primitive(),
+                                 local_path,
+                                 force = force,
+                                 recurse = recurse,
+                                 dry_run = dry_run,
+                                 record_only = record_only)
 
     def has_merge_reintegrate(self):
         """
@@ -1583,8 +1593,10 @@ class SVN:
 
         """
 
-        return self.client.merge_reintegrate(url_or_path, revision.primitive(),
-            local_path, dry_run)
+        return self.client.merge_reintegrate(url_or_path,
+                                             revision.primitive(),
+                                             local_path,
+                                             dry_run = dry_run)
 
 
     def diff(self, tmp_path, url_or_path, revision1, url_or_path2, revision2,

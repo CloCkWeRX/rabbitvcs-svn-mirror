@@ -14,6 +14,7 @@
     <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Loading</property>
+    <property name="resizable">False</property>
     <property name="window_position">center</property>
     <property name="icon_name">rabbitvcs-small</property>
     <property name="type_hint">dialog</property>
@@ -28,12 +29,16 @@
         <property name="can_focus">False</property>
         <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">6</property>
+        <property name="spacing">18</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox" id="dialog-action_area13">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+            <property name="halign">end</property>
+            <property name="valign">end</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="loading_cancel">
@@ -65,6 +70,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="events">GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK</property>
+            <property name="hexpand">True</property>
           </object>
           <packing>
             <property name="expand">False</property>

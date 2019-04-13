@@ -47,6 +47,7 @@ from __future__ import absolute_import
 import os, os.path
 import sys
 import json
+import locale
 
 from gi.repository import GObject
 from gi.repository import GLib
@@ -92,7 +93,7 @@ def decode_status(json_dict):
     """ Once we get a JSON encoded string out the other side of DBUS, we need to
     reconstitute the original object. This method is based on the pickle module
     in the Python stdlib.
-    """    
+    """
     cl = find_class(json_dict['__module__'], json_dict['__type__'])
     st = None
     if cl in rabbitvcs.vcs.status.STATUS_TYPES:
@@ -133,10 +134,10 @@ class StatusCheckerService(dbus.service.Object):
         @type mainloop: any main loop with a quit() method
         """
         dbus.service.Object.__init__(self, connection, OBJECT_PATH)
-        
+
         self.encoder = json.JSONEncoder(default=encode_status,
                                               separators=(',', ':'))
-        
+
         self.mainloop = mainloop
 
         # Start the status checking daemon so we can do requests in the
@@ -151,8 +152,11 @@ class StatusCheckerService(dbus.service.Object):
     def MemoryUsage(self):
         own_mem = helper.process_memory(os.getpid())
         checker_mem = self.status_checker.get_memory_usage()
-
         return own_mem + checker_mem
+
+    @dbus.service.method(INTERFACE)
+    def SetLocale(self, language = None, encoding = None):
+        return rabbitvcs.util._locale.set_locale(language, encoding)
 
     @dbus.service.method(INTERFACE)
     def PID(self):
@@ -171,7 +175,7 @@ class StatusCheckerService(dbus.service.Object):
                                                   recurse=recurse,
                                                   summary=summary,
                                                   invalidate=invalidate)
-        
+
         return self.encoder.encode(status)
 
     @dbus.service.method(INTERFACE, in_signature='as', out_signature='s')
@@ -179,7 +183,7 @@ class StatusCheckerService(dbus.service.Object):
         upaths = []
         for path in paths:
             upaths.append(helper.to_text(path))
-    
+
         path_dict = self.status_checker.generate_menu_conditions(upaths)
         return json.dumps(path_dict)
 
@@ -259,6 +263,8 @@ class StatusCheckerStub:
         try:
             self.status_checker = self.session_bus.get_object(SERVICE,
                                                               OBJECT_PATH)
+            # Sets the checker locale.
+            self.status_checker.SetLocale(*locale.getlocale(locale.LC_MESSAGES))
         except dbus.DBusException as ex:
             # There is not much we should do about this...
             log.exception(ex)
@@ -268,9 +274,9 @@ class StatusCheckerStub:
         This will use the CheckVersionOrDie method to ensure that either the
         checker service currently running has the correct version, or that it
         is quit and restarted.
-        
+
         Note that if the version of the newly started checker still doesn't
-        match, nothing is done. 
+        match, nothing is done.
         """
         try:
             pid = self.status_checker.CheckVersionOrDie(version)
@@ -286,20 +292,20 @@ class StatusCheckerStub:
                     pass
                 start()
                 self._connect_to_checker()
-                
+
                 try:
                     if not self.status_checker.CheckVersion(version):
                         log.warning("Version mismatch even after restart!")
                 except dbus.DBusException as ex:
                     log.exception(ex)
                     self._connect_to_checker()
-                    
+
 
     def check_status_now(self, path, recurse=False, invalidate=False,
                        summary=False):
-        
+
         status = None
-                
+
         try:
             json_status = self.status_checker.CheckStatus(path,
                                                           recurse, invalidate,
@@ -318,10 +324,10 @@ class StatusCheckerStub:
             self._connect_to_checker()
 
         return status
-        
+
     def check_status_later(self, path, callback, recurse=False,
                            invalidate=False, summary=False):
-        
+
         def real_reply_handler(json_status):
             # Note that this a closure referring to the outer functions callback
             # parameter
@@ -330,17 +336,17 @@ class StatusCheckerStub:
                                         "(asked about %s, got back %s)" % \
                                         (path, status.path)
             callback(status)
-        
+
         def reply_handler(*args, **kwargs):
             # The callback should be performed as a low priority task, so we
             # keep Nautilus as responsive as possible.
             GLib.idle_add(real_reply_handler, *args, **kwargs)
-        
+
         def error_handler(dbus_ex):
             log.exception(dbus_ex)
             self._connect_to_checker()
             callback(rabbitvcs.vcs.status.Status.status_error(path))
-        
+
         try:
             self.status_checker.CheckStatus(path,
                                             recurse, invalidate,
@@ -372,23 +378,23 @@ class StatusCheckerStub:
             return self.check_status_now(path, recurse, invalidate, summary)
 
     def generate_menu_conditions(self, provider, base_dir, paths, callback):
-    
+
         def real_reply_handler(obj):
             # Note that this a closure referring to the outer functions callback
             # parameter
             path_dict = json.loads(obj)
             callback(provider, base_dir, paths, path_dict)
-        
+
         def reply_handler(*args, **kwargs):
             # The callback should be performed as a low priority task, so we
             # keep Nautilus as responsive as possible.
             GLib.idle_add(real_reply_handler, *args, **kwargs)
-        
+
         def error_handler(dbus_ex):
             log.exception(dbus_ex)
             self._connect_to_checker()
             callback(provider, base_dir, paths, {})
-        
+
         try:
             self.status_checker.GenerateMenuConditions(paths,
                                             dbus_interface=INTERFACE,

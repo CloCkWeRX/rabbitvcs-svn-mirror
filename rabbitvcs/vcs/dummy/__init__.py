@@ -31,27 +31,27 @@ import rabbitvcs.vcs.status
 class Dummy:
     def __init__(self):
         pass
-    
+
     def status(self, path, summarize=True, invalidate=False):
         return rabbitvcs.vcs.status.Status.status_unknown(path)
-    
+
     def is_working_copy(self, path):
         return False
-    
+
     def is_in_a_or_a_working_copy(self, path):
         return False
 
     def is_versioned(self, path):
         return False
-    
+
     def get_items(self, paths, statuses=[]):
         return []
-    
+
     def is_locked(self, path):
         return False
-    
+
     def statuses(self, path, recurse=True, invalidate=False):
         return []
-        
+
     def revision(self, kind, number=None):
         return None

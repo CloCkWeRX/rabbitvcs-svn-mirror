@@ -1,22 +1,22 @@
 from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -58,7 +58,7 @@ def _guess(path):
                         "vcs": client,
                         "repo_path": path_to_check
                     }
-                    return cache                
+                    return cache
             path_to_check = os.path.split(path_to_check)[0]
 
     return {
@@ -78,10 +78,10 @@ def guess(path):
 class VCS:
     clients = {}
     exclude_paths = []
-    
+
     def __init__(self):
         self.exclude_paths = get_exclude_paths()
-    
+
     def dummy(self):
         if VCS_DUMMY in self.clients:
             return self.clients[VCS_DUMMY]
@@ -89,7 +89,7 @@ class VCS:
             from rabbitvcs.vcs.dummy import Dummy
             self.clients[VCS_DUMMY] = Dummy()
             return self.clients[VCS_DUMMY]
-    
+
     def svn(self):
         if settings.get("HideItem", "svn"):
             return self.dummy()
@@ -135,7 +135,7 @@ class VCS:
                     else:
                         repo_path = git.find_repository_path(path)
                         git.set_repository(repo_path)
-                
+
                 self.clients[VCS_GIT] = git
                 return self.clients[VCS_GIT]
             except Exception as e:
@@ -202,23 +202,23 @@ class VCS:
             return self.mercurial(guess["repo_path"], is_repo_path=False)
         else:
             return self.dummy()
-    
+
     def should_exclude(self, path):
         for exclude_path in self.exclude_paths:
             if path.startswith(exclude_path):
                 return True
-        
+
         return False
-    
+
     def guess(self, path):
         return guess(path)
-    
+
     # Methods that call client methods
 
     def statuses(self, path, recurse=True, invalidate=False):
         client = self.client(path)
         return client.statuses(path, recurse=recurse, invalidate=invalidate)
-    
+
     def status(self, path, summarize=True, invalidate=False):
         client = self.client(path)
         return client.status(path, summarize, invalidate)
@@ -235,7 +235,7 @@ class VCS:
     def is_versioned(self, path):
         client = self.client(path)
         return client.is_versioned(path)
-    
+
     def is_locked(self, path):
         client = self.client(path)
         return client.is_locked(path)
@@ -269,8 +269,8 @@ def guess_vcs(path):
 class ExternalUtilError(Exception):
     """ Represents an error caused by unexpected output from an external
     program.
-    """ 
-        
+    """
+
     def __init__(self, program, output):
         """ Initialises the error with the external tool and the unexpected
         output.
