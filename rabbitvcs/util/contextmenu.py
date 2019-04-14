@@ -1,23 +1,23 @@
 from __future__ import absolute_import
 from __future__ import print_function
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2010 by Jason Heeris <jason.heeris@gmail.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -31,15 +31,10 @@ from six.moves import range
 # Yes, * imports are bad. You write it out then.
 from .contextmenuitems import *
 
-if "REQUIRE_GTK3" in os.environ and os.environ["REQUIRE_GTK3"]:
-    from gi.repository import Gtk as gtk
-else:
-    import gtk
-
-try:
-    from gi.repository import GObject as gobject
-except ImportError:
-    import gobject
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk as gtk
+from gi.repository import GLib as glib
 
 from rabbitvcs.vcs import create_vcs_instance, VCS_SVN, VCS_GIT, VCS_DUMMY, VCS_MERCURIAL
 from rabbitvcs.util.log import Log
@@ -55,43 +50,43 @@ settings = SettingsManager()
 class MenuBuilder(object):
     """
     Generalised menu builder class. Subclasses must provide:
-    
+
     connect_to_signal(self, menuitem, callback, callback_args) - connect the
     menu item to a signal (or do whatever needs to be done) so that the callback
     is called upon activation.
-    
+
     In actual fact, a standard GTK compatible method for this is provided by
     this class. All a subclass has to do is define the class parameter "signal",
-    and it will be automatically done. 
-    
+    and it will be automatically done.
+
     make_menu_item(self, item, id_magic) - create the menu item for whatever
     toolkit (usually this should be just call a  convenience method on the
     MenuItem instance).
-    
+
     attach_submenu(self, menu_node, submenu_list) - given a list of whatever
     make_menu_item(...) returns, create a submenu and attach it to the given
     node.
-    
+
     top_level_menu(self, items) - in some circumstances we need to treat the top
     level menu differently (eg. Nautilus, because Xenu said so). This processes
     a list of menu items returned by make_menu_item(...) to create the overall
-    menu.  
+    menu.
     """
-    
+
     def __init__(self, structure, conditions, callbacks):
         """
         @param  structure: Menu structure
         @type   structure: list
-                
-        Note on "structure". The menu structure is defined in a list of tuples 
+
+        Note on "structure". The menu structure is defined in a list of tuples
         of two elements each.  The first element is a class - the MenuItem
         subclass that defines the menu interface (see below).
-        
+
         The second element is either None (if there is no submenu) or a list of
-        tuples if there is a submenu.  The submenus are generated recursively. 
+        tuples if there is a submenu.  The submenus are generated recursively.
         FYI, this is a list of tuples so that we retain the desired menu item
         order (dicts do not retain order)
-        
+
             Example:
             [
                 (MenuClassOne, [
@@ -101,12 +96,12 @@ class MenuBuilder(object):
                 (MenuClassTwo, None),
                 (MenuClassThree, None)
             ]
-            
+
         """
-        # The index is mostly for identifier magic 
+        # The index is mostly for identifier magic
         index = 0
         last_level = -1
-        last_item = last_menuitem = None        
+        last_item = last_menuitem = None
 
         stack = [] # ([items], last_item, last_menuitem)
         flat_structure = rabbitvcs.util.helper.walk_tree_depth_first(
@@ -114,13 +109,13 @@ class MenuBuilder(object):
                                 show_levels=True,
                                 preprocess=lambda x: x(conditions, callbacks),
                                 filter=lambda x: x.show())
-        
+
         # Here's how this works: we walk the tree, which is a series of (level,
         # MenuItem instance) tuples. We accumulate items in the list in
         # stack[level][0], and when we go back up a level we put them in a
         # submenu (as defined by the subclasses). We need to keep track of the
         # last item on each level, in case they are separators, so that's on the
-        # stack too.       
+        # stack too.
         for (level, item) in flat_structure:
             index += 1
 
@@ -132,31 +127,31 @@ class MenuBuilder(object):
                     # Remove separators at the end of menus
                     if type(last_item) == MenuSeparator:
                         stack[-1][0].remove(last_menuitem)
-                                    
+
                     (items, last_item, last_menuitem) = stack.pop()
-                    
+
                     # Every time we back out of a level, we attach the list of
-                    # items as a submenu, however the subclass wants to do it.                    
-                    self.attach_submenu(last_menuitem, items)                                
+                    # items as a submenu, however the subclass wants to do it.
+                    self.attach_submenu(last_menuitem, items)
 
             # Have we gone up a level? Save the context and create a submenu
             if level > last_level:
                 # Skip separators at the start of a menu
                 if type(item) == MenuSeparator: continue
-                                
+
                 stack.append(([], last_item, last_menuitem))
-                
+
                 last_item = last_menuitem = None
-        
+
             # Skip duplicate separators
             if (type(last_item) == type(item) == MenuSeparator and
                 level == last_level):
                 continue
-            
+
             menuitem = self.make_menu_item(item, index)
 
             self.connect_signal(menuitem, item.callback, item.callback_args)
-        
+
             stack[-1][0].append(menuitem)
 
             last_item = item
@@ -166,12 +161,12 @@ class MenuBuilder(object):
         # Hey, we're out of the loop. Go back up any remaining levels (in case
         # there were submenus at the end) and finish the job.
         for (items, last_item2, last_menuitem2) in stack[:0:-1]:
-            
+
             if type(last_item) == MenuSeparator:
                 stack[-1][0].remove(last_menuitem)
-            
+
             self.attach_submenu(last_menuitem2, items)
-            
+
             last_item = last_item2
             last_menuitem = last_menuitem2
 
@@ -180,7 +175,7 @@ class MenuBuilder(object):
         else:
             log.debug("Empty top level menu!")
             self.menu = self.top_level_menu([])
-            
+
     def connect_signal(self, menuitem, callback, callback_args):
         if callback:
             if callback_args:
@@ -192,27 +187,27 @@ class GtkContextMenu(MenuBuilder):
     """
     Provides a standard Gtk Context Menu class used for all context menus
     in gtk dialogs/windows.
-    
+
     """
-    
+
     signal = "button-press-event"
-                            
+
     def make_menu_item(self, item, id_magic):
-        return item.make_gtk_menu_item(id_magic)
-    
+        return item.make_gtk3_menu_item(id_magic)
+
     def attach_submenu(self, menu_node, submenu_list):
         submenu = gtk.Menu()
         menu_node.set_submenu(submenu)
         [submenu.add(item) for item in submenu_list]
-    
+
     def top_level_menu(self, items):
         menu = gtk.Menu()
         [menu.add(item) for item in items]
         return menu
-        
-    def show(self, event):        
+
+    def show(self, event):
         self.menu.show_all()
-        self.menu.popup(None, None, None, event.button, event.time)
+        self.menu.popup(None, None, None, None, event.button, event.time)
 
     def get_widget(self):
         return self.menu
@@ -223,16 +218,16 @@ class GtkContextMenuCaller:
     a GtkContextMenu.  Allows us to have a standard common set of methods we can
     call from the callback object.
     """
-    
+
     def __init__(self):
         pass
-    
+
     def on_context_menu_command_finished(self):
         pass
 
     def rescan_after_process_exit(self, proc, paths=None):
         self.execute_after_process_exit(proc, self.on_context_menu_command_finished)
-        
+
     def execute_after_process_exit(self, proc, callback=None):
         if callback is None:
             callback = self.on_context_menu_command_finished
@@ -242,9 +237,9 @@ class GtkContextMenuCaller:
             # First we need to see if the process is still running
 
             retval = proc.poll()
-            
+
             log.debug("%s" % retval)
-            
+
             still_going = (retval is None)
 
             if not still_going and callable(callback):
@@ -253,50 +248,50 @@ class GtkContextMenuCaller:
             return still_going
 
         # Add our callback function on a 1 second timeout
-        gobject.timeout_add_seconds(1, is_process_still_alive)
-        
+        glib.timeout_add_seconds(1, is_process_still_alive)
+
 class ContextMenuCallbacks:
     """
     The base class for context menu callbacks.  This is inheritied by
     sub-classes.
     """
     def __init__(self, caller, base_dir, vcs_client, paths=[]):
-        """        
+        """
         @param  caller: The calling object
         @type   caller: RabbitVCS extension
-        
+
         @param  base_dir: The curent working directory
         @type   base_dir: string
 
         @param  vcs_client: The vcs client to be used
         @type   vcs_client: rabbitvcs.vcs.create_vcs_instance()
-        
+
         @param  paths: The selected paths
         @type   paths: list
-        
-        """  
+
+        """
         self.caller = caller
         self.base_dir = base_dir
         self.vcs_client = vcs_client
         self.paths = paths
-        
+
     def debug_shell(self, widget, data1=None, data2=None):
         """
-        
+
         Open up an IPython shell which shares the context of the extension.
-        
+
         See: http://ipython.scipy.org/moin/Cookbook/EmbeddingInGTK
-        
+
         """
         import gtk
         from rabbitvcs.debug.ipython_view import IPythonView
-        
+
         window = gtk.Window()
         window.set_size_request(750,550)
         window.set_resizable(True)
         window.set_position(gtk.WIN_POS_CENTER)
         scrolled_window = gtk.ScrolledWindow()
-        scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        scrolled_window.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
         ipython_view = IPythonView()
         ipython_view.updateNamespace(locals())
         ipython_view.set_wrap_mode(gtk.WRAP_CHAR)
@@ -305,19 +300,19 @@ class ContextMenuCallbacks:
         scrolled_window.show()
         window.add(scrolled_window)
         window.show()
-    
+
     def refresh_status(self, widget, data1=None, data2=None):
         """
         Refreshes an item status, which is actually just invalidate.
         """
-        
+
         self.debug_invalidate(widget)
-    
+
     def debug_revert(self, widget, data1=None, data2=None):
         client = pysvn.Client()
         for path in self.paths:
             client.revert(path, recurse=True)
-        
+
     def debug_invalidate(self, widget, data1=None, data2=None):
         rabbitvcs_extension = self.caller
         nautilusVFSFile_table = rabbitvcs_extension.nautilusVFSFile_table
@@ -325,28 +320,28 @@ class ContextMenuCallbacks:
             log.debug("callback_debug_invalidate() called for %s" % path)
             if path in nautilusVFSFile_table:
                 nautilusVFSFile_table[path].invalidate_extension_info()
-    
+
     def debug_add_emblem(self, widget, data1=None, data2=None):
         def add_emblem_dialog():
             from subprocess import Popen, PIPE
             command = ["zenity", "--entry", "--title=RabbitVCS", "--text=Emblem to add:"]
             emblem = Popen(command, stdout=PIPE).communicate()[0].replace("\n", "")
-            
+
             rabbitvcs_extension = self.caller
             nautilusVFSFile_table = rabbitvcs_extension.nautilusVFSFile_table
             for path in self.paths:
                 if path in nautilusVFSFile_table:
                     nautilusVFSFile_table[path].add_emblem(emblem)
             return False
-            
-        gobject.idle_add(add_emblem_dialog)
-    
+
+        glib.idle_add(add_emblem_dialog)
+
     # End debugging callbacks
 
     def checkout(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("checkout", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
-    
+
     def update(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("update", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
@@ -383,10 +378,10 @@ class ContextMenuCallbacks:
         guess = self.vcs_client.guess(self.paths[0])
         if guess["vcs"] == rabbitvcs.vcs.VCS_SVN:
             previous_revision_number = self.vcs_client.svn().get_revision(self.paths[0]) - 1
-        
+
             pathrev1 = rabbitvcs.util.helper.create_path_revision_string(self.vcs_client.svn().get_repo_url(self.paths[0]), previous_revision_number)
             pathrev2 = rabbitvcs.util.helper.create_path_revision_string(self.paths[0], "working")
-            
+
             proc = rabbitvcs.util.helper.launch_ui_window("diff", [
                 "-s",
                 pathrev1,
@@ -431,10 +426,10 @@ class ContextMenuCallbacks:
         pathrev2 = pathrev1
         if len(self.paths) == 2:
             pathrev2 = rabbitvcs.util.helper.create_path_revision_string(self.paths[1])
-        
+
         proc = rabbitvcs.util.helper.launch_ui_window("changes", [pathrev1, pathrev2])
         self.caller.rescan_after_process_exit(proc, self.paths)
-    
+
     def show_log(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("log", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
@@ -446,20 +441,23 @@ class ContextMenuCallbacks:
     def create_patch(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("createpatch", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
-    
+
     def apply_patch(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("applypatch", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
-    
+
     def properties(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("property_editor", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
 
     def about(self, widget, data1=None, data2=None):
         rabbitvcs.util.helper.launch_ui_window("about")
-        
+
     def settings(self, widget, data1=None, data2=None):
-        proc = rabbitvcs.util.helper.launch_ui_window("settings", [self.base_dir])
+        base_dir = self.base_dir
+        if len(self.paths) == 1 and os.path.isdir(self.paths[0]):
+            base_dir = self.paths[0]
+        proc = rabbitvcs.util.helper.launch_ui_window("settings", [base_dir])
         self.caller.reload_settings(proc)
 
     def ignore_by_filename(self, widget, data1=None, data2=None):
@@ -510,11 +508,11 @@ class ContextMenuCallbacks:
     def update_to_revision(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("updateto", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
-    
+
     def mark_resolved(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("markresolved", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
-        
+
     def annotate(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("annotate", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
@@ -522,11 +520,11 @@ class ContextMenuCallbacks:
     def unlock(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("unlock", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
-        
+
     def create_repository(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("create", ["--vcs", "svn", self.paths[0]])
         self.caller.rescan_after_process_exit(proc, self.paths)
-    
+
     def relocate(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("relocate", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
@@ -546,7 +544,7 @@ class ContextMenuCallbacks:
 
     def _open(self, widget, data1=None, data2=None):
         pass
-    
+
     def browse_to(self, widget, data1=None, data2=None):
         pass
 
@@ -600,12 +598,12 @@ class ContextMenuCallbacks:
 class ContextMenuConditions:
     """
     Provides a standard interface to checking conditions for menu items.
-    
+
     This class should never be instantied directly, rather the narrowly defined
     FileManagerContextMenuConditions and GtkFilesContextMenuConditions classes
     should be called.
-    
-    """    
+
+    """
     def __init__(self):
         pass
 
@@ -642,7 +640,7 @@ class ContextMenuConditions:
             "has_conflicted"                : lambda path: "complicated" in self.text_statuses,
             "has_obstructed"                : lambda path: "obstructed" in self.text_statuses
         }
-        
+
         for key,func in list(checks.items()):
             self.path_dict[key] = False
 
@@ -663,14 +661,14 @@ class ContextMenuConditions:
             else:
                 return (self.path_dict["is_dir"] and
                         not self.path_dict["is_working_copy"])
-    
+
         return False
-    
+
     def update(self, data=None):
         return (self.path_dict["is_in_a_or_a_working_copy"] and
                 self.path_dict["is_versioned"] and
                 not self.path_dict["is_added"])
-                        
+
     def commit(self, data=None):
         if self.path_dict["is_svn"] or self.path_dict["is_git"] or self.path_dict["is_mercurial"]:
             if self.path_dict["is_in_a_or_a_working_copy"]:
@@ -685,66 +683,66 @@ class ContextMenuConditions:
 
     def diff_menu(self, data=None):
         return self.path_dict["is_in_a_or_a_working_copy"]
-    
+
     def diff_multiple(self, data=None):
-        if (self.path_dict["length"] == 2 and 
+        if (self.path_dict["length"] == 2 and
                 self.path_dict["is_versioned"] and
                 self.path_dict["is_in_a_or_a_working_copy"]):
             return True
         return False
 
     def compare_tool_multiple(self, data=None):
-        if (self.path_dict["length"] == 2 and 
+        if (self.path_dict["length"] == 2 and
                 self.path_dict["is_versioned"] and
                 self.path_dict["is_in_a_or_a_working_copy"]):
             return True
         return False
-        
+
     def diff(self, data=None):
         if (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
-                (self.path_dict["is_modified"] or self.path_dict["has_modified"] or 
+                (self.path_dict["is_modified"] or self.path_dict["has_modified"] or
                 self.path_dict["is_conflicted"] or self.path_dict["has_conflicted"])):
-            return True        
+            return True
         return False
 
     def diff_previous_revision(self, data=None):
         if (self.path_dict["is_svn"] and
                 self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"]):
-            return True        
+            return True
         return False
 
     def compare_tool(self, data=None):
         if (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
-                (self.path_dict["is_modified"] or self.path_dict["has_modified"] or 
+                (self.path_dict["is_modified"] or self.path_dict["has_modified"] or
                 self.path_dict["is_conflicted"] or self.path_dict["has_conflicted"])):
-            return True        
+            return True
         return False
 
     def compare_tool_previous_revision(self, data=None):
         if (self.path_dict["is_svn"] and
                 self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"]):
-            return True        
+            return True
         return False
 
     def show_changes(self, data=None):
         return (self.path_dict["is_in_a_or_a_working_copy"] and
-            self.path_dict["is_versioned"] and 
+            self.path_dict["is_versioned"] and
             self.path_dict["length"] in (1,2))
-        
+
     def show_log(self, data=None):
         return (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
                 self.path_dict["is_versioned"] and
                 not self.path_dict["is_added"])
-        
+
     def add(self, data=None):
         if not self.path_dict["is_svn"]:
             return False
-            
+
         if (self.path_dict["is_dir"] and
                 self.path_dict["is_in_a_or_a_working_copy"]):
             return True
@@ -761,12 +759,13 @@ class ContextMenuConditions:
     def rename(self, data=None):
         return (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
+                not self.path_dict["is_working_copy"] and
                 self.path_dict["is_versioned"])
-        
+
     def delete(self, data=None):
         return (self.path_dict["exists"] or self.path_dict["is_versioned"]) and \
             not self.path_dict["is_deleted"]
-        
+
     def revert(self, data=None):
         if self.path_dict["is_in_a_or_a_working_copy"]:
             if (self.path_dict["is_added"] or
@@ -781,14 +780,14 @@ class ContextMenuConditions:
                         self.path_dict["has_missing"])):
                     return True
         return False
-        
+
     def annotate(self, data=None):
         return (self.path_dict["length"] == 1 and
                 not self.path_dict["is_dir"] and
                 self.path_dict["is_in_a_or_a_working_copy"] and
                 self.path_dict["is_versioned"] and
                 not self.path_dict["is_added"])
-        
+
     def properties(self, data=None):
         return (self.path_dict["length"] == 1 and
                 self.path_dict["is_in_a_or_a_working_copy"] and
@@ -809,12 +808,12 @@ class ContextMenuConditions:
                     self.path_dict["has_missing"])):
                 return True
         return False
-    
+
     def apply_patch(self, data=None):
         if self.path_dict["is_in_a_or_a_working_copy"]:
             return True
         return False
-    
+
     def add_to_ignore_list(self, data=None):
         return (self.path_dict["is_in_a_or_a_working_copy"] and
                 not self.path_dict["is_versioned"])
@@ -822,7 +821,7 @@ class ContextMenuConditions:
     def ignore_by_filename(self, *args):
         return (self.path_dict["is_in_a_or_a_working_copy"] and
                 not self.path_dict["is_versioned"])
-    
+
     def ignore_by_file_extension(self, *args):
         return (self.path_dict["is_in_a_or_a_working_copy"] and
                 not self.path_dict["is_versioned"])
@@ -860,14 +859,14 @@ class ContextMenuConditions:
 
     def update_to_revision(self, data=None):
         return (self.path_dict["length"] == 1 and
-                self.path_dict["is_versioned"] and 
+                self.path_dict["is_versioned"] and
                 self.path_dict["is_in_a_or_a_working_copy"])
-    
+
     def mark_resolved(self, data=None):
         return (self.path_dict["is_in_a_or_a_working_copy"] and
                 self.path_dict["is_versioned"] and
                 self.path_dict["is_conflicted"])
-            
+
     def create_repository(self, data=None):
         return (self.path_dict["length"] == 1 and
                 not self.path_dict["is_in_a_or_a_working_copy"])
@@ -882,10 +881,10 @@ class ContextMenuConditions:
 
     def browse_to(self, data=None):
         return self.path_dict["exists"]
-    
+
     def _open(self, data=None):
         return self.path_dict["is_file"]
-    
+
     def restore(self, data=None):
         return self.path_dict["has_missing"]
 
@@ -905,28 +904,28 @@ class ContextMenuConditions:
             not self.path_dict["is_in_a_or_a_working_copy"])
 
     def rabbitvcs_git(self, data=None):
-        return (self.path_dict["is_git"] or 
+        return (self.path_dict["is_git"] or
             not self.path_dict["is_in_a_or_a_working_copy"])
 
     def rabbitvcs_mercurial(self, data=None):
-        return (self.path_dict["is_mercurial"] or 
+        return (self.path_dict["is_mercurial"] or
             not self.path_dict["is_in_a_or_a_working_copy"])
-    
+
     def debug(self, data=None):
         return settings.get("general", "show_debug")
-    
+
     def separator(self, data=None):
         return True
-    
+
     def help(self, data=None):
         return False
-    
+
     def settings(self, data=None):
         return True
-    
+
     def about(self, data=None):
         return True
-    
+
     def bugs(self, data=None):
         return True
 
@@ -937,7 +936,7 @@ class ContextMenuConditions:
     def clone(self, data=None):
         return (self.path_dict["is_dir"] and
             not self.path_dict["is_in_a_or_a_working_copy"])
-            
+
     def push(self, data=None):
         return (self.path_dict["is_git"] or self.path_dict["is_mercurial"])
 
@@ -946,7 +945,7 @@ class ContextMenuConditions:
 
     def tags(self, data=None):
         return (self.path_dict["is_git"])
-        
+
     def remotes(self, data=None):
         return (self.path_dict["is_git"])
 
@@ -989,20 +988,20 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
     the standard ContextMenuCallbacks class and overrides some methods.
     """
     def __init__(self, caller, base_dir, vcs_client, paths=[]):
-        """        
+        """
         @param  caller: The calling object
         @type   caller: RabbitVCS extension
-        
+
         @param  base_dir: The curent working directory
         @type   base_dir: string
 
         @param  vcs_client: The vcs client to be used
         @type   vcs_client: rabbitvcs.vcs.create_vcs_instance()
-        
+
         @param  paths: The selected paths
         @type   paths: list
-        
-        """  
+
+        """
         ContextMenuCallbacks.__init__(self, caller, base_dir, vcs_client, paths)
 
     def _open(self, widget, data1=None, data2=None):
@@ -1016,11 +1015,11 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
     def revert(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("revert", ["-q"] + self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
-    
+
     def mark_resolved(self, widget, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("markresolved", ["-q"] + self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
-    
+
     def browse_to(self, widget, data1=None, data2=None):
         rabbitvcs.util.helper.browse_to_item(self.paths[0])
 
@@ -1028,15 +1027,15 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
         if len(self.paths) > 0:
             proc = rabbitvcs.util.helper.launch_ui_window("delete", self.paths)
             self.caller.rescan_after_process_exit(proc, self.paths)
-  
+
     def update(self, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("update", self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
-    
+
     def unlock(self, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("unlock", ["-q"] + self.paths)
         self.caller.rescan_after_process_exit(proc, self.paths)
-            
+
     def show_log(self, data1=None, data2=None):
         proc = rabbitvcs.util.helper.launch_ui_window("log", self.paths)
         self.caller.rescan_after_process_exit(proc, [self.paths[0]])
@@ -1051,19 +1050,19 @@ class GtkFilesContextMenuCallbacks(ContextMenuCallbacks):
 
 class GtkFilesContextMenuConditions(ContextMenuConditions):
     """
-    Sub-class for ContextMenuConditions for our dialogs.  Allows us to override 
-    some generic condition methods with condition logic more suitable 
+    Sub-class for ContextMenuConditions for our dialogs.  Allows us to override
+    some generic condition methods with condition logic more suitable
     to the dialogs.
-    
+
     """
     def __init__(self, vcs_client, paths=[]):
-        """    
+        """
         @param  vcs_client: The vcs client to be used
         @type   vcs_client: rabbitvcs.vcs.create_vcs_instance()
-        
+
         @param  paths: The selected paths
         @type   paths: list
-        
+
         """
         self.vcs_client = vcs_client
         self.paths = paths
@@ -1077,38 +1076,38 @@ class GtkFilesContextMenuConditions(ContextMenuConditions):
         for path in paths:
             if not path:
                 continue
-                
+
             statuses_tmp = self.vcs_client.statuses(path, invalidate=True)
             for status in statuses_tmp:
                 self.statuses[status.path] = status
 
         self.text_statuses = [self.statuses[key].simple_content_status() for key in list(self.statuses.keys())]
         self.prop_statuses = [self.statuses[key].simple_metadata_status() for key in list(self.statuses.keys())]
-        
+
 class GtkFilesContextMenu:
     """
     Defines context menu items for a table with files
-    
+
     """
-    def __init__(self, caller, event, base_dir, paths=[], 
+    def __init__(self, caller, event, base_dir, paths=[],
             conditions=None, callbacks=None):
-        """    
+        """
         @param  caller: The calling object
         @type   caller: RabbitVCS extension
-        
+
         @param  base_dir: The curent working directory
         @type   base_dir: string
-        
+
         @param  paths: The selected paths
         @type   paths: list
-        
+
         @param  conditions: The conditions class that determines menu item visibility
         @kind   conditions: ContextMenuConditions
-        
+
         @param  callbacks: The callbacks class that determines what actions are taken
         @kind   callbacks: ContextMenuCallbacks
-        
-        """        
+
+        """
         self.caller = caller
         self.event = event
         self.paths = paths
@@ -1122,12 +1121,12 @@ class GtkFilesContextMenu:
         self.callbacks = callbacks
         if self.callbacks is None:
             self.callbacks = GtkFilesContextMenuCallbacks(
-                self.caller, 
+                self.caller,
                 self.base_dir,
-                self.vcs_client, 
+                self.vcs_client,
                 paths
             )
-            
+
         ignore_items = get_ignore_list_items(paths)
 
         # The first element of each tuple is a key that matches a
@@ -1151,7 +1150,7 @@ class GtkFilesContextMenu:
             (MenuUnstage, None),
             (MenuAddToIgnoreList, ignore_items)
         ]
-        
+
     def show(self):
         if len(self.paths) == 0:
             return
@@ -1167,56 +1166,56 @@ class MainContextMenuCallbacks(ContextMenuCallbacks):
     """
     The callback class used for the main context menu.  This inherits from
     and overrides the ContextMenuCallbacks class.
-    
-    """   
+
+    """
     def __init__(self, caller, base_dir, vcs_client, paths=[]):
-        """        
+        """
         @param  caller: The calling object
         @type   caller: RabbitVCS extension
-        
+
         @param  base_dir: The curent working directory
         @type   base_dir: string
 
         @param  vcs_client: The vcs client to be used
         @type   vcs_client: rabbitvcs.vcs.create_vcs_instance()
-        
+
         @param  paths: The selected paths
         @type   paths: list
-        
-        """  
+
+        """
         ContextMenuCallbacks.__init__(self, caller, base_dir, vcs_client, paths)
 
 class MainContextMenuConditions(ContextMenuConditions):
     """
-    Sub-class for ContextMenuConditions used for file manager extensions.  
-    Allows us to override some generic condition methods with condition logic 
+    Sub-class for ContextMenuConditions used for file manager extensions.
+    Allows us to override some generic condition methods with condition logic
     more suitable to the dialogs.
-    
+
     """
     def __init__(self, vcs_client, paths=[]):
-        """    
+        """
         @param  vcs_client: The vcs client to be used
         @type   vcs_client: rabbitvcs.vcs.create_vcs_instance()
-        
+
         @param  paths: The selected paths
         @type   paths: list
-        
-        """   
+
+        """
 
         self.vcs_client = vcs_client
         self.paths = paths
         self.statuses = {}
-        
+
         self.generate_statuses(paths)
         self.generate_path_dict(paths)
-        
+
     # FIXME: major bottleneck
     def generate_statuses(self, paths):
         self.statuses = {}
         for path in paths:
             if not path:
                 continue
-                
+
             statuses_tmp = self.vcs_client.statuses(path)
             for status in statuses_tmp:
                 self.statuses[status.path] = status
@@ -1229,25 +1228,25 @@ class MainContextMenu:
     Defines and composes the main context menu.
 
     """
-    def __init__(self, caller, base_dir, paths=[], 
+    def __init__(self, caller, base_dir, paths=[],
             conditions=None, callbacks=None):
-        """    
+        """
         @param  caller: The calling object
         @type   caller: RabbitVCS extension
-        
+
         @param  base_dir: The curent working directory
         @type   base_dir: string
-        
+
         @param  paths: The selected paths
         @type   paths: list
-        
+
         @param  conditions: The conditions class that determines menu item visibility
         @kind   conditions: ContextMenuConditions
-        
+
         @param  callbacks: The callbacks class that determines what actions are taken
         @kind   callbacks: ContextMenuCallbacks
-        
-        """        
+
+        """
         self.caller = caller
         self.paths = paths
         self.base_dir = base_dir
@@ -1260,17 +1259,17 @@ class MainContextMenu:
         self.callbacks = callbacks
         if self.callbacks is None:
             self.callbacks = MainContextMenuCallbacks(
-                self.caller, 
+                self.caller,
                 self.base_dir,
-                self.vcs_client, 
+                self.vcs_client,
                 paths
             )
-            
+
         ignore_items = get_ignore_list_items(paths)
 
         # The first element of each tuple is a key that matches a
         # ContextMenuItems item.  The second element is either None when there
-        # is no submenu, or a recursive list of tuples for desired submenus.        
+        # is no submenu, or a recursive list of tuples for desired submenus.
         self.structure = [
             (MenuDebug, [
                 (MenuBugs, None),
@@ -1382,22 +1381,22 @@ def TestMenuItemFunctions():
     """
     This is a test for developers to ensure that they've written all the
     necessary conditions and callbacks (and haven't made any typos).
-    
+
     What it does:
       - build a list of all the subclasses of MenuItem
       - build lists of the methods in ContextMenuConditions/ContextMenuCallbacks
       - checks to see whether all the MenuItems conditions and callbacks have
-        been assigned - if not, a message is printed 
+        been assigned - if not, a message is printed
     """
-    
+
     # These are some simple tests:
     import inspect
     import types
-    
+
     from . import contextmenuitems
-    
+
     menu_item_subclasses = []
-    
+
     # Let's create a list of all MenuItem subclasses
     for name in dir(contextmenuitems):
         entity = getattr(contextmenuitems, name)
@@ -1406,23 +1405,23 @@ def TestMenuItemFunctions():
             if (entity is not contextmenuitems.MenuItem and
                 contextmenuitems.MenuItem in mro):
                 menu_item_subclasses.append(entity)
-    
+
     condition_functions = []
-    
+
     # Now let's create a list of all of the functions in our conditions class
     for name in dir(ContextMenuConditions):
         entity = getattr(ContextMenuConditions, name)
         if type(entity) == types.UnboundMethodType and not name.startswith("__"):
             condition_functions.append(entity)
-    
+
     callback_functions = []
-    
+
     # ...and in our callbacks class
     for name in dir(ContextMenuCallbacks):
         entity = getattr(ContextMenuCallbacks, name)
         if type(entity) == types.UnboundMethodType and not name.startswith("__"):
             condition_functions.append(entity)
-    
+
     for cls in menu_item_subclasses:
         item = cls(ContextMenuConditions(), ContextMenuCallbacks(None, None, None, None))
         if not item.found_condition:
@@ -1431,7 +1430,7 @@ def TestMenuItemFunctions():
         if not item.callback:
             print("Did not find callback function in ContextMenuCallbacks " \
                   "for %s (type: %s)" % (item.identifier, cls))
-            
+
 
 if __name__ == "__main__":
     TestMenuItemFunctions()

@@ -1,32 +1,31 @@
 from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
 import os
 
-import pygtk
-import gobject
-import gtk
-import pango
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GObject, Gdk, Pango
 
 from datetime import datetime
 import time
@@ -43,9 +42,9 @@ _ = gettext.gettext
 class GitReset(InterfaceView):
     """
     Provides a UI to reset your repository to some specified state
-    
+
     """
-    
+
     def __init__(self, path, revision=None):
         InterfaceView.__init__(self, "reset", "Reset")
         self.vcs = rabbitvcs.vcs.VCS()
@@ -64,19 +63,19 @@ class GitReset(InterfaceView):
             url=self.path,
             expand=True
         )
-        
+
         self.get_widget("none_opt").set_active(True)
         self.check_path()
 
     def on_ok_clicked(self, widget):
         path = self.get_widget("path").get_text()
-        
+
         mixed = self.get_widget("mixed_opt").get_active()
         soft = self.get_widget("soft_opt").get_active()
         hard = self.get_widget("hard_opt").get_active()
         merge = self.get_widget("merge_opt").get_active()
         none = self.get_widget("none_opt").get_active()
-        
+
         type = None
         if mixed:
             type = "mixed"
@@ -104,7 +103,7 @@ class GitReset(InterfaceView):
         )
         self.action.append(self.action.set_status, _("Completed Reset"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.schedule()
 
     def on_browse_clicked(self, widget, data=None):
         chooser = rabbitvcs.ui.dialog.FolderChooser()
@@ -119,7 +118,7 @@ class GitReset(InterfaceView):
         path = self.get_widget("path").get_text()
         root = self.git.find_repository_path(path)
         if root != path:
-            self.get_widget("none_opt").set_active(True)    
+            self.get_widget("none_opt").set_active(True)
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main, REVISION_OPT, VCS_OPT
@@ -127,7 +126,7 @@ if __name__ == "__main__":
         [REVISION_OPT, VCS_OPT],
         usage="Usage: rabbitvcs reset [-r REVISION] path"
     )
-    
+
     window = GitReset(paths[0], options.revision)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

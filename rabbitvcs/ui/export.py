@@ -1,31 +1,31 @@
 from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
 import os.path
 
-import pygtk
-import gobject
-import gtk
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.checkout import SVNCheckout
@@ -40,11 +40,11 @@ _ = gettext.gettext
 class SVNExport(SVNCheckout):
     def __init__(self, path=None, revision=None):
         SVNCheckout.__init__(self, path, url=None, revision=revision)
-        
+
         self.svn = self.vcs.svn()
-        
+
         self.get_widget("Checkout").set_title(_("Export - %s") % path)
-        
+
         # Determine behavior based on the given path
         if self.svn.is_in_a_or_a_working_copy(path):
             # If path is from a working copy, export FROM path and set revision
@@ -72,16 +72,16 @@ class SVNExport(SVNCheckout):
         if not url or not path:
             MessageBox(_("The repository URL and destination path are both required fields."))
             return
-        
+
         if url.startswith("file://"):
             url = self._parse_path(url)
-        
+
         # Cannot do:
         # url = os.path.normpath(url)
         # ...in general, since it might be eg. an http URL. Doesn't seem to
         # affect pySvn though.
-        
-        path = os.path.normpath(path)        
+
+        path = os.path.normpath(path)
         revision = self.revision_selector.get_revision_object()
 
         self.hide()
@@ -89,7 +89,7 @@ class SVNExport(SVNCheckout):
             self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
-        
+
         self.action.append(self.action.set_header, _("Export"))
         self.action.append(self.action.set_status, _("Running Export Command..."))
         self.action.append(rabbitvcs.util.helper.save_repository_path, url)
@@ -104,7 +104,7 @@ class SVNExport(SVNCheckout):
         )
         self.action.append(self.action.set_status, _("Completed Export"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.schedule()
 
 class GitExport(GitClone):
     def __init__(self, path=None, revision=None):
@@ -141,16 +141,16 @@ class GitExport(GitClone):
         if not url or not path:
             MessageBox(_("The repository URL and destination path are both required fields."))
             return
-        
+
         if url.startswith("file://"):
             url = self._parse_path(url)
-        
+
         # Cannot do:
         # url = os.path.normpath(url)
         # ...in general, since it might be eg. an http URL. Doesn't seem to
         # affect pySvn though.
-        
-        path = os.path.normpath(path)        
+
+        path = os.path.normpath(path)
         revision = self.revision_selector.get_revision_object()
 
         self.hide()
@@ -158,7 +158,7 @@ class GitExport(GitClone):
             self.git,
             register_gtk_quit=self.gtk_quit_is_set()
         )
-        
+
         self.action.append(self.action.set_header, _("Export"))
         self.action.append(self.action.set_status, _("Running Export Command..."))
         self.action.append(rabbitvcs.util.helper.save_repository_path, url)
@@ -170,7 +170,7 @@ class GitExport(GitClone):
         )
         self.action.append(self.action.set_status, _("Completed Export"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.schedule()
 
     def on_repositories_changed(self, widget, data=None):
         # Do not use quoting for this bit
@@ -183,15 +183,15 @@ class GitExport(GitClone):
             append = tmp.pop()
             if append not in ("trunk", "branches", "tags"):
                 break
-                
+
             if append in ("http:", "https:", "file:", "svn:", "svn+ssh:"):
                 append = ""
                 break
-        
+
         self.get_widget("destination").set_text(
             os.path.join(self.destination, append)
         )
-        
+
         self.check_form()
 
 classes_map = {
@@ -203,10 +203,10 @@ def export_factory(vcs, path, revision=None):
     if not vcs:
         guess = rabbitvcs.vcs.guess(path)
         vcs = guess["vcs"]
-    
+
     if vcs == rabbitvcs.vcs.VCS_DUMMY:
         vcs = rabbitvcs.vcs.VCS_SVN
-        
+
     return classes_map[vcs](path, revision)
 
 if __name__ == "__main__":
@@ -215,7 +215,7 @@ if __name__ == "__main__":
         [REVISION_OPT, VCS_OPT],
         usage="Usage: rabbitvcs export --vcs=[git|svn] [url_or_path]"
     )
-            
+
     window = export_factory(options.vcs, paths[0], revision=options.revision)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

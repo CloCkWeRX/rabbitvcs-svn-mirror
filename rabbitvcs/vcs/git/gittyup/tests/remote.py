@@ -33,10 +33,10 @@ else:
 
     assert (len(l) == 1)
     assert (l[0]["host"] == "git://github.com/adamplumb/sprout.git")
-    
+
     g.remote_delete("origin")
     l = g.remote_list()
-    
+
     assert (len(l) == 0)
 
     print("remote.py pass")

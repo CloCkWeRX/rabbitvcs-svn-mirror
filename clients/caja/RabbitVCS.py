@@ -29,7 +29,6 @@ Our module for everything related to the Caja extension.
 """
 from __future__ import with_statement
 from __future__ import absolute_import
-import six
 from six.moves import range
 
 def log_all_exceptions(type, value, tb):
@@ -63,7 +62,7 @@ import os
 os.environ["REQUIRE_GTK3"] = "1"
 
 import os.path
-from os.path import isdir, isfile, realpath, basename
+from os.path import isdir, isfile, realpath, basename, dirname
 import datetime
 
 #import matevfs
@@ -77,6 +76,7 @@ import rabbitvcs.vcs.status
 from rabbitvcs.util.helper import launch_ui_window, launch_diff_tool
 from rabbitvcs.util.helper import get_file_extension, get_common_directory
 from rabbitvcs.util.helper import pretty_timedelta
+from rabbitvcs.util.helper import to_text
 
 from rabbitvcs.util.decorators import timeit, disable
 
@@ -137,9 +137,14 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         factory = Gtk.IconFactory()
 
         rabbitvcs_icons = [
+            "scalable/actions/rabbitvcs-cancel.svg",
+            "scalable/actions/rabbitvcs-ok.svg",
+            "scalable/actions/rabbitvcs-no.svg",
+            "scalable/actions/rabbitvcs-yes.svg",
             "scalable/actions/rabbitvcs-settings.svg",
             "scalable/actions/rabbitvcs-export.svg",
             "scalable/actions/rabbitvcs-properties.svg",
+            "scalable/actions/rabbitvcs-editprops.svg",
             "scalable/actions/rabbitvcs-show_log.svg",
             "scalable/actions/rabbitvcs-delete.svg",
             "scalable/actions/rabbitvcs-run.svg",
@@ -183,7 +188,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
             "scalable/apps/rabbitvcs-small.svg",
             "16x16/actions/rabbitvcs-push.png"
         ]
-        
+
         rabbitvcs_icon_path = get_icon_path()
         for rel_icon_path in rabbitvcs_icons:
             icon_path = "%s/%s" % (rabbitvcs_icon_path, rel_icon_path)
@@ -195,16 +200,16 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
             factory.add(root, iconset)
 
         factory.add_default()
-    
+
         # Create a global client we can use to do VCS related stuff
         self.vcs_client = VCS()
 
         self.status_checker = StatusChecker()
-        
+
         self.status_checker.assert_version(EXT_VERSION)
-        
+
         self.items_cache = {}
-        
+
     def get_columns(self):
         """
         Return all the columns we support.
@@ -259,11 +264,11 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         """
         enable_emblems = bool(int(settings.get("general", "enable_emblems")))
         enable_attrs = bool(int(settings.get("general", "enable_attributes")))
-        
+
         if not (enable_emblems or enable_attrs): return Caja.OperationResult.COMPLETE
-                
+
         if not self.valid_uri(item.get_uri()): return Caja.OperationResult.FAILED
-        
+
         path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
 
         # log.debug("update_file_info() called for %s" % path)
@@ -314,7 +319,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         # FIXME: when did this get disabled?
         if enable_attrs: self.update_columns(item, path, status)
         if enable_emblems: self.update_status(item, path, status)
-        
+
         return Caja.OperationResult.COMPLETE
 
     def update_columns(self, item, path, status):
@@ -348,7 +353,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         }
 
         for key, value in list(values.items()):
-            item.add_string_attribute(key, value)
+            item.add_string_attribute(key, value if not value is None else "")
 
     def update_status(self, item, path, status):
         if status.summary in rabbitvcs.ui.STATUS_EMBLEMS:
@@ -386,23 +391,24 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
                 self.nautilusVFSFile_table[path] = item
 
         if len(paths) == 0: return []
-        
+
         # log.debug("get_file_items_full() called")
 
         paths_str = "-".join(paths)
-        
+        base_dir = dirname(paths[0])
+
         conditions_dict = None
         if paths_str in self.items_cache:
             conditions_dict = self.items_cache[paths_str]
             if conditions_dict and conditions_dict != "in-progress":
                 conditions = CajaMenuConditions(conditions_dict)
-                menu = CajaMainContextMenu(self, window.base_dir, paths, conditions).get_menu()
+                menu = CajaMainContextMenu(self, base_dir, paths, conditions).get_menu()
                 return menu
-        
+
         if conditions_dict != "in-progress":
-            self.status_checker.generate_menu_conditions_async(provider, window.base_dir, paths, self.update_file_items)        
+            self.status_checker.generate_menu_conditions_async(provider, base_dir, paths, self.update_file_items)
             self.items_cache[path] = "in-progress"
-            
+
         return ()
 
     def get_file_items(self, window, items):
@@ -414,10 +420,11 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
                 self.nautilusVFSFile_table[path] = item
 
         if len(paths) == 0: return []
-        
+
         # log.debug("get_file_items() called")
-        
-        return CajaMainContextMenu(self, window.base_dir, paths).get_menu()
+
+        base_dir = dirname(paths[0])
+        return CajaMainContextMenu(self, base_dir, paths).get_menu()
 
     def update_file_items(self, provider, base_dir, paths, conditions_dict):
         paths_str = "-".join(paths)
@@ -426,24 +433,24 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
 
     #~ @disable
     # This is useful for profiling. Rename it to "get_background_items" and then
-    # rename the real function "get_background_items_real". 
+    # rename the real function "get_background_items_real".
     def get_background_items_profile(self, window, item):
         import cProfile
         import rabbitvcs.util.helper
-        
-        path = six.text_type(gnomevfs.get_local_path_from_uri(item.get_uri()),
+
+        path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()),
                        "utf-8").replace("/", ":")
-        
+
         profile_data_file = os.path.join(
                                rabbitvcs.util.helper.get_home_folder(),
                                "checkerservice_%s.stats" % path)
-        
+
         prof = cProfile.Profile()
         retval = prof.runcall(self.get_background_items_real, window, item)
         prof.dump_stats(profile_data_file)
         log.debug("Dumped: %s" % profile_data_file)
         return retval
-       
+
     def get_background_items_full(self, provider, window, item):
         """
         Menu activated on entering a directory. Builds context menu for File
@@ -471,15 +478,13 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
             conditions_dict = self.items_cache[path]
             if conditions_dict and conditions_dict != "in-progress":
                 conditions = CajaMenuConditions(conditions_dict)
-                menu = CajaMainContextMenu(self, path, [path], conditions).get_menu()                
+                menu = CajaMainContextMenu(self, path, [path], conditions).get_menu()
                 return menu
-
-        window.base_dir = path
 
         if conditions_dict != "in-progress":
             self.status_checker.generate_menu_conditions_async(provider, path, [path], self.update_background_items)
             self.items_cache[path] = "in-progress"
-                    
+
         return ()
 
     def get_background_items(self, window, item):
@@ -488,9 +493,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         self.nautilusVFSFile_table[path] = item
 
         # log.debug("get_background_items() called")
-        
-        window.base_dir = path
-        
+
         return CajaMainContextMenu(self, path, [path]).get_menu()
 
     def update_background_items(self, provider, base_dir, paths, conditions_dict):
@@ -621,7 +624,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         for item in items:
             if self.valid_uri(item.get_uri()):
                 path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
-                
+
                 if self.vcs_client.is_in_a_or_a_working_copy(path):
                     paths.append(path)
                     self.nautilusVFSFile_table[path] = item

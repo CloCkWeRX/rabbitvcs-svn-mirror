@@ -25,16 +25,16 @@ import os
 import six.moves._thread
 from time import sleep
 
-import pygtk
-import gobject
-import gtk
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.util.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 import rabbitvcs.vcs
 from rabbitvcs.util.log import Log
 from rabbitvcs.vcs.status import Status
@@ -44,7 +44,7 @@ log = Log("rabbitvcs.ui.add")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gobject.threads_init()
+helper.gobject_threads_init()
 
 class Add(InterfaceView, GtkContextMenuCaller):
     """
@@ -72,12 +72,17 @@ class Add(InterfaceView, GtkContextMenuCaller):
             if rabbitvcs.vcs.guess(path)['vcs'] == rabbitvcs.vcs.VCS_SVN:
                 self.get_widget("show_ignored").set_sensitive(False)
 
-        self.statuses = self.vcs.statuses_for_add(paths)
+        columns = [[GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH,
+                    GObject.TYPE_STRING],
+                   [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"),
+                    _("Extension")]]
+
+        self.setup(self.get_widget("Add"), columns)
+
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH,
-                gobject.TYPE_STRING],
-            [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
+            columns[0],
+            columns[1],
             filters=[{
                 "callback": rabbitvcs.ui.widget.path_filter,
                 "user_data": {
@@ -94,17 +99,20 @@ class Add(InterfaceView, GtkContextMenuCaller):
 
         self.initialize_items()
 
+    def setup(self, window, columns):
+        self.statuses = self.vcs.statuses_for_add(self.paths)
+
     #
     # Helpers
     #
 
     def load(self):
-        gtk.gdk.threads_enter()
-        self.get_widget("status").set_text(_("Loading..."))
+        status = self.get_widget("status")
+        helper.run_in_main_thread(status.set_text, _("Loading..."))
         self.items = self.vcs.get_items(self.paths, self.statuses)
-        
+
         if self.show_ignored:
-            for path in paths:
+            for path in self.paths:
                 # TODO Refactor
                 # TODO SVN support
                 # TODO Further fix ignore patterns
@@ -118,12 +126,11 @@ class Add(InterfaceView, GtkContextMenuCaller):
 
                         if should_add:
                             self.items.append(Status(os.path.realpath(ignored_path), 'unversioned'))
-                     
+
 
 
         self.populate_files_table()
-        self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
-        gtk.gdk.threads_leave()
+        helper.run_in_main_thread(status.set_text, _("Found %d item(s)") % len(self.items))
 
     def populate_files_table(self):
         self.files_table.clear()
@@ -131,7 +138,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
             self.files_table.append([
                 True,
                 item.path,
-                rabbitvcs.util.helper.get_file_extension(item.path)
+                helper.get_file_extension(item.path)
             ])
 
     def toggle_ignored(self):
@@ -155,7 +162,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
     def delete_items(self, widget, data=None):
         paths = self.files_table.get_selected_row_items(1)
         if len(paths) > 0:
-            proc = rabbitvcs.util.helper.launch_ui_window("delete", paths)
+            proc = helper.launch_ui_window("delete", paths)
             self.rescan_after_process_exit(proc, paths)
 
     #
@@ -168,14 +175,14 @@ class Add(InterfaceView, GtkContextMenuCaller):
             row[0] = self.TOGGLE_ALL
 
     def on_show_ignored_toggled(self, widget):
-        self.toggle_ignored()                  
+        self.toggle_ignored()
 
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
-        rabbitvcs.util.helper.launch_diff_tool(*paths)
+        helper.launch_diff_tool(*paths)
 
     def on_files_table_key_event(self, treeview, data=None):
-        if gtk.gdk.keyval_name(data.keyval) == "Delete":
+        if Gdk.keyval_name(data.keyval) == "Delete":
             self.delete_items(treeview, data)
 
     def on_files_table_mouse_event(self, treeview, data=None):
@@ -190,7 +197,7 @@ class Add(InterfaceView, GtkContextMenuCaller):
 class SVNAdd(Add):
     def __init__(self, paths, base_dir=None):
         Add.__init__(self, paths, base_dir)
-        
+
         self.svn = self.vcs.svn()
 
     def on_ok_clicked(self, widget):
@@ -210,14 +217,14 @@ class SVNAdd(Add):
         self.action.append(self.svn.add, items)
         self.action.append(self.action.set_status, _("Completed Add"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.schedule()
 
 class GitAdd(Add):
     def __init__(self, paths, base_dir=None):
         Add.__init__(self, paths, base_dir)
-        
+
         self.git = self.vcs.git(paths[0])
-    
+
     def on_ok_clicked(self, widget):
         items = self.files_table.get_activated_rows(1)
         if not items:
@@ -235,7 +242,7 @@ class GitAdd(Add):
         self.action.append(self.git.add, items)
         self.action.append(self.action.set_status, _("Completed Add"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.schedule()
 
 classes_map = {
     rabbitvcs.vcs.VCS_SVN: SVNAdd,
@@ -251,12 +258,11 @@ class AddQuiet:
         self.vcs = rabbitvcs.vcs.VCS()
         self.svn = self.vcs.svn()
         self.action = rabbitvcs.ui.action.SVNAction(
-            self.svn,
-            run_in_thread=False
+            self.svn
         )
 
         self.action.append(self.svn.add, paths)
-        self.action.run()
+        self.action.schedule()
 
 if __name__ == "__main__":
     from rabbitvcs.ui import main, BASEDIR_OPT, QUIET_OPT
@@ -270,4 +276,4 @@ if __name__ == "__main__":
     else:
         window = add_factory(paths,options.base_dir)#Add(paths, options.base_dir)
         window.register_gtk_quit()
-        gtk.main()
+        Gtk.main()

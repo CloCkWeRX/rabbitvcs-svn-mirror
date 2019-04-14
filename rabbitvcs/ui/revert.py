@@ -1,22 +1,22 @@
 from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
@@ -25,17 +25,17 @@ import os
 import six.moves._thread
 from time import sleep
 
-import pygtk
-import gobject
-import gtk
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.util.contextmenu import GtkFilesContextMenu, GtkContextMenuCaller
 import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
-import rabbitvcs.util.helper
 import rabbitvcs.vcs
+from rabbitvcs.util import helper
 from rabbitvcs.util.log import Log
 from rabbitvcs.vcs.status import Status
 
@@ -44,7 +44,7 @@ log = Log("rabbitvcs.ui.revert")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gobject.threads_init()
+helper.gobject_threads_init()
 
 import rabbitvcs.vcs
 
@@ -69,8 +69,8 @@ class Revert(InterfaceView, GtkContextMenuCaller):
         self.statuses = self.vcs.statuses_for_revert(paths)
         self.files_table = rabbitvcs.ui.widget.Table(
             self.get_widget("files_table"),
-            [gobject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH,
-                gobject.TYPE_STRING],
+            [GObject.TYPE_BOOLEAN, rabbitvcs.ui.widget.TYPE_PATH,
+                GObject.TYPE_STRING],
             [rabbitvcs.ui.widget.TOGGLE_BUTTON, _("Path"), _("Extension")],
             filters=[{
                 "callback": rabbitvcs.ui.widget.path_filter,
@@ -92,24 +92,22 @@ class Revert(InterfaceView, GtkContextMenuCaller):
         self.files_table.clear()
         for item in self.items:
             self.files_table.append([
-                True, 
-                item.path, 
-                rabbitvcs.util.helper.get_file_extension(item.path),
+                True,
+                item.path,
+                helper.get_file_extension(item.path),
                 item.simple_content_status(),
                 item.simple_metadata_status()
             ])
-                    
+
     def on_ok_clicked(self, widget):
         return True
 
     def load(self):
-        gtk.gdk.threads_enter()
         self.get_widget("status").set_text(_("Loading..."))
         self.items = self.vcs.get_items(self.paths, self.statuses)
 
         self.populate_files_table()
         self.get_widget("status").set_text(_("Found %d item(s)") % len(self.items))
-        gtk.gdk.threads_leave()
 
     def populate_files_table(self):
         self.files_table.clear()
@@ -117,7 +115,7 @@ class Revert(InterfaceView, GtkContextMenuCaller):
             self.files_table.append([
                 True,
                 item.path,
-                rabbitvcs.util.helper.get_file_extension(item.path)
+                helper.get_file_extension(item.path)
             ])
 
     # Overrides the GtkContextMenuCaller method
@@ -141,10 +139,10 @@ class Revert(InterfaceView, GtkContextMenuCaller):
 
     def on_files_table_row_activated(self, treeview, event, col):
         paths = self.files_table.get_selected_row_items(1)
-        rabbitvcs.util.helper.launch_diff_tool(*paths)
+        helper.launch_diff_tool(*paths)
 
     def on_files_table_key_event(self, treeview, data=None):
-        if gtk.gdk.keyval_name(data.keyval) == "Delete":
+        if Gdk.keyval_name(data.keyval) == "Delete":
             self.delete_items(treeview, data)
 
     def on_files_table_mouse_event(self, treeview, data=None):
@@ -159,7 +157,7 @@ class Revert(InterfaceView, GtkContextMenuCaller):
 class SVNRevert(Revert):
     def __init__(self, paths, base_dir=None):
         Revert.__init__(self, paths, base_dir)
-        
+
         self.svn = self.vcs.svn()
 
     def on_ok_clicked(self, widget):
@@ -173,19 +171,19 @@ class SVNRevert(Revert):
             self.vcs.svn(),
             register_gtk_quit=self.gtk_quit_is_set()
         )
-        
+
         self.action.append(self.action.set_header, _("Revert"))
         self.action.append(self.action.set_status, _("Running Revert Command..."))
         self.action.append(self.vcs.svn().revert, items, recurse=True)
         self.action.append(self.action.set_status, _("Completed Revert"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.schedule()
 
 
 class GitRevert(Revert):
     def __init__(self, paths, base_dir=None):
         Revert.__init__(self, paths, base_dir)
-        
+
         self.git = self.vcs.git(self.paths[0])
 
     def on_ok_clicked(self, widget):
@@ -199,13 +197,13 @@ class GitRevert(Revert):
             self.git,
             register_gtk_quit=self.gtk_quit_is_set()
         )
-        
+
         self.action.append(self.action.set_header, _("Revert"))
         self.action.append(self.action.set_status, _("Running Revert Command..."))
         self.action.append(self.git.checkout, items)
         self.action.append(self.action.set_status, _("Completed Revert"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.schedule()
 
 class SVNRevertQuiet:
     def __init__(self, paths, base_dir=None):
@@ -214,9 +212,9 @@ class SVNRevertQuiet:
             self.vcs.svn(),
             run_in_thread=False
         )
-        
+
         self.action.append(self.vcs.svn().revert, paths)
-        self.action.run()
+        self.action.schedule()
 
 class GitRevertQuiet:
     def __init__(self, paths, base_dir=None):
@@ -226,17 +224,17 @@ class GitRevertQuiet:
             self.git,
             run_in_thread=False
         )
-        
+
         self.action.append(self.git.checkout, paths)
-        self.action.run()
+        self.action.schedule()
 
 classes_map = {
-    rabbitvcs.vcs.VCS_SVN: SVNRevert, 
+    rabbitvcs.vcs.VCS_SVN: SVNRevert,
     rabbitvcs.vcs.VCS_GIT: GitRevert
 }
 
 quiet_classes_map = {
-    rabbitvcs.vcs.VCS_SVN: SVNRevertQuiet, 
+    rabbitvcs.vcs.VCS_SVN: SVNRevertQuiet,
     rabbitvcs.vcs.VCS_GIT: GitRevertQuiet
 }
 
@@ -256,4 +254,4 @@ if __name__ == "__main__":
     else:
         window = revert_factory(classes_map, paths, options.base_dir)
         window.register_gtk_quit()
-        gtk.main()
+        Gtk.main()

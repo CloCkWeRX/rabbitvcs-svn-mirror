@@ -30,19 +30,19 @@ else:
     os.mkdir(DIR)
     g = GittyupClient()
     g.initialize_repository(DIR)
-    
+
     touch(DIR + "/test.txt")
-    
+
     # Stage and commit the file
     g.stage([DIR+"/test.txt"])
     g.commit("Adding test.txt")
-    
+
     g.remove([DIR+"/test.txt"])
     st = g.status()
     assert (not os.path.exists(DIR+"/test.txt"))
     assert (g.is_staged(DIR+"/test.txt"))
     assert (st[0] == RemovedStatus)
-    
+
     g.unstage([DIR+"/test.txt"])
     st = g.status()
     assert (not os.path.exists(DIR+"/test.txt"))
@@ -54,5 +54,5 @@ else:
     assert (os.path.exists(DIR+"/test.txt"))
     assert (not g.is_staged(DIR+"/test.txt"))
     assert (st[0] == NormalStatus)
-    
+
     print("remove.py pass")

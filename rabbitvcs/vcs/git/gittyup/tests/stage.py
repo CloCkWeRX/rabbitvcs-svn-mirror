@@ -30,30 +30,30 @@ else:
     os.mkdir(DIR)
     g = GittyupClient()
     g.initialize_repository(DIR)
-    
+
     touch(DIR + "/test1.txt")
     touch(DIR + "/test2.txt")
-    
+
     # Stage both files
     g.stage([DIR+"/test1.txt", DIR+"/test2.txt"])
     st = g.status(DIR)
     assert (st[0] == AddedStatus), st
     assert (st[1] == AddedStatus)
     assert (st[0].is_staged)
-    
+
     # Unstage both files
     g.unstage([DIR+"/test1.txt", DIR+"/test2.txt"])
     st = g.status(DIR)
     assert (st[0] == UntrackedStatus)
     assert (st[1] == UntrackedStatus)
     assert (not st[0].is_staged)
-    
+
     # Untracked files should not be staged
     g.stage_all()
     st = g.status(DIR)
     assert (st[0] == UntrackedStatus)
     assert (st[1] == UntrackedStatus)
-    
+
     # test1.txt is changed, so it should get staged and set as Modified
     g.stage([DIR+"/test1.txt"])
     g.commit("Test commit")
@@ -73,5 +73,5 @@ else:
     assert (not g.is_staged(DIR+"/" + st[1].path))
     assert (st[0] == ModifiedStatus)
     assert (st[1] == UntrackedStatus)
-    
+
     print("stage.py pass")

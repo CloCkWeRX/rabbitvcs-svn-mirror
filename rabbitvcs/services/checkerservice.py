@@ -46,24 +46,19 @@ from __future__ import absolute_import
 
 import os, os.path
 import sys
-import simplejson
-import six
+import json
+import locale
 
-if "REQUIRE_GTK3" in os.environ and os.environ["REQUIRE_GTK3"]:
-    from gi.repository import GObject as gobject
-    from gi.repository import GLib as glib
-else:
-    import gobject
-    import glib
-    
+from gi.repository import GObject
+from gi.repository import GLib
+
 import dbus
-import dbus.glib # FIXME: this might actually already set the default loop
 import dbus.mainloop.glib
 import dbus.service
 
 import rabbitvcs.util.decorators
 import rabbitvcs.util._locale
-import rabbitvcs.util.helper
+from rabbitvcs.util import helper
 import rabbitvcs.services.service
 from rabbitvcs.services.statuschecker import StatusChecker
 
@@ -98,7 +93,7 @@ def decode_status(json_dict):
     """ Once we get a JSON encoded string out the other side of DBUS, we need to
     reconstitute the original object. This method is based on the pickle module
     in the Python stdlib.
-    """    
+    """
     cl = find_class(json_dict['__module__'], json_dict['__type__'])
     st = None
     if cl in rabbitvcs.vcs.status.STATUS_TYPES:
@@ -110,6 +105,11 @@ def decode_status(json_dict):
     else:
         raise TypeError("RabbitVCS status object has no path")
     return st
+
+def output_and_flush(*args):
+    # Idle output function.
+    sys.stdout.write(*args)
+    sys.stdout.flush()
 
 class StatusCheckerService(dbus.service.Object):
     """ StatusCheckerService objects wrap a StatusCheckerPlus instance,
@@ -134,10 +134,10 @@ class StatusCheckerService(dbus.service.Object):
         @type mainloop: any main loop with a quit() method
         """
         dbus.service.Object.__init__(self, connection, OBJECT_PATH)
-        
-        self.encoder = simplejson.JSONEncoder(default=encode_status,
+
+        self.encoder = json.JSONEncoder(default=encode_status,
                                               separators=(',', ':'))
-        
+
         self.mainloop = mainloop
 
         # Start the status checking daemon so we can do requests in the
@@ -150,10 +150,13 @@ class StatusCheckerService(dbus.service.Object):
 
     @dbus.service.method(INTERFACE)
     def MemoryUsage(self):
-        own_mem = rabbitvcs.util.helper.process_memory(os.getpid())
+        own_mem = helper.process_memory(os.getpid())
         checker_mem = self.status_checker.get_memory_usage()
-
         return own_mem + checker_mem
+
+    @dbus.service.method(INTERFACE)
+    def SetLocale(self, language = None, encoding = None):
+        return rabbitvcs.util._locale.set_locale(language, encoding)
 
     @dbus.service.method(INTERFACE)
     def PID(self):
@@ -168,21 +171,21 @@ class StatusCheckerService(dbus.service.Object):
                       summary=False):
         """ Requests a status check from the underlying status checker.
         """
-        status = self.status_checker.check_status(six.text_type(path),
+        status = self.status_checker.check_status(helper.to_text(path),
                                                   recurse=recurse,
                                                   summary=summary,
                                                   invalidate=invalidate)
-        
+
         return self.encoder.encode(status)
 
     @dbus.service.method(INTERFACE, in_signature='as', out_signature='s')
     def GenerateMenuConditions(self, paths):
         upaths = []
         for path in paths:
-            upaths.append(six.text_type(path))
-    
+            upaths.append(helper.to_text(path))
+
         path_dict = self.status_checker.generate_menu_conditions(upaths)
-        return simplejson.dumps(path_dict)
+        return json.dumps(path_dict)
 
     @dbus.service.method(INTERFACE)
     def CheckVersionOrDie(self, version):
@@ -247,7 +250,7 @@ class StatusCheckerStub:
         # We need this to for the client to be able to do asynchronous calls
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         self.session_bus = dbus.SessionBus()
-        self.decoder = simplejson.JSONDecoder(object_hook=decode_status)
+        self.decoder = json.JSONDecoder(object_hook=decode_status)
         self.status_checker = None
         self._connect_to_checker()
 
@@ -260,6 +263,8 @@ class StatusCheckerStub:
         try:
             self.status_checker = self.session_bus.get_object(SERVICE,
                                                               OBJECT_PATH)
+            # Sets the checker locale.
+            self.status_checker.SetLocale(*locale.getlocale(locale.LC_MESSAGES))
         except dbus.DBusException as ex:
             # There is not much we should do about this...
             log.exception(ex)
@@ -269,9 +274,9 @@ class StatusCheckerStub:
         This will use the CheckVersionOrDie method to ensure that either the
         checker service currently running has the correct version, or that it
         is quit and restarted.
-        
+
         Note that if the version of the newly started checker still doesn't
-        match, nothing is done. 
+        match, nothing is done.
         """
         try:
             pid = self.status_checker.CheckVersionOrDie(version)
@@ -287,20 +292,20 @@ class StatusCheckerStub:
                     pass
                 start()
                 self._connect_to_checker()
-                
+
                 try:
                     if not self.status_checker.CheckVersion(version):
                         log.warning("Version mismatch even after restart!")
                 except dbus.DBusException as ex:
                     log.exception(ex)
                     self._connect_to_checker()
-                    
+
 
     def check_status_now(self, path, recurse=False, invalidate=False,
                        summary=False):
-        
+
         status = None
-                
+
         try:
             json_status = self.status_checker.CheckStatus(path,
                                                           recurse, invalidate,
@@ -319,10 +324,10 @@ class StatusCheckerStub:
             self._connect_to_checker()
 
         return status
-        
+
     def check_status_later(self, path, callback, recurse=False,
                            invalidate=False, summary=False):
-        
+
         def real_reply_handler(json_status):
             # Note that this a closure referring to the outer functions callback
             # parameter
@@ -331,17 +336,17 @@ class StatusCheckerStub:
                                         "(asked about %s, got back %s)" % \
                                         (path, status.path)
             callback(status)
-        
+
         def reply_handler(*args, **kwargs):
             # The callback should be performed as a low priority task, so we
             # keep Nautilus as responsive as possible.
-            gobject.idle_add(real_reply_handler, *args, **kwargs)
-        
+            GLib.idle_add(real_reply_handler, *args, **kwargs)
+
         def error_handler(dbus_ex):
             log.exception(dbus_ex)
             self._connect_to_checker()
             callback(rabbitvcs.vcs.status.Status.status_error(path))
-        
+
         try:
             self.status_checker.CheckStatus(path,
                                             recurse, invalidate,
@@ -366,30 +371,30 @@ class StatusCheckerStub:
         service (which is, in turn, a wrapper around the real status checker).
         """
         if callback:
-            gobject.idle_add(self.check_status_later,
+            GLib.idle_add(self.check_status_later,
                      path, callback, recurse, invalidate, summary)
             return rabbitvcs.vcs.status.Status.status_calc(path)
         else:
             return self.check_status_now(path, recurse, invalidate, summary)
 
     def generate_menu_conditions(self, provider, base_dir, paths, callback):
-    
-        def real_reply_handler(json):
+
+        def real_reply_handler(obj):
             # Note that this a closure referring to the outer functions callback
             # parameter
-            path_dict = simplejson.loads(json)
+            path_dict = json.loads(obj)
             callback(provider, base_dir, paths, path_dict)
-        
+
         def reply_handler(*args, **kwargs):
             # The callback should be performed as a low priority task, so we
             # keep Nautilus as responsive as possible.
-            gobject.idle_add(real_reply_handler, *args, **kwargs)
-        
+            GLib.idle_add(real_reply_handler, *args, **kwargs)
+
         def error_handler(dbus_ex):
             log.exception(dbus_ex)
             self._connect_to_checker()
             callback(provider, base_dir, paths, {})
-        
+
         try:
             self.status_checker.GenerateMenuConditions(paths,
                                             dbus_interface=INTERFACE,
@@ -403,7 +408,7 @@ class StatusCheckerStub:
             self._connect_to_checker()
 
     def generate_menu_conditions_async(self, provider, base_dir, paths, callback):
-        gobject.idle_add(self.generate_menu_conditions, provider, base_dir, paths, callback)
+        GLib.idle_add(self.generate_menu_conditions, provider, base_dir, paths, callback)
         return {}
 
 def start():
@@ -426,19 +431,18 @@ def Main():
 
     # The following calls are required to make DBus thread-aware and therefore
     # support the ability run threads.
-    gobject.threads_init()
-    dbus.glib.threads_init()
+    helper.gobject_threads_init()
+    dbus.mainloop.glib.threads_init()
 
     # This registers our service name with the bus
     session_bus = dbus.SessionBus()
     service_name = dbus.service.BusName(SERVICE, session_bus)
 
-    mainloop = gobject.MainLoop()
+    mainloop = GLib.MainLoop()
 
     checker_service = StatusCheckerService(session_bus, mainloop)
 
-    gobject.idle_add(sys.stdout.write, "Started status checker service\n")
-    gobject.idle_add(sys.stdout.flush)
+    GLib.idle_add(output_and_flush, "Started status checker service\n")
 
     mainloop.run()
 

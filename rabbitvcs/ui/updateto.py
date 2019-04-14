@@ -1,29 +1,29 @@
 from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import pygtk
-import gobject
-import gtk
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GObject, Gdk
 
 from rabbitvcs.ui import InterfaceView
 import rabbitvcs.ui.action
@@ -37,7 +37,7 @@ class UpdateToRevision(InterfaceView):
     """
     This class provides an interface to update a working copy to a specific
     revision.  It has a glade .
-    
+
     """
 
     def __init__(self, path, revision=None):
@@ -75,12 +75,12 @@ class SVNUpdateToRevision(UpdateToRevision):
             self.svn,
             register_gtk_quit=self.gtk_quit_is_set()
         )
-        
+
         if rollback:
             self.action.append(self.action.set_header, _("Rollback To Revision"))
             self.action.append(self.action.set_status, _("Rolling Back..."))
             self.action.append(
-                self.svn.merge_ranges, 
+                self.svn.merge_ranges,
                 self.svn.get_repo_url(self.path),
                 [(self.svn.revision("HEAD").primitive(), revision.primitive())],
                 self.svn.revision("head"),
@@ -91,16 +91,16 @@ class SVNUpdateToRevision(UpdateToRevision):
             self.action.append(self.action.set_header, _("Update To Revision"))
             self.action.append(self.action.set_status, _("Updating..."))
             self.action.append(
-                self.svn.update, 
+                self.svn.update,
                 self.path,
                 revision=revision,
                 recurse=recursive,
                 ignore_externals=omit_externals
             )
             self.action.append(self.action.set_status, _("Completed Update"))
-            
+
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.schedule()
 
     def on_revision_changed(self, revision_selector):
         # Only allow rollback when a revision number is specified
@@ -113,7 +113,7 @@ class SVNUpdateToRevision(UpdateToRevision):
 class GitUpdateToRevision(UpdateToRevision):
     def __init__(self, path, revision):
         UpdateToRevision.__init__(self, path, revision)
-        
+
         self.get_widget("revision_label").set_text(_("What revision/branch do you want to checkout?"))
 
         self.git = self.vcs.git(path)
@@ -134,7 +134,7 @@ class GitUpdateToRevision(UpdateToRevision):
             self.git,
             register_gtk_quit=self.gtk_quit_is_set()
         )
-        
+
         self.action.append(self.action.set_header, _("Checkout"))
         self.action.append(self.action.set_status, _("Checking out %s..." % revision))
         self.action.append(
@@ -144,7 +144,7 @@ class GitUpdateToRevision(UpdateToRevision):
         )
         self.action.append(self.action.set_status, _("Completed Checkout"))
         self.action.append(self.action.finish)
-        self.action.start()
+        self.action.schedule()
 
     def on_revision_changed(self, revision_selector):
         pass
@@ -167,7 +167,7 @@ if __name__ == "__main__":
         [REVISION_OPT, VCS_OPT],
         usage="Usage: rabbitvcs updateto [path]"
     )
- 
+
     window = updateto_factory(options.vcs, args[0], revision=options.revision)
     window.register_gtk_quit()
-    gtk.main()
+    Gtk.main()

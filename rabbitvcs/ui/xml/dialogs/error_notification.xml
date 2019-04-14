@@ -1,61 +1,113 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
 <interface>
-  <!-- interface-requires gtk+ 2.10 -->
-  <!-- interface-naming-policy toplevel-contextual -->
-
-
+  <requires lib="gtk+" version="3.0"/>
+  <object class="GtkImage" id="window-close">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">window-close</property>
+  </object>
   <object class="GtkDialog" id="ErrorNotification">
     <property name="width_request">500</property>
     <property name="height_request">300</property>
+    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">RabbitVCS Error</property>
     <property name="icon_name">rabbitvcs-small</property>
     <property name="type_hint">normal</property>
-    <property name="has_separator">False</property>
+    <child>
+      <placeholder/>
+    </child>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox15">
+      <object class="GtkBox" id="dialog-vbox15">
         <property name="visible">True</property>
-        <property name="spacing">6</property>
-        <child>
-          <object class="GtkHBox" id="hbox1">
+        <property name="can_focus">False</property>
+        <property name="hexpand">True</property>
+        <property name="vexpand">True</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">18</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="dialog-action_area15">
             <property name="visible">True</property>
-            <property name="spacing">6</property>
+            <property name="can_focus">False</property>
+            <property name="halign">end</property>
+            <property name="hexpand">True</property>
+            <property name="layout_style">end</property>
             <child>
-              <object class="GtkImage" id="image1">
+              <object class="GtkButton" id="button1">
+                <property name="label" translatable="yes">_Close</property>
                 <property name="visible">True</property>
-                <property name="stock">gtk-dialog-warning</property>
-                <property name="icon-size">6</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="image">window-close</property>
+                <property name="use_underline">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="label1">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">&lt;span weight="bold" size="xx-large"&gt;RabbitVCS Error&lt;/span&gt;</property>
-                <property name="use_markup">True</property>
-              </object>
-              <packing>
-                <property name="position">1</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkGrid">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="column_spacing">6</property>
+            <child>
+              <object class="GtkLabel" id="label1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="hexpand">True</property>
+                <property name="label" translatable="yes">&lt;span weight="bold" size="xx-large"&gt;RabbitVCS Error&lt;/span&gt;</property>
+                <property name="use_markup">True</property>
+                <property name="xalign">0</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkImage" id="image1">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">6</property>
+                <property name="pixel_size">64</property>
+                <property name="icon_name">dialog-warning</property>
+                <property name="icon_size">6</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
         <child>
-          <object class="GtkHBox" id="notice_box">
+          <object class="GtkGrid" id="notice_box">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="hexpand">True</property>
             <child>
               <placeholder/>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -63,8 +115,8 @@
           <object class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="hscrollbar_policy">automatic</property>
-            <property name="vscrollbar_policy">automatic</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
             <property name="shadow_type">etched-in</property>
             <child>
               <object class="GtkTextView" id="error_text">
@@ -76,39 +128,12 @@
             </child>
           </object>
           <packing>
-            <property name="position">3</property>
-          </packing>
-        </child>
-        <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area15">
-            <property name="visible">True</property>
-            <property name="layout_style">end</property>
-            <child>
-              <object class="GtkButton" id="button1">
-                <property name="label">gtk-close</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_stock">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
             <property name="expand">False</property>
-            <property name="pack_type">end</property>
-            <property name="position">0</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
           </packing>
         </child>
       </object>
     </child>
   </object>
-
-
-
-
 </interface>

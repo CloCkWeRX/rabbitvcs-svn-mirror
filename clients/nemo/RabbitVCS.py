@@ -30,7 +30,6 @@ Our module for everything related to the Nemo extension.
 from __future__ import with_statement
 
 from __future__ import absolute_import
-import six
 from six.moves import range
 
 import signal
@@ -81,7 +80,9 @@ import rabbitvcs.vcs.status
 
 from rabbitvcs.util.helper import launch_ui_window, launch_diff_tool
 from rabbitvcs.util.helper import get_file_extension, get_common_directory
+from rabbitvcs.util.helper import get_home_folder
 from rabbitvcs.util.helper import pretty_timedelta
+from rabbitvcs.util.helper import to_text, unquote_url
 
 from rabbitvcs.util.decorators import timeit, disable
 
@@ -142,9 +143,14 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
         factory = Gtk.IconFactory()
 
         rabbitvcs_icons = [
+            "scalable/actions/rabbitvcs-cancel.svg",
+            "scalable/actions/rabbitvcs-ok.svg",
+            "scalable/actions/rabbitvcs-no.svg",
+            "scalable/actions/rabbitvcs-yes.svg",
             "scalable/actions/rabbitvcs-settings.svg",
             "scalable/actions/rabbitvcs-export.svg",
             "scalable/actions/rabbitvcs-properties.svg",
+            "scalable/actions/rabbitvcs-editprops.svg",
             "scalable/actions/rabbitvcs-show_log.svg",
             "scalable/actions/rabbitvcs-delete.svg",
             "scalable/actions/rabbitvcs-run.svg",
@@ -269,7 +275,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
 
         if not self.valid_uri(item.get_uri()): return Nemo.OperationResult.FAILED
 
-        path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
+        path = unquote_url(self.get_local_path(item.get_uri()))
 
         # log.debug("update_file_info() called for %s" % path)
 
@@ -386,7 +392,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
         paths = []
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
+                path = unquote_url(self.get_local_path(item.get_uri()))
                 paths.append(path)
                 self.nemoVFSFile_table[path] = item
 
@@ -414,7 +420,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
         paths = []
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
+                path = unquote_url(self.get_local_path(item.get_uri()))
                 paths.append(path)
                 self.nemoVFSFile_table[path] = item
 
@@ -434,13 +440,12 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
     # rename the real function "get_background_items_real".
     def get_background_items_profile(self, window, item):
         import cProfile
-        import rabbitvcs.util.helper
 
-        path = six.text_type(gnomevfs.get_local_path_from_uri(item.get_uri()),
+        path = to_text(gnomevfs.get_local_path_from_uri(item.get_uri()),
                        "utf-8").replace("/", ":")
 
         profile_data_file = os.path.join(
-            rabbitvcs.util.helper.get_home_folder(),
+            get_home_folder(),
             "checkerservice_%s.stats" % path)
 
         prof = cProfile.Profile()
@@ -466,7 +471,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
         """
 
         if not self.valid_uri(item.get_uri()): return
-        path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
+        path = unquote_url(self.get_local_path(item.get_uri()))
         self.nemoVFSFile_table[path] = item
 
         # log.debug("get_background_items_full() called")
@@ -489,7 +494,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
 
     def get_background_items(self, window, item):
         if not self.valid_uri(item.get_uri()): return
-        path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
+        path = unquote_url(self.get_local_path(item.get_uri()))
         self.nemoVFSFile_table[path] = item
 
         # log.debug("get_background_items() called")
@@ -625,7 +630,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
 
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = rabbitvcs.util.helper.unquote_url(self.get_local_path(item.get_uri()))
+                path = unquote_url(self.get_local_path(item.get_uri()))
 
                 if self.vcs_client.is_in_a_or_a_working_copy(path):
                     paths.append(path)
@@ -633,7 +638,7 @@ class RabbitVCS(Nemo.InfoProvider, Nemo.MenuProvider,
 
         if len(paths) == 0: return []
 
-        label = rabbitvcs.ui.property_page.PropertyPageLabel(claim_domain=False).get_widget()
+        label = rabbitvcs.ui.property_page.PropertyPageLabel(claim_domain=False).get_widget("rabbitvcs-title")
         page = rabbitvcs.ui.property_page.PropertyPage(paths, claim_domain=False).get_widget()
 
         ppage = Nemo.PropertyPage(name='RabbitVCS::PropertyPage',

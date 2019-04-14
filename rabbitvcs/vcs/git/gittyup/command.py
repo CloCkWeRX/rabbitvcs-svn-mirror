@@ -6,6 +6,7 @@ from __future__ import absolute_import
 import subprocess
 import fcntl
 import select
+import encodings
 import os
 
 from .exceptions import GittyupCommandError
@@ -19,30 +20,31 @@ def cancel_func():
 class GittyupCommand:
     def __init__(self, command, cwd=None, notify=None, cancel=None):
         self.command = command
-        
+
         self.notify = notify_func
         if notify:
             self.notify = notify
 
-        self.get_cancel = cancel_func
+        self.cancel = cancel_func
         if cancel:
-            self.get_cancel = cancel
+            self.cancel = cancel
 
         self.cwd = cwd
         if not self.cwd:
             self.cwd = os.getcwd()
-    
+
     def get_lines(self, val):
         returner = []
         lines = val.rstrip("\n").split("\n")
         for line in lines:
             returner.append(line.rstrip("\x1b[K\n"))
-        
-        return returner 
+
+        return returner
 
     def execute(self):
         env = os.environ.copy()
         env["LANG"] = "C";
+        env["PYTHONIOENCODING"] = "UTF-8"
         proc = subprocess.Popen(self.command,
                                 cwd=self.cwd,
                                 stdin=None,
@@ -50,21 +52,21 @@ class GittyupCommand:
                                 stdout=subprocess.PIPE,
                                 env=env,
                                 close_fds=True,
-                                preexec_fn=os.setsid,
-                                universal_newlines=True)
+                                preexec_fn=os.setsid)
 
+        out = encodings.utf_8.StreamReader(proc.stdout)
         stdout = []
 
         while True:
-            line = proc.stdout.readline()
+            line = out.readline()
 
             if line == '':
                 break
-            line = line.rstrip('\n') # Strip trailing newline.
+            line = line.rstrip("\r\n") # Strip trailing newline.
             self.notify(line)
             stdout.append(line)
 
-            if self.get_cancel():
+            if self.cancel():
                 proc.kill()
 
         return (0, stdout, None)

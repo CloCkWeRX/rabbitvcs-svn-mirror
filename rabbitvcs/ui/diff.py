@@ -1,31 +1,29 @@
 from __future__ import absolute_import
 #
-# This is an extension to the Nautilus file manager to allow better 
+# This is an extension to the Nautilus file manager to allow better
 # integration with the Subversion source control system.
-# 
+#
 # Copyright (C) 2006-2008 by Jason Field <jason@jasonfield.com>
 # Copyright (C) 2007-2008 by Bruce van der Kooij <brucevdkooij@gmail.com>
 # Copyright (C) 2008-2010 by Adam Plumb <adamplumb@gmail.com>
-# 
+#
 # RabbitVCS is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # RabbitVCS is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import six.moves._thread
-
-import pygtk
-import gobject
-import gtk
+import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, Gdk, GLib
 import os
 from shutil import rmtree
 import tempfile
@@ -42,13 +40,11 @@ log = Log("rabbitvcs.ui.diff")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-gobject.threads_init()
-
 class Diff(InterfaceNonView):
-    def __init__(self, path1, revision1=None, path2=None, revision2=None, 
+    def __init__(self, path1, revision1=None, path2=None, revision2=None,
             sidebyside=False):
         InterfaceNonView.__init__(self)
-        
+
         self.vcs = rabbitvcs.vcs.VCS()
 
         self.path1 = path1
@@ -59,18 +55,18 @@ class Diff(InterfaceNonView):
 
         if path2 is None:
             self.path2 = path1
-        
+
         self.dialog = None
-        
+
     def launch(self):
-        
-        if self.sidebyside:
-            self.launch_sidebyside_diff()
-        else:
-            self.launch_unified_diff()
-        
-        self.stop_loading()
-        
+        try:
+            if self.sidebyside:
+                self.launch_sidebyside_diff()
+            else:
+                self.launch_unified_diff()
+        finally:
+            self.stop_loading()
+
     def _build_export_path(self, index, revision, path):
         dest = rabbitvcs.util.helper.get_tmp_path("rabbitvcs-%s-%s-%s" % (str(index), str(revision)[:5], os.path.basename(path)))
         if os.path.exists(dest):
@@ -84,15 +80,15 @@ class Diff(InterfaceNonView):
     def start_loading(self):
         self.dialog = rabbitvcs.ui.dialog.Loading()
         self.dialog.run()
-    
+
     def stop_loading(self):
-        
+
         # Sometimes the launching will be too fast, and the dialog we're trusted with
         # cleaning up, may not even have been created!
         while self.dialog == None:
             # Wait for dialog's creation.
             pass
-        
+
         self.dialog.close()
         self.dialog = None
 
@@ -106,21 +102,17 @@ class SVNDiff(Diff):
         self.revision1 = self.get_revision_object(revision1, "base")
         self.revision2 = self.get_revision_object(revision2, "working")
 
-        try:
-            six.moves._thread.start_new_thread(self.launch, ())
-        except Exception as e:
-            log.exception(e)
-        
+        GLib.idle_add(self.launch)
         self.start_loading()
 
     def get_revision_object(self, value, default):
         # If value is a rabbitvcs Revision object, return it
         if hasattr(value, "is_revision_object"):
             return value
-        
+
         # If value is None, use the default
         if value is None:
-            return self.svn.revision(default)          
+            return self.svn.revision(default)
 
         # If the value is an integer number, return a numerical revision object
         # otherwise, a string revision value has been passed, use that as "kind"
@@ -134,15 +126,15 @@ class SVNDiff(Diff):
     def launch_unified_diff(self):
         """
         Launch diff as a unified diff in a text editor or .diff viewer
-        
+
         """
-        
+
         action = SVNAction(
             self.svn,
             notification=False,
             run_in_thread=False
         )
-        
+
         diff_text = action.run_single(
             self.svn.diff,
             self.temp_dir,
@@ -155,14 +147,14 @@ class SVNDiff(Diff):
             diff_text = ""
 
         fh = tempfile.mkstemp("-rabbitvcs-" + str(self.revision1) + "-" + str(self.revision2) + ".diff")
-        os.write(fh[0], diff_text)
+        os.write(fh[0], diff_text.encode("utf-8"))
         os.close(fh[0])
         rabbitvcs.util.helper.open_item(fh[1])
-        
+
     def launch_sidebyside_diff(self):
         """
         Launch diff as a side-by-side comparison using our comparison tool
-        
+
         """
 
         action = SVNAction(
@@ -176,25 +168,25 @@ class SVNDiff(Diff):
         else:
             dest1 = self._build_export_path(1, self.revision1, self.path1)
             action.run_single(
-                self.svn.export, 
-                self.path1, 
-                dest1, 
+                self.svn.export,
+                self.path1,
+                dest1,
                 self.revision1
             )
             action.stop_loader()
-    
+
         if self.revision2.kind == "working":
             dest2 = self.path2
         else:
             dest2 = self._build_export_path(2, self.revision2, self.path2)
             action.run_single(
-                self.svn.export, 
-                self.path2, 
-                dest2, 
+                self.svn.export,
+                self.path2,
+                dest2,
                 self.revision2
             )
             action.stop_loader()
-    
+
         rabbitvcs.util.helper.launch_diff_tool(dest1, dest2)
 
 class GitDiff(Diff):
@@ -207,17 +199,13 @@ class GitDiff(Diff):
         self.revision1 = self.get_revision_object(revision1, "HEAD")
         self.revision2 = self.get_revision_object(revision2, "WORKING")
 
-        try:
-            six.moves._thread.start_new_thread(self.launch, ())
-        except Exception as e:
-            log.exception(e)
-        
+        GLib.idle_add(self.launch)
         self.start_loading()
 
     def get_revision_object(self, value, default):
         # If value is a rabbitvcs Revision object, return it
         if hasattr(value, "is_revision_object"):
-            return value        
+            return value
 
         value_to_pass = value
         if not value_to_pass:
@@ -230,14 +218,14 @@ class GitDiff(Diff):
         dirname = os.path.dirname(path)
         if not os.path.isdir(dirname):
             os.makedirs(dirname)
-        
+
         if not data:
             data = ""
-        
+
         file = open(path, "wb")
         try:
             try:
-                file.write(data)
+                file.write(data.encode("utf-8"))
             except Exception as e:
                 log.exception(e)
         finally:
@@ -246,9 +234,9 @@ class GitDiff(Diff):
     def launch_unified_diff(self):
         """
         Launch diff as a unified diff in a text editor or .diff viewer
-        
+
         """
-        
+
         action = GitAction(
             self.git,
             notification=False,
@@ -266,26 +254,26 @@ class GitDiff(Diff):
             diff_text = ""
 
         fh = tempfile.mkstemp("-rabbitvcs-" + str(self.revision1)[:5] + "-" + str(self.revision2)[:5] + ".diff")
-        os.write(fh[0], diff_text)
+        os.write(fh[0], diff_text.encode("utf-8"))
         os.close(fh[0])
         rabbitvcs.util.helper.open_item(fh[1])
 
     def launch_sidebyside_diff(self):
         """
         Launch diff as a side-by-side comparison using our comparison tool
-        
+
         """
-        
+
         action = GitAction(
             self.git,
             notification=False,
             run_in_thread=False
         )
-        
+
         if self.revision1.kind != "WORKING":
             dest1 = self._build_export_path(1, self.revision1, self.path1)
             self.save_diff_to_file(dest1, action.run_single(
-                self.git.show, 
+                self.git.show,
                 self.path1,
                 self.revision1
             ))
@@ -295,7 +283,7 @@ class GitDiff(Diff):
         if self.revision2.kind != "WORKING":
             dest2 = self._build_export_path(2, self.revision2, self.path2)
             self.save_diff_to_file(dest2, action.run_single(
-                self.git.show, 
+                self.git.show,
                 self.path2,
                 self.revision2
             ))
@@ -320,13 +308,13 @@ if __name__ == "__main__":
     from rabbitvcs.ui import main, VCS_OPT
     (options, args) = main([
         (["-s", "--sidebyside"], {
-            "help":     _("View diff as side-by-side comparison"), 
-            "action":   "store_true", 
+            "help":     _("View diff as side-by-side comparison"),
+            "action":   "store_true",
             "default":  False
         }), VCS_OPT],
         usage="Usage: rabbitvcs diff [url1@rev1] [url2@rev2]"
     )
-    
+
     pathrev1 = rabbitvcs.util.helper.parse_path_revision_string(args.pop(0))
     pathrev2 = (None, None)
     if len(args) > 0:
