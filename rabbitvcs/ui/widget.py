@@ -35,7 +35,7 @@ try:
     gi.require_version("GtkSpell", "3.0")
     from gi.repository import GtkSpell
     HAS_GTKSPELL = True
-except ImportError:
+except (ImportError, ValueError):
     pass
 
 HAS_GTKSOURCEVIEW = False
@@ -43,7 +43,7 @@ try:
     gi.require_version("GtkSource", "3.0")
     from gi.repository import GtkSource
     HAS_GTKSOURCEVIEW = True
-except ImportError:
+except (ImportError, ValueError):
     pass
 
 from rabbitvcs.util.decorators import gtk_unsafe
