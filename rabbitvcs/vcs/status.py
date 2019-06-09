@@ -228,7 +228,7 @@ class Status(object):
 
     def simple_content_status(self):
         if self.content_status_map:
-            return self.content_status_map.get(self.content)
+            return self.content_status_map.get(self.content, self.content)
         else:
             return self.content
 
