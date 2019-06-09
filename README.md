@@ -22,7 +22,7 @@ For subversion:
 * subversion >= 1.4.6
 
 For git:
-* dulwich >= 0.9.7
+* dulwich >= 0.19.0
 * git
 * tkinter (for now)
 
