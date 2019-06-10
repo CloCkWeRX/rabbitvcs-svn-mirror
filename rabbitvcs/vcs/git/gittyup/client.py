@@ -812,7 +812,7 @@ class GittyupClient:
 
         @type   commit_timezone: int
         @param  commit_timezone: The commit timezone.
-            Defaults to (-1 * time.timezone)
+            Defaults to local timezone.
 
         @type   author: string
         @param  author: The author of the file changes.  Defaults to
@@ -823,7 +823,7 @@ class GittyupClient:
 
         @type   author_timezone: int
         @param  author_timezone: The author timezone.
-            Defaults to (-1 * time.timezone)
+            Defaults to commit timezone.
 
         @type   encoding: string
         @param  encoding: The encoding of the commit.  Defaults to UTF-8.
@@ -839,6 +839,9 @@ class GittyupClient:
 
         if encoding is None:
             encoding = ENCODING
+
+        if commit_timezone is None:
+            commit_timezone = helper.utc_offset()
 
         commit_id = self.repo.do_commit(**helper.to_bytes({
                     "message": message,

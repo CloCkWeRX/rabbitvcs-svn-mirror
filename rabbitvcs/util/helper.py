@@ -848,6 +848,22 @@ def pretty_timedelta(time1, time2, resolution=None):
         r = age_s / (3600 * 24 * 365)
         return ngettext("%i year", "%i years",r) % r
 
+def utc_offset(timestamp=None):
+    """
+        Compute the UTC offset of current locale for a timestamp in a
+        portable way, taking care of daylight saving. Positive is east of
+        Greenwich. Result in seconds. If no timestamp is given, the current
+        time is used.
+    """
+
+    if timestamp is None:
+        timestamp = time.time()
+
+    timestamp = int(timestamp)
+    utc = datetime.datetime.utcfromtimestamp(timestamp)
+    local = datetime.datetime.fromtimestamp(timestamp)
+    return int((local - utc).total_seconds())
+
 def _commonpath(l1, l2, common=[]):
     """
     Helper method for the get_relative_path method
