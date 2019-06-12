@@ -81,8 +81,9 @@ class GitPush(Push):
             }
         )
 
-        # Set default for Include Tags checkbox.
+        # Set default for checkboxes.
         self.get_widget("tags").set_active(True)
+        self.get_widget("force_with_lease").set_active(False)
 
         self.initialize_logs()
 
@@ -92,6 +93,7 @@ class GitPush(Push):
         repository = self.repository_selector.repository_opt.get_active_text()
         branch = self.repository_selector.branch_opt.get_active_text()
         tags = self.get_widget("tags").get_active()
+        force_with_lease = self.get_widget("force_with_lease").get_active()
 
         self.action = rabbitvcs.ui.action.GitAction(
             self.git,
@@ -99,7 +101,7 @@ class GitPush(Push):
         )
         self.action.append(self.action.set_header, _("Push"))
         self.action.append(self.action.set_status, _("Running Push Command..."))
-        self.action.append(self.git.push, repository, branch, tags)
+        self.action.append(self.git.push, repository, branch, tags, force_with_lease)
         self.action.append(self.action.set_status, _("Completed Push"))
         self.action.append(self.action.finish)
         self.action.schedule()

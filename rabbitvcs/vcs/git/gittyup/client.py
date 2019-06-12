@@ -990,7 +990,7 @@ class GittyupClient:
             self._config_set(remoteKey, "url", originalRemoteUrl)
             self.config.write_to_path()
 
-    def push(self, repository="origin", refspec="master", tags=True):
+    def push(self, repository="origin", refspec="master", tags=True, force_with_lease=False):
         """
         Push objects from the local repository into the remote repository
             and merge them.
@@ -1011,6 +1011,8 @@ class GittyupClient:
         cmd = ["git", "push", "--progress"]
         if tags:
             cmd.extend(["--tags"])
+        if force_with_lease:
+            cmd.extend(["--force-with-lease"])
         cmd.extend([repository, refspec])
 
         # Setup the section name in the config for the remote target.
