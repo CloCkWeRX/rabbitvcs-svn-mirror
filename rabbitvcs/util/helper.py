@@ -64,17 +64,19 @@ except ImportError:
 import gi
 from gi.repository import GObject
 
+from rabbitvcs import gettext
+_ = gettext.gettext
+
 DATETIME_FORMAT = "%Y-%m-%d %H:%M" # for log files
 LOCAL_DATETIME_FORMAT = locale.nl_langinfo(locale.D_T_FMT) # for UIs
 
-DT_FORMAT_THISWEEK = "%a %I:%M%p"
-DT_FORMAT_THISYEAR = "%b %d %Y"
-DT_FORMAT_ALL = "%b %d %Y"
+DT_FORMAT_TIME = _("%I:%M%P")
+DT_FORMAT_THISWEEK = _("%a %I:%M%p")
+DT_FORMAT_THISYEAR = _("%b %d")
+DT_FORMAT_ALL = _("%b %d %Y")
 
 LINE_BREAK_CHAR = u'\u23CE'
 
-from rabbitvcs import gettext
-_ = gettext.gettext
 
 def compare_version(version1, version2, length = None):
     if not length:
@@ -218,7 +220,7 @@ def format_datetime(dt, format=None):
             elif delta.seconds >= 60 and delta.seconds < 600:
                 returner = _("%d minute(s) ago") % (delta.seconds/60)
             elif delta.seconds >= 600 and delta.seconds < 43200:
-                returner = dt.strftime("%I:%M%P")
+                returner = dt.strftime(DT_FORMAT_TIME)
             else:
                 returner = dt.strftime(DT_FORMAT_THISWEEK)
         elif delta.days > 0 and delta.days < 7:
