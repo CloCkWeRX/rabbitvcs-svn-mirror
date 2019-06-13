@@ -242,16 +242,21 @@ class Commit(InterfaceView, GtkContextMenuCaller):
 
         self.files_table.clear()
         n = 0
+        m = 0
         for item in self.items:
             if item.path in self.changes:
                 checked = self.changes[item.path]
             else:
                 checked = self.should_item_be_activated(item)
 
+            if item.is_versioned():
+                n += 1
+            else:
+                m += 1
+
             if not self.should_item_be_visible(item):
                 continue
 
-            n += 1
             self.files_table.append([
                 checked,
                 item.path,
@@ -259,7 +264,11 @@ class Commit(InterfaceView, GtkContextMenuCaller):
                 item.simple_content_status(),
                 item.simple_metadata_status()
             ])
-        self.get_widget("status").set_text(_("Found %d item(s)") % n)
+        self.get_widget("status").set_text(_("Found %(changed)d changed and %(unversioned)d unversioned item(s)") % {
+                "changed": n,
+                "unversioned": m
+            }
+        )
 
 class SVNCommit(Commit):
     def __init__(self, paths, base_dir=None, message=None):
