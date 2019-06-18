@@ -1088,7 +1088,8 @@ def parse_patch_output(patch_file, base_dir, strip=0):
                                       env = env)
 
     # Intialise things...
-    out = encodings.utf_8.StreamReader(patch_proc.stdout)
+    out = encodings.utf_8.StreamReader(patch_proc.stdout,
+                                       errors='backslashreplace')
     line = out.readline()
     patch_match = PATCHING_RE.match(line)
 
