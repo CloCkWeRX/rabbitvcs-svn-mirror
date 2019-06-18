@@ -1841,7 +1841,7 @@ class GittyupClient:
             self.callback_notify(e)
             stdout = []
 
-        return "\n".join(stdout)
+        return ''.join(x + "\n" for x in stdout)
 
     def diff_summarize(self, path1, revision_obj1, path2=None, revision_obj2=None):
         results = self.diff(path1, revision_obj1, path2, revision_obj2, True)
