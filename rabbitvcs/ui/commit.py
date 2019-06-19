@@ -104,10 +104,14 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         )
         self.files_table.allow_multiple()
         self.get_widget("toggle_show_unversioned").set_active(self.SHOW_UNVERSIONED)
+        msgtextview = self.get_widget("message")
         self.message = rabbitvcs.ui.widget.TextView(
-            self.get_widget("message"),
+            msgtextview,
             (message and message or "")
         )
+        messagebuf = msgtextview.get_buffer()
+        messagebuf.connect("changed", self.on_message_changed)
+        self.on_message_changed(messagebuf)
 
         self.paths = []
         for path in paths:
@@ -232,6 +236,10 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         message = dialog.run()
         if message is not None:
             self.message.set_text(message)
+
+    def on_message_changed(self, buffer, data=None):
+        ok = self.get_widget("ok")
+        ok.set_sensitive(buffer.get_char_count() != 0)
 
     def populate_files_table(self):
         """
