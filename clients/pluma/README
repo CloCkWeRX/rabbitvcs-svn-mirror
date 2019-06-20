@@ -1,0 +1,29 @@
+RabbitVCS Pluma Plugin
+
+This plugin is meant to be used with the Pluma Text Editor.  It provides the 
+familiar RabbitVCS Context menu in the Tools menu as well as in various 
+context menus.
+
+Requirements:
+    * pluma
+    * (all other RabbitVCS requirements)
+
+Installation:
+    To install for all users, copy rabbitvcs-plugin.py and 
+    rabbitvcs-pluma.plugin to:
+        /usr/lib{64}/pluma/plugins
+
+    To install for a single user, copy rabbitvcs-plugin.py and 
+    rabbitvcs-pluma.plugin to:
+        ~/.local/share/pluma/plugins        
+
+
+Troubleshooting:
+    If Pluma supports Python 3 but not Python 2, edit installed file
+    rabbitvcs-pluma.plugin and change line
+        Loader=python
+    to
+        Loader=python3
+
+    See the known-issues section of our website:
+        http://wiki.rabbitvcs.org/wiki/support/known-issues
