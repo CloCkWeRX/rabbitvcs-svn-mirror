@@ -54,7 +54,8 @@ class GittyupCommand:
                                 close_fds=True,
                                 preexec_fn=os.setsid)
 
-        out = encodings.utf_8.StreamReader(proc.stdout)
+        out = encodings.utf_8.StreamReader(proc.stdout,
+                                           errors='backslashreplace')
         stdout = []
 
         while True:

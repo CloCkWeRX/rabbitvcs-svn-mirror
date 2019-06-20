@@ -21,6 +21,9 @@
     <signal name="destroy" handler="on_destroy" swapped="no"/>
     <signal name="key-press-event" handler="on_key_pressed" swapped="no"/>
     <child>
+      <placeholder/>
+    </child>
+    <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -97,22 +100,6 @@
           <packing>
             <property name="left_attach">0</property>
             <property name="top_attach">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkCheckButton" id="tags">
-            <property name="label">Include tags</property>
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="receives_default">False</property>
-            <property name="halign">start</property>
-            <property name="margin_left">10</property>
-            <property name="hexpand">False</property>
-            <property name="draw_indicator">False</property>
-          </object>
-          <packing>
-            <property name="left_attach">0</property>
-            <property name="top_attach">2</property>
           </packing>
         </child>
         <child>
@@ -206,6 +193,47 @@
           <packing>
             <property name="left_attach">0</property>
             <property name="top_attach">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkGrid">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkCheckButton" id="tags">
+                <property name="label">Include tags</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="receives_default">False</property>
+                <property name="halign">start</property>
+                <property name="hexpand">True</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="force_with_lease">
+                <property name="label" translatable="yes">Force with lease</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="halign">start</property>
+                <property name="hexpand">True</property>
+                <property name="draw_indicator">True</property>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">2</property>
           </packing>
         </child>
       </object>

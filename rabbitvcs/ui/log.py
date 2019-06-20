@@ -1238,7 +1238,7 @@ class LogTopContextMenuCallbacks:
 
     def show_changes_revisions(self, widget, data=None):
         rev_first = helper.to_text(self.revisions[0]["revision"])
-        rev_last = helper.to_text(self.revisions[0]["next_revision"])
+        rev_last = helper.to_text(self.revisions[-1]["revision"])
 
         path = self.path
         if self.vcs_name == rabbitvcs.vcs.VCS_SVN:

@@ -587,7 +587,7 @@ class Git:
 
         return self.client.pull(repository, refspec, options)
 
-    def push(self, repository="origin", refspec="master", tags=True):
+    def push(self, repository="origin", refspec="master", tags=True, force_with_lease=False):
         """
         Push objects from the local repository into the remote repository
             and merge them.
@@ -603,7 +603,7 @@ class Git:
 
         """
 
-        return self.client.push(repository, refspec, tags)
+        return self.client.push(repository, refspec, tags, force_with_lease)
 
     def fetch_all(self):
         """

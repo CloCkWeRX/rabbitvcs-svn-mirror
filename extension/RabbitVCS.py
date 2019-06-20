@@ -1,1 +1,1 @@
-../clients/nautilus-3.0/RabbitVCS.py
+../clients/nautilus/RabbitVCS.py

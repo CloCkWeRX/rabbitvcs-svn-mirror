@@ -59,7 +59,7 @@ import os
 os.environ["REQUIRE_GTK3"] = "1"
 
 import os.path
-from os.path import isdir, isfile, realpath, basename
+from os.path import isdir, isfile, realpath, basename, dirname
 import datetime
 
 from gi.repository import Nautilus, GObject, Gtk, GdkPixbuf
@@ -391,17 +391,18 @@ class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
         # log.debug("get_file_items_full() called")
 
         paths_str = "-".join(paths)
+        base_dir = dirname(paths[0])
 
         conditions_dict = None
         if paths_str in self.items_cache:
             conditions_dict = self.items_cache[paths_str]
             if conditions_dict and conditions_dict != "in-progress":
                 conditions = NautilusMenuConditions(conditions_dict)
-                menu = NautilusMainContextMenu(self, window.base_dir, paths, conditions).get_menu()
+                menu = NautilusMainContextMenu(self, base_dir, paths, conditions).get_menu()
                 return menu
 
         if conditions_dict != "in-progress":
-            self.status_checker.generate_menu_conditions_async(provider, window.base_dir, paths, self.update_file_items)
+            self.status_checker.generate_menu_conditions_async(provider, base_dir, paths, self.update_file_items)
             self.items_cache[path] = "in-progress"
 
         return ()
@@ -467,8 +468,6 @@ class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
                 conditions = NautilusMenuConditions(conditions_dict)
                 menu = NautilusMainContextMenu(self, path, [path], conditions).get_menu()
                 return menu
-
-        window.base_dir = path
 
         if conditions_dict != "in-progress":
             self.status_checker.generate_menu_conditions_async(provider, path, [path], self.update_background_items)

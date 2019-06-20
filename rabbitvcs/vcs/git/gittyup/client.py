@@ -812,7 +812,7 @@ class GittyupClient:
 
         @type   commit_timezone: int
         @param  commit_timezone: The commit timezone.
-            Defaults to (-1 * time.timezone)
+            Defaults to local timezone.
 
         @type   author: string
         @param  author: The author of the file changes.  Defaults to
@@ -823,7 +823,7 @@ class GittyupClient:
 
         @type   author_timezone: int
         @param  author_timezone: The author timezone.
-            Defaults to (-1 * time.timezone)
+            Defaults to commit timezone.
 
         @type   encoding: string
         @param  encoding: The encoding of the commit.  Defaults to UTF-8.
@@ -839,6 +839,9 @@ class GittyupClient:
 
         if encoding is None:
             encoding = ENCODING
+
+        if commit_timezone is None:
+            commit_timezone = helper.utc_offset()
 
         commit_id = self.repo.do_commit(**helper.to_bytes({
                     "message": message,
@@ -987,7 +990,7 @@ class GittyupClient:
             self._config_set(remoteKey, "url", originalRemoteUrl)
             self.config.write_to_path()
 
-    def push(self, repository="origin", refspec="master", tags=True):
+    def push(self, repository="origin", refspec="master", tags=True, force_with_lease=False):
         """
         Push objects from the local repository into the remote repository
             and merge them.
@@ -1008,6 +1011,8 @@ class GittyupClient:
         cmd = ["git", "push", "--progress"]
         if tags:
             cmd.extend(["--tags"])
+        if force_with_lease:
+            cmd.extend(["--force-with-lease"])
         cmd.extend([repository, refspec])
 
         # Setup the section name in the config for the remote target.
@@ -1836,7 +1841,7 @@ class GittyupClient:
             self.callback_notify(e)
             stdout = []
 
-        return "\n".join(stdout)
+        return ''.join(x + "\n" for x in stdout)
 
     def diff_summarize(self, path1, revision_obj1, path2=None, revision_obj2=None):
         results = self.diff(path1, revision_obj1, path2, revision_obj2, True)
