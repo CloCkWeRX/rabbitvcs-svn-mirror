@@ -384,6 +384,12 @@ class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
         GtkFilesContextMenuConditions.__init__(self, vcs, paths)
         self.caller = caller
 
+    def is_parent_selected(self):
+        for path in self.paths:
+            if os.path.split(path.rstrip("/"))[1] == "..":
+                return True
+        return False
+
     def _open(self, data1=None, data2=None):
         return True
 
@@ -403,28 +409,30 @@ class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
         return True
 
     def rename(self, data1=None):
+        if self.path_dict["length"] > 1 or self.is_parent_selected():
+            return False
         revision = self.caller.revision_selector.get_revision_object()
-        return (revision.kind == "head")
+        return revision.kind == "head"
 
     def delete(self, data1=None, data2=None):
         revision = self.caller.revision_selector.get_revision_object()
-        return (revision.kind == "head")
+        return revision.kind == "head" and not self.is_parent_selected()
 
     def create_repository_folder(self, data1=None):
-        if self.path_dict["length"] == 1:
+        if self.path_dict["length"] == 1 and not self.is_parent_selected():
             return (self.caller.file_column_callback(self.paths[0]) == "dir")
 
         return (self.path_dict["length"] == 0)
 
     def browser_copy_to(self, data1=None, data2=None):
-        return True
+        return not self.is_parent_selected()
 
     def browser_copy_url_to_clipboard(self, data1=None, data2=None):
         return (self.path_dict["length"] == 1)
 
     def browser_move_to(self, data1=None, data2=None):
         revision = self.caller.revision_selector.get_revision_object()
-        return (revision.kind == "head")
+        return revision.kind == "head" and not self.is_parent_selected()
 
 class BrowserContextMenuCallbacks:
     def __init__(self, caller, base_dir, vcs, paths=[]):
