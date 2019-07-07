@@ -442,8 +442,9 @@ class ErrorNotification(InterfaceView):
         notice = rabbitvcs.ui.wraplabel.WrapLabel(ERROR_NOTICE)
         notice.set_use_markup(True)
 
-        self.get_widget("notice_box").pack_start(notice)
-        self.get_widget("notice_box").show_all()
+        notice_box = rabbitvcs.ui.widget.Box(self.get_widget("notice_box"))
+        notice_box.pack_start(notice, True, True, 0)
+        notice_box.show_all()
 
         self.textview = rabbitvcs.ui.widget.TextView(
             self.get_widget("error_text"),
