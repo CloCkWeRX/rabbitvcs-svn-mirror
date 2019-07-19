@@ -145,7 +145,7 @@ class Log(InterfaceView):
         )
 
         self.stop_on_copy = False
-        self.revision_clipboard = Gtk.Clipboard()
+        self.revision_clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
 
     #
     # UI Signal Callback Methods
@@ -579,7 +579,7 @@ class SVNLog(Log):
 
             text += "\n\n\n"
 
-        self.revision_clipboard.set_text(text)
+        self.revision_clipboard.set_text(text, -1)
 
     def update_revision_message(self):
         combined_paths = []
@@ -857,7 +857,7 @@ class GitLog(Log):
             text += "%s: %s\n" % (DATE_LABEL, helper.to_text(item.date))
             text += "%s\n\n" % item.message
 
-        self.revision_clipboard.set_text(text)
+        self.revision_clipboard.set_text(text, -1)
 
     def update_revision_message(self):
         combined_paths = []

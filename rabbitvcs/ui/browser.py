@@ -122,8 +122,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
             }
         )
 
-        self.clipboard = None
-        self.url_clipboard = Gtk.Clipboard()
+        self.url_clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
         self.repo_root_url = None
 
         if self.url:
@@ -287,23 +286,8 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
 
         BrowserContextMenu(self, data, None, self.vcs, paths).show()
 
-    def update_clipboard(self, action, urls):
-        self.clipboard = {
-            "action": action,
-            "urls": urls
-        }
-
-    def clipboard_has_cut(self):
-        return (self.clipboard is not None and self.clipboard["action"] == "cut")
-
-    def clipboard_has_copy(self):
-        return (self.clipboard is not None and self.clipboard["action"] == "cut")
-
-    def empty_clipboard(self):
-        self.clipboard = None
-
     def set_url_clipboard(self, url):
-        self.url_clipboard.set_text(url)
+        self.url_clipboard.set_text(url, -1)
 
     def get_repo_root_url(self):
         return self.repo_root_url
