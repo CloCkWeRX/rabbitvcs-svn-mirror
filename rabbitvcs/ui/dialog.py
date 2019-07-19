@@ -414,6 +414,7 @@ class NewFolder(InterfaceView):
             self.get_widget("log_message"),
             _("Added a folder to the repository")
         )
+        self.on_folder_name_changed(self.folder_name)
 
     def on_folder_name_changed(self, widget):
         complete = (widget.get_text() != "")
