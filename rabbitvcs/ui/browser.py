@@ -170,6 +170,28 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
         helper.save_repository_path(self.urls.get_active_text())
         self.load()
 
+    def create_folder(self, where):
+        from rabbitvcs.ui.dialog import NewFolder
+        dialog = NewFolder()
+        result = dialog.run()
+        if result is None:
+            return
+
+        (folder_name, log_message) = result
+        new_url = where.rstrip("/") + "/" + folder_name
+
+        self.action = rabbitvcs.ui.action.SVNAction(
+            self.svn,
+            notification=False
+        )
+        self.action.append(self.svn.mkdir, new_url, log_message)
+        self.action.append(self.svn.list, where, recurse=False)
+        self.action.append(self.populate_table, 1)
+        self.action.schedule()
+
+    def on_create_folder_here_clicked(self, widget):
+        self.create_folder(self.urls.get_active_text())
+
     def on_row_activated(self, treeview, data, col):
         path = self.list_table.get_selected_row_items(0)[0]
         if path == "..":
@@ -339,7 +361,7 @@ class SVNBrowserDialog(SVNBrowser):
 class MenuCreateRepositoryFolder(MenuItem):
     identifier = "RabbitVCS::Create_Repository_Folder"
     label = _("Create folder...")
-    icon = "document-new"
+    icon = "folder-new"
 
 class MenuBrowserCopyTo(MenuItem):
     identifier = "RabbitVCS::Browser_Copy_To"
@@ -502,23 +524,7 @@ class BrowserContextMenuCallbacks:
         self.caller.action.schedule()
 
     def create_repository_folder(self, data=None, user_data=None):
-        from rabbitvcs.ui.dialog import NewFolder
-        dialog = NewFolder()
-        result = dialog.run()
-        if result is None:
-            return
-
-        (folder_name, log_message) = result
-        new_url = self.paths[0].rstrip("/") + "/" + folder_name
-
-        self.caller.action = rabbitvcs.ui.action.SVNAction(
-            self.svn,
-            notification=False
-        )
-        self.caller.action.append(self.svn.mkdir, new_url, log_message)
-        self.caller.action.append(self.svn.list, self.paths[0], recurse=False)
-        self.caller.action.append(self.caller.populate_table, 1)
-        self.caller.action.schedule()
+        self.caller.create_folder(self.paths[0])
 
     def browser_copy_to(self, data=None, user_data=None):
         from rabbitvcs.ui.dialog import OneLineTextChange
