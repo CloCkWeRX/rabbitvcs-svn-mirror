@@ -382,12 +382,17 @@ class VCSAction(threading.Thread):
 
         """
 
-        if self.message is None:
-            result = helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.TextChange(_("Log Message")).run)
+        should_continue = True
+        message = self.message
+        if message is None:
+            result = helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.TextChange(_("Log Message")).run())
             should_continue = (result[0] == Gtk.ResponseType.OK)
-            return should_continue, result[1].encode("utf-8")
-        else:
-            return True, self.message.encode("utf-8")
+            message = result[1]
+        if isinstance(message, bytes):
+            message = message.decode()
+        if not should_continue:
+            self.set_cancel()
+        return should_continue, message
 
     def get_login(self, realm, username, may_save):
         """
@@ -417,7 +422,7 @@ class VCSAction(threading.Thread):
         if self.login_tries >= 3:
             return (False, "", "", False)
 
-        result = helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.Authentication(realm, may_save).run)
+        result = helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.Authentication(realm, may_save).run())
 
         if result is not None:
             self.login_tries += 1
@@ -450,7 +455,7 @@ class VCSAction(threading.Thread):
                 data["valid_from"],
                 data["valid_until"],
                 data["finger_print"]
-            ).run)
+            ).run())
 
         if result == 0:
             #Deny
@@ -482,7 +487,7 @@ class VCSAction(threading.Thread):
         return helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.CertAuthentication(
                 realm,
                 may_save
-            ).run)
+            ).run())
 
     def get_client_cert(self, realm, may_save):
         """
@@ -504,7 +509,7 @@ class VCSAction(threading.Thread):
         return helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.SSLClientCertPrompt(
                 realm,
                 may_save
-            ).run)
+            ).run())
 
     def set_log_message(self, message):
         """
@@ -708,7 +713,7 @@ class GitAction(VCSAction):
                     self.notification.append(["", data, ""])
 
     def get_user(self):
-        return helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.NameEmailPrompt().run)
+        return helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.NameEmailPrompt().run())
 
     def conflict_filter(self, data):
         if str(data).startswith("ERROR:"):
@@ -743,7 +748,7 @@ class MercurialAction(VCSAction):
                     self.notification.append(["", data, ""])
 
     def get_user(self):
-        return helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.NameEmailPrompt().run)
+        return helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.NameEmailPrompt().run())
 
     def conflict_filter(self, data):
         if str(data).startswith("ERROR:"):
