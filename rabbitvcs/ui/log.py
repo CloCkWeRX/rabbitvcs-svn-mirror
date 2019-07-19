@@ -1036,18 +1036,17 @@ class MenuCopyClipboard(MenuItem):
     identifier = "RabbitVCS::Copy_Clipboard"
     label = _("Copy to clipboard")
     tooltip = _("Copy to clipboard the full data of these revisions")
+    icon = "rabbitvcs-asynchronous"
 
 class MenuEditAuthor(MenuItem):
     identifier = "RabbitVCS::Edit_Author"
     label = _("Edit author...")
-
-class MenuEditAuthor(MenuItem):
-    identifier = "RabbitVCS::Edit_Author"
-    label = _("Edit author...")
+    icon = "rabbitvcs-monkey"
 
 class MenuEditLogMessage(MenuItem):
     identifier = "RabbitVCS::Edit_Log_Message"
     label = _("Edit log message...")
+    icon = "rabbitvcs-editconflicts"
 
 class MenuEditRevisionProperties(MenuItem):
     identifier = "RabbitVCS::Edit_Revision_Properties"
