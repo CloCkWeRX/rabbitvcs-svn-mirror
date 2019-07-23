@@ -104,9 +104,11 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         )
         self.files_table.allow_multiple()
         self.get_widget("toggle_show_unversioned").set_active(self.SHOW_UNVERSIONED)
+        if not message:
+            message = self.SETTINGS.get_multiline("general", "default_commit_message")
         self.message = rabbitvcs.ui.widget.TextView(
             self.get_widget("message"),
-            (message and message or "")
+            message
         )
 
         self.paths = []

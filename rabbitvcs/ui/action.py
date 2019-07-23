@@ -385,7 +385,9 @@ class VCSAction(threading.Thread):
         should_continue = True
         message = self.message
         if message is None:
-            result = helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.TextChange(_("Log Message")).run())
+            settings = rabbitvcs.util.settings.SettingsManager()
+            message = settings.get_multiline("general", "default_commit_message")
+            result = helper.run_in_main_thread(lambda: rabbitvcs.ui.dialog.TextChange(_("Log Message"), message).run())
             should_continue = (result[0] == Gtk.ResponseType.OK)
             message = result[1]
         if isinstance(message, bytes):

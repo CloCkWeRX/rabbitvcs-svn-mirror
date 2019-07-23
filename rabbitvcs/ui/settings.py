@@ -75,6 +75,10 @@ class Settings(InterfaceView):
         self.get_widget("enable_git").set_active(
             int(self.settings.get("HideItem", "git")) == 0
         )
+        self.default_commit_message = rabbitvcs.ui.widget.TextView(self.get_widget("default_commit_message"))
+        self.default_commit_message.set_text(
+            self.settings.get_multiline("general", "default_commit_message")
+        )
         self.get_widget("diff_tool").set_text(
             self.settings.get("external", "diff_tool")
         )
@@ -261,6 +265,10 @@ class Settings(InterfaceView):
         self.settings.set(
             "HideItem", "git",
             not self.get_widget("enable_git").get_active()
+        )
+        self.settings.set_multiline(
+            "general", "default_commit_message",
+            self.default_commit_message.get_text()
         )
         self.settings.set(
             "external", "diff_tool",

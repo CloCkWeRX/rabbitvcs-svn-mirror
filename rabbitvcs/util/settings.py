@@ -34,8 +34,12 @@ from os.path import dirname
 import shutil
 import configobj
 import validate
+import re
 
 from rabbitvcs import package_prefix
+
+MULTILINE_ESCAPE_RE = re.compile(r'''([\\'"])''')
+MULTILINE_UNESCAPE_RE = re.compile(r"\\(.)")
 
 def get_home_folder():
     """
@@ -178,6 +182,13 @@ class SettingsManager:
             self.settings[section] = {}
 
         self.settings[section][keyword] = value
+
+    # Multilines are escaped to allow them containing '''
+    def get_multiline(self, section=None, keyword=None):
+        return MULTILINE_UNESCAPE_RE.sub(r"\1", self.get(section, keyword))
+
+    def set_multiline(self, section, keyword, value=""):
+        self.set(section, keyword, MULTILINE_ESCAPE_RE.sub(r"\\\1", value))
 
     def set_comments(self, section, comments=[]):
         """
