@@ -451,7 +451,7 @@ class GittyupClient:
         index = self._get_index()
         to_stage = []
 
-        if type(paths) in (str, six.text_type):
+        if isinstance(paths, (str, six.text_type)):
             paths = [paths]
 
         for path in paths:
@@ -496,7 +496,7 @@ class GittyupClient:
         index = self._get_index()
         tree = self._get_tree_index()
 
-        if type(paths) in (str, six.text_type):
+        if isinstance(paths, (str, six.text_type)):
             paths = [paths]
 
         for path in paths:
@@ -886,7 +886,7 @@ class GittyupClient:
 
         """
 
-        if type(paths) in (str, six.text_type):
+        if isinstance(paths, (str, six.text_type)):
             paths = [paths]
 
         index = self._get_index()
