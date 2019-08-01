@@ -191,7 +191,7 @@ class SVNAnnotate(Annotate):
             datestr = item["date"][0:-8]
             date = datetime(*time.strptime(datestr,"%Y-%m-%dT%H:%M:%S")[:-2])
             self.table.append([
-                str(item["number"]),
+                str(int(item["number"]) + 1),
                 str(item["revision"].number),
                 item["author"],
                 rabbitvcs.util.helper.format_datetime(date),
@@ -207,8 +207,8 @@ class SVNAnnotate(Annotate):
             date = datetime(*time.strptime(datestr,"%Y-%m-%dT%H:%M:%S")[:-2])
 
             text += "%s\t%s\t%s\t%s\t%s\n" % (
-                item["number"],
-                item["revision"].number,
+                str(int(item["number"]) + 1),
+                str(item["revision"].number),
                 item["author"],
                 rabbitvcs.util.helper.format_datetime(date),
                 item["line"]
@@ -277,7 +277,7 @@ class GitAnnotate(Annotate):
         self.table.clear()
         for item in blamedict:
             self.table.append([
-                item["number"],
+                str(item["number"]),
                 item["revision"][:7],
                 item["author"],
                 rabbitvcs.util.helper.format_datetime(item["date"]),
@@ -290,7 +290,7 @@ class GitAnnotate(Annotate):
         text = ""
         for item in blamedict:
             text += "%s\t%s\t%s\t%s\t%s\n" % (
-                item["number"],
+                str(item["number"]),
                 item["revision"][:7],
                 item["author"],
                 rabbitvcs.util.helper.format_datetime(item["date"]),

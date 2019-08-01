@@ -456,7 +456,7 @@ class BrowserContextMenuCallbacks:
         revision = self.__get_browser_revision()
         if revision.kind == "number":
             urlrev += "@" + revision.value
-        helper.launch_ui_window("annotate", [urlrev])
+        helper.launch_ui_window("annotate", ["--vcs=%s" % self.guess, urlrev])
 
     def checkout(self, data=None, user_data=None):
         args = [self.paths[0]]
