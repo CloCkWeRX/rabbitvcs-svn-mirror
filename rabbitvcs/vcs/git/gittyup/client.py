@@ -37,6 +37,7 @@ import six
 
 ENCODING = "UTF-8"
 
+RE_STATUS = re.compile("^([\sA-Z\?]+)\s(?:\S+\s->\s)?(.*?)$")
 
 
 def callback_notify_null(val):
@@ -1410,7 +1411,7 @@ class GittyupClient:
         statuses = []
         modified_files = []
         for line in stdout:
-            components = re.match("^([\sA-Z\?]+)\s(.*?)$", line)
+            components = RE_STATUS.match(line)
             if components:
                 status = components.group(1)
                 strip_status = status.strip()
@@ -1420,7 +1421,7 @@ class GittyupClient:
 
                 if status == " D":
                     statuses.append(MissingStatus(path))
-                elif strip_status in ["M", "R", "U"]:
+                elif any(c in strip_status for c in ["M", "R", "U"]):
                     statuses.append(ModifiedStatus(path))
                 elif strip_status in ["A", "C"]:
                     statuses.append(AddedStatus(path))
