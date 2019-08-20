@@ -69,8 +69,7 @@ from gi.repository import GObject
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-DATETIME_FORMAT = "%Y-%m-%d %H:%M" # for log files
-LOCAL_DATETIME_FORMAT = locale.nl_langinfo(locale.D_T_FMT) # for UIs
+LOG_DATETIME_FORMAT = "%Y-%m-%d %H:%M" # for log files
 
 DT_FORMAT_TIME = _("%I:%M%P")
 DT_FORMAT_THISWEEK = _("%a %I:%M%p")
@@ -215,7 +214,7 @@ def format_datetime(dt, format=None):
         else:
             returner = dt.strftime(DT_FORMAT_ALL)
 
-    return returner
+    return S(returner).unicode()
 
 def in_rich_compare(item, list):
     """ Tests whether the item is in the given list. This is mainly to work
@@ -681,7 +680,7 @@ def save_log_message(message):
         while len(messages) > limit:
             messages.pop()
 
-    t = time.strftime(DATETIME_FORMAT)
+    t = time.strftime(LOG_DATETIME_FORMAT)
     messages.insert(0, (t, message))
 
     f = open(get_previous_messages_path(), "w")

@@ -853,25 +853,28 @@ class Box:
         return getattr(self.box, name)
 
 class ComboBox:
-    def __init__(self, cb, items=None):
+    def __init__(self, cb, items=None, columns=1, textcolumn=0):
 
         self.cb = cb
 
-        self.model = Gtk.ListStore(str)
+        coltypes = [str] * columns
+        self.model = Gtk.ListStore(*coltypes)
         if not items is None:
             for i in items:
                 self.append(i)
 
         self.cb.clear()
         self.cb.set_model(self.model)
-        self.cb.set_entry_text_column(0)
+        self.cb.set_entry_text_column(textcolumn)
 
         self.cell = Gtk.CellRendererText()
         self.cb.pack_start(self.cell, True)
-        self.cb.add_attribute(self.cell, 'text', 0)
+        self.cb.add_attribute(self.cell, 'text', textcolumn)
 
     def append(self, item):
-        self.model.append([item])
+        if not isinstance(item, list):
+            item = [item]
+        self.model.append(item)
 
     def set_active_from_value(self, value):
         index = 0

@@ -39,6 +39,7 @@ import rabbitvcs.ui.widget
 from rabbitvcs.ui.dialog import DeleteConfirmation
 from rabbitvcs.ui.log import log_dialog_factory
 from rabbitvcs.util.strings import S
+import rabbitvcs.util.settings
 import rabbitvcs.vcs
 
 from rabbitvcs import gettext
@@ -59,6 +60,9 @@ class GitTagManager(InterfaceView):
         InterfaceView.__init__(self, "manager", "Manager")
 
         self.path = path
+
+        sm = rabbitvcs.util.settings.SettingsManager()
+        self.datetime_format = sm.get("general", "datetime_format")
 
         self.get_widget("right_side").show()
         self.get_widget("Manager").set_size_request(695, -1)
@@ -301,7 +305,7 @@ class GitTagManager(InterfaceView):
             self.revision_label.set_text(S(self.selected_tag.sha).display())
             self.message_label.set_text(S(self.selected_tag.message).display().rstrip("\n"))
             self.tagger_label.set_text(S(self.selected_tag.tagger).display())
-            self.date_label.set_text(helper.format_datetime(datetime.fromtimestamp(self.selected_tag.tag_time)))
+            self.date_label.set_text(helper.format_datetime(datetime.fromtimestamp(self.selected_tag.tag_time), self.datetime_format))
 
             self.show_rows(self.view_rows)
             self.get_widget("detail_label").set_markup(_("<b>Tag Detail</b>"))

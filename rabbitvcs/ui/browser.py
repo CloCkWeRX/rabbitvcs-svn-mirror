@@ -42,6 +42,7 @@ import rabbitvcs.ui.widget
 import rabbitvcs.ui.dialog
 import rabbitvcs.ui.action
 import rabbitvcs.vcs
+import rabbitvcs.util.settings
 from rabbitvcs.util.strings import S
 from rabbitvcs.util.log import Log
 from rabbitvcs.util.decorators import gtk_unsafe
@@ -59,6 +60,9 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
 
         self.vcs = rabbitvcs.vcs.VCS()
         self.svn = self.vcs.svn()
+
+        sm = rabbitvcs.util.settings.SettingsManager()
+        self.datetime_format = sm.get("general", "datetime_format")
 
         self.url = ""
         if self.svn.is_in_a_or_a_working_copy(url):
@@ -280,7 +284,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
 
         if row[column]:
             change_time = datetime.fromtimestamp(float(row[column]))
-            return helper.format_datetime(change_time)
+            return str(S(helper.format_datetime(change_time, self.datetime_format)))
 
         return str(row[column])
 

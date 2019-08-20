@@ -21,10 +21,8 @@ from __future__ import absolute_import
 # along with RabbitVCS;  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import rabbitvcs.util.helper
 import rabbitvcs.vcs
 
-DATETIME_FORMAT = rabbitvcs.util.helper.LOCAL_DATETIME_FORMAT
 
 class LogChangedPath:
     path = ""

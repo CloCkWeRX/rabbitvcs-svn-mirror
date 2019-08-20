@@ -34,6 +34,7 @@ from rabbitvcs.ui.log import SVNLogDialog
 from rabbitvcs.ui.action import SVNAction
 import rabbitvcs.vcs
 import rabbitvcs.ui.widget
+import rabbitvcs.util.settings
 from rabbitvcs.util.strings import S
 
 from rabbitvcs import gettext
@@ -447,6 +448,9 @@ class BranchMerge(InterfaceView):
         self.branch = branch
         self.vcs = rabbitvcs.vcs.VCS()
 
+        sm = rabbitvcs.util.settings.SettingsManager()
+        self.datetime_format = sm.get("general", "datetime_format")
+
 
     def on_cancel_clicked(self, widget, data=None):
         self.close()
@@ -543,7 +547,7 @@ class GitMerge(BranchMerge):
             if log:
                 from_info = log[0]
                 self.info['from']['author'].set_text(S(from_info.author).display())
-                self.info['from']['date'].set_text(helper.format_datetime(from_info.date))
+                self.info['from']['date'].set_text(helper.format_datetime(from_info.date, self.datetime_format))
                 self.info['from']['revision'].set_text(S(from_info.revision).display()[0:7])
                 self.info['from']['message'].set_text(S(helper.html_escape(helper.format_long_text(from_info.message, 500))).display())
 

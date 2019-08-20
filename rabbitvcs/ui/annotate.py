@@ -39,13 +39,12 @@ from rabbitvcs.ui.action import SVNAction, GitAction
 import rabbitvcs.ui.widget
 from rabbitvcs.ui.dialog import MessageBox, Loading
 from rabbitvcs.util.strings import S
-import rabbitvcs.vcs
 from rabbitvcs.util.decorators import gtk_unsafe
+import rabbitvcs.util.settings
+import rabbitvcs.vcs
 
 from rabbitvcs import gettext
 _ = gettext.gettext
-
-DATETIME_FORMAT = helper.LOCAL_DATETIME_FORMAT
 
 class Annotate(InterfaceView):
     """
@@ -66,6 +65,9 @@ class Annotate(InterfaceView):
 
         self.get_widget("Annotate").set_title(_("Annotate - %s") % path)
         self.vcs = rabbitvcs.vcs.VCS()
+
+        sm = rabbitvcs.util.settings.SettingsManager()
+        self.datetime_format = sm.get("general", "datetime_format")
 
     def on_close_clicked(self, widget):
         self.close()
@@ -197,7 +199,7 @@ class SVNAnnotate(Annotate):
                 str(int(item["number"]) + 1),
                 str(item["revision"].number),
                 item["author"],
-                helper.format_datetime(date),
+                helper.format_datetime(date, self.datetime_format),
                 item["line"]
             ])
 
@@ -213,7 +215,7 @@ class SVNAnnotate(Annotate):
                 str(int(item["number"]) + 1),
                 str(item["revision"].number),
                 item["author"],
-                helper.format_datetime(date),
+                helper.format_datetime(date, self.datetime_format),
                 item["line"]
             )
 
@@ -283,7 +285,7 @@ class GitAnnotate(Annotate):
                 str(item["number"]),
                 item["revision"][:7],
                 item["author"],
-                helper.format_datetime(item["date"]),
+                helper.format_datetime(item["date"], self.datetime_format),
                 item["line"]
             ])
 
@@ -296,7 +298,7 @@ class GitAnnotate(Annotate):
                 str(item["number"]),
                 item["revision"][:7],
                 item["author"],
-                helper.format_datetime(item["date"]),
+                helper.format_datetime(item["date"], self.datetime_format),
                 item["line"]
             )
 

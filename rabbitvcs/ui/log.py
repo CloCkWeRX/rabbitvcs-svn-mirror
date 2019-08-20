@@ -24,7 +24,6 @@ from __future__ import division
 from __future__ import absolute_import
 import six
 import threading
-from datetime import datetime
 
 import os.path
 
@@ -39,11 +38,12 @@ sa.restore()
 from rabbitvcs.ui import InterfaceView
 from rabbitvcs.ui.action import SVNAction, GitAction, vcs_action_factory
 from rabbitvcs.ui.dialog import MessageBox
+import rabbitvcs.ui.widget
 from rabbitvcs.util.contextmenu import GtkContextMenu
 from rabbitvcs.util.contextmenuitems import *
 from rabbitvcs.util.decorators import gtk_unsafe
-import rabbitvcs.ui.widget
 from rabbitvcs.util.strings import S
+import rabbitvcs.util.settings
 import rabbitvcs.vcs
 
 from rabbitvcs import gettext
@@ -51,11 +51,11 @@ _ = gettext.gettext
 
 from six.moves import range
 
-DATETIME_FORMAT = helper.LOCAL_DATETIME_FORMAT
 
 REVISION_LABEL = _("Revision")
 DATE_LABEL = _("Date")
 AUTHOR_LABEL = _("Author")
+
 
 def revision_grapher(history):
     """
@@ -130,6 +130,9 @@ class Log(InterfaceView):
 
         self.get_widget("Log").set_title(_("Log - %s") % path)
         self.vcs = rabbitvcs.vcs.VCS()
+
+        sm = rabbitvcs.util.settings.SettingsManager()
+        self.datetime_format = sm.get("general", "datetime_format")
 
         self.filter_text = None
         self.path = path
@@ -503,7 +506,7 @@ class SVNLog(Log):
         self.revisions_table.append([
             S(revision),
             author,
-            helper.format_datetime(date),
+            helper.format_datetime(date, self.datetime_format),
             msg,
             color
         ])
@@ -776,7 +779,7 @@ class GitLog(Log):
             revision = S(item.revision)
             msg = helper.html_escape(helper.format_long_text(item.message, cols = 80, line1only = True))
             author = item.author
-            date = helper.format_datetime(item.date)
+            date = helper.format_datetime(item.date, self.datetime_format)
 
             if item.head:
                 self.head_row = index

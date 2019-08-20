@@ -23,6 +23,7 @@ from __future__ import absolute_import
 
 import os
 import dbus
+import datetime
 
 from rabbitvcs.util import helper
 
@@ -51,6 +52,20 @@ CHECKER_SERVICE_ERROR = _(
 from locale import getdefaultlocale, getlocale, LC_MESSAGES
 
 class Settings(InterfaceView):
+    dtformats = [
+                    ["", _("default")],
+                    ["%c", _("locale")],
+                    ["%Y-%m-%d %H:%M:%S", _("ISO")],
+                    ["%b %d, %Y %I:%M:%S %p", None],
+                    ["%B %d, %Y %I:%M:%S %p", None],
+                    ["%m/%d/%Y %I:%M:%S %p", None],
+                    ["%b %d, %Y %H:%M:%S", None],
+                    ["%B %d, %Y %H:%M:%S", None],
+                    ["%m/%d/%Y %H:%M:%S", None],
+                    ["%d %b %Y %H:%M:%S", None],
+                    ["%d %B %Y %H:%M:%S", None],
+                    ["%d/%m/%Y %H:%M:%S", None]
+    ]
     def __init__(self, base_dir=None):
         """
         Provides an interface to the settings library.
@@ -78,6 +93,20 @@ class Settings(InterfaceView):
         )
         self.get_widget("enable_git").set_active(
             int(self.settings.get("HideItem", "git")) == 0
+        )
+        dtfs = []
+        dt = datetime.datetime.today()
+        # Disambiguate day.
+        if dt.day <= 12:
+            dt =  datetime.datetime(dt.year, dt.month, dt.day + 12,
+                                    dt.hour, dt.minute, dt.second)
+        for format, label in self.dtformats:
+            if label is None:
+                label = helper.format_datetime(dt, format)
+            dtfs.append([format, label])
+        self.datetime_format = rabbitvcs.ui.widget.ComboBox(self.get_widget("datetime_format"), dtfs, 2, 1)
+        self.datetime_format.set_active_from_value(
+            self.settings.get("general", "datetime_format")
         )
         self.default_commit_message = rabbitvcs.ui.widget.TextView(self.get_widget("default_commit_message"))
         self.default_commit_message.set_text(
@@ -273,6 +302,10 @@ class Settings(InterfaceView):
         self.settings.set_multiline(
             "general", "default_commit_message",
             self.default_commit_message.get_text()
+        )
+        self.settings.set(
+            "general", "datetime_format",
+            self.datetime_format.get_active_text()
         )
         self.settings.set(
             "external", "diff_tool",
