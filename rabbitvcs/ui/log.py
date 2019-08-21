@@ -537,7 +537,7 @@ class SVNLog(Log):
     def edit_revprop(self, prop_name, prop_value, callback=None):
 
         failure = False
-        url = self.svn.get_repo_url(self.path)
+        url = S(self.svn.get_repo_url(self.path))
 
         self.action = SVNAction(
             self.svn,
@@ -554,15 +554,17 @@ class SVNLog(Log):
                 item.revision
             )
 
-            callback(row, prop_value)
+            self.action.append(callback, row, prop_value)
 
         self.action.schedule()
 
+    @gtk_unsafe
     def on_log_message_edited(self, index, val):
         self.display_items[index].message = val
         self.revisions_table.set_row_item(index, 3, val)
         self.message.set_text(S(val).display())
 
+    @gtk_unsafe
     def on_author_edited(self, index, val):
         self.display_items[index].author = val
         self.revisions_table.set_row_item(index, 1, val)
@@ -1338,9 +1340,11 @@ class LogTopContextMenuCallbacks:
         ])
 
     def edit_author(self, widget, data=None):
-        message = ""
+        author = ""
         if len(self.revisions) == 1:
             author = self.revisions[0]["author"]
+            if author == _("(no author)"):
+                author = ""
 
         from rabbitvcs.ui.dialog import TextChange
         dialog = TextChange(_("Edit author"), author)
