@@ -23,7 +23,7 @@ from __future__ import absolute_import
 
 import os.path
 import six
-import six.moves._thread
+import locale
 from datetime import datetime
 
 from rabbitvcs.util import helper
@@ -242,7 +242,7 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
         on top and then sort alphabetically.
         """
         kind = self.svn.NODE_KINDS_REVERSE[x[0].kind] != "dir"
-        return (kind, x[0].repos_path)
+        return (kind, locale.strxfrm(S(x[0].repos_path)))
 
     def file_filter(self, row, column, user_data=None):
         """

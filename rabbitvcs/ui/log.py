@@ -24,6 +24,7 @@ from __future__ import division
 from __future__ import absolute_import
 import six
 import threading
+from locale import strxfrm
 
 import os.path
 
@@ -619,7 +620,7 @@ class SVNLog(Log):
                             S(subitem.copy_from_revision)
                         ])
 
-        subitems.sort(key = lambda x: x[1])
+        subitems.sort(key = lambda x: strxfrm(x[1]))
         for subitem in subitems:
             self.paths_table.append([
                 subitem[0],
@@ -899,7 +900,7 @@ class GitLog(Log):
                         subitem.path
                     ])
 
-#        subitems.sort(key = lambda x: x[1])
+#        subitems.sort(key = lambda x: strxfrm(x[1]))
         for subitem in subitems:
             self.paths_table.append([
                 subitem[0],

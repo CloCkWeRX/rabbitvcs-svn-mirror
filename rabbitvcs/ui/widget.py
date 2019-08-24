@@ -24,7 +24,7 @@ from six.moves import range
 
 import os
 import os.path
-from locale import getlocale, LC_MESSAGES
+from locale import getlocale, LC_MESSAGES, strxfrm
 
 import gi
 gi.require_version("Gtk", "3.0")
@@ -200,6 +200,10 @@ def compare_items(model, iter1, iter2, user_data=None):
 
     value1 = real_model.get_value(real_iter1, colnum)
     value2 = real_model.get_value(real_iter2, colnum)
+
+    if coltype in [GObject.TYPE_STRING, str]:
+        value1 = strxfrm(value1)
+        value2 = strxfrm(value2)
 
     if value1 == value2:
         return 0
@@ -769,7 +773,7 @@ class Tree(TableBase):
     def __init__(self, treeview, coltypes, colnames, values=[], filters=None,
             filter_types=None, callbacks={}, flags={}):
         TableBase.__init__(self, treeview, coltypes, colnames, values, filters,
-            filter_types, callbacks, flags={})
+            filter_types, callbacks, flags)
 
     def get_store(self, coltypes):
         return Gtk.TreeStore(*coltypes)
