@@ -48,6 +48,8 @@ class GittyupCommand:
         env = os.environ.copy()
         env["LANG"] = "C";
         env["PYTHONIOENCODING"] = "UTF-8"
+        env["GIT_TERMINAL_PROMPT"] = "0"
+        env["GIT_SSL_CERT_PASSWORD_PROTECTED"] = ""
         proc = subprocess.Popen(self.command,
                                 cwd=self.cwd,
                                 stdin=None,
