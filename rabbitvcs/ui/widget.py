@@ -38,14 +38,6 @@ try:
 except (ImportError, ValueError):
     pass
 
-HAS_GTKSOURCEVIEW = False
-try:
-    gi.require_version("GtkSource", "3.0")
-    from gi.repository import GtkSource
-    HAS_GTKSOURCEVIEW = True
-except (ImportError, ValueError):
-    pass
-
 from rabbitvcs.util.decorators import gtk_unsafe
 from rabbitvcs.util import helper
 from rabbitvcs.util.strings import S
@@ -948,23 +940,6 @@ class TextView:
     @gtk_unsafe
     def append_text(self, text):
         self.buffer.set_text(S(self.get_text() + text).display())
-
-class SourceView(TextView):
-    def __init__(self, widget=None, value=""):
-        if HAS_GTKSOURCEVIEW:
-            if widget is None:
-                self.view = GtkSourceView.SourceView(self.buffer)
-            else:
-                self.view = widget
-            self.buffer = GtkSourceView.SourceBuffer()
-            self.buffer.set_text(S(value).display())
-
-            if HAS_GTKSPELL:
-                GtkSpell.Spell(self.view)
-
-            self.view.show()
-        else:
-            TextView.__init__(self, widget, value)
 
 class ProgressBar:
     def __init__(self, pbar):

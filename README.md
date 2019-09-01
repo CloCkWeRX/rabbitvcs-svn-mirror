@@ -13,10 +13,6 @@ System Requirements
 * python-configobj  >= 4.4.0
 * python-gobject    >= 2.14
 
-For spell checking of commit messages:
-* python-gtkspell
-* hunspell langpacks
-
 For subversion:
 * python-svn >= 1.7.2
 * subversion >= 1.4.6
@@ -26,18 +22,25 @@ For git:
 * git
 * tkinter (for now)
 
+For spell checking of commit messages (optional):
+* python-gtkspell
+* hunspell langpacks
+
+For syntax highlighting (optional):
+* python-pygments
+
 Recommends:
 * meld (graphical diff tool)
 
 
 For Debian-based distros you can run: 
 ```
-# apt-get install python-gtk3 python-configobj python-gobject python-gtkspell python-svn subversion python-dulwich git meld tkinter
+# apt-get install python-gtk3 python-configobj python-gobject python-gtkspell python-svn subversion python-dulwich python-pygments git meld tkinter
 ```
 
 For Fedora-based distros you can run:
 ```
-# dnf install python[23]-nautilus python[23]-pysvn python[23]-configobj python[23]-dbus python[23]-dulwich python[23]-tkinter subversion meld
+# dnf install python[23]-nautilus python[23]-pysvn python[23]-configobj python[23]-dbus python[23]-dulwich python[23]-tkinter python[23]-gtkspell3 python[23]-pygments subversion git meld
 ```
 
 Manual Installation

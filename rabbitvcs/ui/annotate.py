@@ -40,6 +40,7 @@ import rabbitvcs.ui.widget
 from rabbitvcs.ui.dialog import MessageBox, Loading
 from rabbitvcs.util.strings import S
 from rabbitvcs.util.decorators import gtk_unsafe
+from rabbitvcs.util.highlighter import highlight
 import rabbitvcs.util.settings
 import rabbitvcs.vcs
 
@@ -132,7 +133,7 @@ class SVNAnnotate(Annotate):
         self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
             [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING,
-                GObject.TYPE_STRING, GObject.TYPE_STRING],
+                GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_MARKUP],
             [_("Line"), _("Revision"), _("Author"),
                 _("Date"), _("Text")]
         )
@@ -203,19 +204,19 @@ class SVNAnnotate(Annotate):
  
         return revision, date, item["author"]
 
-    @gtk_unsafe
     def populate_table(self):
         blamedict = self.action.get_result(0)
+        lines = highlight(self.path, [item["line"] for item in blamedict])
 
         self.table.clear()
-        for item in blamedict:
+        for i, item in enumerate(blamedict):
             revision, date, author = self.blame_info(item)
             self.table.append([
                 str(int(item["number"]) + 1),
                 revision,
                 author,
                 date,
-                item["line"]
+                lines[i]
             ])
 
     def generate_string_from_result(self):
@@ -250,7 +251,7 @@ class GitAnnotate(Annotate):
         self.table = rabbitvcs.ui.widget.Table(
             self.get_widget("table"),
             [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING,
-                GObject.TYPE_STRING, GObject.TYPE_STRING],
+                GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_MARKUP],
             [_("Line"), _("Revision"), _("Author"),
                 _("Date"), _("Text")]
         )
@@ -289,18 +290,18 @@ class GitAnnotate(Annotate):
         self.action.schedule()
         self.kill_loading()
 
-    @gtk_unsafe
     def populate_table(self):
         blamedict = self.action.get_result(0)
+        lines = highlight(self.path, [item["line"] for item in blamedict])
 
         self.table.clear()
-        for item in blamedict:
+        for i, item in enumerate(blamedict):
             self.table.append([
                 str(item["number"]),
                 item["revision"][:7],
                 item["author"],
                 helper.format_datetime(item["date"], self.datetime_format),
-                item["line"]
+                lines[i]
             ])
 
     def generate_string_from_result(self):
