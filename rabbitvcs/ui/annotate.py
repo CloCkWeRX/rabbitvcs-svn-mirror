@@ -179,27 +179,42 @@ class SVNAnnotate(Annotate):
 
         self.kill_loading()
 
+    def blame_info(self, item):
+        revision = item["revision"].number
+        if revision <= 0:
+            return ("", "", "")
+
+        revision = str(revision)
+
+        # remove fractional seconds and timezone information from
+        # the end of the string provided by pysvn:
+        # * timezone should be always "Z" (for UTC), "%Z" is not yet
+        #   yet supported by strptime
+        # * fractional could be parsed with "%f" since python 2.6
+        #   but this precision is not needed anyway
+        # * the datetime module does not include strptime until python 2.4
+        #   so this workaround is required for now
+        datestr = item["date"][0:-8]
+        try:
+            date = datetime(*time.strptime(datestr,"%Y-%m-%dT%H:%M:%S")[:-2])
+            date = helper.format_datetime(date, self.datetime_format)
+        except:
+            date = ""
+ 
+        return revision, date, item["author"]
+
     @gtk_unsafe
     def populate_table(self):
         blamedict = self.action.get_result(0)
 
         self.table.clear()
         for item in blamedict:
-            # remove fractional seconds and timezone information from
-            # the end of the string provided by pysvn:
-            # * timezone should be always "Z" (for UTC), "%Z" is not yet
-            #   yet supported by strptime
-            # * fractional could be parsed with "%f" since python 2.6
-            #   but this precision is not needed anyway
-            # * the datetime module does not include strptime until python 2.4
-            #   so this workaround is required for now
-            datestr = item["date"][0:-8]
-            date = datetime(*time.strptime(datestr,"%Y-%m-%dT%H:%M:%S")[:-2])
+            revision, date, author = self.blame_info(item)
             self.table.append([
                 str(int(item["number"]) + 1),
-                str(item["revision"].number),
-                item["author"],
-                helper.format_datetime(date, self.datetime_format),
+                revision,
+                author,
+                date,
                 item["line"]
             ])
 
@@ -208,14 +223,13 @@ class SVNAnnotate(Annotate):
 
         text = ""
         for item in blamedict:
-            datestr = item["date"][0:-8]
-            date = datetime(*time.strptime(datestr,"%Y-%m-%dT%H:%M:%S")[:-2])
+            revision, date, author = self.blame_info(item)
 
             text += "%s\t%s\t%s\t%s\t%s\n" % (
                 str(int(item["number"]) + 1),
-                str(item["revision"].number),
-                item["author"],
-                helper.format_datetime(date, self.datetime_format),
+                revision,
+                author,
+                date,
                 item["line"]
             )
 
