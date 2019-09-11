@@ -70,6 +70,9 @@ class Annotate(InterfaceView):
         sm = rabbitvcs.util.settings.SettingsManager()
         self.datetime_format = sm.get("general", "datetime_format")
 
+        self.log_by_order = []
+        self.log_by_revision = {}
+
     def on_close_clicked(self, widget):
         self.close()
 
@@ -92,6 +95,46 @@ class Annotate(InterfaceView):
     def on_to_log_closed(self, data):
         if data is not None:
             self.get_widget("to").set_text(S(data).display())
+
+    def on_query_tooltip(self, treeview, x, y, kbdmode, tooltip, data=None):
+        if kbdmode:
+            return False
+
+        try:
+            position, enabled_columns = data
+            enabled_columns[0]
+        except (TypeError, ValueError, IndexError):
+            return False
+
+        bx, by = treeview.convert_widget_to_bin_window_coords(x, y)
+        t = treeview.get_path_at_pos(bx, by)
+        if t is None:
+            return False
+
+        path, column, cellx, celly = t
+        columns = treeview.get_columns()
+        try:
+                pos = columns.index(column)
+        except ValueError:
+            return False
+        if not pos in enabled_columns:
+            return False
+
+        revision = treeview.get_model()[path][position]
+        if not revision:
+            return False
+
+        revision = str(revision)
+        if not revision in self.log_by_revision:
+            return False
+
+        log = self.log_by_revision[revision]
+        message = helper.format_long_text(log.message, line1only=True)
+        if not message:
+            return False
+
+        tooltip.set_text(S(message).display())
+        return True
 
     def enable_saveas(self):
         self.get_widget("save").set_sensitive(True)
@@ -130,14 +173,23 @@ class SVNAnnotate(Annotate):
         self.get_widget("from").set_text("1")
         self.get_widget("to").set_text(S(revision).display())
 
+        self.log_by_order = self.svn.log(path)
+        self.log_by_order.reverse()
+        for n, log in enumerate(self.log_by_order):
+            setattr(log, "n", n)
+            self.log_by_revision[str(log.revision)] = log
+
+        treeview = self.get_widget("table")
         self.table = rabbitvcs.ui.widget.Table(
-            self.get_widget("table"),
+            treeview,
             [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING,
                 GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_MARKUP],
             [_("Line"), _("Revision"), _("Author"),
                 _("Date"), _("Text")]
         )
         self.table.allow_multiple()
+        treeview.connect("query-tooltip", self.on_query_tooltip, (1, (1, 2, 3)))
+        treeview.set_has_tooltip(True)
 
         self.loading_dialog = None
 
@@ -248,14 +300,23 @@ class GitAnnotate(Annotate):
         self.path = path
         self.get_widget("to").set_text(S(revision).display())
 
+        self.log_by_order = self.git.log(path)
+        self.log_by_order.reverse()
+        for n, log in enumerate(self.log_by_order):
+            setattr(log, "n", n)
+            self.log_by_revision[str(log.revision)[:7]] = log
+
+        treeview = self.get_widget("table")
         self.table = rabbitvcs.ui.widget.Table(
-            self.get_widget("table"),
+            treeview,
             [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING,
                 GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_MARKUP],
             [_("Line"), _("Revision"), _("Author"),
                 _("Date"), _("Text")]
         )
         self.table.allow_multiple()
+        treeview.connect("query-tooltip", self.on_query_tooltip, (1, (1, 2, 3)))
+        treeview.set_has_tooltip(True)
 
         self.load()
 
