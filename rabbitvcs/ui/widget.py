@@ -487,12 +487,17 @@ class TableBase:
             self._reassert_selection = True
 
     @gtk_unsafe
-    def real_append(self, row):
-        self.data.append(row)
+    def real_append(self, **kwargs):
+        return self.data.append(**kwargs)
 
-    def append(self, row):
+    def append(self, row, **kwargs):
         # Python 3 needs type conversions.
-        self.real_append([S(item).display() if self.coltypes[i] in [GObject.TYPE_STRING, str] else item for i, item in enumerate(row)])
+        newrow = []
+        for i, item in enumerate(row):
+            if self.coltypes[i] in [GObject.TYPE_STRING, str]:
+                item = S(item).display()
+            newrow.append(item)
+        return self.real_append(row=newrow, **kwargs)
 
     @gtk_unsafe
     def remove(self, index):
@@ -772,10 +777,9 @@ class Tree(TableBase):
 
     def populate(self, values, parent=None):
         for node in values:
-            root = node[0]
-            new_root = self.append(parent, root)
+            root = self.append(node[0], parent=parent)
             if len(node) > 1 and node[1] is not None:
-                self.populate(node[1], new_root)
+                self.populate(node[1], root)
 
 class Box:
     def __init__(self, box=None, vertical=False, spacing=-1):
