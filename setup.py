@@ -39,8 +39,8 @@ PREFIX = sys.prefix
 
 # If the user passed --prefix=... then use the new prefix
 for c in sys.argv:
-    if c.startswith("--prefix"):
-        PREFIX = c.split("=")[1].lstrip().rstrip()
+    if c.startswith("--prefix="):
+        PREFIX = c.split("=", 1)[1].strip()
 
 #==============================================================================
 # Variables
