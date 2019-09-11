@@ -472,7 +472,7 @@ class TableBase:
         model = self.data
         realpath = self._realpath(Gtk.TreePath.new_from_string(path))
         # User has clicked a checkbox on a selected item.
-        toggleMulti = realpath[0] in self.selected_rows and len(self.selected_rows) > 1
+        toggleMulti = realpath in self.selected_rows and len(self.selected_rows) > 1
         model[realpath][column] = not model[realpath][column]
         if "row-toggled" in self.callbacks:
             self.callbacks["row-toggled"](model[realpath], column)
@@ -575,19 +575,18 @@ class TableBase:
         # selected; user retains their selection after using
         # the new multicheck feature.
         if not self._reassert_selection:
-            (liststore, indexes) = selection.get_selected_rows()
+            (model, indexes) = selection.get_selected_rows()
 
             self.reset_selection()
 
-            for tup in indexes:
-                self.selected_rows.append(self._realpath(tup)[0])
+            for path in indexes:
+                self.selected_rows.append(self._realpath(path))
 
         else:
             self._reassert_selection = False
 
-            for tup in self.selected_rows:
-                path = self._sortedpath(tup);
-                selection.select_range(path, path)
+            for path in self.selected_rows:
+                selection.select_path(self._sortedpath(path))
 
     def reset_selection(self):
         self.selected_rows = []
@@ -624,24 +623,23 @@ class TableBase:
     def __button_press_event(self, treeview, data):
         info = treeview.get_path_at_pos(int(data.x), int(data.y))
         selection = treeview.get_selection()
+        result = False
 
         # If info is none, that means the user is clicking the empty space
         # In that case, unselect everything and update the selected_rows
         if info is None:
             selection.unselect_all()
             self.update_selection()
-            return
-
-        # this allows us to retain multiple selections with a right-click
-        if data.button == 3:
-            (liststore, indexes) = selection.get_selected_rows()
+        elif data.button == 3:
+            # this allows us to retain multiple selections with a right-click
+            (model, indexes) = selection.get_selected_rows()
 
             # If the mouse click is one of the currently selected rows
             # keep the selection, otherwise, use the new selection
-            for index in indexes:
-                if index[0] == info[0][0]:
-                    return True
-            return False
+            result = any(index == info[0] for index in indexes)
+        if "mouse-event" in self.callbacks:
+            result = self.callbacks["mouse-event"](treeview, data) or result
+        return result
 
     def __row_activated_event(self, treeview, data, col):
         treeview.grab_focus()
@@ -660,13 +658,13 @@ class TableBase:
         treeview.get_selection().select_all()
         self.update_selection()
         if "all-selected" in self.callbacks:
-            self.callbacks["all-selected"](treeview, started_editing)
+            self.callbacks["all-selected"](treeview)
 
     def __all_unselected(self, treeview):
         treeview.get_selection().unselect_all()
         self.update_selection()
         if "all-unselected" in self.callbacks:
-            self.callbacks["all-unselected"](treeview, started_editing)
+            self.callbacks["all-unselected"](treeview)
 
     def __key_press_event(self, treeview, data):
         self.update_selection()
@@ -677,13 +675,11 @@ class TableBase:
         self.update_selection()
         if "cursor-changed" in self.callbacks:
             self.callbacks["cursor-changed"](treeview)
-        if "mouse-event" in self.callbacks:
-            self.callbacks["mouse-event"](treeview)
 
     def __button_release_event(self, treeview, data):
         self.update_selection()
         if "mouse-event" in self.callbacks:
-            self.callbacks["mouse-event"](treeview, data)
+            return self.callbacks["mouse-event"](treeview, data)
 
     def __cell_edited(self, cell, row, data, column):
         self.update_selection()
@@ -726,6 +722,7 @@ class TableBase:
         if not icon_name is None:
             cell.set_property("icon-name", icon_name)
 
+
 class Table(TableBase):
     """
     Generate a flat tree view.
@@ -745,6 +742,11 @@ class Table(TableBase):
     def populate(self, values):
         for row in values:
             self.append(row)
+
+    def get_selected_rows(self):
+        # Return as a list of integer row indexes.
+        return [path[0] for path in self.selected_rows]
+
 
 class Tree(TableBase):
     """
@@ -780,6 +782,7 @@ class Tree(TableBase):
             root = self.append(node[0], parent=parent)
             if len(node) > 1 and node[1] is not None:
                 self.populate(node[1], root)
+
 
 class Box:
     def __init__(self, box=None, vertical=False, spacing=-1):
