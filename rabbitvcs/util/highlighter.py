@@ -54,8 +54,8 @@ def mklist(arg):
         arg = [arg]
     return arg
 
-def no_highlight(sourcelines):
-    return [line.translate(escape_markup_table) for line in mklist(sourcelines)]
+def no_highlight(lines):
+    return [S(l).unicode().translate(escape_markup_table) for l in mklist(lines)]
 
 
 if not HAS_PYGMENTS:
