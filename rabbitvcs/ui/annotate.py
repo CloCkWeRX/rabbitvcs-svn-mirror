@@ -24,6 +24,7 @@ from __future__ import absolute_import
 import os
 from datetime import datetime
 import time
+from random import random, uniform
 
 from rabbitvcs.util import helper
 
@@ -46,6 +47,10 @@ import rabbitvcs.vcs
 
 from rabbitvcs import gettext
 _ = gettext.gettext
+
+
+LUMINANCE = 0.90
+
 
 class Annotate(InterfaceView):
     """
@@ -72,6 +77,8 @@ class Annotate(InterfaceView):
 
         self.log_by_order = []
         self.log_by_revision = {}
+        self.author_background = {}
+        self.loading_dialog = None
 
     def on_close_clicked(self, widget):
         self.close()
@@ -160,6 +167,27 @@ class Annotate(InterfaceView):
     def kill_loading(self):
         GLib.idle_add(self.loading_dialog.destroy)
 
+    def set_log(self, action, resno, revkeyfunc):
+        self.log_by_order = action.get_result(resno)
+        self.log_by_order.reverse()
+        self.log_by_revision = {}
+        self.author_background = {}
+        for n, log in enumerate(self.log_by_order):
+            setattr(log, "n", n)
+            c = self.randomHSL()
+            c = helper.HSLtoRGB(*c)
+            setattr(log, "background", helper.html_color(*c))
+            self.log_by_revision[revkeyfunc(log.revision)] = log
+            author = S(log.author.strip())
+            if author:
+                c = self.randomHSL()
+                c = helper.HSLtoRGB(*c)
+                self.author_background[author] = helper.html_color(*c)
+
+    def randomHSL(self):
+        return (uniform(0.0, 360.0), uniform(0.5, 1.0), LUMINANCE)
+
+
 class SVNAnnotate(Annotate):
     def __init__(self, path, revision=None):
         Annotate.__init__(self, path, revision)
@@ -173,25 +201,24 @@ class SVNAnnotate(Annotate):
         self.get_widget("from").set_text("1")
         self.get_widget("to").set_text(S(revision).display())
 
-        self.log_by_order = self.svn.log(path)
-        self.log_by_order.reverse()
-        for n, log in enumerate(self.log_by_order):
-            setattr(log, "n", n)
-            self.log_by_revision[str(log.revision)] = log
-
         treeview = self.get_widget("table")
         self.table = rabbitvcs.ui.widget.Table(
             treeview,
             [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING,
-                GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_MARKUP],
-            [_("Line"), _("Revision"), _("Author"),
-                _("Date"), _("Text")]
+                GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_MARKUP,
+                rabbitvcs.ui.widget.TYPE_HIDDEN,
+                rabbitvcs.ui.widget.TYPE_HIDDEN],
+            [_("Revision"), _("Author"), _("Date"), _("Line"), _("Text"),
+                "revision_color", "author_color"]
         )
         self.table.allow_multiple()
-        treeview.connect("query-tooltip", self.on_query_tooltip, (1, (1, 2, 3)))
+        treeview.connect("query-tooltip", self.on_query_tooltip, (0, (0, 1, 2)))
         treeview.set_has_tooltip(True)
-
-        self.loading_dialog = None
+        for i, n in [(1, 6), (4, 5)]:
+            column = self.table.get_column(i)
+            cell = column.get_cells()[0]
+            column.add_attribute(cell, "background", n)
+        self.table.get_column(3).get_cells()[0].set_property("xalign", 1.0)
 
         self.load()
 
@@ -226,6 +253,11 @@ class SVNAnnotate(Annotate):
             from_rev,
             to_rev
         )
+
+        if not self.log_by_order:
+            self.action.append(self.svn.log, self.path)
+            self.action.append(self.set_log, self.action, 1, lambda x: str(x))
+
         self.action.append(self.populate_table)
         self.action.append(self.enable_saveas)
         self.action.schedule()
@@ -254,7 +286,7 @@ class SVNAnnotate(Annotate):
         except:
             date = ""
  
-        return revision, date, item["author"]
+        return revision, date, S(item["author"].strip())
 
     def populate_table(self):
         blamedict = self.action.get_result(0)
@@ -263,12 +295,20 @@ class SVNAnnotate(Annotate):
         self.table.clear()
         for i, item in enumerate(blamedict):
             revision, date, author = self.blame_info(item)
+            author_color = self.author_background.get(author, "#FFFFFF")
+            try:
+                revision_color = self.log_by_revision[revision].background
+            except KeyError:
+                revision_color = "#FFFFFF"
+
             self.table.append([
-                str(int(item["number"]) + 1),
                 revision,
                 author,
                 date,
-                lines[i]
+                str(int(item["number"]) + 1),
+                lines[i],
+                revision_color,
+                author_color
             ])
 
     def generate_string_from_result(self):
@@ -300,23 +340,24 @@ class GitAnnotate(Annotate):
         self.path = path
         self.get_widget("to").set_text(S(revision).display())
 
-        self.log_by_order = self.git.log(path)
-        self.log_by_order.reverse()
-        for n, log in enumerate(self.log_by_order):
-            setattr(log, "n", n)
-            self.log_by_revision[str(log.revision)[:7]] = log
-
         treeview = self.get_widget("table")
         self.table = rabbitvcs.ui.widget.Table(
             treeview,
             [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING,
-                GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_MARKUP],
-            [_("Line"), _("Revision"), _("Author"),
-                _("Date"), _("Text")]
+                GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_MARKUP,
+                rabbitvcs.ui.widget.TYPE_HIDDEN,
+                rabbitvcs.ui.widget.TYPE_HIDDEN],
+            [_("Revision"), _("Author"), _("Date"), _("Line"), _("Text"),
+                "revision color", "author color"]
         )
         self.table.allow_multiple()
-        treeview.connect("query-tooltip", self.on_query_tooltip, (1, (1, 2, 3)))
+        treeview.connect("query-tooltip", self.on_query_tooltip, (0, (0, 1, 2)))
         treeview.set_has_tooltip(True)
+        for i, n in [(1, 6), (4, 5)]:
+            column = self.table.get_column(i)
+            cell = column.get_cells()[0]
+            column.add_attribute(cell, "background", n)
+        self.table.get_column(3).get_cells()[0].set_property("xalign", 1.0)
 
         self.load()
 
@@ -346,6 +387,12 @@ class GitAnnotate(Annotate):
             self.path,
             to_rev
         )
+
+        if not self.log_by_order:
+            self.action.append(self.git.log, self.path)
+            self.action.append(self.set_log, self.action, 1,
+                               lambda x: str(x)[:7])
+
         self.action.append(self.populate_table)
         self.action.append(self.enable_saveas)
         self.action.schedule()
@@ -357,12 +404,22 @@ class GitAnnotate(Annotate):
 
         self.table.clear()
         for i, item in enumerate(blamedict):
+            revision = item["revision"][:7]
+            author = S(item["author"].strip())
+            author_color = self.author_background.get(author, "#FFFFFF")
+            try:
+                revision_color = self.log_by_revision[revision].background
+            except KeyError:
+                revision_color = "#FFFFFF"
+
             self.table.append([
-                str(item["number"]),
-                item["revision"][:7],
-                item["author"],
+                revision,
+                author,
                 helper.format_datetime(item["date"], self.datetime_format),
-                lines[i]
+                str(item["number"]),
+                lines[i],
+                revision_color,
+                author_color
             ])
 
     def generate_string_from_result(self):
