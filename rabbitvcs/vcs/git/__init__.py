@@ -776,12 +776,14 @@ class Git:
             revision = self.revision(item["commit"])
             date = datetime.strptime(item["commit_date"][0:-6], "%a %b %d %H:%M:%S %Y")
 
-            author = _("(no author)")
-            if "committer" in item:
-                author = item["committer"]
+            try:
+                author = item.get("author", False) or item["committer"]
                 pos = author.find("<")
                 if pos != -1:
-                    author = author[0:pos-1]
+                    author = author[0:pos]
+                author = author.strip()
+            except KeyError:
+                author = _("(no author)")
 
             message = ""
             if "message" in item:
