@@ -85,6 +85,12 @@ class Settings(InterfaceView):
         self.get_widget("enable_recursive").set_active(
             int(self.settings.get("general", "enable_recursive"))
         )
+        self.get_widget("enable_highlighting").set_active(
+            int(self.settings.get("general","enable_highlighting"))
+        )
+        self.get_widget("enable_colorize").set_active(
+            int(self.settings.get("general","enable_colorize"))
+        )
         self.get_widget("show_debug").set_active(
             int(self.settings.get("general","show_debug"))
         )
@@ -286,6 +292,14 @@ class Settings(InterfaceView):
         self.settings.set(
             "general", "enable_recursive",
             self.get_widget("enable_recursive").get_active()
+        )
+        self.settings.set(
+            "general", "enable_highlighting",
+            self.get_widget("enable_highlighting").get_active()
+        )
+        self.settings.set(
+            "general", "enable_colorize",
+            self.get_widget("enable_colorize").get_active()
         )
         self.settings.set(
             "general", "show_debug",

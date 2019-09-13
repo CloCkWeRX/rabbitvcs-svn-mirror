@@ -42,7 +42,7 @@ from rabbitvcs.ui.dialog import MessageBox, Loading
 from rabbitvcs.util.strings import S
 from rabbitvcs.util.decorators import gtk_unsafe
 from rabbitvcs.util.highlighter import highlight
-import rabbitvcs.util.settings
+from rabbitvcs.util.settings import SettingsManager
 import rabbitvcs.vcs
 
 from rabbitvcs import gettext
@@ -72,8 +72,9 @@ class Annotate(InterfaceView):
         self.get_widget("Annotate").set_title(_("Annotate - %s") % path)
         self.vcs = rabbitvcs.vcs.VCS()
 
-        sm = rabbitvcs.util.settings.SettingsManager()
+        sm = SettingsManager()
         self.datetime_format = sm.get("general", "datetime_format")
+        self.colorize = sm.get("general", "enable_colorize")
 
         self.log_by_order = []
         self.log_by_revision = {}
@@ -212,13 +213,15 @@ class SVNAnnotate(Annotate):
                 "revision_color", "author_color"]
         )
         self.table.allow_multiple()
+        self.table.get_column(3).get_cells()[0].set_property("xalign", 1.0)
         treeview.connect("query-tooltip", self.on_query_tooltip, (0, (0, 1, 2)))
         treeview.set_has_tooltip(True)
-        for i, n in [(1, 6), (4, 5)]:
-            column = self.table.get_column(i)
-            cell = column.get_cells()[0]
-            column.add_attribute(cell, "background", n)
-        self.table.get_column(3).get_cells()[0].set_property("xalign", 1.0)
+
+        if self.colorize:
+            for i, n in [(1, 6), (4, 5)]:
+                column = self.table.get_column(i)
+                cell = column.get_cells()[0]
+                column.add_attribute(cell, "background", n)
 
         self.load()
 
@@ -351,13 +354,15 @@ class GitAnnotate(Annotate):
                 "revision color", "author color"]
         )
         self.table.allow_multiple()
+        self.table.get_column(3).get_cells()[0].set_property("xalign", 1.0)
         treeview.connect("query-tooltip", self.on_query_tooltip, (0, (0, 1, 2)))
         treeview.set_has_tooltip(True)
-        for i, n in [(1, 6), (4, 5)]:
-            column = self.table.get_column(i)
-            cell = column.get_cells()[0]
-            column.add_attribute(cell, "background", n)
-        self.table.get_column(3).get_cells()[0].set_property("xalign", 1.0)
+
+        if self.colorize:
+            for i, n in [(1, 6), (4, 5)]:
+                column = self.table.get_column(i)
+                cell = column.get_cells()[0]
+                column.add_attribute(cell, "background", n)
 
         self.load()
 

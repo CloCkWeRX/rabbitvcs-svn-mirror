@@ -27,6 +27,7 @@ Syntax highlighter based on the pygments module.
 import six
 from rabbitvcs.util.strings import S
 from rabbitvcs.util.helper import html_escape
+from rabbitvcs.util.settings import SettingsManager
 from rabbitvcs.util.log import Log
 
 logger = Log("rabbitvcs.util.highlighter")
@@ -134,6 +135,9 @@ else:
 
 
     def highlight(filename, sourcelines):
+        if not SettingsManager().get("general", "enable_highlighting"):
+            return no_highlight(sourcelines)
+
         sourcelines = mklist(sourcelines)
         source = "\n".join(sourcelines)
         try:

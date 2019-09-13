@@ -215,23 +215,6 @@
                         <property name="orientation">vertical</property>
                         <property name="column_spacing">5</property>
                         <child>
-                          <object class="GtkCheckButton" id="show_debug">
-                            <property name="label" translatable="yes">Show RabbitVCS debugging tools</property>
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="tooltip_text" translatable="yes">The debug menu is used to diagnose problems with RabbitVCS itself</property>
-                            <property name="halign">start</property>
-                            <property name="hexpand">True</property>
-                            <property name="draw_indicator">True</property>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">3</property>
-                            <property name="width">2</property>
-                          </packing>
-                        </child>
-                        <child>
                           <object class="GtkCheckButton" id="enable_emblems">
                             <property name="label" translatable="yes">Enable emblems</property>
                             <property name="visible">True</property>
@@ -291,7 +274,7 @@
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
-                            <property name="top_attach">4</property>
+                            <property name="top_attach">6</property>
                           </packing>
                         </child>
                         <child>
@@ -303,7 +286,60 @@
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
+                            <property name="top_attach">6</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkCheckButton" id="enable_highlighting">
+                            <property name="label" translatable="yes">Highlight source syntax</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="tooltip_text" translatable="yes">Highlight source lines according to language syntax</property>
+                            <property name="halign">start</property>
+                            <property name="hexpand">True</property>
+                            <property name="active">True</property>
+                            <property name="draw_indicator">True</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">3</property>
+                            <property name="width">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkCheckButton" id="enable_colorize">
+                            <property name="label" translatable="yes">Colorize commits and authors</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="tooltip_text" translatable="yes">Set a unique background color of lines belonging to the same commit. Apply to line author's too</property>
+                            <property name="halign">start</property>
+                            <property name="hexpand">True</property>
+                            <property name="active">True</property>
+                            <property name="draw_indicator">True</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
                             <property name="top_attach">4</property>
+                            <property name="width">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkCheckButton" id="show_debug">
+                            <property name="label" translatable="yes">Show RabbitVCS debugging tools</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="tooltip_text" translatable="yes">The debug menu is used to diagnose problems with RabbitVCS itself</property>
+                            <property name="halign">start</property>
+                            <property name="hexpand">True</property>
+                            <property name="draw_indicator">True</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">5</property>
+                            <property name="width">2</property>
                           </packing>
                         </child>
                       </object>
