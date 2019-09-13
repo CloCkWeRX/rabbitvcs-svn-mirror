@@ -26,6 +26,7 @@ Syntax highlighter based on the pygments module.
 
 import six
 from rabbitvcs.util.strings import S
+from rabbitvcs.util.helper import html_escape
 from rabbitvcs.util.log import Log
 
 logger = Log("rabbitvcs.util.highlighter")
@@ -40,22 +41,13 @@ try:
 except:
     HAS_PYGMENTS = False
 
-escape_markup_table = {
-    ord("&"): six.u("&amp;"),
-    ord("<"): six.u("&lt;"),
-    ord(">"): six.u("&gt;"),
-    ord('"'): six.u("&quot;"),
-    ord("'"): six.u("&apos;")
-}
-
-
 def mklist(arg):
     if not isinstance(arg, list):
         arg = [arg]
     return arg
 
 def no_highlight(lines):
-    return [S(l).unicode().translate(escape_markup_table) for l in mklist(lines)]
+    return [html_escape(S(l), True) for l in mklist(lines)]
 
 
 if not HAS_PYGMENTS:
@@ -112,7 +104,7 @@ else:
                     self.lastval = ""
 
             def format_single(self, ttype, value):
-                value = value.translate(escape_markup_table)
+                value = html_escape(value, True)
 
                 if ttype != self.lasttype:
                     flush(self)
