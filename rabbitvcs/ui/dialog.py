@@ -101,7 +101,7 @@ class PreviousMessages(InterfaceView):
             selected_message = selection[-1]
             self.message.set_text(S(selected_message).display())
 
-class FolderChooser:
+class FolderChooser(object):
     def __init__(self):
         self.dialog = Gtk.FileChooserDialog(
             title = _("Select a Folder"),
@@ -273,7 +273,7 @@ class Property(InterfaceView):
         self.save_value = self.value.get_text()
         self.save_recurse = self.recurse.get_active()
 
-class FileChooser:
+class FileChooser(object):
     def __init__(self, title=_("Select a File"), folder=None):
         self.dialog = Gtk.FileChooserDialog(
             title = title,
@@ -293,7 +293,7 @@ class FileChooser:
         self.dialog.destroy()
         return returner
 
-class FileSaveAs:
+class FileSaveAs(object):
     def __init__(self, title=_("Save As..."), folder=None):
         self.dialog = Gtk.FileChooserDialog(
             title = title,

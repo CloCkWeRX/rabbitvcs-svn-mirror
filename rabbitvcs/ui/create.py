@@ -38,7 +38,7 @@ from rabbitvcs.ui.action import GitAction
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class SVNCreate:
+class SVNCreate(object):
     """
     Provides an interface to create a svn repository
     """
@@ -57,7 +57,7 @@ class SVNCreate:
         else:
             rabbitvcs.ui.dialog.MessageBox(_("There was an error creating the repository.  Make sure the given folder is empty."))
 
-class GitCreate:
+class GitCreate(object):
     # Also, might want to just launch a terminal window instead of this
     def __init__(self, path):
         self.vcs = rabbitvcs.vcs.VCS()

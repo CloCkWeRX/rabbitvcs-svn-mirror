@@ -59,7 +59,7 @@ else:
 
     class PangoMarkupFormatter(pygments.formatter.Formatter):
         def __init__(self, bylines=False, **options):
-            super(PangoMarkupFormatter, self).__init__(**options)
+            pygments.formatter.Formatter.__init__(self, **options)
             self.bylines = bylines
             self.styles = {}
             for token, style in self.style:

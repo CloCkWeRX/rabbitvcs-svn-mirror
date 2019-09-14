@@ -68,7 +68,7 @@ def pure_unicode(obj):
     return obj
 
 
-class Revision:
+class Revision(object):
     """
     Implements a simple revision object as a wrapper around the pysvn revision
     object.  This allows us to provide a standard interface to the object data.
@@ -128,7 +128,8 @@ class Revision:
     def primitive(self):
         return self.__revision
 
-class SVN:
+
+class SVN(object):
     """
 
     """

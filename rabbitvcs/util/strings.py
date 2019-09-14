@@ -172,18 +172,18 @@ class S(str):
             encoding, errors = self._codeargs(encoding, errors)
             if encoding.lower() == UTF8_ENCODING:
                 return str(self)
-            value = super(S, self).decode(UTF8_ENCODING, SURROGATE_ESCAPE)
+            value = str.decode(self, UTF8_ENCODING, SURROGATE_ESCAPE)
             return value.encode(encoding, errors)
 
         def decode(self, encoding=UTF8_ENCODING, errors=SURROGATE_ESCAPE):
             encoding, errors = self._codeargs(encoding, errors)
-            return super(S, self).decode(encoding, errors)
+            return str.decode(self, encoding, errors)
 
         def display(self, encoding=None, errors='replace'):
             encoding, errors = self._codeargs(encoding, errors)
             if encoding.lower() == UTF8_ENCODING:
                 return str(self)
-            value = super(S, self).decode(UTF8_ENCODING, 'replace')
+            value = str.decode(self, UTF8_ENCODING, 'replace')
             return value.encode(encoding, errors)
 
     else:
@@ -200,7 +200,7 @@ class S(str):
 
         def encode(self, encoding=UTF8_ENCODING, errors=SURROGATE_ESCAPE):
             encoding, errors = self._codeargs(encoding, errors)
-            return super(S, self).encode(encoding, errors)
+            return str.encode(self, encoding, errors)
 
         def decode(self, encoding=UTF8_ENCODING, errors=SURROGATE_ESCAPE):
             return str(self);

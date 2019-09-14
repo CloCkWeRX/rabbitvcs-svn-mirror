@@ -229,7 +229,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
 
         GtkContextMenu(PROP_MENU_STRUCTURE, conditions, callbacks).show(data)
 
-class PropMenuCallbacks:
+class PropMenuCallbacks(object):
 
     def __init__(self, caller, path, propdetails, vcs):
         self.path = path
@@ -260,7 +260,7 @@ class PropMenuCallbacks:
         pass
 
 
-class PropMenuConditions:
+class PropMenuConditions(object):
 
     def __init__(self, path, propdetails):
         self.path = path

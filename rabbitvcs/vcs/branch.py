@@ -24,7 +24,8 @@ from __future__ import absolute_import
 import rabbitvcs.util.helper
 import rabbitvcs.vcs
 
-class BranchEntry:
+
+class BranchEntry(object):
     def __init__(self, name, tracking=False, revision="", message=""):
         self.name = name
         self.tracking = tracking

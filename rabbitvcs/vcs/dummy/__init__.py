@@ -28,7 +28,8 @@ from __future__ import absolute_import
 import rabbitvcs.vcs
 import rabbitvcs.vcs.status
 
-class Dummy:
+
+class Dummy(object):
     def __init__(self):
         pass
 

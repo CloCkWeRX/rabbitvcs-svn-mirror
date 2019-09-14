@@ -199,7 +199,7 @@ class GitRevert(Revert):
         self.action.append(self.action.finish)
         self.action.schedule()
 
-class SVNRevertQuiet:
+class SVNRevertQuiet(object):
     def __init__(self, paths, base_dir=None):
         self.vcs = rabbitvcs.vcs.VCS()
         self.action = rabbitvcs.ui.action.SVNAction(
@@ -210,7 +210,7 @@ class SVNRevertQuiet:
         self.action.append(self.vcs.svn().revert, paths)
         self.action.schedule()
 
-class GitRevertQuiet:
+class GitRevertQuiet(object):
     def __init__(self, paths, base_dir=None):
         self.vcs = rabbitvcs.vcs.VCS()
         self.git = self.vcs.git(paths[0])

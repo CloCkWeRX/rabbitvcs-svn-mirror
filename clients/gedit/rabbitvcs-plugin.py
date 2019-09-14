@@ -541,7 +541,7 @@ class GeditMenuBuilder(object):
 
         return function
 
-class GeditMenu:
+class GeditMenu(object):
     def __init__(self, caller, vcs_client, base_dir, paths):
         """
         @param  caller: The calling object

@@ -52,7 +52,7 @@ _gettext.bindtextdomain(APP_NAME, LOCALE_DIR)
 _gettext.textdomain(APP_NAME)
 current_translation = None
 
-class gettext():
+class gettext(object):
     @staticmethod
     def set_language(langs):
         global current_translation

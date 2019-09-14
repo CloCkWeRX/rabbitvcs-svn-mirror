@@ -493,7 +493,7 @@ class PlumaMenuBuilder(object):
 
         return function
 
-class PlumaMenu:
+class PlumaMenu(object):
     def __init__(self, caller, vcs_client, base_dir, paths):
         """
         @param  caller: The calling object

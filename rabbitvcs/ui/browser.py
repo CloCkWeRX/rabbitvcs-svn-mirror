@@ -431,7 +431,7 @@ class BrowserContextMenuConditions(GtkFilesContextMenuConditions):
         revision = self.caller.revision_selector.get_revision_object()
         return revision.kind == "head" and not self.is_parent_selected()
 
-class BrowserContextMenuCallbacks:
+class BrowserContextMenuCallbacks(object):
     def __init__(self, caller, base_dir, vcs, paths=[]):
         self.caller = caller
         self.base_dir = base_dir
@@ -584,7 +584,7 @@ class BrowserContextMenuCallbacks:
         self.caller.action.append(self.caller.populate_table, 1)
         self.caller.action.schedule()
 
-class BrowserContextMenu:
+class BrowserContextMenu(object):
     def __init__(self, caller, event, base_dir, vcs, paths=[]):
 
         self.caller = caller

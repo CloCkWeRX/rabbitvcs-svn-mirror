@@ -216,7 +216,7 @@ class GtkContextMenu(MenuBuilder):
     def get_widget(self):
         return self.menu
 
-class GtkContextMenuCaller:
+class GtkContextMenuCaller(object):
     """
     Provides an abstract interface to be inherited by dialogs/windows that call
     a GtkContextMenu.  Allows us to have a standard common set of methods we can
@@ -254,7 +254,7 @@ class GtkContextMenuCaller:
         # Add our callback function on a 1 second timeout
         glib.timeout_add_seconds(1, is_process_still_alive)
 
-class ContextMenuCallbacks:
+class ContextMenuCallbacks(object):
     """
     The base class for context menu callbacks.  This is inheritied by
     sub-classes.
@@ -599,7 +599,7 @@ class ContextMenuCallbacks:
         proc = helper.launch_ui_window("editconflicts", [self.paths[0]])
         self.caller.rescan_after_process_exit(proc, [self.paths[0]])
 
-class ContextMenuConditions:
+class ContextMenuConditions(object):
     """
     Provides a standard interface to checking conditions for menu items.
 
@@ -1088,7 +1088,7 @@ class GtkFilesContextMenuConditions(ContextMenuConditions):
         self.text_statuses = [self.statuses[key].simple_content_status() for key in list(self.statuses.keys())]
         self.prop_statuses = [self.statuses[key].simple_metadata_status() for key in list(self.statuses.keys())]
 
-class GtkFilesContextMenu:
+class GtkFilesContextMenu(object):
     """
     Defines context menu items for a table with files
 
@@ -1227,7 +1227,7 @@ class MainContextMenuConditions(ContextMenuConditions):
         self.text_statuses = [self.statuses[key].simple_content_status() for key in list(self.statuses.keys())]
         self.prop_statuses = [self.statuses[key].simple_metadata_status() for key in list(self.statuses.keys())]
 
-class MainContextMenu:
+class MainContextMenu(object):
     """
     Defines and composes the main context menu.
 

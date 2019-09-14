@@ -451,7 +451,7 @@ class MenuCompare(MenuItem):
     label = _("Compare side by side")
     icon = "rabbitvcs-compare"
 
-class ChangesContextMenuConditions:
+class ChangesContextMenuConditions(object):
     def __init__(self, caller, vcs):
         self.caller = caller
         self.vcs = vcs
@@ -480,7 +480,7 @@ class ChangesContextMenuConditions:
             len(self.caller.selected_rows) > 0
         )
 
-class ChangesContextMenuCallbacks:
+class ChangesContextMenuCallbacks(object):
     def __init__(self, caller, vcs):
         self.caller = caller
         self.vcs = vcs
@@ -535,7 +535,7 @@ class ChangesContextMenuCallbacks:
                 "--vcs=%s" % self.caller.get_vcs_name()
             ])
 
-class ChangesContextMenu:
+class ChangesContextMenu(object):
     """
     Defines context menu items for a table with files
 

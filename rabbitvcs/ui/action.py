@@ -77,7 +77,7 @@ class VCSNotifier(InterfaceView):
     def focus_on_ok_button(self):
         pass
 
-class DummyNotifier:
+class DummyNotifier(object):
     def __init__(self):
         pass
 

@@ -44,7 +44,8 @@ log = Log("rabbitvcs.vcs.mercurial")
 from rabbitvcs import gettext
 _ = gettext.gettext
 
-class Revision:
+
+class Revision(object):
     """
     Implements a simple revision object as a wrapper around the gittyup revision
     object.  This allows us to provide a standard interface to the object data.
@@ -79,7 +80,8 @@ class Revision:
     def primitive(self):
         return self.value
 
-class Mercurial:
+
+class Mercurial(object):
     STATUS = {
         "normal":       "C",
         "added":        "A",

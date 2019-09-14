@@ -118,7 +118,7 @@ class SVNUnlock(Add):
         self.action.append(self.action.finish)
         self.action.schedule()
 
-class SVNUnlockQuiet:
+class SVNUnlockQuiet(object):
     """
     This class provides a handler to unlock functionality.
 

@@ -204,7 +204,7 @@ def compare_items(model, iter1, iter2, user_data=None):
     else:
         return 1
 
-class TableBase:
+class TableBase(object):
     def __init__(self, treeview, coltypes, colnames, values=[], filters=None,
                  filter_types=None, callbacks={}, flags={}):
         """
@@ -784,7 +784,7 @@ class Tree(TableBase):
                 self.populate(node[1], root)
 
 
-class Box:
+class Box(object):
     def __init__(self, box=None, vertical=False, spacing=-1):
         if not box:
             box = Gtk.Grid()
@@ -855,7 +855,7 @@ class Box:
     def __getattr__(self, name):
         return getattr(self.box, name)
 
-class ComboBox:
+class ComboBox(object):
     def __init__(self, cb, items=None, columns=1, textcolumn=0):
 
         self.cb = cb
@@ -911,7 +911,7 @@ class ComboBox:
     def set_child_signal(self, signal, callback, userdata=None):
         self.cb.get_child().connect(signal, callback, userdata)
 
-class TextView:
+class TextView(object):
     def __init__(self, widget=None, value="", spellcheck=True):
         if widget is None:
             self.view = Gtk.TextView()
@@ -948,7 +948,7 @@ class TextView:
     def append_text(self, text):
         self.buffer.set_text(S(self.get_text() + text).display())
 
-class ProgressBar:
+class ProgressBar(object):
     def __init__(self, pbar):
         if pbar is None:
             self.view = Gtk.ProgressBar()
@@ -985,7 +985,7 @@ class ProgressBar:
     def set_text(self, text):
         self.view.set_text(S(text).display())
 
-class RevisionSelector:
+class RevisionSelector(object):
     """
     Provides a standard way to generate a revision object from the UI.
 
@@ -1253,7 +1253,7 @@ class KeyValueTable(Gtk.Grid):
         self.set_column_spacing(self.default_col_spacing)
         self.set_row_spacing(self.default_row_spacing)
 
-class GitRepositorySelector:
+class GitRepositorySelector(object):
     def __init__(self, container, git, changed_callback=None):
         self.git = git
         self.changed_callback = changed_callback
@@ -1338,7 +1338,7 @@ class GitRepositorySelector:
         if self.changed_callback:
             self.changed_callback(self.repository_opt.get_active_text(), self.branch_opt.get_active_text())
 
-class GitBranchSelector:
+class GitBranchSelector(object):
     def __init__(self, container, git, changed_callback=None):
         self.git = git
         self.changed_callback = changed_callback
@@ -1381,7 +1381,7 @@ class GitBranchSelector:
     def hide(self):
         self.vbox.hide()
 
-class MultiFileTextEditor:
+class MultiFileTextEditor(object):
     """
     Edit a set of text/config/ignore files
     """

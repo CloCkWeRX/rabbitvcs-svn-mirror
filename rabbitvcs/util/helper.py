@@ -1217,7 +1217,7 @@ For this reason, the current module MAY NOT import Gdk, directly or
 indirectly.
 """
 
-class SanitizeArgv():
+class SanitizeArgv(object):
     def __init__(self):
         self.argmap = None
         if len(sys.argv) and isinstance(sys.argv[0], six.text_type):

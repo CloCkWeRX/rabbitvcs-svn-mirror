@@ -82,7 +82,7 @@ DEFAULT_FORMAT = "%(message)s"
 FILE_FORMAT = "%(asctime)s %(levelname)s\t%(name)s\t%(message)s"
 CONSOLE_FORMAT = "%(levelname)s\t%(name)s\t%(message)s"
 
-class BaseLog:
+class BaseLog(object):
     """
     Provides a wrapper around the logging module to simplify some logging tasks.
     This base class should generally not be called.
@@ -224,6 +224,7 @@ class ConsoleLog(BaseLog):
 
         BaseLog.__init__(self, logger, level)
         self.set_handler(logging.StreamHandler(), CONSOLE_FORMAT)
+
 
 class FileLog(BaseLog):
     """

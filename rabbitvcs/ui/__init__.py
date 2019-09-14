@@ -72,7 +72,7 @@ STATUS_EMBLEMS = {
     rabbitvcs.vcs.status.status_unversioned : "rabbitvcs-unversioned"
 }
 
-class GtkBuilderWidgetWrapper:
+class GtkBuilderWidgetWrapper(object):
 
     def __init__(self, gtkbuilder_filename = None,
                  gtkbuilder_id = None, claim_domain=True):
@@ -214,7 +214,7 @@ class InterfaceView(GtkBuilderWidgetWrapper):
             image = Gtk.Image.new_from_icon_name(icon, Gtk.IconSize.BUTTON)
             button.set_image(image)
 
-class InterfaceNonView:
+class InterfaceNonView(object):
     """
     Provides a way for an interface to handle quitting, etc without having
     to have a visible interface.

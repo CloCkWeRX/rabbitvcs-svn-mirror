@@ -75,7 +75,8 @@ def guess(path):
     else:
         return obj
 
-class VCS:
+
+class VCS(object):
     clients = {}
     exclude_paths = []
 

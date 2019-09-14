@@ -71,7 +71,8 @@ def get_tmp_path(filename):
     mkdir_p(tmpdir)
     return os.path.join(tmpdir, filename)
 
-class GittyupClient:
+
+class GittyupClient(object):
     UTF8 = UTF8_ENCODING
 
     def __init__(self, path=None, create=False):

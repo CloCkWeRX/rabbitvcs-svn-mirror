@@ -275,7 +275,7 @@ class CheckRemoteModsContextMenuConditions(GtkFilesContextMenuConditions):
         return (self.path_dict["exists"]
             and self.path_dict["length"] == 1)
 
-class CheckRemoteModsContextMenuCallbacks:
+class CheckRemoteModsContextMenuCallbacks(object):
     def __init__(self, caller, base_dir, vcs, paths=[]):
         self.caller = caller
         self.base_dir = base_dir
@@ -313,7 +313,7 @@ class CheckRemoteModsContextMenuCallbacks:
         )
         self.action.schedule()
 
-class CheckRemoteModsContextMenu:
+class CheckRemoteModsContextMenu(object):
     def __init__(self, caller, event, base_dir, vcs, paths=[]):
 
         self.caller = caller

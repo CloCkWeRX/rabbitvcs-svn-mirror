@@ -209,7 +209,7 @@ class GitCheckout(GitUpdateToRevision):
         self.get_widget("Update").set_title(_("Checkout - %s") % path)
         self.get_widget("options_box").hide()
 
-class GitCheckoutQuiet:
+class GitCheckoutQuiet(object):
     def __init__(self, path):
         self.vcs = rabbitvcs.vcs.VCS()
         self.git = self.vcs.git(path)

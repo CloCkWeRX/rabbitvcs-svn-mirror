@@ -50,7 +50,7 @@ _ = gettext.gettext
 
 helper.gobject_threads_init()
 
-class CreatePatch:
+class CreatePatch(InterfaceView):
     """
     Provides a user interface for the user to create a Patch file
 

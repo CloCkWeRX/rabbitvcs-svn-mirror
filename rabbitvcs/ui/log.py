@@ -977,7 +977,7 @@ class GitLogDialog(GitLog):
             else:
                 self.ok_callback(self.get_selected_revision_number())
 
-class LogCache:
+class LogCache(object):
     def __init__(self, cache={}):
         self.cache = cache
 
@@ -1072,7 +1072,7 @@ class MenuEditRevisionProperties(MenuItem):
 class MenuSeparatorLast(MenuSeparator):
     identifier = "RabbitVCS::Separator_Last"
 
-class LogTopContextMenuConditions:
+class LogTopContextMenuConditions(object):
     def __init__(self, caller, vcs, path, revisions):
         self.caller = caller
         self.vcs = vcs
@@ -1155,7 +1155,7 @@ class LogTopContextMenuConditions:
     def reset(self, data=None):
         return (self.vcs_name == rabbitvcs.vcs.VCS_GIT)
 
-class LogTopContextMenuCallbacks:
+class LogTopContextMenuCallbacks(object):
     def __init__(self, caller, vcs, path, revisions):
         self.caller = caller
         self.vcs = vcs
@@ -1374,7 +1374,7 @@ class LogTopContextMenuCallbacks:
             "--vcs=%s" % self.caller.get_vcs_name()
         ])
 
-class LogTopContextMenu:
+class LogTopContextMenu(object):
     """
     Defines context menu items for a table with files
 
@@ -1452,7 +1452,7 @@ class LogTopContextMenu:
         context_menu.show(self.event)
 
 
-class LogBottomContextMenuConditions:
+class LogBottomContextMenuConditions(object):
     def __init__(self, caller, vcs, paths, revisions):
         self.caller = caller
         self.vcs = vcs
@@ -1495,7 +1495,7 @@ class LogBottomContextMenuConditions:
     def separator(self, data=None):
         return True
 
-class LogBottomContextMenuCallbacks:
+class LogBottomContextMenuCallbacks(object):
     def __init__(self, caller, vcs, paths, revisions):
         self.caller = caller
         self.vcs = vcs
@@ -1595,7 +1595,7 @@ class LogBottomContextMenuCallbacks:
             "-r", S(self.revisions[0]["revision"])
         ])
 
-class LogBottomContextMenu:
+class LogBottomContextMenu(object):
     """
     Defines context menu items for a table with files
 

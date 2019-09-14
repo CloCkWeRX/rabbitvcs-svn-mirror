@@ -24,7 +24,7 @@ from __future__ import absolute_import
 import rabbitvcs.vcs
 
 
-class LogChangedPath:
+class LogChangedPath(object):
     path = ""
     action = ""
     copy_from_path = ""
@@ -36,7 +36,8 @@ class LogChangedPath:
         self.copy_from_path = copy_from_path
         self.copy_from_revision = copy_from_revision
 
-class Log:
+
+class Log(object):
     date = None
     revision = None
     author = None

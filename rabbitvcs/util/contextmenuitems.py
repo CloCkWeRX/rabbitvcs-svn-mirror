@@ -47,7 +47,7 @@ class MenuItem(object):
     directly. If you want to define a new kind of menu item, you need to
     subclass it like so:
 
-    class MenuPerformMagic:
+    class MenuPerformMagic(MenuItem):
         identifier = "RabbitVCS::Perform_Magic"
         label = _("Perform Magic")
         tooltip = _("Put on your robe and wizard hat")

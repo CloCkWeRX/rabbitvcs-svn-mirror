@@ -44,7 +44,7 @@ from rabbitvcs import gettext
 from six.moves import map
 _ = gettext.gettext
 
-class About:
+class About(object):
     """
     This class provides an interface to the About window.
 
