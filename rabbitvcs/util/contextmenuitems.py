@@ -326,9 +326,9 @@ class MenuBugs(MenuItem):
     label = _("Bugs")
     icon = "rabbitvcs-bug"
 
-class MenuDebugShell(MenuItem):
-    identifier = "RabbitVCS::Debug_Shell"
-    label = _("Open Shell")
+class MenuPythonConsole(MenuItem):
+    identifier = "RabbitVCS::Python_Console"
+    label = _("Open Python Console")
     icon = "gnome-terminal"
     condition_name = "debug"
 

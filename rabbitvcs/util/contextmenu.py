@@ -36,8 +36,7 @@ from rabbitvcs.util import helper
 import gi
 gi.require_version("Gtk", "3.0")
 sa = helper.SanitizeArgv()
-from gi.repository import Gtk as gtk
-from gi.repository import GLib as glib
+from gi.repository import Gtk, GLib
 sa.restore()
 
 from rabbitvcs.vcs import create_vcs_instance, VCS_SVN, VCS_GIT, VCS_DUMMY, VCS_MERCURIAL
@@ -187,11 +186,11 @@ class MenuBuilder(object):
             else:
                 menuitem.connect(self.signal, callback)
 
+
 class GtkContextMenu(MenuBuilder):
     """
     Provides a standard Gtk Context Menu class used for all context menus
-    in gtk dialogs/windows.
-
+    in Gtk dialogs/windows.
     """
 
     signal = "button-press-event"
@@ -200,12 +199,12 @@ class GtkContextMenu(MenuBuilder):
         return item.make_gtk3_menu_item(id_magic)
 
     def attach_submenu(self, menu_node, submenu_list):
-        submenu = gtk.Menu()
+        submenu = Gtk.Menu()
         menu_node.set_submenu(submenu)
         [submenu.add(item) for item in submenu_list]
 
     def top_level_menu(self, items):
-        menu = gtk.Menu()
+        menu = Gtk.Menu()
         [menu.add(item) for item in items]
         return menu
 
@@ -215,6 +214,7 @@ class GtkContextMenu(MenuBuilder):
 
     def get_widget(self):
         return self.menu
+
 
 class GtkContextMenuCaller(object):
     """
@@ -252,13 +252,14 @@ class GtkContextMenuCaller(object):
             return still_going
 
         # Add our callback function on a 1 second timeout
-        glib.timeout_add_seconds(1, is_process_still_alive)
+        GLib.timeout_add_seconds(1, is_process_still_alive)
+
 
 class ContextMenuCallbacks(object):
     """
-    The base class for context menu callbacks.  This is inheritied by
-    sub-classes.
+    The base class for context menu callbacks. This is inherited by sub-classes.
     """
+
     def __init__(self, caller, base_dir, vcs_client, paths=[]):
         """
         @param  caller: The calling object
@@ -279,31 +280,23 @@ class ContextMenuCallbacks(object):
         self.vcs_client = vcs_client
         self.paths = paths
 
-    def debug_shell(self, widget, data1=None, data2=None):
+    def python_console(self, widget, data1=None, data2=None):
+        """
+        Open up an interactive Python console sharing our current context.
         """
 
-        Open up an IPython shell which shares the context of the extension.
+        from rabbitvcs.debug.pythonconsole import PythonConsole
 
-        See: http://ipython.scipy.org/moin/Cookbook/EmbeddingInGTK
+        def exit():
+            window.destroy()
 
-        """
-        import gtk
-        from rabbitvcs.debug.ipython_view import IPythonView
-
-        window = gtk.Window()
-        window.set_size_request(750,550)
+        window = Gtk.Window()
+        window.set_size_request(750, 550)
         window.set_resizable(True)
-        window.set_position(gtk.WIN_POS_CENTER)
-        scrolled_window = gtk.ScrolledWindow()
-        scrolled_window.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
-        ipython_view = IPythonView()
-        ipython_view.updateNamespace(locals())
-        ipython_view.set_wrap_mode(gtk.WRAP_CHAR)
-        ipython_view.show()
-        scrolled_window.add(ipython_view)
-        scrolled_window.show()
-        window.add(scrolled_window)
-        window.show()
+        window.set_position(Gtk.WindowPosition.CENTER)
+        console = PythonConsole(exit)
+        window.add(console)
+        window.show_all()
 
     def refresh_status(self, widget, data1=None, data2=None):
         """
@@ -338,7 +331,7 @@ class ContextMenuCallbacks(object):
                     nautilusVFSFile_table[path].add_emblem(emblem)
             return False
 
-        glib.idle_add(add_emblem_dialog)
+        GLib.idle_add(add_emblem_dialog)
 
     # End debugging callbacks
 
@@ -1277,7 +1270,7 @@ class MainContextMenu(object):
         self.structure = [
             (MenuDebug, [
                 (MenuBugs, None),
-                (MenuDebugShell, None),
+                (MenuPythonConsole, None),
                 (MenuRefreshStatus, None),
                 (MenuDebugRevert, None),
                 (MenuDebugInvalidate, None),
