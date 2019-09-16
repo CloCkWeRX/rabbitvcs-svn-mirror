@@ -1812,29 +1812,3 @@ class SVN(object):
             return True
 
         return False
-
-    def is_version_greater_than(self, version):
-        """
-        @type   version: tuple
-        @param  version: A version tuple to compare pysvn's version to
-        """
-
-        if version[0] < pysvn.version[0]:
-            return True
-
-        if ((version[0] == pysvn.version[0])
-                and (version[1] < pysvn.version[1])):
-            return True
-
-        if ((version[0] == pysvn.version[0])
-                and (version[1] == pysvn.version[1])
-                and (version[2] < pysvn.version[2])):
-            return True
-
-        if ((version[0] == pysvn.version[0])
-                and (version[1] == pysvn.version[1])
-                and (version[2] == pysvn.version[2])
-                and (version[3] < pysvn.version[3])):
-            return True
-
-        return False

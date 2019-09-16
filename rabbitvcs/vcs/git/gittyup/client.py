@@ -164,45 +164,6 @@ class GittyupClient(object):
             except Exception as e:
                 return None
 
-    def _version_greater_than(self, version1, version2):
-        len1 = len(version1)
-        len2 = len(version2)
-
-        max = 5
-
-        # Pad the version lists so they are the same length
-        if max > len1:
-            version1 += [0] * (max-len1)
-        if max > len2:
-            version2 += [0] * (max-len2)
-
-        if version1[0] > version2[0]:
-            return True
-
-        if (version1[0] == version2[0]
-                and version1[1] > version2[1]):
-            return True
-
-        if (version1[0] == version2[0]
-                and version1[1] == version2[1]
-                and version1[2] > version2[2]):
-            return True
-
-        if (version1[0] == version2[0]
-                and version1[1] == version2[1]
-                and version1[2] == version2[2]
-                and version1[3] > version2[3]):
-            return True
-
-        if (version1[0] == version2[0]
-                and version1[1] == version2[1]
-                and version1[2] == version2[2]
-                and version1[3] == version2[3]
-                and version1[4] > version2[4]):
-            return True
-
-        return False
-
     def _get_global_ignore_patterns(self):
         """
         Get ignore patterns from $GIT_DIR/info/exclude then from
