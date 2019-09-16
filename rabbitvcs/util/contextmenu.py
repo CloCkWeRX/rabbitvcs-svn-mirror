@@ -294,7 +294,9 @@ class ContextMenuCallbacks(object):
         window.set_size_request(750, 550)
         window.set_resizable(True)
         window.set_position(Gtk.WindowPosition.CENTER)
-        console = PythonConsole(exit)
+        console = PythonConsole(exit, namespace={"extension": self.caller})
+        console.eval("print(\"You can access the extension through "
+                            "'extension'\")", False)
         window.add(console)
         window.show_all()
 
@@ -322,7 +324,7 @@ class ContextMenuCallbacks(object):
         def add_emblem_dialog():
             from subprocess import Popen, PIPE
             command = ["zenity", "--entry", "--title=RabbitVCS", "--text=Emblem to add:"]
-            emblem = Popen(command, stdout=PIPE).communicate()[0].replace("\n", "")
+            emblem = S(Popen(command, stdout=PIPE).communicate()[0]).replace("\n", "")
 
             rabbitvcs_extension = self.caller
             nautilusVFSFile_table = rabbitvcs_extension.nautilusVFSFile_table
