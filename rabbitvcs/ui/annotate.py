@@ -81,6 +81,32 @@ class Annotate(InterfaceView):
         self.author_background = {}
         self.loading_dialog = None
 
+        self.table = self.build_table()
+
+    def build_table(self):
+        treeview = self.get_widget("table")
+        table = rabbitvcs.ui.widget.Table(
+            treeview,
+            [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING,
+                GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_MARKUP,
+                rabbitvcs.ui.widget.TYPE_HIDDEN,
+                rabbitvcs.ui.widget.TYPE_HIDDEN],
+            [_("Revision"), _("Author"), _("Date"), _("Line"), _("Text"),
+                "revision color", "author color"]
+        )
+        table.allow_multiple()
+        table.get_column(3).get_cells()[0].set_property("xalign", 1.0)
+        treeview.connect("query-tooltip", self.on_query_tooltip, (0, (0, 1, 2)))
+        treeview.set_has_tooltip(True)
+
+        if self.colorize:
+            for i, n in [(1, 6), (4, 5)]:
+                column = table.get_column(i)
+                cell = column.get_cells()[0]
+                column.add_attribute(cell, "background", n)
+
+        return table
+
     def on_close_clicked(self, widget):
         self.close()
 
@@ -202,27 +228,6 @@ class SVNAnnotate(Annotate):
         self.get_widget("from").set_text("1")
         self.get_widget("to").set_text(S(revision).display())
 
-        treeview = self.get_widget("table")
-        self.table = rabbitvcs.ui.widget.Table(
-            treeview,
-            [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING,
-                GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_MARKUP,
-                rabbitvcs.ui.widget.TYPE_HIDDEN,
-                rabbitvcs.ui.widget.TYPE_HIDDEN],
-            [_("Revision"), _("Author"), _("Date"), _("Line"), _("Text"),
-                "revision_color", "author_color"]
-        )
-        self.table.allow_multiple()
-        self.table.get_column(3).get_cells()[0].set_property("xalign", 1.0)
-        treeview.connect("query-tooltip", self.on_query_tooltip, (0, (0, 1, 2)))
-        treeview.set_has_tooltip(True)
-
-        if self.colorize:
-            for i, n in [(1, 6), (4, 5)]:
-                column = self.table.get_column(i)
-                cell = column.get_cells()[0]
-                column.add_attribute(cell, "background", n)
-
         self.load()
 
     #
@@ -342,27 +347,6 @@ class GitAnnotate(Annotate):
 
         self.path = path
         self.get_widget("to").set_text(S(revision).display())
-
-        treeview = self.get_widget("table")
-        self.table = rabbitvcs.ui.widget.Table(
-            treeview,
-            [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING,
-                GObject.TYPE_STRING, rabbitvcs.ui.widget.TYPE_MARKUP,
-                rabbitvcs.ui.widget.TYPE_HIDDEN,
-                rabbitvcs.ui.widget.TYPE_HIDDEN],
-            [_("Revision"), _("Author"), _("Date"), _("Line"), _("Text"),
-                "revision color", "author color"]
-        )
-        self.table.allow_multiple()
-        self.table.get_column(3).get_cells()[0].set_property("xalign", 1.0)
-        treeview.connect("query-tooltip", self.on_query_tooltip, (0, (0, 1, 2)))
-        treeview.set_has_tooltip(True)
-
-        if self.colorize:
-            for i, n in [(1, 6), (4, 5)]:
-                column = self.table.get_column(i)
-                cell = column.get_cells()[0]
-                column.add_attribute(cell, "background", n)
 
         self.load()
 
