@@ -192,7 +192,7 @@ class MenuItem(object):
         """
         identifier = self.make_magic_id(id_magic)
 
-        return Action(identifier, self.make_label(), None, None)
+        return Action(identifier, self.make_label(), self.tooltip, self.icon)
 
     def make_thunar_action(self, id_magic = None):
         identifier = self.make_magic_id(id_magic)
@@ -797,7 +797,7 @@ class Action(object):
         if self.tooltip:
             item.set_tooltip_text(self.tooltip)
         if self.icon_name:
-            item.set_image(Gtk.image_new_from_icon_name(self.icon_name, Gtk.IconSize.MENU))
+            item.set_image(Gtk.Image.new_from_icon_name(self.icon_name, Gtk.IconSize.MENU))
         return item
 
 class RabbitVCSAction(Action):
