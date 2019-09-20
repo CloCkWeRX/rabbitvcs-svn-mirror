@@ -181,9 +181,7 @@ class S(str):
 
         def display(self, encoding=None, errors='replace'):
             encoding, errors = self._codeargs(encoding, errors)
-            if encoding.lower() == UTF8_ENCODING:
-                return str(self)
-            value = str.decode(self, UTF8_ENCODING, 'replace')
+            value = str.decode(self, UTF8_ENCODING, errors)
             return value.encode(encoding, errors)
 
     else:
