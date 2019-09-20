@@ -28,7 +28,7 @@ from locale import getlocale, LC_MESSAGES, strxfrm
 
 import gi
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, GObject, Pango
+from gi.repository import Gtk, Gdk, GObject, Pango
 
 HAS_GTKSPELL = False
 try:
@@ -984,6 +984,104 @@ class ProgressBar(object):
     @gtk_unsafe
     def set_text(self, text):
         self.view.set_text(S(text).display())
+
+
+class Clickable(object):
+    """
+    Handle mouse button events for any click on an event-sensitive widget.
+    Supports the following additional signals:
+    - single_click(clickable, widget, event, data)
+    - double_click(clickable, widget, event, data)
+    - triple_click(clickable, widget, event, data)
+    - long_click(clickable, widget, event, data)
+    """
+
+    _BUTTON_PRESS = Gdk.EventType.BUTTON_PRESS
+    _2BUTTON_PRESS = Gdk.EventType._2BUTTON_PRESS
+    _3BUTTON_PRESS = Gdk.EventType._3BUTTON_PRESS
+
+    def __init__(self, widget):
+        self.widget = widget
+        self._timer = None
+        self._signals = {
+            self._BUTTON_PRESS: self._signal_data(),
+            self._2BUTTON_PRESS: self._signal_data(),
+            self._3BUTTON_PRESS: self._signal_data(),
+            "long-click": self._signal_data(),
+            "button-press-event": self._signal_data(),
+            "button-release-event": self._signal_data(),
+            None: self._signal_data(),
+        }
+        self._lastpress = None
+        widget.connect("button-press-event", self._on_button_pressed, None)
+        widget.connect("button-release-event", self._on_button_released, None)
+        widget.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
+
+    def connect(self, signal, func, *args):
+        if signal == "single-click":
+            self._signals[self._BUTTON_PRESS] = self._signal_data(func, args)
+        elif signal == "double-click":
+            self._signals[self._2BUTTON_PRESS] = self._signal_data(func, args)
+        elif signal == "triple-click":
+            self._signals[self._3BUTTON_PRESS] = self._signal_data(func, args)
+        elif signal in ("long-click",
+                        "button-press-event", "button-release-event"):
+            self._signals[signal] = self._signal_data(func, args)
+        else:
+            self.widget.connect(signal, func, *args)
+
+    def _on_button_pressed(self, widget, event, data):
+        self._cancel_timer()
+        if self._callback("button-press-event", widget, event):
+            return True
+        if event.button == 1:
+            self._lastpress = event.type
+            if event.type == self._BUTTON_PRESS:
+                self._start_timer(1000, self._long_click, event.copy())
+        return False
+
+    def _on_button_released(self, widget, event, data):
+        self._cancel_timer()
+        if self._callback("button-release-event", widget, event):
+            return True
+        if event.button == 1:
+            self._callback(self._lastpress, widget, event)
+            self._lastpress = None
+        return False
+
+    def _long_click(self, event, *args):
+        self._timer = None
+        self._lastpress = None
+        self._callback("long-click", self.widget, event)
+        return False
+
+    def _callback(self, signal, *args):
+        func, data = self._signals[signal]
+        args = list(args) + data
+        return func(self, *args)
+
+    @gtk_unsafe
+    def _cancel_timer(self):
+        if self._timer:
+            GObject.source_remove(self._timer)
+            self._timer = None
+
+    @gtk_unsafe
+    def _start_timer(self, milliseconds, callback, *args):
+        self._cancel_timer()
+        self._timer = GObject.timeout_add(milliseconds, callback, *args)
+
+    def _signal_data(self, func=None, args=[]):
+        if func is None:
+            func = self._passfalse
+        return (func, list(args))
+
+    def _passfalse(self, *args):
+        return False
+
+    def __getattr__(self, name):
+        return getattr(self.widget, name)
+
 
 class RevisionSelector(object):
     """

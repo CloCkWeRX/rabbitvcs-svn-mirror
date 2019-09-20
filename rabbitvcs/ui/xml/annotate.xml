@@ -43,44 +43,13 @@
             <property name="can_focus">False</property>
             <property name="hexpand">True</property>
             <child>
-              <object class="GtkEntry" id="from">
+              <object class="GtkEntry" id="revision">
                 <property name="width_request">100</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="from_show_log">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="margin_right">6</property>
-                <signal name="clicked" handler="on_from_show_log_clicked" swapped="no"/>
-                <child>
-                  <object class="GtkImage" id="image2">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="icon_name">rabbitvcs-show_log</property>
-                  </object>
-                </child>
-                <accelerator key="f" signal="clicked" modifiers="GDK_MOD1_MASK"/>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkEntry" id="to">
-                <property name="width_request">100</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="hexpand">True</property>
+                <signal name="focus-out-event" handler="on_revision_focus_out_event" swapped="no"/>
+                <signal name="key-press-event" handler="on_revision_key_press_event" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -88,12 +57,11 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="to_show_log">
+              <object class="GtkButton" id="show_log">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="margin_right">6</property>
-                <signal name="clicked" handler="on_to_show_log_clicked" swapped="no"/>
+                <signal name="clicked" handler="on_show_log_clicked" swapped="no"/>
                 <child>
                   <object class="GtkImage" id="image1">
                     <property name="visible">True</property>
@@ -105,28 +73,6 @@
               </object>
               <packing>
                 <property name="left_attach">3</property>
-                <property name="top_attach">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="refresh">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="margin_left">6</property>
-                <property name="margin_right">18</property>
-                <signal name="clicked" handler="on_refresh_clicked" swapped="no"/>
-                <child>
-                  <object class="GtkImage" id="image3">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="icon_name">view-refresh</property>
-                  </object>
-                </child>
-                <accelerator key="r" signal="clicked" modifiers="GDK_MOD1_MASK"/>
-              </object>
-              <packing>
-                <property name="left_attach">4</property>
                 <property name="top_attach">1</property>
               </packing>
             </child>
@@ -172,7 +118,7 @@
                 </child>
               </object>
               <packing>
-                <property name="left_attach">5</property>
+                <property name="left_attach">6</property>
                 <property name="top_attach">1</property>
               </packing>
             </child>
@@ -180,7 +126,7 @@
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">&lt;b&gt;To Revision&lt;/b&gt;</property>
+                <property name="label" translatable="yes">&lt;b&gt;Revision&lt;/b&gt;</property>
                 <property name="use_markup">True</property>
                 <property name="xalign">0</property>
               </object>
@@ -191,24 +137,75 @@
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label1">
+              <object class="GtkEventBox" id="history_first">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">&lt;b&gt;From Revision&lt;/b&gt;</property>
-                <property name="use_markup">True</property>
-                <property name="xalign">0</property>
+                <property name="margin_right">4</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="icon_name">go-first</property>
+                  </object>
+                </child>
               </object>
               <packing>
                 <property name="left_attach">0</property>
-                <property name="top_attach">0</property>
-                <property name="width">2</property>
+                <property name="top_attach">1</property>
               </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkEventBox" id="history_prev">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="icon_name">go-previous</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkEventBox" id="history_next">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_right">4</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="icon_name">go-next</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">4</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkEventBox" id="history_last">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_right">24</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="icon_name">go-last</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="left_attach">5</property>
+                <property name="top_attach">1</property>
+              </packing>
             </child>
           </object>
           <packing>
