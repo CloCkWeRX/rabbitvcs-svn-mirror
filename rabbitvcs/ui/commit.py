@@ -75,7 +75,6 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         """
         InterfaceView.__init__(self, "commit", "Commit")
 
-        self.isInitDone = False
         self.base_dir = base_dir
         self.vcs = rabbitvcs.vcs.VCS()
         self.items = []
@@ -118,9 +117,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         self.paths = []
         for path in paths:
             if self.vcs.is_in_a_or_a_working_copy(path):
-                self.paths.append(path)
-
-        self.isInitDone = True
+                self.paths.append(S(path))
 
     #
     # Helper functions
@@ -149,7 +146,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         Determines if a file should be activated or not
         """
 
-        if (item.path in self.paths
+        if (S(item.path) in self.paths
                 or item.is_versioned()
                 and item.simple_content_status() != rabbitvcs.vcs.status.status_missing):
             return True
@@ -204,10 +201,8 @@ class Commit(InterfaceView, GtkContextMenuCaller):
             row[0] = self.TOGGLE_ALL
             self.changes[row[1]] = self.TOGGLE_ALL
 
-    def on_toggle_show_unversioned_toggled(self, widget, data=None):
-        if self.isInitDone:
-            self.SHOW_UNVERSIONED = not self.SHOW_UNVERSIONED
-
+    def on_toggle_show_unversioned_toggled(self, widget, *args):
+        self.SHOW_UNVERSIONED = widget.get_active()
         self.populate_files_table()
 
         # Save this preference for future commits.
