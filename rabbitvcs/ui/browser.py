@@ -217,8 +217,8 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
         else:
             self._open([self.url])
 
-    def on_urls_key_released(self, widget, data, userdata):
-        if Gdk.keyval_name(data.keyval) == "Return":
+    def on_urls_key_released(self, widget, event, *args):
+        if Gdk.keyval_name(event.keyval) == "Return":
             helper.save_repository_path(self.urls.get_active_text())
             self.load()
 
@@ -288,16 +288,16 @@ class SVNBrowser(InterfaceView, GtkContextMenuCaller):
 
         return str(row[column])
 
-    def on_list_table_mouse_event(self, treeview, data=None):
-        if data is not None and data.button == 3:
-            self.show_list_table_popup_menu(treeview, data)
+    def on_list_table_mouse_event(self, treeview, event, *args):
+        if event.button == 3 and event.type == Gdk.EventType.BUTTON_RELEASE:
+            self.show_list_table_popup_menu(treeview, event)
 
-    def show_list_table_popup_menu(self, treeview, data):
+    def show_list_table_popup_menu(self, treeview, event):
         paths = self.list_table.get_selected_row_items(0)
         if len(paths) == 0:
             paths.append(self.url)
 
-        BrowserContextMenu(self, data, None, self.vcs, paths).show()
+        BrowserContextMenu(self, event, None, self.vcs, paths).show()
 
     def set_url_clipboard(self, url):
         self.url_clipboard.set_text(S(url).display(), -1)

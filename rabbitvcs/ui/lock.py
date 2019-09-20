@@ -173,9 +173,9 @@ class SVNLock(InterfaceView, GtkContextMenuCaller):
         self.action.append(self.action.finish)
         self.action.schedule()
 
-    def on_files_table_mouse_event(self, treeview, data=None):
-        if data is not None and data.button == 3:
-            self.show_files_table_popup_menu(treeview, data)
+    def on_files_table_mouse_event(self, treeview, event, *args):
+        if event.button == 3 and event.type == Gdk.EventType.BUTTON_RELEASE:
+            self.show_files_table_popup_menu(treeview, event)
 
     def on_select_all_toggled(self, widget, data=None):
         for row in self.files_table.get_items():

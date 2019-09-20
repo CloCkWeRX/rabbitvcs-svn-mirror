@@ -135,17 +135,17 @@ class Revert(InterfaceView, GtkContextMenuCaller):
         paths = self.files_table.get_selected_row_items(1)
         helper.launch_diff_tool(*paths)
 
-    def on_files_table_key_event(self, treeview, data=None):
-        if Gdk.keyval_name(data.keyval) == "Delete":
-            self.delete_items(treeview, data)
+    def on_files_table_key_event(self, treeview, event, *args):
+        if Gdk.keyval_name(event.keyval) == "Delete":
+            self.delete_items(treeview, event)
 
-    def on_files_table_mouse_event(self, treeview, data=None):
-        if data is not None and data.button == 3:
-            self.show_files_table_popup_menu(treeview, data)
+    def on_files_table_mouse_event(self, treeview, event, *args):
+        if event.button == 3 and event.type == Gdk.EventType.BUTTON_RELEASE:
+            self.show_files_table_popup_menu(treeview, event)
 
-    def show_files_table_popup_menu(self, treeview, data):
+    def show_files_table_popup_menu(self, treeview, event):
         paths = self.files_table.get_selected_row_items(1)
-        GtkFilesContextMenu(self, data, self.base_dir, paths).show()
+        GtkFilesContextMenu(self, event, self.base_dir, paths).show()
 
 
 class SVNRevert(Revert):

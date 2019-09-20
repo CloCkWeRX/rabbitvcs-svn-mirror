@@ -176,7 +176,7 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         paths = self.files_table.get_selected_row_items(1)
         GtkFilesContextMenu(self, data, self.base_dir, paths).show()
 
-    def delete_items(self, widget, data=None):
+    def delete_items(self, widget, event):
         paths = self.files_table.get_selected_row_items(1)
         if len(paths) > 0:
             proc = helper.launch_ui_window("delete", paths)
@@ -188,12 +188,12 @@ class Commit(InterfaceView, GtkContextMenuCaller):
     def on_refresh_clicked(self, widget):
         self.initialize_items()
 
-    def on_key_pressed(self, widget, data):
-        if InterfaceView.on_key_pressed(self, widget, data):
+    def on_key_pressed(self, widget, event, *args):
+        if InterfaceView.on_key_pressed(self, widget, event, *args):
             return True
 
-        if (data.state & (Gdk.ModifierType.CONTROL_MASK) and
-                Gdk.keyval_name(data.keyval) == "Return"):
+        if (event.state & Gdk.ModifierType.CONTROL_MASK and
+                Gdk.keyval_name(event.keyval) == "Return"):
             self.on_ok_clicked(widget)
             return True
 
@@ -225,13 +225,13 @@ class Commit(InterfaceView, GtkContextMenuCaller):
         proc = helper.launch_ui_window("diff", ["-s", pathrev1, pathrev2])
         self.rescan_after_process_exit(proc, paths)
 
-    def on_files_table_key_event(self, treeview, data=None):
-        if Gdk.keyval_name(data.keyval) == "Delete":
-            self.delete_items(treeview, data)
+    def on_files_table_key_event(self, treeview, event, *args):
+        if Gdk.keyval_name(event.keyval) == "Delete":
+            self.delete_items(treeview, event)
 
-    def on_files_table_mouse_event(self, treeview, data=None):
-        if data is not None and data.button == 3:
-            self.show_files_table_popup_menu(treeview, data)
+    def on_files_table_mouse_event(self, treeview, event, *args):
+        if event.button == 3 and event.type == Gdk.EventType.BUTTON_RELEASE:
+            self.show_files_table_popup_menu(treeview, event)
 
     def on_previous_messages_clicked(self, widget, data=None):
         dialog = rabbitvcs.ui.dialog.PreviousMessages()

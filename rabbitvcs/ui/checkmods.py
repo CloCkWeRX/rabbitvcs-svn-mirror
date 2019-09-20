@@ -127,10 +127,10 @@ class SVNCheckLocalModifications(GtkContextMenuCaller):
         paths = self.files_table.get_selected_row_items(0)
         self.diff_local(paths[0])
 
-    def on_files_table_mouse_event(self, treeview, data=None):
-        if data is not None and data.button == 3:
+    def on_files_table_mouse_event(self, treeview, event, *args):
+        if event.button == 3 and event.type == Gdk.EventType.BUTTON_RELEASE:
             paths = self.files_table.get_selected_row_items(0)
-            GtkFilesContextMenu(self, data, self.base_dir, paths).show()
+            GtkFilesContextMenu(self, event, self.base_dir, paths).show()
 
     def refresh(self):
         self.action = rabbitvcs.ui.action.SVNAction(
@@ -192,10 +192,10 @@ class SVNCheckRemoteModifications(GtkContextMenuCaller):
         paths = self.files_table.get_selected_row_items(0)
         self.diff_remote(paths[0])
 
-    def on_files_table_mouse_event(self, treeview, data=None):
-        if data is not None and data.button == 3:
+    def on_files_table_mouse_event(self, treeview, event, *args):
+        if event.button == 3 and event.type == Gdk.EventType.BUTTON_RELEASE:
             paths = self.files_table.get_selected_row_items(0)
-            CheckRemoteModsContextMenu(self, data, self.base_dir, self.vcs, paths).show()
+            CheckRemoteModsContextMenu(self, event, self.base_dir, self.vcs, paths).show()
 
     def refresh(self):
         self.action = rabbitvcs.ui.action.SVNAction(

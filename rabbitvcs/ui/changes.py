@@ -123,10 +123,11 @@ class Changes(InterfaceView):
     def on_changes_table_cursor_changed(self, treeview, data=None):
         self.on_changes_table_event(treeview, data)
 
-    def on_changes_table_button_released(self, treeview, data=None):
-        self.on_changes_table_event(treeview, data)
+    def on_changes_table_button_released(self, treeview, event, *args):
+        if event.type == Gdk.EventType.BUTTON_RELEASE:
+            self.on_changes_table_event(treeview, event, *args)
 
-    def on_changes_table_event(self, treeview, data=None):
+    def on_changes_table_event(self, treeview, event, *args):
         selection = treeview.get_selection()
         (liststore, indexes) = selection.get_selected_rows()
 
@@ -134,8 +135,8 @@ class Changes(InterfaceView):
         for tup in indexes:
             self.selected_rows.append(tup[0])
 
-        if data is not None and data.button == 3:
-            self.show_changes_table_popup_menu(treeview, data)
+        if event.button == 3 and event.type == Gdk.EventType.BUTTON_RELEASE:
+            self.show_changes_table_popup_menu(treeview, event)
 
     def on_more_actions_changed(self, widget, data=None):
         index = self.more_actions.get_active()
@@ -167,8 +168,8 @@ class Changes(InterfaceView):
     def get_second_revision(self):
         return self.second_revision_selector.get_revision_object()
 
-    def show_changes_table_popup_menu(self, treeview, data):
-        ChangesContextMenu(self, data).show()
+    def show_changes_table_popup_menu(self, treeview, event):
+        ChangesContextMenu(self, event).show()
 
     def check_ui(self):
         self.check_first_urls()

@@ -259,14 +259,14 @@ class GitTagManager(InterfaceView):
         self.git.tag(tag_name, tag_message, tag_revision)
         self.load(self.show_detail, tag_name)
 
-    def on_treeview_key_event(self, treeview, data=None):
-        if Gdk.keyval_name(data.keyval) in ("Up", "Down", "Return"):
-            self.on_treeview_event(treeview, data)
+    def on_treeview_key_event(self, treeview, event, *args):
+        if Gdk.keyval_name(event.keyval) in ("Up", "Down", "Return"):
+            self.on_treeview_event(treeview, event)
 
-    def on_treeview_mouse_event(self, treeview, data=None):
-        self.on_treeview_event(treeview, data)
+    def on_treeview_mouse_event(self, treeview, event, *args):
+        self.on_treeview_event(treeview, event)
 
-    def on_treeview_event(self, treeview, data):
+    def on_treeview_event(self, treeview, event):
         selected = self.items_treeview.get_selected_row_items(0)
         if len(selected) > 0:
             if len(selected) == 1:

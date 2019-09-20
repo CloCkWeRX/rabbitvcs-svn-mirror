@@ -97,16 +97,16 @@ class Checkout(InterfaceView):
         if path is not None:
             self.get_widget("destination").set_text(S(path).display())
 
-    def on_repositories_key_released(self, widget, data, userdata=None):
-        if Gdk.keyval_name(data.keyval) == "Return":
+    def on_repositories_key_released(self, widget, event, *args):
+        if Gdk.keyval_name(event.keyval) == "Return":
             if self.complete:
                 self.on_ok_clicked(widget)
 
     def on_destination_changed(self, widget, data=None):
         self.check_form()
 
-    def on_destination_key_released(self, widget, data):
-        if Gdk.keyval_name(data.keyval) == "Return":
+    def on_destination_key_released(self, widget, event, *args):
+        if Gdk.keyval_name(event.keyval) == "Return":
             if self.complete:
                 self.on_ok_clicked(widget)
 

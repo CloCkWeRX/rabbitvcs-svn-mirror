@@ -204,17 +204,17 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         for name in self.table.get_selected_row_items(0):
             self.edit_property(name)
 
-    def on_table_key_event(self, treeview, data=None):
-        if Gdk.keyval_name(data.keyval) == "Delete":
+    def on_table_key_event(self, treeview, event, *args):
+        if Gdk.keyval_name(event.keyval) == "Delete":
             names = self.table.get_selected_row_items(0)
             self.delete_properties(names)
 
-    def on_table_mouse_event(self, treeview, data=None):
-        if data and data.button == 3:
-            self.show_menu(data)
+    def on_table_mouse_event(self, treeview, event, *args):
+        if event.button == 3 and event.type == Gdk.EventType.BUTTON_RELEASE:
+            self.show_menu(event)
 
-    def show_menu(self, data):
-        # self.show_files_table_popup_menu(treeview, data)
+    def show_menu(self, event):
+        # self.show_files_table_popup_menu(treeview, event)
         selected_propnames = self.table.get_selected_row_items(0)
         propdetails = self.svn.propdetails(self.path)
 
@@ -227,7 +227,7 @@ class PropEditor(InterfaceView, GtkContextMenuCaller):
         callbacks = PropMenuCallbacks(self, self.path, filtered_details,
                                       self.vcs)
 
-        GtkContextMenu(PROP_MENU_STRUCTURE, conditions, callbacks).show(data)
+        GtkContextMenu(PROP_MENU_STRUCTURE, conditions, callbacks).show(event)
 
 class PropMenuCallbacks(object):
 

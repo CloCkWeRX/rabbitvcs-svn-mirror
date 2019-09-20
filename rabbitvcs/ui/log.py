@@ -171,10 +171,10 @@ class Log(InterfaceView):
 
         self.close()
 
-    def on_key_pressed(self, widget, data):
-        InterfaceView.on_key_pressed(self, widget, data)
-        if (data.state & Gdk.ModifierType.CONTROL_MASK and
-            Gdk.keyval_name(data.keyval).lower() == "c"):
+    def on_key_pressed(self, widget, event, *args):
+        InterfaceView.on_key_pressed(self, widget, event)
+        if (event.state & Gdk.ModifierType.CONTROL_MASK and
+            Gdk.keyval_name(event.keyval).lower() == "c"):
             if len(self.revisions_table.get_selected_rows()) > 0:
                 self.copy_revision_text()
 
@@ -212,14 +212,14 @@ class Log(InterfaceView):
 
         helper.launch_diff_tool(*paths)
 
-    def on_revisions_table_mouse_event(self, treeview, data=None):
+    def on_revisions_table_mouse_event(self, treeview, event, *args):
         if len(self.revisions_table.get_selected_rows()) == 0:
             self.message.set_text("")
             self.paths_table.clear()
             return
 
-        if data is not None and data.button == 3:
-            self.show_revisions_table_popup_menu(treeview, data)
+        if event.button == 3 and event.type == Gdk.EventType.BUTTON_RELEASE:
+            self.show_revisions_table_popup_menu(treeview, event)
 
         self.paths_table.clear()
         self.message.set_text("")
@@ -241,11 +241,11 @@ class Log(InterfaceView):
         except IndexError:
             pass
 
-    def on_paths_table_mouse_event(self, treeview, data=None):
-        if data is not None and data.button == 3:
-            self.show_paths_table_popup_menu(treeview, data)
+    def on_paths_table_mouse_event(self, treeview, event, *args):
+        if event.button == 3 and event.type == Gdk.EventType.BUTTON_RELEASE:
+            self.show_paths_table_popup_menu(treeview, event)
 
-    def show_paths_table_popup_menu(self, treeview, data):
+    def show_paths_table_popup_menu(self, treeview, event):
         revisions = []
         for row in self.revisions_table.get_selected_rows():
             line = {
@@ -275,7 +275,7 @@ class Log(InterfaceView):
         for row in self.paths_table.get_selected_rows():
             paths.append(self.paths_table.get_row(row)[1])
 
-        LogBottomContextMenu(self, data, paths, revisions).show()
+        LogBottomContextMenu(self, event, paths, revisions).show()
 
     #
     # Helper methods

@@ -391,11 +391,11 @@ class OneLineTextChange(InterfaceView):
 
         self.dialog = self.get_widget("OneLineTextChange")
 
-    def on_key_release_event(self, widget, data):
+    def on_key_release_event(self, widget, event, *args):
         # The Gtk.Dialog.response() method emits the "response" signal,
         # which tells Gtk.Dialog.run() asyncronously to stop.  This allows the
         # user to press the "Return" button when done writing in the new text
-        if Gdk.keyval_name(data.keyval) == "Return":
+        if Gdk.keyval_name(event.keyval) == "Return":
             self.dialog.response(Gtk.ResponseType.OK)
 
     def run(self):
@@ -465,11 +465,11 @@ class NameEmailPrompt(InterfaceView):
 
         self.dialog = self.get_widget("NameEmailPrompt")
 
-    def on_key_release_event(self, widget, data):
+    def on_key_release_event(self, widget, event, *args):
         # The Gtk.Dialog.response() method emits the "response" signal,
         # which tells Gtk.Dialog.run() asyncronously to stop.  This allows the
         # user to press the "Return" button when done writing in the new text
-        if Gdk.keyval_name(data.keyval) == "Return":
+        if Gdk.keyval_name(event.keyval) == "Return":
             self.dialog.response(Gtk.ResponseType.OK)
 
     def run(self):
