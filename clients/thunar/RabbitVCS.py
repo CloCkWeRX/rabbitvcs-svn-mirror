@@ -50,7 +50,6 @@ import rabbitvcs.ui.property_page
 from rabbitvcs.util.helper import launch_ui_window, launch_diff_tool
 from rabbitvcs.util.helper import get_file_extension, get_common_directory
 from rabbitvcs.util.helper import pretty_timedelta
-from rabbitvcs.util.helper import unquote
 from rabbitvcs.util.strings import S
 from rabbitvcs.util.decorators import timeit, disable
 from rabbitvcs.util.contextmenu import MenuBuilder, MainContextMenu, SEPARATOR
@@ -157,7 +156,9 @@ class RabbitVCS(GObject.GObject, Thunarx.MenuProvider, Thunarx.PropertyPageProvi
         self.status_checker = StatusChecker()
 
     def get_local_path(self, item):
-        return unquote(item.get_uri().replace("file://", ""))
+        if item.get_uri_scheme() != "file":
+            return None
+        return item.get_location().get_path()
 
     #~ @disable
     # @timeit

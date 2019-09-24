@@ -129,10 +129,10 @@ class RabbitVCS(Nautilus.InfoProvider, Nautilus.MenuProvider,
     #: use. This is of the form: [("path/to", {...status dict...}), ...]
     statuses_from_callback = []
 
-    def get_local_path(self, file):
-        if file.get_uri_scheme() != "file":
+    def get_local_path(self, item):
+        if item.get_uri_scheme() != "file":
             return None
-        return file.get_location().get_path()
+        return item.get_location().get_path()
 
     def __init__(self):
         factory = Gtk.IconFactory()
