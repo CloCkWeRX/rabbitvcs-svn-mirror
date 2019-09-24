@@ -79,7 +79,6 @@ import rabbitvcs.vcs.status
 from rabbitvcs.util.helper import launch_ui_window, launch_diff_tool
 from rabbitvcs.util.helper import get_file_extension, get_common_directory
 from rabbitvcs.util.helper import pretty_timedelta
-from rabbitvcs.util.helper import unquote_url
 
 from rabbitvcs.util.decorators import timeit, disable
 
@@ -135,8 +134,10 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
     #: use. This is of the form: [("path/to", {...status dict...}), ...]
     statuses_from_callback = []
 
-    def get_local_path(self, path):
-        return path.replace("file://", "")
+    def get_local_path(self, file):
+        if file.get_uri_scheme() != "file":
+            return None
+        return file.get_location().get_path()
 
     def __init__(self):
         factory = Gtk.IconFactory()
@@ -274,7 +275,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
 
         if not self.valid_uri(item.get_uri()): return Caja.OperationResult.FAILED
 
-        path = unquote_url(self.get_local_path(item.get_uri()))
+        path = self.get_local_path(item)
 
         # log.debug("update_file_info() called for %s" % path)
 
@@ -391,7 +392,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         paths = []
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = unquote_url(self.get_local_path(item.get_uri()))
+                path = self.get_local_path(item)
                 paths.append(path)
                 self.nautilusVFSFile_table[path] = item
 
@@ -420,7 +421,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         paths = []
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = unquote_url(self.get_local_path(item.get_uri()))
+                path = self.get_local_path(item)
                 paths.append(path)
                 self.nautilusVFSFile_table[path] = item
 
@@ -470,8 +471,9 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
 
         """
 
-        if not self.valid_uri(item.get_uri()): return
-        path = unquote_url(self.get_local_path(item.get_uri()))
+        if not self.valid_uri(item.get_uri()):
+            return
+        path = self.get_local_path(item)
         self.nautilusVFSFile_table[path] = item
 
         # log.debug("get_background_items_full() called")
@@ -492,7 +494,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
 
     def get_background_items(self, window, item):
         if not self.valid_uri(item.get_uri()): return
-        path = unquote_url(self.get_local_path(item.get_uri()))
+        path = self.get_local_path(item)
         self.nautilusVFSFile_table[path] = item
 
         # log.debug("get_background_items() called")
@@ -626,7 +628,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
 
         for item in items:
             if self.valid_uri(item.get_uri()):
-                path = unquote_url(self.get_local_path(item.get_uri()))
+                path = self.get_local_path(item)
 
                 if self.vcs_client.is_in_a_or_a_working_copy(path):
                     paths.append(path)
