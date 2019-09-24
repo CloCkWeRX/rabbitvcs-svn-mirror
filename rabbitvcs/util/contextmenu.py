@@ -314,11 +314,11 @@ class ContextMenuCallbacks(object):
 
     def debug_invalidate(self, widget, data1=None, data2=None):
         rabbitvcs_extension = self.caller
-        nautilusVFSFile_table = rabbitvcs_extension.nautilusVFSFile_table
+        VFSFile_table = rabbitvcs_extension.VFSFile_table
         for path in self.paths:
             log.debug("callback_debug_invalidate() called for %s" % path)
-            if path in nautilusVFSFile_table:
-                nautilusVFSFile_table[path].invalidate_extension_info()
+            if path in VFSFile_table:
+                VFSFile_table[path].invalidate_extension_info()
 
     def debug_add_emblem(self, widget, data1=None, data2=None):
         def add_emblem_dialog():
@@ -327,10 +327,10 @@ class ContextMenuCallbacks(object):
             emblem = S(Popen(command, stdout=PIPE).communicate()[0]).replace("\n", "")
 
             rabbitvcs_extension = self.caller
-            nautilusVFSFile_table = rabbitvcs_extension.nautilusVFSFile_table
+            VFSFile_table = rabbitvcs_extension.VFSFile_table
             for path in self.paths:
-                if path in nautilusVFSFile_table:
-                    nautilusVFSFile_table[path].add_emblem(emblem)
+                if path in VFSFile_table:
+                    VFSFile_table[path].add_emblem(emblem)
             return False
 
         GLib.idle_add(add_emblem_dialog)

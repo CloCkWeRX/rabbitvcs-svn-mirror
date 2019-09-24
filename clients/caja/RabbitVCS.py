@@ -109,9 +109,9 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
 
     #: This is our lookup table for C{NautilusVFSFile}s which we need for attaching
     #: emblems. This is mostly a workaround for not being able to turn a path/uri
-    #: into a C{NautilusVFSFile}. It looks like:::
+    #: into a C{VFSFile}. It looks like:::
     #:
-    #:     nautilusVFSFile_table = {
+    #:     VFSFile_table = {
     #:        "/foo/bar/baz": <NautilusVFSFile>
     #:
     #:     }
@@ -121,7 +121,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
     #: we also add C{NautilusVFSFile}s to this table from C{get_file_items} etc.
     # FIXME: this may be the source of the memory hogging seen in the extension
     # script itself.
-    nautilusVFSFile_table = {}
+    VFSFile_table = {}
 
     #: This is in case we want to permanently enable invalidation of the status
     #: checker info.
@@ -277,13 +277,13 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         # log.debug("update_file_info() called for %s" % path)
 
         invalidate = False
-        if path in self.nautilusVFSFile_table:
+        if path in self.VFSFile_table:
             invalidate = True
 
         # Always replace the item in the table with the one we receive, because
         # for example if an item is deleted and recreated the NautilusVFSFile
         # we had before will be invalid (think pointers and such).
-        self.nautilusVFSFile_table[path] = item
+        self.VFSFile_table[path] = item
 
         # This check should be pretty obvious :-)
         # TODO: how come the statuses for a few directories are incorrect
@@ -391,7 +391,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
             if self.valid_uri(item.get_uri()):
                 path = self.get_local_path(item)
                 paths.append(path)
-                self.nautilusVFSFile_table[path] = item
+                self.VFSFile_table[path] = item
 
         if len(paths) == 0: return []
 
@@ -420,7 +420,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
             if self.valid_uri(item.get_uri()):
                 path = self.get_local_path(item)
                 paths.append(path)
-                self.nautilusVFSFile_table[path] = item
+                self.VFSFile_table[path] = item
 
         if len(paths) == 0: return []
 
@@ -471,7 +471,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         if not self.valid_uri(item.get_uri()):
             return
         path = self.get_local_path(item)
-        self.nautilusVFSFile_table[path] = item
+        self.VFSFile_table[path] = item
 
         # log.debug("get_background_items_full() called")
 
@@ -492,7 +492,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
     def get_background_items(self, window, item):
         if not self.valid_uri(item.get_uri()): return
         path = self.get_local_path(item)
-        self.nautilusVFSFile_table[path] = item
+        self.VFSFile_table[path] = item
 
         # log.debug("get_background_items() called")
 
@@ -600,8 +600,8 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
         @type   statuses: list of status objects
         @param  statuses: The statuses
         """
-        if status.path in self.nautilusVFSFile_table:
-            item = self.nautilusVFSFile_table[status.path]
+        if status.path in self.VFSFile_table:
+            item = self.VFSFile_table[status.path]
             # We need to invalidate the extension info for only one reason:
             #
             # - Invalidating the extension info will cause Caja to remove all
@@ -629,7 +629,7 @@ class RabbitVCS(Caja.InfoProvider, Caja.MenuProvider,
 
                 if self.vcs_client.is_in_a_or_a_working_copy(path):
                     paths.append(path)
-                    self.nautilusVFSFile_table[path] = item
+                    self.VFSFile_table[path] = item
 
         if len(paths) == 0: return []
 

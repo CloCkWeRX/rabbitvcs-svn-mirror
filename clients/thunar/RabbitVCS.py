@@ -97,9 +97,9 @@ class RabbitVCS(GObject.GObject, Thunarx.MenuProvider, Thunarx.PropertyPageProvi
 
     #: This is our lookup table for C{NautilusVFSFile}s which we need for attaching
     #: emblems. This is mostly a workaround for not being able to turn a path/uri
-    #: into a C{NautilusVFSFile}. It looks like:::
+    #: into a C{VFSFile}. It looks like:::
     #:
-    #:     nautilusVFSFile_table = {
+    #:     VFSFile_table = {
     #:        "/foo/bar/baz": <NautilusVFSFile>
     #:
     #:     }
@@ -107,7 +107,7 @@ class RabbitVCS(GObject.GObject, Thunarx.MenuProvider, Thunarx.PropertyPageProvi
     #: Keeping track of C{NautilusVFSFile}s is a little bit complicated because
     #: when an item is moved (renamed) C{update_file_info} doesn't get called. So
     #: we also add C{NautilusVFSFile}s to this table from C{get_file_items} etc.
-    nautilusVFSFile_table = {}
+    VFSFile_table = {}
 
     #: Without an actual status monitor it's not possible to just keep
     #: track of stuff that happens (e.g. a commit happens, files are added,
@@ -186,7 +186,7 @@ class RabbitVCS(GObject.GObject, Thunarx.MenuProvider, Thunarx.PropertyPageProvi
             if self.valid_uri(item.get_uri()):
                 path = realpath(S(self.get_local_path(item)))
                 paths.append(path)
-                self.nautilusVFSFile_table[path] = item
+                self.VFSFile_table[path] = item
 
         if len(paths) == 0: return []
 
@@ -212,7 +212,7 @@ class RabbitVCS(GObject.GObject, Thunarx.MenuProvider, Thunarx.PropertyPageProvi
 
         if not self.valid_uri(item.get_uri()): return
         path = realpath(S(self.get_local_path(item)))
-        self.nautilusVFSFile_table[path] = item
+        self.VFSFile_table[path] = item
 
         # log.debug("get_background_items() called")
 
@@ -317,7 +317,7 @@ class RabbitVCS(GObject.GObject, Thunarx.MenuProvider, Thunarx.PropertyPageProvi
             if self.valid_uri(item.get_uri()):
                 path = realpath(S(self.get_local_path(item)))
                 paths.append(path)
-                self.nautilusVFSFile_table[path] = item
+                self.VFSFile_table[path] = item
 
         if len(paths) == 0: return []
 
