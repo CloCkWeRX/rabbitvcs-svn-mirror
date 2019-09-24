@@ -740,10 +740,6 @@ def launch_ui_window(filename, args=[], block=False):
                         os.path.dirname(
                             os.path.realpath(__file__)))
 
-    env = os.environ
-    if "REQUIRE_GTK3" in env:
-        del env["REQUIRE_GTK3"]
-
     if not head == "util":
         log.warning("Helper module (%s) not in \"util\" dir" % __file__)
 
@@ -757,7 +753,7 @@ def launch_ui_window(filename, args=[], block=False):
             executable = os.environ["PYTHON"]
         # Give all subprocesses the name 'RabbitVCS' to give Ubuntu desktop files the possibility
         # to group those windows in the launcher on WM_CLASS.
-        proc = subprocess.Popen([executable, path] + ['--name', 'RabbitVCS'] + args, env=env)
+        proc = subprocess.Popen([executable, path] + ['--name', 'RabbitVCS'] + args)
 
         if block:
             proc.wait()

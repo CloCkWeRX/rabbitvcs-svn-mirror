@@ -44,7 +44,6 @@ sa.restore()
 from rabbitvcs.vcs.svn import SVN
 
 import os
-os.environ["REQUIRE_GTK3"] = "1"
 
 import rabbitvcs.ui
 import rabbitvcs.ui.property_page

@@ -62,9 +62,6 @@ def log_all_exceptions(type, value, tb):
 import copy
 
 import os
-# Do NOT change this to "Nemo". RabbitVCS has an internal reference to this name.
-os.environ["REQUIRE_GTK3"] = "1"
-
 import os.path
 from os.path import isdir, isfile, realpath, basename
 import datetime

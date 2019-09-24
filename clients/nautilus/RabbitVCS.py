@@ -56,8 +56,6 @@ def log_all_exceptions(type, value, tb):
 import copy
 
 import os
-os.environ["REQUIRE_GTK3"] = "1"
-
 import os.path
 from os.path import isdir, isfile, realpath, basename, dirname
 import datetime
