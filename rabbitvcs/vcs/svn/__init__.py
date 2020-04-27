@@ -502,7 +502,7 @@ class SVN(object):
 
         try:
             info = self.client_info(path)
-            returner = S(info["url"], IDENTITY_ENCODING).bytes()
+            returner = S(info["url"], IDENTITY_ENCODING)
         except Exception as e:
             log.exception(e)
 
