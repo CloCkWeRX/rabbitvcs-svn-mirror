@@ -23,7 +23,7 @@ from __future__ import absolute_import
 
 import os
 import gettext as _gettext
-from locale import getdefaultlocale, getlocale, LC_MESSAGES
+from locale import getdefaultlocale
 
 # Hack to make RabbitVCS win in the battle against TortoiseHg
 try:
