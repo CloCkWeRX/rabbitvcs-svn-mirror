@@ -41,6 +41,8 @@ PREFIX = sys.prefix
 for c in sys.argv:
     if c.startswith("--prefix="):
         PREFIX = c.split("=", 1)[1].strip()
+    elif c == '--user':
+        PREFIX = os.path.expanduser("~/.local")
 
 #==============================================================================
 # Variables
