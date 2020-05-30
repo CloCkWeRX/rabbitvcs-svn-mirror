@@ -296,7 +296,7 @@ class Log(InterfaceView):
             revisions.append(int(self.revisions_table.get_row(row)[self.revision_number_column]))
 
         revisions.sort()
-        helper.encode_revisions(revisions)
+        return helper.encode_revisions(revisions)
 
     def get_selected_revision_number(self):
         if len(self.revisions_table.get_selected_rows()):
