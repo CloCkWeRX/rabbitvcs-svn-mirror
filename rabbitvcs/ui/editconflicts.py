@@ -172,5 +172,7 @@ if __name__ == "__main__":
     )
 
     window = editconflicts_factory(paths[0])
-    window.register_gtk_quit()
-    Gtk.main()
+
+    # No Gtk event pending.
+    # window.register_gtk_quit()
+    # Gtk.main()
