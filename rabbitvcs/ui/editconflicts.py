@@ -130,7 +130,7 @@ class SVNEditConflicts(InterfaceNonView):
                     log.debug("revision: %s"%revision)
                     revisionPaths.append((revision,name))
         if len(revisionPaths) == 2:
-            if revisionPaths[0][0] < revisionPaths[1][0]:
+            if int(revisionPaths[0][0]) < int(revisionPaths[1][0]):
                 ancestorPath = os.path.join(baseDir, revisionPaths[0][1])
                 theirsPath = os.path.join(baseDir, revisionPaths[1][1])
             else:
