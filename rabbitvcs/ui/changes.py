@@ -135,8 +135,9 @@ class Changes(InterfaceView):
         for tup in indexes:
             self.selected_rows.append(tup[0])
 
-        if event.button == 3 and event.type == Gdk.EventType.BUTTON_RELEASE:
-            self.show_changes_table_popup_menu(treeview, event)
+        if not event is None:
+            if event.button == 3 and event.type == Gdk.EventType.BUTTON_RELEASE:
+                self.show_changes_table_popup_menu(treeview, event)
 
     def on_more_actions_changed(self, widget, data=None):
         index = self.more_actions.get_active()
