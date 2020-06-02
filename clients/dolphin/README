@@ -1,20 +1,37 @@
-RabbitVCS Dolphin/KDE4 Extension (EXPERIMENTAL!)
+RabbitVCS Dolphin/KDE[45] Extension (EXPERIMENTAL!)
 
-This extension is meant to be used with the Dolphin File Manager which comes with KDE 4.x
+This extension is meant to be used with the Dolphin File Manager which comes
+with KDE 4.x and 5.x
+
+Please note this extension only consists in menu entries and is not a Dolphin
+plugin. As a consequence, RabbitVCS functions are available through Dolphin
+contextual menus, but there is no integration with the Dophin main window
+interface.
 
 Requirements:
-    * KDE 4
+    * KDE 4 or 5
     * (all other RabbitVCS requirements)
 
-To install:
+To install with KDE 4:
     Copy all supplied .desktop files to:
         /usr/share/kde4/services/ServiceMenus/
-    
+
+    Install the RabbitCVS CLI client into some PATH directory (i.e.: /usr/bin).
+
     Alternatively you can copy the files to the kde4-directory inside your $HOME, i.e. on Ubuntu 14.04:
         /home/your-username/.kde/share/kde4/services/ServiceMenus/
-        
+
     In the second case, you may need to create the ServiceMenus folder.
     Please note that the name (i.e. .kde or .kde4) depends on your OS distribution.
+
+To install with KDE 5:
+    Copy all supplied .desktop files to:
+        /usr/share/kservices5/
+
+    Install the RabbitCVS CLI client into some PATH directory (i.e.: /usr/bin).
+
+    Alternatively you can copy the files for a private user installation to:
+        /home/your-username/.local/share/kservices5/
 
 Troubleshooting:
 

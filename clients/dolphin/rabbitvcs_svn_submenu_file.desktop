@@ -1,11 +1,11 @@
 [Desktop Entry]
 Type=Service
 ServiceTypes=KonqPopupMenu/Plugin,application/octet-stream
-Actions=Update;Commit;_SEPARATOR_;Log;Browser;CheckMods;_SEPARATOR_;Resolve;UpdateToRev;Rename;Delete;Revert;GetLock;ReleaseLock;_SEPARATOR_;BranchTag;Switch;Merge;_SEPARATOR_;CreatePatch;Properties;_SEPARATOR_;Add;Ignore;_SEPARATOR_;Settings;About;
+Actions=Update;Commit;_SEPARATOR_;Changes;Log;Browser;CheckMods;_SEPARATOR_;Resolve;UpdateToRev;Rename;Delete;Revert;GetLock;ReleaseLock;_SEPARATOR_;BranchTag;Switch;Merge;_SEPARATOR_;Annotate;_SEPARATOR_;CreatePatch;Properties;_SEPARATOR_;Add;Ignore;_SEPARATOR_;Settings;About;
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs.svg
 
 X-KDE-Priority=TopLevel
-X-KDE-Submenu=RabbitVCS (SVN)
+X-KDE-Submenu=RabbitVCS SVN
 
 [Desktop Action Update]
 Name=Update
@@ -22,6 +22,12 @@ Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-commit.svg
 Exec=rabbitvcs commit %U
 
 # SEPARATOR
+
+[Desktop Action Changes]
+Name=Show Changes...
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-changes.svg
+Exec=rabbitvcs changes %U
 
 [Desktop Action Log]
 Name=Show log
@@ -118,6 +124,15 @@ Name[de]=Zusammenführen …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-merge.svg
 Exec=rabbitvcs merge %U
+
+# SEPARATOR
+
+[Desktop Action Annotate]
+Name=Annotate...
+Name[de]=Annotiere …
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-annotate.svg
+Exec=rabbitvcs annotate %U
 
 # SEPARATOR
 
