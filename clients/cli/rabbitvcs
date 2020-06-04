@@ -43,7 +43,7 @@ SVN:
     rename, markresolved, revert, settings, switch, unlock, update, updateto
 
 Git:
-    about, add, annotate, applybranch, branches, changes, checkout, clean, 
+    about, add, annotate, applypatch, branches, changes, checkout, clean, 
     clone, commit, createpatch, create, delete, diff, editconflicts, export, 
     ignore, log, merge, open, push, rename, remotes, reset, revert, settings, 
     tags, update
