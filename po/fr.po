@@ -257,7 +257,7 @@ msgstr "Comparer côte à côte avec la révision précédente"
 
 #: util/contextmenuitems.py:455
 msgid "Show Changes..."
-msgstr "Voir le journal"
+msgstr "Voir les modifications..."
 
 #: util/contextmenuitems.py:456
 msgid "Show changes between paths and revisions"
@@ -282,7 +282,7 @@ msgstr "Ajouter au dépôt"
 
 #: util/contextmenuitems.py:473
 msgid "Add to ignore list"
-msgstr "Ajouter à la liste de fichier ignorés"
+msgstr "Ajouter à la liste de fichiers ignorés"
 
 #: util/contextmenuitems.py:478
 msgid "Update to revision..."
