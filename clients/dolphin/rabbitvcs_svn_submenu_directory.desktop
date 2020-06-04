@@ -5,11 +5,12 @@ Actions=Update;Commit;Checkout;_SEPARATOR_;Log;Browser;CheckMods;_SEPARATOR_;Res
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs.svg
 
 X-KDE-Priority=TopLevel
-X-KDE-Submenu=RabbitVCS (SVN)
+X-KDE-Submenu=RabbitVCS SVN
 
 [Desktop Action Update]
 Name=Update
 Name[de]=Aktualisieren
+Name[fr]=Mettre à jour
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-update.svg
 Exec=rabbitvcs update %U
@@ -17,6 +18,7 @@ Exec=rabbitvcs update %U
 [Desktop Action Commit]
 Name=Commit...
 Name[de]=Committen …
+Name[fr]=Envoyer …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-commit.svg
 Exec=rabbitvcs commit %U
@@ -24,6 +26,7 @@ Exec=rabbitvcs commit %U
 [Desktop Action Checkout]
 Name=Checkout...
 Name[de]=Auschecken …
+Name[fr]=Check-out …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-checkout.svg
 Exec=rabbitvcs checkout
@@ -33,6 +36,7 @@ Exec=rabbitvcs checkout
 [Desktop Action Log]
 Name=Show log
 Name[de]=Historie anzeigen
+Name[fr]=Consulter le journal
 Name[pl]=Pokaz Log
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-show_log.svg
@@ -41,6 +45,7 @@ Exec=rabbitvcs log %U
 [Desktop Action Browser]
 Name=Repo-browser
 Name[de]=Repository-Browser
+Name[fr]=Navigateur de dépôt
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-drive.svg
 Exec=rabbitvcs browser %U
@@ -48,6 +53,7 @@ Exec=rabbitvcs browser %U
 [Desktop Action CheckMods]
 Name=Check for modifications
 Name[de]=Auf Änderungen prüfen
+Name[fr]=Vérifier les modifications
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-checkmods.svg
 Exec=rabbitvcs checkmods %U
@@ -57,6 +63,7 @@ Exec=rabbitvcs checkmods %U
 [Desktop Action Resolve]
 Name=Resolve...
 Name[de]=Konflikte lösen …
+Name[fr]=Résoudre …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-resolve.svg
 Exec=rabbitvcs editconflicts %U
@@ -64,6 +71,7 @@ Exec=rabbitvcs editconflicts %U
 [Desktop Action UpdateToRev]
 Name=Update to revision...
 Name[de]=Auf Revision aktualisieren …
+Name[fr]=Mettre à jour à la révision …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-update.svg
 Exec=rabbitvcs updateto %U
@@ -71,6 +79,7 @@ Exec=rabbitvcs updateto %U
 [Desktop Action Rename]
 Name=Rename...
 Name[de]=Umbenennen …
+Name[fr]=Renommer …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-rename.svg
 Exec=rabbitvcs rename %U
@@ -78,6 +87,7 @@ Exec=rabbitvcs rename %U
 [Desktop Action Delete]
 Name=Delete
 Name[de]=Löschen
+Name[fr]=Supprimer
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-delete.svg
 Exec=rabbitvcs delete %U
@@ -85,6 +95,7 @@ Exec=rabbitvcs delete %U
 [Desktop Action Revert]
 Name=Revert...
 Name[de]=Rückgängig machen …
+Name[fr]=Rétablir …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-revert.svg
 Exec=rabbitvcs revert %U
@@ -92,6 +103,7 @@ Exec=rabbitvcs revert %U
 [Desktop Action CleanUp]
 Name=Clean up...
 Name[de]=Aufräumen …
+Name[fr]=Nettoyer …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-cleanup.svg
 Exec=rabbitvcs cleanup %U
@@ -99,6 +111,7 @@ Exec=rabbitvcs cleanup %U
 [Desktop Action GetLock]
 Name=Get lock...
 Name[de]=Sperren …
+Name[fr]=Obtenir le verrou …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-lock.svg
 Exec=rabbitvcs lock %U
@@ -106,6 +119,7 @@ Exec=rabbitvcs lock %U
 [Desktop Action ReleaseLock]
 Name=Release lock...
 Name[de]=Sperrung aufheben …
+Name[fr]=Relâcher le verrou …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-unlock.svg
 Exec=rabbitvcs unlock %U
@@ -115,6 +129,7 @@ Exec=rabbitvcs unlock %U
 [Desktop Action BranchTag]
 Name=Branch/tag...
 Name[de]=Verzweigen/markieren …
+Name[fr]=Brancher/Taguer …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-branch.svg
 Exec=rabbitvcs branch %U
@@ -122,6 +137,7 @@ Exec=rabbitvcs branch %U
 [Desktop Action Switch]
 Name=Switch...
 Name[de]=Wechseln …
+Name[fr]=Basculer …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-switch.svg
 Exec=rabbitvcs switch %U
@@ -129,6 +145,7 @@ Exec=rabbitvcs switch %U
 [Desktop Action Merge]
 Name=Merge...
 Name[de]=Zusammenführen …
+Name[fr]=Fusionner …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-merge.svg
 Exec=rabbitvcs merge %U
@@ -136,6 +153,7 @@ Exec=rabbitvcs merge %U
 [Desktop Action Export]
 Name=Export...
 Name[de]=Exportieren …
+Name[fr]=Exporter …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-export.svg
 Exec=rabbitvcs export %U
@@ -143,6 +161,7 @@ Exec=rabbitvcs export %U
 [Desktop Action Relocate]
 Name=Relocate...
 Name[de]=Verschieben …
+Name[fr]=Déplacer …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-relocate.svg
 Exec=rabbitvcs relocate %U
@@ -152,6 +171,7 @@ Exec=rabbitvcs relocate %U
 [Desktop Action CreatePatch]
 Name=Create patch...
 Name[de]=Patch erstellen …
+Name[fr]=Créer un correctif …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-createpatch.svg
 Exec=rabbitvcs createpatch %U
@@ -159,6 +179,7 @@ Exec=rabbitvcs createpatch %U
 [Desktop Action ApplyPatch]
 Name=Apply patch...
 Name[de]=Patch anwenden …
+Name[fr]=Appliquer un correctif …
 Name[pl]=Zastosuj Patch...
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-applypatch.svg
@@ -167,6 +188,7 @@ Exec=rabbitvcs applypatch %U
 [Desktop Action Properties]
 Name=Properties
 Name[de]=Eigenschaften
+Name[fr]=Propriétés
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-properties.svg
 Exec=rabbitvcs properties %U
@@ -176,13 +198,15 @@ Exec=rabbitvcs properties %U
 [Desktop Action CreateRepo]
 Name=Create repository here
 Name[de]=Hier ein Repository erstellen
+Name[fr]=Créer un dépôt ici
 
-Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-drive.svg
-Exec=rabbitvcs properties %U
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-run.svg
+Exec=rabbitvcs create --vcs svn %U
 
 [Desktop Action Add]
 Name=Add...
 Name[de]=Hinzufuegen …
+Name[fr]=Ajouter …
 Name[pl]=Dodaj...
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-add.svg
@@ -191,6 +215,7 @@ Exec=rabbitvcs add %U
 [Desktop Action Import]
 Name=Import...
 Name[de]=Importieren …
+Name[fr]=Importer …
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-import.svg
 Exec=rabbitvcs import %U
@@ -198,8 +223,8 @@ Exec=rabbitvcs import %U
 [Desktop Action Ignore]
 Name=Add to ignore list
 Name[de]=Zur Ignorierliste hinzufügen
+Name[fr]=Ajouter à la liste de fichiers ignorés
 
-Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-ignore.svg
 Exec=rabbitvcs ignore %U
 
 # SEPARATOR
@@ -207,6 +232,7 @@ Exec=rabbitvcs ignore %U
 [Desktop Action Settings]
 Name=Settings
 Name[de]=Einstellungen
+Name[fr]=Paramètres
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-settings.svg
 Exec=rabbitvcs settings
@@ -214,6 +240,7 @@ Exec=rabbitvcs settings
 [Desktop Action About]
 Name=About
 Name[de]=Über
+Name[fr]=À propos
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-about.svg
 Exec=rabbitvcs about
