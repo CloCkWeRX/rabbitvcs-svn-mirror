@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Service
 ServiceTypes=KonqPopupMenu/Plugin,inode/directory
-Actions=Update;Commit;Push;_SEPARATOR_;Changes;Log;_SEPARATOR_;Delete;Clean;Reset;Checkout;_SEPARATOR_;Branches;Tags;Remotes;_SEPARATOR_;Export;Merge;_SEPARATOR_;CreatePatch;ApplyPatch;_SEPARATOR_;CreateRepo;Clone;_SEPARATOR_;Settings;About;
+Actions=Update;Commit;Push;_SEPARATOR_;Changes;Log;_SEPARATOR_;Delete;Revert;Clean;Reset;Checkout;_SEPARATOR_;Branches;Tags;Remotes;_SEPARATOR_;Export;Merge;_SEPARATOR_;CreatePatch;ApplyPatch;_SEPARATOR_;CreateRepo;Clone;_SEPARATOR_;Settings;About;
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs.svg
 
 X-KDE-Priority=TopLevel
@@ -57,6 +57,14 @@ Name[fr]=Supprimer
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-delete.svg
 Exec=rabbitvcs delete %U
+
+[Desktop Action Revert]
+Name=Revert...
+Name[de]=Rückgängig machen …
+Name[fr]=Rétablir …
+
+Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-revert.svg
+Exec=rabbitvcs revert %U
 
 [Desktop Action Clean]
 Name=Clean
@@ -151,7 +159,7 @@ Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-run.svg
 Exec=rabbitvcs create --vcs git %U
 
 [Desktop Action Clone]
-Name=Add
+Name=Clone
 Name[fr]=Cloner
 
 Icon=/usr/share/icons/hicolor/scalable/actions/rabbitvcs-checkout.svg
