@@ -155,7 +155,7 @@ class Log(InterfaceView):
 
         self.stop_on_copy = False
         self.revision_clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-        
+
         style = self.get_widget("revisions_table").get_style_context()
         textcolor = style.get_color(Gtk.StateFlags.NORMAL)
         self.orgTextColor = textcolor.to_string()
