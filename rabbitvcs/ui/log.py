@@ -212,6 +212,13 @@ class Log(InterfaceView):
 
         helper.launch_diff_tool(*paths)
 
+    def on_revisions_table_cursor_changed(self, treeview):
+        if len(self.revisions_table.get_selected_rows()) == 0:
+            return
+        self.paths_table.clear()
+        self.message.set_text("")
+        self.update_revision_message()
+
     def on_revisions_table_mouse_event(self, treeview, event, *args):
         if len(self.revisions_table.get_selected_rows()) == 0:
             self.message.set_text("")
@@ -221,10 +228,7 @@ class Log(InterfaceView):
         if event.button == 3 and event.type == Gdk.EventType.BUTTON_RELEASE:
             self.show_revisions_table_popup_menu(treeview, event)
 
-        self.paths_table.clear()
-        self.message.set_text("")
-
-        self.update_revision_message()
+        # Let the rest be handled by the on_revisions_table_cursor changed event
 
 
     #
@@ -385,7 +389,8 @@ class SVNLog(Log):
                 _("Date"), _("Message"),
                 _("Color")],
             callbacks={
-                "mouse-event":   self.on_revisions_table_mouse_event
+                "mouse-event":   self.on_revisions_table_mouse_event,
+                "cursor-changed": self.on_revisions_table_cursor_changed
             }
         )
 
