@@ -781,7 +781,7 @@ def quote_url(url_text):
     (scheme, netloc, path, params, query, fragment) = urlparse.urlparse(url_text)
     # netloc_quoted = urllib.quote(netloc)
     path_quoted = urllib.quote(path)
-    params_quoted = urllib.quote(query)
+    params_quoted = urllib.quote(params)
     query_quoted = urllib.quote_plus(query)
     fragment_quoted = urllib.quote(fragment)
     
